@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,11 +25,11 @@ using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.ScheduleEncoding.JobSequenceMatrix {
   [Item("JobSequenceMatrixCreator", "Creator class used to create Job Sequence Matrix solutions for standard JobShop scheduling problems.")]
-  [StorableClass]
+  [StorableType("F8053C69-31C2-4E05-8FA0-5AED15FAF804")]
   public class JSMRandomCreator : ScheduleCreator, IStochasticOperator {
 
     public ILookupParameter<IRandom> RandomParameter {
@@ -43,7 +43,7 @@ namespace HeuristicLab.Encodings.ScheduleEncoding.JobSequenceMatrix {
     }
 
     [StorableConstructor]
-    protected JSMRandomCreator(bool deserializing) : base(deserializing) { }
+    protected JSMRandomCreator(StorableConstructorFlag _) : base(_) { }
     protected JSMRandomCreator(JSMRandomCreator original, Cloner cloner) : base(original, cloner) { }
     public JSMRandomCreator()
       : base() {

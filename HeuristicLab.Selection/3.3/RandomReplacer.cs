@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,11 +24,11 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Selection {
   [Item("RandomReplacer", "Replaces some randomly selected sub-scopes of the remaining scope with all those (or the best if there are more) from the selected scope.")]
-  [StorableClass]
+  [StorableType("526A1887-C636-4702-8041-36EE0C2F1DA0")]
   public sealed class RandomReplacer : Replacer, IStochasticOperator, ISingleObjectiveReplacer {
     public override bool CanChangeName {
       get { return false; }
@@ -48,7 +48,7 @@ namespace HeuristicLab.Selection {
     }
 
     [StorableConstructor]
-    private RandomReplacer(bool deserializing) : base(deserializing) { }
+    private RandomReplacer(StorableConstructorFlag _) : base(_) { }
     private RandomReplacer(RandomReplacer original, Cloner cloner)
       : base(original, cloner) {
     }

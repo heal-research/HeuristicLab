@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,12 +23,21 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Core;
+using HEAL.Attic;
 
 namespace HeuristicLab.Optimization {
+  [StorableType("b1388a9d-c85c-49f6-9916-ef4c93dffee0")]
   public abstract class Individual {
+    [Storable]
     protected IEncoding Encoding { get; private set; }
+    [Storable]
     protected IScope Scope { get; private set; }
     public string Name { get { return Encoding.Name; } }
+
+
+    [StorableConstructor]
+    protected Individual(StorableConstructorFlag _) {
+    }
 
     protected Individual(IEncoding encoding, IScope scope) {
       Encoding = encoding;

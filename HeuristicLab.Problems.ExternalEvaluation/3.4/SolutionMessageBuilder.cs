@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,11 +25,11 @@ using System.Linq;
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.ExternalEvaluation {
   [Item("SolutionMessageBuilder", "Holds and uses a number of converters to translate HeuristicLab objects into appropriate fields of a solution message.")]
-  [StorableClass]
+  [StorableType("8F406464-C1F6-4BBD-8791-C836846B473B")]
   public class SolutionMessageBuilder : NamedItem {
     public override bool CanChangeName { get { return false; } }
     public override bool CanChangeDescription { get { return false; } }
@@ -42,7 +42,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
     }
 
     [StorableConstructor]
-    protected SolutionMessageBuilder(bool deserializing) : base(deserializing) { }
+    protected SolutionMessageBuilder(StorableConstructorFlag _) : base(_) { }
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
       RegisterEventHandlers();

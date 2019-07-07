@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,18 +23,18 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
   [Item("AlbaPermutationManipulator", "An operator which manipulates a VRP representation by using a standard permutation manipulator.  It is implemented as described in Alba, E. and Dorronsoro, B. (2004). Solving the Vehicle Routing Problem by Using Cellular Genetic Algorithms.")]
-  [StorableClass]
+  [StorableType("EC65F07B-F693-4FEE-A595-39B02D633560")]
   public sealed class AlbaPermutationManipualtor : AlbaManipulator {
     public IValueLookupParameter<IPermutationManipulator> InnerManipulatorParameter {
       get { return (IValueLookupParameter<IPermutationManipulator>)Parameters["InnerManipulator"]; }
     }
 
     [StorableConstructor]
-    private AlbaPermutationManipualtor(bool deserializing) : base(deserializing) { }
+    private AlbaPermutationManipualtor(StorableConstructorFlag _) : base(_) { }
 
     public AlbaPermutationManipualtor()
       : base() {

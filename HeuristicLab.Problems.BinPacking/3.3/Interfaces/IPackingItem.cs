@@ -1,4 +1,5 @@
-﻿#region License Information
+﻿using HEAL.Attic;
+#region License Information
 /* HeuristicLab
  * Copyright (C) 2002-2018 Joseph Helm and Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
@@ -20,6 +21,7 @@
 #endregion
 
 namespace HeuristicLab.Problems.BinPacking {
+  [StorableType("a0f46e8d-d18f-43c4-8b7d-66db0659b230")]
   // a packing item is one of the items that needs to be located in one of the packing bins (containers)
   public interface IPackingItem : IPackingShape {
     double Weight { get; set; }
@@ -29,6 +31,6 @@ namespace HeuristicLab.Problems.BinPacking {
     /// </summary>
     /// <param name="other"></param>
     /// <returns></returns>
-    bool SupportsStacking (IPackingItem other);
+    bool SupportsStacking(IPackingItem other);
   }
 }

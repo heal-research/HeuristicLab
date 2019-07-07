@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,8 +22,10 @@
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.ScheduleEncoding;
 using HeuristicLab.Optimization;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.Scheduling {
+  [StorableType("9E6BC36E-D5A6-4C64-9512-391C382E3527")]
   /// <summary>
   /// An evaluator for a scheduling problem representation
   /// </summary>

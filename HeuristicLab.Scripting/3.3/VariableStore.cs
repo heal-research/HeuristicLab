@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -26,13 +26,12 @@ using HeuristicLab.Collections;
 using HeuristicLab.Common;
 using HeuristicLab.Common.Resources;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Persistence.Default.Xml;
 
 namespace HeuristicLab.Scripting {
   [Item("VariableStore", "Represents a variable store.")]
-  [StorableClass]
+  [StorableType("DDE415E7-99FD-4C10-9B5E-63334876FFDE")]
   public class VariableStore : ObservableDictionary<string, object>, IItem {
     #region Properties
     public virtual string ItemName {
@@ -54,7 +53,7 @@ namespace HeuristicLab.Scripting {
 
     #region Constructors & Cloning
     [StorableConstructor]
-    protected VariableStore(bool deserializing) : base(deserializing) { }
+    protected VariableStore(StorableConstructorFlag _) : base(_) { }
     protected VariableStore(VariableStore original, Cloner cloner) {
       cloner.RegisterClonedObject(original, this);
       foreach (var kvp in original.dict) {
@@ -81,10 +80,11 @@ namespace HeuristicLab.Scripting {
 
     protected T CloneByPersistence<T>(T value) {
       using (var serializerStream = new MemoryStream()) {
-        XmlGenerator.Serialize(value, serializerStream);
+        var serializer = new ProtoBufSerializer();
+        serializer.Serialize(value, serializerStream, disposeStream: false);
         var bytes = serializerStream.GetBuffer();
         using (var deserializerStream = new MemoryStream(bytes)) {
-          return XmlParser.Deserialize<T>(deserializerStream);
+          return (T)serializer.Deserialize(deserializerStream);
         }
       }
     }

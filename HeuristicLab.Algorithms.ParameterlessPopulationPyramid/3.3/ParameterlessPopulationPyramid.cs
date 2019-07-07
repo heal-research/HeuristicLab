@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  * and the BEACON Center for the Study of Evolution in Action.
  * 
  * This file is part of HeuristicLab.
@@ -31,7 +31,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Encodings.BinaryVectorEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.Binary;
 using HeuristicLab.Random;
 
@@ -40,7 +40,7 @@ namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
   // B. W. Goldman and W. F. Punch, "Parameter-less Population Pyramid," GECCO, pp. 785–792, 2014
   // and the original source code in C++11 available from: https://github.com/brianwgoldman/Parameter-less_Population_Pyramid
   [Item("Parameter-less Population Pyramid (P3)", "Binary value optimization algorithm which requires no configuration. B. W. Goldman and W. F. Punch, Parameter-less Population Pyramid, GECCO, pp. 785–792, 2014")]
-  [StorableClass]
+  [StorableType("CAD84CAB-1ECC-4D76-BDC5-701AAF690E17")]
   [Creatable(CreatableAttribute.Categories.PopulationBasedAlgorithms, Priority = 400)]
   public class ParameterlessPopulationPyramid : BasicAlgorithm {
     public override Type ProblemType {
@@ -165,7 +165,7 @@ namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
     public override bool SupportsPause { get { return true; } }
 
     [StorableConstructor]
-    protected ParameterlessPopulationPyramid(bool deserializing) : base(deserializing) { }
+    protected ParameterlessPopulationPyramid(StorableConstructorFlag _) : base(_) { }
 
     protected ParameterlessPopulationPyramid(ParameterlessPopulationPyramid original, Cloner cloner)
       : base(original, cloner) {

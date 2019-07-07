@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,14 +22,14 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.PTSP {
   [Item("Distance calculator", "Calculates the distance between two cities given as index of a coordinates matrix.")]
-  [StorableClass]
+  [StorableType("7CC7E665-A6A7-478B-B978-7079E1DDBA70")]
   public abstract class DistanceCalculator : Item {
     [StorableConstructor]
-    protected DistanceCalculator(bool deserializing) : base(deserializing) { }
+    protected DistanceCalculator(StorableConstructorFlag _) : base(_) { }
     protected DistanceCalculator(DistanceCalculator original, Cloner cloner) : base(original, cloner) { }
     protected DistanceCalculator() { }
 

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -26,11 +26,11 @@ using HeuristicLab.Data;
 using HeuristicLab.Encodings.IntegerVectorEncoding;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.Orienteering {
   [Item("OrienteeringEvaluator", "Operator to evaluate a solution to the orienteering problem.")]
-  [StorableClass]
+  [StorableType("ACAC24FD-9FBC-4722-BFB0-21BFEF02C2D1")]
   public class OrienteeringEvaluator : InstrumentedOperator, IOrienteeringEvaluator {
 
     #region ParameterProperties
@@ -61,8 +61,7 @@ namespace HeuristicLab.Problems.Orienteering {
     #endregion
 
     [StorableConstructor]
-    protected OrienteeringEvaluator(bool deserializing)
-      : base(deserializing) {
+    protected OrienteeringEvaluator(StorableConstructorFlag _) : base(_) {
     }
     protected OrienteeringEvaluator(OrienteeringEvaluator original, Cloner cloner)
       : base(original, cloner) {

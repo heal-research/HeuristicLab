@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,14 +24,14 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
   [Item("Pearson R² evaluator", "Calculates the square of the pearson correlation coefficient (also known as coefficient of determination) of a symbolic classification solution.")]
-  [StorableClass]
+  [StorableType("F6F480F9-21DC-4D22-9D5C-5951906BEB79")]
   public class SymbolicClassificationSingleObjectivePearsonRSquaredEvaluator : SymbolicClassificationSingleObjectiveEvaluator {
     [StorableConstructor]
-    protected SymbolicClassificationSingleObjectivePearsonRSquaredEvaluator(bool deserializing) : base(deserializing) { }
+    protected SymbolicClassificationSingleObjectivePearsonRSquaredEvaluator(StorableConstructorFlag _) : base(_) { }
     protected SymbolicClassificationSingleObjectivePearsonRSquaredEvaluator(SymbolicClassificationSingleObjectivePearsonRSquaredEvaluator original, Cloner cloner)
       : base(original, cloner) {
     }

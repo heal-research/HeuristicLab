@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,14 +22,14 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Optimization {
   [Item("SingleObjectiveQualityTerminator", "A termination criterion which uses a quality parameter (eg. current best quality) for termination.")]
-  [StorableClass]
+  [StorableType("A32469FB-7370-46E3-AB7F-EAF8053AF105")]
   public class SingleObjectiveQualityTerminator : ComparisonTerminator<DoubleValue> {
     [StorableConstructor]
-    protected SingleObjectiveQualityTerminator(bool deserializing) : base(deserializing) { }
+    protected SingleObjectiveQualityTerminator(StorableConstructorFlag _) : base(_) { }
     protected SingleObjectiveQualityTerminator(SingleObjectiveQualityTerminator original, Cloner cloner)
       : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) {

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,17 +23,17 @@ using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Operators;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.TestFunctions {
   // BackwardsCompatibility3.3
   #region Backwards compatible code (remove with 3.4)
   [Obsolete("This operator should not be used anymore.")]
-  [StorableClass]
+  [StorableType("95880958-AB1C-4B88-86DF-4C227B9DF074")]
   internal class RealVectorToRealVectorEncoder : SingleSuccessorOperator {
 
     [StorableConstructor]
-    protected RealVectorToRealVectorEncoder(bool deserializing) : base(deserializing) { }
+    protected RealVectorToRealVectorEncoder(StorableConstructorFlag _) : base(_) { }
     protected RealVectorToRealVectorEncoder(RealVectorToRealVectorEncoder original, Cloner cloner) : base(original, cloner) { }
     public RealVectorToRealVectorEncoder()
       : base() {

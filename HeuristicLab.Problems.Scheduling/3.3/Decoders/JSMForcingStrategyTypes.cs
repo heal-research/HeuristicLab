@@ -1,6 +1,7 @@
-﻿#region License Information
+﻿using HEAL.Attic;
+#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -20,6 +21,7 @@
 #endregion
 
 namespace HeuristicLab.Problems.Scheduling {
+  [StorableType("24F9DDB2-C881-4C8D-AED8-76683C53110C")]
   public enum JSMForcingStrategyTypes {
     ShiftForcing,
     SwapForcing

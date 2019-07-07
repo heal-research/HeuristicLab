@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,11 +24,11 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.TestFunctions {
   [Item("SphereAdditiveMoveEvaluator", "Class for evaluating an additive move on the Sphere function.")]
-  [StorableClass]
+  [StorableType("4A2D54BA-31B3-4A2E-BDCA-D33C0C79E75B")]
   public class SphereAdditiveMoveEvaluator : AdditiveMoveEvaluator, ISphereMoveEvaluator {
     /// <summary>
     /// The parameter C modifies the steepness of the objective function y = C * ||X||^Alpha. Default is C = 1.
@@ -62,7 +62,7 @@ namespace HeuristicLab.Problems.TestFunctions {
     }
 
     [StorableConstructor]
-    protected SphereAdditiveMoveEvaluator(bool deserializing) : base(deserializing) { }
+    protected SphereAdditiveMoveEvaluator(StorableConstructorFlag _) : base(_) { }
     protected SphereAdditiveMoveEvaluator(SphereAdditiveMoveEvaluator original, Cloner cloner) : base(original, cloner) { }
     public SphereAdditiveMoveEvaluator() {
       Parameters.Add(new ValueParameter<DoubleValue>("C", "The parameter C modifies the steepness of the objective function y = C * ||X||^Alpha. Default is C = 1.", new DoubleValue(1)));

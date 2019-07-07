@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,8 +22,10 @@
 using System;
 using System.Collections.Generic;
 using HeuristicLab.Core;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
+  [StorableType("119f5e94-bc7d-42fc-a48b-ac0230115ef2")]
   public interface ISymbolicExpressionGrammarBase : INamedItem {
     IEnumerable<ISymbol> Symbols { get; }
     IEnumerable<ISymbol> AllowedSymbols { get; }

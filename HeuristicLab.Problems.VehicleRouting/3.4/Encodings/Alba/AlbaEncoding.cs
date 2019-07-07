@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,12 +24,12 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
   [Item("AlbaEncoding", "Represents an Alba encoding of VRP solutions. It is implemented as described in Alba, E. and Dorronsoro, B. (2004). Solving the Vehicle Routing Problem by Using Cellular Genetic Algorithms.")]
-  [StorableClass]
+  [StorableType("8BB9735D-8371-46C1-B843-A6864B2ACDA5")]
   public class AlbaEncoding : General.PermutationEncoding {
     #region IVRPEncoding Members
     public override List<Tour> GetTours() {
@@ -105,8 +105,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
     }
 
     [StorableConstructor]
-    protected AlbaEncoding(bool serializing)
-      : base(serializing) {
+    protected AlbaEncoding(StorableConstructorFlag _) : base(_) {
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {

@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,18 +23,18 @@ using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.IntegerVectorEncoding {
   /// <summary>
   /// Rounded average crossover for integer vectors.
   /// </summary>
   [Item("RoundedAverageCrossover", "Average crossover for integer vectors.")]
-  [StorableClass]
+  [StorableType("6899DA13-4004-4E22-99B5-46FE6E3418FA")]
   public class RoundedAverageCrossover : BoundedIntegerVectorCrossover, IBoundedIntegerVectorOperator {
 
     [StorableConstructor]
-    protected RoundedAverageCrossover(bool deserializing) : base(deserializing) { }
+    protected RoundedAverageCrossover(StorableConstructorFlag _) : base(_) { }
     protected RoundedAverageCrossover(RoundedAverageCrossover original, Cloner cloner) : base(original, cloner) { }
     public RoundedAverageCrossover() : base() { }
 

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,11 +24,11 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Algorithms.ALPS {
   [Item("ReseedingController", "An operator that controls if reseeding is needed.")]
-  [StorableClass]
+  [StorableType("67294ABE-C118-41F0-B736-0576F30F664F")]
   public sealed class ReseedingController : SingleSuccessorOperator {
     public ILookupParameter<IntValue> GenerationsParameter {
       get { return (ILookupParameter<IntValue>)Parameters["Generations"]; }
@@ -46,8 +46,7 @@ namespace HeuristicLab.Algorithms.ALPS {
     }
 
     [StorableConstructor]
-    private ReseedingController(bool deserializing)
-      : base(deserializing) { }
+    private ReseedingController(StorableConstructorFlag _) : base(_) { }
 
     private ReseedingController(ReseedingController original, Cloner cloner)
       : base(original, cloner) {

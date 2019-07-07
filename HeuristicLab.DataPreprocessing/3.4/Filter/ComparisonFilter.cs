@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,6 +21,7 @@
 
 using System;
 using System.Drawing;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Common.Resources;
 using HeuristicLab.Core;
@@ -28,6 +29,7 @@ using HeuristicLab.Data;
 
 namespace HeuristicLab.DataPreprocessing.Filter {
   [Item("ComparisonFilter", "A filter which compares the member of the preprocessing data with the constraint data.")]
+  [StorableType("6529899a-987c-48b3-ba14-154d25a7cc8e")]
   public class ComparisonFilter : ComparisonConstraint, IFilter {
     public override string ItemName {
       get { return "ComparisonFilter"; }
@@ -52,7 +54,8 @@ namespace HeuristicLab.DataPreprocessing.Filter {
     }
 
     public ComparisonFilter() : base() { }
-    protected ComparisonFilter(bool deserializing) : base(deserializing) { }
+    [StorableConstructor]
+    protected ComparisonFilter(StorableConstructorFlag _) : base(_) { }
 
     public ComparisonFilter(IPreprocessingData constrainedValue, ConstraintOperation constraintOperation, object constraintData)
       : base(constrainedValue, constraintOperation, constraintData) {

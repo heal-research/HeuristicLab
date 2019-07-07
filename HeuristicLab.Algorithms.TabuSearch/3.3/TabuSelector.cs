@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,7 +25,7 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Selection;
 
 namespace HeuristicLab.Algorithms.TabuSearch {
@@ -36,7 +36,7 @@ namespace HeuristicLab.Algorithms.TabuSearch {
   /// For different aspiration criteria a new operator should be implemented.
   /// </remarks>
   [Item("TabuSelector", "An operator that selects the best move that is either not tabu or satisfies the aspiration criterion. It expects the move subscopes to be sorted by the qualities of the moves (the best move is first).")]
-  [StorableClass]
+  [StorableType("63A67432-6076-4BDE-B6D5-C9919FAA48DE")]
   public class TabuSelector : Selector {
     /// <summary>
     /// The best found quality so far.
@@ -81,7 +81,7 @@ namespace HeuristicLab.Algorithms.TabuSearch {
     }
 
     [StorableConstructor]
-    protected TabuSelector(bool deserializing) : base(deserializing) { }
+    protected TabuSelector(StorableConstructorFlag _) : base(_) { }
     protected TabuSelector(TabuSelector original, Cloner cloner)
       : base(original, cloner) {
     }

@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -27,7 +27,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
@@ -36,7 +36,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   /// </summary>
   [Item("Nearest Neighbour Classification (kNN)", "Nearest neighbour classification data analysis algorithm (wrapper for ALGLIB).")]
   [Creatable(CreatableAttribute.Categories.DataAnalysisClassification, Priority = 150)]
-  [StorableClass]
+  [StorableType("98161D6F-D977-45EA-B899-E47EE017865E")]
   public sealed class NearestNeighbourClassification : FixedDataAnalysisAlgorithm<IClassificationProblem> {
     private const string KParameterName = "K";
     private const string NearestNeighbourClassificationModelResultName = "Nearest neighbour classification solution";
@@ -66,7 +66,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     #endregion
 
     [StorableConstructor]
-    private NearestNeighbourClassification(bool deserializing) : base(deserializing) { }
+    private NearestNeighbourClassification(StorableConstructorFlag _) : base(_) { }
     private NearestNeighbourClassification(NearestNeighbourClassification original, Cloner cloner)
       : base(original, cloner) {
     }

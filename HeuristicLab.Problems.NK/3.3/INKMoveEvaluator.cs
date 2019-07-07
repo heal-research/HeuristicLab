@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -20,7 +20,9 @@
 #endregion
 
 using HeuristicLab.Optimization;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.NK {
+  [StorableType("06B5D234-4D97-4D4A-8EE2-E61FB21A54F6")]
   public interface INKMoveEvaluator : ISingleObjectiveMoveEvaluator, IMoveOperator { }
 }

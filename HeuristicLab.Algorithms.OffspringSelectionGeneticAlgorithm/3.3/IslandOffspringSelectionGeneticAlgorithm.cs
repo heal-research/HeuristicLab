@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -29,7 +29,7 @@ using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Random;
 
@@ -39,7 +39,7 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
   /// </summary>
   [Item("Island Offspring Selection Genetic Algorithm (Island-OSGA)", "An island offspring selection genetic algorithm.")]
   [Creatable(CreatableAttribute.Categories.PopulationBasedAlgorithms, Priority = 130)]
-  [StorableClass]
+  [StorableType("1CE20A3D-8DC7-4504-AEEB-95A0E40B9274")]
   public sealed class IslandOffspringSelectionGeneticAlgorithm : HeuristicOptimizationEngineAlgorithm, IStorableContent {
     public string Filename { get; set; }
 
@@ -267,7 +267,7 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
     #endregion
 
     [StorableConstructor]
-    private IslandOffspringSelectionGeneticAlgorithm(bool deserializing) : base(deserializing) { }
+    private IslandOffspringSelectionGeneticAlgorithm(StorableConstructorFlag _) : base(_) { }
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
       // BackwardsCompatibility3.3

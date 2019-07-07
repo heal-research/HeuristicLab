@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -20,8 +20,10 @@
 #endregion
 
 using HeuristicLab.Core;
+using HEAL.Attic;
 
 namespace HeuristicLab.Optimization {
+  [StorableType("e8b66565-263c-49f9-9c08-29b820bf3e5a")]
   public interface IMultiEncodingOperator : IOperator {
     void AddEncoding(IEncoding encoding);
     bool RemoveEncoding(IEncoding encoding);

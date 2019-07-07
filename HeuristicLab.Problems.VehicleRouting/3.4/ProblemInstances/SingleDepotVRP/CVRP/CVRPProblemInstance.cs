@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -27,14 +27,14 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 using HeuristicLab.Problems.VehicleRouting.Variants;
 
 namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
   [Item("CVRPProblemInstance", "Represents a single depot CVRP instance.")]
-  [StorableClass]
+  [StorableType("CBE1D39B-9BBE-4119-801B-32739D1E8DEE")]
   public class CVRPProblemInstance : SingleDepotVRPProblemInstance, IHomogenousCapacitatedProblemInstance {
     protected IValueParameter<DoubleValue> CapacityParameter {
       get { return (IValueParameter<DoubleValue>)Parameters["Capacity"]; }
@@ -84,7 +84,7 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
     }
 
     [StorableConstructor]
-    protected CVRPProblemInstance(bool deserializing) : base(deserializing) { }
+    protected CVRPProblemInstance(StorableConstructorFlag _) : base(_) { }
 
     public CVRPProblemInstance() {
       Parameters.Add(new ValueParameter<DoubleValue>("Capacity", "The capacity of each vehicle.", new DoubleValue(0)));

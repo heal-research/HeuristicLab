@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,15 +22,15 @@ using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.RealVectorEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
   [Item("DTLZ5", "Testfunction as defined as DTLZ5 in http://repository.ias.ac.in/81671/ [30.11.15]")]
-  [StorableClass]
+  [StorableType("CEFD068E-521B-459F-80F1-B2AE4D114D41")]
   public class DTLZ5 : DTLZ {
 
     [StorableConstructor]
-    protected DTLZ5(bool deserializing) : base(deserializing) { }
+    protected DTLZ5(StorableConstructorFlag _) : base(_) { }
     protected DTLZ5(DTLZ5 original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new DTLZ5(this, cloner);

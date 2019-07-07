@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,8 +21,10 @@
 
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HEAL.Attic;
 
 namespace HeuristicLab.Optimization {
+  [StorableType("740caa52-1f3c-4bfe-a2f9-f59e4c547992")]
   public interface IMultiNeighborhoodShakingOperator : IOperator {
     IValueLookupParameter<IntValue> CurrentNeighborhoodIndexParameter { get; }
     ILookupParameter<IntValue> NeighborhoodCountParameter { get; }

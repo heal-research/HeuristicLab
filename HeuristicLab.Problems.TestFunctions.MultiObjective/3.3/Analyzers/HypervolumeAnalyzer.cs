@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -27,10 +27,10 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
-  [StorableClass]
+  [StorableType("13D363E4-76FF-4A5A-9B2C-767D9E880E4B")]
   [Item("HypervolumeAnalyzer", "Computes the enclosed Hypervolume between the current front and a given reference Point")]
   public class HypervolumeAnalyzer : MOTFAnalyzer {
 
@@ -49,8 +49,7 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
 
 
     [StorableConstructor]
-    protected HypervolumeAnalyzer(bool deserializing)
-      : base(deserializing) {
+    protected HypervolumeAnalyzer(StorableConstructorFlag _) : base(_) {
     }
 
     protected HypervolumeAnalyzer(HypervolumeAnalyzer original, Cloner cloner)

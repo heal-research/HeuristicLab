@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -28,7 +28,7 @@ using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 using HeuristicLab.Problems.VehicleRouting.Variants;
 
@@ -37,7 +37,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
   /// An operator which analyzes the best, average and worst quality of solutions in the scope tree.
   /// </summary>
   [Item("BestAverageWorstPickupAndDeliveryVRPToursAnalyzer", "An operator which analyzes the best, average and worst properties of the VRP tours in the scope tree.")]
-  [StorableClass]
+  [StorableType("B2B231AD-3B1A-4BD0-B6C3-F249A858BAE9")]
   public sealed class BestAverageWorstPickupAndDeliveryVRPToursAnalyzer : AlgorithmOperator, IAnalyzer, IPickupAndDeliveryOperator {
     #region Parameter properties
     public ILookupParameter<IVRPProblemInstance> ProblemInstanceParameter {
@@ -131,7 +131,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
       Initialize();
     }
     [StorableConstructor]
-    private BestAverageWorstPickupAndDeliveryVRPToursAnalyzer(bool deserializing) : base() { }
+    private BestAverageWorstPickupAndDeliveryVRPToursAnalyzer(StorableConstructorFlag _) : base(_) { }
 
     [StorableHook(HookType.AfterDeserialization)]
     private void Initialize() {

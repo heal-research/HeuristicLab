@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,19 +22,19 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Optimization.Operators {
   /// <summary>
   /// A base class for items that perform similarity calculation between two single objective solutions.
   /// </summary>
   [Item("SimilarityCalculator", "A base class for items that perform similarity calculation between two solutions.")]
-  [StorableClass]
+  [StorableType("16E69099-B75B-467B-ADAC-8CA64796F389")]
 #pragma warning disable 0618
   public abstract class SingleObjectiveSolutionSimilarityCalculator : SolutionSimilarityCalculator, ISingleObjectiveSolutionSimilarityCalculator {
 #pragma warning restore 0618
     [StorableConstructor]
-    protected SingleObjectiveSolutionSimilarityCalculator(bool deserializing) : base(deserializing) { }
+    protected SingleObjectiveSolutionSimilarityCalculator(StorableConstructorFlag _) : base(_) { }
     protected SingleObjectiveSolutionSimilarityCalculator(SingleObjectiveSolutionSimilarityCalculator original, Cloner cloner)
       : base(original, cloner) {
 

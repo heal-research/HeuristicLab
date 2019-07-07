@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -26,14 +26,14 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
   /// <summary>
   /// Base class for a test function evaluator.
   /// </summary>
   [Item("Multi-Objective Function", "Base class for multi objective functions.")]
-  [StorableClass]
+  [StorableType("6E9E9993-5B26-4D97-A58C-B4FD28308544")]
   public abstract class MultiObjectiveTestFunction : ParameterizedNamedItem, IMultiObjectiveTestFunction {
     /// <summary>
     /// These operators should not change their name through the GUI
@@ -119,7 +119,7 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
     }
 
     [StorableConstructor]
-    protected MultiObjectiveTestFunction(bool deserializing) : base(deserializing) { }
+    protected MultiObjectiveTestFunction(StorableConstructorFlag _) : base(_) { }
 
     protected MultiObjectiveTestFunction(MultiObjectiveTestFunction original, Cloner cloner)
       : base(original, cloner) {

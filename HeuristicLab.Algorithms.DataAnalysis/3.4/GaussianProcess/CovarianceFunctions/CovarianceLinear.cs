@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,14 +22,14 @@
 using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
-  [StorableClass]
+  [StorableType("5C4AB3C8-48D5-4B6E-830A-89AE2A363C64")]
   [Item(Name = "CovarianceLinear", Description = "Linear covariance function for Gaussian processes.")]
   public sealed class CovarianceLinear : Item, ICovarianceFunction {
     [StorableConstructor]
-    private CovarianceLinear(bool deserializing) : base(deserializing) { }
+    private CovarianceLinear(StorableConstructorFlag _) : base(_) { }
     private CovarianceLinear(CovarianceLinear original, Cloner cloner)
       : base(original, cloner) {
     }

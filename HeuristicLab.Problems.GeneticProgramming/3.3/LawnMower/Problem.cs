@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -27,11 +27,11 @@ using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.Problems.GeneticProgramming.LawnMower {
-  [StorableClass]
+  [StorableType("3F72F63C-CBEB-43BD-ADC0-B3F0AD58331B")]
   [Creatable(CreatableAttribute.Categories.GeneticProgrammingProblems, Priority = 160)]
   [Item("Lawn Mower Problem", "The lawn mower demo problem for genetic programming.")]
   public class Problem : SymbolicExpressionTreeProblem {
@@ -51,7 +51,7 @@ namespace HeuristicLab.Problems.GeneticProgramming.LawnMower {
 
     #region item cloning and persistence
     [StorableConstructor]
-    protected Problem(bool deserializing) : base(deserializing) { }
+    protected Problem(StorableConstructorFlag _) : base(_) { }
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() { }
 

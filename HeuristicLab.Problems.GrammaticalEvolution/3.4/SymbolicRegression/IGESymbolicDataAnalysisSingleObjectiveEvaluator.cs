@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,8 +24,10 @@
 
 using HeuristicLab.Optimization;
 using HeuristicLab.Problems.DataAnalysis;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.GrammaticalEvolution {
+  [StorableType("52190d05-dfdd-4ebb-9a95-5cd96eb3dc7e")]
   public interface IGESymbolicDataAnalysisSingleObjectiveEvaluator<T> : IGESymbolicDataAnalysisEvaluator<T>, ISingleObjectiveEvaluator
     where T : class,IDataAnalysisProblemData {
     bool Maximization { get; }

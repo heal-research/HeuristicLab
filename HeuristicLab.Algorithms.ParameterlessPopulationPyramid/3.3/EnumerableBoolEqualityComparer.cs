@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,8 +21,10 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using HEAL.Attic;
 
 namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
+  [StorableType("231ae77d-4352-4a70-8662-5f3d5d44f095")]
   public class EnumerableBoolEqualityComparer : IEqualityComparer<IEnumerable<bool>> {
     public bool Equals(IEnumerable<bool> first, IEnumerable<bool> second) {
       return first.SequenceEqual(second);

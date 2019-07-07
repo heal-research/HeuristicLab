@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,7 +22,7 @@
 using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.VehicleRouting.Encodings.Potvin;
 
 namespace HeuristicLab.Problems.VehicleRouting {
@@ -30,10 +30,10 @@ namespace HeuristicLab.Problems.VehicleRouting {
   /// An operator which improves VRP solutions.
   /// </summary>
   [Item("VRPIntraRouteImprovementOperator", "An operator which improves VRP solutions.")]
-  [StorableClass]
+  [StorableType("297EAEDF-FD4E-48E1-B304-C13699E78CDA")]
   public sealed class VRPIntraRouteImprovementOperator : VRPImprovementOperator {
     [StorableConstructor]
-    private VRPIntraRouteImprovementOperator(bool deserializing) : base(deserializing) { }
+    private VRPIntraRouteImprovementOperator(StorableConstructorFlag _) : base(_) { }
     private VRPIntraRouteImprovementOperator(VRPIntraRouteImprovementOperator original, Cloner cloner) : base(original, cloner) { }
     public VRPIntraRouteImprovementOperator() : base() { }
 

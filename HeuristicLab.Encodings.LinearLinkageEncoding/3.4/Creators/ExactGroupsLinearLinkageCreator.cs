@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,12 +25,12 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.Encodings.LinearLinkageEncoding {
   [Item("Exactgroups Linear Linkage Creator", "Creates a random linear linkage LLE encoded solution with a given number of equal-sized groups.")]
-  [StorableClass]
+  [StorableType("ACF7F729-9436-4418-86C4-45BF69F91803")]
   public sealed class ExactGroupsLinearLinkageCreator : LinearLinkageCreator {
 
     public IValueLookupParameter<IntValue> ExactGroupsParameter {
@@ -43,7 +43,7 @@ namespace HeuristicLab.Encodings.LinearLinkageEncoding {
     }
 
     [StorableConstructor]
-    private ExactGroupsLinearLinkageCreator(bool deserializing) : base(deserializing) { }
+    private ExactGroupsLinearLinkageCreator(StorableConstructorFlag _) : base(_) { }
     private ExactGroupsLinearLinkageCreator(ExactGroupsLinearLinkageCreator original, Cloner cloner) : base(original, cloner) { }
 
     public ExactGroupsLinearLinkageCreator() {

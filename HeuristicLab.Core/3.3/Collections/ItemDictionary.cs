@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,10 +24,10 @@ using System.Collections.Generic;
 using System.Drawing;
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Core {
-  [StorableClass]
+  [StorableType("C2B03555-3956-400E-94C3-3FB868F30DD2")]
   [Item("ItemDictionary", "Represents a dictionary of items.")]
   public class ItemDictionary<TKey, TValue> : ObservableDictionary<TKey, TValue>, IItemDictionary<TKey, TValue>
     where TKey : class, IItem
@@ -50,7 +50,7 @@ namespace HeuristicLab.Core {
     }
 
     [StorableConstructor]
-    protected ItemDictionary(bool deserializing) : base(deserializing) { }
+    protected ItemDictionary(StorableConstructorFlag _) : base(_) { }
     protected ItemDictionary(ItemDictionary<TKey, TValue> original, Cloner cloner) {
       cloner.RegisterClonedObject(original, this);
       foreach (TKey key in original.dict.Keys)

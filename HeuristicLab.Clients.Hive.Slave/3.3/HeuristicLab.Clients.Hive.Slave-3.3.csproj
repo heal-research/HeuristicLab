@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>HeuristicLab.Clients.Hive.SlaveCore</RootNamespace>
     <AssemblyName>HeuristicLab.Clients.Hive.SlaveCore-3.3</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -92,9 +92,9 @@
       <HintPath>..\..\bin\HeuristicLab.Clients.Common-3.3.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="HeuristicLab.Common-3.3">
+    <Reference Include="HeuristicLab.Common-3.3, Version=3.3.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\bin\HeuristicLab.Common-3.3.dll</HintPath>
-      <Private>False</Private>
     </Reference>
     <Reference Include="HeuristicLab.Common.Resources-3.3, Version=3.3.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
       <HintPath>..\..\bin\HeuristicLab.Common.Resources-3.3.dll</HintPath>
@@ -102,10 +102,6 @@
     </Reference>
     <Reference Include="HeuristicLab.Core-3.3">
       <HintPath>..\..\bin\HeuristicLab.Core-3.3.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="HeuristicLab.Persistence-3.3">
-      <HintPath>..\..\bin\HeuristicLab.Persistence-3.3.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="HeuristicLab.PluginInfrastructure-3.3">

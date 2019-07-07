@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,8 +21,10 @@
 
 using System;
 using HeuristicLab.Core;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.ExternalEvaluation {
+  [StorableType("581f5e17-68dc-42a0-8bc0-e0ac8992ed7b")]
   public interface IItemToSolutionMessageConverter : IItem {
     Type[] ItemTypes { get; }
     void AddItemToBuilder(IItem item, string name, SolutionMessage.Builder builder);

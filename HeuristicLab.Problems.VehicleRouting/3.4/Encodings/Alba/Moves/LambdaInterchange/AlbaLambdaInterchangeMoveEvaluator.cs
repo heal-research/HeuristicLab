@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,12 +22,12 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.VehicleRouting.Encodings.Alba;
 
 namespace HeuristicLab.Problems.VehicleRouting {
   [Item("AlbaLambdaInterchangeMoveEvaluator", "Evaluates a lamnbda interchange move for a VRP representation.  It is implemented as described in Alba, E. and Dorronsoro, B. (2004). Solving the Vehicle Routing Problem by Using Cellular Genetic Algorithms.")]
-  [StorableClass]
+  [StorableType("19F0179C-8D5C-4181-9411-9EBE0B951673")]
   public sealed class AlbaLambdaInterchangeMoveEvaluator : AlbaMoveEvaluator, IAlbaLambdaInterchangeMoveOperator {
     public ILookupParameter<AlbaLambdaInterchangeMove> LambdaInterchangeMoveParameter {
       get { return (ILookupParameter<AlbaLambdaInterchangeMove>)Parameters["AlbaLambdaInterchangeMove"]; }
@@ -38,7 +38,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
     }
 
     [StorableConstructor]
-    private AlbaLambdaInterchangeMoveEvaluator(bool deserializing) : base(deserializing) { }
+    private AlbaLambdaInterchangeMoveEvaluator(StorableConstructorFlag _) : base(_) { }
 
     public AlbaLambdaInterchangeMoveEvaluator()
       : base() {

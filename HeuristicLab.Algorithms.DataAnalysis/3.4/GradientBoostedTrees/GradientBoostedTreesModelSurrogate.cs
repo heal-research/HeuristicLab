@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  * and the BEACON Center for the Study of Evolution in Action.
  * 
  * This file is part of HeuristicLab.
@@ -25,11 +25,11 @@ using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
-  [StorableClass]
+  [StorableType("1BF7BEFB-6739-48AA-89BC-B632E72D148C")]
   // this class is used as a surrogate for persistence of an actual GBT model 
   // since the actual GBT model would be very large when persisted we only store all necessary information to
   // recalculate the actual GBT model on demand
@@ -67,8 +67,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     [StorableConstructor]
-    private GradientBoostedTreesModelSurrogate(bool deserializing)
-      : base(deserializing) {
+    private GradientBoostedTreesModelSurrogate(StorableConstructorFlag _) : base(_) {
       actualModel = new Lazy<IGradientBoostedTreesModel>(() => RecalculateModel());
     }
 

@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -20,8 +20,10 @@
 #endregion
 
 using System.Collections.Generic;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis {
+  [StorableType("35261615-3840-49ba-90a5-0e15806c1bc4")]
   public interface IConfidenceRegressionModel : IRegressionModel {
     IEnumerable<double> GetEstimatedVariances(IDataset dataset, IEnumerable<int> rows);
   }

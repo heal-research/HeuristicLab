@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  * and the BEACON Center for the Study of Evolution in Action.
  * 
  * This file is part of HeuristicLab.
@@ -24,11 +24,11 @@ using System;
 using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   // loss function for the weighted absolute error
-  [StorableClass]
+  [StorableType("C4429BDA-665F-48A2-B18F-EA1569083842")]
   [Item("Absolute error loss", "")]
   public sealed class AbsoluteErrorLoss : Item, ILossFunction {
     public AbsoluteErrorLoss() { }
@@ -82,7 +82,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     #region item implementation
     [StorableConstructor]
-    private AbsoluteErrorLoss(bool deserializing) : base(deserializing) { }
+    private AbsoluteErrorLoss(StorableConstructorFlag _) : base(_) { }
 
     private AbsoluteErrorLoss(AbsoluteErrorLoss original, Cloner cloner) : base(original, cloner) { }
 

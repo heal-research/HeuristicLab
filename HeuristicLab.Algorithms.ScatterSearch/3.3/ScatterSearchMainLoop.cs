@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -26,7 +26,7 @@ using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Selection;
 
 namespace HeuristicLab.Algorithms.ScatterSearch {
@@ -34,7 +34,7 @@ namespace HeuristicLab.Algorithms.ScatterSearch {
   /// An operator which represents a scatter search.
   /// </summary>
   [Item("ScatterSearchMainLoop", "An operator which represents a scatter search.")]
-  [StorableClass]
+  [StorableType("CDEB69B9-A0D9-4E84-80FD-347E16A1A8FE")]
   public sealed class ScatterSearchMainLoop : AlgorithmOperator {
     #region Parameter properties
     public IValueLookupParameter<IMultiAnalyzer> AnalyzerParameter {
@@ -169,7 +169,7 @@ namespace HeuristicLab.Algorithms.ScatterSearch {
     #endregion
 
     [StorableConstructor]
-    private ScatterSearchMainLoop(bool deserializing) : base(deserializing) { }
+    private ScatterSearchMainLoop(StorableConstructorFlag _) : base(_) { }
     private ScatterSearchMainLoop(ScatterSearchMainLoop original, Cloner cloner) : base(original, cloner) { }
     public ScatterSearchMainLoop() : base() { Initialize(); }
 

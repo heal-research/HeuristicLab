@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -27,7 +27,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.IntegerVectorEncoding;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.Problems.GrammaticalEvolution {
@@ -35,11 +35,11 @@ namespace HeuristicLab.Problems.GrammaticalEvolution {
   /// RandomMapper
   /// </summary>
   [Item("RandomMapper", "Randomly determines the next non-terminal symbol to expand.")]
-  [StorableClass]
+  [StorableType("FD52470F-EA9A-4E95-8DE0-66C9B9F5F4EB")]
   public class RandomMapper : GenotypeToPhenotypeMapper {
 
     [StorableConstructor]
-    protected RandomMapper(bool deserializing) : base(deserializing) { }
+    protected RandomMapper(StorableConstructorFlag _) : base(_) { }
     protected RandomMapper(RandomMapper original, Cloner cloner) : base(original, cloner) { }
     public RandomMapper() : base() { }
 

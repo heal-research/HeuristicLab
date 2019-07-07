@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,18 +24,17 @@ using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Algorithms.GradientDescent {
-  [StorableClass]
+  [StorableType("2A117076-0311-4F85-A1B9-16F39D5752DE")]
   [Item("LbfgsState", "Internal state for the limited-memory BFGS optimization algorithm.")]
   public sealed class LbfgsState : Item {
     private alglib.minlbfgs.minlbfgsstate state;
     public alglib.minlbfgs.minlbfgsstate State { get { return state; } }
 
     [StorableConstructor]
-    private LbfgsState(bool deserializing)
-      : base(deserializing) {
+    private LbfgsState(StorableConstructorFlag _) : base(_) {
       state = new alglib.minlbfgs.minlbfgsstate();
     }
     private LbfgsState(LbfgsState original, Cloner cloner)

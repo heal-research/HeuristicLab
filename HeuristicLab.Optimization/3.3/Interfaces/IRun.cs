@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,8 +23,10 @@ using System.ComponentModel;
 using System.Drawing;
 using HeuristicLab.Collections;
 using HeuristicLab.Core;
+using HEAL.Attic;
 
 namespace HeuristicLab.Optimization {
+  [StorableType("bd021976-74c7-4e40-af7e-e10e316af64c")]
   /// <summary>
   /// Represents the parameters and results of an algorithm run.
   /// </summary>

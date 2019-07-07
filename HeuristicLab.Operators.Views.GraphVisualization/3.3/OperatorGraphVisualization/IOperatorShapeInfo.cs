@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,8 +21,10 @@
 
 using System.Collections.Generic;
 using System.Drawing;
+using HEAL.Attic;
 
 namespace HeuristicLab.Operators.Views.GraphVisualization {
+  [StorableType("d6ae073c-ddf7-4923-abed-1b3c864ac492")]
   public interface IOperatorShapeInfo : IShapeInfo {
     bool Collapsed { get; set; }
     string Title { get; set; }

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,15 +23,15 @@ using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
   [Item("AlbaExhaustiveIntraRouteInversionGenerator", "Generates all possible intra route inversion moves from a given VRP encoding.  It is implemented as described in Alba, E. and Dorronsoro, B. (2004). Solving the Vehicle Routing Problem by Using Cellular Genetic Algorithms.")]
-  [StorableClass]
+  [StorableType("11670474-FE25-4641-8711-B68B645D15C1")]
   public sealed class AlbaExhaustiveIntraRouteInversionGenerator : AlbaIntraRouteInversionMoveGenerator, IExhaustiveMoveGenerator, IAlbaIntraRouteInversionMoveOperator {
     [StorableConstructor]
-    private AlbaExhaustiveIntraRouteInversionGenerator(bool deserializing) : base(deserializing) { }
+    private AlbaExhaustiveIntraRouteInversionGenerator(StorableConstructorFlag _) : base(_) { }
 
     public AlbaExhaustiveIntraRouteInversionGenerator()
       : base() {

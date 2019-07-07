@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,18 +24,18 @@ using System.Drawing;
 using System.Text;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Data {
   [Item("DoubleValue", "Represents a double value.")]
-  [StorableClass]
+  [StorableType("E9F7C52B-4D05-4C3A-BA2A-FC4C55B4388A")]
   public class DoubleValue : ValueTypeValue<double>, IComparable, IStringConvertibleValue {
     public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Field; }
     }
 
     [StorableConstructor]
-    protected DoubleValue(bool deserializing) : base(deserializing) { }
+    protected DoubleValue(StorableConstructorFlag _) : base(_) { }
     protected DoubleValue(DoubleValue original, Cloner cloner)
       : base(original, cloner) {
     }

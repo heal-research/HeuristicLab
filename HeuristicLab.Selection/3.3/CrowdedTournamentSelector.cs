@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -26,11 +26,11 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Selection {
   [Item("CrowdedTournamentSelector", "Selects solutions using tournament selection by using the partial order defined in Deb et al. 2002. A Fast and Elitist Multiobjective Genetic Algorithm: NSGA-II. IEEE Transactions on Evolutionary Computation, 6(2), pp. 182-197.")]
-  [StorableClass]
+  [StorableType("343E8160-873B-4F76-BCA0-9F031CB6D1D7")]
   public class CrowdedTournamentSelector : Selector, IMultiObjectiveSelector, IStochasticOperator {
     public ILookupParameter<BoolArray> MaximizationParameter {
       get { return (ILookupParameter<BoolArray>)Parameters["Maximization"]; }
@@ -63,7 +63,7 @@ namespace HeuristicLab.Selection {
     }
 
     [StorableConstructor]
-    protected CrowdedTournamentSelector(bool deserializing) : base(deserializing) { }
+    protected CrowdedTournamentSelector(StorableConstructorFlag _) : base(_) { }
     protected CrowdedTournamentSelector(CrowdedTournamentSelector original, Cloner cloner) : base(original, cloner) { }
     public CrowdedTournamentSelector()
       : base() {

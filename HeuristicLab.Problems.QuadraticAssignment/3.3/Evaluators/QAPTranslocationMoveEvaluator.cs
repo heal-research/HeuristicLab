@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,11 +25,11 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.QuadraticAssignment {
   [Item("QAPTranslocationMoveEvaluator", "Evaluates translocation moves on a QAP solution.")]
-  [StorableClass]
+  [StorableType("0B1B33E0-7F88-485C-8E00-79FBB266CE4E")]
   public class QAPTranslocationMoveEvaluator : QAPMoveEvaluator, IPermutationTranslocationMoveOperator {
 
     public ILookupParameter<TranslocationMove> TranslocationMoveParameter {
@@ -37,7 +37,7 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
     }
 
     [StorableConstructor]
-    protected QAPTranslocationMoveEvaluator(bool deserializing) : base(deserializing) { }
+    protected QAPTranslocationMoveEvaluator(StorableConstructorFlag _) : base(_) { }
     protected QAPTranslocationMoveEvaluator(QAPTranslocationMoveEvaluator original, Cloner cloner)
       : base(original, cloner) {
     }

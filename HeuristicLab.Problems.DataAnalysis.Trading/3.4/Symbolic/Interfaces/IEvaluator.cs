@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -20,8 +20,10 @@
 #endregion
 
 using HeuristicLab.Problems.DataAnalysis.Symbolic;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Trading.Symbolic {
+  [StorableType("d271ad83-6ee0-46cc-8f38-98f0c186e53e")]
   public interface IEvaluator : ISymbolicDataAnalysisEvaluator<IProblemData> {
   }
 }

@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,10 +23,10 @@ using System;
 using System.Drawing;
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Core {
-  [StorableClass]
+  [StorableType("8FC81B05-B27D-4FD7-A8F9-7EE29839B056")]
   [Item("ReadOnlyItemList", "Represents a read-only list of items.")]
   public class ReadOnlyItemList<T> : ReadOnlyObservableList<T>, IItemList<T> where T : class, IItem {
     public virtual string ItemName {
@@ -46,7 +46,7 @@ namespace HeuristicLab.Core {
     }
 
     [StorableConstructor]
-    protected ReadOnlyItemList(bool deserializing) : base(deserializing) { }
+    protected ReadOnlyItemList(StorableConstructorFlag _) : base(_) { }
     protected ReadOnlyItemList(ReadOnlyItemList<T> original, Cloner cloner)
       : base(cloner.Clone((IItemList<T>)original.list)) {
       cloner.RegisterClonedObject(original, this);

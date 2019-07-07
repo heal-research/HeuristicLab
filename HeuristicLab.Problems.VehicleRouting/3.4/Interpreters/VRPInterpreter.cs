@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -20,12 +20,9 @@
 #endregion
 
 using System.IO;
-using HeuristicLab.Data;
 using HeuristicLab.Problems.Instances;
 using HeuristicLab.Problems.VehicleRouting.Encodings.Potvin;
-using HeuristicLab.Problems.VehicleRouting.ProblemInstances;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
-using System;
 
 namespace HeuristicLab.Problems.VehicleRouting.Interpreters {
   public abstract class VRPInterpreter : IVRPDataInterpreter<IVRPData> {

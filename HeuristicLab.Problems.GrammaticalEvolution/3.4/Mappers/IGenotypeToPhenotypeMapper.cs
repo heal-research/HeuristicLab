@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,8 +25,10 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.IntegerVectorEncoding;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.GrammaticalEvolution.Mappers {
+  [StorableType("17ca7334-176c-4d80-89f9-ae918dcc65d2")]
   /// <summary>
   /// IGenotypeToPhenotypeMapper
   /// </summary>

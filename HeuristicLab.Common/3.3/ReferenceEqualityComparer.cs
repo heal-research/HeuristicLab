@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -20,8 +20,10 @@
 #endregion
 
 using System.Collections.Generic;
+using HEAL.Attic;
 
 namespace HeuristicLab.Common {
+  [StorableType("c4231b4c-94ac-4b4a-bd99-3deea73237de")]
   public class ReferenceEqualityComparer : IEqualityComparer<object> {
     bool IEqualityComparer<object>.Equals(object x, object y) {
       return object.ReferenceEquals(x, y);

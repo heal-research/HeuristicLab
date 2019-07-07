@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,7 +23,7 @@ using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.Encodings.RealVectorEncoding {
@@ -36,7 +36,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
   /// The strategy vector can be of smaller length than the solution vector, in which case values are taken from the beginning again once the end of the strategy vector is reached.
   /// </remarks>
   [Item("FixedNormalAllPositionsManipulator", "This manipulation operator adds a value sigma_i * N_i(0,1) to the current value in each position i given the values for sigma_i in the parameter. If there are less elements in Sigma than positions, then Sigma is cycled. It is implemented as described in Beyer, H.-G. and Schwefel, H.-P. 2002. Evolution Strategies - A Comprehensive Introduction Natural Computing, 1, pp. 3-52.")]
-  [StorableClass]
+  [StorableType("DEEF042E-72C8-47D4-A4F8-E6C38FD90CC0")]
   public class FixedNormalAllPositionsManipulator : RealVectorManipulator {
 
     public IValueParameter<RealVector> SigmaParameter {
@@ -44,7 +44,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     }
 
     [StorableConstructor]
-    protected FixedNormalAllPositionsManipulator(bool deserializing) : base(deserializing) { }
+    protected FixedNormalAllPositionsManipulator(StorableConstructorFlag _) : base(_) { }
     protected FixedNormalAllPositionsManipulator(FixedNormalAllPositionsManipulator original, Cloner cloner) : base(original, cloner) { }
     /// <summary>
     /// Initializes a new instance of <see cref="NormalAllPositionsManipulator"/> with one

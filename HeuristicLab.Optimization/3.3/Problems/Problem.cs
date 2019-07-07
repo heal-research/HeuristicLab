@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -27,11 +27,11 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Optimization {
   [Item("Problem", "Represents the base class for a problem.")]
-  [StorableClass]
+  [StorableType("6DC97432-9BD1-4304-802A-1FC48A0E0468")]
   public abstract class Problem : ParameterizedNamedItem, IProblem {
     private const string OperatorsParameterName = "Operators";
     public IFixedValueParameter<ItemCollection<IItem>> OperatorsParameter {
@@ -43,7 +43,7 @@ namespace HeuristicLab.Optimization {
     }
 
     [StorableConstructor]
-    protected Problem(bool deserializing) : base(deserializing) { }
+    protected Problem(StorableConstructorFlag _) : base(_) { }
     protected Problem(Problem original, Cloner cloner)
       : base(original, cloner) {
       RegisterEventHandlers();

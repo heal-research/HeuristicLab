@@ -1,7 +1,7 @@
 ﻿#region License Information
 
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,11 +24,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Collections {
   [Serializable]
-  [StorableClass]
+  [StorableType("47F1D1D1-DF32-4C23-8D4F-0B36A6E42AF7")]
   public abstract class ObservableKeyedList<TKey, TItem> : ObservableList<TItem>, IObservableKeyedList<TKey, TItem> {
 
     private Dictionary<TKey, TItem> dict;
@@ -63,7 +63,7 @@ namespace HeuristicLab.Collections {
       dict = new Dictionary<TKey, TItem>(capacity, comparer);
     }
     [StorableConstructor]
-    protected ObservableKeyedList(bool deserializing) : base(deserializing) { }
+    protected ObservableKeyedList(StorableConstructorFlag _) : base(_) { }
     #endregion
 
     protected abstract TKey GetKeyForItem(TItem item);

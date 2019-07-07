@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,8 +21,10 @@
 
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.PTSP {
+  [StorableType("1BB8344B-894B-48E9-9805-49938AE3F83F")]
   public interface IAnalyticalPTSPOperator : IItem {
     ILookupParameter<DoubleArray> ProbabilitiesParameter { get; }
   }

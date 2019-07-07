@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,9 +24,9 @@ using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
-  [StorableClass]
+  [StorableType("36A22322-0627-4E25-A468-F2A788AF6D46")]
   [Item("TypeCoherentExpressionGrammar", "Represents a grammar for functional expressions in which special syntactic constraints are enforced so that boolean and real-valued expressions are not mixed.")]
   public class TypeCoherentExpressionGrammar : SymbolicExpressionGrammar, ISymbolicDataAnalysisGrammar {
     private const string ArithmeticFunctionsName = "Arithmetic Functions";
@@ -43,7 +43,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     private const string TimeSeriesSymbolsName = "Time Series Symbols";
 
     [StorableConstructor]
-    protected TypeCoherentExpressionGrammar(bool deserializing) : base(deserializing) { }
+    protected TypeCoherentExpressionGrammar(StorableConstructorFlag _) : base(_) { }
     protected TypeCoherentExpressionGrammar(TypeCoherentExpressionGrammar original, Cloner cloner) : base(original, cloner) { }
     public TypeCoherentExpressionGrammar()
       : base(ItemAttribute.GetName(typeof(TypeCoherentExpressionGrammar)), ItemAttribute.GetDescription(typeof(TypeCoherentExpressionGrammar))) {

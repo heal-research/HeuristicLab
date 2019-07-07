@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,11 +25,11 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.NK {
   [Item("LimitedRandomInteractionsInitializer", "Randomly assignes interactions across bits in the vicinity of each other respecting the maximum distances if possible.")]
-  [StorableClass]
+  [StorableType("A49E3167-FC04-40F8-A45C-BA8818CE2065")]
   public sealed class LimitedRandomInteractionsInitializer : ParameterizedNamedItem, IInteractionInitializer {
     private class Bounds {
       public readonly int Min;
@@ -51,7 +51,7 @@ namespace HeuristicLab.Problems.NK {
     }
 
     [StorableConstructor]
-    private LimitedRandomInteractionsInitializer(bool serializing) : base(serializing) { }
+    private LimitedRandomInteractionsInitializer(StorableConstructorFlag _) : base(_) { }
     private LimitedRandomInteractionsInitializer(LimitedRandomInteractionsInitializer original, Cloner cloner) : base(original, cloner) { }
     public LimitedRandomInteractionsInitializer() {
       Parameters.Add(new ValueParameter<IntValue>("MaximumDistance", "Maximum distance of interactions in bits or 0 for unlimited"));

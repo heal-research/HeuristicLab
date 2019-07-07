@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,14 +22,14 @@
 using System;
 using System.Drawing;
 using HeuristicLab.Common;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Core {
   /// <summary>
   /// Represents a variable which has a name and holds an IItem.
   /// </summary>
   [Item("Variable", "A variable which has a name and holds an IItem.")]
-  [StorableClass]
+  [StorableType("FF4ED8C3-C0A0-42F9-8EFF-3DC6AAD90EE7")]
   public sealed class Variable : NamedItem, IVariable {
     public override Image ItemImage {
       get {
@@ -55,7 +55,7 @@ namespace HeuristicLab.Core {
     }
 
     [StorableConstructor]
-    private Variable(bool deserializing) : base(deserializing) { }
+    private Variable(StorableConstructorFlag _) : base(_) { }
     private Variable(Variable original, Cloner cloner)
       : base(original, cloner) {
       value = cloner.Clone(original.value);

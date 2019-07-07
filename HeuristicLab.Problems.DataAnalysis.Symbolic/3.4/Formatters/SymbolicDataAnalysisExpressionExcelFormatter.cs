@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -27,14 +27,14 @@ using System.Text;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [Item("Excel String Formatter", "String formatter for string representations of symbolic data analysis expressions in Excel syntax.")]
-  [StorableClass]
+  [StorableType("46C46897-9C92-4CF1-81C9-700732700DD3")]
   public sealed class SymbolicDataAnalysisExpressionExcelFormatter : NamedItem, ISymbolicExpressionTreeStringFormatter {
     [StorableConstructor]
-    private SymbolicDataAnalysisExpressionExcelFormatter(bool deserializing) : base(deserializing) { }
+    private SymbolicDataAnalysisExpressionExcelFormatter(StorableConstructorFlag _) : base(_) { }
     private SymbolicDataAnalysisExpressionExcelFormatter(SymbolicDataAnalysisExpressionExcelFormatter original, Cloner cloner) : base(original, cloner) { }
     public SymbolicDataAnalysisExpressionExcelFormatter()
       : base() {

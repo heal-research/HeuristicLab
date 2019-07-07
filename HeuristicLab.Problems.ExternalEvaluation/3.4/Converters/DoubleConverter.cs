@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,16 +24,16 @@ using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.ExternalEvaluation {
   [Item("DoubleConverter", "Converts a ValueTypeValue<double>, ValueTypeArray<double>, or ValueTypeMatrix<double> and adds it to the SolutionMessage's DoubleVars or DoubleArrayVars. A matrix is encoded as array by concatenating all rows and setting length as the length of a row.")]
-  [StorableClass]
+  [StorableType("30B9F1EE-5D41-4EE3-97F5-39500BBC5172")]
   public class DoubleConverter : Item, IItemToSolutionMessageConverter {
     private static readonly Type[] itemTypes = new Type[] { typeof(ValueTypeValue<double>), typeof(ValueTypeArray<double>), typeof(ValueTypeMatrix<double>) };
 
     [StorableConstructor]
-    protected DoubleConverter(bool deserializing) : base(deserializing) { }
+    protected DoubleConverter(StorableConstructorFlag _) : base(_) { }
     protected DoubleConverter(DoubleConverter original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new DoubleConverter(this, cloner);

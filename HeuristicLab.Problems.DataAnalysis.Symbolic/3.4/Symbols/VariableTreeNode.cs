@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -20,15 +20,15 @@
 #endregion
 
 using HeuristicLab.Common;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
-  [StorableClass]
+  [StorableType("E60C4216-A6BA-48DE-BA66-389B9946B70A")]
   public sealed class VariableTreeNode : VariableTreeNodeBase {
     public new Variable Symbol {
       get { return (Variable)base.Symbol; }
     }
     [StorableConstructor]
-    private VariableTreeNode(bool deserializing) : base(deserializing) { }
+    private VariableTreeNode(StorableConstructorFlag _) : base(_) { }
     private VariableTreeNode(VariableTreeNode original, Cloner cloner)
       : base(original, cloner) {
     }

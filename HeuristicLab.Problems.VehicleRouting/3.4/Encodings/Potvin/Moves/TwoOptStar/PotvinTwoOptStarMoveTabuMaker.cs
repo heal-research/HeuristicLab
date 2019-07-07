@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -26,12 +26,12 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
   [Item("PotvinTwoOptStarMoveTabuMaker", "Declares a given two opt star move as tabu.")]
-  [StorableClass]
+  [StorableType("4F4D7E5C-3C43-4795-AEB6-680740F04F14")]
   public class PotvinTwoOptStarMoveTabuMaker : SingleSuccessorOperator, ITabuMaker, IPotvinTwoOptStarMoveOperator, IPotvinOperator, ISingleObjectiveOperator {
     public LookupParameter<ItemList<IItem>> TabuListParameter {
       get { return (LookupParameter<ItemList<IItem>>)Parameters["TabuList"]; }
@@ -74,7 +74,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
     }
 
     [StorableConstructor]
-    protected PotvinTwoOptStarMoveTabuMaker(bool deserializing) : base(deserializing) { }
+    protected PotvinTwoOptStarMoveTabuMaker(StorableConstructorFlag _) : base(_) { }
     protected PotvinTwoOptStarMoveTabuMaker(PotvinTwoOptStarMoveTabuMaker original, Cloner cloner) : base(original, cloner) { }
     public PotvinTwoOptStarMoveTabuMaker()
       : base() {

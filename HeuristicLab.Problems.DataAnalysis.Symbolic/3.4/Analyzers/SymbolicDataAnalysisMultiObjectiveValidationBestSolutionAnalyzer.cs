@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -28,14 +28,14 @@ using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   /// <summary>
   /// An operator that analyzes the validation best symbolic data analysis solution for multi objective symbolic data analysis problems.
   /// </summary>
   [Item("SymbolicDataAnalysisMultiObjectiveValidationBestSolutionAnalyzer", "An operator that analyzes the validation best symbolic data analysis solution for multi objective symbolic data analysis problems.")]
-  [StorableClass]
+  [StorableType("ABDCE5CB-E177-4382-B478-90372FE6D47F")]
   public abstract class SymbolicDataAnalysisMultiObjectiveValidationBestSolutionAnalyzer<S, T, U> : SymbolicDataAnalysisMultiObjectiveValidationAnalyzer<T, U>,
     ISymbolicDataAnalysisMultiObjectiveAnalyzer
     where S : class, ISymbolicDataAnalysisSolution
@@ -71,7 +71,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     #endregion
 
     [StorableConstructor]
-    protected SymbolicDataAnalysisMultiObjectiveValidationBestSolutionAnalyzer(bool deserializing) : base(deserializing) { }
+    protected SymbolicDataAnalysisMultiObjectiveValidationBestSolutionAnalyzer(StorableConstructorFlag _) : base(_) { }
     protected SymbolicDataAnalysisMultiObjectiveValidationBestSolutionAnalyzer(SymbolicDataAnalysisMultiObjectiveValidationBestSolutionAnalyzer<S, T, U> original, Cloner cloner) : base(original, cloner) { }
     public SymbolicDataAnalysisMultiObjectiveValidationBestSolutionAnalyzer()
       : base() {
@@ -176,6 +176,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       else return lhs < rhs;
     }
 
+    [StorableType("69cfeefe-8654-4d07-93f1-fdca6fe02338")]
     private class DoubleArrayComparer : IEqualityComparer<double[]> {
       public bool Equals(double[] x, double[] y) {
         if (y.Length != x.Length) throw new ArgumentException();

@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -26,7 +26,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
@@ -36,7 +36,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
                                        "- Randomly choose a node N from the P0\n" +
                                        "- Find the first node M that satisfies the semantic similarity criteria\n" +
                                        "- Swap N for M and return P0")]
-  [StorableClass]
+  [StorableType("8AB40F60-5664-42AB-9DD9-78707476C1B2")]
   public sealed class SymbolicDataAnalysisExpressionSemanticSimilarityCrossover<T> : SymbolicDataAnalysisExpressionCrossover<T> where T : class, IDataAnalysisProblemData {
     private const string SemanticSimilarityRangeParameterName = "SemanticSimilarityRange";
 
@@ -53,7 +53,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     #endregion
 
     [StorableConstructor]
-    private SymbolicDataAnalysisExpressionSemanticSimilarityCrossover(bool deserializing) : base(deserializing) { }
+    private SymbolicDataAnalysisExpressionSemanticSimilarityCrossover(StorableConstructorFlag _) : base(_) { }
     private SymbolicDataAnalysisExpressionSemanticSimilarityCrossover(SymbolicDataAnalysisExpressionCrossover<T> original, Cloner cloner) : base(original, cloner) { }
     public SymbolicDataAnalysisExpressionSemanticSimilarityCrossover()
       : base() {

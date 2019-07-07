@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,8 +22,10 @@
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.TravelingSalesman {
+  [StorableType("E8D13595-71B9-4F6F-B879-FDF2BDB482EB")]
   public interface ITSPPathMoveEvaluator : ITSPMoveEvaluator, IPermutationMoveOperator {
     ILookupParameter<DoubleMatrix> CoordinatesParameter { get; }
     ILookupParameter<DistanceMatrix> DistanceMatrixParameter { get; }

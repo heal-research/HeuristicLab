@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,14 +24,14 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Analysis {
   /// <summary>
   /// An operator which calculates the absolute and relative difference of two quality values.
   /// </summary>
   [Item("QualityDifferenceCalculator", "An operator which calculates the absolute and relative difference of two quality values.")]
-  [StorableClass]
+  [StorableType("D40349AC-2C28-42F9-8C25-107D931E8F59")]
   public class QualityDifferenceCalculator : SingleSuccessorOperator {
     public IValueLookupParameter<DoubleValue> FirstQualityParameter {
       get { return (IValueLookupParameter<DoubleValue>)Parameters["FirstQuality"]; }
@@ -48,7 +48,7 @@ namespace HeuristicLab.Analysis {
 
     #region Storing & Cloning
     [StorableConstructor]
-    protected QualityDifferenceCalculator(bool deserializing) : base(deserializing) { }
+    protected QualityDifferenceCalculator(StorableConstructorFlag _) : base(_) { }
     protected QualityDifferenceCalculator(QualityDifferenceCalculator original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new QualityDifferenceCalculator(this, cloner);

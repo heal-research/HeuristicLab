@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -27,11 +27,11 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Optimization.Operators {
   [Item("WeightedParentsQualityComparator", "Compares the quality against that of its parents (assumes the parents are subscopes to the child scope). This operator works with any number of subscopes > 0.")]
-  [StorableClass]
+  [StorableType("82DA6E16-049F-4BF5-B900-FF11B01FA866")]
   public class WeightedParentsQualityComparator : SingleSuccessorOperator, ISubScopesQualityComparator {
     public IValueLookupParameter<BoolValue> MaximizationParameter {
       get { return (IValueLookupParameter<BoolValue>)Parameters["Maximization"]; }
@@ -50,7 +50,7 @@ namespace HeuristicLab.Optimization.Operators {
     }
 
     [StorableConstructor]
-    protected WeightedParentsQualityComparator(bool deserializing) : base(deserializing) { }
+    protected WeightedParentsQualityComparator(StorableConstructorFlag _) : base(_) { }
     protected WeightedParentsQualityComparator(WeightedParentsQualityComparator original, Cloner cloner) : base(original, cloner) { }
     public WeightedParentsQualityComparator()
       : base() {

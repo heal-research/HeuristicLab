@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -20,7 +20,10 @@
 #endregion
 
 using System.Collections.Generic;
+using HEAL.Attic;
+
 namespace HeuristicLab.Problems.DataAnalysis {
+  [StorableType("8cd26df9-aed7-4378-9516-04322b6f9d2e")]
   public interface IClassificationProblemData : IDataAnalysisProblemData {
     string TargetVariable { get; set; }
 

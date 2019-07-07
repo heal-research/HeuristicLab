@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -30,7 +30,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Problems.Instances;
 using HeuristicLab.Problems.VehicleRouting.Encodings.Alba;
@@ -42,7 +42,7 @@ using HeuristicLab.Problems.VehicleRouting.Variants;
 namespace HeuristicLab.Problems.VehicleRouting {
   [Item("Vehicle Routing Problem (VRP)", "Represents a Vehicle Routing Problem.")]
   [Creatable(CreatableAttribute.Categories.CombinatorialProblems, Priority = 110)]
-  [StorableClass]
+  [StorableType("95137523-AE3B-4638-958C-E86829D54CE3")]
   public sealed class VehicleRoutingProblem : Problem, ISingleObjectiveHeuristicOptimizationProblem, IStorableContent, IProblemInstanceConsumer<IVRPData> {
     public string Filename { get; set; }
 
@@ -117,7 +117,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
     #endregion
 
     [StorableConstructor]
-    private VehicleRoutingProblem(bool deserializing) : base(deserializing) { }
+    private VehicleRoutingProblem(StorableConstructorFlag _) : base(_) { }
     public VehicleRoutingProblem()
       : base() {
       Parameters.Add(new ValueParameter<BoolValue>("Maximization", "Set to false as the Vehicle Routing Problem is a minimization problem.", new BoolValue(false)));

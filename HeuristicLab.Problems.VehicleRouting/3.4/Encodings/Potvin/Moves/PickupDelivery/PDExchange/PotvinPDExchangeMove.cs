@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,13 +23,13 @@ using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.VehicleRouting.Encodings.General;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
   [Item("PotvinPDExchangeMove", "Item that describes a exchange move on a PDP representation.")]
-  [StorableClass]
+  [StorableType("2C3CC022-8F2B-435C-BDAD-ABB9D568FC8E")]
   public class PotvinPDExchangeMove : Item, IVRPMove {
     [Storable]
     public IVRPEncoding Individual { get; protected set; }
@@ -64,7 +64,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
     }
 
     [StorableConstructor]
-    protected PotvinPDExchangeMove(bool deserializing) : base(deserializing) { }
+    protected PotvinPDExchangeMove(StorableConstructorFlag _) : base(_) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new PotvinPDExchangeMove(this, cloner);

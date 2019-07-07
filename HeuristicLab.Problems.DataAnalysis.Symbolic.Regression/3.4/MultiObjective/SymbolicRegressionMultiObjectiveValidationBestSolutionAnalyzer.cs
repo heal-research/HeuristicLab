@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,14 +23,14 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
   /// <summary>
   /// An operator that analyzes the validation best symbolic regression solution for multi objective symbolic regression problems.
   /// </summary>
   [Item("SymbolicRegressionMultiObjectiveValidationBestSolutionAnalyzer", "An operator that analyzes the validation best symbolic regression solution for multi objective symbolic regression problems.")]
-  [StorableClass]
+  [StorableType("64084F75-38B9-4501-BF2D-BB342B49F732")]
   public sealed class SymbolicRegressionMultiObjectiveValidationBestSolutionAnalyzer : SymbolicDataAnalysisMultiObjectiveValidationBestSolutionAnalyzer<ISymbolicRegressionSolution, ISymbolicRegressionMultiObjectiveEvaluator, IRegressionProblemData>,
     ISymbolicDataAnalysisBoundedOperator {
     private const string EstimationLimitsParameterName = "EstimationLimits";
@@ -42,7 +42,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     #endregion
 
     [StorableConstructor]
-    private SymbolicRegressionMultiObjectiveValidationBestSolutionAnalyzer(bool deserializing) : base(deserializing) { }
+    private SymbolicRegressionMultiObjectiveValidationBestSolutionAnalyzer(StorableConstructorFlag _) : base(_) { }
     private SymbolicRegressionMultiObjectiveValidationBestSolutionAnalyzer(SymbolicRegressionMultiObjectiveValidationBestSolutionAnalyzer original, Cloner cloner) : base(original, cloner) { }
     public SymbolicRegressionMultiObjectiveValidationBestSolutionAnalyzer()
       : base() {

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -27,7 +27,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.IntegerVectorEncoding;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.GrammaticalEvolution {
 
@@ -67,7 +67,7 @@ namespace HeuristicLab.Problems.GrammaticalEvolution {
   /// url: http://ncra.ucd.ie/papers/pigeWCCI2010.pdf
   /// </remarks>
   [Item("PIGEMapper", "Position Independent (PI) Grammatical Evolution Mapper")]
-  [StorableClass]
+  [StorableType("AFD85902-C2EA-47F5-8284-BA1759848580")]
   public class PIGEMapper : GenotypeToPhenotypeMapper {
 
     private object nontVectorLocker = new object();
@@ -85,7 +85,7 @@ namespace HeuristicLab.Problems.GrammaticalEvolution {
     }
 
     [StorableConstructor]
-    protected PIGEMapper(bool deserializing) : base(deserializing) { }
+    protected PIGEMapper(StorableConstructorFlag _) : base(_) { }
     protected PIGEMapper(PIGEMapper original, Cloner cloner) : base(original, cloner) { }
     public PIGEMapper() : base() { }
 

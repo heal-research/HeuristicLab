@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,14 +21,14 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Optimization.Operators {
   [Item("UserDefinedManipulator", "A manipulator that can be customized with operators which it will execute one after another.")]
-  [StorableClass]
+  [StorableType("B64E8AF0-990A-4E4F-BE1A-1194E0A6CA4E")]
   public class UserDefinedManipulator : UserDefinedOperator, IManipulator {
     [StorableConstructor]
-    protected UserDefinedManipulator(bool deserializing) : base(deserializing) { }
+    protected UserDefinedManipulator(StorableConstructorFlag _) : base(_) { }
     protected UserDefinedManipulator(UserDefinedManipulator original, Cloner cloner) : base(original, cloner) { }
     public UserDefinedManipulator() : base() { }
 

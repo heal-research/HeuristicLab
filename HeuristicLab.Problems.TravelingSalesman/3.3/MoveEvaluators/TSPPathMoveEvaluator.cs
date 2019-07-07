@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,14 +25,14 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.TravelingSalesman {
   /// <summary>
   /// A base class for operators which evaluate TSP solutions.
   /// </summary>
   [Item("TSPMoveEvaluator", "A base class for operators which evaluate TSP moves.")]
-  [StorableClass]
+  [StorableType("F4EEA3B3-BA91-4391-903B-2EDBD47CF439")]
   public abstract class TSPPathMoveEvaluator : TSPMoveEvaluator, ITSPPathMoveEvaluator {
     public ILookupParameter<Permutation> PermutationParameter {
       get { return (ILookupParameter<Permutation>)Parameters["Permutation"]; }
@@ -48,7 +48,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
     }
 
     [StorableConstructor]
-    protected TSPPathMoveEvaluator(bool deserializing) : base(deserializing) { }
+    protected TSPPathMoveEvaluator(StorableConstructorFlag _) : base(_) { }
     protected TSPPathMoveEvaluator(TSPPathMoveEvaluator original, Cloner cloner) : base(original, cloner) { }
     protected TSPPathMoveEvaluator()
       : base() {

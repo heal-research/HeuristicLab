@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,7 +21,7 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
@@ -29,7 +29,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   /// Represents a neural network ensemble solution for a regression problem which can be visualized in the GUI.
   /// </summary>
   [Item("NeuralNetworkEnsembleRegressionSolution", "Represents a neural network ensemble solution for a regression problem which can be visualized in the GUI.")]
-  [StorableClass]
+  [StorableType("46257A3C-9052-4390-98D1-14A6FBF51C8A")]
   public sealed class NeuralNetworkEnsembleRegressionSolution : RegressionSolution, INeuralNetworkEnsembleRegressionSolution {
 
     public new INeuralNetworkEnsembleModel Model {
@@ -38,7 +38,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     [StorableConstructor]
-    private NeuralNetworkEnsembleRegressionSolution(bool deserializing) : base(deserializing) { }
+    private NeuralNetworkEnsembleRegressionSolution(StorableConstructorFlag _) : base(_) { }
     private NeuralNetworkEnsembleRegressionSolution(NeuralNetworkEnsembleRegressionSolution original, Cloner cloner)
       : base(original, cloner) {
     }

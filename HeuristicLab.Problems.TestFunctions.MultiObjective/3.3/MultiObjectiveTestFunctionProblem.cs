@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -27,11 +27,11 @@ using HeuristicLab.Data;
 using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.Instances;
 
 namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
-  [StorableClass]
+  [StorableType("AB0C6A73-C432-46FD-AE3B-9841EAB2478C")]
   [Creatable(CreatableAttribute.Categories.Problems, Priority = 95)]
   [Item("Test Function (multi-objective)", "Test functions with real valued inputs and multiple objectives.")]
   public class MultiObjectiveTestFunctionProblem : MultiObjectiveBasicProblem<RealVectorEncoding>, IProblemInstanceConsumer<MOTFData> {
@@ -96,7 +96,7 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
     #endregion
 
     [StorableConstructor]
-    protected MultiObjectiveTestFunctionProblem(bool deserializing) : base(deserializing) { }
+    protected MultiObjectiveTestFunctionProblem(StorableConstructorFlag _) : base(_) { }
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
       RegisterEventHandlers();

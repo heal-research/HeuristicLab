@@ -1,6 +1,7 @@
-﻿#region License Information
+﻿using HEAL.Attic;
+#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -20,6 +21,7 @@
 #endregion
 
 namespace HeuristicLab.Collections {
+  [StorableType(StorableMemberSelection.AllFields, "0a9d0728-5fdc-4e16-b02b-545dbdf0b0fa")]
   public struct IndexedItem<T> {
     private readonly int index;
     public int Index {

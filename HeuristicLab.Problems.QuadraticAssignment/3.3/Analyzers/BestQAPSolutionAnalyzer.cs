@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -27,14 +27,14 @@ using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.QuadraticAssignment {
   /// <summary>
   /// An operator for analyzing the best solution of Quadratic Assignment Problems.
   /// </summary>
   [Item("BestQAPSolutionAnalyzer", "An operator for analyzing the best solution of Quadratic Assignment Problems.")]
-  [StorableClass]
+  [StorableType("A133BED6-EF96-4735-B122-120BD8831A47")]
   public sealed class BestQAPSolutionAnalyzer : SingleSuccessorOperator, IAnalyzer, ISingleObjectiveOperator {
     public bool EnabledByDefault {
       get { return true; }
@@ -72,7 +72,7 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
     }
 
     [StorableConstructor]
-    private BestQAPSolutionAnalyzer(bool deserializing) : base(deserializing) { }
+    private BestQAPSolutionAnalyzer(StorableConstructorFlag _) : base(_) { }
     private BestQAPSolutionAnalyzer(BestQAPSolutionAnalyzer original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new BestQAPSolutionAnalyzer(this, cloner);

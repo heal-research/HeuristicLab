@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,12 +24,12 @@ using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.DataPreprocessing {
   [Item("PreprocessingContext", "PreprocessingContext")]
-  [StorableClass]
+  [StorableType("52D31B2B-7D48-482B-B875-5FCE0F8397A8")]
   public class PreprocessingContext : NamedItem, IStorableContent {
     public string Filename { get; set; }
 
@@ -49,8 +49,7 @@ namespace HeuristicLab.DataPreprocessing {
     }
 
     [StorableConstructor]
-    protected PreprocessingContext(bool deserializing)
-      : base(deserializing) { }
+    protected PreprocessingContext(StorableConstructorFlag _) : base(_) { }
     protected PreprocessingContext(PreprocessingContext original, Cloner cloner)
       : base(original, cloner) {
       Source = cloner.Clone(original.Source);

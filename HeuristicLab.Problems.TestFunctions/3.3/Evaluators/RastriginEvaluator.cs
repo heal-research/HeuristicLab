@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,7 +25,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.TestFunctions {
   /// <summary>
@@ -33,7 +33,7 @@ namespace HeuristicLab.Problems.TestFunctions {
   /// It is implemented as described in Eiben, A.E. and Smith, J.E. 2003. Introduction to Evolutionary Computation. Natural Computing Series, Springer-Verlag Berlin Heidelberg.
   /// </summary
   [Item("RastriginEvaluator", "Evaluates the generalized Rastrigin function y = Sum((x_i)^2 + A * (1 - Cos(2pi*x_i))) on a given point. The optimum of this function is 0 at the origin. It is implemented as described in Eiben, A.E. and Smith, J.E. 2003. Introduction to Evolutionary Computation. Natural Computing Series, Springer-Verlag Berlin Heidelberg.")]
-  [StorableClass]
+  [StorableType("DAC41E30-0487-4400-A089-4B57DFAA329A")]
   public class RastriginEvaluator : SingleObjectiveTestFunctionProblemEvaluator {
     public override string FunctionName { get { return "Rastrigin"; } }
     /// <summary>
@@ -85,7 +85,7 @@ namespace HeuristicLab.Problems.TestFunctions {
     }
 
     [StorableConstructor]
-    protected RastriginEvaluator(bool deserializing) : base(deserializing) { }
+    protected RastriginEvaluator(StorableConstructorFlag _) : base(_) { }
     protected RastriginEvaluator(RastriginEvaluator original, Cloner cloner) : base(original, cloner) { }
     /// <summary>
     /// Initializes a new instance of the RastriginEvaluator with one parameter (<c>A</c>).

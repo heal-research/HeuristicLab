@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,14 +21,14 @@
 using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
-  [StorableClass]
+  [StorableType("7B76ECDD-A7B1-450F-B542-D25E19480FC5")]
   [Item(Name = "MeanZero", Description = "Constant zero mean function for Gaussian processes.")]
   public sealed class MeanZero : Item, IMeanFunction {
     [StorableConstructor]
-    private MeanZero(bool deserializing) : base(deserializing) { }
+    private MeanZero(StorableConstructorFlag _) : base(_) { }
     private MeanZero(MeanZero original, Cloner cloner)
       : base(original, cloner) {
     }

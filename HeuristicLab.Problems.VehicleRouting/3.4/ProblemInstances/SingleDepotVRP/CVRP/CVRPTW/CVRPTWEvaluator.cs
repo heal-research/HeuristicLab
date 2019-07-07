@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,13 +24,13 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 using HeuristicLab.Problems.VehicleRouting.Variants;
 
 namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
   [Item("CVRPTWEvaluator", "Represents a single depot CVRPTW evaluator.")]
-  [StorableClass]
+  [StorableType("BB258008-7ECC-488A-BB2A-B38AE0023CFD")]
   public class CVRPTWEvaluator : CVRPEvaluator {
     public ILookupParameter<DoubleValue> TardinessParameter {
       get { return (ILookupParameter<DoubleValue>)Parameters["Tardiness"]; }
@@ -258,7 +258,7 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
     }
 
     [StorableConstructor]
-    protected CVRPTWEvaluator(bool deserializing) : base(deserializing) { }
+    protected CVRPTWEvaluator(StorableConstructorFlag _) : base(_) { }
 
     public CVRPTWEvaluator() {
       Parameters.Add(new LookupParameter<DoubleValue>("Tardiness", "The tardiness."));

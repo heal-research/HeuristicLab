@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,14 +23,14 @@ using System.Collections.Generic;
 using System.Text;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Data {
   [Item("PercentMatrix", "Represents a matrix of double values in percent.")]
-  [StorableClass]
+  [StorableType("A140221B-1990-46FF-BA82-630DF48AB1B7")]
   public class PercentMatrix : DoubleMatrix {
     [StorableConstructor]
-    protected PercentMatrix(bool deserializing) : base(deserializing) { }
+    protected PercentMatrix(StorableConstructorFlag _) : base(_) { }
     protected PercentMatrix(PercentMatrix original, Cloner cloner)
       : base(original, cloner) {
     }

@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,12 +23,12 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using HeuristicLab.Common;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Core {
   [Item("Log", "A log for logging string messages.")]
-  [StorableClass]
+  [StorableType("8EF2479E-3C44-4631-BA0C-26C05AB13416")]
   public sealed class Log : Item, ILog, IStorableContent {
     public string Filename { get; set; }
 
@@ -49,7 +49,7 @@ namespace HeuristicLab.Core {
     }
 
     [StorableConstructor]
-    private Log(bool deserializing) : base(deserializing) { }
+    private Log(StorableConstructorFlag _) : base(_) { }
     private Log(Log original, Cloner cloner)
       : base(original, cloner) {
       this.messages = new List<string>(original.messages);

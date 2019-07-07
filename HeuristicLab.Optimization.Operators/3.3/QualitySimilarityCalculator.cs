@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -32,10 +33,12 @@ namespace HeuristicLab.Optimization.Operators {
   /// The item always considers two solutions to be equal if they have the same quality.
   /// </remarks>
   [Item("QualitySimilarityCalculator", "An item that performs similarity calculation between two solutions. The item only considers the qualities of the two solutions.")]
+  [StorableType("b5ef2b97-4a4a-43cd-aeae-7f951b49cdc1")]
   public sealed class QualitySimilarityCalculator : SingleObjectiveSolutionSimilarityCalculator {
     protected override bool IsCommutative { get { return true; } }
 
-    private QualitySimilarityCalculator(bool deserializing) : base(deserializing) { }
+    [StorableConstructor]
+    private QualitySimilarityCalculator(StorableConstructorFlag _) : base(_) { }
     private QualitySimilarityCalculator(QualitySimilarityCalculator original, Cloner cloner) : base(original, cloner) { }
     public QualitySimilarityCalculator() : base() { }
 

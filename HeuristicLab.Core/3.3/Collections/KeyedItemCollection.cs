@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,11 +24,11 @@ using System.Collections.Generic;
 using System.Drawing;
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Core {
   [Item("KeyedItemCollection", "Represents a keyed collection of items.")]
-  [StorableClass]
+  [StorableType("176A9538-58A6-4D3F-9590-26FC37E2BA04")]
   public abstract class KeyedItemCollection<TKey, TItem> : ObservableKeyedCollection<TKey, TItem>, IKeyedItemCollection<TKey, TItem> where TItem : class, IItem {
     public virtual string ItemName {
       get { return ItemAttribute.GetName(this.GetType()); }
@@ -47,7 +47,7 @@ namespace HeuristicLab.Core {
     }
 
     [StorableConstructor]
-    protected KeyedItemCollection(bool deserializing) : base(deserializing) { }
+    protected KeyedItemCollection(StorableConstructorFlag _) : base(_) { }
     protected KeyedItemCollection(KeyedItemCollection<TKey, TItem> original, Cloner cloner) {
       cloner.RegisterClonedObject(original, this);
       foreach (TItem item in original.dict.Values) {

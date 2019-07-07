@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,8 +22,10 @@
 using System;
 using System.Collections.Generic;
 using HeuristicLab.Core;
+using HEAL.Attic;
 
 namespace HeuristicLab.Optimization {
+  [StorableType("d70b2675-246c-489c-a91b-b2e19a1616a3")]
   public interface IEncoding : IParameterizedNamedItem {
     ISolutionCreator SolutionCreator { get; set; }
     IEnumerable<IOperator> Operators { get; set; }

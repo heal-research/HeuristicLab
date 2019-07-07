@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -27,13 +27,13 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 
 namespace HeuristicLab.Problems.GeneticProgramming.Boolean {
   [Item("Even Parity Problem", "The Boolean even parity genetic programming problem. See Koza, 1992, page 529 section 20.2 Symbolic Regression of Even-Parity Functions")]
   [Creatable(CreatableAttribute.Categories.GeneticProgrammingProblems, Priority = 900)]
-  [StorableClass]
+  [StorableType("76D6001D-135F-45FB-BC79-061EDAEE33A9")]
   public sealed class EvenParityProblem : SymbolicExpressionTreeProblem {
 
     #region parameter names
@@ -60,7 +60,7 @@ namespace HeuristicLab.Problems.GeneticProgramming.Boolean {
     #region item cloning and persistence
     // persistence
     [StorableConstructor]
-    private EvenParityProblem(bool deserializing) : base(deserializing) { }
+    private EvenParityProblem(StorableConstructorFlag _) : base(_) { }
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
       RegisterEventHandlers();

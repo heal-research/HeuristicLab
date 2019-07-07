@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,9 +23,9 @@ using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
-  [StorableClass]
+  [StorableType("B5DF4207-7FDD-478D-B2FD-E52D8B7CD709")]
   public class LaggedTreeNode : SymbolicExpressionTreeNode, ILaggedTreeNode {
     public new LaggedSymbol Symbol {
       get { return (LaggedSymbol)base.Symbol; }
@@ -38,7 +38,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     [StorableConstructor]
-    protected LaggedTreeNode(bool deserializing) : base(deserializing) { }
+    protected LaggedTreeNode(StorableConstructorFlag _) : base(_) { }
     protected LaggedTreeNode(LaggedTreeNode original, Cloner cloner)
       : base(original, cloner) {
       lag = original.lag;

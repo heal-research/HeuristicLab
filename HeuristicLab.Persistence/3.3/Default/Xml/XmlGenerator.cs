@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -26,6 +26,7 @@ using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using HEAL.Attic;
 using HeuristicLab.Persistence.Core;
 using HeuristicLab.Persistence.Core.Tokens;
 using HeuristicLab.Persistence.Interfaces;
@@ -311,11 +312,11 @@ namespace HeuristicLab.Persistence.Default.Xml {
     }
 
     private static void Serialize(object obj, Stream stream, Configuration config, bool includeAssemblies, CompressionLevel compression, CancellationToken cancellationToken = default(CancellationToken)) {
-      Serializer serializer = new Serializer(obj, config);
+      Core.Serializer serializer = new Core.Serializer(obj, config);
       Serialize(stream, includeAssemblies, compression, serializer, cancellationToken);
     }
 
-    private static void Serialize(Stream stream, bool includeAssemblies, CompressionLevel compression, Serializer serializer, CancellationToken cancellationToken = default(CancellationToken)) {
+    private static void Serialize(Stream stream, bool includeAssemblies, CompressionLevel compression, Core.Serializer serializer, CancellationToken cancellationToken = default(CancellationToken)) {
       try {
         cancellationToken.ThrowIfCancellationRequested();
         DateTime start = DateTime.Now;
@@ -428,7 +429,7 @@ namespace HeuristicLab.Persistence.Default.Xml {
     /// <param name="compressionType">Type of compression, default is GZip.</param>
     public static void Serialize(object obj, Stream stream, Configuration config, bool includeAssemblies, CompressionType compressionType = CompressionType.GZip, CancellationToken cancellationToken = default(CancellationToken)) {
       try {
-        Serializer serializer = new Serializer(obj, config);
+        Core.Serializer serializer = new Core.Serializer(obj, config);
         if (compressionType == CompressionType.Zip) {
           Serialize(obj, stream, config, includeAssemblies, CompressionLevel.Optimal, cancellationToken);
         } else {
@@ -453,7 +454,7 @@ namespace HeuristicLab.Persistence.Default.Xml {
     public static void Serialize(object obj, Stream stream, Configuration config, bool includeAssemblies, out IEnumerable<Type> types,
                                  CompressionType compressionType = CompressionType.GZip, CancellationToken cancellationToken = default(CancellationToken)) {
       try {
-        Serializer serializer = new Serializer(obj, config);
+        Core.Serializer serializer = new Core.Serializer(obj, config);
         if (compressionType == CompressionType.Zip) {
           Serialize(stream, includeAssemblies, CompressionLevel.Optimal, serializer, cancellationToken);
         } else {
@@ -467,7 +468,7 @@ namespace HeuristicLab.Persistence.Default.Xml {
       }
     }
 
-    private static void Serialize(Stream stream, Serializer serializer, CancellationToken cancellationToken = default(CancellationToken)) {
+    private static void Serialize(Stream stream, Core.Serializer serializer, CancellationToken cancellationToken = default(CancellationToken)) {
       cancellationToken.ThrowIfCancellationRequested();
       using (StreamWriter writer = new StreamWriter(new GZipStream(stream, CompressionMode.Compress))) {
         serializer.InterleaveTypeInformation = true;

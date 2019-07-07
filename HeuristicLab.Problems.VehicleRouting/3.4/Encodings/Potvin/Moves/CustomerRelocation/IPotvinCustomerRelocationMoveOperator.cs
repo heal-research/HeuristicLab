@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,8 +21,10 @@
 
 using HeuristicLab.Core;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
+  [StorableType("6F70F50C-411C-4AF9-A373-E2BCDFA66F56")]
   public interface IPotvinCustomerRelocationMoveOperator : IVRPMoveOperator {
     ILookupParameter<PotvinCustomerRelocationMove> CustomerRelocationMoveParameter { get; }
   }

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -28,7 +28,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Encodings.RealVectorEncoding {
@@ -36,7 +36,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
   /// A shaking operator for VNS.
   /// </summary>
   [Item("RealVectorShakingOperator", "A shaking operator for VNS which uses available manipulation operators to perform the shaking.")]
-  [StorableClass]
+  [StorableType("EDA38073-1563-488D-80A0-67FBDFE8B460")]
   public class RealVectorShakingOperator : ShakingOperator<IRealVectorManipulator>, IRealVectorMultiNeighborhoodShakingOperator, IStochasticOperator {
 
     public ILookupParameter<RealVector> RealVectorParameter {
@@ -53,7 +53,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
 
 
     [StorableConstructor]
-    protected RealVectorShakingOperator(bool deserializing) : base(deserializing) { }
+    protected RealVectorShakingOperator(StorableConstructorFlag _) : base(_) { }
     protected RealVectorShakingOperator(RealVectorShakingOperator original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new RealVectorShakingOperator(this, cloner);

@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -26,7 +26,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
@@ -35,7 +35,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   /// </summary>
   [Item("Nearest Neighbour Regression (kNN)", "Nearest neighbour regression data analysis algorithm (wrapper for ALGLIB).")]
   [Creatable(CreatableAttribute.Categories.DataAnalysisRegression, Priority = 150)]
-  [StorableClass]
+  [StorableType("3F940BE0-4F44-4F7F-A3EE-E47423C7F22D")]
   public sealed class NearestNeighbourRegression : FixedDataAnalysisAlgorithm<IRegressionProblem> {
     private const string KParameterName = "K";
     private const string NearestNeighbourRegressionModelResultName = "Nearest neighbour regression solution";
@@ -66,7 +66,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     #endregion
 
     [StorableConstructor]
-    private NearestNeighbourRegression(bool deserializing) : base(deserializing) { }
+    private NearestNeighbourRegression(StorableConstructorFlag _) : base(_) { }
     private NearestNeighbourRegression(NearestNeighbourRegression original, Cloner cloner)
       : base(original, cloner) {
     }

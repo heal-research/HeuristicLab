@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,8 +21,10 @@
 
 using System;
 using HeuristicLab.Common;
+using HEAL.Attic;
 
 namespace HeuristicLab.Operators.Views.GraphVisualization {
+  [StorableType("3cdcae5a-9f9f-4b99-bcd7-cc9619a547d8")]
   public interface IConnectionInfo : IDeepCloneable {
     IShapeInfo From { get; }
     string ConnectorFrom { get; }

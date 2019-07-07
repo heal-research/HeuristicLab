@@ -7,13 +7,13 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Random;
 using static HeuristicLab.Problems.DataAnalysis.Symbolic.SymbolicExpressionHashExtensions;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [Item("DiversityCrossover", "Simple crossover operator prioritizing internal nodes according to the given probability.")]
-  [StorableClass]
+  [StorableType("ED35B0D9-9704-4D32-B10B-8F9870E76781")]
   public sealed class SymbolicDataAnalysisExpressionDiversityPreservingCrossover<T> : SymbolicDataAnalysisExpressionCrossover<T> where T : class, IDataAnalysisProblemData {
 
     private const string InternalCrossoverPointProbabilityParameterName = "InternalCrossoverPointProbability";
@@ -65,7 +65,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     [StorableConstructor]
-    private SymbolicDataAnalysisExpressionDiversityPreservingCrossover(bool deserializing) : base(deserializing) { }
+    private SymbolicDataAnalysisExpressionDiversityPreservingCrossover(StorableConstructorFlag _) : base(_) { }
 
     private static ISymbolicExpressionTreeNode ActualRoot(ISymbolicExpressionTree tree) {
       return tree.Root.GetSubtree(0).GetSubtree(0);

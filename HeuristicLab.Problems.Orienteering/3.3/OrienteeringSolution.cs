@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,11 +25,11 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.IntegerVectorEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.Orienteering {
   [Item("OrienteeringSolution", "Represents a Orienteering solution which can be visualized in the GUI.")]
-  [StorableClass]
+  [StorableType("BC58ED08-B9A7-40F3-B8E0-A6B33AA993F4")]
   public sealed class OrienteeringSolution : Item {
     public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Image; }
@@ -141,8 +141,7 @@ namespace HeuristicLab.Problems.Orienteering {
     }
 
     [StorableConstructor]
-    private OrienteeringSolution(bool deserializing)
-      : base(deserializing) { }
+    private OrienteeringSolution(StorableConstructorFlag _) : base(_) { }
     private OrienteeringSolution(OrienteeringSolution original, Cloner cloner)
       : base(original, cloner) {
       this.integerVector = cloner.Clone(original.integerVector);

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,11 +23,11 @@ using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.Programmable {
   [Item("Single-objective Problem Definition Script", "Script that defines the parameter vector and evaluates the solution for a programmable problem.")]
-  [StorableClass]
+  [StorableType("D0B2A649-EDDE-4A6E-A3B5-F40F5FD1B2C0")]
   public sealed class SingleObjectiveProblemDefinitionScript : ProblemDefinitionScript, ISingleObjectiveProblemDefinition, IStorableContent {
     public string Filename { get; set; }
 
@@ -36,7 +36,7 @@ namespace HeuristicLab.Problems.Programmable {
     }
 
     [StorableConstructor]
-    private SingleObjectiveProblemDefinitionScript(bool deserializing) : base(deserializing) { }
+    private SingleObjectiveProblemDefinitionScript(StorableConstructorFlag _) : base(_) { }
     private SingleObjectiveProblemDefinitionScript(SingleObjectiveProblemDefinitionScript original, Cloner cloner) : base(original, cloner) { }
     public SingleObjectiveProblemDefinitionScript() : base(ScriptTemplates.CompiledSingleObjectiveProblemDefinition) { }
 

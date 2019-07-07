@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -26,11 +26,11 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Problems.GrammaticalEvolution {
-  [StorableClass]
+  [StorableType("BEC10226-1F0C-4D42-ABDF-38E604C0B2F2")]
   public abstract class GESymbolicDataAnalysisSingleObjectiveEvaluator<T> : GESymbolicDataAnalysisEvaluator<T>, IGESymbolicDataAnalysisSingleObjectiveEvaluator<T>
    where T : class, IDataAnalysisProblemData {
     private const string QualityParameterName = "Quality";
@@ -43,7 +43,7 @@ namespace HeuristicLab.Problems.GrammaticalEvolution {
     public abstract bool Maximization { get; }
     #endregion
     [StorableConstructor]
-    protected GESymbolicDataAnalysisSingleObjectiveEvaluator(bool deserializing) : base(deserializing) { }
+    protected GESymbolicDataAnalysisSingleObjectiveEvaluator(StorableConstructorFlag _) : base(_) { }
     protected GESymbolicDataAnalysisSingleObjectiveEvaluator(GESymbolicDataAnalysisSingleObjectiveEvaluator<T> original, Cloner cloner)
       : base(original, cloner) {
     }

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -27,12 +27,12 @@ using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.Algorithms.CMAEvolutionStrategy {
   [Item("CMAMutator", "Mutates the solution vector according to the CMA-ES scheme.")]
-  [StorableClass]
+  [StorableType("13539C1A-1D94-4CD7-8514-2173C661333D")]
   public sealed class CMAMutator : SingleSuccessorOperator, IStochasticOperator, ICMAManipulator, IIterationBasedOperator {
 
     public Type CMAType {
@@ -82,7 +82,7 @@ namespace HeuristicLab.Algorithms.CMAEvolutionStrategy {
     #endregion
 
     [StorableConstructor]
-    private CMAMutator(bool deserializing) : base(deserializing) { }
+    private CMAMutator(StorableConstructorFlag _) : base(_) { }
     private CMAMutator(CMAMutator original, Cloner cloner) : base(original, cloner) { }
     public CMAMutator()
       : base() {

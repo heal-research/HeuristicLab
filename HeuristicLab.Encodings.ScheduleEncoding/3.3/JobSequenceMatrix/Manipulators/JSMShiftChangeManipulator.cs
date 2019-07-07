@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,15 +25,15 @@ using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.PermutationEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.ScheduleEncoding.JobSequenceMatrix {
   [Item("JSMShiftChangeManipulator", "Represents a manipulation operation where the operations of a randomly determined job are shifted in one direction for all resources.")]
-  [StorableClass]
+  [StorableType("69212E02-2006-493D-92C0-0EF4EFDAAF8A")]
   public class JSMShiftChangeManipulator : JSMManipulator {
 
     [StorableConstructor]
-    protected JSMShiftChangeManipulator(bool deserializing) : base(deserializing) { }
+    protected JSMShiftChangeManipulator(StorableConstructorFlag _) : base(_) { }
     protected JSMShiftChangeManipulator(JSMShiftChangeManipulator original, Cloner cloner) : base(original, cloner) { }
     public JSMShiftChangeManipulator() : base() { }
 

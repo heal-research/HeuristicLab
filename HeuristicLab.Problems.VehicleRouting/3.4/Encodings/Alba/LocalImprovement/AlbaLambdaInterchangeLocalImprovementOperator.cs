@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,22 +19,17 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using HeuristicLab.Optimization;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Data;
 using HeuristicLab.Common;
 using HeuristicLab.Parameters;
-using HeuristicLab.Operators;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
   [Item("AlbaLambdaInterchangeLocalImprovementOperator", "Takes a solution and finds the local optimum with respect to the lambda interchange neighborhood by decending along the steepest gradient.")]
-  [StorableClass]
+  [StorableType("84981F03-B886-4ADD-8DB5-C12628404335")]
   public class AlbaLambdaInterchangeLocalImprovementOperator : VRPOperator, IStochasticOperator, ILocalImprovementOperator, ISingleObjectiveOperator {
 
     public IValueLookupParameter<IntValue> MaximumIterationsParameter {
@@ -70,7 +65,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
     }
 
     [StorableConstructor]
-    protected AlbaLambdaInterchangeLocalImprovementOperator(bool deserializing) : base(deserializing) { }
+    protected AlbaLambdaInterchangeLocalImprovementOperator(StorableConstructorFlag _) : base(_) { }
     protected AlbaLambdaInterchangeLocalImprovementOperator(AlbaLambdaInterchangeLocalImprovementOperator original, Cloner cloner)
       : base(original, cloner) {
     }

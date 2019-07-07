@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -28,7 +28,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.VehicleRouting.Encodings.Potvin;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 using HeuristicLab.Problems.VehicleRouting.ProblemInstances;
@@ -39,7 +39,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
   /// An operator which relinks paths between VRP solutions.
   /// </summary>
   [Item("VRPPathRelinker", "An operator which relinks paths between VRP solutions.")]
-  [StorableClass]
+  [StorableType("C0C17982-BC36-4DF9-8C33-2B6F9A19CA53")]
   public sealed class VRPPathRelinker : SingleObjectivePathRelinker, IGeneralVRPOperator, IStochasticOperator {
     #region Parameter properties
     public IValueParameter<IntValue> IterationsParameter {
@@ -57,7 +57,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
     #endregion
 
     [StorableConstructor]
-    private VRPPathRelinker(bool deserializing) : base(deserializing) { }
+    private VRPPathRelinker(StorableConstructorFlag _) : base(_) { }
     private VRPPathRelinker(VRPPathRelinker original, Cloner cloner) : base(original, cloner) { }
     public VRPPathRelinker()
       : base() {

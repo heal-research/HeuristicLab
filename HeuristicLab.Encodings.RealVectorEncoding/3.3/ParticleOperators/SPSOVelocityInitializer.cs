@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,11 +25,11 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.RealVectorEncoding {
   [Item("Velocity Initializer (SPSO)", "Initializes the velocity vector.")]
-  [StorableClass]
+  [StorableType("BB130DA2-221C-4C56-BF8D-9492BFA8E3C2")]
   public abstract class SPSOVelocityInitializer : SingleSuccessorOperator, IStochasticOperator {
     #region Parameters
     public ILookupParameter<IRandom> RandomParameter {
@@ -48,7 +48,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     
     #region Construction & Cloning
     [StorableConstructor]
-    protected SPSOVelocityInitializer(bool deserializing) : base(deserializing) { }
+    protected SPSOVelocityInitializer(StorableConstructorFlag _) : base(_) { }
     protected SPSOVelocityInitializer(SPSOVelocityInitializer original, Cloner cloner) : base(original, cloner) { }
     protected SPSOVelocityInitializer()
       : base() {

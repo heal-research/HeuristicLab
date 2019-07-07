@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,7 +22,7 @@
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Optimization {
   /// <summary>
@@ -30,7 +30,7 @@ namespace HeuristicLab.Optimization {
   /// </summary>
   [Item("User-Defined Algorithm", "An algorithm which can be defined by the user.")]
   [Creatable(CreatableAttribute.Categories.Algorithms, Priority = 100)]
-  [StorableClass]
+  [StorableType("8D1C0ED9-F732-4DE3-8F6C-125DFF9E8D5E")]
   public sealed class UserDefinedAlgorithm : EngineAlgorithm, IParameterizedItem, IStorableContent {
     public string Filename { get; set; }
 
@@ -70,7 +70,7 @@ namespace HeuristicLab.Optimization {
     public UserDefinedAlgorithm(string name) : base(name) { }
     public UserDefinedAlgorithm(string name, string description) : base(name, description) { }
     [StorableConstructor]
-    private UserDefinedAlgorithm(bool deserializing) : base(deserializing) { }
+    private UserDefinedAlgorithm(StorableConstructorFlag _) : base(_) { }
     private UserDefinedAlgorithm(UserDefinedAlgorithm original, Cloner cloner)
       : base(original, cloner) {
     }

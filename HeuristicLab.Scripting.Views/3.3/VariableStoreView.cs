@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -31,9 +31,10 @@ using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
 using HeuristicLab.Persistence.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Persistence.Default.Xml;
 using HeuristicLab.PluginInfrastructure;
+using System.IO;
 
 namespace HeuristicLab.Scripting.Views {
   [View("ItemCollection View")]
@@ -485,17 +486,20 @@ namespace HeuristicLab.Scripting.Views {
 
     private bool IsSerializable(KeyValuePair<string, object> variable) {
       Type type = null;
-      bool serializable;
+      bool serializable = false;
 
       if (variable.Value != null) {
         type = variable.Value.GetType();
         if (serializableLookup.TryGetValue(type, out serializable)) return serializable;
-        if (StorableClassAttribute.IsStorableClass(type)) return serializableLookup[type] = true;
+        if (StorableTypeAttribute.IsStorableType(type)) return serializableLookup[type] = true;
       }
 
-      var ser = new Serializer(variable, ConfigurationService.Instance.GetDefaultConfig(new XmlFormat()), "ROOT", true);
+      var ser = new ProtoBufSerializer();
       try {
-        serializable = ser.Count() > 0; // try to create all serialization tokens
+        using (var memStream = new MemoryStream()) {
+          ser.Serialize(variable.Value, memStream); // try to serialize to memory stream
+          serializable = true;
+        }
       } catch (PersistenceException) {
         serializable = false;
       }

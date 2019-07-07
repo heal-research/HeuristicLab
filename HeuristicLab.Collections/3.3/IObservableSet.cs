@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -20,8 +20,10 @@
 #endregion
 
 using System.Collections.Generic;
+using HEAL.Attic;
 
 namespace HeuristicLab.Collections {
+  [StorableType("2c42f57a-3bdb-45b9-a548-d4cb9cc71250")]
   public interface IObservableSet<T> : IObservableCollection<T> {
     bool IsProperSubsetOf(IEnumerable<T> other);
     bool IsProperSupersetOf(IEnumerable<T> other);

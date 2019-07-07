@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,11 +24,11 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.LinearLinkageEncoding {
   [Item("Swap Item Manipulator", "Performs N swaps operations of two items each. The same items may be swapped multiple times, at least two groups need to be present.")]
-  [StorableClass]
+  [StorableType("21F18233-0752-40A2-8B9A-6E6A9E2CE456")]
   public sealed class SwapItemManipulator : LinearLinkageManipulator {
 
     public IValueLookupParameter<IntValue> NParameter {
@@ -36,7 +36,7 @@ namespace HeuristicLab.Encodings.LinearLinkageEncoding {
     }
 
     [StorableConstructor]
-    private SwapItemManipulator(bool deserializing) : base(deserializing) { }
+    private SwapItemManipulator(StorableConstructorFlag _) : base(_) { }
     private SwapItemManipulator(SwapItemManipulator original, Cloner cloner) : base(original, cloner) { }
     public SwapItemManipulator() {
       Parameters.Add(new ValueLookupParameter<IntValue>("N", "The number of swaps to perform.", new IntValue(1)));

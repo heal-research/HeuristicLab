@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,7 +25,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.VehicleRouting.Encodings;
 using HeuristicLab.Problems.VehicleRouting.Encodings.Potvin;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
@@ -36,7 +36,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
   /// A base class for operators which improve VRP solutions.
   /// </summary>
   [Item("VRPImprovementOperator", "A base class for operators which improve VRP solutions.")]
-  [StorableClass]
+  [StorableType("478FC98D-CB2E-4071-80E4-970BDC09EE32")]
   public abstract class VRPImprovementOperator : VRPOperator, IGeneralVRPOperator, ISingleObjectiveImprovementOperator {
     #region Parameter properties
     public ScopeParameter CurrentScopeParameter {
@@ -60,7 +60,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
     #endregion
 
     [StorableConstructor]
-    protected VRPImprovementOperator(bool deserializing) : base(deserializing) { }
+    protected VRPImprovementOperator(StorableConstructorFlag _) : base(_) { }
     protected VRPImprovementOperator(VRPImprovementOperator original, Cloner cloner) : base(original, cloner) { }
     protected VRPImprovementOperator()
       : base() {

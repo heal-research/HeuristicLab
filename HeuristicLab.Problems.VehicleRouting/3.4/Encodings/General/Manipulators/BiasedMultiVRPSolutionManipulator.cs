@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -28,12 +28,12 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
   [Item("BiasedMultiVRPSolutionManipulator", "Randomly selects and applies one of its crossovers every time it is called based on the success progress.")]
-  [StorableClass]
+  [StorableType("213DD800-26CC-47FE-A151-CFB8742DB3C1")]
   public class BiasedMultiVRPSolutionManipulator : MultiVRPSolutionManipulator {
     public ValueLookupParameter<DoubleArray> ActualProbabilitiesParameter {
       get { return (ValueLookupParameter<DoubleArray>)Parameters["ActualProbabilities"]; }
@@ -56,7 +56,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
     }
 
     [StorableConstructor]
-    protected BiasedMultiVRPSolutionManipulator(bool deserializing) : base(deserializing) { }
+    protected BiasedMultiVRPSolutionManipulator(StorableConstructorFlag _) : base(_) { }
     protected BiasedMultiVRPSolutionManipulator(BiasedMultiVRPSolutionManipulator original, Cloner cloner) : base(original, cloner) { }
     public BiasedMultiVRPSolutionManipulator()
       : base() {

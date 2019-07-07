@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -26,11 +26,11 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.PermutationEncoding {
   [Item("StochasticScrambleMultiMoveGenerator", "Randomly samples n from all possible scramble moves from a given permutation.")]
-  [StorableClass]
+  [StorableType("ECC7549D-404B-459A-A01E-6E00A53E58F5")]
   public class StochasticScrambleMultiMoveGenerator : ScrambleMoveGenerator, IMultiMoveGenerator, IStochasticOperator {
     public ILookupParameter<IRandom> RandomParameter {
       get { return (ILookupParameter<IRandom>)Parameters["Random"]; }
@@ -45,7 +45,7 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
     }
 
     [StorableConstructor]
-    protected StochasticScrambleMultiMoveGenerator(bool deserializing) : base(deserializing) { }
+    protected StochasticScrambleMultiMoveGenerator(StorableConstructorFlag _) : base(_) { }
     protected StochasticScrambleMultiMoveGenerator(StochasticScrambleMultiMoveGenerator original, Cloner cloner) : base(original, cloner) { }
     public StochasticScrambleMultiMoveGenerator()
       : base() {

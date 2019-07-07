@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -27,7 +27,7 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.IntegerVectorEncoding;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.DataAnalysis;
 using HeuristicLab.Problems.DataAnalysis.Symbolic;
 using HeuristicLab.Problems.DataAnalysis.Symbolic.Regression;
@@ -35,7 +35,7 @@ using HeuristicLab.Problems.DataAnalysis.Symbolic.Regression;
 namespace HeuristicLab.Problems.GrammaticalEvolution {
   [Item("Grammatical Evolution Symbolic Regression Problem (GE)",
         "Represents grammatical evolution for single objective symbolic regression problems.")]
-  [StorableClass]
+  [StorableType("65208F51-3181-4765-BA04-33CADBCE0826")]
   [Creatable(CreatableAttribute.Categories.GeneticProgrammingProblems, Priority = 180)]
   public class GESymbolicRegressionSingleObjectiveProblem : GESymbolicDataAnalysisSingleObjectiveProblem<IRegressionProblemData, IGESymbolicRegressionSingleObjectiveEvaluator, IIntegerVectorCreator>,
                                                             IRegressionProblem {
@@ -56,7 +56,7 @@ namespace HeuristicLab.Problems.GrammaticalEvolution {
     }
     #endregion
     [StorableConstructor]
-    protected GESymbolicRegressionSingleObjectiveProblem(bool deserializing) : base(deserializing) { }
+    protected GESymbolicRegressionSingleObjectiveProblem(StorableConstructorFlag _) : base(_) { }
     protected GESymbolicRegressionSingleObjectiveProblem(GESymbolicRegressionSingleObjectiveProblem original, Cloner cloner)
       : base(original, cloner) {
       RegisterEventHandlers();

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,7 +22,7 @@
 using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.RealVectorEncoding {
   /// <summary>
@@ -32,10 +32,10 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
   /// It is implemented as described in Dumitrescu, D. et al. (2000), Evolutionary computation, CRC Press, Boca Raton, FL, pp. 193 - 194.
   /// </remarks>
   [Item("RandomConvexCrossover", "The random convex crossover acts like the local crossover, but with just one randomly chosen alpha for all crossed positions. It is implementes as described in Dumitrescu, D. et al. (2000), Evolutionary computation, CRC Press, Boca Raton, FL, pp. 193 - 194.")]
-  [StorableClass]
+  [StorableType("951482B3-BBED-4C8F-BEC4-B26A6B756E72")]
   public class RandomConvexCrossover : RealVectorCrossover {
     [StorableConstructor]
-    protected RandomConvexCrossover(bool deserializing) : base(deserializing) { }
+    protected RandomConvexCrossover(StorableConstructorFlag _) : base(_) { }
     protected RandomConvexCrossover(RandomConvexCrossover original, Cloner cloner) : base(original, cloner) { }
     public RandomConvexCrossover() : base() { }
 

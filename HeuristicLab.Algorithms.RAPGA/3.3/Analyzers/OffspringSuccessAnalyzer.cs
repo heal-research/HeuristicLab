@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -27,14 +27,14 @@ using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Algorithms.RAPGA {
   /// <summary>
   /// An operator which analyzes the success of the created offspring in a generation.
   /// </summary>
   [Item("OffspringSuccessAnalyzer", "An operator which analyzes the success of the created offspring in a generation.")]
-  [StorableClass]
+  [StorableType("1E42247A-C685-448C-82FF-247A598D6C10")]
   public sealed class OffspringSuccessAnalyzer : AlgorithmOperator, IAnalyzer {
     #region Parameter properties
     public ILookupParameter<IntValue> NumberOfCreatedOffspringParameter {
@@ -71,7 +71,7 @@ namespace HeuristicLab.Algorithms.RAPGA {
 
     #region Storing & Cloning
     [StorableConstructor]
-    private OffspringSuccessAnalyzer(bool deserializing) : base(deserializing) { }
+    private OffspringSuccessAnalyzer(StorableConstructorFlag _) : base(_) { }
     private OffspringSuccessAnalyzer(OffspringSuccessAnalyzer original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new OffspringSuccessAnalyzer(this, cloner);

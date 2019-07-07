@@ -1,6 +1,7 @@
-﻿#region License Information
+﻿using HEAL.Attic;
+#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,6 +22,7 @@
 
 
 namespace HeuristicLab.Problems.VehicleRouting.Variants {
+  [StorableType("0827648C-B4EF-450C-86BE-B145624FCC6C")]
   public interface IHomogenousCapacitatedOperator : ICapacitatedOperator {
   }
 }

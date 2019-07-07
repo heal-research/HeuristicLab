@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -26,11 +26,11 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Selection {
   [Item("Replacer", "Generic replacer that replaces sub-scopes of the remaining scope with those from the selected scope.")]
-  [StorableClass]
+  [StorableType("E92517F6-5936-4143-B07A-E76BC7A508F3")]
   public class Replacer : AlgorithmOperator, IReplacer {
     public IValueLookupParameter<ISelector> ReplacedSelectorParameter {
       get { return (IValueLookupParameter<ISelector>)Parameters["ReplacedSelector"]; }
@@ -40,7 +40,7 @@ namespace HeuristicLab.Selection {
     }
 
     [StorableConstructor]
-    protected Replacer(bool deserializing) : base(deserializing) { }
+    protected Replacer(StorableConstructorFlag _) : base(_) { }
     protected Replacer(Replacer original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new Replacer(this, cloner);

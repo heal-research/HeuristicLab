@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,19 +22,18 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Encodings.LinearLinkageEncoding {
   [Item("Multi LLE Crossover", "Randomly selects and applies one of its crossovers every time it is called.")]
-  [StorableClass]
+  [StorableType("276A73EA-3642-4B8F-9CD4-74C1B2772728")]
   public class MultiLinearLinkageCrossover : StochasticMultiBranch<ILinearLinkageCrossover>, ILinearLinkageCrossover, IStochasticOperator {
     public override bool CanChangeName {
       get { return false; }
@@ -52,7 +51,7 @@ namespace HeuristicLab.Encodings.LinearLinkageEncoding {
     }
 
     [StorableConstructor]
-    protected MultiLinearLinkageCrossover(bool deserializing) : base(deserializing) { }
+    protected MultiLinearLinkageCrossover(StorableConstructorFlag _) : base(_) { }
     protected MultiLinearLinkageCrossover(MultiLinearLinkageCrossover original, Cloner cloner) : base(original, cloner) { }
     public MultiLinearLinkageCrossover()
       : base() {

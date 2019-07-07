@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,11 +23,11 @@ using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.RealVectorEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
   [Item("Kursawe", "Kursawe function from // http://darwin.di.uminho.pt/jecoli/index.php/Multiobjective_example [30.11.2015]")]
-  [StorableClass]
+  [StorableType("9D38092B-2C55-450E-A27A-2C28714745ED")]
   public class Kursawe : MultiObjectiveTestFunction {
     protected override double[,] GetBounds(int objectives) {
       return new double[,] { { -5, 5 } };
@@ -50,7 +50,7 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
     }
 
     [StorableConstructor]
-    protected Kursawe(bool deserializing) : base(deserializing) { }
+    protected Kursawe(StorableConstructorFlag _) : base(_) { }
     protected Kursawe(Kursawe original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new Kursawe(this, cloner);

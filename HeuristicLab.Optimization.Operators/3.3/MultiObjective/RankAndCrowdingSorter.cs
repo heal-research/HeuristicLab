@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,11 +24,11 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Selection;
 
 namespace HeuristicLab.Optimization.Operators {
-  [StorableClass]
+  [StorableType("CC2A5B04-361C-451B-87A4-524895748E79")]
   public class RankAndCrowdingSorter : AlgorithmOperator, IMultiObjectiveOperator {
     #region Parameter properties
     public ValueLookupParameter<BoolArray> MaximizationParameter {
@@ -49,7 +49,7 @@ namespace HeuristicLab.Optimization.Operators {
     #endregion
 
     [StorableConstructor]
-    protected RankAndCrowdingSorter(bool deserializing) : base(deserializing) { }
+    protected RankAndCrowdingSorter(StorableConstructorFlag _) : base(_) { }
     protected RankAndCrowdingSorter(RankAndCrowdingSorter original, Cloner cloner) : base(original, cloner) { }
     public RankAndCrowdingSorter()
       : base() {

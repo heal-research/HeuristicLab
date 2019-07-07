@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -26,7 +26,6 @@ using System.Linq;
 using System.Windows.Forms;
 using HeuristicLab.Clients.Hive.Views;
 using HeuristicLab.MainForm;
-using HeuristicLab.Core;
 
 namespace HeuristicLab.Clients.Hive.JobManager.Views {
   public partial class HiveResourceSelectorDialog : Form {

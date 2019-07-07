@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -20,8 +20,10 @@
 #endregion
 
 using HeuristicLab.Core;
+using HEAL.Attic;
 
 namespace HeuristicLab.Optimization {
+  [StorableType("65af3d33-528d-4554-a430-bd2daf42860a")]
   /// <summary>
   /// The basic interface that marks all move operators. Derived interfaces
   /// are used to group move operators together.

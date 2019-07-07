@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,14 +25,14 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.TravelingSalesman {
   /// <summary>
   /// A base class for operators which evaluate TSP solutions given in path representation using a distance matrix.
   /// </summary>
   [Item("TSPDistanceMatrixEvaluator", "Evaluate TSP solutions given in path representation using the distance matrix.")]
-  [StorableClass]
+  [StorableType("A52B705D-9F66-47AE-B1B4-B6969E0A6D83")]
   public sealed class TSPDistanceMatrixEvaluator : TSPEvaluator, ITSPDistanceMatrixEvaluator {
 
     public ILookupParameter<Permutation> PermutationParameter {
@@ -43,7 +43,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
     }
 
     [StorableConstructor]
-    private TSPDistanceMatrixEvaluator(bool deserializing) : base(deserializing) { }
+    private TSPDistanceMatrixEvaluator(StorableConstructorFlag _) : base(_) { }
     private TSPDistanceMatrixEvaluator(TSPDistanceMatrixEvaluator original, Cloner cloner) : base(original, cloner) { }
     public TSPDistanceMatrixEvaluator()
       : base() {

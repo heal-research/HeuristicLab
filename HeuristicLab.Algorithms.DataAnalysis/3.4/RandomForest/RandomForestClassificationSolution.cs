@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,7 +21,7 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
@@ -29,7 +29,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   /// Represents a random forest solution for a classification problem which can be visualized in the GUI.
   /// </summary>
   [Item("RandomForestClassificationSolution", "Represents a random forest solution for a classification problem which can be visualized in the GUI.")]
-  [StorableClass]
+  [StorableType("11D108AD-931C-4504-BA87-0D5CEB2C95A9")]
   public sealed class RandomForestClassificationSolution : ClassificationSolution, IRandomForestClassificationSolution {
 
     public new IRandomForestModel Model {
@@ -42,7 +42,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     [StorableConstructor]
-    private RandomForestClassificationSolution(bool deserializing) : base(deserializing) { }
+    private RandomForestClassificationSolution(StorableConstructorFlag _) : base(_) { }
     private RandomForestClassificationSolution(RandomForestClassificationSolution original, Cloner cloner)
       : base(original, cloner) {
     }

@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,7 +21,7 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
@@ -29,7 +29,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   /// Represents a multinomial logit solution for a classification problem which can be visualized in the GUI.
   /// </summary>
   [Item("Multinomial Logit Classification Solution", "Represents a multinomial logit solution for a classification problem which can be visualized in the GUI.")]
-  [StorableClass]
+  [StorableType("A6F6F990-EF97-4A9C-8054-B38E39763FDB")]
   public sealed class MultinomialLogitClassificationSolution : ClassificationSolution {
 
     public new MultinomialLogitModel Model {
@@ -38,7 +38,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     [StorableConstructor]
-    private MultinomialLogitClassificationSolution(bool deserializing) : base(deserializing) { }
+    private MultinomialLogitClassificationSolution(StorableConstructorFlag _) : base(_) { }
     private MultinomialLogitClassificationSolution(MultinomialLogitClassificationSolution original, Cloner cloner)
       : base(original, cloner) {
     }

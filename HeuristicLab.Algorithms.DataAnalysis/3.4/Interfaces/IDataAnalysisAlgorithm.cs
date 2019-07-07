@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,8 +21,10 @@
 
 using HeuristicLab.Optimization;
 using HeuristicLab.Problems.DataAnalysis;
+using HEAL.Attic;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
+  [StorableType("76554c78-e43e-4988-910b-0f31338dab47")]
   /// <summary>
   /// Interface to represent a data analysis algorithm.
   /// </summary>

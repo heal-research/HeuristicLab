@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,13 +19,11 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using HeuristicLab.Core;
+using HEAL.Attic;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
+  [StorableType("d93ecea5-379a-4569-8e0d-a80725d38d7f")]
   public interface INcaModelCreator : IOperator {
 
   }

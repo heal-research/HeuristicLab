@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,11 +22,11 @@ using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.RealVectorEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
   [Item("DTLZ8", "Testfunction as defined as DTLZ7 in http://repository.ias.ac.in/81671/ [30.11.15]. There has been a renumbering therefore the numbers do not match")]
-  [StorableClass]
+  [StorableType("067D6CD2-0416-4FB3-AA21-B561776762A4")]
   public class DTLZ8 : DTLZ, IConstrainedTestFunction {
     public static double[] IllegalValue(int size, bool[] maximization) {
       double[] res = new double[size];
@@ -37,7 +37,7 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
     }
 
     [StorableConstructor]
-    protected DTLZ8(bool deserializing) : base(deserializing) { }
+    protected DTLZ8(StorableConstructorFlag _) : base(_) { }
     protected DTLZ8(DTLZ8 original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new DTLZ8(this, cloner);

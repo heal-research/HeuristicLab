@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,15 +25,15 @@ using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.PermutationEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.BinPacking3D {
   [Item("Residual Space Best Fit Extreme-point Permutation Decoder (3d)", "Decodes the permutation and creates a packing solution candidate")]
-  [StorableClass]
+  [StorableType("FD6679E5-CB7C-4DDA-B45F-DA6137CFA00E")]
   public class ResidualSpaceBestFitExtremePointPermutationDecoder : ExtremePointPermutationDecoderBase {
 
     [StorableConstructor]
-    protected ResidualSpaceBestFitExtremePointPermutationDecoder(bool deserializing) : base(deserializing) { }
+    protected ResidualSpaceBestFitExtremePointPermutationDecoder(StorableConstructorFlag _) : base(_) { }
     protected ResidualSpaceBestFitExtremePointPermutationDecoder(ResidualSpaceBestFitExtremePointPermutationDecoder original, Cloner cloner)
       : base(original, cloner) {
     }

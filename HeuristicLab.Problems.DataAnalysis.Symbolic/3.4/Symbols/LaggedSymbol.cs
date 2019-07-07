@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,10 +22,10 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
-  [StorableClass]
+  [StorableType("3290F116-CD55-4749-9983-E4E5692A5666")]
   [Item("LaggedSymbol", "Represents a symblol whose evaluation is shifted.")]
   public abstract class LaggedSymbol : Symbol {
     [Storable]
@@ -42,7 +42,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     [StorableConstructor]
-    protected LaggedSymbol(bool deserializing) : base(deserializing) { }
+    protected LaggedSymbol(StorableConstructorFlag _) : base(_) { }
     protected LaggedSymbol(LaggedSymbol original, Cloner cloner)
       : base(original, cloner) {
       minLag = original.minLag;

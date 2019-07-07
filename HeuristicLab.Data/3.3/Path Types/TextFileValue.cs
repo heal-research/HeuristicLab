@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,14 +21,14 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Data {
   [Item("TextFile", "Represents the content and path to a text file.")]
-  [StorableClass]
+  [StorableType("19F5012B-6139-4113-A015-1C920A59E5AF")]
   public class TextFileValue : FileValue {
     [StorableConstructor]
-    protected TextFileValue(bool deserializing) : base(deserializing) { }
+    protected TextFileValue(StorableConstructorFlag _) : base(_) { }
     protected TextFileValue(TextFileValue original, Cloner cloner)
       : base(original, cloner) {
     }

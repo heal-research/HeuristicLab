@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,10 +25,10 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
-  [StorableClass]
+  [StorableType("BD6DF0C6-07A2-44CE-8EDB-92561505EF6E")]
   [Item(Name = "CovariancePolynomial",
     Description = "Polynomial covariance function for Gaussian processes.")]
   public sealed class CovariancePolynomial : ParameterizedNamedItem, ICovarianceFunction {
@@ -51,8 +51,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     [StorableConstructor]
-    private CovariancePolynomial(bool deserializing)
-      : base(deserializing) {
+    private CovariancePolynomial(StorableConstructorFlag _) : base(_) {
     }
 
     private CovariancePolynomial(CovariancePolynomial original, Cloner cloner)

@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,19 +19,17 @@
  */
 #endregion
 
-using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.PluginInfrastructure;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
-  [StorableClass]
+  [StorableType("71F54D2D-F409-4B56-9C67-43715ABD58FA")]
   [Item("FullTreeCreator", "An operator that creates new symbolic expression trees using the 'Full' method")]
   public class SymbolicDataAnalysisExpressionFullTreeCreator : FullTreeCreator, ISymbolicDataAnalysisSolutionCreator {
     [StorableConstructor]
-    protected SymbolicDataAnalysisExpressionFullTreeCreator(bool deserializing) : base(deserializing) { }
+    protected SymbolicDataAnalysisExpressionFullTreeCreator(StorableConstructorFlag _) : base(_) { }
     protected SymbolicDataAnalysisExpressionFullTreeCreator(SymbolicDataAnalysisExpressionFullTreeCreator original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) { return new SymbolicDataAnalysisExpressionFullTreeCreator(this, cloner); }
 

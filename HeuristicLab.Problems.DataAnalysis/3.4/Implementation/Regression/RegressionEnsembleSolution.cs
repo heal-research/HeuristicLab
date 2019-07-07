@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -26,13 +26,13 @@ using HeuristicLab.Collections;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis {
   /// <summary>
   /// Represents regression solutions that contain an ensemble of multiple regression models
   /// </summary>
-  [StorableClass]
+  [StorableType("C5B38C31-4307-48E4-9BCD-6797C329E018")]
   [Item("Regression Ensemble Solution", "A regression solution that contains an ensemble of multiple regression models")]
   [Creatable(CreatableAttribute.Categories.DataAnalysisEnsembles, Priority = 100)]
   public sealed class RegressionEnsembleSolution : RegressionSolutionBase, IRegressionEnsembleSolution {
@@ -61,8 +61,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     private readonly Dictionary<IRegressionModel, IntRange> testPartitions;
 
     [StorableConstructor]
-    private RegressionEnsembleSolution(bool deserializing)
-      : base(deserializing) {
+    private RegressionEnsembleSolution(StorableConstructorFlag _) : base(_) {
       regressionSolutions = new ItemCollection<IRegressionSolution>();
     }
     [StorableHook(HookType.AfterDeserialization)]

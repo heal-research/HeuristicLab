@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,14 +22,14 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [Item("SymbolicExpressionTreeNodeEqualityComparer", "An operator that checks node equality based on different similarity measures.")]
-  [StorableClass]
+  [StorableType("F5BC06AA-3F08-4692-93E8-E44CE8205A46")]
   public class SymbolicExpressionTreeNodeEqualityComparer : Item, ISymbolicExpressionTreeNodeSimilarityComparer {
     [StorableConstructor]
-    protected SymbolicExpressionTreeNodeEqualityComparer(bool deserializing) : base(deserializing) { }
+    protected SymbolicExpressionTreeNodeEqualityComparer(StorableConstructorFlag _) : base(_) { }
     protected SymbolicExpressionTreeNodeEqualityComparer(SymbolicExpressionTreeNodeEqualityComparer original, Cloner cloner)
       : base(original, cloner) {
       matchConstantValues = original.matchConstantValues;

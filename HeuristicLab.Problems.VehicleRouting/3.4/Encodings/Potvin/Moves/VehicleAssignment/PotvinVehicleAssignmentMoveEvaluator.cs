@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,11 +22,11 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
   [Item("PotvinVehicleAssignmentMoveEvaluator", "Evaluates a vehicle assignment move for a VRP representation. ")]
-  [StorableClass]
+  [StorableType("41525962-0E71-4DE5-9FC9-6E8FD0C6BE61")]
   public sealed class PotvinVehicleAssignmentMoveEvaluator : PotvinMoveEvaluator, IPotvinVehicleAssignmentMoveOperator {
     public ILookupParameter<PotvinVehicleAssignmentMove> VehicleAssignmentMoveParameter {
       get { return (ILookupParameter<PotvinVehicleAssignmentMove>)Parameters["PotvinVehicleAssignmentMove"]; }
@@ -37,7 +37,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
     }
 
     [StorableConstructor]
-    private PotvinVehicleAssignmentMoveEvaluator(bool deserializing) : base(deserializing) { }
+    private PotvinVehicleAssignmentMoveEvaluator(StorableConstructorFlag _) : base(_) { }
 
     public PotvinVehicleAssignmentMoveEvaluator()
       : base() {

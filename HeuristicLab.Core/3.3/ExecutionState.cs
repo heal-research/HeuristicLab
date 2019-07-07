@@ -1,6 +1,7 @@
+using HEAL.Attic;
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -20,6 +21,7 @@
 #endregion
 
 namespace HeuristicLab.Core {
+  [StorableType("ad36dbde-a72c-43ad-8bb4-67aaaef34b72")]
   public enum ExecutionState {
     Prepared,
     Started,

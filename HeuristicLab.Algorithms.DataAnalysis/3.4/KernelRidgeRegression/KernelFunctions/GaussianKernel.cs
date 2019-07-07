@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,14 +24,14 @@ using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
-  [StorableClass]
+  [StorableType("CFF2B805-FE21-427B-B899-531D3AB1C7EF")]
   [Item("GaussianKernel", "A kernel function that uses Gaussian function exp(-n²/beta²). As described in http://crsouza.com/2010/03/17/kernel-functions-for-machine-learning-applications/")]
   public class GaussianKernel : KernelBase {
     [StorableConstructor]
-    protected GaussianKernel(bool deserializing) : base(deserializing) { }
+    protected GaussianKernel(StorableConstructorFlag _) : base(_) { }
 
     protected GaussianKernel(GaussianKernel original, Cloner cloner) : base(original, cloner) { }
 

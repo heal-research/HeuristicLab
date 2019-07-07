@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,13 +25,13 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 using HeuristicLab.Problems.VehicleRouting.Variants;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
   [Item("MultiVRPMoveTabuMaker", "A multi VRP move tabu maker.")]
-  [StorableClass]
+  [StorableType("58E2C5A6-88CF-460B-8684-E38E2E64F648")]
   public class MultiVRPMoveTabuMaker : SingleSuccessorOperator, IMultiVRPMoveOperator, ITabuMaker, IGeneralVRPOperator, ISingleObjectiveOperator {
     public ILookupParameter VRPMoveParameter {
       get { return (ILookupParameter)Parameters["VRPMove"]; }
@@ -59,7 +59,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
     }
 
     [StorableConstructor]
-    protected MultiVRPMoveTabuMaker(bool deserializing) : base(deserializing) { }
+    protected MultiVRPMoveTabuMaker(StorableConstructorFlag _) : base(_) { }
 
     public MultiVRPMoveTabuMaker()
       : base() {

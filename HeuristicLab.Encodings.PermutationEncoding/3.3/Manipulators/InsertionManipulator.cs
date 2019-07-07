@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,7 +21,7 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.PermutationEncoding {
   /// <summary>
@@ -31,10 +31,10 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
   /// It is implemented as described in Fogel, D.B. (1988). An Evolutionary Approach to the Traveling Salesman Problem, Biological Cybernetics, 60, pp. 139-144.
   /// </remarks>
   [Item("InsertionManipulator", "An operator which moves randomly one element to another position in the permutation (Insertion is a special case of Translocation). It is implemented as described in Fogel, D.B. (1988). An Evolutionary Approach to the Traveling Salesman Problem, Biological Cybernetics, 60, pp. 139-144.")]
-  [StorableClass]
+  [StorableType("E8C09728-ACB7-491B-B87C-BE8E2B5A5B0B")]
   public class InsertionManipulator : PermutationManipulator {
     [StorableConstructor]
-    protected InsertionManipulator(bool deserializing) : base(deserializing) { }
+    protected InsertionManipulator(StorableConstructorFlag _) : base(_) { }
     protected InsertionManipulator(InsertionManipulator original, Cloner cloner) : base(original, cloner) { }
     public InsertionManipulator() : base() { }
 

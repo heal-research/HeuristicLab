@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,11 +25,11 @@ using HeuristicLab.Core;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.LinearLinkageEncoding {
   [Item("Linear Linkage Crossover", "Base class for linear linkage crossovers.")]
-  [StorableClass]
+  [StorableType("AB45F937-ECD4-4658-BC9E-793EE0453A0C")]
   public abstract class LinearLinkageCrossover : InstrumentedOperator, ILinearLinkageCrossover, IStochasticOperator {
 
     public ILookupParameter<IRandom> RandomParameter {
@@ -45,7 +45,7 @@ namespace HeuristicLab.Encodings.LinearLinkageEncoding {
     }
 
     [StorableConstructor]
-    protected LinearLinkageCrossover(bool deserializing) : base(deserializing) { }
+    protected LinearLinkageCrossover(StorableConstructorFlag _) : base(_) { }
     protected LinearLinkageCrossover(LinearLinkageCrossover original, Cloner cloner) : base(original, cloner) { }
     protected LinearLinkageCrossover() {
       Parameters.Add(new LookupParameter<IRandom>("Random", "The random number generator to use."));

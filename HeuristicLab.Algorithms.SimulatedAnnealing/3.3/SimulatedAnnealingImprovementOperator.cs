@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -28,7 +28,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Algorithms.SimulatedAnnealing {
@@ -36,7 +36,7 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
   /// A simulated annealing improvement operator.
   /// </summary>
   [Item("SimulatedAnnealingImprovementOperator", "A simulated annealing improvement operator.")]
-  [StorableClass]
+  [StorableType("838ADB03-1D6F-4795-B955-10C8B05B2EC4")]
   public sealed class SimulatedAnnealingImprovementOperator : SingleSuccessorOperator, ILocalImprovementAlgorithmOperator, IStochasticOperator, ISingleObjectiveOperator {
     #region IGenericLocalImprovementOperator Properties
     public Type ProblemType { get { return typeof(ISingleObjectiveHeuristicOptimizationProblem); } }
@@ -130,7 +130,7 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
     #endregion
 
     [StorableConstructor]
-    private SimulatedAnnealingImprovementOperator(bool deserializing) : base(deserializing) { }
+    private SimulatedAnnealingImprovementOperator(StorableConstructorFlag _) : base(_) { }
     private SimulatedAnnealingImprovementOperator(SimulatedAnnealingImprovementOperator original, Cloner cloner)
       : base(original, cloner) {
       this.problem = cloner.Clone(original.problem);

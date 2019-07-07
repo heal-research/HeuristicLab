@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,13 +22,12 @@
 using System;
 using System.Collections;
 using System.Text;
+using HEAL.Attic;
 using HeuristicLab.Persistence.Auxiliary;
-using HeuristicLab.Persistence.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Persistence.Default.Xml.Compact {
 
-  [StorableClass]
+  [StorableType("B4D23353-9322-4005-BAF2-AB3034DEE34A")]
   internal abstract class NumberEnumeration2XmlSerializerBase<T> : CompactXmlSerializerBase<T> where T : IEnumerable {
 
     protected virtual char Separator { get { return ';'; } }

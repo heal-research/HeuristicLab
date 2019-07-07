@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -27,14 +27,14 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Selection {
   /// <summary>
   /// A quality proportional selection operator which considers a single double quality value for selection.
   /// </summary>
   [Item("ProportionalSelector", "A quality proportional selection operator which considers a single double quality value for selection.")]
-  [StorableClass]
+  [StorableType("82E6E547-4B36-4873-B9B9-E155EE913228")]
   public sealed class ProportionalSelector : StochasticSingleObjectiveSelector, ISingleObjectiveSelector {
     private ValueParameter<BoolValue> WindowingParameter {
       get { return (ValueParameter<BoolValue>)Parameters["Windowing"]; }
@@ -46,7 +46,7 @@ namespace HeuristicLab.Selection {
     }
 
     [StorableConstructor]
-    private ProportionalSelector(bool deserializing) : base(deserializing) { }
+    private ProportionalSelector(StorableConstructorFlag _) : base(_) { }
     private ProportionalSelector(ProportionalSelector original, Cloner cloner)
       : base(original, cloner) {
     }

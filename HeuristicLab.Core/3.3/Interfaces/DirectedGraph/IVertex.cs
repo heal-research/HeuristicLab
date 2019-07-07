@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,8 +22,10 @@
 using System;
 using System.Collections.Generic;
 using HeuristicLab.Common;
+using HEAL.Attic;
 
 namespace HeuristicLab.Core {
+  [StorableType("f7a3227e-17b9-4af6-bf6d-0801cbdca286")]
   public interface IVertex : IItem {
     IEnumerable<IArc> InArcs { get; }
     IEnumerable<IArc> OutArcs { get; }
@@ -43,6 +45,7 @@ namespace HeuristicLab.Core {
     event EventHandler<EventArgs<IArc>> ArcRemoved;
   }
 
+  [StorableType("f856ed8e-1259-4949-9784-78f1f4da1abb")]
   public interface IVertex<T> : IVertex where T : class, IDeepCloneable {
     T Data { get; set; }
   }

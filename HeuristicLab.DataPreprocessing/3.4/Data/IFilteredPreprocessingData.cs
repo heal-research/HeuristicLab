@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -20,8 +20,10 @@
 #endregion
 
 using System;
+using HEAL.Attic;
 
 namespace HeuristicLab.DataPreprocessing {
+  [StorableType("9f0c478b-6b6b-42a1-ad0a-6bc2769cd593")]
   public interface IFilteredPreprocessingData : IPreprocessingData {
     #region Filters
     void SetFilter(bool[] remainingRows);

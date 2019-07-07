@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,11 +23,11 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Algorithms.TabuSearch {
   [Item("TabuListCreator", "An operator that creates a new empty tabu list. It can also replace an existing tabu list with a new empty one.")]
-  [StorableClass]
+  [StorableType("F199F8AB-35BA-45EB-A7E9-F6352FC053E3")]
   public class TabuListCreator : SingleSuccessorOperator {
     public ValueLookupParameter<ItemList<IItem>> TabuListParameter {
       get { return (ValueLookupParameter<ItemList<IItem>>)Parameters["TabuList"]; }
@@ -40,7 +40,7 @@ namespace HeuristicLab.Algorithms.TabuSearch {
     }
 
     [StorableConstructor]
-    protected TabuListCreator(bool deserializing) : base(deserializing) { }
+    protected TabuListCreator(StorableConstructorFlag _) : base(_) { }
     protected TabuListCreator(TabuListCreator original, Cloner cloner)
       : base(original, cloner) {
     }

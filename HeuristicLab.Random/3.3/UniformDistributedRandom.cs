@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,7 +22,7 @@
 using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Random {
 
@@ -30,7 +30,7 @@ namespace HeuristicLab.Random {
   /// Unformliy distributed random variable.
   /// </summary>
   [Item("UniformDistributedRandom", "A pseudo random number generator to create uniform distributed random numbers.")]
-  [StorableClass]
+  [StorableType("01239E33-7AAD-467A-A95C-6D7E001F5827")]
   public sealed class UniformDistributedRandom : Item, IRandom {
     [Storable]
     private double min;
@@ -60,7 +60,7 @@ namespace HeuristicLab.Random {
     /// </summary>
     /// <param name="deserializing">true, if the constructor is called during deserialization.</param>
     [StorableConstructor]
-    private UniformDistributedRandom(bool deserializing) : base(deserializing) { }
+    private UniformDistributedRandom(StorableConstructorFlag _) : base(_) { }
 
     /// <summary>
     /// Initializes a new instance from an existing one (copy constructor).

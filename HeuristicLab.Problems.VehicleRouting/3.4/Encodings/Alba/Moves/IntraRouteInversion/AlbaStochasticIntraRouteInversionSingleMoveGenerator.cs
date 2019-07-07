@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,12 +24,12 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
   [Item("AlbaStochasticIntraRouteInversionSingleMoveGenerator", "Generates one random intra route inversion move from a given VRP encoding.  It is implemented as described in Alba, E. and Dorronsoro, B. (2004). Solving the Vehicle Routing Problem by Using Cellular Genetic Algorithms.")]
-  [StorableClass]
+  [StorableType("53458AC0-F674-4A75-9737-63052F17B54F")]
   public sealed class AlbaStochasticIntraRouteInversionSingleMoveGenerator : AlbaIntraRouteInversionMoveGenerator,
     IStochasticOperator, ISingleMoveGenerator, IAlbaIntraRouteInversionMoveOperator {
     #region IMultiVRPMoveOperator Members
@@ -45,7 +45,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
     }
 
     [StorableConstructor]
-    private AlbaStochasticIntraRouteInversionSingleMoveGenerator(bool deserializing) : base(deserializing) { }
+    private AlbaStochasticIntraRouteInversionSingleMoveGenerator(StorableConstructorFlag _) : base(_) { }
 
     public AlbaStochasticIntraRouteInversionSingleMoveGenerator()
       : base() {

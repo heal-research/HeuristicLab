@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -26,10 +26,10 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis {
-  [StorableClass]
+  [StorableType("1C8DCCCF-4E2A-421D-9C61-7C017D584054")]
   [Item("ClassificationProblemData", "Represents an item containing all data defining a classification problem.")]
   public class ClassificationProblemData : DataAnalysisProblemData, IClassificationProblemData, IStorableContent {
     protected const string TargetVariableParameterName = "TargetVariable";
@@ -278,7 +278,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
 
     [StorableConstructor]
-    protected ClassificationProblemData(bool deserializing) : base(deserializing) { }
+    protected ClassificationProblemData(StorableConstructorFlag _) : base(_) { }
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
       RegisterParameterEvents();

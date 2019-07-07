@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,13 +21,13 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 
 
 namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
   [Item("SingleDepotVRPEvaluator", "Represents a single depot VRP evaluator.")]
-  [StorableClass]
+  [StorableType("AFC33483-2E8A-4469-8216-1F4FEE0AEB51")]
   public class MultiDepotVRPEvaluator : VRPEvaluator {
     protected override void EvaluateTour(VRPEvaluation eval, IVRPProblemInstance instance, Tour tour, IVRPEncoding solution) {
       TourInsertionInfo tourInfo = new TourInsertionInfo(solution.GetVehicleAssignment(solution.GetTourIndex(tour)));
@@ -79,7 +79,7 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
     }
 
     [StorableConstructor]
-    protected MultiDepotVRPEvaluator(bool deserializing) : base(deserializing) { }
+    protected MultiDepotVRPEvaluator(StorableConstructorFlag _) : base(_) { }
 
     public MultiDepotVRPEvaluator() {
     }

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,10 +24,10 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
-  [StorableClass]
+  [StorableType("21D5F261-B9DF-4DC4-AF42-7B223C45840F")]
   [Item(Name = "CovarianceMask",
     Description = "Masking covariance function for dimension selection can be used to apply a covariance function only on certain input dimensions.")]
   public sealed class CovarianceMask : ParameterizedNamedItem, ICovarianceFunction {
@@ -39,8 +39,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     [StorableConstructor]
-    private CovarianceMask(bool deserializing)
-      : base(deserializing) {
+    private CovarianceMask(StorableConstructorFlag _) : base(_) {
     }
 
     private CovarianceMask(CovarianceMask original, Cloner cloner)

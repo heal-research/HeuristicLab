@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,11 +19,11 @@
  */
 #endregion
 
-using HeuristicLab.Optimization;
 using HeuristicLab.Problems.DataAnalysis;
-using HeuristicLab.Core;
+using HEAL.Attic;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
+  [StorableType("ff6d9203-3685-418b-b6cc-2312b50c4014")]
   /// <summary>
   /// Interface to represent a random forest classification solution
   /// </summary>

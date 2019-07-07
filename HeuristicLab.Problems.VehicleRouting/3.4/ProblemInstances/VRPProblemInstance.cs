@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -26,13 +26,13 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.VehicleRouting.Encodings.General;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 
 namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
   [Item("VRPProblemInstance", "Represents a VRP instance.")]
-  [StorableClass]
+  [StorableType("9A6CCE89-A4B6-4FA3-A150-181FC315B713")]
   public abstract class VRPProblemInstance : ParameterizedNamedItem, IVRPProblemInstance, IStatefulItem {
     IVRPEvaluator moveEvaluator;
 
@@ -249,7 +249,7 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
     protected abstract IVRPCreator Creator { get; }
 
     [StorableConstructor]
-    protected VRPProblemInstance(bool deserializing) : base(deserializing) { }
+    protected VRPProblemInstance(StorableConstructorFlag _) : base(_) { }
 
     public VRPProblemInstance()
       : base() {

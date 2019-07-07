@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,13 +24,13 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 using HeuristicLab.Problems.VehicleRouting.Variants;
 
 namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
   [Item("MDCVRPTWEvaluator", "Represents a multi depot CVRPTW evaluator.")]
-  [StorableClass]
+  [StorableType("D3E40FC1-17FA-4C0E-AD1A-10C98ACCE27D")]
   public class MDCVRPTWEvaluator : MDCVRPEvaluator {
     public ILookupParameter<DoubleValue> TardinessParameter {
       get { return (ILookupParameter<DoubleValue>)Parameters["Tardiness"]; }
@@ -274,7 +274,7 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
     }
 
     [StorableConstructor]
-    protected MDCVRPTWEvaluator(bool deserializing) : base(deserializing) { }
+    protected MDCVRPTWEvaluator(StorableConstructorFlag _) : base(_) { }
 
     public MDCVRPTWEvaluator() {
       Parameters.Add(new LookupParameter<DoubleValue>("Tardiness", "The tardiness."));

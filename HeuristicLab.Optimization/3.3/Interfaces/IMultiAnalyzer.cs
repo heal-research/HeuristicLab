@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,7 +21,10 @@
 
 
 using HeuristicLab.Core;
+using HEAL.Attic;
+
 namespace HeuristicLab.Optimization {
+  [StorableType("7f691603-fb68-4ea0-8085-d7f01df378e6")]
   /// <summary>
   /// An interface which represents a multi analysis operator.
   /// </summary>

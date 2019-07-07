@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,11 +25,11 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.PTSP {
   [Item("PTSP Analytical 2.5-MoveEvaluator", "Operator that evaluates 2.5-p-opt moves of PTSP by a full solution evaluation.")]
-  [StorableClass]
+  [StorableType("59729BB5-2026-44E8-8C19-EBCC2303103C")]
   public class PTSPAnalyticalTwoPointFiveMoveEvaluator : AnalyticalPTSPMoveEvaluator, ITwoPointFiveMoveOperator {
 
     public ILookupParameter<TwoPointFiveMove> TwoPointFiveMoveParameter {
@@ -37,7 +37,7 @@ namespace HeuristicLab.Problems.PTSP {
     }
 
     [StorableConstructor]
-    protected PTSPAnalyticalTwoPointFiveMoveEvaluator(bool deserializing) : base(deserializing) { }
+    protected PTSPAnalyticalTwoPointFiveMoveEvaluator(StorableConstructorFlag _) : base(_) { }
     protected PTSPAnalyticalTwoPointFiveMoveEvaluator(PTSPAnalyticalTwoPointFiveMoveEvaluator original, Cloner cloner) : base(original, cloner) { }
     public PTSPAnalyticalTwoPointFiveMoveEvaluator()
       : base() {

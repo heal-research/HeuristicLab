@@ -21,14 +21,14 @@
 
 using System;
 using System.Linq;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Core;
 using HeuristicLab.Common;
 using HeuristicLab.Data;
 using HeuristicLab.Collections;
 
 namespace HeuristicLab.Problems.BinPacking {
-  [StorableClass]
+  [StorableType("2E5A4B2A-EB2B-49F8-9BE8-45DA1A421F3E")]
   public abstract class PackingPlan<D, B, I> : Item
     where D : class, IPackingPosition
     where B : PackingShape<D>
@@ -77,7 +77,7 @@ namespace HeuristicLab.Problems.BinPacking {
     }
 
     [StorableConstructor]
-    protected PackingPlan(bool deserializing) : base(deserializing) { }
+    protected PackingPlan(StorableConstructorFlag _) : base(_) { }
     protected PackingPlan(PackingPlan<D, B, I> original, Cloner cloner)
       : base(original, cloner) {
       this.Bins = new ObservableList<BinPacking<D, B, I>>(original.Bins.Select(p => cloner.Clone(p)));

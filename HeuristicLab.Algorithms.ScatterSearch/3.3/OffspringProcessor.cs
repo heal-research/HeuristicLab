@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,14 +23,14 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Algorithms.ScatterSearch {
   /// <summary>
   /// An operator that creates a subscope with subscopes for every variable in the current scope.
   /// </summary>
   [Item("OffspringProcessor", "An operator that creates a subscope with subscopes for every variable in the current scope.")]
-  [StorableClass]
+  [StorableType("A89D522A-CAFF-4899-A24D-5EB463EEB03F")]
   public sealed class OffspringProcessor : SingleSuccessorOperator {
     #region Parameter properties
     public ScopeParameter CurrentScopeParameter {
@@ -45,7 +45,7 @@ namespace HeuristicLab.Algorithms.ScatterSearch {
     #endregion
 
     [StorableConstructor]
-    private OffspringProcessor(bool deserializing) : base(deserializing) { }
+    private OffspringProcessor(StorableConstructorFlag _) : base(_) { }
     private OffspringProcessor(OffspringProcessor original, Cloner cloner) : base(original, cloner) { }
     public OffspringProcessor()
       : base() {

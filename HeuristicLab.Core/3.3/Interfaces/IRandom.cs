@@ -1,6 +1,7 @@
+using HEAL.Attic;
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -20,6 +21,7 @@
 #endregion
 
 namespace HeuristicLab.Core {
+  [StorableType("a25f7f50-5838-4312-862d-9ad950b616c5")]
   /// <summary>
   /// Represents an interface for random number generators.
   /// </summary>

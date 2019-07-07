@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -20,7 +20,7 @@
 #endregion
 
 using System;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Persistence.Interfaces {
 
@@ -28,7 +28,7 @@ namespace HeuristicLab.Persistence.Interfaces {
   /// Common base class for defining a new serialization format.
   /// </summary>
   /// <typeparam name="SerialDataFormat">The type of the serial data format.</typeparam>
-  [StorableClass]
+  [StorableType("4EC2B779-0778-4B95-BF4F-5F88C1C1FF1F")]
   public abstract class FormatBase<SerialDataFormat> : IFormat<SerialDataFormat> where SerialDataFormat : ISerialData {
 
     /// <summary>
@@ -43,7 +43,7 @@ namespace HeuristicLab.Persistence.Interfaces {
     public Type SerialDataType { get { return typeof(SerialDataFormat); } }
 
     [StorableConstructor]
-    protected FormatBase(bool deserializing) { }
+    protected FormatBase(StorableConstructorFlag _) { }
     protected FormatBase() { }
 
     /// <summary>

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,11 +23,11 @@ using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Algorithms.CMAEvolutionStrategy {
   [Item("CMAParameters", "CMA-ES controls many strategy parameters that guide the search and which are combined in this class.")]
-  [StorableClass]
+  [StorableType("FB7495E1-6285-4E3E-AEC3-F40CCB182F0F")]
   public sealed class CMAParameters : Item {
 
     [Storable(Name = "axisRatio")]
@@ -80,7 +80,7 @@ namespace HeuristicLab.Algorithms.CMAEvolutionStrategy {
     public int QualityHistorySize { get; set; }
 
     [StorableConstructor]
-    private CMAParameters(bool deserializing) : base(deserializing) { }
+    private CMAParameters(StorableConstructorFlag _) : base(_) { }
     private CMAParameters(CMAParameters original, Cloner cloner)
       : base(original, cloner) {
       this.AxisRatio = original.AxisRatio;

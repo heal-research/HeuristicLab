@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -26,12 +26,12 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.DataAnalysis;
 using HeuristicLab.Problems.DataAnalysis.Symbolic.Regression;
 
 namespace HeuristicLab.Problems.GrammaticalEvolution {
-  [StorableClass]
+  [StorableType("85880E49-DE2F-4FB4-8C1E-F1C51D862FDF")]
   public class GESymbolicRegressionSingleObjectiveEvaluator : GESymbolicDataAnalysisSingleObjectiveEvaluator<IRegressionProblemData>,
                                                               IGESymbolicRegressionSingleObjectiveEvaluator {
 
@@ -56,7 +56,7 @@ namespace HeuristicLab.Problems.GrammaticalEvolution {
 
 
     [StorableConstructor]
-    protected GESymbolicRegressionSingleObjectiveEvaluator(bool deserializing) : base(deserializing) { }
+    protected GESymbolicRegressionSingleObjectiveEvaluator(StorableConstructorFlag _) : base(_) { }
     protected GESymbolicRegressionSingleObjectiveEvaluator(GESymbolicRegressionSingleObjectiveEvaluator original, Cloner cloner) : base(original, cloner) { }
     public GESymbolicRegressionSingleObjectiveEvaluator()
       : base() {

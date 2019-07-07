@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,7 +25,7 @@ using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.DataAnalysis;
 using HeuristicLab.Problems.DataAnalysis.Symbolic;
 
@@ -33,7 +33,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   /// <summary>
   /// Represents a random forest model for regression and classification
   /// </summary>
-  [StorableClass]
+  [StorableType("A4F688CD-1F42-4103-8449-7DE52AEF6C69")]
   [Item("RandomForestModel", "Represents a random forest for regression and classification.")]
   public sealed class RandomForestModel : ClassificationModel, IRandomForestModel {
     // not persisted
@@ -70,8 +70,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     private double m;
 
     [StorableConstructor]
-    private RandomForestModel(bool deserializing)
-      : base(deserializing) {
+    private RandomForestModel(StorableConstructorFlag _) : base(_) {
       // for backwards compatibility (loading old solutions)
       randomForest = new alglib.decisionforest();
     }

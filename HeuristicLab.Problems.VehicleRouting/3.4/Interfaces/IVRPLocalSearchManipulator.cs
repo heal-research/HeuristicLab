@@ -1,6 +1,7 @@
-﻿#region License Information
+﻿using HEAL.Attic;
+#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,6 +22,7 @@
 
 
 namespace HeuristicLab.Problems.VehicleRouting.Interfaces {
+  [StorableType("5C793BBC-0189-4176-BFDC-5E5B01A8FA5E")]
   public interface IVRPLocalSearchManipulator : IVRPManipulator {
   }
 }

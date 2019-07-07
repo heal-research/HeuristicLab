@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -30,13 +30,13 @@ using HeuristicLab.Encodings.BinaryVectorEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Problems.Knapsack {
   [Item("Knapsack Problem (KSP)", "Represents a Knapsack problem.")]
   [Creatable(CreatableAttribute.Categories.CombinatorialProblems, Priority = 200)]
-  [StorableClass]
+  [StorableType("8CEDAFA2-6E0A-4D4B-B6C6-F85CC58B824E")]
   public sealed class KnapsackProblem : SingleObjectiveHeuristicOptimizationProblem<IKnapsackEvaluator, IBinaryVectorCreator>, IStorableContent {
     public string Filename { get; set; }
 
@@ -98,7 +98,7 @@ namespace HeuristicLab.Problems.Knapsack {
     #endregion
 
     [StorableConstructor]
-    private KnapsackProblem(bool deserializing) : base(deserializing) { }
+    private KnapsackProblem(StorableConstructorFlag _) : base(_) { }
     private KnapsackProblem(KnapsackProblem original, Cloner cloner)
       : base(original, cloner) {
       RegisterEventHandlers();

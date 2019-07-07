@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,14 +24,14 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.TravelingSalesman {
   /// <summary>
   /// A base class for operators which evaluate TSP solutions.
   /// </summary>
   [Item("TSPEvaluator", "A base class for operators which evaluate TSP solutions.")]
-  [StorableClass]
+  [StorableType("79FAF3BB-305D-437E-9FF3-C85A561D9A85")]
   public abstract class TSPEvaluator : InstrumentedOperator, ITSPEvaluator {
     public override bool CanChangeName {
       get { return false; }
@@ -42,7 +42,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
     }
 
     [StorableConstructor]
-    protected TSPEvaluator(bool deserializing) : base(deserializing) { }
+    protected TSPEvaluator(StorableConstructorFlag _) : base(_) { }
     protected TSPEvaluator(TSPEvaluator original, Cloner cloner) : base(original, cloner) { }
     protected TSPEvaluator()
       : base() {

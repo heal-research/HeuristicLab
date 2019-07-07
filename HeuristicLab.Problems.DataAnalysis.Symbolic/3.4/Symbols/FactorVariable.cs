@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,9 +25,9 @@ using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
-  [StorableClass]
+  [StorableType("511B0319-0180-4C2E-81AD-3A8936BE4DE8")]
   [Item("FactorVariable", "Represents a categorical variable (comparable to factors as in R).")]
   public sealed class FactorVariable : VariableBase {
     private readonly Dictionary<string, Dictionary<string, int>> variableValues; // for each variable value also store a zero-based index
@@ -44,8 +44,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     [StorableConstructor]
-    private FactorVariable(bool deserializing)
-      : base(deserializing) {
+    private FactorVariable(StorableConstructorFlag _) : base(_) {
       variableValues = new Dictionary<string, Dictionary<string, int>>();
     }
     private FactorVariable(FactorVariable original, Cloner cloner)

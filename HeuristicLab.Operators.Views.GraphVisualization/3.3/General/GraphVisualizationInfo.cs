@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,13 +24,13 @@ using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Operators.Views.GraphVisualization {
-  [StorableClass]
+  [StorableType("85B8035F-C25D-4C75-A2A2-21230A08E9B2")]
   public class GraphVisualizationInfo : DeepCloneable, IGraphVisualizationInfo {
     [StorableConstructor]
-    protected GraphVisualizationInfo(bool deserializing) : base() { }
+    protected GraphVisualizationInfo(StorableConstructorFlag _) { }
     protected GraphVisualizationInfo(GraphVisualizationInfo original, Cloner cloner)
       : base(original, cloner) {
       shapeInfos = new ObservableSet<IShapeInfo>(original.shapeInfos.Select(x => cloner.Clone(x)));

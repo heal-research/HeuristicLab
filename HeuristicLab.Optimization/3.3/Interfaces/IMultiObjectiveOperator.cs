@@ -1,6 +1,7 @@
-﻿#region License Information
+﻿using HEAL.Attic;
+#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -20,6 +21,7 @@
 #endregion
 
 namespace HeuristicLab.Optimization {
+  [StorableType("9928146a-f8eb-490c-a468-a66435185e27")]
   /// <summary>
   /// This is only a marker interface to prevent operators that expect to work with multiple quality values
   /// and/or multiple maximization flags to appear in single-objective algorithms.

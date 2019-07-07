@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,18 +22,18 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.RealVectorEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.TestFunctions {
   [Item("BealeAdditiveMoveEvaluator", "Class for evaluating an additive move on the Beale function.")]
-  [StorableClass]
+  [StorableType("1F069200-31A3-45B0-A9E1-86C501148550")]
   public class BealeAdditiveMoveEvaluator : AdditiveMoveEvaluator {
     public override System.Type EvaluatorType {
       get { return typeof(BealeEvaluator); }
     }
 
     [StorableConstructor]
-    protected BealeAdditiveMoveEvaluator(bool deserializing) : base(deserializing) { }
+    protected BealeAdditiveMoveEvaluator(StorableConstructorFlag _) : base(_) { }
     protected BealeAdditiveMoveEvaluator(BealeAdditiveMoveEvaluator original, Cloner cloner) : base(original, cloner) { }
     public BealeAdditiveMoveEvaluator() : base() { }
 

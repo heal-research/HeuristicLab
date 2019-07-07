@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -26,7 +26,7 @@ using System.Text;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
@@ -35,10 +35,10 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   /// As described in Koza, Bennett, Andre, Keane, Genetic Programming III - Darwinian Invention and Problem Solving, 1999, pp. 88
   /// </summary>
   [Item("SubroutineDuplicater", "Manipulates a symbolic expression by duplicating a preexisting function-defining branch. As described in Koza, Bennett, Andre, Keane, Genetic Programming III - Darwinian Invention and Problem Solving, 1999, pp. 88")]
-  [StorableClass]
+  [StorableType("FA58A28B-95B5-43BF-B94A-99FBFF4C9316")]
   public sealed class SubroutineDuplicater : SymbolicExpressionTreeArchitectureManipulator {
     [StorableConstructor]
-    private SubroutineDuplicater(bool deserializing) : base(deserializing) { }
+    private SubroutineDuplicater(StorableConstructorFlag _) : base(_) { }
     private SubroutineDuplicater(SubroutineDuplicater original, Cloner cloner)
       : base(original, cloner) {
     }

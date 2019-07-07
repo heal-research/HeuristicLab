@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -26,7 +26,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 using HeuristicLab.Problems.VehicleRouting.Variants;
 using HeuristicLab.Problems.VehicleRouting.ProblemInstances;
@@ -36,7 +36,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
   /// An operator for analyzing the best solution of Vehicle Routing Problems.
   /// </summary>
   [Item("BestCapacitatedVRPSolutionAnalyzer", "An operator for analyzing the best solution of capacitated Vehicle Routing Problems.")]
-  [StorableClass]
+  [StorableType("5E50BE52-E801-4F84-8070-298368FEC208")]
   public sealed class BestCapacitatedVRPSolutionAnalyzer : SingleSuccessorOperator, IAnalyzer, ICapacitatedOperator, ISingleObjectiveOperator {
     public ILookupParameter<IVRPProblemInstance> ProblemInstanceParameter {
       get { return (ILookupParameter<IVRPProblemInstance>)Parameters["ProblemInstance"]; }
@@ -64,7 +64,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
     }
 
     [StorableConstructor]
-    private BestCapacitatedVRPSolutionAnalyzer(bool deserializing) : base(deserializing) { }
+    private BestCapacitatedVRPSolutionAnalyzer(StorableConstructorFlag _) : base(_) { }
 
     public BestCapacitatedVRPSolutionAnalyzer()
       : base() {

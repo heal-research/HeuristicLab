@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,14 +22,14 @@
 using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.TravelingSalesman {
   /// <summary>
   /// An operator to evaluate inversion moves (2-opt).
   /// </summary>
   [Item("TSPInversionMoveGeoPathEvaluator", "Operator for evaluating an inversion move (2-opt) based on geo (world) distances.")]
-  [StorableClass]
+  [StorableType("DCBB9049-6C89-4249-BB7D-314B7C62E9E6")]
   public class TSPInversionMoveGeoPathEvaluator : TSPInversionMovePathEvaluator {
     public override Type EvaluatorType {
       get { return typeof(TSPGeoPathEvaluator); }
@@ -39,7 +39,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
     private const double RADIUS = 6378.388;
 
     [StorableConstructor]
-    protected TSPInversionMoveGeoPathEvaluator(bool deserializing) : base(deserializing) { }
+    protected TSPInversionMoveGeoPathEvaluator(StorableConstructorFlag _) : base(_) { }
     protected TSPInversionMoveGeoPathEvaluator(TSPInversionMoveGeoPathEvaluator original, Cloner cloner) : base(original, cloner) { }
     public TSPInversionMoveGeoPathEvaluator() : base() { }
 

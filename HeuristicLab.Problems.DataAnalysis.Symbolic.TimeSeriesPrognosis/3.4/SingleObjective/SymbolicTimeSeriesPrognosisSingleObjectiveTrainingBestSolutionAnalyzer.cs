@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,14 +23,14 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis {
   /// <summary>
   /// An operator that analyzes the training best symbolic time-series prognosis solution for single objective symbolic time-series prognosis problems.
   /// </summary>
   [Item("SymbolicTimeSeriesPrognosisSingleObjectiveTrainingBestSolutionAnalyzer", "An operator that analyzes the training best symbolic time-series prognosis solution for single objective symbolic time-series prognosis problems.")]
-  [StorableClass]
+  [StorableType("22BC06A9-796A-4D32-89BF-B8D7A9BB85C3")]
   public sealed class SymbolicTimeSeriesPrognosisSingleObjectiveTrainingBestSolutionAnalyzer : SymbolicDataAnalysisSingleObjectiveTrainingBestSolutionAnalyzer<ISymbolicTimeSeriesPrognosisSolution>,
   ISymbolicDataAnalysisInterpreterOperator, ISymbolicDataAnalysisBoundedOperator {
     private const string ProblemDataParameterName = "ProblemData";
@@ -50,7 +50,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis {
 
 
     [StorableConstructor]
-    private SymbolicTimeSeriesPrognosisSingleObjectiveTrainingBestSolutionAnalyzer(bool deserializing) : base(deserializing) { }
+    private SymbolicTimeSeriesPrognosisSingleObjectiveTrainingBestSolutionAnalyzer(StorableConstructorFlag _) : base(_) { }
     private SymbolicTimeSeriesPrognosisSingleObjectiveTrainingBestSolutionAnalyzer(SymbolicTimeSeriesPrognosisSingleObjectiveTrainingBestSolutionAnalyzer original, Cloner cloner) : base(original, cloner) { }
     public SymbolicTimeSeriesPrognosisSingleObjectiveTrainingBestSolutionAnalyzer()
       : base() {

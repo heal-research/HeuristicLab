@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -20,7 +20,10 @@
 #endregion
 
 using System.Collections.Generic;
+using HEAL.Attic;
+
 namespace HeuristicLab.Problems.DataAnalysis {
+  [StorableType("c238682c-af0b-449e-aecf-8cf61418f425")]
   /// <summary>
   /// Interface for all time series prognosis models.
   /// <remarks>All methods and properties in in this interface must be implemented thread safely</remarks>

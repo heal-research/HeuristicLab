@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -28,11 +28,11 @@ using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.ParameterOptimization {
   [Item("BestSolutionsAnalyzer", "Tracks the best parameter vector solutions of the current algorithm run.")]
-  [StorableClass]
+  [StorableType("4882160E-6022-4AFC-AD84-9D7D7FF55562")]
   public class BestSolutionsAnalyzer : SingleSuccessorOperator, IAnalyzer {
     private const string MaximizationParameterName = "Maximization";
     private const string ParameterVectorParameterName = "RealVector";
@@ -75,7 +75,7 @@ namespace HeuristicLab.Problems.ParameterOptimization {
     }
 
     [StorableConstructor]
-    protected BestSolutionsAnalyzer(bool deserializing) : base(deserializing) { }
+    protected BestSolutionsAnalyzer(StorableConstructorFlag _) : base(_) { }
     protected BestSolutionsAnalyzer(BestSolutionsAnalyzer original, Cloner cloner)
       : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -149,6 +149,7 @@ namespace HeuristicLab.Problems.ParameterOptimization {
     }
   }
 
+  [StorableType("EB92A47A-F96B-4C42-9D31-EF4992320794")]
   public class DoubleArrayEqualityComparer : IEqualityComparer<DoubleArray> {
     public bool Equals(DoubleArray x, DoubleArray y) {
       if (x == null && y == null) return true;

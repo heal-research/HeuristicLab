@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,18 +21,17 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
-  [StorableClass]
+  [StorableType("1D3FE1D5-E524-4DEC-B845-34C940F5BA61")]
   [Item("EuclideanDistance", "A norm function that uses Euclidean distance")]
   public class EuclideanDistance : DistanceBase<IEnumerable<double>> {
     #region HLConstructors & Cloning
     [StorableConstructor]
-    protected EuclideanDistance(bool deserializing) : base(deserializing) { }
+    protected EuclideanDistance(StorableConstructorFlag _) : base(_) { }
     protected EuclideanDistance(EuclideanDistance original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new EuclideanDistance(this, cloner);

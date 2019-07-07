@@ -1,7 +1,7 @@
 ﻿#region License Information
 
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -26,7 +26,7 @@ using System.Linq;
 using System.Threading;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.PluginInfrastructure;
 using ExecutionContext = HeuristicLab.Core.ExecutionContext;
 
@@ -37,14 +37,14 @@ namespace HeuristicLab.Operators {
       return instrumentedOperator.ExecutionContext.CreateOperation(wrapper);
     }
 
-    [StorableClass]
+    [StorableType("6F0E5A4B-596C-435E-8CCA-969FE8745E92")]
     [NonDiscoverableType]
     private class InstrumentedOperatorWrapper : Operator {
       [Storable]
       private readonly InstrumentedOperator instrumentedOperator;
 
       [StorableConstructor]
-      private InstrumentedOperatorWrapper(bool deserializing) : base(deserializing) { }
+      private InstrumentedOperatorWrapper(StorableConstructorFlag _) : base(_) { }
 
       private InstrumentedOperatorWrapper(InstrumentedOperatorWrapper original, Cloner cloner)
         : base(original, cloner) {

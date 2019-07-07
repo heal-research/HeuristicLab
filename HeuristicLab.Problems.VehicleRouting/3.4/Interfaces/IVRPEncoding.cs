@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,8 +21,10 @@
 
 using System.Collections.Generic;
 using HeuristicLab.Core;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.VehicleRouting.Interfaces {
+  [StorableType("A8B95552-3A3D-43B3-95C3-B04602AEACF5")]
   public interface IVRPEncoding : IItem {
     List<Tour> GetTours();
     int GetTourIndex(Tour tour);

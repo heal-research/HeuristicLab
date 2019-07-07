@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,11 +25,11 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
-  [StorableClass]
+  [StorableType("9255DA02-C545-4952-AB36-5A588EE41407")]
   [Item(Name = "GaussianProcessRegressionSolutionCreator",
     Description = "Creates a Gaussian process solution from a trained model.")]
   public sealed class GaussianProcessRegressionSolutionCreator : SingleSuccessorOperator {
@@ -61,7 +61,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     #endregion
 
     [StorableConstructor]
-    private GaussianProcessRegressionSolutionCreator(bool deserializing) : base(deserializing) { }
+    private GaussianProcessRegressionSolutionCreator(StorableConstructorFlag _) : base(_) { }
     private GaussianProcessRegressionSolutionCreator(GaussianProcessRegressionSolutionCreator original, Cloner cloner) : base(original, cloner) { }
     public GaussianProcessRegressionSolutionCreator()
       : base() {

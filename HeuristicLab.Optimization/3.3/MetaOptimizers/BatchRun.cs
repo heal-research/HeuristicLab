@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -28,9 +28,10 @@ using HeuristicLab.Collections;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Optimization {
+  [StorableType("3d385be2-5c83-43f2-a693-f984acac44f6")]
   internal enum BatchRunAction { None, Prepare, Start, Pause, Stop };
 
   /// <summary>
@@ -38,7 +39,7 @@ namespace HeuristicLab.Optimization {
   /// </summary>
   [Item("Batch Run", "A run in which an optimizer is executed a given number of times.")]
   [Creatable(CreatableAttribute.Categories.TestingAndAnalysis, Priority = 110)]
-  [StorableClass]
+  [StorableType("E85407E0-18EC-4198-8321-9CF030FDF6D7")]
   public sealed class BatchRun : NamedItem, IOptimizer, IStorableContent {
     public string Filename { get; set; }
 
@@ -198,7 +199,7 @@ namespace HeuristicLab.Optimization {
       Runs = new RunCollection { OptimizerName = Name };
     }
     [StorableConstructor]
-    private BatchRun(bool deserializing) : base(deserializing) { }
+    private BatchRun(StorableConstructorFlag _) : base(_) { }
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
       Initialize();

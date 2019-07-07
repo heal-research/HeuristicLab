@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -26,12 +26,12 @@ using HeuristicLab.Data;
 using HeuristicLab.Encodings.ScheduleEncoding.PermutationWithRepetition;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 
 namespace HeuristicLab.Encodings.ScheduleEncoding {
   [Item("DirectScheduleRandomCreator", "Creator class used to create schedule encoding objects.")]
-  [StorableClass]
+  [StorableType("40BD24F4-7197-4F65-AFC0-AC28A372DD45")]
   public class DirectScheduleRandomCreator : ScheduleCreator, IStochasticOperator {
 
     public ILookupParameter<IRandom> RandomParameter {
@@ -49,7 +49,7 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
 
 
     [StorableConstructor]
-    protected DirectScheduleRandomCreator(bool deserializing) : base(deserializing) { }
+    protected DirectScheduleRandomCreator(StorableConstructorFlag _) : base(_) { }
     protected DirectScheduleRandomCreator(DirectScheduleRandomCreator original, Cloner cloner)
       : base(original, cloner) {
     }

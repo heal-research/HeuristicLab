@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,16 +22,16 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.Instances;
 
 namespace HeuristicLab.Problems.PTSP {
   [Item("Geo Distance", "Calculates the geo distance.")]
-  [StorableClass]
+  [StorableType("B6CAD594-7558-4F19-ACE3-7739D29621F1")]
   public sealed class GeoDistance : DistanceCalculator {
 
     [StorableConstructor]
-    private GeoDistance(bool deserializing) : base(deserializing) { }
+    private GeoDistance(StorableConstructorFlag _) : base(_) { }
     private GeoDistance(GeoDistance original, Cloner cloner) : base(original, cloner) { }
     public GeoDistance() { }
 

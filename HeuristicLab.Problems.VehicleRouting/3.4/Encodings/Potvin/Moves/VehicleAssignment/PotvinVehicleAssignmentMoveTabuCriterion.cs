@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,13 +25,13 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 using HeuristicLab.Problems.VehicleRouting.Variants;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
   [Item("PotvinVehicleAssignmentMoveTabuCriterion", @"Checks if a certain vehicle assignment move is tabu.")]
-  [StorableClass]
+  [StorableType("F1D25F3C-DE98-4C8B-B70B-9BDEF9EB4D1E")]
   public class PotvinVehicleAssignmentMoveTabuCriterion : SingleSuccessorOperator, IPotvinVehicleAssignmentMoveOperator, ITabuChecker, IPotvinOperator, IVRPMoveOperator {
     public override bool CanChangeName {
       get { return false; }
@@ -82,7 +82,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
     }
 
     [StorableConstructor]
-    protected PotvinVehicleAssignmentMoveTabuCriterion(bool deserializing) : base(deserializing) { }
+    protected PotvinVehicleAssignmentMoveTabuCriterion(StorableConstructorFlag _) : base(_) { }
     protected PotvinVehicleAssignmentMoveTabuCriterion(PotvinVehicleAssignmentMoveTabuCriterion original, Cloner cloner) : base(original, cloner) { }
     public PotvinVehicleAssignmentMoveTabuCriterion()
       : base() {

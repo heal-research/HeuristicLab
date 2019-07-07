@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,9 +22,9 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
-  [StorableClass]
+  [StorableType("1BFD8CB7-7377-4130-9903-1E9A76349285")]
   [Item("Analytic Quotient", "The analytic quotient function aq(a,b) = a / sqrt(b²+1) can be used as an " +
     "alternative to protected division. See H. Drieberg and P. Rocket, The Use of an Analytic Quotient Operator" +
     " in Genetic Programming. IEEE Transactions on Evolutionary Computation, Vol. 17, No. 1, February 2013, pp. 146 -- 152")]
@@ -40,7 +40,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     [StorableConstructor]
-    private AnalyticQuotient(bool deserializing) : base(deserializing) { }
+    private AnalyticQuotient(StorableConstructorFlag _) : base(_) { }
     private AnalyticQuotient(AnalyticQuotient original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new AnalyticQuotient(this, cloner);

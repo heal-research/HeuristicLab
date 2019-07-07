@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,7 +19,7 @@
  */
 #endregion
 
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Persistence.Interfaces;
 
 namespace HeuristicLab.Persistence.Default.DebugString {
@@ -27,7 +27,7 @@ namespace HeuristicLab.Persistence.Default.DebugString {
   /// <summary>
   /// Simple write-only format for debugging purposes.
   /// </summary>
-  [StorableClass]
+  [StorableType("961AC268-6669-4B0E-A2B5-38C99BA63FD9")]
   public class DebugStringFormat : FormatBase<DebugString> {
     /// <summary>
     /// Gets the format's name.
@@ -36,7 +36,7 @@ namespace HeuristicLab.Persistence.Default.DebugString {
     public override string Name { get { return "DebugString"; } }
 
     [StorableConstructor]
-    protected DebugStringFormat(bool deserializing) : base(deserializing) { }
+    protected DebugStringFormat(StorableConstructorFlag _) : base(_) { }
     public DebugStringFormat() { }
   }
 

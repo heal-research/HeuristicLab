@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,14 +22,14 @@
 using System.Text;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Data {
   [Item("IntArray", "Represents an array of integer values.")]
-  [StorableClass]
+  [StorableType("B9E18852-D23D-4BF7-8971-04572EB0C2A2")]
   public class IntArray : StringConvertibleArray<int> {
     [StorableConstructor]
-    protected IntArray(bool deserializing) : base(deserializing) { }
+    protected IntArray(StorableConstructorFlag _) : base(_) { }
     protected IntArray(IntArray original, Cloner cloner)
       : base(original, cloner) {
     }

@@ -1,7 +1,7 @@
 ﻿#region License Information
 
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -29,25 +29,30 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.Problems.DataAnalysis {
-  [StorableClass]
+  [StorableType("768AFEDB-5641-429E-85A1-A0BE8DFDD56F")]
   [Item("ClassificationSolution Impacts Calculator", "Calculation of the impacts of input variables for any classification solution")]
   public sealed class ClassificationSolutionVariableImpactsCalculator : ParameterizedNamedItem {
     #region Parameters/Properties
+    [StorableType("e6cd2226-10cd-4765-ae1a-924e316b6aac")]
     public enum ReplacementMethodEnum {
       Median,
       Average,
       Shuffle,
       Noise
     }
+
+    [StorableType("84d84ccf-5d6d-432f-a946-eb499935e5c8")]
     public enum FactorReplacementMethodEnum {
       Best,
       Mode,
       Shuffle
     }
+
+    [StorableType("70f30113-df01-41b4-9e3b-2982035de498")]
     public enum DataPartitionEnum {
       Training,
       Test,
@@ -84,7 +89,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     #region Ctor/Cloner
     [StorableConstructor]
-    private ClassificationSolutionVariableImpactsCalculator(bool deserializing) : base(deserializing) { }
+    private ClassificationSolutionVariableImpactsCalculator(StorableConstructorFlag _) : base(_) { }
     private ClassificationSolutionVariableImpactsCalculator(ClassificationSolutionVariableImpactsCalculator original, Cloner cloner)
       : base(original, cloner) { }
     public ClassificationSolutionVariableImpactsCalculator()

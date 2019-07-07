@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,11 +24,11 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.LinearAssignment {
   [Item("LAP Assignment", "Represents a solution to the LAP.")]
-  [StorableClass]
+  [StorableType("8F255E15-291B-44D5-BF8B-AC79264274C0")]
   public sealed class LAPAssignment : Item, INotifyPropertyChanged, IStorableContent {
     public string Filename { get; set; }
 
@@ -88,7 +88,7 @@ namespace HeuristicLab.Problems.LinearAssignment {
     }
 
     [StorableConstructor]
-    private LAPAssignment(bool deserializing) : base(deserializing) { }
+    private LAPAssignment(StorableConstructorFlag _) : base(_) { }
     private LAPAssignment(LAPAssignment original, Cloner cloner)
       : base(original, cloner) {
       costs = cloner.Clone(original.costs);

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -30,6 +30,7 @@ using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using HEAL.Attic;
 using HeuristicLab.Algorithms.GeneticAlgorithm;
 using HeuristicLab.Persistence.Auxiliary;
 using HeuristicLab.Persistence.Core;
@@ -42,10 +43,11 @@ using HeuristicLab.Persistence.Default.Xml.Primitive;
 using HeuristicLab.Persistence.Interfaces;
 using HeuristicLab.Tests;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Serializer = HeuristicLab.Persistence.Core.Serializer;
 
 namespace HeuristicLab.Persistence.Tests {
 
-  [StorableClass]
+  [StorableType("25A94A36-F3AA-4207-A3C9-54260D2A1724")]
   public class NumberTest {
     [Storable]
     private bool _bool = true;
@@ -92,22 +94,23 @@ namespace HeuristicLab.Persistence.Tests {
         _long.GetHashCode() ^
         _ulong.GetHashCode();
     }
-  }
 
-  [StorableClass]
-  public class NonDefaultConstructorClass {
-    [Storable]
-    int value;
-    public NonDefaultConstructorClass(int value) {
-      this.value = value;
+    [StorableConstructor]
+    protected NumberTest(StorableConstructorFlag _) {
+    }
+    public NumberTest() {
     }
   }
 
-  [StorableClass]
+  [StorableType("BE44EB33-C8B7-4CDA-A564-3165558FEBE7")]
   public class IntWrapper {
 
     [Storable]
     public int Value;
+
+    [StorableConstructor]
+    protected IntWrapper(StorableConstructorFlag _) {
+    }
 
     private IntWrapper() { }
 
@@ -126,7 +129,7 @@ namespace HeuristicLab.Persistence.Tests {
 
   }
 
-  [StorableClass]
+  [StorableType("A7865A50-E5B7-4656-8648-F375FC678BA3")]
   public class PrimitivesTest : NumberTest {
     [Storable]
     private char c = 'e';
@@ -154,11 +157,18 @@ namespace HeuristicLab.Persistence.Tests {
         list.GetHashCode() ^
         o.GetHashCode();
     }
+
+    [StorableConstructor]
+    protected PrimitivesTest(StorableConstructorFlag _) : base(_) {
+    }
+    public PrimitivesTest() {
+    }
   }
 
-  public enum TestEnum { va1, va2, va3, va8 } ;
+  [StorableType("18245FB6-D650-4378-9197-CCE6BB678F66")]
+  public enum TestEnum { va1, va2, va3, va8 };
 
-  [StorableClass]
+  [StorableType("F5646F6C-DCD3-47D7-BBE5-2B33812B06D7")]
   public class RootBase {
     [Storable]
     private string baseString = "   Serial  ";
@@ -175,9 +185,15 @@ namespace HeuristicLab.Persistence.Tests {
       return baseString.GetHashCode() ^
         myEnum.GetHashCode();
     }
+
+    [StorableConstructor]
+    protected RootBase(StorableConstructorFlag _) {
+    }
+    public RootBase() {
+    }
   }
 
-  [StorableClass]
+  [StorableType("A9F5AFC4-20D3-4898-A7B6-E78A2CCE343B")]
   public class Root : RootBase {
     [Storable]
     public Stack<int> intStack = new Stack<int>();
@@ -205,6 +221,12 @@ namespace HeuristicLab.Persistence.Tests {
     public Dictionary<string, int> dict = new Dictionary<string, int>();
     [Storable(DefaultValue = "default")]
     public string uninitialized;
+
+    [StorableConstructor]
+    protected Root(StorableConstructorFlag _) : base(_) {
+    }
+    public Root() {
+    }
   }
 
   public enum SimpleEnum { one, two, three }
@@ -212,7 +234,7 @@ namespace HeuristicLab.Persistence.Tests {
   [FlagsAttribute]
   public enum TrickyEnum { zero = 0, one = 1, two = 2 }
 
-  [StorableClass]
+  [StorableType("969350FD-1E94-4A6F-BA95-6D2D48014E73")]
   public class EnumTest {
     [Storable]
     public SimpleEnum simpleEnum = SimpleEnum.one;
@@ -220,9 +242,15 @@ namespace HeuristicLab.Persistence.Tests {
     public ComplexEnum complexEnum = (ComplexEnum)2;
     [Storable]
     public TrickyEnum trickyEnum = (TrickyEnum)15;
+
+    [StorableConstructor]
+    protected EnumTest(StorableConstructorFlag _) {
+    }
+    public EnumTest() {
+    }
   }
 
-  [StorableClass]
+  [StorableType("03CC855E-1DCA-451E-9BFB-3B06E7F96CAA")]
   public class Custom {
     [Storable]
     public int i;
@@ -230,9 +258,17 @@ namespace HeuristicLab.Persistence.Tests {
     public Root r;
     [Storable]
     public string name = "<![CDATA[<![CDATA[Serial]]>]]>";
+
+    [StorableConstructor]
+    protected Custom(StorableConstructorFlag _) {
+    }
+
+    public Custom() {
+
+    }
   }
 
-  [StorableClass]
+  [StorableType("C3A632A5-F356-4E22-8659-BBE515638CDC")]
   public class Manager {
 
     public DateTime lastLoadTime;
@@ -243,14 +279,26 @@ namespace HeuristicLab.Persistence.Tests {
     }
     [Storable]
     public double? dbl;
+
+    [StorableConstructor]
+    protected Manager(StorableConstructorFlag _) {
+    }
+    public Manager() {
+    }
   }
 
-  [StorableClass]
+  [StorableType("D694E112-47AF-47DF-8A89-F12F95FF43AB")]
   public class C {
     [Storable]
     public C[][] allCs;
     [Storable]
     public KeyValuePair<List<C>, C> kvpList;
+
+    [StorableConstructor]
+    protected C(StorableConstructorFlag _) {
+    }
+    public C() {
+    }
   }
 
   public class NonSerializable {
@@ -485,7 +533,7 @@ namespace HeuristicLab.Persistence.Tests {
         DebugStringGenerator.Serialize(o));
     }
 
-    [StorableClass]
+    [StorableType("8EA1D97E-91CD-4643-80B2-D66724E3ED4C")]
     public class NestedType {
       [Storable]
       private string value = "value";
@@ -497,6 +545,12 @@ namespace HeuristicLab.Persistence.Tests {
       }
       public override int GetHashCode() {
         return value.GetHashCode();
+      }
+
+      [StorableConstructor]
+      protected NestedType(StorableConstructorFlag _) {
+      }
+      public NestedType() {
       }
     }
 
@@ -588,7 +642,7 @@ namespace HeuristicLab.Persistence.Tests {
       XmlGenerator.Serialize(sdt, tempFile,
         new Configuration(new XmlFormat(),
           new List<IPrimitiveSerializer> { new String2XmlSerializer() },
-          new List<ICompositeSerializer> { 
+          new List<ICompositeSerializer> {
             new StorableSerializer(),
             new Number2StringSerializer() }));
       object o = XmlParser.Deserialize(tempFile);
@@ -628,18 +682,6 @@ namespace HeuristicLab.Persistence.Tests {
       Assert.AreEqual(newInts[1].Value, 1);
       Assert.AreEqual(newInts[0], newInts[1]);
       Assert.AreNotSame(newInts[0], newInts[1]);
-    }
-
-    [TestMethod]
-    [TestCategory("Persistence")]
-    [TestProperty("Time", "short")]
-    public void NonDefaultConstructorTest() {
-      NonDefaultConstructorClass c = new NonDefaultConstructorClass(1);
-      try {
-        XmlGenerator.Serialize(c, tempFile);
-        Assert.Fail("Exception not thrown");
-      } catch (PersistenceException) {
-      }
     }
 
     [TestMethod]
@@ -752,22 +794,40 @@ namespace HeuristicLab.Persistence.Tests {
       Assert.AreEqual(((Override)n).Name, ((Override)nn).Name);
     }
 
-    [StorableClass]
+    [StorableType("B7140365-BA53-4E12-A095-86A3AAF5D159")]
     class Child {
       [Storable]
       public GrandParent grandParent;
+
+      [StorableConstructor]
+      protected Child(StorableConstructorFlag _) {
+      }
+      public Child() {
+      }
     }
 
-    [StorableClass]
+    [StorableType("45FAEF81-D8CD-47DB-B8DD-BBFE81F37181")]
     class Parent {
       [Storable]
       public Child child;
+
+      [StorableConstructor]
+      protected Parent(StorableConstructorFlag _) {
+      }
+      public Parent() {
+      }
     }
 
-    [StorableClass]
+    [StorableType("0668DB55-89ED-4943-B0AB-245AB3167348")]
     class GrandParent {
       [Storable]
       public Parent parent;
+
+      [StorableConstructor]
+      protected GrandParent(StorableConstructorFlag _) {
+      }
+      public GrandParent() {
+      }
     }
 
     [TestMethod]
@@ -842,7 +902,7 @@ namespace HeuristicLab.Persistence.Tests {
           Assert.AreEqual(bitmap.GetPixel(i, j), newBitmap.GetPixel(i, j));
     }
 
-    [StorableClass]
+    [StorableType("92DD18D7-A43C-4DEE-9354-81196F4DC96D")]
     private class PersistenceHooks {
       [Storable]
       public int a;
@@ -857,6 +917,12 @@ namespace HeuristicLab.Persistence.Tests {
       [StorableHook(HookType.AfterDeserialization)]
       void PostDeserializationHook() {
         sum = a + b;
+      }
+
+      [StorableConstructor]
+      protected PersistenceHooks(StorableConstructorFlag _) {
+      }
+      public PersistenceHooks() {
       }
     }
 
@@ -879,15 +945,14 @@ namespace HeuristicLab.Persistence.Tests {
       Assert.IsFalse(newHookTest.WasSerialized);
     }
 
-    [StorableClass]
+    [StorableType("3E9A9875-875F-41DD-AEEC-2924643C8E45")]
     private class CustomConstructor {
       public string Value = "none";
       public CustomConstructor() {
         Value = "default";
       }
       [StorableConstructor]
-      private CustomConstructor(bool deserializing) {
-        Assert.IsTrue(deserializing);
+      private CustomConstructor(StorableConstructorFlag _) {
         Value = "persistence";
       }
     }
@@ -901,29 +966,6 @@ namespace HeuristicLab.Persistence.Tests {
       XmlGenerator.Serialize(cc, tempFile);
       CustomConstructor newCC = (CustomConstructor)XmlParser.Deserialize(tempFile);
       Assert.AreEqual(newCC.Value, "persistence");
-    }
-
-    [StorableClass]
-    public class ExplodingDefaultConstructor {
-      public ExplodingDefaultConstructor() {
-        throw new Exception("this constructor will always fail");
-      }
-      public ExplodingDefaultConstructor(string password) {
-      }
-    }
-
-    [TestMethod]
-    [TestCategory("Persistence")]
-    [TestProperty("Time", "short")]
-    public void TestConstructorExceptionUnwrapping() {
-      ExplodingDefaultConstructor x = new ExplodingDefaultConstructor("password");
-      XmlGenerator.Serialize(x, tempFile);
-      try {
-        ExplodingDefaultConstructor newX = (ExplodingDefaultConstructor)XmlParser.Deserialize(tempFile);
-        Assert.Fail("Exception expected");
-      } catch (PersistenceException pe) {
-        Assert.AreEqual(pe.InnerException.Message, "this constructor will always fail");
-      }
     }
 
     [TestMethod]
@@ -953,7 +995,7 @@ namespace HeuristicLab.Persistence.Tests {
       }
     }
 
-    [StorableClass]
+    [StorableType("BC0996AA-6544-4D0F-8CBD-1FCCF08F4637")]
     public class HookInheritanceTestBase {
       [Storable]
       public object a;
@@ -962,9 +1004,15 @@ namespace HeuristicLab.Persistence.Tests {
       private void relink() {
         link = a;
       }
+
+      [StorableConstructor]
+      protected HookInheritanceTestBase(StorableConstructorFlag _) {
+      }
+      public HookInheritanceTestBase() {
+      }
     }
 
-    [StorableClass]
+    [StorableType("E0CABA1E-EA8E-4B50-9840-1F80D23E8DC7")]
     public class HookInheritanceTestDerivedClass : HookInheritanceTestBase {
       [Storable]
       public object b;
@@ -972,6 +1020,12 @@ namespace HeuristicLab.Persistence.Tests {
       private void relink() {
         Assert.AreSame(a, link);
         link = b;
+      }
+
+      [StorableConstructor]
+      protected HookInheritanceTestDerivedClass(StorableConstructorFlag _) : base(_) {
+      }
+      public HookInheritanceTestDerivedClass() {
       }
     }
 
@@ -986,7 +1040,7 @@ namespace HeuristicLab.Persistence.Tests {
       Assert.AreSame(c.b, c.link);
     }
 
-    [StorableClass(StorableClassType.AllFields)]
+    [StorableType(StorableMemberSelection.AllFields, "45B11367-791E-4967-86AA-D6B83EC3CDAE")]
     public class AllFieldsStorable {
       public int Value1 = 1;
       [Storable]
@@ -994,13 +1048,12 @@ namespace HeuristicLab.Persistence.Tests {
       public int Value3 { get; private set; }
       public int Value4 { get; private set; }
       [StorableConstructor]
-      public AllFieldsStorable(bool isDeserializing) {
-        if (!isDeserializing) {
-          Value1 = 12;
-          Value2 = 23;
-          Value3 = 34;
-          Value4 = 56;
-        }
+      protected AllFieldsStorable(StorableConstructorFlag _) { }
+      public AllFieldsStorable() {
+        Value1 = 12;
+        Value2 = 23;
+        Value3 = 34;
+        Value4 = 56;
       }
     }
 
@@ -1008,7 +1061,7 @@ namespace HeuristicLab.Persistence.Tests {
     [TestCategory("Persistence")]
     [TestProperty("Time", "short")]
     public void TestStorableClassDiscoveryAllFields() {
-      AllFieldsStorable afs = new AllFieldsStorable(false);
+      AllFieldsStorable afs = new AllFieldsStorable();
       XmlGenerator.Serialize(afs, tempFile);
       AllFieldsStorable newAfs = (AllFieldsStorable)XmlParser.Deserialize(tempFile);
       Assert.AreEqual(afs.Value1, newAfs.Value1);
@@ -1017,7 +1070,7 @@ namespace HeuristicLab.Persistence.Tests {
       Assert.AreEqual(0, newAfs.Value4);
     }
 
-    [StorableClass(StorableClassType.AllProperties)]
+    [StorableType(StorableMemberSelection.AllProperties, "BB7931E4-2900-430C-80FA-1CF3C41BA2C9")]
     public class AllPropertiesStorable {
       public int Value1 = 1;
       [Storable]
@@ -1025,13 +1078,12 @@ namespace HeuristicLab.Persistence.Tests {
       public int Value3 { get; private set; }
       public int Value4 { get; private set; }
       [StorableConstructor]
-      public AllPropertiesStorable(bool isDeserializing) {
-        if (!isDeserializing) {
-          Value1 = 12;
-          Value2 = 23;
-          Value3 = 34;
-          Value4 = 56;
-        }
+      protected AllPropertiesStorable(StorableConstructorFlag _) { }
+      public AllPropertiesStorable() {
+        Value1 = 12;
+        Value2 = 23;
+        Value3 = 34;
+        Value4 = 56;
       }
     }
 
@@ -1039,7 +1091,7 @@ namespace HeuristicLab.Persistence.Tests {
     [TestCategory("Persistence")]
     [TestProperty("Time", "short")]
     public void TestStorableClassDiscoveryAllProperties() {
-      AllPropertiesStorable afs = new AllPropertiesStorable(false);
+      AllPropertiesStorable afs = new AllPropertiesStorable();
       XmlGenerator.Serialize(afs, tempFile);
       AllPropertiesStorable newAfs = (AllPropertiesStorable)XmlParser.Deserialize(tempFile);
       Assert.AreEqual(1, newAfs.Value1);
@@ -1049,7 +1101,7 @@ namespace HeuristicLab.Persistence.Tests {
 
     }
 
-    [StorableClass(StorableClassType.AllFieldsAndAllProperties)]
+    [StorableType(StorableMemberSelection.AllFieldsAndAllProperties, "D81160A5-BCF9-409A-9082-EFB803C882BF")]
     public class AllFieldsAndAllPropertiesStorable {
       public int Value1 = 1;
       [Storable]
@@ -1057,13 +1109,12 @@ namespace HeuristicLab.Persistence.Tests {
       public int Value3 { get; private set; }
       public int Value4 { get; private set; }
       [StorableConstructor]
-      public AllFieldsAndAllPropertiesStorable(bool isDeserializing) {
-        if (!isDeserializing) {
-          Value1 = 12;
-          Value2 = 23;
-          Value3 = 34;
-          Value4 = 56;
-        }
+      protected AllFieldsAndAllPropertiesStorable(StorableConstructorFlag _) { }
+      public AllFieldsAndAllPropertiesStorable() {
+        Value1 = 12;
+        Value2 = 23;
+        Value3 = 34;
+        Value4 = 56;
       }
     }
 
@@ -1071,7 +1122,7 @@ namespace HeuristicLab.Persistence.Tests {
     [TestCategory("Persistence")]
     [TestProperty("Time", "short")]
     public void TestStorableClassDiscoveryAllFieldsAndAllProperties() {
-      AllFieldsAndAllPropertiesStorable afs = new AllFieldsAndAllPropertiesStorable(false);
+      AllFieldsAndAllPropertiesStorable afs = new AllFieldsAndAllPropertiesStorable();
       XmlGenerator.Serialize(afs, tempFile);
       AllFieldsAndAllPropertiesStorable newAfs = (AllFieldsAndAllPropertiesStorable)XmlParser.Deserialize(tempFile);
       Assert.AreEqual(afs.Value1, newAfs.Value1);
@@ -1080,7 +1131,7 @@ namespace HeuristicLab.Persistence.Tests {
       Assert.AreEqual(afs.Value4, newAfs.Value4);
     }
 
-    [StorableClass(StorableClassType.MarkedOnly)]
+    [StorableType(StorableMemberSelection.MarkedOnly, "979BEF0C-D150-4809-9EF4-467B7CCB9665")]
     public class MarkedOnlyStorable {
       public int Value1 = 1;
       [Storable]
@@ -1088,13 +1139,12 @@ namespace HeuristicLab.Persistence.Tests {
       public int Value3 { get; private set; }
       public int Value4 { get; private set; }
       [StorableConstructor]
-      public MarkedOnlyStorable(bool isDeserializing) {
-        if (!isDeserializing) {
-          Value1 = 12;
-          Value2 = 23;
-          Value3 = 34;
-          Value4 = 56;
-        }
+      protected MarkedOnlyStorable(StorableConstructorFlag _) { }
+      public MarkedOnlyStorable() {
+        Value1 = 12;
+        Value2 = 23;
+        Value3 = 34;
+        Value4 = 56;
       }
     }
 
@@ -1102,7 +1152,7 @@ namespace HeuristicLab.Persistence.Tests {
     [TestCategory("Persistence")]
     [TestProperty("Time", "short")]
     public void TestStorableClassDiscoveryMarkedOnly() {
-      MarkedOnlyStorable afs = new MarkedOnlyStorable(false);
+      MarkedOnlyStorable afs = new MarkedOnlyStorable();
       XmlGenerator.Serialize(afs, tempFile);
       MarkedOnlyStorable newAfs = (MarkedOnlyStorable)XmlParser.Deserialize(tempFile);
       Assert.AreEqual(1, newAfs.Value1);
@@ -1240,11 +1290,17 @@ namespace HeuristicLab.Persistence.Tests {
       Assert.AreEqual(typeof(IdentityComparer<int>), newDictionaries[1].Comparer.GetType());
     }
 
-    [StorableClass]
+    [StorableType("5F96AAB5-F68E-4A41-BA66-E56069822719")]
     public class ReadOnlyFail {
       [Storable]
       public string ReadOnly {
         get { return "fail"; }
+      }
+
+      [StorableConstructor]
+      protected ReadOnlyFail(StorableConstructorFlag _) {
+      }
+      public ReadOnlyFail() {
       }
     }
 
@@ -1262,11 +1318,17 @@ namespace HeuristicLab.Persistence.Tests {
     }
 
 
-    [StorableClass]
+    [StorableType("9809F12C-B787-4BB5-9930-705673964D45")]
     public class WriteOnlyFail {
       [Storable]
       public string WriteOnly {
         set { throw new InvalidOperationException("this property should never be set."); }
+      }
+
+      [StorableConstructor]
+      protected WriteOnlyFail(StorableConstructorFlag _) {
+      }
+      public WriteOnlyFail() {
       }
     }
 
@@ -1283,8 +1345,12 @@ namespace HeuristicLab.Persistence.Tests {
       }
     }
 
-    [StorableClass]
+    [StorableType("749C5247-ABB8-4286-8208-058CC7B9C781")]
     public class OneWayTest {
+      [StorableConstructor]
+      protected OneWayTest(StorableConstructorFlag _) {
+      }
+
       public OneWayTest() { this.value = "default"; }
       public string value;
       [Storable(AllowOneWay = true)]
@@ -1308,7 +1374,7 @@ namespace HeuristicLab.Persistence.Tests {
       Assert.AreEqual("ROOT", ((BeginToken)it.Current).Name); it.MoveNext();
       Assert.AreEqual("ReadOnly", ((PrimitiveToken)it.Current).Name); it.MoveNext();
       Assert.AreEqual("ROOT", ((EndToken)it.Current).Name); it.MoveNext();
-      var deserializer = new Deserializer(new[] { 
+      var deserializer = new Deserializer(new[] {
         new TypeMapping(0, typeof(OneWayTest).AssemblyQualifiedName, typeof(StorableSerializer).AssemblyQualifiedName),
         new TypeMapping(1, typeof(string).AssemblyQualifiedName, typeof(String2XmlSerializer).AssemblyQualifiedName) });
       var newTest = (OneWayTest)deserializer.Deserialize(new ISerializationToken[] {
@@ -1460,7 +1526,7 @@ namespace HeuristicLab.Persistence.Tests {
       b[1] = 200;
       b[2] = byte.MaxValue;
       XmlGenerator.Serialize(b, tempFile);
-      var newB = (byte[]) XmlParser.Deserialize(tempFile);
+      var newB = (byte[])XmlParser.Deserialize(tempFile);
       CollectionAssert.AreEqual(b, newB);
     }
 
@@ -1468,9 +1534,9 @@ namespace HeuristicLab.Persistence.Tests {
     [TestCategory("Persistence")]
     [TestProperty("Time", "short")]
     public void TestOptionalNumberEnumerable() {
-      var values = new List<double?> {0, null, double.NaN, double.PositiveInfinity, double.MaxValue, 1};
+      var values = new List<double?> { 0, null, double.NaN, double.PositiveInfinity, double.MaxValue, 1 };
       XmlGenerator.Serialize(values, tempFile);
-      var newValues = (List<double?>) XmlParser.Deserialize(tempFile);
+      var newValues = (List<double?>)XmlParser.Deserialize(tempFile);
       CollectionAssert.AreEqual(values, newValues);
     }
 
@@ -1481,7 +1547,7 @@ namespace HeuristicLab.Persistence.Tests {
       var values = new List<DateTime?> { DateTime.MinValue, null, DateTime.Now, DateTime.Now.Add(TimeSpan.FromDays(1)),
         DateTime.ParseExact("10.09.2014 12:21", "dd.MM.yyyy hh:mm", CultureInfo.InvariantCulture), DateTime.MaxValue};
       XmlGenerator.Serialize(values, tempFile);
-      var newValues = (List<DateTime?>) XmlParser.Deserialize(tempFile);
+      var newValues = (List<DateTime?>)XmlParser.Deserialize(tempFile);
       CollectionAssert.AreEqual(values, newValues);
     }
 
@@ -1489,9 +1555,9 @@ namespace HeuristicLab.Persistence.Tests {
     [TestCategory("Persistence")]
     [TestProperty("Time", "short")]
     public void TestStringEnumerable() {
-      var values = new List<string> {"", null, "s", "string", string.Empty, "123", "<![CDATA[nice]]>", "<![CDATA[nasty unterminated"};
+      var values = new List<string> { "", null, "s", "string", string.Empty, "123", "<![CDATA[nice]]>", "<![CDATA[nasty unterminated" };
       XmlGenerator.Serialize(values, tempFile);
-      var newValues = (List<String>) XmlParser.Deserialize(tempFile);
+      var newValues = (List<String>)XmlParser.Deserialize(tempFile);
       CollectionAssert.AreEqual(values, newValues);
     }
 
@@ -1499,7 +1565,7 @@ namespace HeuristicLab.Persistence.Tests {
     [TestCategory("Persistence")]
     [TestProperty("Time", "short")]
     public void TestUnicodeCharArray() {
-      var s = Encoding.UTF8.GetChars(new byte[] {0, 1, 2, 03, 04, 05, 06, 07, 08, 09, 0xa, 0xb});
+      var s = Encoding.UTF8.GetChars(new byte[] { 0, 1, 2, 03, 04, 05, 06, 07, 08, 09, 0xa, 0xb });
       XmlGenerator.Serialize(s, tempFile);
       var newS = (char[])XmlParser.Deserialize(tempFile);
       CollectionAssert.AreEqual(s, newS);
@@ -1509,7 +1575,7 @@ namespace HeuristicLab.Persistence.Tests {
     [TestCategory("Persistence")]
     [TestProperty("Time", "short")]
     public void TestUnicode() {
-      var s = Encoding.UTF8.GetString(new byte[] {0, 1, 2, 03, 04, 05, 06, 07, 08, 09, 0xa, 0xb});
+      var s = Encoding.UTF8.GetString(new byte[] { 0, 1, 2, 03, 04, 05, 06, 07, 08, 09, 0xa, 0xb });
       XmlGenerator.Serialize(s, tempFile);
       var newS = XmlParser.Deserialize(tempFile);
       Assert.AreEqual(s, newS);
@@ -1519,7 +1585,7 @@ namespace HeuristicLab.Persistence.Tests {
     [TestCategory("Persistence")]
     [TestProperty("Time", "short")]
     public void TestQueue() {
-      var q = new Queue<int>(new[] {1, 2, 3, 4, 0});
+      var q = new Queue<int>(new[] { 1, 2, 3, 4, 0 });
       XmlGenerator.Serialize(q, tempFile);
       var newQ = (Queue<int>)XmlParser.Deserialize(tempFile);
       CollectionAssert.AreEqual(q, newQ);

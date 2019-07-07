@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,10 +23,10 @@ using System;
 using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis {
-  [StorableClass]
+  [StorableType("2998B895-4724-489C-A4CA-9ADD10C7CA49")]
   [Item("Regression Model", "Base class for all regression models.")]
   public abstract class RegressionModel : DataAnalysisModel, IRegressionModel {
     [Storable]
@@ -40,8 +40,9 @@ namespace HeuristicLab.Problems.DataAnalysis {
       }
     }
 
-    protected RegressionModel(bool deserializing)
-      : base(deserializing) {
+    [StorableConstructor]
+    protected RegressionModel(StorableConstructorFlag _)
+      : base(_) {
       targetVariable = string.Empty;
     }
 

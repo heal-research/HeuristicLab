@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,13 +23,13 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 using HeuristicLab.Problems.VehicleRouting.Encodings;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 
 namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
   [Item("VRPEvaluator", "Represents a VRP evaluator.")]
-  [StorableClass]
+  [StorableType("164315D4-BCCF-4A79-B75B-11A49C56C5E1")]
   public abstract class VRPEvaluator : VRPOperator, IVRPEvaluator {
     public ILookupParameter<IVRPEncoding> VRPToursParameter {
       get { return (ILookupParameter<IVRPEncoding>)Parameters["VRPTours"]; }
@@ -53,7 +53,7 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
     }
 
     [StorableConstructor]
-    protected VRPEvaluator(bool deserializing) : base(deserializing) { }
+    protected VRPEvaluator(StorableConstructorFlag _) : base(_) { }
 
     public VRPEvaluator() {
       Parameters.Add(new LookupParameter<IVRPEncoding>("VRPTours", "The VRP tours which should be evaluated."));

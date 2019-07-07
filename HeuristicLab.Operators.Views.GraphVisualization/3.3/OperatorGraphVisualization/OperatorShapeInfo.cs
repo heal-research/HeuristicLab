@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,10 +22,10 @@
 using System.Collections.Generic;
 using System.Drawing;
 using HeuristicLab.Common;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Operators.Views.GraphVisualization {
-  [StorableClass]
+  [StorableType("354155F1-6C42-42D3-99CB-9290CD11649B")]
   public class OperatorShapeInfo : ShapeInfo, IOperatorShapeInfo {
     [Storable]
     private List<string> labels;
@@ -36,7 +36,7 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
     private object lockObject = new object();
 
     [StorableConstructor]
-    protected OperatorShapeInfo(bool deserializing) : base(deserializing) { }
+    protected OperatorShapeInfo(StorableConstructorFlag _) : base(_) { }
 
     protected OperatorShapeInfo(OperatorShapeInfo original, Cloner cloner)
       : base(original, cloner) {

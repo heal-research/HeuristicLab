@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,14 +21,14 @@
 
 using System.Collections.Generic;
 using HeuristicLab.Common;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HEAL.Attic;
 
 namespace HeuristicLab.Core {
-  [StorableClass]
+  [StorableType("5E78ED3E-97A4-4632-B729-C9B7DC965609")]
   [Item("ConstraintCollection", "Represents a collection of constraints.")]
   public class ConstraintCollection : ItemCollection<IConstraint> {
     [StorableConstructor]
-    protected ConstraintCollection(bool deserializing) : base(deserializing) { }
+    protected ConstraintCollection(StorableConstructorFlag _) : base(_) { }
     protected ConstraintCollection(ConstraintCollection original, Cloner cloner) : base(original, cloner) { }
     public ConstraintCollection() : base() { }
     public ConstraintCollection(int capacity) : base(capacity) { }
