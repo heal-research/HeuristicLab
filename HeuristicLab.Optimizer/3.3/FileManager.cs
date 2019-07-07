@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
 using HeuristicLab.Common;
@@ -72,9 +73,13 @@ namespace HeuristicLab.Optimizer {
       }
     }
 
-    private static void LoadingCompleted(IStorableContent content, Exception error) {
+    private static void LoadingCompleted(IStorableContent content, Exception error, ContentManager.Info info) {
       try {
         if (error != null) throw error;
+        if (info!=null && info.UnknownTypeGuids.Any()) {
+          var message = "Unknown type guids: " + string.Join(Environment.NewLine, info.UnknownTypeGuids);
+          MessageBox.Show((Control)MainFormManager.MainForm, message, $"File {info.Filename} not restored completely", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
         IView view = MainFormManager.MainForm.ShowContent(content);
         if (view == null)
           ErrorHandling.ShowErrorDialog("There is no view for the loaded item. It cannot be displayed.", new InvalidOperationException("No View Available"));

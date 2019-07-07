@@ -21,8 +21,8 @@
 
 using System.IO;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Algorithms.TabuSearch;
-using HeuristicLab.Persistence.Default.Xml;
 using HeuristicLab.Problems.Instances.VehicleRouting;
 using HeuristicLab.Problems.VehicleRouting;
 using HeuristicLab.Problems.VehicleRouting.Encodings.Potvin;
@@ -32,6 +32,7 @@ namespace HeuristicLab.Tests {
   [TestClass]
   public class TabuSearchVRPSampleTest {
     private const string SampleFileName = "TS_VRP";
+    private static readonly ProtoBufSerializer serializer = new ProtoBufSerializer();
 
     [TestMethod]
     [TestCategory("Samples.Create")]
@@ -39,7 +40,7 @@ namespace HeuristicLab.Tests {
     public void CreateTabuSearchVRPSampleTest() {
       var vrp = CreateTabuSearchVrpSample();
       string path = Path.Combine(SamplesUtils.SamplesDirectory, SampleFileName + SamplesUtils.SampleFileExtension);
-      XmlGenerator.Serialize(vrp, path);
+      serializer.Serialize(vrp, path);
     }
     [TestMethod]
     [TestCategory("Samples.Execute")]

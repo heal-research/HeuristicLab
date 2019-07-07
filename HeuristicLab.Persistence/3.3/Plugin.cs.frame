@@ -28,9 +28,7 @@ namespace HeuristicLab.Persistence {
   /// </summary>
   [Plugin("HeuristicLab.Persistence", "3.3.15.$WCREV$")]
   [PluginFile("HeuristicLab.Persistence-3.3.dll", PluginFileType.Assembly)]
-  [PluginFile("HEAL.Attic.dll", PluginFileType.Assembly)]
-  [PluginFile("Google.Protobuf.dll", PluginFileType.Assembly)]
-  [PluginFile("System.Drawing.Common.dll", PluginFileType.Assembly)]
   [PluginDependency("HeuristicLab.Tracing", "3.3")]
+  [PluginDependency("HeuristicLab.Attic", "1.0")]
   public class HeuristicLabPersistencePlugin : PluginBase { }
 }

@@ -21,9 +21,9 @@
 
 using System.IO;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Algorithms.GeneticAlgorithm;
 using HeuristicLab.Encodings.PermutationEncoding;
-using HeuristicLab.Persistence.Default.Xml;
 using HeuristicLab.Problems.Instances.TSPLIB;
 using HeuristicLab.Problems.TravelingSalesman;
 using HeuristicLab.Selection;
@@ -34,13 +34,15 @@ namespace HeuristicLab.Tests {
   public class GATspSampleTest {
     private const string SampleFileName = "GA_TSP";
 
+    private static readonly ProtoBufSerializer serializer = new ProtoBufSerializer();
+
     [TestMethod]
     [TestCategory("Samples.Create")]
     [TestProperty("Time", "medium")]
     public void CreateGaTspSampleTest() {
       var ga = CreateGaTspSample();
       string path = Path.Combine(SamplesUtils.SamplesDirectory, SampleFileName + SamplesUtils.SampleFileExtension);
-      XmlGenerator.Serialize(ga, path);
+      serializer.Serialize(ga, path);
     }
 
     [TestMethod]

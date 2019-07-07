@@ -24,25 +24,34 @@ using HeuristicLab.Common;
 using HeuristicLab.Persistence.Default.Xml;
 using HEAL.Attic;
 using System;
+using System.Diagnostics;
 
 namespace HeuristicLab.Core {
   public class PersistenceContentManager : ContentManager {
     public PersistenceContentManager() : base() { }
 
-    protected override IStorableContent LoadContent(string filename) {
-      // first try to load using the new persistence format
-      try {
+    protected override IStorableContent LoadContent(string filename, out Info info) {
+      bool useOldPersistence = XmlParser.CanOpen(filename);
+      IStorableContent content = null;
+      if (useOldPersistence) {
+        var sw = new Stopwatch();
+        sw.Start();
+        content = XmlParser.Deserialize<IStorableContent>(filename);
+        sw.Stop();
+        info = new Info(filename, sw.Elapsed);
+      } else {
         var ser = new ProtoBufSerializer();
-        return (IStorableContent)ser.Deserialize(filename);
-      } catch (Exception) {
-        // try old format if new format fails
-        return XmlParser.Deserialize<IStorableContent>(filename);
+        content = (IStorableContent)ser.Deserialize(filename, out SerializationInfo serInfo);
+        info = new Info(filename, serInfo);
       }
+      if (content == null) throw new PersistenceException($"Cannot deserialize root element of {filename}");
+      return content;
     }
+
 
     protected override void SaveContent(IStorableContent content, string filename, bool compressed, CancellationToken cancellationToken) {
       var ser = new ProtoBufSerializer();
-      ser.Serialize(content, filename, cancellationToken); 
+      ser.Serialize(content, filename, cancellationToken);
     }
   }
 }

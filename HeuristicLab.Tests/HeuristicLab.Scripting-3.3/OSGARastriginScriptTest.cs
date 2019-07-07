@@ -20,8 +20,8 @@
 #endregion
 
 using System.IO;
+using HEAL.Attic;
 using HeuristicLab.Data;
-using HeuristicLab.Persistence.Default.Xml;
 using HeuristicLab.Scripting;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -37,13 +37,15 @@ namespace HeuristicLab.Tests {
     private const string SeedVariableName = "seed";
     private const string BestQualityVariableName = "bestFitness";
 
+    private static readonly ProtoBufSerializer serializer = new ProtoBufSerializer();
+
     [TestMethod]
     [TestCategory("Scripts.Create")]
     [TestProperty("Time", "short")]
     public void CreateOSGARastriginScriptTest() {
       var script = CreateOSGARastriginScript();
       string path = Path.Combine(ScriptingUtils.ScriptsDirectory, ScriptFileName + ScriptingUtils.ScriptFileExtension);
-      XmlGenerator.Serialize(script, path);
+      serializer.Serialize(script, path);
     }
 
     [TestMethod]

@@ -24,16 +24,17 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using HEAL.Attic;
 using HeuristicLab.Algorithms.GeneticAlgorithm;
 using HeuristicLab.Common;
 using HeuristicLab.Optimization;
-using HeuristicLab.Persistence.Default.Xml;
 using HeuristicLab.Problems.TestFunctions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace HeuristicLab.Tests {
   [TestClass]
   public class CollectObjectGraphTest {
+    private static readonly ProtoBufSerializer serializer = new ProtoBufSerializer();
 
     private TestContext testContextInstance;
     public TestContext TestContext {
@@ -47,7 +48,7 @@ namespace HeuristicLab.Tests {
     [TestCategory("Essential")]
     [TestProperty("Time", "medium")]
     public void TestObjectGraphTraversal() {
-      GeneticAlgorithm ga = (GeneticAlgorithm)XmlParser.Deserialize(@"Test Resources\GA_SymbReg.hl");
+      GeneticAlgorithm ga = (GeneticAlgorithm)serializer.Deserialize(@"Test Resources\GA_SymbReg.hl");
       var objects = ga.GetObjectGraphObjects().ToList();
 
       // Should be 3982, but count may change slightly as members are added or removed
@@ -59,7 +60,7 @@ namespace HeuristicLab.Tests {
     [TestCategory("Essential")]
     [TestProperty("Time", "medium")]
     public void CollectGASample() {
-      GeneticAlgorithm ga = (GeneticAlgorithm)XmlParser.Deserialize(@"Test Resources\GA_SymbReg.hl");
+      GeneticAlgorithm ga = (GeneticAlgorithm)serializer.Deserialize(@"Test Resources\GA_SymbReg.hl");
 
       Stopwatch watch = new Stopwatch();
       watch.Start();

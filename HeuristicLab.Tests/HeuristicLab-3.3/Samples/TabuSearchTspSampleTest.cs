@@ -21,9 +21,9 @@
 
 using System.IO;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Algorithms.TabuSearch;
 using HeuristicLab.Encodings.PermutationEncoding;
-using HeuristicLab.Persistence.Default.Xml;
 using HeuristicLab.Problems.Instances.TSPLIB;
 using HeuristicLab.Problems.TravelingSalesman;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -32,6 +32,7 @@ namespace HeuristicLab.Tests {
   [TestClass]
   public class TabuSearchTspSampleTest {
     private const string SampleFileName = "TS_TSP";
+    private static readonly ProtoBufSerializer serializer = new ProtoBufSerializer();
 
     [TestMethod]
     [TestCategory("Samples.Create")]
@@ -39,7 +40,7 @@ namespace HeuristicLab.Tests {
     public void CreateTabuSearchTspSampleTest() {
       var ts = CreateTabuSearchTspSample();
       string path = Path.Combine(SamplesUtils.SamplesDirectory, SampleFileName + SamplesUtils.SampleFileExtension);
-      XmlGenerator.Serialize(ts, path);
+      serializer.Serialize(ts, path);
     }
     [TestMethod]
     [TestCategory("Samples.Execute")]

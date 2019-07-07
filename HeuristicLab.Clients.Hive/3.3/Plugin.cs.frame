@@ -28,6 +28,7 @@ using HeuristicLab.PluginInfrastructure;
 namespace HeuristicLab.Clients.Hive {
   [Plugin("HeuristicLab.Clients.Hive", "3.3.15.$WCREV$")]
   [PluginFile("HeuristicLab.Clients.Hive-3.3.dll", PluginFileType.Assembly)]
+  [PluginDependency("HeuristicLab.Attic", "1.0")]
   [PluginDependency("HeuristicLab.Clients.Common", "3.3")]
   [PluginDependency("HeuristicLab.Clients.Access", "3.3")]  
   [PluginDependency("HeuristicLab.Collections", "3.3")]

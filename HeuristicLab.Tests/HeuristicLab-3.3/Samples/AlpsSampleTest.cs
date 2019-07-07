@@ -21,10 +21,10 @@
 
 using System.IO;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Algorithms.ALPS;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Persistence.Default.Xml;
 using HeuristicLab.Problems.DataAnalysis.Symbolic;
 using HeuristicLab.Problems.DataAnalysis.Symbolic.Regression;
 using HeuristicLab.Problems.Instances.DataAnalysis;
@@ -39,13 +39,15 @@ namespace HeuristicLab.Tests {
     private const string TspSampleFileName = "ALPSGA_TSP";
     private const string SymRegSampleFileName = "ALPSGP_SymReg";
 
+    private static readonly ProtoBufSerializer serializer = new ProtoBufSerializer();
+
     [TestMethod]
     [TestCategory("Samples.Create")]
     [TestProperty("Time", "medium")]
     public void CreateAlpsGaTspSampleTest() {
       var alpsGa = CreateAlpsGaTspSample();
       string path = Path.Combine(SamplesUtils.SamplesDirectory, TspSampleFileName + SamplesUtils.SampleFileExtension);
-      XmlGenerator.Serialize(alpsGa, path);
+      serializer.Serialize(alpsGa, path);
     }
 
     [TestMethod]
@@ -54,7 +56,7 @@ namespace HeuristicLab.Tests {
     public void CreateAlpsGaSymRegSampleTest() {
       var alpsGa = CreateAlpsGaSymRegSample();
       string path = Path.Combine(SamplesUtils.SamplesDirectory, SymRegSampleFileName + SamplesUtils.SampleFileExtension);
-      XmlGenerator.Serialize(alpsGa, path);
+      serializer.Serialize(alpsGa, path);
     }
 
     [TestMethod]
