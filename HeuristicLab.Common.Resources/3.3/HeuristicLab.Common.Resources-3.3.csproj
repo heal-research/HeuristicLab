@@ -1,0 +1,523 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{0E27A536-1C4A-4624-A65E-DC4F4F23E3E1}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>HeuristicLab.Common.Resources</RootNamespace>
+    <AssemblyName>HeuristicLab.Common.Resources-3.3</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
+    <FileAlignment>512</FileAlignment>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>HeuristicLab.snk</AssemblyOriginatorKeyFile>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <UpgradeBackupLocation />
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>$(SolutionDir)\bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>$(SolutionDir)\bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>$(SolutionDir)\bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <OutputPath>$(SolutionDir)\bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>$(SolutionDir)\bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
+    <OutputPath>$(SolutionDir)\bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Xml.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data.DataSetExtensions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Plugin.cs.frame" />
+    <Compile Include="HeuristicLab.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>HeuristicLab.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Plugin.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="VSImageLibrary.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>VSImageLibrary.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="HeuristicLab.snk" />
+    <None Include="Properties\AssemblyInfo.cs.frame" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\HeuristicLab.PluginInfrastructure\3.3\HeuristicLab.PluginInfrastructure-3.3.csproj">
+      <Project>{94186A6A-5176-4402-AE83-886557B53CCA}</Project>
+      <Name>HeuristicLab.PluginInfrastructure-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="HeuristicLab.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>HeuristicLab.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="VSImageLibrary.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>VSImageLibrary.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Method.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Module.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Script.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Assembly.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Class.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Component.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Constant.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Control.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Database.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Delegate.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Document.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Drive.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Enum.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_EnumItem.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Error.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Event.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Exception.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Field.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_File.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Insall.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Interface.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Internet.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Library.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Macro.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Map.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_MapItem.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_MethodOverload.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Namespace.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_NetworkConnections.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Object.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Operator.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Properties.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Structure.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Template.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Timer.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Type.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_TypeDef.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Union.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_User.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_UserAccounts.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_ValueType.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_CommonElements_Actions_Add.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_CommonElements_Actions_Remove.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_CommonElements_Objects_Arrow_Down.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_CommonElements_Objects_Arrow_Up.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_Pause.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_Play.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_Stop.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_Restart.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_EditTable.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_OrgChart.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_ProtectForm.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_Redo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_Sort.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_SortUp.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_Undo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_Windows.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_Open.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_Save.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_SaveAll.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_NewDocument.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_NewFolder.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_Flag_Blue.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_Flag_Green.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_Flag_Red.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_Zoom.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_Copy.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_Cut.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_FormulaEvaluator.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_Function.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_Paste.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_Print.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_PrintPreview.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_Warning.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_RefreshDocument.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_Delete.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_DeleteFolder.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_Pointer.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_Breakpoint.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_CommonElements_Objects_Zoom_In.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_CommonElements_Objects_Zoom_Out.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Nothing.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_Table.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_EditInformation.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Annotations&amp;Buttons_Collapse.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Annotations&amp;Buttons_Expand.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_Edit.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_Comment.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Breakpoint_Active.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Breakpoint_Inactive.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Image.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Executable_Paused.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Executable_Prepared.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Executable_Started.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Executable_Stopped.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VS2010ImageLibrary\camera.png" />
+    <None Include="Resources\VS2010ImageLibrary\VS2010ImageLibrary_Actions_SaveAsHH.png" />
+    <Content Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_Checkout.png" />
+    <Content Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_Clone.png" />
+    <None Include="Resources\VS2010ImageLibrary\VS2010ImageLibrary_Objects_Information_Large.png" />
+    <None Include="Resources\VS2010ImageLibrary\VS2010ImageLibrary_Objects_Network_Center_Large.png" />
+    <None Include="Resources\VS2010ImageLibrary\VS2010ImageLibrary_Objects_Monitor_Large.png" />
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_DisplayInColor_Vertical.png" />
+    <Content Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Annotations_Default.png" />
+    <Content Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_BatchRun_Paused.png" />
+    <Content Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_BatchRun_Prepared.png" />
+    <Content Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_BatchRun_Started.png" />
+    <Content Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_BatchRun_Stopped.png" />
+    <Content Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Experiment_Paused.png" />
+    <Content Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Experiment_Prepared.png" />
+    <Content Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Experiment_Started.png" />
+    <Content Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Experiment_Stopped.png" />
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Annotations_Information.png" />
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_Help.png" />
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_HiddenField.png" />
+    <None Include="Resources\VS2010ImageLibrary\VS2010ImageLibrary_Actions_Filter.png" />
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Cab.png" />
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_Gradient.png" />
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_EditBrightnessContrast.png" />
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_DisplayInColor.png" />
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_TrackBar.png" />
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_RadialChart.png" />
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Statistics.png" />
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Performance.png" />
+    <None Include="Resources\HeuristicLab\HeuristicLab.ico" />
+    <None Include="Resources\HeuristicLab\HeuristicLabBanner.png" />
+    <None Include="Resources\HeuristicLab\HeuristicLabLogo.png" />
+    <Content Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_ActualSize.png" />
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_Disconnect.png" />
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_PublishToWeb.png" />
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_Refresh.png" />
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Database_Modified.png" />
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Annotations&amp;Buttons_HighPriority_Large.png" />
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_Graph.png" />
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_PieChart.png" />
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_MoveFirst.png" />
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_MoveLast.png" />
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_MoveNext.png" />
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_MovePrevious.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <PropertyGroup>
+    <PreBuildEvent Condition=" '$(OS)' == 'Windows_NT' ">set Path=%25Path%25;$(ProjectDir);$(SolutionDir)
+set ProjectDir=$(ProjectDir)
+set SolutionDir=$(SolutionDir)
+set Outdir=$(Outdir)
+
+call PreBuildEvent.cmd
+</PreBuildEvent>
+    <PreBuildEvent Condition=" '$(OS)' != 'Windows_NT' ">
+export ProjectDir=$(ProjectDir)
+export SolutionDir=$(SolutionDir)
+
+$SolutionDir/PreBuildEvent.sh
+</PreBuildEvent>
+  </PropertyGroup>
+</Project>

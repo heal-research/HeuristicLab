@@ -1,0 +1,182 @@
+﻿<?xml version="1.0" encoding="utf-8"?><Database Name="HeuristicLab.OKB" EntityNamespace="HeuristicLab.Services.OKB.DataAccess" ContextNamespace="HeuristicLab.Services.OKB.DataAccess" Class="OKBDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+  <Connection Mode="AppSettings" ConnectionString="Data Source=localhost;Integrated Security=SSPI;Initial Catalog=HeuristicLab.OKB" SettingsObjectName="HeuristicLab.Services.OKB.DataAccess.Properties.Settings" SettingsPropertyName="OKBConnectionString" Provider="System.Data.SqlClient" />
+  <Table Name="dbo.AlgorithmClass" Member="AlgorithmClasses">
+    <Type Name="AlgorithmClass">
+      <Column Name="Id" Type="System.Int64" DbType="BigInt NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="NVarChar(200) NOT NULL" CanBeNull="false" />
+      <Column Name="Description" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Association Name="AlgorithmClass_Algorithm" Member="Algorithms" ThisKey="Id" OtherKey="AlgorithmClassId" Type="Algorithm" />
+    </Type>
+  </Table>
+  <Table Name="dbo.ProblemClass" Member="ProblemClasses">
+    <Type Name="ProblemClass">
+      <Column Name="Id" Type="System.Int64" DbType="BigInt NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="NVarChar(200) NOT NULL" CanBeNull="false" />
+      <Column Name="Description" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Association Name="ProblemClass_Problem" Member="Problems" ThisKey="Id" OtherKey="ProblemClassId" Type="Problem" />
+    </Type>
+  </Table>
+  <Table Name="dbo.AlgorithmUser" Member="AlgorithmUsers">
+    <Type Name="AlgorithmUser">
+      <Column Name="AlgorithmId" Type="System.Int64" DbType="BigInt NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="UserGroupId" Storage="_UserId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Association Name="Algorithm_AlgorithmUser" Member="Algorithm" ThisKey="AlgorithmId" OtherKey="Id" Type="Algorithm" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.ProblemUser" Member="ProblemUsers">
+    <Type Name="ProblemUser">
+      <Column Name="ProblemId" Type="System.Int64" DbType="BigInt NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="UserGroupId" Storage="_UserId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Association Name="Problem_ProblemUser" Member="Problem" ThisKey="ProblemId" OtherKey="Id" Type="Problem" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Platform" Member="Platforms">
+    <Type Name="Platform">
+      <Column Name="Id" Type="System.Int64" DbType="BigInt NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="NVarChar(200) NOT NULL" CanBeNull="false" />
+      <Column Name="Description" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Association Name="Platform_Algorithm" Member="Algorithms" ThisKey="Id" OtherKey="PlatformId" Type="Algorithm" />
+      <Association Name="Platform_Problem" Member="Problems" ThisKey="Id" OtherKey="PlatformId" Type="Problem" />
+    </Type>
+  </Table>
+  <Table Name="dbo.DataType" Member="DataTypes">
+    <Type Name="DataType">
+      <Column Name="Id" Type="System.Int64" DbType="BigInt NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="NVarChar(200) NOT NULL" CanBeNull="false" />
+      <Column Name="TypeName" Type="System.String" DbType="NVarChar(MAX) NOT NULL" CanBeNull="false" />
+      <Association Name="DataType_Algorithm" Member="Algorithms" ThisKey="Id" OtherKey="DataTypeId" Type="Algorithm" />
+      <Association Name="DataType_Problem" Member="Problems" ThisKey="Id" OtherKey="DataTypeId" Type="Problem" />
+      <Association Name="DataType_Value" Member="Values" ThisKey="Id" OtherKey="DataTypeId" Type="Value" />
+      <Association Name="DataType_CharacteristicValue" Member="CharacteristicValues" ThisKey="Id" OtherKey="DataTypeId" Type="CharacteristicValue" />
+      <Association Name="DataType_SingleObjectiveSolution" Member="SingleObjectiveSolutions" ThisKey="Id" OtherKey="DataTypeId" Type="SingleObjectiveSolution" />
+    </Type>
+  </Table>
+  <Table Name="dbo.ValueName" Member="ValueNames">
+    <Type Name="ValueName">
+      <Column Name="Id" Type="System.Int64" DbType="BigInt NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="NVarChar(200) NOT NULL" CanBeNull="false" />
+      <Column Name="Category" Type="ValueNameCategory" DbType="TinyInt NOT NULL" CanBeNull="false" />
+      <Column Name="Type" Type="ValueNameType" DbType="TinyInt NOT NULL" CanBeNull="false" />
+      <Association Name="ValueName_Value" Member="Values" ThisKey="Id" OtherKey="ValueNameId" Type="Value" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Algorithm" Member="Algorithms">
+    <Type Name="Algorithm">
+      <Column Name="Id" Type="System.Int64" DbType="BigInt NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="AlgorithmClassId" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
+      <Column Name="PlatformId" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
+      <Column Name="DataTypeId" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
+      <Column Name="BinaryDataId" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
+      <Column Name="Name" Type="System.String" DbType="NVarChar(200) NOT NULL" CanBeNull="false" />
+      <Column Name="Description" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Association Name="Algorithm_AlgorithmUser" Member="AlgorithmUsers" ThisKey="Id" OtherKey="AlgorithmId" Type="AlgorithmUser" />
+      <Association Name="Algorithm_Run" Member="Runs" ThisKey="Id" OtherKey="AlgorithmId" Type="Run" />
+      <Association Name="AlgorithmClass_Algorithm" Member="AlgorithmClass" ThisKey="AlgorithmClassId" OtherKey="Id" Type="AlgorithmClass" IsForeignKey="true" />
+      <Association Name="DataType_Algorithm" Member="DataType" ThisKey="DataTypeId" OtherKey="Id" Type="DataType" IsForeignKey="true" />
+      <Association Name="Platform_Algorithm" Member="Platform" ThisKey="PlatformId" OtherKey="Id" Type="Platform" IsForeignKey="true" />
+      <Association Name="BinaryData_Algorithm" Member="BinaryData" ThisKey="BinaryDataId" OtherKey="Id" Type="BinaryData" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Problem" Member="Problems">
+    <Type Name="Problem">
+      <Column Name="Id" Type="System.Int64" DbType="BigInt NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="ProblemClassId" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
+      <Column Name="PlatformId" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
+      <Column Name="DataTypeId" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
+      <Column Name="BinaryDataId" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
+      <Column Name="Name" Type="System.String" DbType="NVarChar(200) NOT NULL" CanBeNull="false" />
+      <Column Name="Description" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Association Name="Problem_ProblemUser" Member="ProblemUsers" ThisKey="Id" OtherKey="ProblemId" Type="ProblemUser" />
+      <Association Name="Problem_Run" Member="Runs" ThisKey="Id" OtherKey="ProblemId" Type="Run" />
+      <Association Name="Problem_CharacteristicValue" Member="CharacteristicValues" ThisKey="Id" OtherKey="ProblemId" Type="CharacteristicValue" />
+      <Association Name="Problem_SingleObjectiveSolution" Member="SingleObjectiveSolutions" ThisKey="Id" OtherKey="ProblemId" Type="SingleObjectiveSolution" />
+      <Association Name="DataType_Problem" Member="DataType" ThisKey="DataTypeId" OtherKey="Id" Type="DataType" IsForeignKey="true" />
+      <Association Name="Platform_Problem" Member="Platform" ThisKey="PlatformId" OtherKey="Id" Type="Platform" IsForeignKey="true" />
+      <Association Name="ProblemClass_Problem" Member="ProblemClass" ThisKey="ProblemClassId" OtherKey="Id" Type="ProblemClass" IsForeignKey="true" />
+      <Association Name="BinaryData_Problem" Member="BinaryData" ThisKey="BinaryDataId" OtherKey="Id" Type="BinaryData" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.BinaryData" Member="BinaryDatas">
+    <Type Name="BinaryData">
+      <Column Name="Id" Type="System.Int64" DbType="BigInt NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Data" Type="System.Data.Linq.Binary" DbType="VarBinary(MAX) NOT NULL" CanBeNull="false" UpdateCheck="Never" />
+      <Column Name="Hash" Type="System.Byte[]" DbType="VarBinary(20) NOT NULL" CanBeNull="false" UpdateCheck="Never" />
+      <Association Name="BinaryData_Algorithm" Member="Algorithms" ThisKey="Id" OtherKey="BinaryDataId" Type="Algorithm" />
+      <Association Name="BinaryData_Problem" Member="Problems" ThisKey="Id" OtherKey="BinaryDataId" Type="Problem" />
+      <Association Name="BinaryData_Value" Member="Values" ThisKey="Id" OtherKey="BinaryDataId" Type="Value" />
+      <Association Name="BinaryData_SingleObjectiveSolution" Member="SingleObjectiveSolutions" ThisKey="Id" OtherKey="BinaryDataId" Type="SingleObjectiveSolution" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Run" Member="Runs">
+    <Type Name="Run">
+      <Column Name="Id" Type="System.Int64" DbType="BigInt NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="AlgorithmId" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
+      <Column Name="ProblemId" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
+      <Column Name="CreatedDate" Type="System.DateTime" DbType="DateTime2 NOT NULL" CanBeNull="false" />
+      <Column Name="UserId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Column Name="ClientId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Association Name="Run_Value" Member="Values" ThisKey="Id" OtherKey="RunId" Type="Value" />
+      <Association Name="Run_SingleObjectiveSolution" Member="SingleObjectiveSolutions" ThisKey="Id" OtherKey="RunId" Type="SingleObjectiveSolution" />
+      <Association Name="Algorithm_Run" Member="Algorithm" ThisKey="AlgorithmId" OtherKey="Id" Type="Algorithm" IsForeignKey="true" />
+      <Association Name="Problem_Run" Member="Problem" ThisKey="ProblemId" OtherKey="Id" Type="Problem" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Value" Member="Values">
+    <Type Name="Value">
+      <Column Name="Id" Type="System.Int64" DbType="BigInt NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="RunId" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
+      <Column Name="ValueNameId" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
+      <Column Name="DataTypeId" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
+      <Column Name="BoolValue" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="IntValue" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="LongValue" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
+      <Column Name="FloatValue" Type="System.Single" DbType="Real" CanBeNull="true" />
+      <Column Name="DoubleValue" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="StringValue" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="BinaryDataId" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
+      <Association Name="BinaryData_Value" Member="BinaryData" ThisKey="BinaryDataId" OtherKey="Id" Type="BinaryData" IsForeignKey="true" />
+      <Association Name="DataType_Value" Member="DataType" ThisKey="DataTypeId" OtherKey="Id" Type="DataType" IsForeignKey="true" />
+      <Association Name="Run_Value" Member="Run" ThisKey="RunId" OtherKey="Id" Type="Run" IsForeignKey="true" />
+      <Association Name="ValueName_Value" Member="ValueName" ThisKey="ValueNameId" OtherKey="Id" Type="ValueName" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Characteristic" Member="Characteristics">
+    <Type Name="Characteristic">
+      <Column Name="Id" Type="System.Int64" DbType="BigInt NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="NVarChar(200) NOT NULL" CanBeNull="false" />
+      <Column Name="Type" Type="CharacteristicType" DbType="TinyInt NOT NULL" CanBeNull="false" />
+      <Association Name="Characteristic_CharacteristicValue" Member="CharacteristicValues" ThisKey="Id" OtherKey="CharacteristicId" Type="CharacteristicValue" />
+    </Type>
+  </Table>
+  <Table Name="dbo.CharacteristicValue" Member="CharacteristicValues">
+    <Type Name="CharacteristicValue">
+      <Column Name="Id" Type="System.Int64" DbType="BigInt NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="ProblemId" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
+      <Column Name="CharacteristicId" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
+      <Column Name="DataTypeId" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
+      <Column Name="BoolValue" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="IntValue" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="LongValue" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
+      <Column Name="FloatValue" Type="System.Single" DbType="Real" CanBeNull="true" />
+      <Column Name="DoubleValue" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="StringValue" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Association Name="Characteristic_CharacteristicValue" Member="Characteristic" ThisKey="CharacteristicId" OtherKey="Id" Type="Characteristic" IsForeignKey="true" />
+      <Association Name="DataType_CharacteristicValue" Member="DataType" ThisKey="DataTypeId" OtherKey="Id" Type="DataType" IsForeignKey="true" />
+      <Association Name="Problem_CharacteristicValue" Member="Problem" ThisKey="ProblemId" OtherKey="Id" Type="Problem" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.SingleObjectiveSolution" Member="SingleObjectiveSolutions">
+    <Type Name="SingleObjectiveSolution">
+      <Column Name="Id" Type="System.Int64" DbType="BigInt NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="ProblemId" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
+      <Column Name="BinaryDataId" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
+      <Column Name="RunId" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
+      <Column Name="Quality" Type="System.Double" DbType="Float" CanBeNull="false" />
+      <Column Name="DataTypeId" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
+      <Association Name="Problem_SingleObjectiveSolution" Member="Problem" ThisKey="ProblemId" OtherKey="Id" Type="Problem" IsForeignKey="true" />
+      <Association Name="BinaryData_SingleObjectiveSolution" Member="BinaryData" ThisKey="BinaryDataId" OtherKey="Id" Type="BinaryData" IsForeignKey="true" />
+      <Association Name="Run_SingleObjectiveSolution" Member="Run" ThisKey="RunId" OtherKey="Id" Type="Run" IsForeignKey="true" />
+      <Association Name="DataType_SingleObjectiveSolution" Member="DataType" ThisKey="DataTypeId" OtherKey="Id" Type="DataType" IsForeignKey="true" />
+    </Type>
+  </Table>
+</Database>

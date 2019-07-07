@@ -1,0 +1,27 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="HeuristicLab.Clients.Hive.SlaveCore.Views.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="ShowBalloonTips" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="ShowUICmd" Type="System.String" Scope="User">
+      <Value Profile="(Default)">showui</Value>
+    </Setting>
+    <Setting Name="SlaveCommunicationServiceEndpoint" Type="System.String" Scope="User">
+      <Value Profile="(Default)">SlaveCommunicationServiceEndpoint</Value>
+    </Setting>
+    <Setting Name="ServiceName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">HeuristicLab.Clients.Hive.Slave</Value>
+    </Setting>
+    <Setting Name="ServiceStartStopTimeout" Type="System.TimeSpan" Scope="User">
+      <Value Profile="(Default)">00:00:20</Value>
+    </Setting>
+    <Setting Name="ServiceReconnectTimeout" Type="System.TimeSpan" Scope="User">
+      <Value Profile="(Default)">00:00:03</Value>
+    </Setting>
+    <Setting Name="MaxLogCount" Type="System.Int32" Scope="Application">
+      <Value Profile="(Default)">1000</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

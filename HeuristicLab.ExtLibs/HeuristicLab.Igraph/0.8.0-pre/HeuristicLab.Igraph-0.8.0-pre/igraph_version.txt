@@ -1,0 +1,6 @@
+﻿This version of igraph is a custom build of a commit [1] in the pre-0.8.0 branch 
+of the igraph C library available at GitHub [2]. The library was compiled with
+Visual Studio 2013 for x86 as well as x64.
+
+[1]: https://github.com/igraph/igraph/commit/ac88d125017ced5d77bd64e4a336fdd8e6a5ca84
+[2]: https://github.com/igraph/igraph

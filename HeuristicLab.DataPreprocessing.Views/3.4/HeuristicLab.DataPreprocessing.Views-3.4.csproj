@@ -1,0 +1,380 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{3FC7515E-D8A0-41FE-8CFA-50E3ADA61A1E}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>HeuristicLab.DataPreprocessing.Views</RootNamespace>
+    <AssemblyName>HeuristicLab.DataPreprocessing.Views-3.4</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>$(SolutionDir)\bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>$(SolutionDir)\bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>
+    </DocumentationFile>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>$(SolutionDir)\bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
+    <OutputPath>$(SolutionDir)\bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <DocumentationFile>
+    </DocumentationFile>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>$(SolutionDir)\bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <OutputPath>$(SolutionDir)\bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <DocumentationFile>
+    </DocumentationFile>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>HeuristicLab.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Windows.Forms.DataVisualization" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="DataPreprocessingMenuItem.cs" />
+    <Compile Include="PreprocessingCheckedVariablesView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PreprocessingCheckedVariablesView.Designer.cs">
+      <DependentUpon>PreprocessingCheckedVariablesView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PreprocessingFeatureCorrelationView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PreprocessingFeatureCorrelationView.Designer.cs">
+      <DependentUpon>PreprocessingFeatureCorrelationView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CheckedFilterCollectionView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="CheckedFilterCollectionView.Designer.cs">
+      <DependentUpon>CheckedFilterCollectionView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CheckedTransformationListView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="CheckedTransformationListView.Designer.cs">
+      <DependentUpon>CheckedTransformationListView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ComparisonFilterView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ComparisonFilterView.Designer.cs">
+      <DependentUpon>ComparisonFilterView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PreprocessingIcons.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PreprocessingIcons.resx</DependentUpon>
+    </Compile>
+    <Compile Include="RenameColumnsDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="RenameColumnsDialog.Designer.cs">
+      <DependentUpon>RenameColumnsDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ScatterPlotSingleView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ScatterPlotSingleView.Designer.cs">
+      <DependentUpon>ScatterPlotSingleView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DataCompletenessView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="DataCompletenessView.Designer.cs">
+      <DependentUpon>DataCompletenessView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DataGridContentView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="DataGridContentView.Designer.cs">
+      <DependentUpon>DataGridContentView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DataPreprocessingView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="DataPreprocessingView.designer.cs">
+      <DependentUpon>DataPreprocessingView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DataPreprocessorStarter.cs" />
+    <Compile Include="FilterView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="FilterView.Designer.cs">
+      <DependentUpon>FilterView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ScatterPlotMultiView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ScatterPlotMultiView.Designer.cs">
+      <DependentUpon>ScatterPlotMultiView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SearchAndReplaceDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SearchAndReplaceDialog.Designer.cs">
+      <DependentUpon>SearchAndReplaceDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="HistogramView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="HistogramView.Designer.cs">
+      <DependentUpon>HistogramView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="LineChartView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="LineChartView.Designer.cs">
+      <DependentUpon>LineChartView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ManipulationView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ManipulationView.Designer.cs">
+      <DependentUpon>ManipulationView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Plugin.cs" />
+    <Compile Include="PreprocessingChartView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PreprocessingChartView.Designer.cs">
+      <DependentUpon>PreprocessingChartView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="StatisticsView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="StatisticsView.Designer.cs">
+      <DependentUpon>StatisticsView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TransformationView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="TransformationView.Designer.cs">
+      <DependentUpon>TransformationView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Utils\FindPreprocessingItemsIterator.cs" />
+    <Compile Include="Utils\IFindPreprocessingItemsIterator.cs" />
+    <Compile Include="Utils\VerticalLabel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ViewShortcutListView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ViewShortcutListView.Designer.cs">
+      <DependentUpon>ViewShortcutListView.cs</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="HeuristicLab.snk" />
+    <None Include="Plugin.cs.frame" />
+    <None Include="Properties\AssemblyInfo.cs.frame" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\HeuristicLab.Analysis.Views\3.3\HeuristicLab.Analysis.Views-3.3.csproj">
+      <Project>{76945D76-CA61-4147-9DC2-0ACDCDDF87F9}</Project>
+      <Name>HeuristicLab.Analysis.Views-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Analysis\3.3\HeuristicLab.Analysis-3.3.csproj">
+      <Project>{887425B4-4348-49ED-A457-B7D2C26DDBF9}</Project>
+      <Name>HeuristicLab.Analysis-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Collections\3.3\HeuristicLab.Collections-3.3.csproj">
+      <Project>{958B43BC-CC5C-4FA2-8628-2B3B01D890B6}</Project>
+      <Name>HeuristicLab.Collections-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Common.Resources\3.3\HeuristicLab.Common.Resources-3.3.csproj">
+      <Project>{0e27a536-1c4a-4624-a65e-dc4f4f23e3e1}</Project>
+      <Name>HeuristicLab.Common.Resources-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Common\3.3\HeuristicLab.Common-3.3.csproj">
+      <Project>{A9AD58B9-3EF9-4CC1-97E5-8D909039FF5C}</Project>
+      <Name>HeuristicLab.Common-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Core.Views\3.3\HeuristicLab.Core.Views-3.3.csproj">
+      <Project>{E226881D-315F-423D-B419-A766FE0D8685}</Project>
+      <Name>HeuristicLab.Core.Views-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Core\3.3\HeuristicLab.Core-3.3.csproj">
+      <Project>{C36BD924-A541-4A00-AFA8-41701378DDC5}</Project>
+      <Name>HeuristicLab.Core-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Data.Views\3.3\HeuristicLab.Data.Views-3.3.csproj">
+      <Project>{72104a0b-90e7-42f3-9abe-9bbbadd4b943}</Project>
+      <Name>HeuristicLab.Data.Views-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.DataPreprocessing\3.4\HeuristicLab.DataPreprocessing-3.4.csproj">
+      <Project>{3B90F866-70F8-43EF-A541-51819D255B7B}</Project>
+      <Name>HeuristicLab.DataPreprocessing-3.4</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Data\3.3\HeuristicLab.Data-3.3.csproj">
+      <Project>{BBAB9DF5-5EF3-4BA8-ADE9-B36E82114937}</Project>
+      <Name>HeuristicLab.Data-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.MainForm.WindowsForms\3.3\HeuristicLab.MainForm.WindowsForms-3.3.csproj">
+      <Project>{ab687bbe-1bfe-476b-906d-44237135431d}</Project>
+      <Name>HeuristicLab.MainForm.WindowsForms-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.MainForm\3.3\HeuristicLab.MainForm-3.3.csproj">
+      <Project>{3BD61258-31DA-4B09-89C0-4F71FEF5F05A}</Project>
+      <Name>HeuristicLab.MainForm-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Optimization\3.3\HeuristicLab.Optimization-3.3.csproj">
+      <Project>{14AB8D24-25BC-400C-A846-4627AA945192}</Project>
+      <Name>HeuristicLab.Optimization-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Optimizer\3.3\HeuristicLab.Optimizer-3.3.csproj">
+      <Project>{C664305E-497C-4533-A140-967DEDB05C19}</Project>
+      <Name>HeuristicLab.Optimizer-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.PluginInfrastructure\3.3\HeuristicLab.PluginInfrastructure-3.3.csproj">
+      <Project>{94186A6A-5176-4402-AE83-886557B53CCA}</Project>
+      <Name>HeuristicLab.PluginInfrastructure-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Problems.DataAnalysis.Views\3.4\HeuristicLab.Problems.DataAnalysis.Views-3.4.csproj">
+      <Project>{3E9E8944-44FF-40BB-A622-3A4A7DD0F198}</Project>
+      <Name>HeuristicLab.Problems.DataAnalysis.Views-3.4</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Problems.DataAnalysis\3.4\HeuristicLab.Problems.DataAnalysis-3.4.csproj">
+      <Project>{DF87C13E-A889-46FF-8153-66DCAA8C5674}</Project>
+      <Name>HeuristicLab.Problems.DataAnalysis-3.4</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Problems.Instances.DataAnalysis.Views\3.3\HeuristicLab.Problems.Instances.DataAnalysis.Views-3.3.csproj">
+      <Project>{72232235-B6CF-4E6C-B086-9E9E11AA0717}</Project>
+      <Name>HeuristicLab.Problems.Instances.DataAnalysis.Views-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Problems.Instances.DataAnalysis\3.3\HeuristicLab.Problems.Instances.DataAnalysis-3.3.csproj">
+      <Project>{94C7714E-29D4-4D6D-B213-2C18D627AB75}</Project>
+      <Name>HeuristicLab.Problems.Instances.DataAnalysis-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Problems.Instances\3.3\HeuristicLab.Problems.Instances-3.3.csproj">
+      <Project>{3540E29E-4793-49E7-8EE2-FEA7F61C3994}</Project>
+      <Name>HeuristicLab.Problems.Instances-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Visualization.ChartControlsExtensions\3.3\HeuristicLab.Visualization.ChartControlsExtensions-3.3.csproj">
+      <Project>{315bda09-3f4f-49b3-9790-b37cfc1c5750}</Project>
+      <Name>HeuristicLab.Visualization.ChartControlsExtensions-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="PreprocessingIcons.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>PreprocessingIcons.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ScatterPlotSingleView.resx">
+      <DependentUpon>ScatterPlotSingleView.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Icons\All.png" />
+    <Content Include="Icons\Inputs.png" />
+    <Content Include="Icons\None.png" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent Condition=" '$(OS)' == 'Windows_NT' ">set Path=%25Path%25;$(ProjectDir);$(SolutionDir)
+set ProjectDir=$(ProjectDir)
+set SolutionDir=$(SolutionDir)
+set Outdir=$(Outdir)
+
+call PreBuildEvent.cmd
+</PreBuildEvent>
+    <PreBuildEvent Condition=" '$(OS)' != 'Windows_NT' ">
+export ProjectDir=$(ProjectDir)
+export SolutionDir=$(SolutionDir)
+
+$SolutionDir/PreBuildEvent.sh
+</PreBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

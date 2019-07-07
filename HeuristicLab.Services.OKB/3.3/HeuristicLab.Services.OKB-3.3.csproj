@@ -1,0 +1,366 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{766DA4B7-2A0E-4CDE-8F90-93D8B1AD62CF}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>HeuristicLab.Services.OKB</RootNamespace>
+    <AssemblyName>HeuristicLab.Services.OKB-3.3</AssemblyName>
+    <ProjectTypeGuids>{3D9AD99F-2412-4246-B90B-4EAA41C64699};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <StartArguments>/client:"WcfTestClient.exe"</StartArguments>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>
+    </DocumentationFile>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <DocumentationFile>
+    </DocumentationFile>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <DocumentationFile>
+    </DocumentationFile>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>HeuristicLab.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <CodeAnalysisLogFile>bin\Debug\HeuristicLab.Services.OKB-3.3.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;C:\Program Files\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisRuleDirectories>;C:\Program Files\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <CodeAnalysisLogFile>bin\Release\HeuristicLab.Services.OKB-3.3.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;C:\Program Files\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisRuleDirectories>;C:\Program Files\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+    <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <CodeAnalysisLogFile>bin\Debug\HeuristicLab.Services.OKB-3.3.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;C:\Program Files\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisRuleDirectories>;C:\Program Files\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <CodeAnalysisLogFile>bin\Release\HeuristicLab.Services.OKB-3.3.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;C:\Program Files\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisRuleDirectories>;C:\Program Files\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.Linq" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Administration\AdministrationService.cs" />
+    <Compile Include="Administration\Convert.cs" />
+    <Compile Include="Administration\DataTransfer\Algorithm.cs" />
+    <Compile Include="Administration\DataTransfer\AlgorithmClass.cs" />
+    <Compile Include="Administration\DataTransfer\NamedOKBItem.cs" />
+    <Compile Include="Administration\DataTransfer\OKBItem.cs" />
+    <Compile Include="Administration\DataTransfer\Platform.cs" />
+    <Compile Include="Administration\DataTransfer\Problem.cs" />
+    <Compile Include="Administration\DataTransfer\ProblemClass.cs" />
+    <Compile Include="Administration\IAdministrationService.cs" />
+    <Compile Include="OKBRoles.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Query\Convert.cs" />
+    <Compile Include="Query\DataTransfer\Algorithm.cs" />
+    <Compile Include="Query\DataTransfer\BinaryValue.cs" />
+    <Compile Include="Query\DataTransfer\BooleanOperation.cs" />
+    <Compile Include="Query\DataTransfer\BoolValue.cs" />
+    <Compile Include="Query\DataTransfer\CombinedFilter.cs" />
+    <Compile Include="Query\DataTransfer\ValueName.cs" />
+    <Compile Include="Query\DataTransfer\NameOrdinalComparisonTimeSpanFilter.cs" />
+    <Compile Include="Query\DataTransfer\OrdinalComparisonTimeSpanFilter.cs" />
+    <Compile Include="Query\DataTransfer\TimeSpanValue.cs" />
+    <Compile Include="Query\DataTransfer\OrdinalComparisonPercentFilter.cs" />
+    <Compile Include="Query\DataTransfer\NameOrdinalComparisonPercentFilter.cs" />
+    <Compile Include="Query\DataTransfer\OrdinalComparisonFloatFilter.cs" />
+    <Compile Include="Query\DataTransfer\OrdinalComparisonDoubleFilter.cs" />
+    <Compile Include="Query\DataTransfer\EqualityComparisonByteArrayFilter.cs" />
+    <Compile Include="Query\DataTransfer\EqualityComparisonBoolFilter.cs" />
+    <Compile Include="Query\DataTransfer\DataType.cs" />
+    <Compile Include="Query\DataTransfer\DoubleValue.cs" />
+    <Compile Include="Query\DataTransfer\EqualityComparison.cs" />
+    <Compile Include="Query\DataTransfer\EqualityComparisonFilter.cs" />
+    <Compile Include="Query\DataTransfer\Filter.cs" />
+    <Compile Include="Query\DataTransfer\FloatValue.cs" />
+    <Compile Include="Query\DataTransfer\IntValue.cs" />
+    <Compile Include="Query\DataTransfer\LongValue.cs" />
+    <Compile Include="Query\DataTransfer\NameEqualityComparisonBoolFilter.cs" />
+    <Compile Include="Query\DataTransfer\NameEqualityComparisonByteArrayFilter.cs" />
+    <Compile Include="Query\DataTransfer\NameOrdinalComparisonDoubleFilter.cs" />
+    <Compile Include="Query\DataTransfer\NameOrdinalComparisonFloatFilter.cs" />
+    <Compile Include="Query\DataTransfer\NameOrdinalComparisonIntFilter.cs" />
+    <Compile Include="Query\DataTransfer\NameOrdinalComparisonLongFilter.cs" />
+    <Compile Include="Query\DataTransfer\NameStringComparisonAvailableValuesFilter.cs" />
+    <Compile Include="Query\DataTransfer\NameStringComparisonFilter.cs" />
+    <Compile Include="Query\DataTransfer\OrdinalComparison.cs" />
+    <Compile Include="Query\DataTransfer\OrdinalComparisonDateTimeFilter.cs" />
+    <Compile Include="Query\DataTransfer\OrdinalComparisonFilter.cs" />
+    <Compile Include="Query\DataTransfer\OrdinalComparisonIntFilter.cs" />
+    <Compile Include="Query\DataTransfer\OrdinalComparisonLongFilter.cs" />
+    <Compile Include="Query\DataTransfer\PercentValue.cs" />
+    <Compile Include="Query\DataTransfer\Problem.cs" />
+    <Compile Include="Query\DataTransfer\Run.cs" />
+    <Compile Include="Query\DataTransfer\StringComparison.cs" />
+    <Compile Include="Query\DataTransfer\StringComparisonAvailableValuesFilter.cs" />
+    <Compile Include="Query\DataTransfer\StringComparisonFilter.cs" />
+    <Compile Include="Query\DataTransfer\StringValue.cs" />
+    <Compile Include="Query\DataTransfer\Value.cs" />
+    <Compile Include="Query\Filters\AlgorithmClassNameFilter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Query\Filters\AlgorithmNameFilter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Query\Filters\AndFilter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Query\Filters\AlgorithmDataTypeNameFilter.cs" />
+    <Compile Include="Query\Filters\AlgorithmPlatformNameFilter.cs" />
+    <Compile Include="Query\Filters\BoolValueFilter.cs" />
+    <Compile Include="Query\Filters\BinaryValueFilter.cs" />
+    <Compile Include="Query\Filters\TimeSpanValueFilter.cs" />
+    <Compile Include="Query\Filters\PercentValueFilter.cs" />
+    <Compile Include="Query\Filters\StringValueFilter.cs" />
+    <Compile Include="Query\Filters\FloatValueFilter.cs" />
+    <Compile Include="Query\Filters\DoubleValueFilter.cs" />
+    <Compile Include="Query\Filters\LongValueFilter.cs" />
+    <Compile Include="Query\Filters\IntValueFilter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Query\Filters\ValueDataTypeNameFilter.cs" />
+    <Compile Include="Query\Filters\ProblemPlatformNameFilter.cs" />
+    <Compile Include="Query\Filters\ProblemDataTypeNameFilter.cs" />
+    <Compile Include="Query\Filters\IFilter.cs" />
+    <Compile Include="Query\Filters\OrFilter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Query\Filters\ProblemClassNameFilter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Query\Filters\ProblemNameFilter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Query\Filters\RunClientNameFilter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Query\Filters\RunCreatedDateFilter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Query\Filters\RunUserNameFilter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Query\Filters\ValueNameFilter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Query\IQueryService.cs" />
+    <Compile Include="Query\QueryService.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="RunCreation\Convert.cs" />
+    <Compile Include="RunCreation\DataTransfer\Algorithm.cs" />
+    <Compile Include="RunCreation\DataTransfer\AlgorithmClass.cs" />
+    <Compile Include="RunCreation\DataTransfer\BinaryValue.cs" />
+    <Compile Include="RunCreation\DataTransfer\BoolValue.cs" />
+    <Compile Include="RunCreation\DataTransfer\SingleObjectiveSolution.cs" />
+    <Compile Include="RunCreation\DataTransfer\Solution.cs" />
+    <Compile Include="RunCreation\DataTransfer\TimeSpanValue.cs" />
+    <Compile Include="RunCreation\DataTransfer\PercentValue.cs" />
+    <Compile Include="RunCreation\DataTransfer\DataType.cs" />
+    <Compile Include="RunCreation\DataTransfer\DoubleValue.cs" />
+    <Compile Include="RunCreation\DataTransfer\FloatValue.cs" />
+    <Compile Include="RunCreation\DataTransfer\IntValue.cs" />
+    <Compile Include="RunCreation\DataTransfer\LongValue.cs" />
+    <Compile Include="RunCreation\DataTransfer\Problem.cs" />
+    <Compile Include="RunCreation\DataTransfer\ProblemClass.cs" />
+    <Compile Include="RunCreation\DataTransfer\Run.cs" />
+    <Compile Include="RunCreation\DataTransfer\StringValue.cs" />
+    <Compile Include="RunCreation\DataTransfer\Value.cs" />
+    <Compile Include="RunCreation\MissingSolution.cs" />
+    <Compile Include="RunCreation\MissingProblem.cs" />
+    <Compile Include="RunCreation\RunCreationService.cs" />
+    <Compile Include="RunCreation\IRunCreationService.cs" />
+    <Compile Include="RunCreation\UnknownCharacteristicType.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="HeuristicLab.snk" />
+    <None Include="Properties\AssemblyInfo.cs.frame" />
+    <None Include="Web.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{3259AA49-8AA1-44D3-9025-A0B520596A8C}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Administration\AdministrationService.svc" />
+    <Content Include="Query\QueryService.svc" />
+    <Content Include="RunCreation\RunCreationService.svc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\HeuristicLab.Services.Access.DataAccess\3.3\HeuristicLab.Services.Access.DataAccess-3.3.csproj">
+      <Project>{0F652437-998A-4EAB-8BF1-444B5FE8CE97}</Project>
+      <Name>HeuristicLab.Services.Access.DataAccess-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Services.Access\3.3\HeuristicLab.Services.Access-3.3.csproj">
+      <Project>{9FAC0B23-2730-452A-9BA0-D7CA1746C541}</Project>
+      <Name>HeuristicLab.Services.Access-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Services.OKB.DataAccess\3.3\HeuristicLab.Services.OKB.DataAccess-3.3.csproj">
+      <Project>{E36BE58F-F3CE-40BB-9AB3-9F9E30AD5CCF}</Project>
+      <Name>HeuristicLab.Services.OKB.DataAccess-3.3</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{3D9AD99F-2412-4246-B90B-4EAA41C64699}">
+        <WcfProjectProperties>
+          <AutoStart>True</AutoStart>
+        </WcfProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <PropertyGroup>
+    <PreBuildEvent Condition=" '$(OS)' == 'Windows_NT' ">set Path=%25Path%25;$(ProjectDir);$(SolutionDir)
+set ProjectDir=$(ProjectDir)
+set SolutionDir=$(SolutionDir)
+set Outdir=$(Outdir)
+
+call PreBuildEvent.cmd</PreBuildEvent>
+    <PreBuildEvent Condition=" '$(OS)' != 'Windows_NT' ">
+export ProjectDir=$(ProjectDir)
+export SolutionDir=$(SolutionDir)
+
+$SolutionDir/PreBuildEvent.sh
+</PreBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

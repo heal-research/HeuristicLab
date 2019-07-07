@@ -1,0 +1,386 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{94186A6A-5176-4402-AE83-886557B53CCA}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>HeuristicLab.PluginInfrastructure</RootNamespace>
+    <AssemblyName>HeuristicLab.PluginInfrastructure-3.3</AssemblyName>
+    <StartupObject>
+    </StartupObject>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>HeuristicLab.snk</AssemblyOriginatorKeyFile>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>$(SolutionDir)\bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>$(SolutionDir)\bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <DocumentationFile>
+    </DocumentationFile>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>$(SolutionDir)\bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <OutputPath>$(SolutionDir)\bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <DocumentationFile>
+    </DocumentationFile>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>$(SolutionDir)\bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
+    <OutputPath>$(SolutionDir)\bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <DocumentationFile>
+    </DocumentationFile>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.IdentityModel" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Advanced\AvailablePluginsView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Advanced\AvailablePluginsView.Designer.cs">
+      <DependentUpon>AvailablePluginsView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Advanced\BasicUpdateView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Advanced\BasicUpdateView.Designer.cs">
+      <DependentUpon>BasicUpdateView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Advanced\ConfirmationDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Advanced\ConfirmationDialog.Designer.cs">
+      <DependentUpon>ConfirmationDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Advanced\ConnectionSetupView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Advanced\ConnectionSetupView.Designer.cs">
+      <DependentUpon>ConnectionSetupView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Advanced\PluginUpdaterForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Advanced\PluginUpdaterForm.Designer.cs">
+      <DependentUpon>PluginUpdaterForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Advanced\DeploymentService\AdminServiceClientFactory.cs" />
+    <Compile Include="Advanced\DeploymentService\DeploymentServerCertificateValidator.cs" />
+    <Compile Include="Advanced\DeploymentService\ServiceClients.cs" />
+    <Compile Include="Advanced\DeploymentService\UpdateServiceClientFactory.cs" />
+    <Compile Include="Advanced\EditProductsView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Advanced\EditProductsView.Designer.cs">
+      <DependentUpon>EditProductsView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Advanced\InstalledPluginsView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Advanced\InstalledPluginsView.Designer.cs">
+      <DependentUpon>InstalledPluginsView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Advanced\LicenseConfirmationDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Advanced\LicenseConfirmationDialog.Designer.cs">
+      <DependentUpon>LicenseConfirmationDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Advanced\UploadPluginsView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Advanced\UploadPluginsView.Designer.cs">
+      <DependentUpon>UploadPluginsView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Advanced\Util.cs" />
+    <Compile Include="Advanced\InstallationManagerControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Advanced\InstallationManagerControl.Designer.cs">
+      <DependentUpon>InstallationManagerControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Advanced\InstallationManagerException.cs" />
+    <Compile Include="Advanced\InstallationManager.cs" />
+    <Compile Include="Advanced\InstallationManagerForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Advanced\InstallationManagerForm.Designer.cs">
+      <DependentUpon>InstallationManagerForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Advanced\DeploymentService\PluginDescription.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Advanced\DeploymentService\ProductDescription.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Advanced\IStatusDisplay.cs" />
+    <Compile Include="Advanced\LicenseView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Advanced\LicenseView.Designer.cs">
+      <DependentUpon>LicenseView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Advanced\MultiSelectListView.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Advanced\MultiSelectListView.Designer.cs">
+      <DependentUpon>MultiSelectListView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Advanced\PluginView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Advanced\PluginView.Designer.cs">
+      <DependentUpon>PluginView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="AssemblyHelpers.cs" />
+    <Compile Include="CommandLineArgumentHandling\Arguments\OpenArgument.cs" />
+    <Compile Include="CommandLineArgumentHandling\Arguments\HideStarterArgument.cs" />
+    <Compile Include="CommandLineArgumentHandling\Arguments\StartArgument.cs" />
+    <Compile Include="CommandLineArgumentHandling\CommandLineArgument.cs" />
+    <Compile Include="CommandLineArgumentHandling\CommandLineArgumentHandling.cs" />
+    <Compile Include="CommandLineArgumentHandling\ICommandLineArgument.cs" />
+    <Compile Include="Attributes\ApplicationAttribute.cs" />
+    <Compile Include="Attributes\ContactInformationAttribute.cs" />
+    <Compile Include="Attributes\NonDiscoverableTypeAttribute.cs" />
+    <Compile Include="Attributes\PluginAttribute.cs" />
+    <Compile Include="Attributes\PluginDependencyAttribute.cs" />
+    <Compile Include="Attributes\PluginFileAttribute.cs" />
+    <Compile Include="BaseClasses\ApplicationBase.cs" />
+    <Compile Include="BaseClasses\PluginBase.cs" />
+    <Compile Include="SandboxApplicationManager.cs" />
+    <Compile Include="DefaultApplicationManager.cs" />
+    <Compile Include="ErrorHandling\ErrorDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ErrorHandling\ErrorDialog.Designer.cs">
+      <DependentUpon>ErrorDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ErrorHandling\ErrorHandling.cs">
+    </Compile>
+    <Compile Include="ErrorHandling\FrameworkVersionErrorDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ErrorHandling\FrameworkVersionErrorDialog.Designer.cs">
+      <DependentUpon>FrameworkVersionErrorDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="LightweightApplicationManager.cs" />
+    <Compile Include="Interfaces\IPluginFile.cs" />
+    <Compile Include="Interfaces\IApplicationManager.cs" />
+    <Compile Include="Interfaces\IApplicationDescription.cs" />
+    <Compile Include="Interfaces\IApplication.cs" />
+    <Compile Include="Interfaces\IControlManager.cs" />
+    <Compile Include="Interfaces\IPlugin.cs" />
+    <Compile Include="ControlManager.cs" />
+    <Compile Include="Interfaces\IPluginDescription.cs" />
+    <Compile Include="InvalidPluginException.cs" />
+    <Compile Include="Manager\ApplicationDescription.cs" />
+    <Compile Include="Manager\PluginFile.cs" />
+    <Compile Include="Manager\PluginInfrastructureCancelEventArgs.cs" />
+    <Compile Include="Manager\PluginDescription.cs" />
+    <Compile Include="Manager\PluginInfrastructureEventArgs.cs" />
+    <Compile Include="Manager\PluginManager.cs" />
+    <Compile Include="Manager\PluginValidator.cs" />
+    <Compile Include="PluginDescriptionIterator.cs" />
+    <Compile Include="ApplicationManager.cs" />
+    <Compile Include="PluginState.cs" />
+    <Compile Include="Main.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TypeExtensions.cs" />
+    <None Include="Advanced\DeploymentService\GenerateServiceClients.cmd" />
+    <None Include="app.config">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="HeuristicLab.snk" />
+    <None Include="Properties\AssemblyInfo.cs.frame" />
+    <None Include="Properties\Settings.settings">
+      <Generator>PublicSettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Compile Include="Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Sandboxing\SandboxManager.cs" />
+    <Compile Include="Starter\AboutDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Starter\AboutDialog.Designer.cs">
+      <DependentUpon>AboutDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Starter\SplashScreen.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Starter\SplashScreen.Designer.cs">
+      <DependentUpon>SplashScreen.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Starter\StarterForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Starter\StarterForm.Designer.cs">
+      <DependentUpon>StarterForm.cs</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Advanced\DeploymentService\services.heuristiclab.com.cer" />
+    <None Include="Resources\Error.ico" />
+    <Content Include="Resources\HeuristicLab.ico" />
+    <None Include="Resources\HeuristicLabLogo.png" />
+    <None Include="Resources\HeuristicLabBanner.png" />
+    <Content Include="Resources\UpdateAvailable.ico" />
+    <Content Include="Resources\VS2008ImageLibrary_Actions_PublishToWebHS.png" />
+    <Content Include="Resources\VS2008ImageLibrary_Actions_RepeatHS.png" />
+    <None Include="Resources\VS2008ImageLibrary_Annotations_Error.png" />
+    <Content Include="Resources\VS2008ImageLibrary_CommonElements_Actions_Add.png" />
+    <Content Include="Resources\VS2008ImageLibrary_Objects_Plugin.png" />
+    <EmbeddedResource Include="Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <None Include="Resources\VS2008ImageLibrary_CommonElements_Actions_Remove.png" />
+    <None Include="Resources\show_icons.png" />
+    <None Include="Resources\show_details.png" />
+    <None Include="Resources\Setup_Install.ico" />
+    <None Include="Resources\VS2008ImageLibrary_Objects_NetworkConnections.png" />
+    <None Include="Resources\VS2008ImageLibrary_CommonElements_Objects_Arrow_Up.png" />
+    <None Include="Resources\VS2008ImageLibrary_Objects_File.png" />
+    <None Include="Resources\VS2008ImageLibrary_Objects_Document.png" />
+    <None Include="Resources\VS2008ImageLibrary_Objects_Internet.png" />
+    <None Include="Resources\VS2008ImageLibrary_Objects_Install.png" />
+    <None Include="Resources\VS2008ImageLibrary_Objects_Assembly.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <PropertyGroup>
+    <PreBuildEvent Condition=" '$(OS)' == 'Windows_NT' ">set Path=%25Path%25;$(ProjectDir);$(SolutionDir)
+set ProjectDir=$(ProjectDir)
+set SolutionDir=$(SolutionDir)
+set Outdir=$(Outdir)
+
+call PreBuildEvent.cmd</PreBuildEvent>
+    <PreBuildEvent Condition=" '$(OS)' != 'Windows_NT' ">
+export ProjectDir=$(ProjectDir)
+export SolutionDir=$(SolutionDir)
+
+$SolutionDir/PreBuildEvent.sh
+</PreBuildEvent>
+  </PropertyGroup>
+</Project>

@@ -1,0 +1,102 @@
+﻿@* HeuristicLab
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ *
+ * This file is part of HeuristicLab.
+ *
+ * HeuristicLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * HeuristicLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
+*@
+
+@using HeuristicLab.Services.WebApp.Configs
+<!DOCTYPE html>
+<html lang="en" ng-app="app">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="pragma" content="no-cache" />
+    <title>HeuristicLab Hive</title>
+    <link href="~/WebApp/HeuristicLab.ico" rel="shortcut icon" type="image/x-icon" />
+    @Styles.Render("~/Bundles/Vendors/css")
+    @Styles.Render("~/Bundles/WebApp/css")
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Open+Sans:300,400,600,700">
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+        @Scripts.Render("~/Bundles/IESupport")
+    <![endif]-->
+    @Scripts.Render("~/Bundles/Vendors/js")
+    @foreach (var script in BundleConfig.GetWebAppScripts()) {
+        <script src="@script"></script>
+    }
+
+    @Scripts.Render("~/Bundles/WebApp/Shared")
+</head>
+<body ngcloak>
+<div id="app">
+    <header id="toolbar" class="navbar navbar-default navbar-static-top no-border no-padding-margin"
+            ng-controller="app.menu.ctrl">
+        <nav>
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <div class="center-block">
+                        <a class="navbar-brand" href="#">
+                            <img src="~/WebApp/shared/images/HeuristicLab-Logo.png" style="float: left; height: 100%; margin-right: 5px;"/>
+                            <span style="color: #f7921d">HeuristicLab</span>
+                        </a>
+                        <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#menu .navbar-collapse">
+                            <span class="sr-only">Toggle navigation</span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="navbar-content">
+                    <ul class="nav navbar-nav navbar-right">
+                        @if (Request.IsAuthenticated) {
+                            <li>
+                                <span class="navbar-text">Hello @User.Identity.Name!</span>
+                            </li>
+                            <li>
+                                <a ng-href="#" data-ng-click="logout()">Logout</a>
+                            </li>
+                        } else {
+                            <li>
+                                <a ng-href="#/login" data-ng-click="hideMenu()">Login</a>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <aside id="menu" ng-controller="app.menu.ctrl">
+        <div class="navbar-collapse collapse">
+            <ul class="nav nav-sidebar"
+                ng-include="'App/LoadSharedView?directory=menu&view=menu.cshtml&dateTime=@DateTime.Now'"
+                ng-init="entries = menuEntries;"></ul>
+        </div>
+    </aside>
+
+    <section id="view">
+        <ui-view/>
+    </section>
+</div>
+<script type="text/javascript">
+    $('.navbar-collapse').on('click', 'li a', function () {
+        $('.navbar-collapse').collapse('hide');
+    });
+</script>
+</body>
+</html>

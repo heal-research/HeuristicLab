@@ -1,0 +1,267 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{C38691AE-ECB4-489A-A05D-B035554E0168}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>HeuristicLab.CodeEditor</RootNamespace>
+    <AssemblyName>HeuristicLab.CodeEditor-3.4</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>$(SolutionDir)\bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>$(SolutionDir)\bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>
+    </DocumentationFile>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>$(SolutionDir)\bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
+    <OutputPath>$(SolutionDir)\bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <DocumentationFile>
+    </DocumentationFile>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>$(SolutionDir)\bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <OutputPath>$(SolutionDir)\bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <DocumentationFile>
+    </DocumentationFile>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>HeuristicLab.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="ICSharpCode.AvalonEdit, Version=5.0.1.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\bin\ICSharpCode.AvalonEdit.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="ICSharpCode.NRefactory, Version=5.0.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\bin\ICSharpCode.NRefactory.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="ICSharpCode.NRefactory.Cecil, Version=1.0.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\bin\ICSharpCode.NRefactory.Cecil.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="ICSharpCode.NRefactory.CSharp, Version=5.0.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\bin\ICSharpCode.NRefactory.CSharp.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="ICSharpCode.NRefactory.Xml, Version=5.0.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\bin\ICSharpCode.NRefactory.Xml.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
+    <Reference Include="WindowsFormsIntegration" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AssemblyLoader.cs" />
+    <Compile Include="CodeViewer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CodeViewer.Designer.cs">
+      <DependentUpon>CodeViewer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GoToLineDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GoToLineDialog.Designer.cs">
+      <DependentUpon>GoToLineDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CodeEditorBase.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="LanguageFeatures\CodeFolding\CodeFoldingResult.cs" />
+    <Compile Include="LanguageFeatures\CodeFolding\CodeFoldingStrategy.cs" />
+    <Compile Include="LanguageFeatures\CodeFolding\CSharp\CSharpCodeFoldingContext.cs" />
+    <Compile Include="LanguageFeatures\CodeFolding\CSharp\CSharpCodeFoldingStrategy.cs" />
+    <Compile Include="LanguageFeatures\CodeFolding\CSharp\FoldingVisitor.cs" />
+    <Compile Include="LanguageFeatures\CodeFolding\XML\XmlCodeFoldingStrategy.cs" />
+    <Compile Include="ITextMarker.cs" />
+    <Compile Include="LanguageFeatures\CodeCompletion\CodeCompletionResult.cs" />
+    <Compile Include="LanguageFeatures\CodeCompletion\CodeCompletionStrategy.cs" />
+    <Compile Include="LanguageFeatures\CodeCompletion\CSharp\CompletionData\Images\CompletionImage.cs" />
+    <Compile Include="LanguageFeatures\CodeCompletion\CSharp\CSharpInsightItem.cs" />
+    <Compile Include="LanguageFeatures\CodeCompletion\CSharp\CSharpOverloadProvider.cs" />
+    <Compile Include="LanguageFeatures\Interfaces\IUpdatableOverloadProvider.cs" />
+    <Compile Include="LanguageFeatures\Interfaces\ICodeCompletionStrategy.cs" />
+    <Compile Include="LanguageFeatures\CodeCompletion\CSharp\CompletionData\CodeCompletionData.cs" />
+    <Compile Include="LanguageFeatures\CodeCompletion\CSharp\CSharpCodeCompletionStrategy.cs" />
+    <Compile Include="LanguageFeatures\CodeCompletion\CSharp\CSharpDocumentationBuilder.cs" />
+    <Compile Include="LanguageFeatures\CodeCompletion\CSharp\CSharpCodeCompletionContext.cs" />
+    <Compile Include="LanguageFeatures\CodeCompletion\CSharp\CSharpCodeCompletionDataFactory.cs" />
+    <Compile Include="LanguageFeatures\Helpers\CSharpParsingHelpers.cs" />
+    <Compile Include="LanguageFeatures\CodeCompletion\CSharp\CompletionData\EntityCompletionData.cs" />
+    <Compile Include="LanguageFeatures\CodeCompletion\CSharp\CompletionData\VariableCompletionData.cs" />
+    <Compile Include="LanguageFeatures\Interfaces\ICodeFoldingStrategy.cs" />
+    <Compile Include="LanguageFeatures\LanguageFeatures.cs" />
+    <Compile Include="MethodDefinitionReadOnlySectionProvider.cs" />
+    <Compile Include="TextMarkerService.cs" />
+    <Compile Include="LanguageFeatures\XmlLanguageFeatures.cs" />
+    <None Include="HeuristicLab.snk" />
+    <None Include="Properties\AssemblyInfo.cs.frame" />
+    <None Include="Plugin.cs.frame" />
+    <Compile Include="CodeEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="CodeEditor.Designer.cs">
+      <DependentUpon>CodeEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SimpleCodeEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="SimpleCodeEditor.Designer.cs">
+      <DependentUpon>SimpleCodeEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="AvalonEditWrapper.xaml.cs">
+      <DependentUpon>AvalonEditWrapper.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="LanguageFeatures\CSharpLanguageFeatures.cs" />
+    <Compile Include="LanguageFeatures\Interfaces\ILanguageFeatures.cs" />
+    <Compile Include="Plugin.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\HeuristicLab.Common.Resources\3.3\HeuristicLab.Common.Resources-3.3.csproj">
+      <Project>{0e27a536-1c4a-4624-a65e-dc4f4f23e3e1}</Project>
+      <Name>HeuristicLab.Common.Resources-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Common\3.3\HeuristicLab.Common-3.3.csproj">
+      <Project>{a9ad58b9-3ef9-4cc1-97e5-8d909039ff5c}</Project>
+      <Name>HeuristicLab.Common-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.PluginInfrastructure\3.3\HeuristicLab.PluginInfrastructure-3.3.csproj">
+      <Project>{94186a6a-5176-4402-ae83-886557b53cca}</Project>
+      <Name>HeuristicLab.PluginInfrastructure-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="AvalonEditWrapper.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="LanguageFeatures\CodeCompletion\CSharp\CompletionData\Images\Class.png" />
+    <Resource Include="LanguageFeatures\CodeCompletion\CSharp\CompletionData\Images\Constructor.png" />
+    <Resource Include="LanguageFeatures\CodeCompletion\CSharp\CompletionData\Images\Delegate.png" />
+    <Resource Include="LanguageFeatures\CodeCompletion\CSharp\CompletionData\Images\Enum.png" />
+    <Resource Include="LanguageFeatures\CodeCompletion\CSharp\CompletionData\Images\EnumValue.png" />
+    <Resource Include="LanguageFeatures\CodeCompletion\CSharp\CompletionData\Images\Event.png" />
+    <Resource Include="LanguageFeatures\CodeCompletion\CSharp\CompletionData\Images\ExtensionMethod.png" />
+    <Resource Include="LanguageFeatures\CodeCompletion\CSharp\CompletionData\Images\Field.png" />
+    <Resource Include="LanguageFeatures\CodeCompletion\CSharp\CompletionData\Images\FieldReadOnly.png" />
+    <Resource Include="LanguageFeatures\CodeCompletion\CSharp\CompletionData\Images\Indexer.png" />
+    <Resource Include="LanguageFeatures\CodeCompletion\CSharp\CompletionData\Images\Interface.png" />
+    <Resource Include="LanguageFeatures\CodeCompletion\CSharp\CompletionData\Images\Literal.png" />
+    <Resource Include="LanguageFeatures\CodeCompletion\CSharp\CompletionData\Images\Method.png" />
+    <Resource Include="LanguageFeatures\CodeCompletion\CSharp\CompletionData\Images\NameSpace.png" />
+    <Resource Include="LanguageFeatures\CodeCompletion\CSharp\CompletionData\Images\Operator.png" />
+    <Resource Include="LanguageFeatures\CodeCompletion\CSharp\CompletionData\Images\OverlayInternal.png" />
+    <Resource Include="LanguageFeatures\CodeCompletion\CSharp\CompletionData\Images\OverlayPrivate.png" />
+    <Resource Include="LanguageFeatures\CodeCompletion\CSharp\CompletionData\Images\OverlayProtected.png" />
+    <Resource Include="LanguageFeatures\CodeCompletion\CSharp\CompletionData\Images\OverlayProtectedInternal.png" />
+    <Resource Include="LanguageFeatures\CodeCompletion\CSharp\CompletionData\Images\OverlayStatic.png" />
+    <Resource Include="LanguageFeatures\CodeCompletion\CSharp\CompletionData\Images\PInvokeMethod.png" />
+    <Resource Include="LanguageFeatures\CodeCompletion\CSharp\CompletionData\Images\Property.png" />
+    <Resource Include="LanguageFeatures\CodeCompletion\CSharp\CompletionData\Images\StaticClass.png" />
+    <Resource Include="LanguageFeatures\CodeCompletion\CSharp\CompletionData\Images\Struct.png" />
+    <Resource Include="LanguageFeatures\CodeCompletion\CSharp\CompletionData\Images\Template.png" />
+    <Resource Include="LanguageFeatures\CodeCompletion\CSharp\CompletionData\Images\VirtualMethod.png" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent Condition=" '$(OS)' == 'Windows_NT' ">
+      set Path=%25Path%25;$(ProjectDir);$(SolutionDir)
+      set ProjectDir=$(ProjectDir)
+      set SolutionDir=$(SolutionDir)
+      set Outdir=$(Outdir)
+
+      call PreBuildEvent.cmd
+    </PreBuildEvent>
+    <PreBuildEvent Condition=" '$(OS)' != 'Windows_NT' ">
+      export ProjectDir=$(ProjectDir)
+      export SolutionDir=$(SolutionDir)
+
+      $SolutionDir/PreBuildEvent.sh
+    </PreBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

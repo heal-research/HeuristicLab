@@ -1,0 +1,123 @@
+﻿<?xml version="1.0" encoding="utf-8"?><Database Name="HeuristicLab.ClientManagement" Class="AccessServiceDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+  <Connection Mode="AppSettings" ConnectionString="Data Source=localhost;Integrated Security=SSPI;Initial Catalog=HeuristicLab.AccessService" SettingsObjectName="HeuristicLab.Services.Access.DataAccess.Properties.Settings" SettingsPropertyName="HeuristicLab_ClientManagementConnectionString" Provider="System.Data.SqlClient" />
+  <Table Name="dbo.Resource" Member="Resources">
+    <Type Name="Resource" InheritanceCode="Resource" IsInheritanceDefault="true">
+      <Column Name="Id" AutoSync="OnInsert" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="NVarChar(MAX) NOT NULL" CanBeNull="false" />
+      <Column Name="Description" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="Type" Type="System.String" DbType="NVarChar(MAX) NOT NULL" CanBeNull="false" IsDiscriminator="true" />
+      <Association Name="Resource_ResourceResourceGroup" Member="ResourceResourceGroupsChilds" Storage="_ResourceResourceGroups" ThisKey="Id" OtherKey="ResourceGroupId" Type="ResourceResourceGroup" />
+      <Association Name="Resource_ResourceResourceGroup1" Member="ResourceResourceGroupsParents" Storage="_ResourceResourceGroups1" ThisKey="Id" OtherKey="ResourceId" Type="ResourceResourceGroup" />
+      <Association Name="Resource_ClientLog" Member="ClientLogs" ThisKey="Id" OtherKey="ResourceId" Type="ClientLog" />
+      <Association Name="Resource_ResourcePlugin" Member="ResourcePlugins" ThisKey="Id" OtherKey="ResourceId" Type="ResourcePlugin" />
+      <Type Name="Client" InheritanceCode="Client">
+        <Column Name="HeuristicLabVersion" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+        <Column Name="MemorySize" Type="System.Int32" DbType="Int" CanBeNull="true" />
+        <Column Name="Timestamp" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+        <Column Name="NumberOfCores" Type="System.Int32" DbType="Int" CanBeNull="true" />
+        <Column Name="ProcessorType" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+        <Column Name="ClientTypeId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+        <Column Name="OperatingSystemId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+        <Column Name="ClientConfigurationId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+        <Column Name="CountryId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+        <Column Name="PerformanceValue" Type="System.Double" DbType="real" CanBeNull="true" />
+        <Association Name="ClientType_Client" Member="ClientType" ThisKey="ClientTypeId" OtherKey="Id" Type="ClientType" IsForeignKey="true" />
+        <Association Name="OperatingSystem_Client" Member="OperatingSystem" ThisKey="OperatingSystemId" OtherKey="Id" Type="OperatingSystem" IsForeignKey="true" />
+        <Association Name="Country_Client" Member="Country" ThisKey="CountryId" OtherKey="Id" Type="Country" IsForeignKey="true" />
+        <Association Name="ClientConfiguration_Client" Member="ClientConfiguration" ThisKey="ClientConfigurationId" OtherKey="Id" Type="ClientConfiguration" IsForeignKey="true" />
+      </Type>
+      <Type Name="ClientGroup" InheritanceCode="ClientGroup" />
+    </Type>
+  </Table>
+  <Table Name="dbo.ResourceResourceGroup" Member="ResourceResourceGroups">
+    <Type Name="ResourceResourceGroup">
+      <Column Name="ResourceId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="ResourceGroupId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Association Name="Resource_ResourceResourceGroup" Member="ParentResource" Storage="_Resource" ThisKey="ResourceGroupId" OtherKey="Id" Type="Resource" IsForeignKey="true" />
+      <Association Name="Resource_ResourceResourceGroup1" Member="Resource" Storage="_Resource1" ThisKey="ResourceId" OtherKey="Id" Type="Resource" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.ClientLog" Member="ClientLogs">
+    <Type Name="ClientLog">
+      <Column Name="Timestamp" Type="System.DateTime" DbType="DateTime NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="ResourceId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="Message" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Association Name="Resource_ClientLog" Member="Resource" ThisKey="ResourceId" OtherKey="Id" Type="Resource" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.ClientError" Member="ClientErrors">
+    <Type Name="ClientError">
+      <Column Name="Id" AutoSync="Never" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Timestamp" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="Exception" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="UserComment" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="ConfigDump" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="ClientId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="UserId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.UserGroup" Member="UserGroupBases">
+    <Type Name="UserGroupBase" InheritanceCode="UserGroupBase" IsInheritanceDefault="true">
+      <Column Name="Id" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="Type" Type="System.String" DbType="NVarChar(10) NOT NULL" CanBeNull="false" IsDiscriminator="true" />
+      <Association Name="UserGroupBase_UserGroupUserGroup" Member="UserGroupUserGroupsChilds" Storage="_UserGroupUserGroups" ThisKey="Id" OtherKey="UserGroupId" Type="UserGroupUserGroup" />
+      <Association Name="UserGroupBase_UserGroupUserGroup1" Member="UserGroupUserGroupsParents" Storage="_UserGroupUserGroups1" ThisKey="Id" OtherKey="UserGroupUserGroupId" Type="UserGroupUserGroup" />
+      <Type Name="User" InheritanceCode="User">
+        <Column Name="FullName" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      </Type>
+      <Type Name="UserGroup" InheritanceCode="UserGroup">
+        <Column Name="Name" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      </Type>
+    </Type>
+  </Table>
+  <Table Name="dbo.ClientType" Member="ClientTypes">
+    <Type Name="ClientType">
+      <Column Name="Id" AutoSync="Never" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="NVarChar(MAX) NOT NULL" CanBeNull="false" />
+    </Type>
+  </Table>
+  <Table Name="dbo.OperatingSystem" Member="OperatingSystems">
+    <Type Name="OperatingSystem">
+      <Column Name="Id" AutoSync="Never" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="NVarChar(MAX) NOT NULL" CanBeNull="false" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Country" Member="Countries">
+    <Type Name="Country">
+      <Column Name="Id" AutoSync="Never" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="NVarChar(MAX) NOT NULL" CanBeNull="false" />
+    </Type>
+  </Table>
+  <Table Name="dbo.ClientConfiguration" Member="ClientConfigurations">
+    <Type Name="ClientConfiguration">
+      <Column Name="Id" AutoSync="Never" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Hash" Type="System.String" DbType="NVarChar(MAX) NOT NULL" CanBeNull="false" />
+      <Column Name="Description" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Plugin" Member="Plugins">
+    <Type Name="Plugin">
+      <Column Name="Id" AutoSync="Never" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="NVarChar(MAX) NOT NULL" CanBeNull="false" />
+      <Column Name="StrongName" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="Version" Type="System.String" DbType="NVarChar(20) NOT NULL" CanBeNull="false" />
+      <Association Name="Plugin_ResourcePlugin" Member="ResourcePlugins" ThisKey="Id" OtherKey="PluginId" Type="ResourcePlugin" />
+    </Type>
+  </Table>
+  <Table Name="dbo.ResourcePlugin" Member="ResourcePlugins">
+    <Type Name="ResourcePlugin">
+      <Column Name="ResourceId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="PluginId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Association Name="Plugin_ResourcePlugin" Member="Plugin" ThisKey="PluginId" OtherKey="Id" Type="Plugin" IsForeignKey="true" />
+      <Association Name="Resource_ResourcePlugin" Member="Resource" ThisKey="ResourceId" OtherKey="Id" Type="Resource" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.UserGroupUserGroup" Member="UserGroupUserGroups">
+    <Type Name="UserGroupUserGroup">
+      <Column Name="UserGroupId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="UserGroupUserGroupId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Association Name="UserGroupBase_UserGroupUserGroup" Member="UserGroup" ThisKey="UserGroupId" OtherKey="Id" Type="UserGroupBase" IsForeignKey="true" />
+      <Association Name="UserGroupBase_UserGroupUserGroup1" Member="UserGroupBase" ThisKey="UserGroupUserGroupId" OtherKey="Id" Type="UserGroupBase" IsForeignKey="true" />
+    </Type>
+  </Table>
+</Database>

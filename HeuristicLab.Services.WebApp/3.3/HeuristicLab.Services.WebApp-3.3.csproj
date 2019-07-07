@@ -1,0 +1,361 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>
+    </ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{6564C6AF-3E37-4C29-8947-68D4E22232BE}</ProjectGuid>
+    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>HeuristicLab.Services.WebApp</RootNamespace>
+    <AssemblyName>HeuristicLab.Services.WebApp-3.3</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <MvcBuildViews>false</MvcBuildViews>
+    <UseIISExpress>true</UseIISExpress>
+    <IISExpressSSLPort />
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+    <UseGlobalApplicationHostFile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PublishDatabases>false</PublishDatabases>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Antlr3.Runtime, Version=3.5.0.2, Culture=neutral, PublicKeyToken=eb42632606e9261f, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\Antlr.3.5.0.2\lib\Antlr3.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.Http.Formatting, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.AspNet.WebApi.Client.5.2.3\lib\net45\System.Net.Http.Formatting.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.DynamicData" />
+    <Reference Include="System.Web.Entity" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.Helpers.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Http, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.AspNet.WebApi.Core.5.2.3\lib\net45\System.Web.Http.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Http.WebHost, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.AspNet.WebApi.WebHost.5.2.3\lib\net45\System.Web.Http.WebHost.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Mvc, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.AspNet.Mvc.5.2.3\lib\net45\System.Web.Mvc.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Optimization, Version=1.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.AspNet.Web.Optimization.1.1.3\lib\net40\System.Web.Optimization.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.AspNet.Razor.3.2.3\lib\net45\System.Web.Razor.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.WebPages, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Deployment, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.Deployment.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web.Abstractions" />
+    <Reference Include="System.Web.Routing" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.EnterpriseServices" />
+    <Reference Include="System.Net.Http">
+    </Reference>
+    <Reference Include="System.Net.Http.WebRequest">
+    </Reference>
+    <Reference Include="WebGrease">
+      <HintPath>..\..\packages\WebGrease.1.6.0\lib\WebGrease.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Configs\BundleConfig.cs" />
+    <Compile Include="Configs\FilterConfig.cs" />
+    <Compile Include="Configs\RouteConfig.cs" />
+    <Compile Include="Configs\WebApiConfig.cs" />
+    <Compile Include="Controllers\AppController.cs" />
+    <Compile Include="Controllers\AuthenticationController.cs" />
+    <Compile Include="Controllers\DataTransfer\Plugin.cs" />
+    <Compile Include="Controllers\DataTransfer\User.cs" />
+    <Compile Include="Controllers\PluginController.cs" />
+    <Compile Include="Controllers\WebAppControllerSelector.cs" />
+    <Compile Include="Global.asax.cs">
+      <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="Plugin.cs" />
+    <Compile Include="PluginManager.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="WebApp\app.css" />
+    <Content Include="Global.asax" />
+    <Content Include="WebApp\libs\angularjs\angular-tablesort\angular-tablesort.js" />
+    <Content Include="WebApp\libs\angularjs\angular-tablesort\tablesort.css" />
+    <Content Include="WebApp\libs\angularjs\fittext\ng-FitText.js" />
+    <Content Include="WebApp\libs\cryptojs\aes.js" />
+    <Content Include="WebApp\main.js" />
+    <Content Include="WebApp\helper.js" />
+    <Content Include="WebApp\HeuristicLab.ico" />
+    <Content Include="WebApp\libs\angularjs\angular-animate.min.js" />
+    <Content Include="WebApp\libs\angularjs\angular-aria.min.js" />
+    <Content Include="WebApp\libs\angularjs\angular-cookies.min.js" />
+    <Content Include="WebApp\libs\angularjs\angular-knob\angular-knob.js" />
+    <Content Include="WebApp\libs\angularjs\angular-loader.min.js" />
+    <Content Include="WebApp\libs\angularjs\angular-messages.min.js" />
+    <Content Include="WebApp\libs\angularjs\angular-resource.min.js" />
+    <Content Include="WebApp\libs\angularjs\angular-route.min.js" />
+    <Content Include="WebApp\libs\angularjs\angular-sanitize.min.js" />
+    <Content Include="WebApp\libs\angularjs\angular-touch.min.js" />
+    <Content Include="WebApp\libs\angularjs\angular-ui-router.min.js" />
+    <Content Include="WebApp\libs\angularjs\loading-bar\loading-bar.css" />
+    <Content Include="WebApp\libs\angularjs\loading-bar\loading-bar.js" />
+    <Content Include="WebApp\libs\angularjs\ocLazyLoad\ocLazyLoad.min.js" />
+    <Content Include="WebApp\libs\font-awesome\font-awesome.min.css" />
+    <Content Include="WebApp\libs\jquery\jquery-knob\jquery.knob.min.js" />
+    <Content Include="WebApp\libs\jquery\jquery-ui\jquery-ui-1.11.4.min.js" />
+    <Content Include="WebApp\libs\misc\html5shiv.min.js" />
+    <Content Include="WebApp\libs\misc\respond.min.js" />
+    <Content Include="WebApp\libs\smoothScroll\smoothScroll.js" />
+    <Content Include="WebApp\app.js" />
+    <Content Include="WebApp\plugins\about\about.js" />
+    <Content Include="WebApp\plugins\about\aboutCtrl.js" />
+    <Content Include="WebApp\plugins\login\login.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="WebApp\plugins\login\login.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="WebApp\plugins\login\loginCtrl.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="WebApp\plugins\plugins\pluginsExceptionCtrl.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="WebApp\plugins\plugins\plugins.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="WebApp\plugins\plugins\pluginsCtrl.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="WebApp\plugins\plugins\pluginsService.js" />
+    <Content Include="WebApp\shared\directives\flot.js" />
+    <Content Include="WebApp\libs\angularjs\angular-ui\ui-bootstrap-tpls-0.13.0.min.js" />
+    <Content Include="WebApp\libs\angularjs\angular.min.js" />
+    <Content Include="WebApp\libs\bootstrap\css\bootstrap-theme.min.css" />
+    <Content Include="WebApp\libs\bootstrap\css\bootstrap.min.css" />
+    <Content Include="WebApp\libs\bootstrap\fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="WebApp\libs\bootstrap\js\bootstrap.min.js" />
+    <Content Include="WebApp\libs\jquery\jquery-flot\excanvas.js" />
+    <Content Include="WebApp\libs\jquery\jquery-flot\excanvas.min.js" />
+    <Content Include="WebApp\libs\jquery\jquery-flot\jquery.colorhelpers.min.js" />
+    <Content Include="WebApp\libs\jquery\jquery-flot\jquery.flot.canvas.min.js" />
+    <Content Include="WebApp\libs\jquery\jquery-flot\jquery.flot.categories.min.js" />
+    <Content Include="WebApp\libs\jquery\jquery-flot\jquery.flot.crosshair.min.js" />
+    <Content Include="WebApp\libs\jquery\jquery-flot\jquery.flot.errorbars.min.js" />
+    <Content Include="WebApp\libs\jquery\jquery-flot\jquery.flot.fillbetween.min.js" />
+    <Content Include="WebApp\libs\jquery\jquery-flot\jquery.flot.image.min.js" />
+    <Content Include="WebApp\libs\jquery\jquery-flot\jquery.flot.min.js" />
+    <Content Include="WebApp\libs\jquery\jquery-flot\jquery.flot.navigate.min.js" />
+    <Content Include="WebApp\libs\jquery\jquery-flot\jquery.flot.pie.min.js" />
+    <Content Include="WebApp\libs\jquery\jquery-flot\jquery.flot.resize.min.js" />
+    <Content Include="WebApp\libs\jquery\jquery-flot\jquery.flot.selection.min.js" />
+    <Content Include="WebApp\libs\jquery\jquery-flot\jquery.flot.stack.min.js" />
+    <Content Include="WebApp\libs\jquery\jquery-flot\jquery.flot.symbol.min.js" />
+    <Content Include="WebApp\libs\jquery\jquery-flot\jquery.flot.threshold.min.js" />
+    <Content Include="WebApp\libs\jquery\jquery-flot\jquery.flot.time.min.js" />
+    <Content Include="WebApp\libs\jquery\jquery-flot\LICENSE.txt" />
+    <Content Include="WebApp\libs\jquery\jquery-2.1.4.min.js" />
+    <Content Include="HeuristicLab.snk" />
+    <Content Include="Properties\AssemblyInfo.cs.frame" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Web.Debug.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </Content>
+    <Content Include="Web.Release.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </Content>
+    <Content Include="WebApp\libs\bootstrap\fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="WebApp\libs\bootstrap\fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="WebApp\libs\bootstrap\fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="WebApp\libs\bootstrap\fonts\glyphicons-halflings-regular.woff2" />
+    <Content Include="WebApp\shared\filter\filters.js" />
+    <Content Include="WebApp\shared\images\HeuristicLab-Logo.png" />
+    <Content Include="WebApp\shared\layout\layout.cshtml" />
+    <Content Include="WebApp\shared\menu\menuCtrl.js" />
+    <Content Include="WebApp\shared\services\authenticationService.js" />
+    <Content Include="WebApp\Web.config" />
+    <Content Include="WebApp\shared\menu\menu.cshtml" />
+    <Content Include="WebApp\shared\restricted\empty.cshtml" />
+    <Content Include="WebApp\plugins\login\login.cshtml" />
+    <Content Include="WebApp\plugins\plugins\plugins.cshtml" />
+    <Content Include="WebApp\plugins\plugins\Web.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\HeuristicLab.Services.Access\3.3\HeuristicLab.Services.Access-3.3.csproj">
+      <Project>{9fac0b23-2730-452a-9ba0-d7ca1746c541}</Project>
+      <Name>HeuristicLab.Services.Access-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Services.Hive.DataAccess\3.3\HeuristicLab.Services.Hive.DataAccess-3.3.csproj">
+      <Project>{ec2c8109-6e1e-4c88-9a2b-908cff2ef4ac}</Project>
+      <Name>HeuristicLab.Services.Hive.DataAccess-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Services.Hive\3.3\HeuristicLab.Services.Hive-3.3.csproj">
+      <Project>{cf9da321-ac1b-4fd3-9ec3-67bc6b861bde}</Project>
+      <Name>HeuristicLab.Services.Hive-3.3</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\PublishProfiles\WebApp.pubxml" />
+    <Content Include="WebApp\plugins\about\about.cshtml" />
+  </ItemGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>HeuristicLab.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
+  <Target Name="MvcBuildViews" AfterTargets="AfterBuild" Condition="'$(MvcBuildViews)'=='true'">
+    <AspNetCompiler VirtualPath="temp" PhysicalPath="$(WebProjectOutputDir)" />
+  </Target>
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>True</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>62175</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>http://localhost:62175/</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
+  </Target>
+  <PropertyGroup>
+    <PreBuildEvent>set Path=%25Path%25;$(ProjectDir);$(SolutionDir)
+set ProjectDir=$(ProjectDir)
+set SolutionDir=$(SolutionDir)
+set Outdir=$(Outdir)
+
+call PreBuildEvent.cmd</PreBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target> -->
+</Project>

@@ -1,0 +1,314 @@
+﻿<?xml version="1.0" encoding="utf-8"?><Database Name="HeuristicLab.Hive" Class="HiveDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+  <Table Name="dbo.AssignedProjectResource" Member="AssignedProjectResources">
+    <Type Name="AssignedProjectResource">
+      <Column Name="ResourceId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="ProjectId" Storage="_JobId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Association Name="Resource_AssignedProjectResource" Member="Resource" ThisKey="ResourceId" OtherKey="ResourceId" Type="Resource" IsForeignKey="true" DeleteRule="CASCADE" />
+      <Association Name="Project_AssignedProjectResource" Member="Project" ThisKey="ProjectId" OtherKey="ProjectId" Type="Project" IsForeignKey="true" DeleteRule="CASCADE" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Plugin" Member="Plugins">
+    <Type Name="Plugin">
+      <Column Name="PluginId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="VarChar(MAX)" CanBeNull="false" />
+      <Column Name="Version" Type="System.String" DbType="VarChar(MAX)" CanBeNull="false" />
+      <Column Name="UserId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="false" />
+      <Column Name="DateCreated" Type="System.DateTime" DbType="DateTime" CanBeNull="false" />
+      <Column Name="Hash" Type="System.Byte[]" DbType="VarBinary(20) NOT NULL" CanBeNull="false" />
+      <Association Name="Plugin_RequiredPlugin" Member="RequiredPlugins" ThisKey="PluginId" OtherKey="PluginId" Type="RequiredPlugin" />
+      <Association Name="Plugin_PluginData" Member="PluginData" ThisKey="PluginId" OtherKey="PluginId" Type="PluginData" />
+    </Type>
+  </Table>
+  <Table Name="dbo.RequiredPlugins" Member="RequiredPlugins">
+    <Type Name="RequiredPlugin">
+      <Column Name="RequiredPluginId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" UpdateCheck="Never" />
+      <Column Name="TaskId" Storage="_JobId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Column Name="PluginId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Association Name="Plugin_RequiredPlugin" Member="Plugin" Storage="_PluginInfo" ThisKey="PluginId" OtherKey="PluginId" Type="Plugin" IsForeignKey="true" DeleteRule="CASCADE" />
+      <Association Name="Task_RequiredPlugin" Member="Task" Storage="_Job" ThisKey="TaskId" OtherKey="TaskId" Type="Task" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Resource" Member="Resources">
+    <Type Name="Resource" InheritanceCode="RESOURCE">
+      <Column Name="ResourceId" AutoSync="OnInsert" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="VarChar(MAX)" CanBeNull="false" />
+      <Column Name="ResourceType" Type="System.String" CanBeNull="false" IsDiscriminator="true" />
+      <Column Name="ParentResourceId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="HbInterval" Type="System.Int32" DbType="Int" CanBeNull="false" />
+      <Column Name="OwnerUserId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Association Name="Resource_AssignedProjectResource" Member="AssignedProjectResources" ThisKey="ResourceId" OtherKey="ResourceId" Type="AssignedProjectResource" />
+      <Association Name="Resource_Resource" Member="ChildResources" ThisKey="ResourceId" OtherKey="ParentResourceId" Type="Resource" />
+      <Association Name="Resource_Downtime" Member="Downtimes" Storage="_UptimeCalendars" ThisKey="ResourceId" OtherKey="ResourceId" Type="Downtime" />
+      <Association Name="Resource_StateLog" Member="StateLogs" ThisKey="ResourceId" OtherKey="SlaveId" Type="StateLog" />
+      <Association Name="Resource_AssignedJobResource" Member="AssignedJobResources" ThisKey="ResourceId" OtherKey="ResourceId" Type="AssignedJobResource" />
+      <Association Name="Resource_Resource" Member="ParentResource" ThisKey="ParentResourceId" OtherKey="ResourceId" Type="Resource" IsForeignKey="true" />
+      <Type Name="Slave" InheritanceCode="Slave" IsInheritanceDefault="true">
+        <Column Name="CpuSpeed" Storage="_CPUSpeed" Type="System.Int32" DbType="Int" CanBeNull="true" />
+        <Column Name="Memory" Type="System.Int32" DbType="Int" CanBeNull="true" />
+        <Column Name="Login" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+        <Column Name="SlaveState" Storage="_Status" Type="global::HeuristicLab.Services.Hive.DataAccess.SlaveState" DbType="VarChar(15)" CanBeNull="true" />
+        <Column Name="Cores" Storage="_NumberOfCores" Type="System.Int32" DbType="Int" CanBeNull="true" />
+        <Column Name="FreeCores" Storage="_NumberOfFreeCores" Type="System.Int32" DbType="Int" CanBeNull="true" />
+        <Column Name="FreeMemory" Type="System.Int32" DbType="Int" CanBeNull="true" />
+        <Column Name="IsAllowedToCalculate" Type="System.Boolean" DbType="Bit" CanBeNull="false" />
+        <Column Name="CpuArchitecture" Type="global::HeuristicLab.Services.Hive.DataAccess.CpuArchitecture" DbType="VarChar(3)" CanBeNull="false" />
+        <Column Name="OperatingSystem" Type="System.String" DbType="VarChar(MAX)" CanBeNull="false" UpdateCheck="Never" />
+        <Column Name="LastHeartbeat" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+        <Column Name="CpuUtilization" Type="System.Double" DbType="float" CanBeNull="false" />
+        <Column Name="IsDisposable" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      </Type>
+      <Type Name="SlaveGroup" InheritanceCode="GROUP" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Task" Member="Tasks">
+    <Type Name="Task">
+      <Column Name="TaskId" Storage="_JobId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="TaskState" Member="State" Type="global::HeuristicLab.Services.Hive.DataAccess.TaskState" DbType="VarChar(30)" CanBeNull="false" />
+      <Column Name="ExecutionTimeMs" Storage="_ExecutionTime" Type="System.Double" DbType="float" CanBeNull="false" />
+      <Column Name="LastHeartbeat" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="ParentTaskId" Storage="_ParentJobId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="Priority" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="CoresNeeded" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="MemoryNeeded" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="IsParentTask" Storage="_IsParentJob" Type="System.Boolean" DbType="Bit" CanBeNull="false" />
+      <Column Name="FinishWhenChildJobsFinished" Type="System.Boolean" DbType="Bit" CanBeNull="false" />
+      <Column Name="Command" Type="global::HeuristicLab.Services.Hive.DataAccess.Command?" DbType="VarChar(30)" CanBeNull="true" />
+      <Column Name="JobId" Storage="_HiveExperimentId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Association Name="Task_RequiredPlugin" Member="RequiredPlugins" ThisKey="TaskId" OtherKey="TaskId" Type="RequiredPlugin" />
+      <Association Name="Task_Task" Member="ChildJobs" Storage="_Jobs" ThisKey="TaskId" OtherKey="ParentTaskId" Type="Task" />
+      <Association Name="Task_TaskData" Member="JobData" ThisKey="TaskId" OtherKey="TaskId" Type="TaskData" Cardinality="One" />
+      <Association Name="Task_StateLog" Member="StateLogs" ThisKey="TaskId" OtherKey="TaskId" Type="StateLog" />
+      <Association Name="Task_Task" Member="ParentJob" Storage="_Job1" ThisKey="ParentTaskId" OtherKey="TaskId" Type="Task" IsForeignKey="true" />
+      <Association Name="Job_Task" Member="Job" Storage="_HiveExperiment" ThisKey="JobId" OtherKey="JobId" Type="Job" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Downtime" Member="Downtimes">
+    <Type Name="Downtime">
+      <Column Name="DowntimeId" Storage="_UptimeCalendarId" Type="System.Guid" DbType="UniqueIdentifier" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="ResourceId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="false" />
+      <Column Name="StartDate" Type="System.DateTime" DbType="DateTime" CanBeNull="false" />
+      <Column Name="EndDate" Type="System.DateTime" DbType="DateTime" CanBeNull="false" />
+      <Column Name="AllDayEvent" Type="System.Boolean" DbType="Bit" CanBeNull="false" />
+      <Column Name="Recurring" Type="System.Boolean" DbType="Bit" CanBeNull="false" />
+      <Column Name="RecurringId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="false" />
+      <Column Name="DowntimeType" Storage="_Type" Type="global::HeuristicLab.Services.Hive.DataAccess.DowntimeType" DbType="VarChar(MAX)" CanBeNull="false" />
+      <Association Name="Resource_Downtime" Member="Resource" ThisKey="ResourceId" OtherKey="ResourceId" Type="Resource" IsForeignKey="true" DeleteRule="CASCADE" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Job" Member="Jobs">
+    <Type Name="Job">
+      <Column Name="JobId" Storage="_HiveExperimentId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="VarChar(MAX)" CanBeNull="false" />
+      <Column Name="Description" Type="System.String" DbType="VarChar(MAX)" CanBeNull="true" />
+      <Column Name="OwnerUserId" Storage="_UserId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="false" />
+      <Column Name="DateCreated" Type="System.DateTime" DbType="DateTime" CanBeNull="false" />
+      <Column Name="ProjectId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Column Name="JobState" Member="State" Type="global::HeuristicLab.Services.Hive.DataAccess.JobState" DbType="VarChar(30)" CanBeNull="false" />
+      <Association Name="Job_Task" Member="Tasks" Storage="_Jobs" ThisKey="JobId" OtherKey="JobId" Type="Task" />
+      <Association Name="Job_JobPermission" Member="JobPermissions" Storage="_HiveExperimentPermissions" ThisKey="JobId" OtherKey="JobId" Type="JobPermission" />
+      <Association Name="Job_AssignedJobResource" Member="AssignedJobResources" ThisKey="JobId" OtherKey="JobId" Type="AssignedJobResource" />
+      <Association Name="Project_Job" Member="Project" ThisKey="ProjectId" OtherKey="ProjectId" Type="Project" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.TaskData" Member="TaskDatas">
+    <Type Name="TaskData">
+      <Column Name="TaskId" Storage="_JobId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="Data" Type="System.Byte[]" DbType="VarBinary(MAX)" CanBeNull="false" UpdateCheck="Never" IsDelayLoaded="true" />
+      <Column Name="LastUpdate" Type="System.DateTime" DbType="DateTime" CanBeNull="false" />
+      <Association Name="Task_TaskData" Member="Task" Storage="_Job" ThisKey="TaskId" OtherKey="TaskId" Type="Task" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.PluginData" Member="PluginDatas">
+    <Type Name="PluginData">
+      <Column Name="PluginDataId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="PluginId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Column Name="Data" Type="System.Byte[]" DbType="VarBinary(MAX) NOT NULL" CanBeNull="false" UpdateCheck="Never" IsDelayLoaded="true" />
+      <Column Name="FileName" Type="System.String" DbType="VarChar(MAX)" CanBeNull="false" />
+      <Association Name="Plugin_PluginData" Member="Plugin" ThisKey="PluginId" OtherKey="PluginId" Type="Plugin" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.StateLog" Member="StateLogs">
+    <Type Name="StateLog">
+      <Column Name="StateLogId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="State" Type="global::HeuristicLab.Services.Hive.DataAccess.TaskState" DbType="VarChar(30) NOT NULL" CanBeNull="false" />
+      <Column Name="DateTime" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="TaskId" Storage="_JobId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Column Name="UserId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="SlaveId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="Exception" Type="System.String" DbType="VarChar(MAX)" CanBeNull="false" />
+      <Association Name="Task_StateLog" Member="Task" Storage="_Job" ThisKey="TaskId" OtherKey="TaskId" Type="Task" IsForeignKey="true" />
+      <Association Name="Resource_StateLog" Member="Resource" ThisKey="SlaveId" OtherKey="ResourceId" Type="Resource" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.JobPermission" Member="JobPermissions">
+    <Type Name="JobPermission">
+      <Column Name="JobId" Storage="_HiveExperimentId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="GrantedUserId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="GrantedByUserId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Column Name="Permission" Type="global::HeuristicLab.Services.Hive.DataAccess.Permission" DbType="VarChar(15) NOT NULL" CanBeNull="false" />
+      <Association Name="Job_JobPermission" Member="Job" Storage="_HiveExperiment" ThisKey="JobId" OtherKey="JobId" Type="Job" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="" Member="Lifecycles">
+    <Type Name="Lifecycle">
+      <Column Name="LifecycleId" Type="System.Int32" DbType="Int" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="LastCleanup" Type="System.DateTime" DbType="DateTime" CanBeNull="false" />
+    </Type>
+  </Table>
+  <Table Name="" Member="UserPriorities">
+    <Type Name="UserPriority">
+      <Column Name="UserId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="DateEnqueued" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+    </Type>
+  </Table>
+  <Table Name="[statistics].DimClient" Member="DimClients">
+    <Type Name="DimClient">
+      <Column Name="Id" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="VarChar(MAX) NOT NULL" CanBeNull="false" />
+      <Column Name="ResourceId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Column Name="ParentResourceId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="ResourceType" Type="System.String" CanBeNull="false" />
+      <Column Name="DateCreated" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="DateExpired" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Association Name="DimClient_FactTask" Member="FactTasks" ThisKey="Id" OtherKey="LastClientId" Type="FactTask" />
+      <Association Name="DimClient_FactClientInfo" Member="FactClientInfos" ThisKey="Id" OtherKey="ClientId" Type="FactClientInfo" />
+    </Type>
+  </Table>
+  <Table Name="[statistics].FactTask" Member="FactTasks">
+    <Type Name="FactTask">
+      <Column Name="TaskId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="CalculatingTime" Storage="_TotalRuntime" Type="System.Int64" DbType="INT NOT NULL" CanBeNull="false" />
+      <Column Name="WaitingTime" Storage="_TotalWaitingTime" Type="System.Int64" DbType="INT NOT NULL" CanBeNull="false" />
+      <Column Name="TransferTime" Storage="_TotalTransferTime" Type="System.Int64" DbType="INT NOT NULL" CanBeNull="false" />
+      <Column Name="NumCalculationRuns" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="NumRetries" Storage="_NumFails" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="CoresRequired" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="MemoryRequired" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Priority" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="LastClientId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="true" />
+      <Column Name="JobId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Column Name="EndTime" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="true" />
+      <Column Name="TaskState" Type="global::HeuristicLab.Services.Hive.DataAccess.TaskState" DbType="varchar(30)" CanBeNull="false" />
+      <Column Name="Exception" Type="System.String" DbType="varchar(MAX)" CanBeNull="true" />
+      <Column Name="InitialWaitingTime" Storage="_InitialWaitingTimeMs" Type="System.Int64" DbType="INT" CanBeNull="false" />
+      <Column Name="StartTime" Type="System.DateTime" CanBeNull="true" />
+      <Association Name="DimClient_FactTask" Member="DimClient" ThisKey="LastClientId" OtherKey="Id" Type="DimClient" IsForeignKey="true" />
+      <Association Name="DimJob_FactTask" Member="DimJob" ThisKey="JobId" OtherKey="JobId" Type="DimJob" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="[statistics].DimJob" Member="DimJobs">
+    <Type Name="DimJob">
+      <Column Name="JobId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="UserId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Column Name="JobName" Type="System.String" DbType="VarChar(MAX) NOT NULL" CanBeNull="false" />
+      <Column Name="UserName" Type="System.String" DbType="VarChar(MAX) NOT NULL" CanBeNull="false" />
+      <Column Name="DateCreated" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="TotalTasks" Type="System.Int32" DbType="INT NOT NULL" CanBeNull="false" />
+      <Column Name="CompletedTasks" Type="System.Int32" DbType="INT NOT NULL" CanBeNull="false" />
+      <Column Name="DateCompleted" Type="System.DateTime" DbType="DateTime NULL" CanBeNull="true" />
+      <Column Name="ProjectId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Association Name="DimJob_FactTask" Member="FactTasks" ThisKey="JobId" OtherKey="JobId" Type="FactTask" />
+      <Association Name="DimProject_DimJob" Member="DimProject" ThisKey="ProjectId" OtherKey="Id" Type="DimProject" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="[statistics].DimTime" Member="DimTimes">
+    <Type Name="DimTime">
+      <Column Name="Time" Type="System.DateTime" DbType="DateTime NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="Hour" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="Day" Type="System.DateTime" DbType="Date NOT NULL" CanBeNull="false" />
+      <Column Name="Month" Type="System.DateTime" DbType="Date NOT NULL" CanBeNull="false" />
+      <Column Name="Year" Type="System.DateTime" DbType="Date NOT NULL" CanBeNull="false" />
+      <Column Name="Minute" Type="System.DateTime" CanBeNull="false" />
+      <Association Name="DimTime_FactClientInfo" Member="FactClientInfos" ThisKey="Time" OtherKey="Time" Type="FactClientInfo" />
+      <Association Name="DimTime_FactProjectInfo" Member="FactProjectInfos" ThisKey="Time" OtherKey="Time" Type="FactProjectInfo" />
+    </Type>
+  </Table>
+  <Table Name="[statistics].DimUser" Member="DimUsers">
+    <Type Name="DimUser">
+      <Column Name="UserId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="VarChar(MAX) NOT NULL" CanBeNull="false" />
+      <Association Name="DimUser_FactClientInfo" Member="FactClientInfos" ThisKey="UserId" OtherKey="UserId" Type="FactClientInfo" />
+    </Type>
+  </Table>
+  <Table Name="[statistics].FactClientInfo" Member="FactClientInfos">
+    <Type Name="FactClientInfo">
+      <Column Name="ClientId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="Time" Type="System.DateTime" DbType="DateTime NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="UserId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="NumUsedCores" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="NumTotalCores" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="UsedMemory" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="TotalMemory" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="CpuUtilization" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
+      <Column Name="IdleTime" Storage="_TotalTimeIdle" Type="System.Int64" DbType="INT NOT NULL" CanBeNull="false" />
+      <Column Name="OfflineTime" Storage="_TotalTimeOffline" Type="System.Int64" DbType="INT NOT NULL" CanBeNull="false" />
+      <Column Name="UnavailableTime" Storage="_TotalTimeUnavailable" Type="System.Int64" DbType="INT NOT NULL" CanBeNull="false" />
+      <Column Name="SlaveState" Type="global::HeuristicLab.Services.Hive.DataAccess.SlaveState" DbType="VarChar(15)" CanBeNull="false" />
+      <Column Name="IsAllowedToCalculate" Type="System.Boolean" DbType="BIT" CanBeNull="false" />
+      <Association Name="DimClient_FactClientInfo" Member="DimClient" ThisKey="ClientId" OtherKey="Id" Type="DimClient" IsForeignKey="true" />
+      <Association Name="DimTime_FactClientInfo" Member="DimTime" ThisKey="Time" OtherKey="Time" Type="DimTime" IsForeignKey="true" />
+      <Association Name="DimUser_FactClientInfo" Member="DimUser" ThisKey="UserId" OtherKey="UserId" Type="DimUser" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Project" Member="Projects">
+    <Type Name="Project">
+      <Column Name="ProjectId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="ParentProjectId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="DateCreated" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="VarChar(MAX) NOT NULL" CanBeNull="false" />
+      <Column Name="Description" Type="System.String" DbType="VarChar(MAX)" CanBeNull="true" />
+      <Column Name="OwnerUserId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Column Name="StartDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="EndDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Association Name="Project_AssignedProjectResource" Member="AssignedProjectResources" ThisKey="ProjectId" OtherKey="ProjectId" Type="AssignedProjectResource" />
+      <Association Name="Project_Job" Member="Jobs" ThisKey="ProjectId" OtherKey="ProjectId" Type="Job" />
+      <Association Name="Project_Project" Member="ChildProjects" Storage="_Projects" ThisKey="ProjectId" OtherKey="ParentProjectId" Type="Project" />
+      <Association Name="Project_ProjectPermission" Member="ProjectPermissions" ThisKey="ProjectId" OtherKey="ProjectId" Type="ProjectPermission" />
+      <Association Name="Project_Project" Member="ParentProject" Storage="_Project1" ThisKey="ParentProjectId" OtherKey="ProjectId" Type="Project" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.ProjectPermission" Member="ProjectPermissions">
+    <Type Name="ProjectPermission">
+      <Column Name="ProjectId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="GrantedUserId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="GrantedByUserId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Association Name="Project_ProjectPermission" Member="Project" ThisKey="ProjectId" OtherKey="ProjectId" Type="Project" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.AssignedJobResource" Member="AssignedJobResources">
+    <Type Name="AssignedJobResource">
+      <Column Name="ResourceId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="JobId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Association Name="Resource_AssignedJobResource" Member="Resource" ThisKey="ResourceId" OtherKey="ResourceId" Type="Resource" IsForeignKey="true" />
+      <Association Name="Job_AssignedJobResource" Member="Job" ThisKey="JobId" OtherKey="JobId" Type="Job" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="[statistics].FactProjectInfo" Member="FactProjectInfos">
+    <Type Name="FactProjectInfo">
+      <Column Name="ProjectId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="Time" Type="System.DateTime" DbType="DateTime NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="NumTotalCores" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="NumUsedCores" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="TotalMemory" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="UsedMemory" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Association Name="DimProject_FactProjectInfo" Member="DimProject" ThisKey="ProjectId" OtherKey="Id" Type="DimProject" IsForeignKey="true" />
+      <Association Name="DimTime_FactProjectInfo" Member="DimTime" ThisKey="Time" OtherKey="Time" Type="DimTime" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="[statistics].DimProject" Member="DimProjects">
+    <Type Name="DimProject">
+      <Column Name="Id" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="ProjectId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Column Name="ParentProjectId" Storage="_ParentId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="Name" Type="System.String" CanBeNull="false" />
+      <Column Name="Description" Type="System.String" CanBeNull="true" />
+      <Column Name="OwnerUserId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Column Name="StartDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="EndDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="DateCreated" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="DateExpired" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Association Name="DimProject_DimJob" Member="DimJobs" ThisKey="Id" OtherKey="ProjectId" Type="DimJob" />
+      <Association Name="DimProject_FactProjectInfo" Member="FactProjectInfos" ThisKey="Id" OtherKey="ProjectId" Type="FactProjectInfo" />
+    </Type>
+  </Table>
+</Database>
