@@ -142,7 +142,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       if (branch.Symbol is CubeRoot) {
         var f = (ISymbolicExpressionTreeNode)branch.Clone();
         var u = (ISymbolicExpressionTreeNode)branch.GetSubtree(0).Clone();
-        return Product(Div(CreateConstant(1.0), Product(CreateConstant(3.0), Square(f))), Derive(u, variableName));
+        return Product(Div(CreateConstant(1.0), Product(CreateConstant(3.0), Square(f))), Derive(u, variableName));  // 1/3 1/cbrt(f(x))^2 d/dx f(x)
       }
       if (branch.Symbol is Cube) {
         var f = (ISymbolicExpressionTreeNode)branch.GetSubtree(0).Clone();

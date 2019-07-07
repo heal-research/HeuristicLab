@@ -117,7 +117,7 @@ inline double evaluate(instruction *code, int len, int row) noexcept
                 }
             case OpCodes::CubeRoot:
                 {
-                    in.value = hl_pow(code[in.childIndex].value, 1./3.);
+                    in.value = hl_cbrt(code[in.childIndex].value);
                     break;
                 }
             case OpCodes::Cube:
@@ -271,7 +271,7 @@ inline void evaluate(instruction* code, int len, int* __restrict rows, int rowIn
                 }
             case OpCodes::CubeRoot:
                 {
-                    pow(in.buf, code[in.childIndex].buf, 1./3.);
+                    cbrt(in.buf, code[in.childIndex].buf);
                     break;
                 }
             case OpCodes::Cube:

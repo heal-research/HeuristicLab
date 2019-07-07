@@ -100,7 +100,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
     public static void CubeRoot(double[] a, double[] b) {
       for (int i = 0; i < BATCHSIZE; ++i)
-        a[i] = Math.Pow(b[i], 1d / 3d);
+        a[i] = b[i] < 0 ? -Math.Pow(-b[i], 1d / 3d) : Math.Pow(b[i], 1d / 3d);
     }
 
     public static void Absolute(double[] a, double[] b) {
