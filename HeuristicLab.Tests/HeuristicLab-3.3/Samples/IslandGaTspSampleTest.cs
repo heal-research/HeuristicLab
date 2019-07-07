@@ -21,10 +21,10 @@
 
 using System.IO;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Algorithms.GeneticAlgorithm;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Optimization.Operators;
-using HeuristicLab.Persistence.Default.Xml;
 using HeuristicLab.Problems.Instances.TSPLIB;
 using HeuristicLab.Problems.TravelingSalesman;
 using HeuristicLab.Selection;
@@ -34,6 +34,7 @@ namespace HeuristicLab.Tests {
   [TestClass]
   public class UnitTest1 {
     private const string SampleFileName = "IslandGA_TSP";
+    private static readonly ProtoBufSerializer serializer = new ProtoBufSerializer();
 
     [TestMethod]
     [TestCategory("Samples.Create")]
@@ -41,7 +42,7 @@ namespace HeuristicLab.Tests {
     public void CreateIslandGaTspSampleTest() {
       var ga = CreateIslandGaTspSample();
       string path = Path.Combine(SamplesUtils.SamplesDirectory, SampleFileName + SamplesUtils.SampleFileExtension);
-      XmlGenerator.Serialize(ga, path);
+      serializer.Serialize(ga, path);
     }
     [TestMethod]
     [TestCategory("Samples.Execute")]

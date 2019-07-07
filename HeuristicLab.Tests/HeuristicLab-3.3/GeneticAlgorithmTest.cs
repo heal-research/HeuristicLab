@@ -20,15 +20,16 @@
 #endregion
 
 using System;
+using HEAL.Attic;
 using HeuristicLab.Algorithms.GeneticAlgorithm;
 using HeuristicLab.Common;
 using HeuristicLab.Data;
-using HeuristicLab.Persistence.Default.Xml;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace HeuristicLab.Tests {
   [TestClass]
   public class GeneticAlgorithmTest {
+    private static readonly ProtoBufSerializer serializer = new ProtoBufSerializer();
     public GeneticAlgorithmTest() { }
 
     private TestContext testContextInstance;
@@ -44,7 +45,7 @@ namespace HeuristicLab.Tests {
     [TestProperty("Time", "long")]
     public void GeneticAlgorithmPerformanceTest() {
       ex = null;
-      GeneticAlgorithm ga = (GeneticAlgorithm)XmlParser.Deserialize(@"Test Resources\GA_TSP.hl");
+      GeneticAlgorithm ga = (GeneticAlgorithm)serializer.Deserialize(@"Test Resources\GA_TSP.hl");
       ga.ExceptionOccurred += new EventHandler<EventArgs<Exception>>(ga_ExceptionOccurred);
       ga.SetSeedRandomly.Value = false;
       ga.Seed.Value = 0;

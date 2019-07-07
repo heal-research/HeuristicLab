@@ -444,7 +444,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             Label end = il.DefineLabel();
             Label c1 = il.DefineLabel();
             CompileInstructions(il, state, ds);
-            il.Emit(System.Reflection.Emit.OpCodes.Ldc_I4_0); // > 0
+            il.Emit(System.Reflection.Emit.OpCodes.Ldc_R8, 0.0); // > 0
             il.Emit(System.Reflection.Emit.OpCodes.Cgt);
             il.Emit(System.Reflection.Emit.OpCodes.Brfalse, c1);
             CompileInstructions(il, state, ds);
@@ -459,12 +459,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             Label end = il.DefineLabel();
             CompileInstructions(il, state, ds);
             for (int i = 1; i < nArgs; i++) {
-              il.Emit(System.Reflection.Emit.OpCodes.Ldc_I4_0); // > 0
+              il.Emit(System.Reflection.Emit.OpCodes.Ldc_R8, 0.0); // > 0
               il.Emit(System.Reflection.Emit.OpCodes.Cgt);
               il.Emit(System.Reflection.Emit.OpCodes.Brfalse, falseBranch);
               CompileInstructions(il, state, ds);
             }
-            il.Emit(System.Reflection.Emit.OpCodes.Ldc_I4_0); // > 0
+            il.Emit(System.Reflection.Emit.OpCodes.Ldc_R8, 0.0); // > 0
             il.Emit(System.Reflection.Emit.OpCodes.Cgt);
             il.Emit(System.Reflection.Emit.OpCodes.Brfalse, falseBranch);
             il.Emit(System.Reflection.Emit.OpCodes.Ldc_R8, 1.0); // 1
@@ -484,7 +484,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
               Label nextArgBranch = il.DefineLabel();
               // complex definition because of special properties of NaN  
               il.Emit(System.Reflection.Emit.OpCodes.Dup);
-              il.Emit(System.Reflection.Emit.OpCodes.Ldc_I4_0); // <= 0        
+              il.Emit(System.Reflection.Emit.OpCodes.Ldc_R8, 0.0); // <= 0        
               il.Emit(System.Reflection.Emit.OpCodes.Ble, nextArgBranch);
               il.Emit(System.Reflection.Emit.OpCodes.Br, resultBranch);
               il.MarkLabel(nextArgBranch);
@@ -492,7 +492,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
               CompileInstructions(il, state, ds);
             }
             il.MarkLabel(resultBranch);
-            il.Emit(System.Reflection.Emit.OpCodes.Ldc_I4_0); // > 0
+            il.Emit(System.Reflection.Emit.OpCodes.Ldc_R8, 0.0); // > 0
             il.Emit(System.Reflection.Emit.OpCodes.Cgt);
             il.Emit(System.Reflection.Emit.OpCodes.Brtrue, trueBranch);
             il.Emit(System.Reflection.Emit.OpCodes.Ldc_R8, 1.0); // -1
@@ -505,7 +505,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           }
         case OpCodes.NOT: {
             CompileInstructions(il, state, ds);
-            il.Emit(System.Reflection.Emit.OpCodes.Ldc_I4_0); // > 0
+            il.Emit(System.Reflection.Emit.OpCodes.Ldc_R8, 0.0); // > 0
             il.Emit(System.Reflection.Emit.OpCodes.Cgt);
             il.Emit(System.Reflection.Emit.OpCodes.Conv_R8); // convert to float64
             il.Emit(System.Reflection.Emit.OpCodes.Ldc_R8, 2.0); // * 2
@@ -517,12 +517,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           }
         case OpCodes.XOR: {
             CompileInstructions(il, state, ds);
-            il.Emit(System.Reflection.Emit.OpCodes.Ldc_I4_0);
+            il.Emit(System.Reflection.Emit.OpCodes.Ldc_R8, 0.0);
             il.Emit(System.Reflection.Emit.OpCodes.Cgt);// > 0
 
             for (int i = 1; i < nArgs; i++) {
               CompileInstructions(il, state, ds);
-              il.Emit(System.Reflection.Emit.OpCodes.Ldc_I4_0);
+              il.Emit(System.Reflection.Emit.OpCodes.Ldc_R8, 0.0);
               il.Emit(System.Reflection.Emit.OpCodes.Cgt);// > 0
               il.Emit(System.Reflection.Emit.OpCodes.Xor);
             }

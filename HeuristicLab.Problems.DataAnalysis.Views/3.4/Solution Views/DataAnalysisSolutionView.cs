@@ -24,11 +24,11 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using HEAL.Attic;
 using HeuristicLab.Core;
 using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
 using HeuristicLab.Optimization;
-using HeuristicLab.Persistence.Default.Xml;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Problems.DataAnalysis.Views {
@@ -125,7 +125,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     protected virtual void loadProblemDataButton_Click(object sender, EventArgs e) {
       if (loadProblemDataFileDialog.ShowDialog(this) != DialogResult.OK) return;
       try {
-        object hlFile = XmlParser.Deserialize(loadProblemDataFileDialog.FileName);
+        var ser = new ProtoBufSerializer();
+        object hlFile = ser.Deserialize(loadProblemDataFileDialog.FileName);
 
         IDataAnalysisProblemData problemData = null;
         if (hlFile is IDataAnalysisProblemData) {
@@ -144,11 +145,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         if (!solution.Name.EndsWith(" with loaded problemData"))
           solution.Name += " with loaded problemData";
         MainFormManager.MainForm.ShowContent(solution);
-      }
-      catch (InvalidOperationException invalidOperationException) {
+      } catch (InvalidOperationException invalidOperationException) {
         ErrorHandling.ShowErrorDialog(this, invalidOperationException);
-      }
-      catch (ArgumentException argumentException) {
+      } catch (ArgumentException argumentException) {
         ErrorHandling.ShowErrorDialog(this, argumentException);
       }
     }
@@ -234,11 +233,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
           Content.Name += " with changed problemData";
         Content.Filename = string.Empty;
         MainFormManager.GetMainForm<HeuristicLab.MainForm.WindowsForms.MainForm>().UpdateTitle();
-      }
-      catch (InvalidOperationException invalidOperationException) {
+      } catch (InvalidOperationException invalidOperationException) {
         ErrorHandling.ShowErrorDialog(this, invalidOperationException);
-      }
-      catch (ArgumentException argumentException) {
+      } catch (ArgumentException argumentException) {
         ErrorHandling.ShowErrorDialog(this, argumentException);
       }
     }

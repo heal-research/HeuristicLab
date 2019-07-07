@@ -21,11 +21,11 @@
 
 using System.IO;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Algorithms.LocalSearch;
 using HeuristicLab.Algorithms.VariableNeighborhoodSearch;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
-using HeuristicLab.Persistence.Default.Xml;
 using HeuristicLab.Problems.TravelingSalesman;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -33,6 +33,7 @@ namespace HeuristicLab.Tests {
   [TestClass]
   public class VnsTspSampleTest {
     private const string SampleFileName = "VNS_TSP";
+    private static readonly ProtoBufSerializer serializer = new ProtoBufSerializer();
 
     [TestMethod]
     [TestCategory("Samples.Create")]
@@ -40,7 +41,7 @@ namespace HeuristicLab.Tests {
     public void CreateVnsTspSampleTest() {
       var vns = CreateVnsTspSample();
       string path = Path.Combine(SamplesUtils.SamplesDirectory, SampleFileName + SamplesUtils.SampleFileExtension);
-      XmlGenerator.Serialize(vns, path);
+      serializer.Serialize(vns, path);
     }
     [TestMethod]
     [TestCategory("Samples.Execute")]

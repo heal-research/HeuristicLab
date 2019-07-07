@@ -33,7 +33,7 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
 
   /// <summary>
   /// Intended for serialization of all custom classes. Classes should have the
-  /// <c>[StorableClass]</c> attribute set. The default mode is to serialize
+  /// <c>[StorableType]</c> attribute set. The default mode is to serialize
   /// members with the <c>[Storable]</c> attribute set. Alternatively the
   /// storable mode can be set to <c>AllFields</c>, <c>AllProperties</c>
   /// or <c>AllFieldsAndAllProperties</c>.

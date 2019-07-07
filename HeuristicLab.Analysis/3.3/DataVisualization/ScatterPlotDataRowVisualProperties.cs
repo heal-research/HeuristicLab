@@ -32,6 +32,7 @@ namespace HeuristicLab.Analysis {
   [StorableType("3336A12E-A464-438E-9A37-B87790AE963A")]
   public class ScatterPlotDataRowVisualProperties : DeepCloneable, INotifyPropertyChanged {
     #region PointStyle
+    [StorableType("45ED097C-3523-46B7-8D04-DA193833A899")]
     public enum ScatterPlotDataRowPointStyle {
       Circle,
       Cross,
@@ -45,6 +46,7 @@ namespace HeuristicLab.Analysis {
     }
     #endregion
     #region
+    [StorableType("4EFF1DC9-C74C-474C-81E4-0AF8E336438E")]
     public enum ScatterPlotDataRowRegressionType {
       None,
       Linear,

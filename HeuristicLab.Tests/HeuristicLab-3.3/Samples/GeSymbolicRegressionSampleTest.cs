@@ -21,8 +21,8 @@
 
 using System.IO;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm;
-using HeuristicLab.Persistence.Default.Xml;
 using HeuristicLab.Problems.DataAnalysis.Symbolic;
 using HeuristicLab.Problems.Instances.DataAnalysis;
 using HeuristicLab.Selection;
@@ -31,6 +31,9 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace HeuristicLab.Tests {
   [TestClass]
   public class GeSymbolicRegressionSampleTest {
+
+    private static readonly ProtoBufSerializer serializer = new ProtoBufSerializer();
+
     #region artificial ant
     private const string GeArtificialAntSampleFileName = "GE_ArtificialAnt";
 
@@ -40,7 +43,7 @@ namespace HeuristicLab.Tests {
     public void CreateGeArtificialAntSampleTest() {
       var geaa = CreateGeArtificialAntSample();
       string path = Path.Combine(SamplesUtils.SamplesDirectory, GeArtificialAntSampleFileName + SamplesUtils.SampleFileExtension);
-      XmlGenerator.Serialize(geaa, path);
+      serializer.Serialize(geaa, path);
     }
 
     [TestMethod]
@@ -79,7 +82,7 @@ namespace HeuristicLab.Tests {
     public void CreateGeSymbolicRegressionSampleTest() {
       var geSymbReg = CreateGeSymbolicRegressionSample();
       string path = Path.Combine(SamplesUtils.SamplesDirectory, GeSymbolicRegressionSampleFileName + SamplesUtils.SampleFileExtension);
-      XmlGenerator.Serialize(geSymbReg, path);
+      serializer.Serialize(geSymbReg, path);
     }
 
     [TestMethod]

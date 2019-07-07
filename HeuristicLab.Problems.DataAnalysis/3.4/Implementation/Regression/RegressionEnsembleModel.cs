@@ -72,7 +72,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
 
     #region backwards compatiblity 3.3.5
-    [Storable(Name = "models", AllowOneWay = true)]
+    [Storable(OldName = "models")]
     private List<IRegressionModel> OldStorableModels {
       set { models = value; }
     }

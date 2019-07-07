@@ -22,9 +22,9 @@
 using System;
 using System.IO;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Algorithms.ParticleSwarmOptimization;
 using HeuristicLab.Encodings.RealVectorEncoding;
-using HeuristicLab.Persistence.Default.Xml;
 using HeuristicLab.Problems.TestFunctions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -32,6 +32,7 @@ namespace HeuristicLab.Tests {
   [TestClass]
   public class PsoRastriginSampleTest {
     private const string SampleFileName = "PSO_Rastrigin";
+    private static readonly ProtoBufSerializer serializer = new ProtoBufSerializer();
 
     [TestMethod]
     [TestCategory("Samples.Create")]
@@ -39,7 +40,7 @@ namespace HeuristicLab.Tests {
     public void CreatePsoRastriginSampleTest() {
       var pso = CreatePsoRastriginSample();
       string path = Path.Combine(SamplesUtils.SamplesDirectory, SampleFileName + SamplesUtils.SampleFileExtension);
-      XmlGenerator.Serialize(pso, path);
+      serializer.Serialize(pso, path);
     }
     [TestMethod]
     [TestCategory("Samples.Execute")]

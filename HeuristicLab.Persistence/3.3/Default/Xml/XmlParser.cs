@@ -287,5 +287,22 @@ namespace HeuristicLab.Persistence.Default.Xml {
         throw new PersistenceException("Unexpected exception during deserialization", e);
       }
     }
+
+    /// <summary>
+    /// Checks if the given file can be opened as <see cref="ZipArchive" />.
+    /// </summary>
+    /// <param name="filename">The filename.</param>
+    /// <returns><see langword="true" /> if the file can be opened as <see cref="ZipArchive" />; otherwise, <see langword="false" />.</returns>
+    public static bool CanOpen(string filename) {
+      try {
+        using (FileStream fs = new FileStream(filename, FileMode.Open, FileAccess.Read)) {
+          using (ZipArchive zip = new ZipArchive(fs)) {
+            return true;
+          }
+        }
+      } catch (InvalidDataException) {
+        return false;
+      }
+    }
   }
 }
