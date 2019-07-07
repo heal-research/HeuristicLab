@@ -32,7 +32,27 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     private readonly static Dictionary<string, string> symbolNameMap = new Dictionary<string, string>() {
       // match Koza style
       {"ProgramRootSymbol", "Prog"},
-      {"StartSymbol", "RPB"}, 
+      {"StartSymbol", "RPB"},
+
+      // short form 
+      {"Subtraction", "-" },
+      {"Addition", "+" },
+      {"Multiplication", "*" },
+      {"Division", "/" },
+      {"Absolute", "abs" },
+      {"AnalyticQuotient", "AQ" },
+      {"Sine", "sin" },
+      {"Cosine", "cos" },
+      {"Tanget", "tan" },
+      {"HyperbolicTangent", "tanh" },
+      {"Exponential", "exp" },
+      {"Logarithm", "log" },
+      {"SquareRoot", "sqrt" },
+      {"Square", "sqr" },
+      {"CubeRoot", "cbrt" },
+      {"Cube", "cube" },
+      {"GreaterThan", ">" },
+      {"LessThan", "<" },
     };
 
     public SymbolicExpressionTreeGraphvizFormatter()

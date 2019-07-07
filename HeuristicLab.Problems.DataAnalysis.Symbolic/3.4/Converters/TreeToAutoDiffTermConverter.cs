@@ -91,6 +91,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       diff: x => Math.Sign(x)
       );
 
+    private static readonly Func<Term, UnaryFunc> cbrt = UnaryFunc.Factory(
+      eval: x => x < 0 ? -Math.Pow(-x, 1.0 / 3) : Math.Pow(x, 1.0 / 3),
+      diff: x => { var cbrt_x = x < 0 ? -Math.Pow(-x, 1.0 / 3) : Math.Pow(x, 1.0 / 3); return 1.0 / (3 * cbrt_x * cbrt_x); }
+      );
+
+
+
     #endregion
 
     public static bool TryConvertToAutoDiff(ISymbolicExpressionTree tree, bool makeVariableWeightsVariable, bool addLinearScalingTerms,
@@ -249,8 +256,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           ConvertToAutoDiff(node.GetSubtree(0)), 3.0);
       }
       if (node.Symbol is CubeRoot) {
-        return AutoDiff.TermBuilder.Power(
-          ConvertToAutoDiff(node.GetSubtree(0)), 1.0/3.0);
+        return cbrt(ConvertToAutoDiff(node.GetSubtree(0)));
       }
       if (node.Symbol is Sine) {
         return sin(
