@@ -68,18 +68,18 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     public void ClearState() { }
     #endregion
 
-    public Interval GetSymbolicExressionTreeInterval(ISymbolicExpressionTree tree, IDataset dataset, IEnumerable<int> rows = null) {
+    public Interval GetSymbolicExpressionTreeInterval(ISymbolicExpressionTree tree, IDataset dataset, IEnumerable<int> rows = null) {
       var variableRanges = DatasetUtil.GetVariableRanges(dataset, rows);
-      return GetSymbolicExressionTreeInterval(tree, variableRanges);
+      return GetSymbolicExpressionTreeInterval(tree, variableRanges);
     }
 
-    public Interval GetSymbolicExressionTreeIntervals(ISymbolicExpressionTree tree, IDataset dataset,
-      out Dictionary<ISymbolicExpressionTreeNode, Interval> nodeIntervals, IEnumerable<int> rows = null) {
+    public Interval GetSymbolicExpressionTreeIntervals(ISymbolicExpressionTree tree, IDataset dataset,
+      out IDictionary<ISymbolicExpressionTreeNode, Interval> nodeIntervals, IEnumerable<int> rows = null) {
       var variableRanges = DatasetUtil.GetVariableRanges(dataset, rows);
-      return GetSymbolicExressionTreeIntervals(tree, variableRanges, out nodeIntervals);
+      return GetSymbolicExpressionTreeIntervals(tree, variableRanges, out nodeIntervals);
     }
 
-    public Interval GetSymbolicExressionTreeInterval(ISymbolicExpressionTree tree, Dictionary<string, Interval> variableRanges) {
+    public Interval GetSymbolicExpressionTreeInterval(ISymbolicExpressionTree tree, IDictionary<string, Interval> variableRanges) {
       lock (syncRoot) {
         EvaluatedSolutions++;
       }
@@ -87,12 +87,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       var instructions = PrepareInterpreterState(tree, variableRanges);
       var outputInterval = Evaluate(instructions, ref instructionCount);
 
-      return outputInterval;
+      // because of numerical errors the bounds might be incorrect
+      if (outputInterval.LowerBound <= outputInterval.UpperBound)
+        return outputInterval;
+      else
+        return new Interval(outputInterval.UpperBound, outputInterval.LowerBound);
     }
 
 
-    public Interval GetSymbolicExressionTreeIntervals(ISymbolicExpressionTree tree,
-      Dictionary<string, Interval> variableRanges, out Dictionary<ISymbolicExpressionTreeNode, Interval> nodeIntervals) {
+    public Interval GetSymbolicExpressionTreeIntervals(ISymbolicExpressionTree tree,
+      IDictionary<string, Interval> variableRanges, out IDictionary<ISymbolicExpressionTreeNode, Interval> nodeIntervals) {
       lock (syncRoot) {
         EvaluatedSolutions++;
       }
@@ -101,13 +105,25 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       var instructions = PrepareInterpreterState(tree, variableRanges);
       var outputInterval = Evaluate(instructions, ref instructionCount, intervals);
 
-      nodeIntervals = intervals;
+      // fix incorrect intervals if necessary (could occur because of numerical errors)
+      nodeIntervals = new Dictionary<ISymbolicExpressionTreeNode, Interval>();
+      foreach (var kvp in intervals) {
+        var interval = kvp.Value;
+        if (interval.IsInfiniteOrUndefined || interval.LowerBound <= interval.UpperBound)
+          nodeIntervals.Add(kvp.Key, interval);
+        else
+          nodeIntervals.Add(kvp.Key, new Interval(interval.UpperBound, interval.LowerBound));
+      }
 
-      return outputInterval;
+      // because of numerical errors the bounds might be incorrect
+      if (outputInterval.IsInfiniteOrUndefined || outputInterval.LowerBound <= outputInterval.UpperBound)
+        return outputInterval;
+      else
+        return new Interval(outputInterval.UpperBound, outputInterval.LowerBound);
     }
 
 
-    private static Instruction[] PrepareInterpreterState(ISymbolicExpressionTree tree, Dictionary<string, Interval> variableRanges) {
+    private static Instruction[] PrepareInterpreterState(ISymbolicExpressionTree tree, IDictionary<string, Interval> variableRanges) {
       if (variableRanges == null)
         throw new ArgumentNullException("No variablew ranges are present!", nameof(variableRanges));
 
@@ -124,7 +140,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       return code;
     }
 
-    private Interval Evaluate(Instruction[] instructions, ref int instructionCounter, Dictionary<ISymbolicExpressionTreeNode, Interval> nodeIntervals = null) {
+    private Interval Evaluate(Instruction[] instructions, ref int instructionCounter, IDictionary<ISymbolicExpressionTreeNode, Interval> nodeIntervals = null) {
       Instruction currentInstr = instructions[instructionCounter];
       //Use ref parameter, because the tree will be iterated through recursively from the left-side branch to the right side
       //Update instructionCounter, whenever Evaluate is called
@@ -199,6 +215,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         case OpCodes.Tan: {
             var argumentInterval = Evaluate(instructions, ref instructionCounter, nodeIntervals);
             result = Interval.Tangens(argumentInterval);
+            break;
+          }
+        case OpCodes.Tanh: {
+            var argumentInterval = Evaluate(instructions, ref instructionCounter, nodeIntervals);
+            result = Interval.HyperbolicTangent(argumentInterval);
             break;
           }
         //Exponential functions

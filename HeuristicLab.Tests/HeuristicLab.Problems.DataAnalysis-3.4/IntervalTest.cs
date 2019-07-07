@@ -1,5 +1,4 @@
 ﻿using System;
-using HeuristicLab.Problems.DataAnalysis;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace HeuristicLab.Problems.DataAnalysis.Tests {
@@ -51,6 +50,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
       Assert.AreEqual<Interval>(Interval.Multiply(Interval.Multiply(a, b), c), new Interval(-6, 6));
       //([-1, 1] * [0, 3]) * [-2, 2] = [-6, 6]
       Assert.AreEqual<Interval>(Interval.Multiply(Interval.Multiply(a, c), b), new Interval(-6, 6));
+
+      // [-2, 0] * [-2, 0]  = [0, 4]
+      Assert.AreEqual<Interval>(new Interval(0, 4), Interval.Multiply(new Interval(-2, 0), new Interval(-2, 0)));
     }
 
     [TestMethod]
@@ -122,6 +124,41 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
     public void TestIntervalExpOperator() {
       //Exp([0, 1]) = [exp(0), exp(1)]
       Assert.AreEqual<Interval>(new Interval(1, Math.Exp(1)), Interval.Exponential(new Interval(0, 1)));
+    }
+
+
+    [TestMethod]
+    [TestCategory("Problems.DataAnalysis")]
+    [TestProperty("Time", "short")]
+    public void TestIntervalSqrOperator() {
+      Assert.AreEqual<Interval>(new Interval(1, 4), Interval.Square(new Interval(1, 2)));
+      Assert.AreEqual<Interval>(new Interval(1, 4), Interval.Square(new Interval(-2, -1)));
+      Assert.AreEqual<Interval>(new Interval(0, 4), Interval.Square(new Interval(-2, 2)));
+    }
+
+    [TestMethod]
+    [TestCategory("Problems.DataAnalysis")]
+    [TestProperty("Time", "short")]
+    public void TestIntervalSqrtOperator() {
+      Assert.AreEqual<Interval>(new Interval(1, 2), Interval.SquareRoot(new Interval(1, 4)));
+      Assert.AreEqual<Interval>(new Interval(double.NaN, double.NaN), Interval.SquareRoot(new Interval(-4, -1)));
+    }
+
+    [TestMethod]
+    [TestCategory("Problems.DataAnalysis")]
+    [TestProperty("Time", "short")]
+    public void TestIntervalCubeOperator() {
+      Assert.AreEqual<Interval>(new Interval(1, 8), Interval.Cube(new Interval(1, 2)));
+      Assert.AreEqual<Interval>(new Interval(-8, -1), Interval.Cube(new Interval(-2, -1)));
+      Assert.AreEqual<Interval>(new Interval(-8, 8), Interval.Cube(new Interval(-2, 2)));
+    }
+
+    [TestMethod]
+    [TestCategory("Problems.DataAnalysis")]
+    [TestProperty("Time", "short")]
+    public void TestIntervalCbrtOperator() {
+      Assert.AreEqual<Interval>(new Interval(1, 2), Interval.CubicRoot(new Interval(1, 8)));
+      Assert.AreEqual<Interval>(new Interval(double.NaN, double.NaN), Interval.CubicRoot(new Interval(-8, -1)));
     }
   }
 }

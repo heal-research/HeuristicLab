@@ -123,7 +123,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       double v4 = a.UpperBound * b.UpperBound;
 
       double min = Math.Min(Math.Min(v1, v2), Math.Min(v3, v4));
-      double max = Math.Max(Math.Min(v1, v2), Math.Max(v3, v4));
+      double max = Math.Max(Math.Max(v1, v2), Math.Max(v3, v4));
       return new Interval(min, max);
     }
 
@@ -166,10 +166,13 @@ namespace HeuristicLab.Problems.DataAnalysis {
       return new Interval(sinValues.Min(), sinValues.Max());
     }
     public static Interval Cosine(Interval a) {
-      return Interval.Sine(Interval.Subtract(a, new Interval(Math.PI / 2, Math.PI / 2)));
+      return Interval.Sine(Interval.Add(a, new Interval(Math.PI / 2, Math.PI / 2)));
     }
     public static Interval Tangens(Interval a) {
       return Interval.Divide(Interval.Sine(a), Interval.Cosine(a));
+    }  
+    public static Interval HyperbolicTangent(Interval a) {
+      return new Interval(Math.Tanh(a.LowerBound), Math.Tanh(a.UpperBound));
     }
 
     public static Interval Logarithm(Interval a) {
@@ -200,11 +203,13 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
 
     public static Interval Square(Interval a) {
-      return Power(a, new Interval(2, 2));
+      if (a.UpperBound <= 0) return new Interval(a.UpperBound * a.UpperBound, a.LowerBound * a.LowerBound);     // interval is negative
+      else if (a.LowerBound >= 0) return new Interval(a.LowerBound * a.LowerBound, a.UpperBound * a.UpperBound); // interval is positive
+      else return new Interval(0, Math.Max(a.LowerBound*a.LowerBound, a.UpperBound*a.UpperBound)); // interval goes over zero
     }
 
-    public static Interval Cubic(Interval a) {
-      return Power(a, new Interval(3, 3));
+    public static Interval Cube(Interval a) {
+      return new Interval(Math.Pow(a.LowerBound, 3), Math.Pow(a.UpperBound, 3));
     }
 
     public static Interval Root(Interval a, Interval b) {
@@ -215,11 +220,13 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
 
     public static Interval SquareRoot(Interval a) {
-      return Root(a, new Interval(2, 2));
+      if (a.LowerBound < 0) return new Interval(double.NaN, double.NaN);
+      return new Interval(Math.Sqrt(a.LowerBound), Math.Sqrt(a.UpperBound));
     }
 
     public static Interval CubicRoot(Interval a) {
-      return Root(a, new Interval(3, 3));
+      if (a.LowerBound < 0) return new Interval(double.NaN, double.NaN);
+      return new Interval(Math.Pow(a.LowerBound, 1.0/3), Math.Pow(a.UpperBound, 1.0/3));
     }
     #endregion
   }
