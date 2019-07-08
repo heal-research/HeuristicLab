@@ -22,11 +22,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 
 namespace HeuristicLab.Optimization {
   [StorableType("2697320D-0259-44BB-BD71-7EE1B10F664C")]
@@ -94,7 +94,6 @@ namespace HeuristicLab.Optimization {
     }
 
     protected override void OnOperatorsChanged() {
-      base.OnOperatorsChanged();
       if (Encoding != null) {
         PruneMultiObjectiveOperators(Encoding);
         var multiEncoding = Encoding as MultiEncoding;
@@ -104,6 +103,7 @@ namespace HeuristicLab.Optimization {
           }
         }
       }
+      base.OnOperatorsChanged();
     }
 
     private void PruneMultiObjectiveOperators(IEncoding encoding) {

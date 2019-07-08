@@ -20,11 +20,11 @@
 #endregion
 
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 
 namespace HeuristicLab.Optimization {
   [StorableType("6F2EC371-0309-4848-B7B1-C9B9C7E3436F")]
@@ -58,7 +58,6 @@ namespace HeuristicLab.Optimization {
     public virtual void Analyze(Individual[] individuals, double[][] qualities, ResultCollection results, IRandom random) { }
     
     protected override void OnOperatorsChanged() {
-      base.OnOperatorsChanged();
       if (Encoding != null) {
         PruneSingleObjectiveOperators(Encoding);
         var multiEncoding = Encoding as MultiEncoding;
@@ -68,6 +67,7 @@ namespace HeuristicLab.Optimization {
           }
         }
       }
+      base.OnOperatorsChanged();
     }
 
     private void PruneSingleObjectiveOperators(IEncoding encoding) {
