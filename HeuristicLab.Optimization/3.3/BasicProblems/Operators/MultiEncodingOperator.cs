@@ -22,11 +22,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 
 namespace HeuristicLab.Optimization {
   [StorableType("43619638-9D00-4951-8138-8CCD0786E784")]
@@ -38,38 +38,49 @@ namespace HeuristicLab.Optimization {
       set { encodings = new List<IEncoding>(value); }
     }
 
-    [StorableConstructor]
-    protected MultiEncodingOperator(StorableConstructorFlag _) : base(_) {
-    }
+    public abstract string OperatorPrefix { get; }
 
+    [StorableConstructor]
+    protected MultiEncodingOperator(StorableConstructorFlag _) : base(_) { }
     protected MultiEncodingOperator(MultiEncodingOperator<T> original, Cloner cloner)
       : base(original, cloner) {
       encodings = new List<IEncoding>(original.encodings.Select(cloner.Clone));
       foreach (var encoding in encodings)
         encoding.OperatorsChanged += Encoding_OperatorsChanged;
     }
-
     protected MultiEncodingOperator() : base() { }
 
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
-      foreach (var encoding in encodings)
+      foreach (var encoding in encodings) {
+        // BackwardsCompatibility3.3
+        #region Backwards compatible code, remove with 3.4
+        if (Parameters.ContainsKey(encoding.Name) && !Parameters.ContainsKey(OperatorPrefix + "." + encoding.Name)) {
+          var oldParam = (IConstrainedValueParameter<T>)Parameters[encoding.Name];
+          var selected = oldParam.Value;
+          Parameters.Remove(oldParam);
+          var newParam = new ConstrainedValueParameter<T>(OperatorPrefix + "." + encoding.Name, new ItemSet<T>(oldParam.ValidValues));
+          newParam.Value = selected;
+          Parameters.Add(newParam);
+          oldParam.ValidValues.Clear();
+        }
+        #endregion
         encoding.OperatorsChanged += Encoding_OperatorsChanged;
+      }
     }
 
-
     public override IOperation Apply() {
-      var operations = Parameters.Select(p => p.ActualValue).OfType<IOperator>().Select(op => ExecutionContext.CreateOperation(op));
+      var operations = Parameters.Select(p => p.ActualValue).OfType<IOperator>().Select(op => ExecutionContext.CreateChildOperation(op));
       return new OperationCollection(operations);
     }
 
     public virtual void AddEncoding(IEncoding encoding) {
-      if (Parameters.ContainsKey(encoding.Name)) throw new ArgumentException(string.Format("Encoding {0} was already added.", encoding.Name));
+      if (Parameters.ContainsKey(OperatorPrefix + "." + encoding.Name)) throw new ArgumentException(string.Format("Encoding {0} was already added.", encoding.Name));
 
       encodings.Add(encoding);
       encoding.OperatorsChanged += Encoding_OperatorsChanged;
 
-      var param = new ConstrainedValueParameter<T>(encoding.Name, new ItemSet<T>(encoding.Operators.OfType<T>()));
+      var param = new ConstrainedValueParameter<T>(OperatorPrefix + "." + encoding.Name, new ItemSet<T>(encoding.Operators.OfType<T>()));
       param.Value = param.ValidValues.First();
       Parameters.Add(param);
     }
@@ -77,13 +88,13 @@ namespace HeuristicLab.Optimization {
     public virtual bool RemoveEncoding(IEncoding encoding) {
       if (!encodings.Remove(encoding)) throw new ArgumentException(string.Format("Encoding {0} was not added to the MultiEncoding.", encoding.Name));
       encoding.OperatorsChanged -= Encoding_OperatorsChanged;
-      return Parameters.Remove(encoding.Name);
+      return Parameters.Remove(OperatorPrefix + "." + encoding.Name);
     }
 
     protected IConstrainedValueParameter<T> GetParameter(IEncoding encoding) {
-      if (!Parameters.ContainsKey(encoding.Name)) throw new ArgumentException(string.Format("Encoding {0} was not added to the MultiEncoding.", encoding.Name));
+      if (!Parameters.ContainsKey(OperatorPrefix + "." + encoding.Name)) throw new ArgumentException(string.Format("Encoding {0} was not added to the MultiEncoding.", encoding.Name));
 
-      return (IConstrainedValueParameter<T>)Parameters[encoding.Name];
+      return (IConstrainedValueParameter<T>)Parameters[OperatorPrefix + "." + encoding.Name];
     }
 
     private void Encoding_OperatorsChanged(object sender, EventArgs e) {

@@ -19,19 +19,35 @@
  */
 #endregion
 
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HEAL.Attic;
+using HeuristicLab.Parameters;
 
 namespace HeuristicLab.Optimization {
   [Item("MultiEncoding Crossover", "Applies different crossovers to cross a multi-encoding.")]
   [StorableType("BB0A04E2-899D-460C-82A2-5E4CEEDE8996")]
-  public sealed class MultiEncodingCrossover : MultiEncodingOperator<ICrossover>, ICrossover {
+  public sealed class MultiEncodingCrossover : MultiEncodingOperator<ICrossover>, ICrossover, IStochasticOperator {
+    public ILookupParameter<IRandom> RandomParameter {
+      get { return (ILookupParameter<IRandom>)Parameters["Random"]; }
+    }
+
+    public override string OperatorPrefix => "Crossover";
+
     [StorableConstructor]
     private MultiEncodingCrossover(StorableConstructorFlag _) : base(_) { }
     private MultiEncodingCrossover(MultiEncodingCrossover original, Cloner cloner) : base(original, cloner) { }
-    public MultiEncodingCrossover() { }
+    public MultiEncodingCrossover() {
+      Parameters.Add(new LookupParameter<IRandom>("Random", "The random number generator used by the individual operators."));
+    }
 
     public override IDeepCloneable Clone(Cloner cloner) { return new MultiEncodingCrossover(this, cloner); }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      if (!Parameters.ContainsKey("Random")) {
+        Parameters.Add(new LookupParameter<IRandom>("Random", "The random number generator used by the individual operators."));
+      }
+    }
   }
 }
