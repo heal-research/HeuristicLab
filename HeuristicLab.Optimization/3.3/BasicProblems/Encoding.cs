@@ -22,10 +22,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 
 namespace HeuristicLab.Optimization {
   [Item("Encoding", "Base class for describing different encodings.")]
@@ -91,7 +91,9 @@ namespace HeuristicLab.Optimization {
     }
     protected Encoding(string name)
       : base(name) {
-      Parameters.Add(new FixedValueParameter<ReadOnlyItemSet<IOperator>>(name + ".Operators", "The operators that the encoding specifies.", encodingOperators.AsReadOnly()));
+      Parameters.Add(new FixedValueParameter<ReadOnlyItemSet<IOperator>>(name + ".Operators", "The operators that the encoding specifies.", encodingOperators.AsReadOnly()) {
+        GetsCollected = false
+      });
     }
 
     public virtual Individual GetIndividual(IScope scope) {
