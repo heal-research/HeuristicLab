@@ -103,10 +103,9 @@ namespace HeuristicLab.Core.Views {
       viewHost.Content = null;
       if (Content != null) {
         Caption += " (" + Content.GetType().Name + ")";
-        foreach (T item in Content)
+        foreach (T item in Content.OrderBy(x => x.ToString()))
           AddListViewItem(CreateListViewItem(item));
         AdjustListViewColumnSizes();
-        SortItemsListView(SortOrder.Ascending);
       }
     }
 
