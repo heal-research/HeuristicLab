@@ -1,0 +1,18 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="HeuristicLab.ExactOptimization.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="ScipLibraryName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">scip.dll</Value>
+    </Setting>
+    <Setting Name="CplexLibraryName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">cplex1280.dll</Value>
+    </Setting>
+    <Setting Name="GlpkLibraryName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">glpk_4_65.dll</Value>
+    </Setting>
+    <Setting Name="GurobiLibraryName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">gurobi81.dll</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

@@ -1,0 +1,230 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{FA3B9270-48B7-4C77-9FEA-2A6EDE82E909}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>HeuristicLab.ExactOptimization</RootNamespace>
+    <AssemblyName>HeuristicLab.ExactOptimization-3.3</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>HeuristicLab.snk</AssemblyOriginatorKeyFile>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <LangVersion>default</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Google.OrTools, Version=6.9.5866.0, Culture=neutral, PublicKeyToken=5d849a56a8afc8c7, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\bin\Google.OrTools.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="HEAL.Attic, Version=1.0.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\bin\HEAL.Attic.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="LinearProgramming\Algorithms\ResultStatus.cs" />
+    <Compile Include="LinearProgramming\Algorithms\Solvers\BopSolver.cs" />
+    <Compile Include="LinearProgramming\Algorithms\Solvers\CoinOrSolver.cs" />
+    <Compile Include="LinearProgramming\Algorithms\Solvers\Base\ExternalLinearSolver.cs" />
+    <Compile Include="LinearProgramming\Algorithms\Solvers\GlopSolver.cs" />
+    <Compile Include="LinearProgramming\Algorithms\Solvers\GlpkSolver.cs" />
+    <Compile Include="LinearProgramming\Algorithms\Solvers\Base\IExternalLinearSolver.cs" />
+    <Compile Include="LinearProgramming\Algorithms\Solvers\Base\IIncrementalLinearSolver.cs" />
+    <Compile Include="LinearProgramming\Algorithms\Solvers\Base\ExternalIncrementalLinearSolver.cs" />
+    <Compile Include="LinearProgramming\Algorithms\Solvers\Base\IncrementalLinearSolver.cs" />
+    <Compile Include="LinearProgramming\Algorithms\ProblemType.cs" />
+    <Compile Include="LinearProgramming\Algorithms\Solvers\ScipSolver.cs" />
+    <Compile Include="LinearProgramming\Problems\CompiledProblemDefinition.cs" />
+    <Compile Include="LinearProgramming\Problems\FileBasedLinearProblemDefinition.cs" />
+    <Compile Include="LinearProgramming\Problems\LinearProblem.cs" />
+    <Compile Include="LinearProgramming\Algorithms\Solvers\CplexSolver.cs" />
+    <Compile Include="LinearProgramming\Algorithms\Solvers\GurobiSolver.cs" />
+    <Compile Include="LinearProgramming\Algorithms\Solvers\Base\ILinearSolver.cs" />
+    <Compile Include="LinearProgramming\Problems\ILinearProblemDefinition.cs" />
+    <Compile Include="LinearProgramming\Algorithms\LinearProgrammingAlgorithm.cs" />
+    <Compile Include="LinearProgramming\Algorithms\LinearSolverExtensions.cs" />
+    <Compile Include="LinearProgramming\Algorithms\Solvers\Base\LinearSolver.cs" />
+    <Compile Include="LinearProgramming\Problems\ProgrammableLinearProblemDefinition.cs" />
+    <Compile Include="LinearProgramming\Algorithms\ProtoWriteFormat.cs" />
+    <Compile Include="LinearProgramming\Algorithms\SolverResponseStatus.cs" />
+    <Resource Include="LinearProgramming\Templates\CompiledLinearProblemDefinition.cs" />
+    <Compile Include="LinearProgramming\Templates\ScriptTemplates.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ScriptTemplates.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+    <None Include="app.config">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Plugin.cs.frame" />
+    <Compile Include="Plugin.cs" />
+    <None Include="Properties\AssemblyInfo.cs.frame" />
+    <None Include="Properties\Settings.settings">
+      <Generator>PublicSettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="HeuristicLab.snk" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="LinearProgramming\Templates\ScriptTemplates.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <SubType>Designer</SubType>
+      <LastGenOutput>ScriptTemplates.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\HeuristicLab.Analysis\3.3\HeuristicLab.Analysis-3.3.csproj">
+      <Project>{887425B4-4348-49ED-A457-B7D2C26DDBF9}</Project>
+      <Name>HeuristicLab.Analysis-3.3</Name>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Collections\3.3\HeuristicLab.Collections-3.3.csproj">
+      <Project>{958B43BC-CC5C-4FA2-8628-2B3B01D890B6}</Project>
+      <Name>HeuristicLab.Collections-3.3</Name>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Common.Resources\3.3\HeuristicLab.Common.Resources-3.3.csproj">
+      <Project>{0E27A536-1C4A-4624-A65E-DC4F4F23E3E1}</Project>
+      <Name>HeuristicLab.Common.Resources-3.3</Name>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Common\3.3\HeuristicLab.Common-3.3.csproj">
+      <Project>{A9AD58B9-3EF9-4CC1-97E5-8D909039FF5C}</Project>
+      <Name>HeuristicLab.Common-3.3</Name>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Core\3.3\HeuristicLab.Core-3.3.csproj">
+      <Project>{C36BD924-A541-4A00-AFA8-41701378DDC5}</Project>
+      <Name>HeuristicLab.Core-3.3</Name>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Data\3.3\HeuristicLab.Data-3.3.csproj">
+      <Project>{BBAB9DF5-5EF3-4BA8-ADE9-B36E82114937}</Project>
+      <Name>HeuristicLab.Data-3.3</Name>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Encodings.BinaryVectorEncoding\3.3\HeuristicLab.Encodings.BinaryVectorEncoding-3.3.csproj">
+      <Project>{66D249C3-A01D-42A8-82A2-919BC8EC3D83}</Project>
+      <Name>HeuristicLab.Encodings.BinaryVectorEncoding-3.3</Name>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Encodings.PermutationEncoding\3.3\HeuristicLab.Encodings.PermutationEncoding-3.3.csproj">
+      <Project>{DBECB8B0-B166-4133-BAF1-ED67C3FD7FCA}</Project>
+      <Name>HeuristicLab.Encodings.PermutationEncoding-3.3</Name>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Optimization\3.3\HeuristicLab.Optimization-3.3.csproj">
+      <Project>{14AB8D24-25BC-400C-A846-4627AA945192}</Project>
+      <Name>HeuristicLab.Optimization-3.3</Name>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Parameters\3.3\HeuristicLab.Parameters-3.3.csproj">
+      <Project>{56F9106A-079F-4C61-92F6-86A84C2D84B7}</Project>
+      <Name>HeuristicLab.Parameters-3.3</Name>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.PluginInfrastructure\3.3\HeuristicLab.PluginInfrastructure-3.3.csproj">
+      <Project>{94186A6A-5176-4402-AE83-886557B53CCA}</Project>
+      <Name>HeuristicLab.PluginInfrastructure-3.3</Name>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Problems.Knapsack\3.3\HeuristicLab.Problems.Knapsack-3.3.csproj">
+      <Project>{E10F395F-C8A6-48AD-B470-9AA7A1F43809}</Project>
+      <Name>HeuristicLab.Problems.Knapsack-3.3</Name>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Problems.Programmable\3.3\HeuristicLab.Problems.Programmable-3.3.csproj">
+      <Project>{EE07BFF8-B23D-41F5-8AD7-AC9598D7A2C9}</Project>
+      <Name>HeuristicLab.Problems.Programmable-3.3</Name>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Problems.TravelingSalesman\3.3\HeuristicLab.Problems.TravelingSalesman-3.3.csproj">
+      <Project>{D767C38D-8014-46B0-9A32-03A3AECCE34A}</Project>
+      <Name>HeuristicLab.Problems.TravelingSalesman-3.3</Name>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Scripting\3.3\HeuristicLab.Scripting-3.3.csproj">
+      <Project>{21977CC3-1757-4B3B-87BD-FF817AAA900F}</Project>
+      <Name>HeuristicLab.Scripting-3.3</Name>
+      <Private>True</Private>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>set Path=%25Path%25;$(ProjectDir);$(SolutionDir)
+set ProjectDir=$(ProjectDir)
+set SolutionDir=$(SolutionDir)
+set Outdir=$(Outdir)
+
+call PreBuildEvent.cmd</PreBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PostBuildEvent>copy /y "$(TargetPath)" "$(SolutionDir)\bin"
+copy /y "$(TargetPath).config" "$(SolutionDir)\bin"</PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
