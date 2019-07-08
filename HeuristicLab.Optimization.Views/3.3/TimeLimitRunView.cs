@@ -133,13 +133,13 @@ namespace HeuristicLab.Optimization.Views {
     #region Content events
     private void Content_PropertyChanged(object sender, PropertyChangedEventArgs e) {
       switch (e.PropertyName) {
-        case "MaximumExecutionTime":
+        case nameof(Content.MaximumExecutionTime):
           SuppressEvents = true;
           try {
             timeLimitTextBox.Text = TimeSpanHelper.FormatNatural(Content.MaximumExecutionTime);
           } finally { SuppressEvents = false; }
           break;
-        case "SnapshotTimes":
+        case nameof(Content.SnapshotTimes):
           SuppressEvents = true;
           try {
             if (Content.SnapshotTimes.Any())
@@ -152,25 +152,25 @@ namespace HeuristicLab.Optimization.Views {
             Content.SnapshotTimes.CollectionReset += Content_SnapshotTimes_Changed;
           } finally { SuppressEvents = false; }
           break;
-        case "StoreAlgorithmInEachSnapshot":
+        case nameof(Content.StoreAlgorithmInEachSnapshot):
           SuppressEvents = true;
           try {
             storeAlgorithmInEachSnapshotCheckBox.Checked = Content.StoreAlgorithmInEachSnapshot;
           } finally { SuppressEvents = false; }
           break;
-        case "Algorithm":
+        case nameof(Content.Algorithm):
           SuppressEvents = true;
           try {
             algorithmViewHost.Content = Content.Algorithm;
           } finally { SuppressEvents = false; }
           break;
-        case "Snapshots":
+        case nameof(Content.Snapshots):
           SuppressEvents = true;
           try {
             snapshotsView.Content = Content.Snapshots;
           } finally { SuppressEvents = false; }
           break;
-        case "Runs":
+        case nameof(Content.Runs):
           SuppressEvents = true;
           try {
             runsView.Content = Content.Runs;
