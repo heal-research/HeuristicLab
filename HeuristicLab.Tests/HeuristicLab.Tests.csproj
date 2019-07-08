@@ -591,6 +591,7 @@
     <Compile Include="HeuristicLab.Persistence.Attic\UseCases.cs" />
     <Compile Include="HeuristicLab.PluginInfraStructure-3.3\TypeExtensionsTest.cs" />
     <Compile Include="HeuristicLab.Problems.DataAnalysis-3.4\ClassificationVariableImpactCalculationTest.cs" />
+    <Compile Include="HeuristicLab.Problems.DataAnalysis-3.4\DatasetTest.cs" />
     <Compile Include="HeuristicLab.Problems.DataAnalysis-3.4\IntervalTest.cs" />
     <Compile Include="HeuristicLab.Problems.DataAnalysis-3.4\RegressionVariableImpactCalculationTest.cs" />
     <Compile Include="HeuristicLab.Problems.DataAnalysis-3.4\ThresholdCalculatorsTest.cs" />
