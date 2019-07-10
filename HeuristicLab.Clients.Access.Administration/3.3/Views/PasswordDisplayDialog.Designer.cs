@@ -75,6 +75,7 @@ namespace HeuristicLab.Clients.Access.Administration {
                   | System.Windows.Forms.AnchorStyles.Right)));
       this.passwordTextbox.Location = new System.Drawing.Point(102, 6);
       this.passwordTextbox.Name = "passwordTextbox";
+      this.passwordTextbox.ReadOnly = true;
       this.passwordTextbox.Size = new System.Drawing.Size(203, 20);
       this.passwordTextbox.TabIndex = 2;
       // 
