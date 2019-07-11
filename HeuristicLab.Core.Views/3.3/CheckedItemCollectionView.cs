@@ -83,7 +83,6 @@ namespace HeuristicLab.Core.Views {
     protected virtual void itemsListView_ItemCheck(object sender, ItemCheckEventArgs e) {
       if (doubleClick) {
         e.NewValue = e.CurrentValue;
-        doubleClick = false;
       } else {
         bool check = e.NewValue == CheckState.Checked;
         var checkedItem = (T)itemsListView.Items[e.Index].Tag;
@@ -103,8 +102,7 @@ namespace HeuristicLab.Core.Views {
       }
     }
     protected void itemsListView_MouseDown(object sender, MouseEventArgs e) {
-      if (e.Clicks > 1)
-        doubleClick = true;
+      doubleClick = e.Clicks > 1;
     }
     #endregion
 
