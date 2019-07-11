@@ -21,17 +21,16 @@
 
 using System;
 using System.Collections.Generic;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
-using HEAL.Attic;
 using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.DataPreprocessing {
   [Item("PreprocessingContext", "PreprocessingContext")]
   [StorableType("52D31B2B-7D48-482B-B875-5FCE0F8397A8")]
   public class PreprocessingContext : NamedItem {
-    public string Filename { get; set; }
 
     [Storable]
     public IFilteredPreprocessingData Data { get; private set; }
