@@ -44,7 +44,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       public bool IsLeaf => Arity == 0;
 
       public int CompareTo(HashNode<T> other) {
-        return CalculatedHashValue.CompareTo(other.CalculatedHashValue);
+        var res = HashValue.CompareTo(other.HashValue);
+        return res == 0 ? CalculatedHashValue.CompareTo(other.CalculatedHashValue) : res;
       }
 
       public override string ToString() {
@@ -111,7 +112,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             continue;
           }
           node.Simplify?.Invoke(ref nodes, i);
-          for (int j = i - node.Size; j < i; ++j) {
+          for (int j = i - node.Size; j <= i; ++j) {
             // detect if anything was simplified
             if (!nodes[j].Enabled) {
               simplified = true;
