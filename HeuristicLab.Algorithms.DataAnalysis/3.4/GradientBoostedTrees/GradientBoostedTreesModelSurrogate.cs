@@ -74,7 +74,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     private GradientBoostedTreesModelSurrogate(GradientBoostedTreesModelSurrogate original, Cloner cloner)
       : base(original, cloner) {
       IGradientBoostedTreesModel clonedModel = null;
-      if (original.ActualModel != null) clonedModel = cloner.Clone(original.ActualModel);
+      if (original.actualModel.IsValueCreated) clonedModel = cloner.Clone(original.ActualModel);
       actualModel = new Lazy<IGradientBoostedTreesModel>(CreateLazyInitFunc(clonedModel)); // only capture clonedModel in the closure
 
       this.trainingProblemData = cloner.Clone(original.trainingProblemData);
