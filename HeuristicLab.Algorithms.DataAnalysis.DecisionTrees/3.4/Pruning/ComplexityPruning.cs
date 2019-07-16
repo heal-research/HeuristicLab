@@ -203,20 +203,23 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     [StorableType("EAD60C7E-2C58-45C4-9697-6F735F518CFD")]
     public class PruningState : Item {
       [Storable]
-      public IDictionary<RegressionNodeModel, int> modelComplexities = new Dictionary<RegressionNodeModel, int>();
+      public IDictionary<RegressionNodeModel, int> modelComplexities;
       [Storable]
-      public IDictionary<RegressionNodeModel, int> nodeComplexities = new Dictionary<RegressionNodeModel, int>();
+      public IDictionary<RegressionNodeModel, int> nodeComplexities;
       [Storable]
-      public IDictionary<RegressionNodeModel, int> pruningSizes = new Dictionary<RegressionNodeModel, int>();
+      public IDictionary<RegressionNodeModel, int> pruningSizes;
       [Storable]
-      public IDictionary<RegressionNodeModel, double> modelErrors = new Dictionary<RegressionNodeModel, double>();
+      public IDictionary<RegressionNodeModel, double> modelErrors;
 
       [Storable]
-      public Queue<RegressionNodeModel> nodeQueue = new Queue<RegressionNodeModel>();
+      private RegressionNodeModel[] storableNodeQueue { get { return nodeQueue.ToArray(); } set { nodeQueue = new Queue<RegressionNodeModel>(value); } }
+      public Queue<RegressionNodeModel> nodeQueue;
       [Storable]
-      public Queue<IReadOnlyList<int>> trainingRowsQueue = new Queue<IReadOnlyList<int>>();
+      private IReadOnlyList<int>[] storabletrainingRowsQueue { get { return trainingRowsQueue.ToArray(); } set { trainingRowsQueue = new Queue<IReadOnlyList<int>>(value); } }
+      public Queue<IReadOnlyList<int>> trainingRowsQueue;
       [Storable]
-      public Queue<IReadOnlyList<int>> pruningRowsQueue = new Queue<IReadOnlyList<int>>();
+      private IReadOnlyList<int>[] storablepruningRowsQueue { get { return pruningRowsQueue.ToArray(); } set { pruningRowsQueue = new Queue<IReadOnlyList<int>>(value); } }
+      public Queue<IReadOnlyList<int>> pruningRowsQueue;
 
       //State.Code values denote the current action (for pausing)
       //0...nothing has been done;
@@ -241,7 +244,15 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         pruningRowsQueue = new Queue<IReadOnlyList<int>>(original.pruningRowsQueue.Select(x => (IReadOnlyList<int>)x.ToArray()));
         Code = original.Code;
       }
-      public PruningState() { }
+      public PruningState() {
+        modelComplexities = new Dictionary<RegressionNodeModel, int>();
+        nodeComplexities = new Dictionary<RegressionNodeModel, int>();
+        pruningSizes = new Dictionary<RegressionNodeModel, int>();
+        modelErrors = new Dictionary<RegressionNodeModel, double>();
+        nodeQueue = new Queue<RegressionNodeModel>();
+        trainingRowsQueue = new Queue<IReadOnlyList<int>>();
+        pruningRowsQueue = new Queue<IReadOnlyList<int>>();
+      }
       public override IDeepCloneable Clone(Cloner cloner) {
         return new PruningState(this, cloner);
       }

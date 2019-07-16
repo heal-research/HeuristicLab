@@ -111,10 +111,20 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     [StorableType("BC1149FD-370E-4F3A-92F5-6E519736D09A")]
     public class SplittingState : Item {
+      public Queue<RegressionNodeModel> nodeQueue;
       [Storable]
-      public Queue<RegressionNodeModel> nodeQueue = new Queue<RegressionNodeModel>();
+      private RegressionNodeModel[] storableNodeQueue {
+        get { return nodeQueue.ToArray(); }
+        set { nodeQueue = new Queue<RegressionNodeModel>(value); }
+      }
+
+      public Queue<IReadOnlyList<int>> trainingRowsQueue;
       [Storable]
-      public Queue<IReadOnlyList<int>> trainingRowsQueue = new Queue<IReadOnlyList<int>>();
+      private IReadOnlyList<int>[] storableTrainingRowsQueue {
+        get { return trainingRowsQueue.ToArray(); }
+        set { trainingRowsQueue = new Queue<IReadOnlyList<int>>(value); }
+      }
+
 
       //State.Code values denote the current action (for pausing)
       //0...nothing has been done;
@@ -130,7 +140,10 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         trainingRowsQueue = new Queue<IReadOnlyList<int>>(original.trainingRowsQueue.Select(x => (IReadOnlyList<int>)x.ToArray()));
         Code = original.Code;
       }
-      public SplittingState() { }
+      public SplittingState() : base() {
+        nodeQueue = new Queue<RegressionNodeModel>();
+        trainingRowsQueue = new Queue<IReadOnlyList<int>>();
+      }
       public override IDeepCloneable Clone(Cloner cloner) {
         return new SplittingState(this, cloner);
       }

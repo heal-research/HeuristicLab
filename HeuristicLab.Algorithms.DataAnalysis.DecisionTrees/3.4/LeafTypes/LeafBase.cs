@@ -111,9 +111,11 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     [StorableType("495243C0-6C15-4328-B30D-FFBFA0F54DCB")]
     public class LeafBuildingState : Item {
       [Storable]
-      public Queue<RegressionNodeModel> nodeQueue = new Queue<RegressionNodeModel>();
+      private RegressionNodeModel[] storableNodeQueue { get { return nodeQueue.ToArray(); } set { nodeQueue = new Queue<RegressionNodeModel>(value); } }
+      public Queue<RegressionNodeModel> nodeQueue;
       [Storable]
-      public Queue<IReadOnlyList<int>> trainingRowsQueue = new Queue<IReadOnlyList<int>>();
+      private IReadOnlyList<int>[] storabletrainingRowsQueue { get { return trainingRowsQueue.ToArray(); } set { trainingRowsQueue = new Queue<IReadOnlyList<int>>(value); } }
+      public Queue<IReadOnlyList<int>> trainingRowsQueue;
 
       //State.Code values denote the current action (for pausing)
       //0...nothing has been done;
@@ -129,7 +131,10 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         trainingRowsQueue = new Queue<IReadOnlyList<int>>(original.trainingRowsQueue.Select(x => (IReadOnlyList<int>)x.ToArray()));
         Code = original.Code;
       }
-      public LeafBuildingState() { }
+      public LeafBuildingState() {
+        nodeQueue = new Queue<RegressionNodeModel>();
+        trainingRowsQueue = new Queue<IReadOnlyList<int>>();
+      }
       public override IDeepCloneable Clone(Cloner cloner) {
         return new LeafBuildingState(this, cloner);
       }
