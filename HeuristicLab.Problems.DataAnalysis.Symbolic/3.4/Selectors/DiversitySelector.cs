@@ -65,22 +65,28 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       get { return (IFixedValueParameter<DoubleValue>)Parameters[SimilarityWeightParameterName]; }
     }
 
-    public bool StrictSimilarity { get { return StrictSimilarityParameter.Value.Value; } }
+    public bool StrictSimilarity {
+      get { return StrictSimilarityParameter.Value.Value; }
+      set { StrictSimilarityParameter.Value.Value = value; }
+    }
 
-    public double SimilarityWeight { get { return SimilarityWeightParameter.Value.Value; } }
+    public double SimilarityWeight {
+      get { return SimilarityWeightParameter.Value.Value; }
+      set { SimilarityWeightParameter.Value.Value = value; }
+    }
 
     public DiversitySelector() : base() {
       Parameters.Add(new FixedValueParameter<BoolValue>(StrictSimilarityParameterName, "Calculate strict similarity.", new BoolValue(true)));
       Parameters.Add(new FixedValueParameter<DoubleValue>(SimilarityWeightParameterName, "Weight of the diversity term.", new DoubleValue(1)));
       Parameters.Add(new ScopeTreeLookupParameter<ISymbolicExpressionTree>(SymbolicExpressionTreeParameterName, "The symbolic expression trees that should be analyzed."));
-      Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>(DiversityParameterName));
       Parameters.Add(new ValueParameter<ISingleObjectiveSelector>(SelectorParameterName, "The inner selection operator to select the parents.", new TournamentSelector()));
+      Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>(DiversityParameterName, "The diversity value calcuated by the operator (output). The inner selector uses this value."));
 
       RegisterParameterEventHandlers();
     }
 
     [StorableConstructor]
-    private DiversitySelector(StorableConstructorFlag deserializing) : base(deserializing) { }
+    private DiversitySelector(StorableConstructorFlag _) : base(_) { }
 
     private DiversitySelector(DiversitySelector original, Cloner cloner) : base(original, cloner) { }
 
@@ -90,11 +96,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
-      RegisterParameterEventHandlers();
-
       if (!Parameters.ContainsKey(DiversityParameterName)) {
         Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>(DiversityParameterName));
       }
+
+      RegisterParameterEventHandlers();
     }
 
     #region Events
@@ -102,7 +108,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       SelectorParameter.ValueChanged += SelectorParameter_ValueChanged;
       CopySelectedParameter.ValueChanged += CopySelectedParameter_ValueChanged;
       CopySelected.ValueChanged += CopySelected_ValueChanged;
+
+      MaximizationParameter.NameChanged += MaximizationParameter_NameChanged;
+      QualityParameter.NameChanged += QualityParameter_NameChanged;
+      RandomParameter.NameChanged += RandomParameter_NameChanged;
     }
+
+    private void RandomParameter_NameChanged(object sender, EventArgs e) { ParameterizeSelector(Selector); }
+    private void QualityParameter_NameChanged(object sender, EventArgs e) { ParameterizeSelector(Selector); }
+    private void MaximizationParameter_NameChanged(object sender, EventArgs e) { ParameterizeSelector(Selector); }
 
     private void CopySelectedParameter_ValueChanged(object sender, EventArgs e) {
       if (CopySelected.Value != true) {
@@ -126,7 +140,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       var w = SimilarityWeight;
       if (w.IsAlmost(0)) {
         ApplyInnerSelector();
-        return CurrentScope.SubScopes[1].SubScopes.ToArray();
+        return CurrentScope.SubScopes[1].SubScopes.ToArray();  // return selected individuals (selectors create two sub-scopes with remaining and selected)
       }
 
       var trees = SymbolicExpressionTreeParameter.ActualValue;

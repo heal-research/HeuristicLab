@@ -41,7 +41,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     private const string ProportionalSamplingParameterName = "ProportionalSampling";
     private const string StrictHashingParameterName = "StrictHashing";
 
-    private static readonly Func<byte[], ulong> hashFunction = HashUtil.JSHash;
+    private static readonly Func<byte[], ulong> hashFunction = HashUtil.DJBHash;
 
     #region Parameter Properties
     public IValueLookupParameter<PercentValue> InternalCrossoverPointProbabilityParameter {
@@ -87,16 +87,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       }
     }
 
-    public SymbolicDataAnalysisExpressionDiversityPreservingCrossover() {
-      name = "DiversityCrossover";
+    public SymbolicDataAnalysisExpressionDiversityPreservingCrossover() : base() {
       Parameters.Add(new ValueLookupParameter<PercentValue>(InternalCrossoverPointProbabilityParameterName, "The probability to select an internal crossover point (instead of a leaf node).", new PercentValue(0.9)));
       Parameters.Add(new ValueLookupParameter<BoolValue>(WindowingParameterName, "Use proportional sampling with windowing for cutpoint selection.", new BoolValue(false)));
       Parameters.Add(new ValueLookupParameter<BoolValue>(ProportionalSamplingParameterName, "Select cutpoints proportionally using probabilities as weights instead of randomly.", new BoolValue(true)));
       Parameters.Add(new FixedValueParameter<BoolValue>(StrictHashingParameterName, "Use strict hashing when calculating subtree hash values."));
     }
 
-    private SymbolicDataAnalysisExpressionDiversityPreservingCrossover(SymbolicDataAnalysisExpressionDiversityPreservingCrossover<T> original, Cloner cloner) : base(original, cloner) {
-    }
+    private SymbolicDataAnalysisExpressionDiversityPreservingCrossover(SymbolicDataAnalysisExpressionDiversityPreservingCrossover<T> original, Cloner cloner) : base(original, cloner) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new SymbolicDataAnalysisExpressionDiversityPreservingCrossover<T>(this, cloner);
