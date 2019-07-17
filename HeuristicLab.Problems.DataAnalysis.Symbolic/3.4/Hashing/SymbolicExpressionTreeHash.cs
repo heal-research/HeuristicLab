@@ -38,6 +38,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     private static readonly Constant constant = new Constant();
 
     private static ISymbolicExpressionTreeNode ActualRoot(this ISymbolicExpressionTree tree) => tree.Root.GetSubtree(0).GetSubtree(0);
+    public static ulong HashFunction(byte[] input) => HashUtil.DJBHash(input);
 
     #region tree hashing
     public static ulong[] Hash(this ISymbolicExpressionTree tree, bool simplify = false, bool strict = false) {
@@ -45,9 +46,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     public static ulong[] Hash(this ISymbolicExpressionTreeNode node, bool simplify = false, bool strict = false) {
-      ulong hashFunction(byte[] input) => HashUtil.DJBHash(input);
-
-      var hashNodes = simplify ? node.MakeNodes(strict).Simplify(hashFunction) : node.MakeNodes(strict).Sort(hashFunction); // simplify sorts implicitly
+      var hashNodes = simplify ? node.MakeNodes(strict).Simplify(HashFunction) : node.MakeNodes(strict).Sort(HashFunction);
       var hashes = new ulong[hashNodes.Length];
       for (int i = 0; i < hashes.Length; ++i) {
         hashes[i] = hashNodes[i].CalculatedHashValue;
@@ -166,7 +165,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       // build hash arrays
       for (int i = 0; i < trees.Count; ++i) {
         var nodes = trees[i].MakeNodes(strict);
-        hashes[i] = (simplify ? nodes.Simplify(HashUtil.DJBHash) : nodes.Sort(HashUtil.DJBHash)).Select(x => x.CalculatedHashValue).ToArray();
+        hashes[i] = (simplify ? nodes.Simplify(HashFunction) : nodes.Sort(HashFunction)).Select(x => x.CalculatedHashValue).ToArray();
         Array.Sort(hashes[i]);
       }
       // compute similarity matrix
@@ -178,22 +177,27 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       return avg / total;
     }
 
-    public static double[,] ComputeSimilarityMatrix(IList<ISymbolicExpressionTree> trees, bool simplify = false, bool strict = false) {
-      var sim = new double[trees.Count, trees.Count];
-      var hashes = new ulong[trees.Count][];
-      // build hash arrays
-      for (int i = 0; i < trees.Count; ++i) {
-        var nodes = trees[i].MakeNodes(strict);
-        hashes[i] = (simplify ? nodes.Simplify(HashUtil.DJBHash) : nodes.Sort(HashUtil.DJBHash)).Select(x => x.CalculatedHashValue).ToArray();
-        Array.Sort(hashes[i]);
-      }
+    public static double[,] ComputeSimilarityMatrix(IList<ulong[]> hashes) {
       // compute similarity matrix
-      for (int i = 0; i < trees.Count - 1; ++i) {
-        for (int j = i + 1; j < trees.Count; ++j) {
+      var n = hashes.Count;
+      var sim = new double[n, n];
+      for (int i = 0; i < n - 1; ++i) {
+        for (int j = i + 1; j < n; ++j) {
           sim[i, j] = sim[j, i] = ComputeSimilarity(hashes[i], hashes[j]);
         }
       }
       return sim;
+    }
+
+    public static double[,] ComputeSimilarityMatrix(IList<ISymbolicExpressionTree> trees, bool simplify = false, bool strict = false) {
+      var hashes = new ulong[trees.Count][];
+      // build hash arrays
+      for (int i = 0; i < trees.Count; ++i) {
+        var nodes = trees[i].MakeNodes(strict);
+        hashes[i] = (simplify ? nodes.Simplify(HashFunction) : nodes.Sort(HashFunction)).Select(x => x.CalculatedHashValue).ToArray();
+        Array.Sort(hashes[i]);
+      }
+      return ComputeSimilarityMatrix(hashes);
     }
     #endregion
 
@@ -209,7 +213,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     public static ISymbolicExpressionTreeNode ToSubtree(this HashNode<ISymbolicExpressionTreeNode>[] nodes) {
       var treeNodes = nodes.Select(x => x.Data.Symbol.CreateTreeNode()).ToArray();
 
-      // construct tree top down (assumes postfix order for nodes)
       for (int i = nodes.Length - 1; i >= 0; --i) {
         var node = nodes[i];
 
@@ -244,11 +247,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     // these simplification methods rely on the assumption that child nodes of the current node have already been simplified
     // (in other words simplification should be applied in a bottom-up fashion)
     public static ISymbolicExpressionTree Simplify(ISymbolicExpressionTree tree) {
-      ulong hashFunction(byte[] bytes) => HashUtil.DJBHash(bytes);
-      var root = tree.ActualRoot();
-      var nodes = root.MakeNodes();
-      var simplified = nodes.Simplify(hashFunction);
-      return simplified.ToTree();
+      return tree.MakeNodes().Simplify(HashFunction).ToTree();
     }
 
     public static void SimplifyAddition(ref HashNode<ISymbolicExpressionTreeNode>[] nodes, int i) {
@@ -285,26 +284,43 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           continue;
 
         var symbol = child.Data.Symbol;
-        if (symbol is Constant) {
+        if (child.Data is ConstantTreeNode firstConst) {
+          // fold sibling constant nodes into the first constant
           for (int k = j + 1; k < children.Length; ++k) {
-            var d = children[k];
-            if (nodes[d].Data.Symbol is Constant) {
-              nodes[d].Enabled = false;
+            var sibling = nodes[children[k]];
+            if (sibling.Data is ConstantTreeNode otherConst) {
+              sibling.Enabled = false;
               node.Arity--;
+              firstConst.Value *= otherConst.Value;
+            } else {
+              break;
+            }
+          }
+        } else if (child.Data is VariableTreeNode variable) {
+          // fold sibling constant nodes into the variable weight
+          for (int k = j + 1; k < children.Length; ++k) {
+            var sibling = nodes[children[k]];
+            if (sibling.Data is ConstantTreeNode constantNode) {
+              sibling.Enabled = false;
+              node.Arity--;
+              variable.Weight *= constantNode.Value;
             } else {
               break;
             }
           }
         } else if (symbol is Division) {
-          var div = nodes[c];
-          var denominator =
-            div.Arity == 1 ?
-            nodes[c - 1] :                    // 1 / x is expressed as div(x) (with a single child)
-            nodes[c - nodes[c - 1].Size - 2]; // assume division always has arity 1 or 2
+          // 1/x is expressed as div(x) (with a single child)
+          // we assume division always has arity 1 or 2
+          var d = child.Arity == 1 ? c - 1 : c - nodes[c - 1].Size - 2;
+          var denominator = nodes[d];
 
-          foreach (var d in children) {
-            if (nodes[d].Enabled && nodes[d] == denominator) {
-              nodes[c].Enabled = nodes[d].Enabled = denominator.Enabled = false;
+          // iterate children of node i to see if any of them matches the denominator of div node c
+          for (int k = 0; k < children.Length; ++k) {
+            var sibling = nodes[children[k]];
+            if (sibling.Enabled && sibling == denominator) {
+              nodes.SetEnabled(children[j], false); // disable the div subtree
+              nodes.SetEnabled(children[k], false); // disable the sibling matching the denominator
+
               node.Arity -= 2; // matching child + division node
               break;
             }
@@ -369,7 +385,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       if (childSymbol is Constant) {
         nodes[i].Enabled = false;
       } else if ((parentSymbol is Exponential && childSymbol is Logarithm) || (parentSymbol is Logarithm && childSymbol is Exponential)) {
-        // exp(log(x)) == x only for positive x. We consider this as equivalent for hashing anyway.
         child.Enabled = parent.Enabled = false;
       }
     }
