@@ -21,12 +21,12 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 
 namespace HeuristicLab.Analysis {
   /// <summary>
@@ -58,7 +58,7 @@ namespace HeuristicLab.Analysis {
     public DataTableValuesCollector()
       : base() {
       Parameters.Add(new ValueLookupParameter<DataTable>("DataTable", "The table of data values where the collected values should be stored."));
-      Parameters.Add(new FixedValueParameter<BoolValue>("StartIndexZero", "True, if the collected data values should start with index 0, otherwise false.", new BoolValue(true), false));
+      Parameters.Add(new FixedValueParameter<BoolValue>("StartIndexZero", "True, if the collected data values should start with index 0, otherwise false.", new BoolValue(true)) { GetsCollected = false });
       StartIndexZeroParameter.Hidden = true;
     }
 
@@ -67,7 +67,7 @@ namespace HeuristicLab.Analysis {
       // BackwardsCompatibility3.3
       #region Backwards compatible code (remove with 3.4)
       if (!Parameters.ContainsKey("StartIndexZero")) {
-        Parameters.Add(new FixedValueParameter<BoolValue>("StartIndexZero", "True, if the collected data values should start with index 0, otherwise false.", new BoolValue(true), false));
+        Parameters.Add(new FixedValueParameter<BoolValue>("StartIndexZero", "True, if the collected data values should start with index 0, otherwise false.", new BoolValue(true)) { GetsCollected = false });
         StartIndexZeroParameter.Hidden = true;
       }
       #endregion
