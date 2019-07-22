@@ -21,9 +21,9 @@
 
 using System;
 using System.Collections.Generic;
+using HEAL.Attic;
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
-using HEAL.Attic;
 
 namespace HeuristicLab.Core {
   [StorableType("81B63F7B-0AD4-4BAD-8F39-BAB1F6B006C8")]
@@ -72,6 +72,10 @@ namespace HeuristicLab.Core {
 
     public void SetItemCheckedState(T item, bool checkedState) {
       CheckedItemCollection.SetItemCheckedState(item, checkedState);
+    }
+
+    public void SetItemCheckedState(IEnumerable<T> items, bool checkedState) {
+      CheckedItemCollection.SetItemCheckedState(items, checkedState);
     }
 
     public void Add(T item, bool checkedState) {

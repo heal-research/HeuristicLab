@@ -20,8 +20,8 @@
 #endregion
 
 using System.Collections.Generic;
-using HeuristicLab.Collections;
 using HEAL.Attic;
+using HeuristicLab.Collections;
 
 namespace HeuristicLab.Core {
   [StorableType("ba4a82ca-92eb-47a1-95a7-f41f6ef470f4")]
@@ -29,7 +29,11 @@ namespace HeuristicLab.Core {
     event CollectionItemsChangedEventHandler<IndexedItem<T>> CheckedItemsChanged;
     IEnumerable<IndexedItem<T>> CheckedItems { get; }
     bool ItemChecked(T item);
+    bool ItemChecked(int itemIndex);
     void SetItemCheckedState(T item, bool checkedState);
+    void SetItemCheckedState(IEnumerable<T> items, bool checkedState);
+    void SetItemCheckedState(int itemIndex, bool checkedState);
+    void SetItemCheckedState(IEnumerable<int> itemIndices, bool checkedState);
     void Add(T item, bool checkedState);
     void Insert(int index, T item, bool checkedState);
   }
