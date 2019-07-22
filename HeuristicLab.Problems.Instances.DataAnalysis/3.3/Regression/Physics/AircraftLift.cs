@@ -27,7 +27,7 @@ using HeuristicLab.Random;
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
   public class AircraftLift : ArtificialRegressionDataDescriptor {
-    public override string Name { get { return "Aircraft Lift Coefficient C_L = C_Lα (α + α0) + C_Lδ_e δ_e S_HT / S_ref"; } }
+    public override string Name { get { return "Aircraft Lift Coefficient C_L = C_Lα (α - α0) + C_Lδ_e δ_e S_HT / S_ref"; } }
 
     public override string Description {
       get {
@@ -35,7 +35,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
           "Chen Chen, Changtong Luo, Zonglin Jiang, \"A multilevel block building algorithm for fast " +
           "modeling generalized separable systems\", Expert Systems with Applications, Volume 109, 2018, " +
           "Pages 25-34 https://doi.org/10.1016/j.eswa.2018.05.021. " + Environment.NewLine +
-          "Function: C_L = C_Lα (α + α0) + C_Lδ_e δ_e S_HT / S_ref" + Environment.NewLine +
+          "Function: C_L = C_Lα (α - α0) + C_Lδ_e δ_e S_HT / S_ref" + Environment.NewLine +
           "the lift coefficient of the main airfoil C_Lα ∈ [0.4, 0.8]," + Environment.NewLine +
           "tha angle of attack α ∈ [5°, 10°]," + Environment.NewLine +
           "the lift coefficient of the horizontal tail C_Lδ_e ∈ [0.4, 0.8]," + Environment.NewLine +
@@ -87,7 +87,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
       double a0 = -2.0;
 
       for (int i = 0; i < C_La.Count; i++) {
-        double C_Li = C_La[i] * (a[i] + a0) + C_Ld_e[i] * d_e[i] * S_HT[i] / S_ref[i];
+        double C_Li = C_La[i] * (a[i] - a0) + C_Ld_e[i] * d_e[i] * S_HT[i] / S_ref[i];
         C_L.Add(C_Li);
       }
 
