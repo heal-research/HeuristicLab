@@ -247,6 +247,12 @@ namespace HeuristicLab.Core.Views {
           }
           Clipboard.SetText(builder.ToString());
         }
+      } else if (itemsListView.MultiSelect && e.KeyData == (Keys.A | Keys.Control)) {
+        try {
+          itemsListView.BeginUpdate();
+          foreach (ListViewItem item in itemsListView.Items)
+            item.Selected = true;
+        } finally { itemsListView.EndUpdate(); }
       }
     }
     protected virtual void itemsListView_DoubleClick(object sender, EventArgs e) {
