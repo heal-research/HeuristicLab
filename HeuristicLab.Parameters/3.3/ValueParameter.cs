@@ -21,9 +21,9 @@
 
 using System;
 using System.Reflection;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HEAL.Attic;
 
 namespace HeuristicLab.Parameters {
   /// <summary>
@@ -46,14 +46,10 @@ namespace HeuristicLab.Parameters {
 
     public ValueParameter() : base() { }
     public ValueParameter(string name) : base(name) { base.Value = CreateDefaultValue(); }
-    public ValueParameter(string name, bool getsCollected) : base(name, getsCollected) { base.Value = CreateDefaultValue(); }
     public ValueParameter(string name, T value) : base(name, value) { }
-    public ValueParameter(string name, T value, bool getsCollected) : base(name, value, getsCollected) { }
     public ValueParameter(string name, string description) : base(name, description) { base.Value = CreateDefaultValue(); }
-    public ValueParameter(string name, string description, bool getsCollected) : base(name, description, getsCollected) { base.Value = CreateDefaultValue(); }
     public ValueParameter(string name, string description, T value) : base(name, description, value) { }
-    public ValueParameter(string name, string description, T value, bool getsCollected) : base(name, description, value, getsCollected) { }
-                                                                                  
+
     protected T CreateDefaultValue() {
       Type type = typeof(T);
       if (type.IsAbstract) return null;

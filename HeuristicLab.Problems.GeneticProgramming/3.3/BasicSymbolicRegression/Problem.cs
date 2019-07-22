@@ -22,11 +22,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 using HeuristicLab.Problems.DataAnalysis;
 using HeuristicLab.Problems.Instances;
 
@@ -86,6 +86,7 @@ namespace HeuristicLab.Problems.GeneticProgramming.BasicSymbolicRegression {
 
       var g = new SimpleSymbolicExpressionGrammar(); // empty grammar is replaced in UpdateGrammar()
       base.Encoding = new SymbolicExpressionTreeEncoding(g, 100, 17);
+      Encoding.GrammarParameter.ReadOnly = true;
 
       UpdateGrammar();
       RegisterEventHandlers();
@@ -176,7 +177,9 @@ namespace HeuristicLab.Problems.GeneticProgramming.BasicSymbolicRegression {
         g.AddTerminalSymbol(newErcSy);
       }
 
+      Encoding.GrammarParameter.ReadOnly = false;
       Encoding.Grammar = g;
+      Encoding.GrammarParameter.ReadOnly = true;
     }
     #endregion
 

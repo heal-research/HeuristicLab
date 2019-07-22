@@ -24,12 +24,12 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Threading;
+using HEAL.Attic;
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Optimization {
@@ -129,7 +129,7 @@ namespace HeuristicLab.Optimization {
       if (Parameters.ContainsKey("Operators") && Parameters["Operators"] is ValueParameter<ItemList<IOperator>>) {
         ItemList<IOperator> tmp = ((ValueParameter<ItemList<IOperator>>)Parameters["Operators"]).Value;
         Parameters.Remove("Operators");
-        Parameters.Add(new ValueParameter<ItemList<IItem>>("Operators", "The operators and items that the problem provides to the algorithms.", new ItemList<IItem>(tmp), false));
+        Parameters.Add(new ValueParameter<ItemList<IItem>>("Operators", "The operators and items that the problem provides to the algorithms.", new ItemList<IItem>(tmp)) { GetsCollected = false });
       }
       #endregion
 

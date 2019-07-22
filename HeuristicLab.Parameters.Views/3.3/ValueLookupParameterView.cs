@@ -73,6 +73,7 @@ namespace HeuristicLab.Parameters.Views {
     protected override void DeregisterContentEvents() {
       Content.ActualNameChanged -= new EventHandler(Content_ActualNameChanged);
       Content.GetsCollectedChanged -= new EventHandler(Content_GetsCollectedChanged);
+      Content.ReadOnlyChanged -= new EventHandler(Content_ReadOnlyChanged);
       Content.ValueChanged -= new EventHandler(Content_ValueChanged);
       base.DeregisterContentEvents();
     }
@@ -85,6 +86,7 @@ namespace HeuristicLab.Parameters.Views {
       base.RegisterContentEvents();
       Content.ActualNameChanged += new EventHandler(Content_ActualNameChanged);
       Content.GetsCollectedChanged += new EventHandler(Content_GetsCollectedChanged);
+      Content.ReadOnlyChanged += new EventHandler(Content_ReadOnlyChanged);
       Content.ValueChanged += new EventHandler(Content_ValueChanged);
     }
 
@@ -107,8 +109,8 @@ namespace HeuristicLab.Parameters.Views {
       base.SetEnabledStateOfControls();
       actualNameTextBox.Enabled = Content != null;
       actualNameTextBox.ReadOnly = ReadOnly;
-      setValueButton.Enabled = Content != null && !ReadOnly;
-      clearValueButton.Enabled = Content != null && Content.Value != null && !ReadOnly;
+      setValueButton.Enabled = Content != null && !Content.ReadOnly && !ReadOnly;
+      clearValueButton.Enabled = Content != null && !Content.ReadOnly && Content.Value != null && !ReadOnly;
       showInRunCheckBox.Enabled = Content != null && !ReadOnly;
     }
 
@@ -123,9 +125,16 @@ namespace HeuristicLab.Parameters.Views {
         Invoke(new EventHandler(Content_ValueChanged), sender, e);
       else {
         SetDataTypeTextBoxText();
-        clearValueButton.Enabled = Content != null && Content.Value != null && !ReadOnly;
+        clearValueButton.Enabled = Content != null && !Content.ReadOnly && Content.Value != null && !ReadOnly;
         valueViewHost.ViewType = null;
         valueViewHost.Content = Content != null ? Content.Value : null;
+      }
+    }
+    protected virtual void Content_ReadOnlyChanged(object sender, EventArgs e) {
+      if (InvokeRequired)
+        Invoke(new EventHandler(Content_ReadOnlyChanged), sender, e);
+      else {
+        SetEnabledStateOfControls();
       }
     }
     protected virtual void Content_GetsCollectedChanged(object sender, EventArgs e) {
