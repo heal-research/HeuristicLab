@@ -1,0 +1,6 @@
+ALGLIB changes by HEAL
+
+ap.cs(ln 765)
+mkommend: added thread static attribute to RNG to have a separate instance per thread and allow modification of the seed
+
+ALGLIB 3.7.0 contains further changes that have not been ported yet
