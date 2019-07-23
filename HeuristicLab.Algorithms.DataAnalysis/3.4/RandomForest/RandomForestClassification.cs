@@ -19,13 +19,16 @@
  */
 #endregion
 
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
+using HEAL.Attic;
+using HeuristicLab.Algorithms.DataAnalysis.RandomForest;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
@@ -42,7 +45,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     private const string MParameterName = "M";
     private const string SeedParameterName = "Seed";
     private const string SetSeedRandomlyParameterName = "SetSeedRandomly";
-    private const string CreateSolutionParameterName = "CreateSolution";
+    private const string ModelCreationParameterName = "ModelCreation";
 
     #region parameter properties
     public IFixedValueParameter<IntValue> NumberOfTreesParameter {
@@ -60,8 +63,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     public IFixedValueParameter<BoolValue> SetSeedRandomlyParameter {
       get { return (IFixedValueParameter<BoolValue>)Parameters[SetSeedRandomlyParameterName]; }
     }
-    public IFixedValueParameter<BoolValue> CreateSolutionParameter {
-      get { return (IFixedValueParameter<BoolValue>)Parameters[CreateSolutionParameterName]; }
+    private IFixedValueParameter<EnumValue<ModelCreation>> ModelCreationParameter {
+      get { return (IFixedValueParameter<EnumValue<ModelCreation>>)Parameters[ModelCreationParameterName]; }
     }
     #endregion
     #region properties
@@ -85,9 +88,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       get { return SetSeedRandomlyParameter.Value.Value; }
       set { SetSeedRandomlyParameter.Value.Value = value; }
     }
-    public bool CreateSolution {
-      get { return CreateSolutionParameter.Value.Value; }
-      set { CreateSolutionParameter.Value.Value = value; }
+    public ModelCreation ModelCreation {
+      get { return ModelCreationParameter.Value.Value; }
+      set { ModelCreationParameter.Value.Value = value; }
     }
     #endregion
 
@@ -104,8 +107,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       Parameters.Add(new FixedValueParameter<DoubleValue>(MParameterName, "The ratio of features that will be used in the construction of individual trees (0<m<=1)", new DoubleValue(0.5)));
       Parameters.Add(new FixedValueParameter<IntValue>(SeedParameterName, "The random seed used to initialize the new pseudo random number generator.", new IntValue(0)));
       Parameters.Add(new FixedValueParameter<BoolValue>(SetSeedRandomlyParameterName, "True if the random seed should be set to a random value, otherwise false.", new BoolValue(true)));
-      Parameters.Add(new FixedValueParameter<BoolValue>(CreateSolutionParameterName, "Flag that indicates if a solution should be produced at the end of the run", new BoolValue(true)));
-      Parameters[CreateSolutionParameterName].Hidden = true;
+      Parameters.Add(new FixedValueParameter<EnumValue<ModelCreation>>(ModelCreationParameterName, "Defines the results produced at the end of the run (Surrogate => Less disk space, lazy recalculation of model)", new EnumValue<ModelCreation>(ModelCreation.Model)));
+      Parameters[ModelCreationParameterName].Hidden = true;
 
       Problem = new ClassificationProblem();
     }
@@ -120,9 +123,19 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         Parameters.Add(new FixedValueParameter<IntValue>(SeedParameterName, "The random seed used to initialize the new pseudo random number generator.", new IntValue(0)));
       if (!Parameters.ContainsKey((SetSeedRandomlyParameterName)))
         Parameters.Add(new FixedValueParameter<BoolValue>(SetSeedRandomlyParameterName, "True if the random seed should be set to a random value, otherwise false.", new BoolValue(true)));
-      if (!Parameters.ContainsKey(CreateSolutionParameterName)) {
-        Parameters.Add(new FixedValueParameter<BoolValue>(CreateSolutionParameterName, "Flag that indicates if a solution should be produced at the end of the run", new BoolValue(true)));
-        Parameters[CreateSolutionParameterName].Hidden = true;
+
+      // parameter type has been changed
+      if (Parameters.ContainsKey("CreateSolution")) {
+        var createSolutionParam = Parameters["CreateSolution"] as FixedValueParameter<BoolValue>;
+        Parameters.Remove(createSolutionParam);
+
+        ModelCreation value = createSolutionParam.Value.Value ? ModelCreation.Model : ModelCreation.QualityOnly;
+        Parameters.Add(new FixedValueParameter<EnumValue<ModelCreation>>(ModelCreationParameterName, "Defines the results produced at the end of the run (Surrogate => Less disk space, lazy recalculation of model)", new EnumValue<ModelCreation>(value)));
+        Parameters[ModelCreationParameterName].Hidden = true;
+      } else if (!Parameters.ContainsKey(ModelCreationParameterName)) {
+        // very old version contains neither ModelCreationParameter nor CreateSolutionParameter
+        Parameters.Add(new FixedValueParameter<EnumValue<ModelCreation>>(ModelCreationParameterName, "Defines the results produced at the end of the run (Surrogate => Less disk space, lazy recalculation of model)", new EnumValue<ModelCreation>(ModelCreation.Model)));
+        Parameters[ModelCreationParameterName].Hidden = true;
       }
       #endregion
     }
@@ -137,13 +150,24 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       if (SetSeedRandomly) Seed = Random.RandomSeedGenerator.GetSeed();
 
       var model = CreateRandomForestClassificationModel(Problem.ProblemData, NumberOfTrees, R, M, Seed, out rmsError, out relClassificationError, out outOfBagRmsError, out outOfBagRelClassificationError);
+
       Results.Add(new Result("Root mean square error", "The root of the mean of squared errors of the random forest regression solution on the training set.", new DoubleValue(rmsError)));
       Results.Add(new Result("Relative classification error", "Relative classification error of the random forest regression solution on the training set.", new PercentValue(relClassificationError)));
       Results.Add(new Result("Root mean square error (out-of-bag)", "The out-of-bag root of the mean of squared errors of the random forest regression solution.", new DoubleValue(outOfBagRmsError)));
       Results.Add(new Result("Relative classification error (out-of-bag)", "The out-of-bag relative classification error  of the random forest regression solution.", new PercentValue(outOfBagRelClassificationError)));
 
-      if (CreateSolution) {
-        var solution = new RandomForestClassificationSolution(model, (IClassificationProblemData)Problem.ProblemData.Clone());
+
+      IClassificationSolution solution = null;
+      if (ModelCreation == ModelCreation.Model) {
+        solution = model.CreateClassificationSolution(Problem.ProblemData);
+      } else if (ModelCreation == ModelCreation.SurrogateModel) {
+        var problemData = Problem.ProblemData;
+        var surrogateModel = new RandomForestModelSurrogate(model, problemData.TargetVariable, problemData, Seed, NumberOfTrees, R, M, problemData.ClassValues.ToArray());
+
+        solution = surrogateModel.CreateClassificationSolution(problemData);
+      }
+
+      if (solution != null) {
         Results.Add(new Result(RandomForestClassificationModelResultName, "The random forest classification solution.", solution));
       }
     }
@@ -156,10 +180,42 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       return new RandomForestClassificationSolution(model, (IClassificationProblemData)problemData.Clone());
     }
 
-    public static RandomForestModel CreateRandomForestClassificationModel(IClassificationProblemData problemData, int nTrees, double r, double m, int seed,
+    public static RandomForestModelFull CreateRandomForestClassificationModel(IClassificationProblemData problemData, int nTrees, double r, double m, int seed,
+ out double rmsError, out double avgRelError, out double outOfBagRmsError, out double outOfBagAvgRelError) {
+      var model = CreateRandomForestClassificationModel(problemData, problemData.TrainingIndices, nTrees, r, m, seed, out rmsError, out avgRelError, out outOfBagRmsError, out outOfBagAvgRelError);
+      return model;
+    }
+
+    public static RandomForestModelFull CreateRandomForestClassificationModel(IClassificationProblemData problemData, IEnumerable<int> trainingIndices, int nTrees, double r, double m, int seed,
       out double rmsError, out double relClassificationError, out double outOfBagRmsError, out double outOfBagRelClassificationError) {
-      return RandomForestModel.CreateClassificationModel(problemData, nTrees, r, m, seed,
-       rmsError: out rmsError, relClassificationError: out relClassificationError, outOfBagRmsError: out outOfBagRmsError, outOfBagRelClassificationError: out outOfBagRelClassificationError);
+
+      var variables = problemData.AllowedInputVariables.Concat(new string[] { problemData.TargetVariable });
+      double[,] inputMatrix = problemData.Dataset.ToArray(variables, trainingIndices);
+
+      var classValues = problemData.ClassValues.ToArray();
+      int nClasses = classValues.Length;
+
+      // map original class values to values [0..nClasses-1]
+      var classIndices = new Dictionary<double, double>();
+      for (int i = 0; i < nClasses; i++) {
+        classIndices[classValues[i]] = i;
+      }
+
+      int nRows = inputMatrix.GetLength(0);
+      int nColumns = inputMatrix.GetLength(1);
+      for (int row = 0; row < nRows; row++) {
+        inputMatrix[row, nColumns - 1] = classIndices[inputMatrix[row, nColumns - 1]];
+      }
+
+      alglib.dfreport rep;
+      var dForest = RandomForestUtil.CreateRandomForestModel(seed, inputMatrix, nTrees, r, m, nClasses, out rep);
+
+      rmsError = rep.rmserror;
+      outOfBagRmsError = rep.oobrmserror;
+      relClassificationError = rep.relclserror;
+      outOfBagRelClassificationError = rep.oobrelclserror;
+
+      return new RandomForestModelFull(dForest, problemData.TargetVariable, problemData.AllowedInputVariables, classValues);
     }
     #endregion
   }
