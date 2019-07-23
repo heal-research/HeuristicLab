@@ -37,9 +37,12 @@ namespace HeuristicLab.OrTools {
   [PluginDependency("HeuristicLab.Protobuf", "3.6.1")]
   public class HeuristicLabOrToolsPlugin : PluginBase {
 
-    public override void OnUnload() {
-      // HACK: free handle to native DLL used temporarily by the Hive Slave
-      // should be solved for all native DLLs used by the Hive Slave
+    ~HeuristicLabOrToolsPlugin() {
+      // HACK: Free handle to native DLL used temporarily by the Hive Slave.
+      // Finalizer must be used because generated finalizers used in
+      // HeuristicLab.ExactOptimization that call destructors in native DLL
+      // are called after HeuristicLabOrToolsPlugin.OnUnload().
+      // This should be solved for all native DLLs used by the Hive Slave.
       var dllDir = new FileInfo(GetType().Assembly.Location).Directory;
       if (dllDir == null || !dllDir.FullName.Contains(Path.DirectorySeparatorChar + "PluginTemp" + Path.DirectorySeparatorChar))
         return;
