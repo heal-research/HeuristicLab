@@ -189,7 +189,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       this.dataset = dataset;
       cachedData = new Dictionary<string, double[]>();
       foreach (var v in dataset.DoubleVariables) {
-        var values = dataset.GetDoubleValues(v).ToArray();
+        cachedData[v] = dataset.GetDoubleValues(v).ToArray();
       }
     }
 
