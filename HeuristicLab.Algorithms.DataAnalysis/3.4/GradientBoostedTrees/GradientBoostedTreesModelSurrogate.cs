@@ -74,7 +74,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     private GradientBoostedTreesModelSurrogate(GradientBoostedTreesModelSurrogate original, Cloner cloner)
       : base(original, cloner) {
       IGradientBoostedTreesModel clonedModel = null;
-      if (original.ActualModel != null) clonedModel = cloner.Clone(original.ActualModel);
+      if (original.actualModel.IsValueCreated) clonedModel = cloner.Clone(original.ActualModel);
       actualModel = new Lazy<IGradientBoostedTreesModel>(CreateLazyInitFunc(clonedModel)); // only capture clonedModel in the closure
 
       this.trainingProblemData = cloner.Clone(original.trainingProblemData);
@@ -89,12 +89,12 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     private Func<IGradientBoostedTreesModel> CreateLazyInitFunc(IGradientBoostedTreesModel clonedModel) {
       return () => {
-        return clonedModel == null ? RecalculateModel() : clonedModel;
+        return clonedModel ?? RecalculateModel();
       };
     }
 
     // create only the surrogate model without an actual model
-    public GradientBoostedTreesModelSurrogate(IRegressionProblemData trainingProblemData, uint seed,
+    private GradientBoostedTreesModelSurrogate(IRegressionProblemData trainingProblemData, uint seed,
       ILossFunction lossFunction, int iterations, int maxSize, double r, double m, double nu)
       : base(trainingProblemData.TargetVariable, "Gradient boosted tree model", string.Empty) {
       this.trainingProblemData = trainingProblemData;
@@ -105,12 +105,13 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       this.r = r;
       this.m = m;
       this.nu = nu;
+
+      actualModel = new Lazy<IGradientBoostedTreesModel>(() => RecalculateModel());
     }
 
     // wrap an actual model in a surrograte
-    public GradientBoostedTreesModelSurrogate(IRegressionProblemData trainingProblemData, uint seed,
-      ILossFunction lossFunction, int iterations, int maxSize, double r, double m, double nu,
-      IGradientBoostedTreesModel model)
+    public GradientBoostedTreesModelSurrogate(IGradientBoostedTreesModel model, IRegressionProblemData trainingProblemData, uint seed,
+      ILossFunction lossFunction, int iterations, int maxSize, double r, double m, double nu)
       : this(trainingProblemData, seed, lossFunction, iterations, maxSize, r, m, nu) {
       actualModel = new Lazy<IGradientBoostedTreesModel>(() => model);
     }
