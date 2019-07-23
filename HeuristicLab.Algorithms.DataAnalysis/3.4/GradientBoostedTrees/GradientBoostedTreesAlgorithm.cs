@@ -23,6 +23,7 @@
 using System;
 using System.Linq;
 using System.Threading;
+using HeuristicLab.Algorithms.DataAnalysis.GradientBoostedTrees;
 using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -48,7 +49,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     private const string SetSeedRandomlyParameterName = "SetSeedRandomly";
     private const string LossFunctionParameterName = "LossFunction";
     private const string UpdateIntervalParameterName = "UpdateInterval";
-    private const string CreateSolutionParameterName = "CreateSolution";
+    private const string ModelCreationParameterName = "ModelCreation";
     #endregion
 
     #region ParameterProperties
@@ -79,8 +80,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     public IFixedValueParameter<IntValue> UpdateIntervalParameter {
       get { return (IFixedValueParameter<IntValue>)Parameters[UpdateIntervalParameterName]; }
     }
-    public IFixedValueParameter<BoolValue> CreateSolutionParameter {
-      get { return (IFixedValueParameter<BoolValue>)Parameters[CreateSolutionParameterName]; }
+    private IFixedValueParameter<EnumValue<ModelCreation>> ModelCreationParameter {
+      get { return (IFixedValueParameter<EnumValue<ModelCreation>>)Parameters[ModelCreationParameterName]; }
     }
     #endregion
 
@@ -113,9 +114,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       get { return MParameter.Value.Value; }
       set { MParameter.Value.Value = value; }
     }
-    public bool CreateSolution {
-      get { return CreateSolutionParameter.Value.Value; }
-      set { CreateSolutionParameter.Value.Value = value; }
+    public ModelCreation ModelCreation {
+      get { return ModelCreationParameter.Value.Value; }
+      set { ModelCreationParameter.Value.Value = value; }
     }
     #endregion
 
@@ -146,14 +147,14 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       Parameters.Add(new FixedValueParameter<IntValue>(IterationsParameterName, "Number of iterations (set as high as possible, adjust in combination with nu, when increasing iterations also decrease nu)", new IntValue(1000)));
       Parameters.Add(new FixedValueParameter<IntValue>(SeedParameterName, "The random seed used to initialize the new pseudo random number generator.", new IntValue(0)));
       Parameters.Add(new FixedValueParameter<BoolValue>(SetSeedRandomlyParameterName, "True if the random seed should be set to a random value, otherwise false.", new BoolValue(true)));
-      Parameters.Add(new FixedValueParameter<IntValue>(MaxSizeParameterName, "Maximal size of the tree learned in each step (prefer smaller sizes if possible)", new IntValue(10)));
+      Parameters.Add(new FixedValueParameter<IntValue>(MaxSizeParameterName, "Maximal size of the tree learned in each step (prefer smaller sizes (3 to 10) if possible)", new IntValue(10)));
       Parameters.Add(new FixedValueParameter<DoubleValue>(RParameterName, "Ratio of training rows selected randomly in each step (0 < R <= 1)", new DoubleValue(0.5)));
       Parameters.Add(new FixedValueParameter<DoubleValue>(MParameterName, "Ratio of variables selected randomly in each step (0 < M <= 1)", new DoubleValue(0.5)));
       Parameters.Add(new FixedValueParameter<DoubleValue>(NuParameterName, "Learning rate nu (step size for the gradient update, should be small 0 < nu < 0.1)", new DoubleValue(0.002)));
       Parameters.Add(new FixedValueParameter<IntValue>(UpdateIntervalParameterName, "", new IntValue(100)));
       Parameters[UpdateIntervalParameterName].Hidden = true;
-      Parameters.Add(new FixedValueParameter<BoolValue>(CreateSolutionParameterName, "Flag that indicates if a solution should be produced at the end of the run", new BoolValue(true)));
-      Parameters[CreateSolutionParameterName].Hidden = true;
+      Parameters.Add(new FixedValueParameter<EnumValue<ModelCreation>>(ModelCreationParameterName, "Defines the results produced at the end of the run (Surrogate => Less disk space, lazy recalculation of model)", new EnumValue<ModelCreation>(ModelCreation.Model)));
+      Parameters[ModelCreationParameterName].Hidden = true;
 
       var lossFunctions = ApplicationManager.Manager.GetInstances<ILossFunction>();
       Parameters.Add(new ConstrainedValueParameter<ILossFunction>(LossFunctionParameterName, "The loss function", new ItemSet<ILossFunction>(lossFunctions)));
@@ -164,6 +165,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     private void AfterDeserialization() {
       // BackwardsCompatibility3.4
       #region Backwards compatible code, remove with 3.5
+
+      #region LossFunction
       // parameter type has been changed
       var lossFunctionParam = Parameters[LossFunctionParameterName] as ConstrainedValueParameter<StringValue>;
       if (lossFunctionParam != null) {
@@ -181,6 +184,19 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
           LossFunctionParameter.Value = LossFunctionParameter.ValidValues.First(f => f.ToString().Contains("Squared")); // default: SE
         }
       }
+      #endregion
+
+      #region CreateSolution
+      // parameter type has been changed
+      if (Parameters.ContainsKey("CreateSolution")) {
+        var createSolutionParam = Parameters["CreateSolution"] as FixedValueParameter<BoolValue>;
+        Parameters.Remove(createSolutionParam);
+
+        ModelCreation value = createSolutionParam.Value.Value ? ModelCreation.Model : ModelCreation.QualityOnly;
+        Parameters.Add(new FixedValueParameter<EnumValue<ModelCreation>>(ModelCreationParameterName, "Defines the results produced at the end of the run (Surrogate => Less disk space, lazy recalculation of model)", new EnumValue<ModelCreation>(value)));
+        Parameters[ModelCreationParameterName].Hidden = true;
+      }
+      #endregion
       #endregion
     }
 
@@ -248,8 +264,12 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       Results.Add(new Result("Loss (test)", new DoubleValue(state.GetTestLoss())));
 
       // produce solution 
-      if (CreateSolution) {
-        var model = state.GetModel();
+      if (ModelCreation == ModelCreation.SurrogateModel || ModelCreation == ModelCreation.Model) {
+        IRegressionModel model = state.GetModel();
+
+        if (ModelCreation == ModelCreation.SurrogateModel) {
+          model = new GradientBoostedTreesModelSurrogate((GradientBoostedTreesModel)model, problemData, (uint)Seed, lossFunction, Iterations, MaxSize, R, M, Nu);
+        }
 
         // for logistic regression we produce a classification solution
         if (lossFunction is LogisticRegressionLoss) {
@@ -271,6 +291,10 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
           // otherwise we produce a regression solution
           Results.Add(new Result("Solution", new GradientBoostedTreesSolution(model, problemData)));
         }
+      } else if (ModelCreation == ModelCreation.QualityOnly) {
+        //Do nothing
+      } else {
+        throw new NotImplementedException("Selected parameter for CreateSolution isn't implemented yet");
       }
     }
   }
