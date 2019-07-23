@@ -21,11 +21,13 @@
 
 using System;
 using System.Threading;
+using HEAL.Attic;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
 
 namespace HeuristicLab.ExactOptimization.LinearProgramming {
 
+  [StorableType("D647D4F0-A0F5-4091-8F12-54E59CEF12E4")]
   public interface ILinearSolver : IParameterizedNamedItem {
     double DualTolerance { get; set; }
 

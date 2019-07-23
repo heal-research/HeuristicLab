@@ -19,8 +19,11 @@
  */
 #endregion
 
+using HEAL.Attic;
+
 namespace HeuristicLab.ExactOptimization.LinearProgramming {
 
+  [StorableType("F4D6C4AE-C222-4175-9D05-E13707D0EDDB")]
   public enum ProblemType {
     LinearProgramming,
     MixedIntegerProgramming
