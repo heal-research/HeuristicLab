@@ -67,7 +67,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
 
 
       Assert.AreEqual("('a' * 'b' * 'c')", Derive("a*b*c*d", "d"));
-      Assert.AreEqual("('a' / ('b' * 'c' * SQR('d') * (-1)))", Derive("a/b/c/d", "d")); 
+      Assert.AreEqual("('a' / ('b' * 'c' * SQR('d') * (-1)))", Derive("a/b/c/d", "d"));
+
+      Assert.AreEqual("('x' * ((SQR(TANH(SQR('x'))) * (-1)) + 1) * 2)", Derive("tanh(sqr(x))", "x")); // (2*'x'*(1 - SQR(TANH(SQR('x'))))
 
       {
         // special case: Inv(x) using only one argument to the division symbol
