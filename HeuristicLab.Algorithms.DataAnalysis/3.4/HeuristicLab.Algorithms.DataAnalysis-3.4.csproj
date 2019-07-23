@@ -298,11 +298,14 @@
     <Compile Include="NonlinearRegression\NonlinearRegression.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RandomForest\ModelCreation.cs" />
     <Compile Include="RandomForest\RandomForestClassificationSolution.cs" />
     <Compile Include="RandomForest\RandomForestClassification.cs" />
     <Compile Include="RandomForest\RandomForestModel.cs" />
+    <Compile Include="RandomForest\RandomForestModelFull.cs" />
     <Compile Include="RandomForest\RandomForestRegression.cs" />
     <Compile Include="RandomForest\RandomForestRegressionSolution.cs" />
+    <Compile Include="RandomForest\RandomForestModelSurrogate.cs" />
     <Compile Include="RandomForest\RandomForestUtil.cs" />
     <Compile Include="SupportVectorMachine\SupportVectorClassification.cs" />
     <Compile Include="SupportVectorMachine\SupportVectorClassificationSolution.cs" />

@@ -26,11 +26,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 using HeuristicLab.Problems.DataAnalysis;
 using HeuristicLab.Random;
 
@@ -88,6 +88,35 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   }
 
   public static class RandomForestUtil {
+    public static void AssertParameters(double r, double m) {
+      if (r <= 0 || r > 1) throw new ArgumentException("The R parameter for random forest modeling must be between 0 and 1.");
+      if (m <= 0 || m > 1) throw new ArgumentException("The M parameter for random forest modeling must be between 0 and 1.");
+    }
+
+    public static void AssertInputMatrix(double[,] inputMatrix) {
+      if (inputMatrix.ContainsNanOrInfinity())
+        throw new NotSupportedException("Random forest modeling does not support NaN or infinity values in the input dataset.");
+    }
+
+    internal static alglib.decisionforest CreateRandomForestModel(int seed, double[,] inputMatrix, int nTrees, double r, double m, int nClasses, out alglib.dfreport rep) {
+      RandomForestUtil.AssertParameters(r, m);
+      RandomForestUtil.AssertInputMatrix(inputMatrix);
+
+      int info = 0;
+      alglib.math.rndobject = new System.Random(seed);
+      var dForest = new alglib.decisionforest();
+      rep = new alglib.dfreport();
+      int nRows = inputMatrix.GetLength(0);
+      int nColumns = inputMatrix.GetLength(1);
+      int sampleSize = Math.Max((int)Math.Round(r * nRows), 1);
+      int nFeatures = Math.Max((int)Math.Round(m * (nColumns - 1)), 1);
+
+      alglib.dforest.dfbuildinternal(inputMatrix, nRows, nColumns - 1, nClasses, nTrees, sampleSize, nFeatures, alglib.dforest.dfusestrongsplits + alglib.dforest.dfuseevs, ref info, dForest.innerobj, rep.innerobj);
+      if (info != 1) throw new ArgumentException("Error in calculation of random forest model");
+      return dForest;
+    }
+
+
     private static void CrossValidate(IRegressionProblemData problemData, Tuple<IEnumerable<int>, IEnumerable<int>>[] partitions, int nTrees, double r, double m, int seed, out double avgTestMse) {
       avgTestMse = 0;
       var ds = problemData.Dataset;
