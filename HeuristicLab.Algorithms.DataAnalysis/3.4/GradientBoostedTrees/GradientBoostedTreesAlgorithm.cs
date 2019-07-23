@@ -195,6 +195,10 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         ModelCreation value = createSolutionParam.Value.Value ? ModelCreation.Model : ModelCreation.QualityOnly;
         Parameters.Add(new FixedValueParameter<EnumValue<ModelCreation>>(ModelCreationParameterName, "Defines the results produced at the end of the run (Surrogate => Less disk space, lazy recalculation of model)", new EnumValue<ModelCreation>(value)));
         Parameters[ModelCreationParameterName].Hidden = true;
+      } else if (!Parameters.ContainsKey(ModelCreationParameterName)) {
+        // very old version contains neither ModelCreationParameter nor CreateSolutionParameter
+        Parameters.Add(new FixedValueParameter<EnumValue<ModelCreation>>(ModelCreationParameterName, "Defines the results produced at the end of the run (Surrogate => Less disk space, lazy recalculation of model)", new EnumValue<ModelCreation>(ModelCreation.Model)));
+        Parameters[ModelCreationParameterName].Hidden = true;
       }
       #endregion
       #endregion
