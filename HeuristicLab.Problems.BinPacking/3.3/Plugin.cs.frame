@@ -25,7 +25,7 @@ namespace HeuristicLab.Problems.BinPacking {
   /// <summary>
   /// Plugin class for HeuristicLab.Problems.BinPacking plugin.
   /// </summary>
-  [Plugin("HeuristicLab.Problems.BinPacking", "3.3.15.$WCREV$")]
+  [Plugin("HeuristicLab.Problems.BinPacking", "3.3.16.$WCREV$")]
   [PluginFile("HeuristicLab.Problems.BinPacking-3.3.dll", PluginFileType.Assembly)]
   [PluginDependency("HeuristicLab.Analysis", "3.3")]
   [PluginDependency("HeuristicLab.Collections", "3.3")]

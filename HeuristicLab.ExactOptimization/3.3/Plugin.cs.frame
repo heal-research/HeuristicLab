@@ -24,7 +24,7 @@ using HeuristicLab.PluginInfrastructure;
 namespace HeuristicLab.ExactOptimization {
 
   [Plugin("HeuristicLab.ExactOptimization", "Provides support for exact optimization based on Google OR-Tools. " +
-    "Requires the Microsoft Visual C++ 2017 Redistributable (x64) - 14.16.27012: https://aka.ms/vs/15/release/vc_redist.x64.exe", "3.3.15.$WCREV$")]
+    "Requires the Microsoft Visual C++ 2017 Redistributable (x64) - 14.16.27012: https://aka.ms/vs/15/release/vc_redist.x64.exe", "3.3.16.$WCREV$")]
   [PluginFile("HeuristicLab.ExactOptimization-3.3.dll", PluginFileType.Assembly)]
   [PluginDependency("HeuristicLab.Analysis", "3.3")]
   [PluginDependency("HeuristicLab.Attic", "1.0")]
