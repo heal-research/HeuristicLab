@@ -22,9 +22,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis {
   /// <summary>
@@ -120,8 +120,13 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
 
     public override IEnumerable<double> GetEstimatedClassValues(IDataset dataset, IEnumerable<int> rows) {
+      var estimatedValues = GetEstimatedValues(dataset, rows);
+      return GetEstimatedClassValues(estimatedValues);
+    }
+
+    public virtual IEnumerable<double> GetEstimatedClassValues(IEnumerable<double> estimatedValues) {
       if (!Thresholds.Any() && !ClassValues.Any()) throw new ArgumentException("No thresholds and class values were set for the current classification model.");
-      foreach (var x in GetEstimatedValues(dataset, rows)) {
+      foreach (var x in estimatedValues) {
         int classIndex = 0;
         // find first threshold value which is larger than x => class index = threshold index + 1
         for (int i = 0; i < thresholds.Length; i++) {
@@ -131,6 +136,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
         yield return classValues.ElementAt(classIndex - 1);
       }
     }
+
     #region events
     public event EventHandler ThresholdsChanged;
     protected virtual void OnThresholdsChanged(EventArgs e) {

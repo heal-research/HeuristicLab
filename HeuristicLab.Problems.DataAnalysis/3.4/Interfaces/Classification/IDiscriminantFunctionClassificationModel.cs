@@ -33,6 +33,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     // class values and thresholds can only be assigned simultanously
     void SetThresholdsAndClassValues(IEnumerable<double> thresholds, IEnumerable<double> classValues);
     IEnumerable<double> GetEstimatedValues(IDataset dataset, IEnumerable<int> rows);
+    IEnumerable<double> GetEstimatedClassValues(IEnumerable<double> estimatedValues);
 
     event EventHandler ThresholdsChanged;
 

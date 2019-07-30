@@ -243,6 +243,7 @@
     <Compile Include="Implementation\Regression\RegressionSolution.cs" />
     <Compile Include="OnlineCalculators\OnlineTheilsUStatisticCalculator.cs" />
     <Compile Include="OnlineCalculators\OnlineWeightedDirectionalSymmetryCalculator.cs" />
+    <Compile Include="OnlineCalculators\OnlineWeightedClassificationMeanSquaredErrorCalculator.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Implementation\Classification\ThresholdCalculators\AccuracyMaximizationThresholdCalculator.cs" />
     <Compile Include="Implementation\Classification\ThresholdCalculators\NormalDistributionCutPointsThresholdCalculator.cs" />
