@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("HEAL")]
 [assembly: AssemblyProduct("HeuristicLab.Problems.DataAnalysis.Symbolic.NativeInterpreter-0.1")]
-[assembly: AssemblyCopyright("(c) 2002-2018 HEAL")]
+[assembly: AssemblyCopyright("(c) HEAL")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
