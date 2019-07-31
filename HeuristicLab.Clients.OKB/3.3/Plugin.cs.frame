@@ -25,7 +25,7 @@ namespace HeuristicLab.Clients.OKB {
   /// <summary>
   /// Plugin class for HeuristicLab.Clients.OKB plugin.
   /// </summary>
-  [Plugin("HeuristicLab.Clients.OKB", "3.3.15.$WCREV$")]
+  [Plugin("HeuristicLab.Clients.OKB", "3.3.16.$WCREV$")]
   [PluginFile("HeuristicLab.Clients.OKB-3.3.dll", PluginFileType.Assembly)]  
   [PluginDependency("HeuristicLab.Attic", "1.0")]
   [PluginDependency("HeuristicLab.Clients.Common", "3.3")]

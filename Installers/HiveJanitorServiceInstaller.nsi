@@ -1,5 +1,5 @@
 /* HeuristicLab
- * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -26,7 +26,7 @@ OutFile "HeuristicLab Hive Janitor Service Installer.exe"
 ; Build configuration is either Debug or Release
 !define BUILDCONFIGURATION "Debug"
 !define JANITORBUILDPATH "..\HeuristicLab.Services.Hive.JanitorService\3.3\bin\${BUILDCONFIGURATION}"
-!define VERSION "3.3.15"
+!define VERSION "3.3.16"
 
 InstallDir $PROGRAMFILES\HeuristicLabHiveJanitorService
 RequestExecutionLevel admin
