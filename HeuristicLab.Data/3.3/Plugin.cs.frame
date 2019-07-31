@@ -25,7 +25,7 @@ namespace HeuristicLab.Data {
   /// <summary>
   /// Plugin class for HeuristicLab.Data plugin.
   /// </summary>
-  [Plugin("HeuristicLab.Data", "3.3.15.$WCREV$")]
+  [Plugin("HeuristicLab.Data", "3.3.16.$WCREV$")]
   [PluginFile("HeuristicLab.Data-3.3.dll", PluginFileType.Assembly)]
   [PluginDependency("HeuristicLab.Common", "3.3")]
   [PluginDependency("HeuristicLab.Common.Resources", "3.3")]

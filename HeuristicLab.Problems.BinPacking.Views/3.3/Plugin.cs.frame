@@ -25,7 +25,7 @@ namespace HeuristicLab.Problems.BinPacking.Views {
   /// <summary>
   /// Plugin class for HeuristicLab.Problems.BinPacking.Views plugin.
   /// </summary>
-  [Plugin("HeuristicLab.Problems.BinPacking.Views", "3.3.15.$WCREV$")]
+  [Plugin("HeuristicLab.Problems.BinPacking.Views", "3.3.16.$WCREV$")]
   [PluginFile("HeuristicLab.Problems.BinPacking.Views-3.3.dll", PluginFileType.Assembly)]
   [PluginDependency("HeuristicLab.Collections", "3.3")]
   [PluginDependency("HeuristicLab.Core", "3.3")]

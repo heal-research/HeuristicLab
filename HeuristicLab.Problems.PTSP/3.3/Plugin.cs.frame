@@ -22,7 +22,7 @@
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Problems.PTSP {
-  [Plugin("HeuristicLab.Problems.PTSP", "Provides an implementation of the probabilistic traveling salesman problem (PTSP)", "3.3.15.$WCREV$")]
+  [Plugin("HeuristicLab.Problems.PTSP", "Provides an implementation of the probabilistic traveling salesman problem (PTSP)", "3.3.16.$WCREV$")]
   [PluginFile("HeuristicLab.Problems.PTSP-3.3.dll", PluginFileType.Assembly)]
   [PluginDependency("HeuristicLab.Analysis", "3.3")]
   [PluginDependency("HeuristicLab.Collections", "3.3")]

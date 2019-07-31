@@ -25,7 +25,7 @@ using System.Text;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis {
-  [Plugin("HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis","Provides classes to perform symbolic time-series prognosis.", "3.4.11.$WCREV$")]
+  [Plugin("HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis","Provides classes to perform symbolic time-series prognosis.", "3.4.12.$WCREV$")]
   [PluginFile("HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis-3.4.dll", PluginFileType.Assembly)]
   [PluginDependency("HeuristicLab.ALGLIB", "3.7.0")]
   [PluginDependency("HeuristicLab.Analysis", "3.3")]
