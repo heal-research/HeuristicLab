@@ -6,6 +6,7 @@ $editions = @("Enterprise", "Professional", "Community", "BuildTools")
 $versions = @("Current", "15.0")
 
 $msBuildPath = $undefined
+$vstestPath = $undefined
 :search Foreach ($year in $years) {
   $loc = [System.IO.Path]::Combine($vsDir, $year)
   Foreach ($edition in $editions) {
@@ -17,28 +18,50 @@ $msBuildPath = $undefined
 
       If ([System.IO.File]::Exists($loc64)) {
         $msBuildPath = $loc64
+        $vstestPath = [System.IO.Path]::Combine($loc, $edition, "Common7", "IDE", "CommonExtensions", "Microsoft", "TestWindow", "vstest.console.exe")
         Break search;
       }
       If ([System.IO.File]::Exists($loc32)) {
         $msBuildPath = $loc32
+        $vstestPath = [System.IO.Path]::Combine($loc, $edition, "Common7", "IDE", "CommonExtensions", "Microsoft", "TestWindow", "vstest.console.exe")
         Break search;
       }
     }
   }
 }
 
-Try {
-  If ($msBuildPath -eq $undefined) {
-    "Could not locate MSBuild, ABORTING ..."
-    Return
-  }
+If ($vstestPath -eq $undefined) {
+  "Could not locate vstest.console.exe, ABORTING ..."
+  Return
+}
 
-  "MSBuild located at `"{0}`"." -f $msBuildPath
+If(-not [System.IO.File]::Exists($vstestPath)) {
+  "vstest.console.exe is not found at $vstestPath, ABORTING ..."
+  Return
+}
 
+$testcontainer = "HeuristicLab.Tests.dll"
+$input = Read-Host "Which container to test? [$($testcontainer)]"
+$testcontainer = ($testcontainer, $input)[[bool]$input]
+
+$testplatform = "x64"
+$input = Read-Host "Which platform to run the tests? [$($testplatform)]"
+$testplatform = ($testplatform, $input)[[bool]$input]
+
+$testcategory = "Essential"
+$input = Read-Host "Which category do you want to run? [$($testcategory)]"
+$testcategory = ($testcategory, $input)[[bool]$input]
+
+# query whether to build
+$input = Read-Host "Should the tests be rebuilt y/N?"
+$input = ([string]("n", $input)[[bool]$input]).ToLowerInvariant()
+$dobuild = $input -eq "y"
+
+If($dobuild) {
   $curPath = $MyInvocation.MyCommand.Path
   $curDir = Split-Path $curPath
 
-  $slnFiles = Get-ChildItem $curDir -Filter *.sln
+  $slnFiles = Get-ChildItem $curDir -Filter *Tests.sln
 
   If ($slnFiles.Count -le 0) {
     "No solutions found, ABORTING ..."
@@ -132,10 +155,6 @@ Try {
     & $msBuildPath $args
     "===== BUILD FINISHED ====="
   }
-} Finally {
-  ""
-
-  Write-Host -NoNewline "Press any key to continue ... "
-
-  [void][System.Console]::ReadKey($true)
 }
+
+& $vstestPath "bin\$testcontainer" /Framework:framework40 /Platform:$testplatform /TestCaseFilter:"TestCategory=$testcategory"
