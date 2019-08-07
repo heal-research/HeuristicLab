@@ -1,22 +1,42 @@
 ﻿# find ms build
 $programFilesX86Dir = ($Env:ProgramFiles, ${Env:ProgramFiles(x86)})[[bool]${Env:ProgramFiles(x86)}]
-$locations = @(
-  [System.IO.Path]::Combine($programFilesX86Dir, "Microsoft Visual Studio", "2017", "Enterprise")
-  [System.IO.Path]::Combine($programFilesX86Dir, "Microsoft Visual Studio", "2017", "Community")
-  [System.IO.Path]::Combine($programFilesX86Dir, "Microsoft Visual Studio", "2017", "BuildTools")
-)
+$vsDir = [System.IO.Path]::Combine($programFilesX86Dir, "Microsoft Visual Studio")
+$years = @("2019", "2017")
+$editions = @("Enterprise", "Professional", "Community", "BuildTools")
+$versions = @("Current", "15.0")
 
+$msBuildPath = $undefined
 $vstestPath = $undefined
-Foreach ($loc in $locations) {
-  $vstestloc = [System.IO.Path]::Combine($loc, "Common7", "IDE", "CommonExtensions", "Microsoft", "TestWindow", "vstest.console.exe")
-  If([System.IO.File]::Exists($vstestloc)) {
-    $vstestPath = $vstestloc
-    Break;
+:search Foreach ($year in $years) {
+  $loc = [System.IO.Path]::Combine($vsDir, $year)
+  Foreach ($edition in $editions) {
+    $edLoc = [System.IO.Path]::Combine($loc, $edition, "MSBuild")
+    Foreach ($version in $versions) {
+      $binLoc = [System.IO.Path]::Combine($edLoc, $version, "Bin")
+      $loc64 = [System.IO.Path]::Combine($binLoc, "amd64", "MSBuild.exe")
+      $loc32 = [System.IO.Path]::Combine($binLoc, "MSBuild.exe")
+
+      If ([System.IO.File]::Exists($loc64)) {
+        $msBuildPath = $loc64
+        $vstestPath = [System.IO.Path]::Combine($loc, $edition, "Common7", "IDE", "CommonExtensions", "Microsoft", "TestWindow", "vstest.console.exe")
+        Break search;
+      }
+      If ([System.IO.File]::Exists($loc32)) {
+        $msBuildPath = $loc32
+        $vstestPath = [System.IO.Path]::Combine($loc, $edition, "Common7", "IDE", "CommonExtensions", "Microsoft", "TestWindow", "vstest.console.exe")
+        Break search;
+      }
+    }
   }
 }
 
 If ($vstestPath -eq $undefined) {
   "Could not locate vstest.console.exe, ABORTING ..."
+  Return
+}
+
+If(-not [System.IO.File]::Exists($vstestPath)) {
+  "vstest.console.exe is not found at $vstestPath, ABORTING ..."
   Return
 }
 
@@ -38,25 +58,6 @@ $input = ([string]("n", $input)[[bool]$input]).ToLowerInvariant()
 $dobuild = $input -eq "y"
 
 If($dobuild) {
-
-  $msBuildPath = $undefined
-  Foreach ($loc in $locations) {
-    $msbuildloc64 = [System.IO.Path]::Combine($loc, "MSBuild", "15.0", "Bin", "amd64", "MSBuild.exe")
-    $msbuildloc32 = [System.IO.Path]::Combine($loc, "MSBuild", "15.0", "Bin", "MSBuild.exe")
-    If ([System.IO.File]::Exists($msbuildloc64)) {
-      $msBuildPath = $msbuildloc64
-      Break;
-    } ElseIf ([System.IO.File]::Exists($msbuildloc32)) {
-      $msBuildPath = $msbuildloc32
-      Break;
-    }
-  }
-  
-  If ($msBuildPath -eq $undefined) {
-    "Could not locate MSBuild, ABORTING ..."
-    Return
-  }
-
   $curPath = $MyInvocation.MyCommand.Path
   $curDir = Split-Path $curPath
 
