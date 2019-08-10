@@ -299,7 +299,8 @@ namespace HeuristicLab.Algorithms.ALPS {
       // BackwardsCompatibility3.3
       #region Backwards compatible code, remove with 3.4
       var optionalMutatorParameter = MutatorParameter as OptionalConstrainedValueParameter<IManipulator>;
-      if (optionalMutatorParameter != null) {
+      var mutatorParameter = MutatorParameter as ConstrainedValueParameter<IManipulator>;
+      if (mutatorParameter == null && optionalMutatorParameter != null) {
         Parameters.Remove(optionalMutatorParameter);
         Parameters.Add(new ConstrainedValueParameter<IManipulator>("Mutator", "The operator used to mutate solutions."));
         foreach (var m in optionalMutatorParameter.ValidValues)
