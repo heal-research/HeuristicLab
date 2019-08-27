@@ -144,7 +144,7 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       if (Content != null && Content.Jobs != null) {
         // clear hive client only if it is not displayed by any other content view (i.e. job manager)
         var contentViews = MainFormManager.MainForm.Views.OfType<IContentView>();
-        if (contentViews.All(x => x.Content != Content && x == this))
+        if (contentViews.All(x => x.Content != Content || x == this))
           Content.ClearHiveClient();
 
         Content = null;
