@@ -23,6 +23,7 @@ using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.RealVectorEncoding;
+using HeuristicLab.Optimization;
 using HEAL.Attic;
 
 namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
@@ -30,7 +31,7 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
   [StorableType("A676EB9C-ECA8-40D7-BA16-ADDDDD482092")]
   public class SchafferN1 : MultiObjectiveTestFunction {
     protected override double[,] GetBounds(int objectives) {
-      return new double[,] { { -1e5, 1e5 } };
+      return new double[,] {{-1e5, 1e5}};
     }
 
     protected override bool[] GetMaximization(int objectives) {
@@ -38,16 +39,16 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
     }
 
     protected override double[] GetReferencePoint(int objectives) {
-      return new double[] { 1e5, 1e5 };
+      return new double[] {1e5, 1e5};
     }
 
 
-    protected override IEnumerable<double[]> GetOptimalParetoFront(int objectives) {
+    protected override IList<double[]> GetOptimalParetoFront(int objectives) {
       return ParetoFrontStore.GetParetoFront("Misc.ParetoFronts." + "SchafferN1");
     }
 
     protected override double GetBestKnownHypervolume(int objectives) {
-      return Hypervolume.Calculate(GetOptimalParetoFront(objectives), GetReferencePoint(objectives), GetMaximization(objectives));
+      return HypervolumeCalculator.CalculateHypervolume(GetOptimalParetoFront(objectives), GetReferencePoint(objectives), GetMaximization(objectives));
     }
 
     [StorableConstructor]
@@ -71,7 +72,7 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
       double f1 = x - 2;
       f1 *= f1;
 
-      return new double[] { f0, f1 };
+      return new double[] {f0, f1};
     }
   }
 }

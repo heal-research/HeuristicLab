@@ -47,9 +47,7 @@ namespace HeuristicLab.Problems.Programmable {
       return new SingleObjectiveProblemDefinitionScript<TEncoding, TEncodedSolution>(this, cloner);
     }
 
-    bool ISingleObjectiveProblemDefinition<TEncoding, TEncodedSolution>.Maximization {
-      get { return CompiledProblemDefinition.Maximization; }
-    }
+    public bool Maximization => CompiledProblemDefinition.Maximization;
 
     double ISingleObjectiveProblemDefinition<TEncoding, TEncodedSolution>.Evaluate(TEncodedSolution individual, IRandom random) {
       return CompiledProblemDefinition.Evaluate(individual, random);
@@ -62,7 +60,7 @@ namespace HeuristicLab.Problems.Programmable {
       return CompiledProblemDefinition.GetNeighbors(individual, random);
     }
 
-    bool ISingleObjectiveProblemDefinition<TEncoding, TEncodedSolution>.IsBetter(double quality, double bestQuality) {
+    public bool IsBetter(double quality, double bestQuality) {
       return CompiledProblemDefinition.IsBetter(quality, bestQuality);
     }
   }

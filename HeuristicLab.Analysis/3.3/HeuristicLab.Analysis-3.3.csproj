@@ -149,8 +149,15 @@
     <Compile Include="DataVisualization\HeatMapHistory.cs" />
     <Compile Include="DataVisualization\ScatterPlot.cs" />
     <Compile Include="MultidimensionalScaling\MultidimensionalScaling.cs" />
+    <Compile Include="MultiObjective\CrowdingAnalyzer.cs" />
+    <Compile Include="MultiObjective\GenerationalDistanceAnalyzer.cs" />
+    <Compile Include="MultiObjective\HypervolumeAnalyzer.cs" />
+    <Compile Include="MultiObjective\InvertedGenerationalDistanceAnalyzer.cs" />
+    <Compile Include="MultiObjective\MultiObjectiveSuccessAnalyzer.cs" />
     <Compile Include="MultiObjective\RankBasedParetoFrontAnalyzer.cs" />
     <Compile Include="MultiObjective\ParetoFrontAnalyzer.cs" />
+    <Compile Include="MultiObjective\SpacingAnalyzer.cs" />
+    <Compile Include="MultiObjective\TimelineAnalyzer.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="PopulationSimilarityAnalysis\PopulationDiversityAnalyzer.cs" />
     <Compile Include="PopulationSimilarityAnalysis\PopulationSimilarityAnalyzer.cs" />

@@ -27,12 +27,12 @@ using HEAL.Attic;
 namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
   [StorableType("A8192C08-A1DA-479A-9381-9B634761B521")]
   public abstract class ZDT : MultiObjectiveTestFunction {
-    protected override IEnumerable<double[]> GetOptimalParetoFront(int objectives) {
+    protected override IList<double[]> GetOptimalParetoFront(int objectives) {
       return ParetoFrontStore.GetParetoFront("ZDT.ParetoFronts." + this.ItemName);
     }
 
     protected override double[,] GetBounds(int objectives) {
-      return new double[,] { { 0, 1 } };
+      return new double[,] {{0, 1}};
     }
 
     protected override bool[] GetMaximization(int objectives) {
@@ -40,7 +40,7 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
     }
 
     protected override double[] GetReferencePoint(int objecitives) {
-      return new double[] { 11.0, 11.0 };
+      return new double[] {11.0, 11.0};
     }
 
     protected override double GetBestKnownHypervolume(int objectives) {
@@ -50,8 +50,7 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
     [StorableConstructor]
     protected ZDT(StorableConstructorFlag _) : base(_) { }
     protected ZDT(MultiObjectiveTestFunction original, Cloner cloner)
-      : base(original, cloner) {
-    }
+      : base(original, cloner) { }
     protected ZDT() : base(minimumObjectives: 2, maximumObjectives: 2, minimumSolutionLength: 1, maximumSolutionLength: int.MaxValue) { }
 
     public override double[] Evaluate(RealVector r, int objectives) {

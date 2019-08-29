@@ -24,9 +24,6 @@ using HEAL.Attic;
 
 namespace HeuristicLab.Optimization {
   [StorableType("eefee3ee-96ea-41fe-af01-ef96961c99b4")]
-  /// <summary>
-  /// An interface which represents an analysis operator.
-  /// </summary>
   public interface IAnalyzer : IOperator {
     bool EnabledByDefault { get; }
   }

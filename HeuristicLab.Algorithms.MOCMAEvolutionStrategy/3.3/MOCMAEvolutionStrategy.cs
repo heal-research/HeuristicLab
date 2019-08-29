@@ -51,6 +51,10 @@ namespace HeuristicLab.Algorithms.MOCMAEvolutionStrategy {
       get { return true; }
     }
 
+    public RealVectorEncoding Encoding {
+      get { return Problem.Encoding; }
+    }
+
     #region Storable fields
     [Storable]
     private IRandom random = new MersenneTwister();
@@ -63,16 +67,15 @@ namespace HeuristicLab.Algorithms.MOCMAEvolutionStrategy {
     [Storable]
     private double stepSizeDampeningFactor; //d
     [Storable]
-    private double targetSuccessProbability;// p^target_succ
+    private double targetSuccessProbability; // p^target_succ
     [Storable]
-    private double evolutionPathLearningRate;//cc
+    private double evolutionPathLearningRate; //cc
     [Storable]
-    private double covarianceMatrixLearningRate;//ccov
+    private double covarianceMatrixLearningRate; //ccov
     [Storable]
     private double covarianceMatrixUnlearningRate;
     [Storable]
     private double successThreshold; //ptresh
-
     #endregion
 
     #region ParameterNames
@@ -161,13 +164,27 @@ namespace HeuristicLab.Algorithms.MOCMAEvolutionStrategy {
       set { IndicatorParameter.Value = value; }
     }
 
-    public double StepSizeLearningRate { get { return stepSizeLearningRate; } }
-    public double StepSizeDampeningFactor { get { return stepSizeDampeningFactor; } }
-    public double TargetSuccessProbability { get { return targetSuccessProbability; } }
-    public double EvolutionPathLearningRate { get { return evolutionPathLearningRate; } }
-    public double CovarianceMatrixLearningRate { get { return covarianceMatrixLearningRate; } }
-    public double CovarianceMatrixUnlearningRate { get { return covarianceMatrixUnlearningRate; } }
-    public double SuccessThreshold { get { return successThreshold; } }
+    public double StepSizeLearningRate {
+      get { return stepSizeLearningRate; }
+    }
+    public double StepSizeDampeningFactor {
+      get { return stepSizeDampeningFactor; }
+    }
+    public double TargetSuccessProbability {
+      get { return targetSuccessProbability; }
+    }
+    public double EvolutionPathLearningRate {
+      get { return evolutionPathLearningRate; }
+    }
+    public double CovarianceMatrixLearningRate {
+      get { return covarianceMatrixLearningRate; }
+    }
+    public double CovarianceMatrixUnlearningRate {
+      get { return covarianceMatrixUnlearningRate; }
+    }
+    public double SuccessThreshold {
+      get { return successThreshold; }
+    }
     #endregion
 
     #region ResultsProperties
@@ -237,7 +254,6 @@ namespace HeuristicLab.Algorithms.MOCMAEvolutionStrategy {
     private double ResultsDifferenceBestKnownHypervolume {
       get { return ((DoubleValue)Results[DifferenceToBestKnownHypervolumeResultName].Value).Value; }
       set { ((DoubleValue)Results[DifferenceToBestKnownHypervolumeResultName].Value).Value = value; }
-
     }
     //Solutions
     private DoubleMatrix ResultsSolutions {
@@ -256,10 +272,10 @@ namespace HeuristicLab.Algorithms.MOCMAEvolutionStrategy {
       Parameters.Add(new FixedValueParameter<IntValue>(SeedName, "The random seed used to initialize the new pseudo random number generator.", new IntValue(0)));
       Parameters.Add(new FixedValueParameter<BoolValue>(SetSeedRandomlyName, "True if the random seed should be set to a random value, otherwise false.", new BoolValue(true)));
       Parameters.Add(new FixedValueParameter<IntValue>(PopulationSizeName, "λ (lambda) - the size of the offspring population.", new IntValue(20)));
-      Parameters.Add(new ValueParameter<DoubleArray>(InitialSigmaName, "The initial sigma can be a single value or a value for each dimension. All values need to be > 0.", new DoubleArray(new[] { 0.5 })));
+      Parameters.Add(new ValueParameter<DoubleArray>(InitialSigmaName, "The initial sigma can be a single value or a value for each dimension. All values need to be > 0.", new DoubleArray(new[] {0.5})));
       Parameters.Add(new FixedValueParameter<IntValue>(MaximumGenerationsName, "The maximum number of generations which should be processed.", new IntValue(1000)));
       Parameters.Add(new FixedValueParameter<IntValue>(MaximumEvaluatedSolutionsName, "The maximum number of evaluated solutions that should be computed.", new IntValue(int.MaxValue)));
-      var set = new ItemSet<IIndicator> { new HypervolumeIndicator(), new CrowdingIndicator(), new MinimalDistanceIndicator() };
+      var set = new ItemSet<IIndicator> {new HypervolumeIndicator(), new CrowdingIndicator(), new MinimalDistanceIndicator()};
       Parameters.Add(new ConstrainedValueParameter<IIndicator>(IndicatorName, "The selection mechanism on non-dominated solutions", set, set.First()));
     }
 
@@ -279,7 +295,9 @@ namespace HeuristicLab.Algorithms.MOCMAEvolutionStrategy {
       successThreshold = original.successThreshold;
     }
 
-    public override IDeepCloneable Clone(Cloner cloner) { return new MOCMAEvolutionStrategy(this, cloner); }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new MOCMAEvolutionStrategy(this, cloner);
+    }
     #endregion
 
     #region Initialization
@@ -308,9 +326,9 @@ namespace HeuristicLab.Algorithms.MOCMAEvolutionStrategy {
     private void InitSolutions() {
       solutions = new Individual[PopulationSize];
       for (var i = 0; i < PopulationSize; i++) {
-        var x = new RealVector(Problem.Encoding.Length); // Uniform distibution in all dimensions assumed.
-        var bounds = Problem.Encoding.Bounds;
-        for (var j = 0; j < Problem.Encoding.Length; j++) {
+        var x = new RealVector(Encoding.Length); // Uniform distibution in all dimensions assumed.
+        var bounds = Encoding.Bounds;
+        for (var j = 0; j < Encoding.Length; j++) {
           var dim = j % bounds.Rows;
           x[j] = random.NextDouble() * (bounds[dim, 1] - bounds[dim, 0]) + bounds[dim, 0];
         }
@@ -321,7 +339,7 @@ namespace HeuristicLab.Algorithms.MOCMAEvolutionStrategy {
     }
     private void InitStrategy() {
       const int lambda = 1;
-      double n = Problem.Encoding.Length;
+      double n = Encoding.Length;
       targetSuccessProbability = 1.0 / (5.0 + Math.Sqrt(lambda) / 2.0);
       stepSizeDampeningFactor = 1.0 + n / (2.0 * lambda);
       stepSizeLearningRate = targetSuccessProbability * lambda / (2.0 + targetSuccessProbability * lambda);
@@ -354,13 +372,14 @@ namespace HeuristicLab.Algorithms.MOCMAEvolutionStrategy {
       Results.Add(new Result(CurrentFrontResultName, "The current front", new DoubleMatrix()));
       Results.Add(new Result(ScatterPlotResultName, "A scatterplot displaying the evaluated solutions and (if available) the analytically optimal front", new ParetoFrontScatterPlot()));
 
-      var problem = Problem as MultiObjectiveTestFunctionProblem;
+      var problem = Problem;
       if (problem == null) return;
-      if (problem.BestKnownFront != null) {
-        ResultsBestKnownHypervolume = Hypervolume.Calculate(problem.BestKnownFront.ToJaggedArray(), problem.TestFunction.ReferencePoint(problem.Objectives), Problem.Maximization);
+      var bkf = problem.BestKnownFront == null ? null : problem.BestKnownFront.ToArray();
+      if (bkf != null && problem.ReferencePoint != null) {
+        ResultsBestKnownHypervolume = HypervolumeCalculator.CalculateHypervolume(bkf, problem.ReferencePoint, Problem.Maximization);
         ResultsDifferenceBestKnownHypervolume = ResultsBestKnownHypervolume;
       }
-      ResultsScatterPlot = new ParetoFrontScatterPlot(new double[0][], new double[0][], problem.BestKnownFront.ToJaggedArray(), Problem.Objectives, Problem.Encoding.Length);
+      ResultsScatterPlot = new ParetoFrontScatterPlot(new double[0][], new double[0][], bkf, Problem.Objectives, Problem.Encoding.Length);
     }
     #endregion
 
@@ -416,7 +435,7 @@ namespace HeuristicLab.Algorithms.MOCMAEvolutionStrategy {
       return fitness.Select((v, i) => Problem.Maximization[i] ? v - penalty : v + penalty).ToArray();
     }
     private RealVector ClosestFeasible(RealVector x) {
-      var bounds = Problem.Encoding.Bounds;
+      var bounds = Encoding.Bounds;
       var r = new RealVector(x.Length);
       for (var i = 0; i < x.Length; i++) {
         var dim = i % bounds.Rows;
@@ -425,7 +444,7 @@ namespace HeuristicLab.Algorithms.MOCMAEvolutionStrategy {
       return r;
     }
     private bool IsFeasable(RealVector offspring) {
-      var bounds = Problem.Encoding.Bounds;
+      var bounds = Encoding.Bounds;
       for (var i = 0; i < offspring.Length; i++) {
         var dim = i % bounds.Rows;
         if (bounds[dim, 0] > offspring[i] || offspring[i] > bounds[dim, 1]) return false;
@@ -437,7 +456,7 @@ namespace HeuristicLab.Algorithms.MOCMAEvolutionStrategy {
     private void SelectParents(IReadOnlyList<Individual> parents, int length) {
       //perform a nondominated sort to assign the rank to every element
       int[] ranks;
-      var fronts = DominationCalculator<Individual>.CalculateAllParetoFronts(parents.ToArray(), parents.Select(i => i.PenalizedFitness).ToArray(), Problem.Maximization, out ranks);
+      var fronts = DominationCalculator.CalculateAllParetoFronts(parents.ToArray(), parents.Select(i => i.PenalizedFitness).ToArray(), Problem.Maximization, out ranks);
 
       //deselect the highest rank fronts until we would end up with less or equal mu elements
       var rank = fronts.Count - 1;
@@ -469,20 +488,24 @@ namespace HeuristicLab.Algorithms.MOCMAEvolutionStrategy {
     }
 
     private void Analyze() {
-      ResultsScatterPlot = new ParetoFrontScatterPlot(solutions.Select(x => x.Fitness).ToArray(), solutions.Select(x => x.Mean.ToArray()).ToArray(), ResultsScatterPlot.ParetoFront, ResultsScatterPlot.Objectives, ResultsScatterPlot.ProblemSize);
+      var qualities = solutions.Select(x => x.Fitness).ToArray();
+
+      //to do check for side effects
+      ResultsScatterPlot = new ParetoFrontScatterPlot(qualities, solutions.Select(x => x.Mean.ToArray()).ToArray(), ResultsScatterPlot.ParetoFront, ResultsScatterPlot.Objectives, ResultsScatterPlot.ProblemSize);
       ResultsSolutions = solutions.Select(x => x.Mean.ToArray()).ToMatrix();
 
-      var problem = Problem as MultiObjectiveTestFunctionProblem;
+      var problem = Problem as MultiObjectiveProblem<RealVectorEncoding, RealVector>;
       if (problem == null) return;
 
-      var front = NonDominatedSelect.GetDominatingVectors(solutions.Select(x => x.Fitness), problem.ReferencePoint.CloneAsArray(), Problem.Maximization, true).ToArray();
-      if (front.Length == 0) return;
-      var bounds = problem.Bounds.CloneAsMatrix();
-      ResultsCrowding = Crowding.Calculate(front, bounds);
-      ResultsSpacing = Spacing.Calculate(front);
-      ResultsGenerationalDistance = problem.BestKnownFront != null ? GenerationalDistance.Calculate(front, problem.BestKnownFront.ToJaggedArray(), 1) : double.NaN;
-      ResultsInvertedGenerationalDistance = problem.BestKnownFront != null ? InvertedGenerationalDistance.Calculate(front, problem.BestKnownFront.ToJaggedArray(), 1) : double.NaN;
-      ResultsHypervolume = Hypervolume.Calculate(front, problem.ReferencePoint.CloneAsArray(), Problem.Maximization);
+
+      if (qualities.Length == 0) return;
+      ResultsCrowding = CrowdingCalculator.CalculateCrowding(qualities);
+      ResultsSpacing = Spacing.Calculate(qualities);
+
+
+      ResultsGenerationalDistance = problem.BestKnownFront != null ? GenerationalDistance.Calculate(qualities, problem.BestKnownFront, 1) : double.NaN;
+      ResultsInvertedGenerationalDistance = problem.BestKnownFront != null ? InvertedGenerationalDistance.Calculate(qualities, problem.BestKnownFront, 1) : double.NaN;
+      ResultsHypervolume = problem.ReferencePoint != null ? HypervolumeCalculator.CalculateHypervolume(qualities, problem.ReferencePoint, Problem.Maximization) : double.NaN;
       ResultsBestHypervolume = Math.Max(ResultsHypervolume, ResultsBestHypervolume);
       ResultsDifferenceBestKnownHypervolume = ResultsBestKnownHypervolume - ResultsBestHypervolume;
 

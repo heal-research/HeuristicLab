@@ -32,7 +32,9 @@ namespace HeuristicLab.Optimization {
       get { return (ILookupParameter<IRandom>)Parameters["Random"]; }
     }
 
-    public override string OperatorPrefix => "Manipulator";
+    public override string OperatorPrefix {
+      get { return "Manipulator"; }
+    }
     [StorableConstructor]
     private MultiEncodingManipulator(StorableConstructorFlag _) : base(_) { }
     private MultiEncodingManipulator(MultiEncodingManipulator original, Cloner cloner) : base(original, cloner) { }

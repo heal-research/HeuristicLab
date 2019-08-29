@@ -29,9 +29,11 @@ using HEAL.Attic;
 
 namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
   [StorableType("EC99F3C1-D8D2-4738-9523-0D07438647A5")]
-  [Item("InvertedGenerationalDistanceAnalyzer", "The inverted generational distance between the current and the best known front (see Multi-Objective Performance Metrics - Shodhganga for more information)")]
+  [Item("InvertedGenerationalDistanceAnalyzer", "This analyzer is functionally equivalent to the InvertedGenerationalDistanceAnalyzer in HeuristicLab.Analysis, but is kept as not to break backwards compatibility")]
   public class InvertedGenerationalDistanceAnalyzer : MOTFAnalyzer {
-    public override bool EnabledByDefault { get { return false; } }
+    public override bool EnabledByDefault {
+      get { return false; }
+    }
 
     private IFixedValueParameter<DoubleValue> DampeningParameter {
       get { return (IFixedValueParameter<DoubleValue>)Parameters["Dampening"]; }
@@ -50,7 +52,6 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
       Parameters.Add(new FixedValueParameter<DoubleValue>("Dampening", "", new DoubleValue(1)));
       Parameters.Add(new ResultParameter<DoubleValue>("Inverted Generational Distance", "The genrational distance between the current front and the optimal front"));
       InvertedGenerationalDistanceResultParameter.DefaultValue = new DoubleValue(double.NaN);
-
     }
 
 
@@ -63,18 +64,12 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
 
     public override IOperation Apply() {
       var qualities = QualitiesParameter.ActualValue;
-      var testFunction = TestFunctionParameter.ActualValue;
-      int objectives = qualities[0].Length;
-
-      var optimalfront = testFunction.OptimalParetoFront(objectives);
+      var optimalfront = TestFunctionParameter.ActualValue.OptimalParetoFront(qualities[0].Length);
       if (optimalfront == null) return base.Apply();
 
-      var invertedGenerationalDistance = InvertedGenerationalDistance.Calculate(qualities.Select(q => q.ToArray()), optimalfront, DampeningParameter.Value.Value);
-      InvertedGenerationalDistanceResultParameter.ActualValue.Value = invertedGenerationalDistance;
-
+      var q = qualities.Select(x => x.ToArray());
+      InvertedGenerationalDistanceResultParameter.ActualValue.Value = InvertedGenerationalDistance.Calculate(q, optimalfront, Dampening);
       return base.Apply();
     }
-
-
   }
 }

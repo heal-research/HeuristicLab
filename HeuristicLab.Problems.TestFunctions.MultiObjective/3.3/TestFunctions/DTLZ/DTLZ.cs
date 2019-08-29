@@ -27,7 +27,7 @@ using HEAL.Attic;
 namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
   [StorableType("3ED6C22E-EA6E-4336-BC49-884CE151E514")]
   public abstract class DTLZ : MultiObjectiveTestFunction {
-    protected override IEnumerable<double[]> GetOptimalParetoFront(int objectives) {
+    protected override IList<double[]> GetOptimalParetoFront(int objectives) {
       if (objectives == 2) return ParetoFrontStore.GetParetoFront("DTLZ.ParetoFronts." + this.ItemName + ".2D");
       return null;
     }

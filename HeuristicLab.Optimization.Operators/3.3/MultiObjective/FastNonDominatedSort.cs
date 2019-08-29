@@ -73,7 +73,7 @@ Genetic Algorithm: NSGA-II"", IEEE Transactions On Evolutionary Computation, Vol
       int populationSize = scope.SubScopes.Count;
 
       int[] rank;
-      var fronts = DominationCalculator<IScope>.CalculateAllParetoFronts(scope.SubScopes.ToArray(), qualities, maximization, out rank, dominateOnEqualQualities);
+      var fronts = DominationCalculator.CalculateAllParetoFronts(scope.SubScopes.ToArray(), qualities, maximization, out rank, dominateOnEqualQualities);
 
       RankParameter.ActualValue = new ItemArray<IntValue>(rank.Select(x => new IntValue(x)));
 

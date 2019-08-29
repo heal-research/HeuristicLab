@@ -22,6 +22,7 @@
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
+using HeuristicLab.Data;
 using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
@@ -40,7 +41,6 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
       get { return (IResultParameter<ParetoFrontScatterPlot>)Parameters["Scatterplot"]; }
     }
 
-
     [StorableConstructor]
     protected ScatterPlotAnalyzer(StorableConstructorFlag _) : base(_) { }
     protected ScatterPlotAnalyzer(ScatterPlotAnalyzer original, Cloner cloner) : base(original, cloner) { }
@@ -51,25 +51,29 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
     public ScatterPlotAnalyzer() {
       Parameters.Add(new ScopeTreeLookupParameter<RealVector>("Individuals", "The individual solutions to the problem"));
       Parameters.Add(new ResultParameter<ParetoFrontScatterPlot>("Scatterplot", "The scatterplot for the current and optimal (if known front)"));
-
     }
 
     public override IOperation Apply() {
       var qualities = QualitiesParameter.ActualValue;
       var individuals = IndividualsParameter.ActualValue;
       var testFunction = TestFunctionParameter.ActualValue;
-      int objectives = qualities[0].Length;
-      int problemSize = individuals[0].Length;
+      var objectives = qualities.Length != 0 ? qualities[0].Length:0;    
+      var problemSize = individuals.Length != 0 ? individuals[0].Length:0;
 
-      double[][] optimalFront = new double[0][];
-      var front = testFunction.OptimalParetoFront(objectives);
-      if (front != null) optimalFront = front.ToArray();
+      var optimalFront = new double[0][];               
+      if (testFunction != null) {
+        var front = testFunction.OptimalParetoFront(objectives);
+        if (front != null) optimalFront = front.ToArray();
+      }
+      else {
+        var mat = BestKnownFrontParameter.ActualValue;
+        optimalFront = mat == null ? null : Enumerable.Range(0, mat.Rows).Select(r => Enumerable.Range(0, mat.Columns).Select(c => mat[r, c]).ToArray()).ToArray();
+      }
 
       var qualityClones = qualities.Select(s => s.ToArray()).ToArray();
       var solutionClones = individuals.Select(s => s.ToArray()).ToArray();
 
       ScatterPlotResultParameter.ActualValue = new ParetoFrontScatterPlot(qualityClones, solutionClones, optimalFront, objectives, problemSize);
-
       return base.Apply();
     }
   }

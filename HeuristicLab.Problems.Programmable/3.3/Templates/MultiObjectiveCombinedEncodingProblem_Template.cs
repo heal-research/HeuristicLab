@@ -16,6 +16,8 @@ using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 namespace HeuristicLab.Problems.Programmable {
   public class CompiledMultiObjectiveProblemDefinition : CompiledMultiObjectiveProblemDefinition<CombinedEncoding, CombinedSolution> {
     public override bool[] Maximization { get { return new[] { true, false }; } }
+    public override double[] ReferencePoint { get { return null; } }
+    public override IReadOnlyList<double[]> BestKnownFront { get { return null; } }
 
     public override void Initialize() {
       // Use vars.yourVariable to access variables in the variable store i.e. yourVariable

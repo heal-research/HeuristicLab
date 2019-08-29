@@ -25,6 +25,30 @@ using System.Linq;
 
 namespace HeuristicLab.Common {
   public static class EnumerableExtensions {
+    public static T[,] ToMatrix<T>(this IEnumerable<IEnumerable<T>> source) {
+      if (source == null) throw new ArgumentNullException("source");
+      if (!source.Any()) return new T[0, 0];
+
+      int firstDimension = source.Count();
+      int secondDimension = source.First().Count();
+      var result = new T[firstDimension, secondDimension];
+
+      int i = 0;
+      int j = 0;
+      foreach (var row in source) {
+        j = 0;
+        foreach (var element in row) {
+          result[i, j] = element;
+          j++;
+        }
+        if (j != secondDimension) throw new InvalidOperationException("All enumerables must be of the same length.");
+        i++;
+      }
+
+      return result;
+    }
+
+
     /// <summary>
     /// Selects all elements in the sequence that are maximal with respect to the given value.
     /// </summary>

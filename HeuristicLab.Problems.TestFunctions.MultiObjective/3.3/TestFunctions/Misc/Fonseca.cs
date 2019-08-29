@@ -21,33 +21,35 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.RealVectorEncoding;
+using HeuristicLab.Optimization;
 
 namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
   [Item("Fonseca", "Fonseca and Flemming function from // https://en.wikipedia.org/wiki/Test_functions_for_optimization [30.11.2015]")]
   [StorableType("CBB43DEB-9DD2-4365-A3CF-18F89F2A47B0")]
   public class Fonseca : MultiObjectiveTestFunction {
     protected override double[,] GetBounds(int objectives) {
-      return new double[,] { { -4, 4 } };
+      return new double[,] {{-4, 4}};
     }
 
     protected override bool[] GetMaximization(int objectives) {
       return new bool[2];
     }
 
-    protected override IEnumerable<double[]> GetOptimalParetoFront(int objectives) {
-      return ParetoFrontStore.GetParetoFront("Misc.ParetoFronts." + this.ItemName);
+    protected override IList<double[]> GetOptimalParetoFront(int objectives) {
+      return ParetoFrontStore.GetParetoFront("Misc.ParetoFronts." + this.ItemName).ToList();
     }
 
     protected override double GetBestKnownHypervolume(int objectives) {
-      return Hypervolume.Calculate(GetOptimalParetoFront(objectives), GetReferencePoint(objectives), GetMaximization(objectives));
+      return HypervolumeCalculator.CalculateHypervolume(GetOptimalParetoFront(objectives), GetReferencePoint(objectives), GetMaximization(objectives));
     }
 
     protected override double[] GetReferencePoint(int objectives) {
-      return new double[] { 11, 11 };
+      return new double[] {11, 11};
     }
 
     [StorableConstructor]
@@ -78,9 +80,8 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
       }
       f1 = 1 - Math.Exp(-f1);
 
-      double[] res = { f0, f1 };
+      double[] res = {f0, f1};
       return res;
     }
-
   }
 }

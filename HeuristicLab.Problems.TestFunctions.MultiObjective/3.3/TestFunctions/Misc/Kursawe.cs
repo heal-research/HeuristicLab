@@ -20,9 +20,11 @@
 #endregion
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.RealVectorEncoding;
+using HeuristicLab.Optimization;
 using HEAL.Attic;
 
 namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
@@ -30,23 +32,23 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
   [StorableType("9D38092B-2C55-450E-A27A-2C28714745ED")]
   public class Kursawe : MultiObjectiveTestFunction {
     protected override double[,] GetBounds(int objectives) {
-      return new double[,] { { -5, 5 } };
+      return new double[,] {{-5, 5}};
     }
 
     protected override bool[] GetMaximization(int objecitves) {
       return new bool[2];
     }
 
-    protected override IEnumerable<double[]> GetOptimalParetoFront(int objecitves) {
+    protected override IList<double[]> GetOptimalParetoFront(int objecitves) {
       return ParetoFrontStore.GetParetoFront("Misc.ParetoFronts." + this.ItemName);
     }
 
     protected override double GetBestKnownHypervolume(int objectives) {
-      return Hypervolume.Calculate(GetOptimalParetoFront(objectives), GetReferencePoint(objectives), GetMaximization(objectives));
+      return HypervolumeCalculator.CalculateHypervolume(GetOptimalParetoFront(objectives), GetReferencePoint(objectives), GetMaximization(objectives));
     }
 
     protected override double[] GetReferencePoint(int objectives) {
-      return new double[] { 11, 11 };
+      return new double[] {11, 11};
     }
 
     [StorableConstructor]
@@ -56,9 +58,6 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
       return new Kursawe(this, cloner);
     }
     public Kursawe() : base(minimumObjectives: 2, maximumObjectives: 2, minimumSolutionLength: 3, maximumSolutionLength: int.MaxValue) { }
-
-
-
 
 
     public override double[] Evaluate(RealVector r, int objectives) {
@@ -74,7 +73,7 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
         f1 += Math.Pow(Math.Abs(r[i]), 0.8) + 5 * Math.Sin(Math.Pow(r[i], 3));
       }
 
-      return new double[] { f0, f1 };
+      return new double[] {f0, f1};
     }
   }
 }

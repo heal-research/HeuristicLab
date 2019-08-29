@@ -23,6 +23,7 @@ using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.RealVectorEncoding;
+using HeuristicLab.Optimization;
 using HEAL.Attic;
 
 namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
@@ -30,7 +31,7 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
   [StorableType("C4F3378F-169B-412C-8882-D733EF5388D9")]
   public class ELLI : MultiObjectiveTestFunction {
     protected override double[,] GetBounds(int objectives) {
-      return new double[,] { { -10, 10 } };
+      return new double[,] {{-10, 10}};
     }
 
     protected override bool[] GetMaximization(int objecitves) {
@@ -38,10 +39,10 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
     }
 
     protected override double[] GetReferencePoint(int objecitves) {
-      return new double[] { 11, 11 };
+      return new double[] {11, 11};
     }
 
-    protected override IEnumerable<double[]> GetOptimalParetoFront(int objecitves) {
+    protected override IList<double[]> GetOptimalParetoFront(int objecitves) {
       List<double[]> res = new List<double[]>();
       for (int i = 0; i <= 500; i++) {
         RealVector r = new RealVector(2);
@@ -53,7 +54,7 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
     }
 
     protected override double GetBestKnownHypervolume(int objectives) {
-      return Hypervolume.Calculate(GetOptimalParetoFront(objectives), GetReferencePoint(objectives), GetMaximization(objectives));
+      return HypervolumeCalculator.CalculateHypervolume(GetOptimalParetoFront(objectives), GetReferencePoint(objectives), GetMaximization(objectives));
     }
 
     [StorableConstructor]
@@ -83,7 +84,7 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
       //objective0
       double f1 = 1 / (a * a * r.Length) * sum;
 
-      return new double[] { f0, f1 };
+      return new double[] {f0, f1};
     }
   }
 }

@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using HeuristicLab.Core;
+using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 
 namespace HeuristicLab.Problems.Programmable {
@@ -50,7 +51,6 @@ namespace HeuristicLab.Problems.Programmable {
   public abstract class CompiledSingleObjectiveProblemDefinition<TEncoding, TEncodedSolution> : CompiledProblemDefinition<TEncoding, TEncodedSolution>, ISingleObjectiveProblemDefinition<TEncoding, TEncodedSolution>
     where TEncoding : class, IEncoding<TEncodedSolution>
     where TEncodedSolution : class, IEncodedSolution {
-
     protected CompiledSingleObjectiveProblemDefinition() : base() { }
 
     protected CompiledSingleObjectiveProblemDefinition(TEncoding encoding)
@@ -71,16 +71,16 @@ namespace HeuristicLab.Problems.Programmable {
   public abstract class CompiledMultiObjectiveProblemDefinition<TEncoding, TEncodedSolution> : CompiledProblemDefinition<TEncoding, TEncodedSolution>, IMultiObjectiveProblemDefinition<TEncoding, TEncodedSolution>
     where TEncoding : class, IEncoding<TEncodedSolution>
     where TEncodedSolution : class, IEncodedSolution {
-
     protected CompiledMultiObjectiveProblemDefinition() : base() { }
 
     protected CompiledMultiObjectiveProblemDefinition(TEncoding encoding)
       : base(encoding) { }
 
     #region ISingleObjectiveProblemDefinition<TEncoding,TEncodedSolution> Members
-
     public int Objectives => Maximization.Length;
     public abstract bool[] Maximization { get; }
+    public abstract IReadOnlyList<double[]> BestKnownFront { get; }
+    public abstract double[] ReferencePoint { get; }
     public abstract double[] Evaluate(TEncodedSolution individual, IRandom random);
     public abstract void Analyze(TEncodedSolution[] individuals, double[][] qualities, ResultCollection results, IRandom random);
     public abstract IEnumerable<TEncodedSolution> GetNeighbors(TEncodedSolution individual, IRandom random);

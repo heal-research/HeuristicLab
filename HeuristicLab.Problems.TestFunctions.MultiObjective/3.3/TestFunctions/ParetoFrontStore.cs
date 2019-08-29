@@ -27,7 +27,7 @@ using System.Reflection;
 
 namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
   internal class ParetoFrontStore {
-    internal static IEnumerable<double[]> GetParetoFront(String filename) {
+    internal static IList<double[]> GetParetoFront(String filename) {
       List<double[]> data = new List<double[]>();
       var assembly = Assembly.GetExecutingAssembly();
       String ressourcename = typeof(ParetoFrontStore).Namespace + ".TestFunctions." + filename + ".pf";

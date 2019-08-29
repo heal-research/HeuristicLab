@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,42 +25,37 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HEAL.Attic;
 
 
-namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
-
-  [StorableType("CFBB2CAB-C1B7-4F14-9A01-6D5624B7B681")]
-  public abstract class MOTFAnalyzer : SingleSuccessorOperator, IMultiObjectiveTestFunctionAnalyzer {
+namespace HeuristicLab.Analysis {
+  [StorableType("3659291a-927c-4016-88be-8a0f65476660")]
+  public abstract class MultiObjectiveSuccessAnalyzer : SingleSuccessorOperator, IAnalyzer, IMultiObjectiveOperator {
     public virtual bool EnabledByDefault {
       get { return true; }
     }
+    public abstract string ResultName { get; }
 
     public IScopeTreeLookupParameter<DoubleArray> QualitiesParameter {
       get { return (IScopeTreeLookupParameter<DoubleArray>)Parameters["Qualities"]; }
     }
 
-    public ILookupParameter<ResultCollection> ResultsParameter {
-      get { return (ILookupParameter<ResultCollection>)Parameters["Results"]; }
+    public ILookupParameter<BoolArray> MaximizationParameter {
+      get { return (ILookupParameter<BoolArray>)Parameters["Maximization"]; }
     }
 
-    public ILookupParameter<IMultiObjectiveTestFunction> TestFunctionParameter {
-      get { return (ILookupParameter<IMultiObjectiveTestFunction>)Parameters["TestFunction"]; }
+    public ResultParameter<DoubleValue> ResultParameter {
+      get { return (ResultParameter<DoubleValue>)Parameters[ResultName]; }
     }
 
-    public ILookupParameter<DoubleMatrix> BestKnownFrontParameter {
-      get { return (ILookupParameter<DoubleMatrix>)Parameters["BestKnownFront"]; }
-    }
-
-    protected MOTFAnalyzer(MOTFAnalyzer original, Cloner cloner) : base(original, cloner) { }
-
+    protected MultiObjectiveSuccessAnalyzer(MultiObjectiveSuccessAnalyzer original, Cloner cloner) : base(original, cloner) { }
     [StorableConstructor]
-    protected MOTFAnalyzer(StorableConstructorFlag _) : base(_) { }
-    protected MOTFAnalyzer() {
+    protected MultiObjectiveSuccessAnalyzer(StorableConstructorFlag _) : base(_) { }
+    protected MultiObjectiveSuccessAnalyzer() {
       Parameters.Add(new ScopeTreeLookupParameter<DoubleArray>("Qualities", "The qualities of the parameter vector."));
-      Parameters.Add(new LookupParameter<ResultCollection>("Results", "The results collection to write to."));
-      Parameters.Add(new LookupParameter<IMultiObjectiveTestFunction>("TestFunction", "The Testfunction that is analyzed"));
       Parameters.Add(new LookupParameter<DoubleMatrix>("BestKnownFront", "The currently best known Pareto front"));
+      Parameters.Add(new LookupParameter<BoolArray>("Maximization", ""));
     }
   }
 }

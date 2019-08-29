@@ -33,7 +33,7 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
     bool[] Maximization(int objectives);
     double[,] Bounds(int objectives);
 
-    IEnumerable<double[]> OptimalParetoFront(int objectives);
+    IList<double[]> OptimalParetoFront(int objectives);
     double OptimalHypervolume(int objectives);
     double[] ReferencePoint(int objectives);
 

@@ -39,6 +39,5 @@ namespace HeuristicLab.Optimization {
 
   public interface IProblem<TEncoding, TEncodedSolution> : IHeuristicOptimizationProblem
     where TEncoding : class, IEncoding<TEncodedSolution>
-    where TEncodedSolution : class, IEncodedSolution {
-  }
+    where TEncodedSolution : class, IEncodedSolution { }
 }

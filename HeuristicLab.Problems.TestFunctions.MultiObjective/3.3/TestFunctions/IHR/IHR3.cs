@@ -23,13 +23,14 @@ using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.RealVectorEncoding;
+using HeuristicLab.Optimization;
 using HEAL.Attic;
 
 namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
   [Item("IHR3", "Testfunction as defined as IHR3 in \"Igel, C., Hansen, N., & Roth, S. (2007). Covariance matrix adaptation for multi-objective optimization. Evolutionary computation, 15(1), 1-28.\" [24.06.16]")]
   [StorableType("316D5351-762D-4883-ACEF-06F4EAFA73AE")]
   public class IHR3 : IHR {
-    protected override IEnumerable<double[]> GetOptimalParetoFront(int objectives) {
+    protected override IList<double[]> GetOptimalParetoFront(int objectives) {
       List<double[]> res = new List<double[]>();
       for (int i = 0; i <= 500; i++) {
         RealVector r = new RealVector(objectives);
@@ -41,7 +42,7 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
     }
 
     protected override double GetBestKnownHypervolume(int objectives) {
-      return Hypervolume.Calculate(GetOptimalParetoFront(objectives), GetReferencePoint(objectives), GetMaximization(objectives));
+      return HypervolumeCalculator.CalculateHypervolume(GetOptimalParetoFront(objectives), GetReferencePoint(objectives), GetMaximization(objectives));
     }
 
     [StorableConstructor]

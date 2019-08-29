@@ -35,7 +35,6 @@ namespace HeuristicLab.Optimization {
     where TEncoding : class, IEncoding<TEncodedSolution>
     where TEncodedSolution : class, IEncodedSolution
     where TEvaluator : class, IEvaluator {
-
     public string Filename { get; set; } // TODO: Really okay here? should be in Problem (non-generic)
 
     //TODO remove parameter for encoding?
@@ -59,8 +58,12 @@ namespace HeuristicLab.Optimization {
       get { return Encoding.SolutionCreatorParameter; }
     }
     event EventHandler IHeuristicOptimizationProblem.SolutionCreatorChanged {
-      add { Encoding.SolutionCreatorChanged += value; }
-      remove { Encoding.SolutionCreatorChanged -= value; }
+      add {
+        if (Encoding != null) Encoding.SolutionCreatorChanged += value;
+      }
+      remove {
+        if (Encoding != null) Encoding.SolutionCreatorChanged -= value;
+      }
     }
 
     //TODO is a parameter for the evaluator really necessary, only single-objective or multi-objective evulators calling the func are possible
@@ -71,8 +74,12 @@ namespace HeuristicLab.Optimization {
       get { return EvaluatorParameter.Value; }
       protected set { EvaluatorParameter.Value = value; }
     }
-    IEvaluator IHeuristicOptimizationProblem.Evaluator { get { return Evaluator; } }
-    IParameter IHeuristicOptimizationProblem.EvaluatorParameter { get { return EvaluatorParameter; } }
+    IEvaluator IHeuristicOptimizationProblem.Evaluator {
+      get { return Evaluator; }
+    }
+    IParameter IHeuristicOptimizationProblem.EvaluatorParameter {
+      get { return EvaluatorParameter; }
+    }
 
     public event EventHandler EvaluatorChanged;
     protected virtual void OnEvaluatorChanged() {
@@ -89,7 +96,7 @@ namespace HeuristicLab.Optimization {
     public override IEnumerable<IParameterizedItem> ExecutionContextItems {
       get {
         if (Encoding == null) return base.ExecutionContextItems;
-        return base.ExecutionContextItems.Concat(new[] { Encoding });
+        return base.ExecutionContextItems.Concat(new[] {Encoding});
       }
     }
 
@@ -172,7 +179,7 @@ namespace HeuristicLab.Optimization {
         var newMultiEncoding = (CombinedEncoding)newEncoding;
         if (!oldMultiEncoding.Encodings.SequenceEqual(newMultiEncoding.Encodings, new TypeEqualityComparer<IEncoding>())) return;
 
-        var nestedEncodings = oldMultiEncoding.Encodings.Zip(newMultiEncoding.Encodings, (o, n) => new { oldEnc = o, newEnc = n });
+        var nestedEncodings = oldMultiEncoding.Encodings.Zip(newMultiEncoding.Encodings, (o, n) => new {oldEnc = o, newEnc = n});
         foreach (var multi in nestedEncodings)
           AdaptEncodingOperators(multi.oldEnc, multi.newEnc);
       }

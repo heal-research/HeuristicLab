@@ -86,11 +86,11 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
     /// <summary>
     /// retrieves the optimal pareto front (if known from a file)
     /// </summary>
-    public IEnumerable<double[]> OptimalParetoFront(int objectives) {
+    public IList<double[]> OptimalParetoFront(int objectives) {
       ThrowIfObjectivesOutOfRange(objectives);
       return GetOptimalParetoFront(objectives);
     }
-    protected abstract IEnumerable<double[]> GetOptimalParetoFront(int objectives);
+    protected abstract IList<double[]> GetOptimalParetoFront(int objectives);
 
     /// <summary>
     /// returns a Reference Point for Hypervolume calculation (default=(11|11))
@@ -131,10 +131,10 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
       : base() {
       Parameters.Add(new FixedValueParameter<IntValue>("Minimum Objectives",
         "The dimensionality of the problem instance (number of variables in the function).",
-        (IntValue)new IntValue(minimumObjectives).AsReadOnly()) { GetsCollected = false });
-      Parameters.Add(new FixedValueParameter<IntValue>("Maximum Objectives", "The dimensionality of the problem instance (number of variables in the function).", (IntValue)new IntValue(maximumObjectives).AsReadOnly()) { GetsCollected = false });
-      Parameters.Add(new FixedValueParameter<IntValue>("Minimum SolutionLength", "The dimensionality of the problem instance (number of variables in the function).", (IntValue)new IntValue(minimumSolutionLength).AsReadOnly()) { GetsCollected = false });
-      Parameters.Add(new FixedValueParameter<IntValue>("Maximum SolutionLength", "The dimensionality of the problem instance (number of variables in the function).", (IntValue)new IntValue(maximumSolutionLength).AsReadOnly()) { GetsCollected = false });
+        (IntValue)new IntValue(minimumObjectives).AsReadOnly()) {GetsCollected = false});
+      Parameters.Add(new FixedValueParameter<IntValue>("Maximum Objectives", "The dimensionality of the problem instance (number of variables in the function).", (IntValue)new IntValue(maximumObjectives).AsReadOnly()) {GetsCollected = false});
+      Parameters.Add(new FixedValueParameter<IntValue>("Minimum SolutionLength", "The dimensionality of the problem instance (number of variables in the function).", (IntValue)new IntValue(minimumSolutionLength).AsReadOnly()) {GetsCollected = false});
+      Parameters.Add(new FixedValueParameter<IntValue>("Maximum SolutionLength", "The dimensionality of the problem instance (number of variables in the function).", (IntValue)new IntValue(maximumSolutionLength).AsReadOnly()) {GetsCollected = false});
 
       MinimumObjectives = minimumObjectives;
       MaximumObjectives = maximumObjectives;

@@ -33,7 +33,6 @@ namespace HeuristicLab.Optimization.Operators {
   [Item("CrowdingDistanceAssignment", "Calculates the crowding distances for each sub-scope as described in Deb et al. 2002. A Fast and Elitist Multiobjective Genetic Algorithm: NSGA-II. IEEE Transactions on Evolutionary Computation, 6(2), pp. 182-197.")]
   [StorableType("F7DF8B74-F1E6-45D6-A1A8-5D381F20B382")]
   public class CrowdingDistanceAssignment : SingleSuccessorOperator, IMultiObjectiveOperator {
-
     public ScopeTreeLookupParameter<DoubleArray> QualitiesParameter {
       get { return (ScopeTreeLookupParameter<DoubleArray>)Parameters["Qualities"]; }
     }
@@ -65,60 +64,14 @@ namespace HeuristicLab.Optimization.Operators {
     }
 
     public static void Apply(DoubleArray[] qualities, DoubleValue[] distances) {
-      int populationSize = qualities.Length;
-      int objectiveCount = qualities[0].Length;
-      for (int m = 0; m < objectiveCount; m++) {
-        Array.Sort<DoubleArray, DoubleValue>(qualities, distances, new QualitiesComparer(m));
-
-        distances[0].Value = double.MaxValue;
-        distances[populationSize - 1].Value = double.MaxValue;
-
-        double minQuality = qualities[0][m];
-        double maxQuality = qualities[populationSize - 1][m];
-        for (int i = 1; i < populationSize - 1; i++) {
-          distances[i].Value += (qualities[i + 1][m] - qualities[i - 1][m]) / (maxQuality - minQuality);
-        }
-      }
+      var dist = CrowdingCalculator.CalculateCrowdingDistances(qualities.Select(x => x.ToArray()).ToArray());
+      for (var i = 0; i < distances.Length; i++) distances[i].Value = dist[i];
     }
 
     public override IOperation Apply() {
-      DoubleArray[] qualities = QualitiesParameter.ActualValue.ToArray();
-      int populationSize = qualities.Length;
-      DoubleValue[] distances = new DoubleValue[populationSize];
-      for (int i = 0; i < populationSize; i++)
-        distances[i] = new DoubleValue(0);
-
-      CrowdingDistanceParameter.ActualValue = new ItemArray<DoubleValue>(distances);
-
-      Apply(qualities, distances);
-
+      var dist = CrowdingCalculator.CalculateCrowdingDistances(QualitiesParameter.ActualValue.Select(x => x.ToArray()).ToArray());
+      CrowdingDistanceParameter.ActualValue = new ItemArray<DoubleValue>(dist.Select(d => new DoubleValue(d)));
       return base.Apply();
-    }
-
-    private void Initialize(ItemArray<DoubleValue> distances) {
-      for (int i = 0; i < distances.Length; i++) {
-        if (distances[i] == null) distances[i] = new DoubleValue(0);
-        else distances[i].Value = 0;
-      }
-    }
-
-    [StorableType("30fd1927-b268-4ce7-8960-b04bfa83f1e6")]
-    private class QualitiesComparer : IComparer<DoubleArray> {
-      private int index;
-
-      public QualitiesComparer(int index) {
-        this.index = index;
-      }
-
-      #region IComparer<DoubleArray> Members
-
-      public int Compare(DoubleArray x, DoubleArray y) {
-        if (x[index] < y[index]) return -1;
-        else if (x[index] > y[index]) return +1;
-        else return 0;
-      }
-
-      #endregion
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {

@@ -24,10 +24,11 @@ using System.Collections.Generic;
 using HEAL.Attic;
 
 namespace HeuristicLab.Optimization {
+
   [StorableType("d76eb753-5088-4490-ad18-e78d3629c60b")]
   public enum DominationResult { Dominates, IsDominated, IsNonDominated };
 
-  public static class DominationCalculator<T> {
+  public static class DominationCalculator {
     /// <summary>
     /// Calculates the best pareto front only. The fast non-dominated sorting algorithm is used
     /// as described in Deb, K., Pratap, A., Agarwal, S., and Meyarivan, T. (2002).
@@ -44,9 +45,8 @@ namespace HeuristicLab.Optimization {
     /// <param name="maximization">The objective in each dimension.</param>
     /// <param name="dominateOnEqualQualities">Whether solutions of exactly equal quality should dominate one another.</param>
     /// <returns>The pareto front containing the best solutions and their associated quality resp. fitness.</returns>
-    public static List<Tuple<T, double[]>> CalculateBestParetoFront(T[] solutions, double[][] qualities, bool[] maximization, bool dominateOnEqualQualities = true) {
-      int populationSize = solutions.Length;
-
+    public static List<Tuple<T, double[]>> CalculateBestParetoFront<T>(T[] solutions, double[][] qualities, bool[] maximization, bool dominateOnEqualQualities = true) {
+      var populationSize = solutions.Length;
       Dictionary<T, List<int>> dominatedIndividuals;
       int[] dominationCounter, rank;
       return CalculateBestFront(solutions, qualities, maximization, dominateOnEqualQualities, populationSize, out dominatedIndividuals, out dominationCounter, out rank);
@@ -70,21 +70,21 @@ namespace HeuristicLab.Optimization {
     /// <param name="rank">The rank of each of the solutions, corresponds to the front it is put in.</param>
     /// <param name="dominateOnEqualQualities">Whether solutions of exactly equal quality should dominate one another.</param>
     /// <returns>A sorted list of the pareto fronts from best to worst.</returns>
-    public static List<List<Tuple<T, double[]>>> CalculateAllParetoFronts(T[] solutions, double[][] qualities, bool[] maximization, out int[] rank, bool dominateOnEqualQualities = true) {
-      int populationSize = solutions.Length;
+    public static List<List<Tuple<T, double[]>>> CalculateAllParetoFronts<T>(T[] solutions, double[][] qualities, bool[] maximization, out int[] rank, bool dominateOnEqualQualities = true) {
+      var populationSize = solutions.Length;
 
       Dictionary<T, List<int>> dominatedIndividuals;
       int[] dominationCounter;
       var fronts = new List<List<Tuple<T, double[]>>>();
       fronts.Add(CalculateBestFront(solutions, qualities, maximization, dominateOnEqualQualities, populationSize, out dominatedIndividuals, out dominationCounter, out rank));
-      int i = 0;
+      var i = 0;
       while (i < fronts.Count && fronts[i].Count > 0) {
         var nextFront = new List<Tuple<T, double[]>>();
         foreach (var p in fronts[i]) {
           List<int> dominatedIndividualsByp;
           if (dominatedIndividuals.TryGetValue(p.Item1, out dominatedIndividualsByp)) {
-            for (int k = 0; k < dominatedIndividualsByp.Count; k++) {
-              int dominatedIndividual = dominatedIndividualsByp[k];
+            for (var k = 0; k < dominatedIndividualsByp.Count; k++) {
+              var dominatedIndividual = dominatedIndividualsByp[k];
               dominationCounter[dominatedIndividual] -= 1;
               if (dominationCounter[dominatedIndividual] == 0) {
                 rank[dominatedIndividual] = i + 1;
@@ -99,17 +99,17 @@ namespace HeuristicLab.Optimization {
       return fronts;
     }
 
-    private static List<Tuple<T, double[]>> CalculateBestFront(T[] solutions, double[][] qualities, bool[] maximization, bool dominateOnEqualQualities, int populationSize, out Dictionary<T, List<int>> dominatedIndividuals, out int[] dominationCounter, out int[] rank) {
+    private static List<Tuple<T, double[]>> CalculateBestFront<T>(T[] solutions, double[][] qualities, bool[] maximization, bool dominateOnEqualQualities, int populationSize, out Dictionary<T, List<int>> dominatedIndividuals, out int[] dominationCounter, out int[] rank) {
       var front = new List<Tuple<T, double[]>>();
       dominatedIndividuals = new Dictionary<T, List<int>>();
       dominationCounter = new int[populationSize];
       rank = new int[populationSize];
-      for (int pI = 0; pI < populationSize - 1; pI++) {
+      for (var pI = 0; pI < populationSize - 1; pI++) {
         var p = solutions[pI];
         List<int> dominatedIndividualsByp;
         if (!dominatedIndividuals.TryGetValue(p, out dominatedIndividualsByp))
           dominatedIndividuals[p] = dominatedIndividualsByp = new List<int>();
-        for (int qI = pI + 1; qI < populationSize; qI++) {
+        for (var qI = pI + 1; qI < populationSize; qI++) {
           var test = Dominates(qualities[pI], qualities[qI], maximization, dominateOnEqualQualities);
           if (test == DominationResult.Dominates) {
             dominatedIndividualsByp.Add(qI);
@@ -148,7 +148,7 @@ namespace HeuristicLab.Optimization {
       //mkommend Caution: do not use LINQ.SequenceEqual for comparing the two quality arrays (left and right) due to performance reasons
       if (dominateOnEqualQualities) {
         var equal = true;
-        for (int i = 0; i < left.Length; i++) {
+        for (var i = 0; i < left.Length; i++) {
           if (left[i] != right[i]) {
             equal = false;
             break;
@@ -158,7 +158,7 @@ namespace HeuristicLab.Optimization {
       }
 
       bool leftIsBetter = false, rightIsBetter = false;
-      for (int i = 0; i < left.Length; i++) {
+      for (var i = 0; i < left.Length; i++) {
         if (IsDominated(left[i], right[i], maximizations[i])) rightIsBetter = true;
         else if (IsDominated(right[i], left[i], maximizations[i])) leftIsBetter = true;
         if (leftIsBetter && rightIsBetter) break;

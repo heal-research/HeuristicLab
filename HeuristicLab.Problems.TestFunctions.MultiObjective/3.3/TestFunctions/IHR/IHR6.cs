@@ -23,13 +23,14 @@ using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.RealVectorEncoding;
+using HeuristicLab.Optimization;
 using HEAL.Attic;
 
 namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
   [Item("IHR6", "Testfunction as defined as IHR6 in \"Igel, C., Hansen, N., & Roth, S. (2007). Covariance matrix adaptation for multi-objective optimization. Evolutionary computation, 15(1), 1-28.\" [24.06.16]")]
   [StorableType("5C0A4163-831B-4507-997F-A70B59E3A445")]
   public class IHR6 : IHR {
-    protected override IEnumerable<double[]> GetOptimalParetoFront(int objectives) {
+    protected override IList<double[]> GetOptimalParetoFront(int objectives) {
       List<double[]> res = new List<double[]>();
       for (int i = 0; i <= 500; i++) {
         RealVector r = new RealVector(objectives);
@@ -40,14 +41,13 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
     }
 
     protected override double GetBestKnownHypervolume(int objectives) {
-      return Hypervolume.Calculate(GetOptimalParetoFront(objectives), GetReferencePoint(objectives), GetMaximization(objectives));
+      return HypervolumeCalculator.CalculateHypervolume(GetOptimalParetoFront(objectives), GetReferencePoint(objectives), GetMaximization(objectives));
     }
 
     [StorableConstructor]
     protected IHR6(StorableConstructorFlag _) : base(_) { }
     protected IHR6(IHR6 original, Cloner cloner) : base(original, cloner) { }
-    public IHR6() : base() {
-    }
+    public IHR6() : base() { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new IHR6(this, cloner);

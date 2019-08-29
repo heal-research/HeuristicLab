@@ -19,17 +19,24 @@
  */
 #endregion
 
+using System.Collections;
+using System.Collections.Generic;
 using HEAL.Attic;
 using HeuristicLab.Core;
+using HeuristicLab.Data;
 
 namespace HeuristicLab.Optimization {
-  [StorableType("39eacdb5-80a0-425d-902a-00eb3e1d6610")]
-  public interface IMultiObjectiveProblemDefinition<TEncoding, TEncodedSolution> : IProblemDefinition<TEncoding, TEncodedSolution>
-    where TEncoding : class, IEncoding<TEncodedSolution>
-    where TEncodedSolution : class, IEncodedSolution {
-
+  public interface IMultiObjectiveProblemDefinition {
     int Objectives { get; }
     bool[] Maximization { get; }
+    IReadOnlyList<double[]> BestKnownFront { get; }
+    double[] ReferencePoint { get; }
+  }
+
+  [StorableType("39eacdb5-80a0-425d-902a-00eb3e1d6610")]
+  public interface IMultiObjectiveProblemDefinition<TEncoding, TEncodedSolution> : IMultiObjectiveProblemDefinition, IProblemDefinition<TEncoding, TEncodedSolution>
+    where TEncoding : class, IEncoding<TEncodedSolution>
+    where TEncodedSolution : class, IEncodedSolution {
     double[] Evaluate(TEncodedSolution solution, IRandom random);
     void Analyze(TEncodedSolution[] solutions, double[][] qualities, ResultCollection results, IRandom random);
   }

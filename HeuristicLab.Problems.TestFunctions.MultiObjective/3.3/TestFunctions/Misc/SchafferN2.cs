@@ -30,7 +30,7 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
   [StorableType("CCF2BA5F-BBE5-4280-ABC7-10C02EF947CB")]
   public class SchafferN2 : MultiObjectiveTestFunction {
     protected override double[,] GetBounds(int objectives) {
-      return new double[,] { { -5, 10 } };
+      return new double[,] {{-5, 10}};
     }
 
     protected override bool[] GetMaximization(int objecitves) {
@@ -38,11 +38,11 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
     }
 
     protected override double[] GetReferencePoint(int objecitves) {
-      return new double[] { 100, 100 };
+      return new double[] {100, 100};
     }
 
 
-    protected override IEnumerable<double[]> GetOptimalParetoFront(int objectives) {
+    protected override IList<double[]> GetOptimalParetoFront(int objectives) {
       return null;
     }
 
@@ -71,7 +71,7 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
       double f1 = x - 5;
       f1 *= f1;
 
-      return new double[] { f0, f1 };
+      return new double[] {f0, f1};
     }
   }
 }

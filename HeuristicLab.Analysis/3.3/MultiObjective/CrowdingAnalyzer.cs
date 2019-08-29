@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,36 +24,34 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
-using HeuristicLab.Parameters;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HEAL.Attic;
 
-namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
-  [StorableType("F06FB45C-051E-4AD8-BD82-16DA9DCBCACB")]
-  [Item("CrowdingAnalyzer", "This analyzer is functionally equivalent to the CrowdingAnalyzer in HeuristicLab.Analysis, but is kept as not to break backwards compatibility")]
-  public class CrowdingAnalyzer : MOTFAnalyzer {
-
-    public IResultParameter<DoubleValue> CrowdingResultParameter {
-      get { return (IResultParameter<DoubleValue>)Parameters["Crowding"]; }
+namespace HeuristicLab.Analysis {
+  [StorableType("6f09f028-039d-4da8-9585-2575f9aef074")]
+  [Item("CrowdingAnalyzer", "The mean crowding distance for each point of the Front (see Multi-Objective Performance Metrics - Shodhganga for more information)")]
+  public class CrowdingAnalyzer : MultiObjectiveSuccessAnalyzer {
+    public override string ResultName {
+      get { return "Crowding"; }
     }
 
     [StorableConstructor]
     protected CrowdingAnalyzer(StorableConstructorFlag _) : base(_) { }
-    public CrowdingAnalyzer(CrowdingAnalyzer original, Cloner cloner): base(original, cloner) {}
+    public CrowdingAnalyzer(CrowdingAnalyzer original, Cloner cloner)
+      : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new CrowdingAnalyzer(this, cloner);
     }
 
     public CrowdingAnalyzer() {
-      Parameters.Add(new ResultParameter<DoubleValue>("Crowding", "The average corwding distance of all points (excluding infinities)"));
-      CrowdingResultParameter.DefaultValue = new DoubleValue(double.NaN);
+      Parameters.Add(new ResultParameter<DoubleValue>("Crowding", "The average corwding distance of all points (excluding infinities)", "Results", new DoubleValue(double.NaN)));
     }
 
     public override IOperation Apply() {
       var qualities = QualitiesParameter.ActualValue;
-      var crowdingDistance = CrowdingCalculator.CalculateCrowding(qualities);
-      CrowdingResultParameter.ActualValue.Value = crowdingDistance;
+      var crowdingDistance = CrowdingCalculator.CalculateCrowding(qualities.Select(x => x.ToArray()));
+      ResultParameter.ActualValue.Value = crowdingDistance;
       return base.Apply();
     }
-
   }
 }

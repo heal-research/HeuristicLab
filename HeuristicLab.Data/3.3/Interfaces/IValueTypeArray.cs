@@ -1,5 +1,4 @@
 ﻿#region License Information
-
 /* HeuristicLab
  * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
@@ -18,7 +17,6 @@
  * You should have received a copy of the GNU General Public License
  * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
  */
-
 #endregion
 
 using System;
@@ -46,9 +44,7 @@ namespace HeuristicLab.Data {
   }
 
   [StorableType("f9db5740-1c4f-4f62-a9a8-84b32a461ea8")]
-  public interface IValueTypeArray<T> : IValueTypeArray, IEnumerable<T> where T : struct {
-    T this[int index] { get; set; }
+  public interface IValueTypeArray<out T> : IValueTypeArray, IReadOnlyList<T> where T : struct {
+    //T this[int index] { get; set; }
   }
 }
-
-

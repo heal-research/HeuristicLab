@@ -63,7 +63,7 @@ namespace HeuristicLab.Encodings.LinearLinkageEncoding {
     public override void Analyze(LinearLinkage[] individuals, double[][] qualities, ResultCollection results, IRandom random) {
       base.Analyze(individuals, qualities, results, random);
 
-      var result = DominationCalculator<LinearLinkage>.CalculateBestParetoFront(individuals, qualities, Maximization);
+      var result = DominationCalculator.CalculateBestParetoFront(individuals, qualities, Maximization);
       // TODO: Add results
     }
 

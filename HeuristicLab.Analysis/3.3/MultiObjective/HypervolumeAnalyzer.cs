@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,27 +19,24 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 
-namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
-  [StorableType("13D363E4-76FF-4A5A-9B2C-767D9E880E4B")]
-  [Item("HypervolumeAnalyzer", "This analyzer is functionally equivalent to the HypervolumeAnalyzer in HeuristicLab.Analysis, but is kept as not to break backwards compatibility")]
-  public class HypervolumeAnalyzer : MOTFAnalyzer {
+namespace HeuristicLab.Analysis {
+  [StorableType("fc42ed56-15de-41df-bf59-0e5b11cd4f9b")]
+  [Item("HypervolumeAnalyzer", "Computes the enclosed Hypervolume between the current front and a given reference Point")]
+  public class HypervolumeAnalyzer : MultiObjectiveSuccessAnalyzer {
+    public override string ResultName {
+      get { return "Hypervolume"; }
+    }
 
     public ILookupParameter<DoubleArray> ReferencePointParameter {
       get { return (ILookupParameter<DoubleArray>)Parameters["ReferencePoint"]; }
-    }
-
-    public IResultParameter<DoubleValue> HypervolumeResultParameter {
-      get { return (IResultParameter<DoubleValue>)Parameters["Hypervolume"]; }
     }
 
     public IResultParameter<DoubleValue> BestKnownHypervolumeResultParameter {
@@ -52,10 +49,9 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
 
 
     [StorableConstructor]
-    protected HypervolumeAnalyzer(StorableConstructorFlag _) : base(_) {
-    }
+    protected HypervolumeAnalyzer(StorableConstructorFlag _) : base(_) { }
 
-    protected HypervolumeAnalyzer(HypervolumeAnalyzer original, Cloner cloner) : base(original, cloner) {}
+    protected HypervolumeAnalyzer(HypervolumeAnalyzer original, Cloner cloner) : base(original, cloner) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new HypervolumeAnalyzer(this, cloner);
@@ -63,37 +59,26 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
 
     public HypervolumeAnalyzer() {
       Parameters.Add(new LookupParameter<DoubleArray>("ReferencePoint", "The reference point for hypervolume calculation"));
-      Parameters.Add(new ResultParameter<DoubleValue>("Hypervolume", "The hypervolume of the current generation"));
+      Parameters.Add(new ResultParameter<DoubleValue>("Hypervolume", "The hypervolume of the current generation", "Results", new DoubleValue(double.NaN)));
       Parameters.Add(new ResultParameter<DoubleValue>("Best known hypervolume", "The optimal hypervolume"));
       Parameters.Add(new ResultParameter<DoubleValue>("Absolute Distance to BestKnownHypervolume", "The difference between the best known and the current hypervolume"));
-      HypervolumeResultParameter.DefaultValue = new DoubleValue(0);
-      BestKnownHypervolumeResultParameter.DefaultValue = new DoubleValue(0);
-      HypervolumeDistanceResultParameter.DefaultValue = new DoubleValue(0);
+      BestKnownHypervolumeResultParameter.DefaultValue = new DoubleValue(double.NaN);
+      HypervolumeDistanceResultParameter.DefaultValue = new DoubleValue(double.NaN);
     }
 
     public override IOperation Apply() {
-      var qualities = QualitiesParameter.ActualValue;
-      var testFunction = TestFunctionParameter.ActualValue;
-      var objectives = qualities[0].Length;
-      var referencePoint = ReferencePointParameter.ActualValue;
-
+      var qualities = QualitiesParameter.ActualValue.Select(x => x.CloneAsArray()).ToArray();
+      var referencePoint = ReferencePointParameter.ActualValue.ToArray();
       var best = BestKnownHypervolumeResultParameter.ActualValue.Value;
-      if (referencePoint.SequenceEqual(testFunction.ReferencePoint(objectives))) {
-        best = Math.Max(best, testFunction.OptimalHypervolume(objectives));
-      }
+      var maximization = MaximizationParameter.ActualValue.ToArray();
 
-      var hv = HypervolumeCalculator.CalculateHypervolume(qualities.Select(x=>x.CloneAsArray()).ToArray(), referencePoint.ToArray(), testFunction.Maximization(objectives));
-
-      if (hv > best) {
-        best = hv;
-      }
-
-      HypervolumeResultParameter.ActualValue.Value = hv;
+      var hv = HypervolumeCalculator.CalculateHypervolume(qualities, referencePoint, maximization);
+      if (hv > best || double.IsNaN(best)) best = hv;
+      ResultParameter.ActualValue.Value = hv;
       BestKnownHypervolumeResultParameter.ActualValue.Value = best;
       HypervolumeDistanceResultParameter.ActualValue.Value = best - hv;
 
       return base.Apply();
     }
-
   }
 }

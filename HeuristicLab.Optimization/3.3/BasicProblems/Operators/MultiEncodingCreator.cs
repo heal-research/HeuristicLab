@@ -34,7 +34,9 @@ namespace HeuristicLab.Optimization {
       get { return (ILookupParameter<IRandom>)Parameters["Random"]; }
     }
 
-    public override string OperatorPrefix => "Creator";
+    public override string OperatorPrefix {
+      get { return "Creator"; }
+    }
 
     [StorableConstructor]
     private MultiEncodingCreator(StorableConstructorFlag _) : base(_) { }

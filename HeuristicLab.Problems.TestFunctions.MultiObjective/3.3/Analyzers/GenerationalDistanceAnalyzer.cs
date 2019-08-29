@@ -29,7 +29,7 @@ using HEAL.Attic;
 
 namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
   [StorableType("EBC72F16-E329-4D18-800C-8642EFD0F05C")]
-  [Item("GenerationalDistanceAnalyzer", "The generational distance between the current and the best known front (see Multi-Objective Performance Metrics - Shodhganga for more information)")]
+  [Item("GenerationalDistanceAnalyzer", "This analyzer is functionally equivalent to the GenerationalDistanceAnalyzer in HeuristicLab.Analysis, but is kept as not to break backwards compatibility")]
   public class GenerationalDistanceAnalyzer : MOTFAnalyzer {
 
     private IFixedValueParameter<DoubleValue> DampeningParameter {
@@ -62,14 +62,11 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
 
     public override IOperation Apply() {
       var qualities = QualitiesParameter.ActualValue;
-      int objectives = qualities[0].Length;
-
-      var optimalfront = TestFunctionParameter.ActualValue.OptimalParetoFront(objectives);
+      var optimalfront = TestFunctionParameter.ActualValue.OptimalParetoFront(qualities[0].Length);
       if (optimalfront == null) return base.Apply();
 
-      var distance = GenerationalDistance.Calculate(qualities.Select(x => x.CloneAsArray()), optimalfront, Dampening);
-      GenerationalDistanceResultParameter.ActualValue.Value = distance;
-
+      var q = qualities.Select(x => x.ToArray());
+      GenerationalDistanceResultParameter.ActualValue.Value = GenerationalDistance.Calculate(q, optimalfront, Dampening);
       return base.Apply();
     }
   }

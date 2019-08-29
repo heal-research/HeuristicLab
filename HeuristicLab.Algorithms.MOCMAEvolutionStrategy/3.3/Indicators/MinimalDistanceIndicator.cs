@@ -32,16 +32,17 @@ namespace HeuristicLab.Algorithms.MOCMAEvolutionStrategy {
   [Item("MinimalDistanceIndicator", "Selection of Offspring based on distance to nearest neighbour")]
   [StorableType("FBBD4517-164C-4DEE-B87D-49B99172EDF4")]
   internal class MinimalDistanceIndicator : Item, IIndicator {
-
     #region Constructor and Cloning
     [StorableConstructor]
     protected MinimalDistanceIndicator(StorableConstructorFlag _) : base(_) { }
     protected MinimalDistanceIndicator(MinimalDistanceIndicator original, Cloner cloner) : base(original, cloner) { }
-    public override IDeepCloneable Clone(Cloner cloner) { return new MinimalDistanceIndicator(this, cloner); }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new MinimalDistanceIndicator(this, cloner);
+    }
     public MinimalDistanceIndicator() { }
     #endregion
 
-    public int LeastContributer(IReadOnlyList<Individual> front, MultiObjectiveProblem<RealVectorEncoding, RealVector> problem) {
+    public int LeastContributer(IReadOnlyList<Individual> front, IMultiObjectiveProblemDefinition problem) {
       var extracted = front.Select(x => x.PenalizedFitness).ToArray();
       if (extracted.Length <= 2) return 0;
       var distances = CalcDistances(extracted);
@@ -87,8 +88,8 @@ namespace HeuristicLab.Algorithms.MOCMAEvolutionStrategy {
     private static double[,] CalcDistances(IReadOnlyList<double[]> extracted) {
       var res = new double[extracted.Count, extracted.Count];
       for (var i = 0; i < extracted.Count; i++)
-        for (var j = 0; j < i; j++)
-          res[i, j] = res[j, i] = Dist(extracted[i], extracted[j]);
+      for (var j = 0; j < i; j++)
+        res[i, j] = res[j, i] = Dist(extracted[i], extracted[j]);
       return res;
     }
 

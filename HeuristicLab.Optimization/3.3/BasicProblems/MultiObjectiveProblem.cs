@@ -19,6 +19,8 @@
  */
 #endregion
 
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using HEAL.Attic;
 using HeuristicLab.Common;
@@ -34,10 +36,24 @@ namespace HeuristicLab.Optimization {
     IMultiObjectiveProblemDefinition<TEncoding, TEncodedSolution>
     where TEncoding : class, IEncoding<TEncodedSolution>
     where TEncodedSolution : class, IEncodedSolution {
+    #region Parameternames
+    public const string MaximizationParameterName = "Maximization";
+    public const string BestKnownFrontParameterName = "BestKnownFront";
+    public const string ReferencePointParameterName = "ReferencePoint";
+    #endregion
 
-    protected IValueParameter<BoolArray> MaximizationParameter {
-      get { return (IValueParameter<BoolArray>)Parameters["Maximization"]; }
+    #region Parameterproperties
+    public IValueParameter<BoolArray> MaximizationParameter {
+      get { return (IValueParameter<BoolArray>)Parameters[MaximizationParameterName]; }
     }
+    public IValueParameter<DoubleMatrix> BestKnownFrontParameter {
+      get { return (IValueParameter<DoubleMatrix>)Parameters[BestKnownFrontParameterName]; }
+    }
+    public IValueParameter<DoubleArray> ReferencePointParameter {
+      get { return (IValueParameter<DoubleArray>)Parameters[ReferencePointParameterName]; }
+    }
+    #endregion
+
 
     [StorableConstructor]
     protected MultiObjectiveProblem(StorableConstructorFlag _) : base(_) { }
@@ -48,20 +64,20 @@ namespace HeuristicLab.Optimization {
     }
 
     protected MultiObjectiveProblem() : base() {
-      Parameters.Add(new ValueParameter<BoolArray>("Maximization", "Set to false if the problem should be minimized.", (BoolArray)new BoolArray(Maximization).AsReadOnly()));
-
+      Parameters.Add(new ValueParameter<BoolArray>(MaximizationParameterName, "Set to false if the problem should be minimized.", (BoolArray)new BoolArray(Maximization).AsReadOnly()));
+      Parameters.Add(new OptionalValueParameter<DoubleMatrix>(BestKnownFrontParameterName, "A double matrix representing the best known qualites for this problem (aka points on the Pareto front). Points are to be given in a row-wise fashion."));
+      Parameters.Add(new OptionalValueParameter<DoubleArray>(ReferencePointParameterName, "The refrence point for hypervolume calculations on this problem"));
       Operators.Add(Evaluator);
       Operators.Add(new MultiObjectiveAnalyzer<TEncodedSolution>());
-
       ParameterizeOperators();
     }
 
     protected MultiObjectiveProblem(TEncoding encoding) : base(encoding) {
-      Parameters.Add(new ValueParameter<BoolArray>("Maximization", "Set to false if the problem should be minimized.", (BoolArray)new BoolArray(Maximization).AsReadOnly()));
-
+      Parameters.Add(new ValueParameter<BoolArray>(MaximizationParameterName, "Set to false if the problem should be minimized.", (BoolArray)new BoolArray(Maximization).AsReadOnly()));
+      Parameters.Add(new OptionalValueParameter<DoubleMatrix>(BestKnownFrontParameterName, "A double matrix representing the best known qualites for this problem (aka points on the Pareto front). Points are to be given in a row-wise fashion."));
+      Parameters.Add(new OptionalValueParameter<DoubleArray>(ReferencePointParameterName, "The refrence point for hypervolume calculations on this problem"));
       Operators.Add(Evaluator);
       Operators.Add(new MultiObjectiveAnalyzer<TEncodedSolution>());
-
       ParameterizeOperators();
     }
 
@@ -70,10 +86,48 @@ namespace HeuristicLab.Optimization {
       ParameterizeOperators();
     }
 
-    public int Objectives => Maximization.Length;
+    public int Objectives {
+      get { return Maximization.Length; }
+    }
     public abstract bool[] Maximization { get; }
+
+    public virtual IReadOnlyList<double[]> BestKnownFront {
+      get {
+        if (!Parameters.ContainsKey(BestKnownFrontParameterName)) return null;
+        var mat = BestKnownFrontParameter.Value;
+        if (mat == null) return null;
+        var v = new double[mat.Rows][];
+        for (var i = 0; i < mat.Rows; i++) {
+          var r = v[i] = new double[mat.Columns];
+          for (var j = 0; j < mat.Columns; j++) {
+            r[j] = mat[i, j];
+          }
+        }
+        return v;
+      }
+      set {
+        if (value == null || value.Count == 0) {
+          BestKnownFrontParameter.Value = new DoubleMatrix();
+          return;
+        }
+        var mat = new DoubleMatrix(value.Count, value[0].Length);
+        for (int i = 0; i < value.Count; i++) {
+          for (int j = 0; j < value[i].Length; j++) {
+            mat[i, j] = value[i][j];
+          }
+        }
+
+        BestKnownFrontParameter.Value = mat;
+      }
+    }
+    public virtual double[] ReferencePoint {
+      get { return ReferencePointParameter.Value != null ? ReferencePointParameter.Value.CloneAsArray() : null; }
+      set { ReferencePointParameter.Value = new DoubleArray(value); }
+    }
+
     public abstract double[] Evaluate(TEncodedSolution solution, IRandom random);
     public virtual void Analyze(TEncodedSolution[] solutions, double[][] qualities, ResultCollection results, IRandom random) { }
+
 
     protected override void OnOperatorsChanged() {
       if (Encoding != null) {
@@ -114,7 +168,7 @@ namespace HeuristicLab.Optimization {
 
     #region IMultiObjectiveHeuristicOptimizationProblem Members
     IParameter IMultiObjectiveHeuristicOptimizationProblem.MaximizationParameter {
-      get { return Parameters["Maximization"]; }
+      get { return Parameters[MaximizationParameterName]; }
     }
     IMultiObjectiveEvaluator IMultiObjectiveHeuristicOptimizationProblem.Evaluator {
       get { return Evaluator; }

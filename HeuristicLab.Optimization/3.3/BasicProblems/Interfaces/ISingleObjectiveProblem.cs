@@ -1,5 +1,4 @@
 ﻿#region License Information
-
 /* HeuristicLab
  * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
@@ -18,14 +17,15 @@
  * You should have received a copy of the GNU General Public License
  * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
  */
-
 #endregion
 
 
 namespace HeuristicLab.Optimization {
-  public interface ISingleObjectiveProblem<TEncoding, TEncodedSolution> : IProblem<TEncoding, TEncodedSolution>, ISingleObjectiveHeuristicOptimizationProblem
-    where TEncoding : class, IEncoding<TEncodedSolution>
-    where TEncodedSolution : class, IEncodedSolution {
+  public interface ISingleObjectiveProblem : ISingleObjectiveHeuristicOptimizationProblem {
 
   }
+
+  public interface ISingleObjectiveProblem<TEncoding, TEncodedSolution> : ISingleObjectiveProblem, IProblem<TEncoding, TEncodedSolution>
+    where TEncoding : class, IEncoding<TEncodedSolution>
+    where TEncodedSolution : class, IEncodedSolution { }
 }

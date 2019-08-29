@@ -24,14 +24,17 @@ using HEAL.Attic;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.Optimization {
+  public interface ISingleObjectiveProblemDefinition {
+    bool Maximization { get; }
+    bool IsBetter(double quality, double bestQuality);
+  }
+
   [StorableType("7ec7bf7e-aaa7-4681-828b-3401cf67e2b3")]
-  public interface ISingleObjectiveProblemDefinition<TEncoding, TEncodedSolution> : IProblemDefinition<TEncoding, TEncodedSolution>
+  public interface ISingleObjectiveProblemDefinition<TEncoding, TEncodedSolution> : ISingleObjectiveProblemDefinition, IProblemDefinition<TEncoding, TEncodedSolution>
     where TEncoding : class, IEncoding<TEncodedSolution>
     where TEncodedSolution : class, IEncodedSolution {
-    bool Maximization { get; }
     double Evaluate(TEncodedSolution solution, IRandom random);
     void Analyze(TEncodedSolution[] solutions, double[] qualities, ResultCollection results, IRandom random);
     IEnumerable<TEncodedSolution> GetNeighbors(TEncodedSolution solution, IRandom random);
-    bool IsBetter(double quality, double bestQuality);
   }
 }

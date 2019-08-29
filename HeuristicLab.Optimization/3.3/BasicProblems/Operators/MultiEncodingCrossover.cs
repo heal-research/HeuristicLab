@@ -32,7 +32,9 @@ namespace HeuristicLab.Optimization {
       get { return (ILookupParameter<IRandom>)Parameters["Random"]; }
     }
 
-    public override string OperatorPrefix => "Crossover";
+    public override string OperatorPrefix {
+      get { return "Crossover"; }
+    }
 
     [StorableConstructor]
     private MultiEncodingCrossover(StorableConstructorFlag _) : base(_) { }

@@ -75,6 +75,11 @@ namespace HeuristicLab.Data {
       #endregion
     }
 
+    public int Count
+    {
+      get { return Length; }
+    }
+
     [Storable]
     protected bool resizable = true;
     public bool Resizable {

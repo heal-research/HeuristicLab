@@ -20,23 +20,23 @@
 #endregion
 
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
-using HEAL.Attic;
 
 namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
   [StorableType("F32027A7-3116-4864-A404-820F866BFD65")]
-  [Item("SpacingAnalyzer", "The spacing of the current front (see Multi-Objective Performance Metrics - Shodhganga for more information)")]
+  [Item("SpacingAnalyzer", "This analyzer is functionally equivalent to the SpacingAnalyzer in HeuristicLab.Analysis, but is kept as not to break backwards compatibility")]
   public class SpacingAnalyzer : MOTFAnalyzer {
 
     public IResultParameter<DoubleValue> SpacingResultParameter {
       get { return (IResultParameter<DoubleValue>)Parameters["Spacing"]; }
     }
+
     [StorableConstructor]
     protected SpacingAnalyzer(StorableConstructorFlag _) : base(_) { }
-
 
     protected SpacingAnalyzer(SpacingAnalyzer original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -50,9 +50,8 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
 
     public override IOperation Apply() {
       var qualities = QualitiesParameter.ActualValue;
-      var spacing = Spacing.Calculate(qualities.Select(q => q.ToArray()));
-      SpacingResultParameter.ActualValue.Value = spacing;
-
+      var q = qualities.Select(x => x.ToArray());
+      SpacingResultParameter.ActualValue.Value = Spacing.Calculate(q);
       return base.Apply();
     }
   }

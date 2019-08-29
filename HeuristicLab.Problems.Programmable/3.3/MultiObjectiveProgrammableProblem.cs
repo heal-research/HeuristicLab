@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System.Collections.Generic;
 using System.Drawing;
 using HEAL.Attic;
 using HeuristicLab.Common;
@@ -58,6 +59,7 @@ namespace HeuristicLab.Problems.Programmable {
       get { return MultiObjectiveProblemScriptParameter.Value; }
     }
 
+
     [StorableConstructor]
     protected MultiObjectiveProgrammableProblem(StorableConstructorFlag _) : base(_) { }
     protected MultiObjectiveProgrammableProblem(MultiObjectiveProgrammableProblem<TEncoding, TEncodedSolution> original, Cloner cloner)
@@ -68,7 +70,7 @@ namespace HeuristicLab.Problems.Programmable {
     public MultiObjectiveProgrammableProblem(TEncoding encoding)
       : base(encoding) {
       Parameters.Add(new FixedValueParameter<MultiObjectiveProblemDefinitionScript<TEncoding, TEncodedSolution>>("ProblemScript", "Defines the problem.",
-        new MultiObjectiveProblemDefinitionScript<TEncoding, TEncodedSolution>() { Name = Name }));
+        new MultiObjectiveProblemDefinitionScript<TEncoding, TEncodedSolution>() {Name = Name}));
       ProblemScript.Encoding = (TEncoding)encoding.Clone();
 
       var codeTemplate = ScriptTemplates.MultiObjectiveProblem_Template;
@@ -92,7 +94,7 @@ namespace HeuristicLab.Problems.Programmable {
 
     private void OnProblemDefinitionChanged() {
       Parameters.Remove("Maximization");
-      Parameters.Add(new ValueParameter<BoolArray>("Maximization", "Set to false if the problem should be minimized.", (BoolArray)new BoolArray(Maximization).AsReadOnly()) { Hidden = true });
+      Parameters.Add(new ValueParameter<BoolArray>("Maximization", "Set to false if the problem should be minimized.", (BoolArray)new BoolArray(Maximization).AsReadOnly()) {Hidden = true});
       Encoding = (TEncoding)ProblemScript.Encoding.Clone();
 
       OnOperatorsChanged();
@@ -107,7 +109,15 @@ namespace HeuristicLab.Problems.Programmable {
     }
 
     public override bool[] Maximization {
-      get { return Parameters.ContainsKey("ProblemScript") ? ProblemDefinition.Maximization : new[] { false }; }
+      get { return Parameters.ContainsKey("ProblemScript") ? ProblemDefinition.Maximization : new[] {false}; }
+    }
+
+    public override IReadOnlyList<double[]> BestKnownFront {
+      get { return Parameters.ContainsKey("ProblemScript") ? ProblemDefinition.BestKnownFront : null; }
+    }
+
+    public override double[] ReferencePoint {
+      get { return Parameters.ContainsKey("ProblemScript") ? ProblemDefinition.ReferencePoint : null; }
     }
 
     public override double[] Evaluate(TEncodedSolution individual, IRandom random) {

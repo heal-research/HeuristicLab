@@ -19,7 +19,6 @@
  */
 #endregion
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using HEAL.Attic;
@@ -36,30 +35,17 @@ namespace HeuristicLab.Algorithms.MOCMAEvolutionStrategy {
     [StorableConstructor]
     protected CrowdingIndicator(StorableConstructorFlag _) : base(_) { }
     protected CrowdingIndicator(CrowdingIndicator original, Cloner cloner) : base(original, cloner) { }
-    public override IDeepCloneable Clone(Cloner cloner) { return new CrowdingIndicator(this, cloner); }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new CrowdingIndicator(this, cloner);
+    }
     public CrowdingIndicator() { }
     #endregion
 
-    public int LeastContributer(IReadOnlyList<Individual> front, MultiObjectiveProblem<RealVectorEncoding, RealVector> problem) {
-      var bounds = problem.Encoding.Bounds;
+    public int LeastContributer(IReadOnlyList<Individual> front, IMultiObjectiveProblemDefinition problem) {
       var extracted = front.Select(x => x.PenalizedFitness).ToArray();
       if (extracted.Length <= 2) return 0;
-      var pointsums = new double[extracted.Length];
-
-      for (var dim = 0; dim < problem.Maximization.Length; dim++) {
-        var arr = extracted.Select(x => x[dim]).ToArray();
-        Array.Sort(arr);
-        var fmax = problem.Encoding.Bounds[dim % bounds.Rows, 1];
-        var fmin = bounds[dim % bounds.Rows, 0];
-        var pointIdx = 0;
-        foreach (var point in extracted) {
-          var pos = Array.BinarySearch(arr, point[dim]);
-          var d = pos != 0 && pos != arr.Length - 1 ? (arr[pos + 1] - arr[pos - 1]) / (fmax - fmin) : double.PositiveInfinity;
-          pointsums[pointIdx] += d;
-          pointIdx++;
-        }
-      }
-      return pointsums.Select((value, index) => new { value, index }).OrderBy(x => x.value).First().index;
+      var pointsums = CrowdingCalculator.CalculateCrowdingDistances(extracted);
+      return pointsums.Select((value, index) => new {value, index}).OrderBy(x => x.value).First().index;
     }
   }
 }
