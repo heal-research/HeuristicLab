@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,9 +22,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
-using HEAL.Attic;
 
 namespace HeuristicLab.Core {
   /// <summary>
@@ -110,14 +110,33 @@ namespace HeuristicLab.Core {
     /// <summary>
     /// Sets the checked state of <paramref name="item"/> to <paramref name="checkedState"/>.
     /// </summary>
+    /// <remarks>
+    /// This method is slower than <see cref="SetItemCheckedState(int, bool)"/>.
+    /// </remarks>
     /// <param name="item">The item to set the checked state for.</param>
     /// <param name="checkedState">The new checked state of <paramref name="item"/></param>
     public void SetItemCheckedState(T item, bool checkedState) {
-      if (!this.checkedState.ContainsKey(item)) throw new ArgumentException();
-      if (this.checkedState[item] != checkedState) {
-        this.checkedState[item] = checkedState;
-        OnCheckedItemsChanged(new IndexedItem<T>[] { new IndexedItem<T>(IndexOf(item), item) });
+      SetItemCheckedState(IndexOf(item), checkedState);
+    }
+
+    /// <summary>
+    /// Sets the checked state of <paramref name="items"/> to <paramref name="checkedState"/>.
+    /// </summary>
+    /// <remarks>
+    /// This method is slower than <see cref="SetItemCheckedState(IEnumerable{int}, bool)"/>.
+    /// </remarks>
+    /// <param name="items">The items to set the checked state for.</param>
+    /// <param name="checkedState">The new checked state of <paramref name="item"/></param>
+    public void SetItemCheckedState(IEnumerable<T> items, bool checkedState) {
+      var changed = new List<IndexedItem<T>>();
+      foreach (var item in items) {
+        if (!this.checkedState.TryGetValue(item, out bool currentState)) throw new ArgumentException();
+        if (currentState != checkedState) {
+          this.checkedState[item] = checkedState;
+          changed.Add(new IndexedItem<T>(IndexOf(item), item));
+        }
       }
+      if (changed.Count > 0) OnCheckedItemsChanged(changed);
     }
 
     /// <summary>
@@ -126,7 +145,30 @@ namespace HeuristicLab.Core {
     /// <param name="itemIndex">The index of the item to set the checked state for.</param>
     /// <param name="checkedState">The new checked state of the item.</param>
     public void SetItemCheckedState(int itemIndex, bool checkedState) {
-      SetItemCheckedState(this[itemIndex], checkedState);
+      var item = list[itemIndex];
+      if (!this.checkedState.TryGetValue(item, out bool currentState)) throw new ArgumentException();
+      if (currentState != checkedState) {
+        this.checkedState[item] = checkedState;
+        OnCheckedItemsChanged(new IndexedItem<T>[] { new IndexedItem<T>(itemIndex, item) });
+      }
+    }
+
+    /// <summary>
+    /// Sets the checked state of all <paramref name="itemIndices"/> to <paramref name="checkedState"/>.
+    /// </summary>
+    /// <param name="itemIndices">The indices of all items to set the checked state for.</param>
+    /// <param name="checkedState">The new checked state of the item.</param>
+    public void SetItemCheckedState(IEnumerable<int> itemIndices, bool checkedState) {
+      var changed = new List<IndexedItem<T>>();
+      foreach (var index in itemIndices) {
+        var item = list[index];
+        if (!this.checkedState.TryGetValue(item, out bool currentState)) throw new ArgumentException();
+        if (currentState != checkedState) {
+          this.checkedState[item] = checkedState;
+          changed.Add(new IndexedItem<T>(index, item));
+        }
+      }
+      if (changed.Count > 0) OnCheckedItemsChanged(changed);
     }
 
     /// <summary>

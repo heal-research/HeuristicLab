@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,7 +25,7 @@ namespace HeuristicLab.Algorithms.RandomSearch {
   /// <summary>
   /// Plugin class for HeuristicLab.Algorithms.Random plugin.
   /// </summary>
-  [Plugin("HeuristicLab.Algorithms.RandomSearch", "3.3.15.$WCREV$")]
+  [Plugin("HeuristicLab.Algorithms.RandomSearch", "3.3.16.$WCREV$")]
   [PluginFile("HeuristicLab.Algorithms.RandomSearch-3.3.dll", PluginFileType.Assembly)]
   [PluginDependency("HeuristicLab.Analysis", "3.3")]
   [PluginDependency("HeuristicLab.Collections", "3.3")]

@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,9 +22,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
-using HEAL.Attic;
 
 namespace HeuristicLab.Core {
   /// <summary>
@@ -104,6 +104,23 @@ namespace HeuristicLab.Core {
         this.checkedState[item] = checkedState;
         OnCheckedItemsChanged(new T[] { item });
       }
+    }
+
+    /// <summary>
+    /// Sets the checked state of <paramref name="items"/> to <paramref name="checkedState"/>.
+    /// </summary>
+    /// <param name="items">The items to set the checked state for.</param>
+    /// <param name="checkedState">The new checked state of <paramref name="item"/></param>
+    public void SetItemCheckedState(IEnumerable<T> items, bool checkedState) {
+      var changed = new List<T>();
+      foreach (var item in items) {
+        if (!this.checkedState.TryGetValue(item, out bool currentState)) throw new ArgumentException();
+        if (currentState != checkedState) {
+          this.checkedState[item] = checkedState;
+          changed.Add(item);
+        }
+      }
+      if (changed.Count > 0) OnCheckedItemsChanged(changed);
     }
 
     /// <summary>

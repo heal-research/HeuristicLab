@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,8 +21,8 @@
 
 using System.IO;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Algorithms.ScatterSearch;
-using HeuristicLab.Persistence.Default.Xml;
 using HeuristicLab.Problems.Instances.VehicleRouting;
 using HeuristicLab.Problems.VehicleRouting;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -31,6 +31,7 @@ namespace HeuristicLab.Tests {
   [TestClass]
   public class ScatterSearchVRPSampleTest {
     private const string SampleFileName = "SS_VRP";
+    private static readonly ProtoBufSerializer serializer = new ProtoBufSerializer();
 
     [TestMethod]
     [TestCategory("Samples.Create")]
@@ -38,7 +39,7 @@ namespace HeuristicLab.Tests {
     public void CreateScatterSearchVRPSampleTest() {
       var ss = CreateScatterSearchVRPSample();
       string path = Path.Combine(SamplesUtils.SamplesDirectory, SampleFileName + SamplesUtils.SampleFileExtension);
-      XmlGenerator.Serialize(ss, path);
+      serializer.Serialize(ss, path);
     }
 
     [TestMethod]

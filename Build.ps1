@@ -1,20 +1,29 @@
 ﻿# find ms build
 $programFilesX86Dir = ($Env:ProgramFiles, ${Env:ProgramFiles(x86)})[[bool]${Env:ProgramFiles(x86)}]
-$locations = @(
-  [System.IO.Path]::Combine($programFilesX86Dir, "Microsoft Visual Studio", "2017", "Enterprise", "MSBuild", "15.0", "Bin", "amd64")
-  [System.IO.Path]::Combine($programFilesX86Dir, "Microsoft Visual Studio", "2017", "Enterprise", "MSBuild", "15.0", "Bin")
-  [System.IO.Path]::Combine($programFilesX86Dir, "Microsoft Visual Studio", "2017", "Community", "MSBuild", "15.0", "Bin", "amd64")
-  [System.IO.Path]::Combine($programFilesX86Dir, "Microsoft Visual Studio", "2017", "Community", "MSBuild", "15.0", "Bin")
-  [System.IO.Path]::Combine($programFilesX86Dir, "Microsoft Visual Studio", "2017", "BuildTools", "MSBuild", "15.0", "Bin", "amd64"),
-  [System.IO.Path]::Combine($programFilesX86Dir, "Microsoft Visual Studio", "2017", "BuildTools", "MSBuild", "15.0", "Bin")
-)
+$vsDir = [System.IO.Path]::Combine($programFilesX86Dir, "Microsoft Visual Studio")
+$years = @("2019", "2017")
+$editions = @("Enterprise", "Professional", "Community", "BuildTools")
+$versions = @("Current", "15.0")
 
 $msBuildPath = $undefined
-Foreach ($loc in $locations) {
-  $loc = [System.IO.Path]::Combine($loc, "MSBuild.exe")
-  If ([System.IO.File]::Exists($loc)) {
-    $msBuildPath = $loc
-    Break;
+:search Foreach ($year in $years) {
+  $loc = [System.IO.Path]::Combine($vsDir, $year)
+  Foreach ($edition in $editions) {
+    $edLoc = [System.IO.Path]::Combine($loc, $edition, "MSBuild")
+    Foreach ($version in $versions) {
+      $binLoc = [System.IO.Path]::Combine($edLoc, $version, "Bin")
+      $loc64 = [System.IO.Path]::Combine($binLoc, "amd64", "MSBuild.exe")
+      $loc32 = [System.IO.Path]::Combine($binLoc, "MSBuild.exe")
+
+      If ([System.IO.File]::Exists($loc64)) {
+        $msBuildPath = $loc64
+        Break search;
+      }
+      If ([System.IO.File]::Exists($loc32)) {
+        $msBuildPath = $loc32
+        Break search;
+      }
+    }
   }
 }
 
@@ -23,6 +32,8 @@ Try {
     "Could not locate MSBuild, ABORTING ..."
     Return
   }
+
+  "MSBuild located at `"{0}`"." -f $msBuildPath
 
   $curPath = $MyInvocation.MyCommand.Path
   $curDir = Split-Path $curPath

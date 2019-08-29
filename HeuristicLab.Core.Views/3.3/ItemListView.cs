@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -241,8 +241,7 @@ namespace HeuristicLab.Core.Views {
                                (Content != null) && !Content.IsReadOnly && !ReadOnly;
       removeButton.Enabled = itemsListView.SelectedItems.Count > 0 &&
                              (Content != null) && !Content.IsReadOnly && !ReadOnly;
-      AdjustListViewColumnSizes();
-
+      
       if (showDetailsCheckBox.Checked) {
         if (itemsListView.SelectedItems.Count == 1) {
           T item = (T)itemsListView.SelectedItems[0].Tag;
@@ -269,6 +268,12 @@ namespace HeuristicLab.Core.Views {
           }
           Clipboard.SetText(builder.ToString());
         }
+      } else if (itemsListView.MultiSelect && e.KeyData == (Keys.A | Keys.Control)) {
+        try {
+          itemsListView.BeginUpdate();
+          foreach (ListViewItem item in itemsListView.Items)
+            item.Selected = true;
+        } finally { itemsListView.EndUpdate(); }
       }
     }
 
@@ -352,6 +357,10 @@ namespace HeuristicLab.Core.Views {
           }
         }
       }
+    }
+    protected virtual void itemsListView_Layout(object sender, LayoutEventArgs e) {
+      if (itemsListView.Columns.Count == 1)
+        AdjustListViewColumnSizes();
     }
     #endregion
 
@@ -493,16 +502,22 @@ namespace HeuristicLab.Core.Views {
         T item = (T)sender;
         foreach (ListViewItem listViewItem in GetListViewItemsForItem(item))
           UpdateListViewItemText(listViewItem);
-        AdjustListViewColumnSizes();
+        if (itemsListView.Columns.Count > 1)
+          AdjustListViewColumnSizes();
       }
     }
     #endregion
 
     #region Helpers
     protected virtual void AdjustListViewColumnSizes() {
-      if (itemsListView.Items.Count > 0) {
-        for (int i = 0; i < itemsListView.Columns.Count; i++)
-          itemsListView.Columns[i].AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
+      if (itemsListView.Columns.Count == 1) {
+        if (itemsListView.Columns[0].Width != itemsListView.ClientSize.Width)
+          itemsListView.Columns[0].Width = itemsListView.ClientSize.Width;
+      } else {
+        if (itemsListView.Items.Count > 0) {
+          for (int i = 0; i < itemsListView.Columns.Count; i++)
+            itemsListView.Columns[i].AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
+        }
       }
     }
     protected virtual void RebuildImageList() {

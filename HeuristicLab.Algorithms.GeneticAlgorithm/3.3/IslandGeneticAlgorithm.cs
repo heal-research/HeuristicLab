@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -210,8 +210,10 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       if (!Parameters.ContainsKey("ReevaluateElites")) {
         Parameters.Add(new FixedValueParameter<BoolValue>("ReevaluateElites", "Flag to determine if elite individuals should be reevaluated (i.e., if stochastic fitness functions are used.)", (BoolValue)new BoolValue(false).AsReadOnly()) { Hidden = true });
       }
+
       var optionalMutatorParameter = MutatorParameter as OptionalConstrainedValueParameter<IManipulator>;
-      if (optionalMutatorParameter != null) {
+      var mutatorParameter = MutatorParameter as ConstrainedValueParameter<IManipulator>;
+      if (mutatorParameter == null && optionalMutatorParameter != null) {
         Parameters.Remove(optionalMutatorParameter);
         Parameters.Add(new ConstrainedValueParameter<IManipulator>("Mutator", "The operator used to mutate solutions."));
         foreach (var m in optionalMutatorParameter.ValidValues)

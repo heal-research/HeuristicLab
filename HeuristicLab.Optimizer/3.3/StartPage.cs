@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -26,10 +26,10 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Windows.Forms;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.MainForm;
-using HeuristicLab.Persistence.Default.Xml;
 
 namespace HeuristicLab.Optimizer {
   [View("Start Page")]
@@ -116,25 +116,22 @@ namespace HeuristicLab.Optimizer {
     }
 
     private void LoadSample(string name, Assembly assembly, ListViewGroup group, int count) {
-      string path = Path.GetTempFileName();
-      try {
-        using (var stream = assembly.GetManifestResourceStream(name)) {
-          WriteStreamToTempFile(stream, path); // create a file in a temporary folder (persistence cannot load these files directly from the stream)
-          var item = XmlParser.Deserialize<INamedItem>(path);
-          OnSampleLoaded(item, group, 1.0 / count);
-        }
-      } catch (Exception) {
-      } finally {
-        if (File.Exists(path)) {
-          File.Delete(path); // make sure we remove the temporary file
-        }
+      using (var stream = assembly.GetManifestResourceStream(name)) {
+        var serializer = new ProtoBufSerializer();
+        var item = (NamedItem)serializer.Deserialize(stream, false);
+        OnSampleLoaded(item, group, 1.0 / count);
       }
     }
 
     private void FillGroupLookup() {
+      //TODO: uncomment whole sample and script list and readd in project
+      //var standardProblems = new List<string> { "ALPSGA_TSP", "ES_Griewank", "OSES_Griewank", "GA_Grouping", "GA_TSP", "GA_VRP", "GE_ArtificialAnt",
+      //          "IslandGA_TSP", "LS_Knapsack", "PSO_Rastrigin", "RAPGA_JSSP",
+      //          "SA_Rastrigin", "SGP_SantaFe", "GP_Multiplexer", "SGP_Robocode", "SS_VRP", "TS_TSP", "TS_VRP", "VNS_OP", "VNS_TSP", "GA_BPP"
+      //  };
       var standardProblems = new List<string> { "ALPSGA_TSP", "ES_Griewank", "OSES_Griewank", "GA_Grouping", "GA_TSP", "GA_VRP", "GE_ArtificialAnt",
-                "IslandGA_TSP", "LS_Knapsack", "PSO_Rastrigin", "RAPGA_JSSP",
-                "SA_Rastrigin", "SGP_SantaFe", "GP_Multiplexer", "SGP_Robocode", "SS_VRP", "TS_TSP", "TS_VRP", "VNS_OP", "VNS_TSP", "GA_BPP"
+                "IslandGA_TSP", "PSO_Rastrigin",
+                "SGP_SantaFe", "GP_Multiplexer", "SGP_Robocode", "SS_VRP", "TS_TSP", "TS_VRP", "VNS_OP"
         };
       groupLookup[standardProblemsGroup] = standardProblems;
       var dataAnalysisProblems = new List<string> { "ALPSGP_SymReg", "SGP_SymbClass", "SGP_SymbReg", "OSGP_SymReg", "OSGP_TimeSeries", "GE_SymbReg", "GPR" };
@@ -198,13 +195,5 @@ namespace HeuristicLab.Optimizer {
       Properties.Settings.Default.ShowStartPage = showStartPageCheckBox.Checked;
       Properties.Settings.Default.Save();
     }
-
-    #region Helpers
-    private void WriteStreamToTempFile(Stream stream, string path) {
-      using (FileStream output = new FileStream(path, FileMode.Create, FileAccess.Write)) {
-        stream.CopyTo(output);
-      }
-    }
-    #endregion
   }
 }

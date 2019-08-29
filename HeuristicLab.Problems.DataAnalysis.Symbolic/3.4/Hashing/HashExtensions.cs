@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -20,10 +20,14 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
+using System.Linq;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   public static class SymbolicExpressionHashExtensions {
+    /// <summary>
+    /// Holds data that is necessary to handle tree nodes in hashing / simplification.
+    /// </summary>
+    /// <typeparam name="T">The tree node type</typeparam>
     public sealed class HashNode<T> : IComparable<HashNode<T>>, IEquatable<HashNode<T>> where T : class {
       public T Data;
       public int Arity;
@@ -37,18 +41,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       public delegate void SimplifyAction(ref HashNode<T>[] nodes, int i);
       public SimplifyAction Simplify;
 
-      public IComparer<T> Comparer;
-
       public bool IsLeaf => Arity == 0;
 
-      public HashNode(IComparer<T> comparer) {
-        Comparer = comparer;
-      }
-
-      private HashNode() { }
-
       public int CompareTo(HashNode<T> other) {
-        var res = Comparer.Compare(Data, other.Data);
+        var res = HashValue.CompareTo(other.HashValue);
         return res == 0 ? CalculatedHashValue.CompareTo(other.CalculatedHashValue) : res;
       }
 
@@ -102,32 +98,30 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     public static HashNode<T>[] Simplify<T>(this HashNode<T>[] nodes, Func<byte[], ulong> hashFunction) where T : class {
-      var reduced = nodes.UpdateNodeSizes().Reduce().Sort(hashFunction);
-
-      for (int i = 0; i < reduced.Length; ++i) {
-        var node = reduced[i];
-        if (node.IsLeaf) {
-          continue;
+      bool simplified = false;
+      nodes = nodes.UpdateNodeSizes().Reduce().Sort(hashFunction);
+      do {
+        if (simplified) {
+          simplified = false;
+          nodes = nodes.Where(x => x.Enabled).ToArray().UpdateNodeSizes().Reduce().Sort(hashFunction);
         }
-        node.Simplify?.Invoke(ref reduced, i);
-      }
-      // detect if anything was simplified
-      var count = 0;
-      foreach (var node in reduced) {
-        if (!node.Enabled) { ++count; }
-      }
-      if (count == 0) {
-        return reduced;
-      }
 
-      var simplified = new HashNode<T>[reduced.Length - count];
-      int j = 0;
-      foreach (var node in reduced) {
-        if (node.Enabled) {
-          simplified[j++] = node;
+        for (int i = 0; i < nodes.Length; ++i) {
+          var node = nodes[i];
+          if (node.IsLeaf) {
+            continue;
+          }
+          node.Simplify?.Invoke(ref nodes, i);
+          for (int j = i - node.Size; j <= i; ++j) {
+            // detect if anything was simplified
+            if (!nodes[j].Enabled) {
+              simplified = true;
+              break;
+            }
+          }
         }
-      }
-      return simplified.UpdateNodeSizes().Reduce().Sort(hashFunction);
+      } while (simplified);
+      return nodes.UpdateNodeSizes().Sort(hashFunction);
     }
 
     public static HashNode<T>[] Sort<T>(this HashNode<T>[] nodes, Func<byte[], ulong> hashFunction) where T : class {
@@ -172,10 +166,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     /// <summary>
-    /// Get a function node's child indicest
+    /// Get a function node's child indices
     /// </summary>
     /// <typeparam name="T">The data type encapsulated by a hash node</typeparam>
-    /// <param name="nodes">An array of hash nodes with up-to-date node sizes</param>
+    /// <param name="nodes">An array of hash nodes with up-to-date node sizes (see UpdateNodeSizes)</param>
     /// <param name="i">The index in the array of hash nodes of the node whose children we want to iterate</param>
     /// <returns>An array containing child indices</returns>
     public static int[] IterateChildren<T>(this HashNode<T>[] nodes, int i) where T : class {
@@ -190,6 +184,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       return children;
     }
 
+    /// <summary>
+    /// Determines size of each branch and sets the results for each node.
+    /// </summary>
+    /// <typeparam name="T">The data type encapsulated by a hash node</typeparam>
+    /// <param name="nodes">An array of hash nodes in postfix order.</param>
+    /// <returns>The array with updated node sizes. The array is not copied.</returns>
     public static HashNode<T>[] UpdateNodeSizes<T>(this HashNode<T>[] nodes) where T : class {
       for (int i = 0; i < nodes.Length; ++i) {
         var node = nodes[i];
@@ -198,7 +198,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           continue;
         }
         node.Size = node.Arity;
-
+        // visit all children and sum up their size (assumes postfix order).
         for (int j = i - 1, k = 0; k < node.Arity; j -= 1 + nodes[j].Size, ++k) {
           node.Size += nodes[j].Size;
         }
@@ -206,7 +206,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       return nodes;
     }
 
-    private static HashNode<T>[] Reduce<T>(this HashNode<T>[] nodes) where T : class {
+    // disables duplicate branches and removes the disabled nodes
+    public static HashNode<T>[] Reduce<T>(this HashNode<T>[] nodes) where T : class {
       int count = 0;
       for (int i = 0; i < nodes.Length; ++i) {
         var node = nodes[i];

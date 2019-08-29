@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,17 +22,19 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Optimization;
-using HeuristicLab.Persistence.Default.Xml;
 using HeuristicLab.PluginInfrastructure;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace HeuristicLab.Tests {
   [TestClass]
   public class DeepCloneableCloningTest {
+    private static readonly ProtoBufSerializer serializer = new ProtoBufSerializer();
+
     private TestContext testContextInstance;
     public TestContext TestContext {
       get { return testContextInstance; }
@@ -45,8 +47,9 @@ namespace HeuristicLab.Tests {
         typeof (HeuristicLab.Problems.TravelingSalesman.DistanceMatrix),
         typeof (HeuristicLab.Problems.DataAnalysis.ClassificationEnsembleSolution),
         typeof (HeuristicLab.Problems.DataAnalysis.RegressionEnsembleSolution),
-        typeof (HeuristicLab.Problems.Orienteering.DistanceMatrix),
-        typeof (HeuristicLab.Problems.PTSP.DistanceMatrix)
+        typeof (HeuristicLab.Problems.Orienteering.DistanceMatrix)
+        //TODO: include when PTSP builds again,
+        //typeof (HeuristicLab.Problems.PTSP.DistanceMatrix)
       };
       excludedTypes.Add(typeof(SymbolicExpressionGrammar).Assembly.GetType("HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.EmptySymbolicExpressionTreeGrammar"));
 
@@ -65,7 +68,7 @@ namespace HeuristicLab.Tests {
     [TestCategory("Essential")]
     [TestProperty("Time", "long")]
     public void TestCloningFinishedExperiment() {
-      Experiment experiment = (Experiment)XmlParser.Deserialize(@"Test Resources\SamplesExperimentFinished.hl");
+      Experiment experiment = (Experiment)serializer.Deserialize(@"Test Resources\SamplesExperimentFinished.hl");
 
       Experiment clone = (Experiment)experiment.Clone(new Cloner());
       var intersections = CheckTotalInequality(experiment, clone).Where(x => x.GetType().FullName.StartsWith("HeuristicLab"));

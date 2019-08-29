@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -435,7 +435,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             il.Emit(System.Reflection.Emit.OpCodes.Dup);
             il.Emit(System.Reflection.Emit.OpCodes.Mul); // x2*x2
             il.Emit(System.Reflection.Emit.OpCodes.Ldc_R8, 1.0);
-            il.Emit(System.Reflection.Emit.OpCodes.Mul); // 1+x2*x2
+            il.Emit(System.Reflection.Emit.OpCodes.Add); // 1+x2*x2
             il.Emit(System.Reflection.Emit.OpCodes.Call, sqrt);
             il.Emit(System.Reflection.Emit.OpCodes.Div);
             return;

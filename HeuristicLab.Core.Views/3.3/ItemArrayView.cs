@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -236,7 +236,6 @@ namespace HeuristicLab.Core.Views {
                                itemsListView.SelectedIndices[0] != itemsListView.Items.Count - 1 &&
                                (Content != null) && !Content.IsReadOnly && !ReadOnly;
       removeButton.Enabled = itemsListView.SelectedItems.Count > 0 && (Content != null) && !Content.IsReadOnly && !ReadOnly;
-      AdjustListViewColumnSizes();
 
       if (showDetailsCheckBox.Checked) {
         if (itemsListView.SelectedItems.Count == 1) {
@@ -328,6 +327,10 @@ namespace HeuristicLab.Core.Views {
         T item = e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat) as T;
         Content[listViewItem.Index] = e.Effect.HasFlag(DragDropEffects.Copy) ? (T)item.Clone() : item;
       }
+    }
+    protected virtual void itemsListView_Layout(object sender, LayoutEventArgs e) {
+      if (itemsListView.Columns.Count == 1)
+        AdjustListViewColumnSizes();
     }
     #endregion
 
@@ -452,16 +455,22 @@ namespace HeuristicLab.Core.Views {
         T item = (T)sender;
         foreach (ListViewItem listViewItem in GetListViewItemsForItem(item))
           UpdateListViewItemText(listViewItem);
-        AdjustListViewColumnSizes();
+        if (itemsListView.Columns.Count > 1)
+          AdjustListViewColumnSizes();
       }
     }
     #endregion
 
     #region Helpers
     protected virtual void AdjustListViewColumnSizes() {
-      if (itemsListView.Items.Count > 0) {
-        for (int i = 0; i < itemsListView.Columns.Count; i++)
-          itemsListView.Columns[i].AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
+      if (itemsListView.Columns.Count == 1) {
+        if (itemsListView.Columns[0].Width != itemsListView.ClientSize.Width)
+          itemsListView.Columns[0].Width = itemsListView.ClientSize.Width;
+      } else {
+        if (itemsListView.Items.Count > 0) {
+          for (int i = 0; i < itemsListView.Columns.Count; i++)
+            itemsListView.Columns[i].AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
+        }
       }
     }
     protected virtual void RebuildImageList() {

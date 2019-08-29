@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,9 +22,9 @@
 using System;
 using System.IO;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Algorithms.ParticleSwarmOptimization;
 using HeuristicLab.Encodings.RealVectorEncoding;
-using HeuristicLab.Persistence.Default.Xml;
 using HeuristicLab.Problems.TestFunctions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -32,6 +32,7 @@ namespace HeuristicLab.Tests {
   [TestClass]
   public class PsoRastriginSampleTest {
     private const string SampleFileName = "PSO_Rastrigin";
+    private static readonly ProtoBufSerializer serializer = new ProtoBufSerializer();
 
     [TestMethod]
     [TestCategory("Samples.Create")]
@@ -39,7 +40,7 @@ namespace HeuristicLab.Tests {
     public void CreatePsoRastriginSampleTest() {
       var pso = CreatePsoRastriginSample();
       string path = Path.Combine(SamplesUtils.SamplesDirectory, SampleFileName + SamplesUtils.SampleFileExtension);
-      XmlGenerator.Serialize(pso, path);
+      serializer.Serialize(pso, path);
     }
     [TestMethod]
     [TestCategory("Samples.Execute")]
@@ -67,7 +68,7 @@ namespace HeuristicLab.Tests {
       var problem = new SingleObjectiveTestFunctionProblem();
       var provider = new SOTFInstanceProvider();
       problem.Load(provider.LoadData(provider.GetDataDescriptors().Single(x => x.Name == "Rastrigin Function")));
-      problem.SolutionCreatorParameter.Value = new UniformRandomRealVectorCreator();
+      problem.Encoding.SolutionCreator = new UniformRandomRealVectorCreator();
       #endregion
       #region Algorithm Configuration
       pso.Name = "Particle Swarm Optimization - Rastrigin";

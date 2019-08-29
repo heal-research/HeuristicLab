@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -43,11 +43,18 @@ namespace HeuristicLab.Clients.Hive {
       var ser = new ProtoBufSerializer();
       try {
         return (T)ser.Deserialize(sjob);
-      } catch (Exception) {
-        // retry with old persistence
-        using (MemoryStream memStream = new MemoryStream(sjob)) {
-          return XmlParser.Deserialize<T>(memStream);
-        }
+      } catch (PersistenceException e) {
+        if (e.InnerException is InvalidDataException) {
+          // We assume the data was not serialized with HEAL.Attic, but with the former
+          // XML-based persistence
+          return DeserializeWithXmlParser<T>(sjob);
+        } else throw;
+      }
+    }
+
+    private static T DeserializeWithXmlParser<T>(byte[] sjob) {
+      using (MemoryStream memStream = new MemoryStream(sjob)) {
+        return XmlParser.Deserialize<T>(memStream);
       }
     }
   }

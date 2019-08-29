@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,10 +21,10 @@
 
 using System.IO;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Algorithms.VariableNeighborhoodSearch;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.IntegerVectorEncoding;
-using HeuristicLab.Persistence.Default.Xml;
 using HeuristicLab.Problems.Orienteering;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -32,6 +32,7 @@ namespace HeuristicLab.Tests {
   [TestClass]
   public class VnsOpSampleTest {
     private const string SampleFileName = "VNS_OP";
+    private static readonly ProtoBufSerializer serializer = new ProtoBufSerializer();
 
     [TestMethod]
     [TestCategory("Samples.Create")]
@@ -39,7 +40,7 @@ namespace HeuristicLab.Tests {
     public void CreateVnsOpSampleTest() {
       var vns = CreateVnsOpSample();
       string path = Path.Combine(SamplesUtils.SamplesDirectory, SampleFileName + SamplesUtils.SampleFileExtension);
-      XmlGenerator.Serialize(vns, path);
+      serializer.Serialize(vns, path);
     }
     [TestMethod]
     [TestCategory("Samples.Execute")]

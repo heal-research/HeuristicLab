@@ -1,26 +1,47 @@
-﻿using System;
+﻿#region License Information
+/* HeuristicLab
+ * Copyright (C) Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ *
+ * This file is part of HeuristicLab.
+ *
+ * HeuristicLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * HeuristicLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
+ */
+#endregion
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
-
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 using HeuristicLab.Random;
 using static HeuristicLab.Problems.DataAnalysis.Symbolic.SymbolicExpressionHashExtensions;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
-  [Item("DiversityCrossover", "Simple crossover operator prioritizing internal nodes according to the given probability.")]
+  [Item("DiversityCrossover", "Simple crossover operator preventing swap between subtrees with the same hash value.")]
   [StorableType("ED35B0D9-9704-4D32-B10B-8F9870E76781")]
   public sealed class SymbolicDataAnalysisExpressionDiversityPreservingCrossover<T> : SymbolicDataAnalysisExpressionCrossover<T> where T : class, IDataAnalysisProblemData {
 
     private const string InternalCrossoverPointProbabilityParameterName = "InternalCrossoverPointProbability";
     private const string WindowingParameterName = "Windowing";
     private const string ProportionalSamplingParameterName = "ProportionalSampling";
+    private const string StrictHashingParameterName = "StrictHashing";
 
-    private static readonly Func<byte[], ulong> hashFunction = HashUtil.JSHash;
+    private static readonly Func<byte[], ulong> hashFunction = HashUtil.DJBHash;
 
     #region Parameter Properties
     public IValueLookupParameter<PercentValue> InternalCrossoverPointProbabilityParameter {
@@ -33,6 +54,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
     public IValueLookupParameter<BoolValue> ProportionalSamplingParameter {
       get { return (IValueLookupParameter<BoolValue>)Parameters[ProportionalSamplingParameterName]; }
+    }
+
+    public IFixedValueParameter<BoolValue> StrictHashingParameter {
+      get { return (IFixedValueParameter<BoolValue>)Parameters[StrictHashingParameterName]; }
     }
     #endregion
 
@@ -48,17 +73,28 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     public BoolValue ProportionalSampling {
       get { return ProportionalSamplingParameter.ActualValue; }
     }
+
+    bool StrictHashing {
+      get { return StrictHashingParameter.Value.Value; }
+    }
     #endregion
 
-    public SymbolicDataAnalysisExpressionDiversityPreservingCrossover() {
-      name = "DiversityCrossover";
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      if (!Parameters.ContainsKey(StrictHashingParameterName)) {
+        Parameters.Add(new FixedValueParameter<BoolValue>(StrictHashingParameterName, "Use strict hashing when calculating subtree hash values."));
+      }
+    }
+
+    public SymbolicDataAnalysisExpressionDiversityPreservingCrossover() : base() {
       Parameters.Add(new ValueLookupParameter<PercentValue>(InternalCrossoverPointProbabilityParameterName, "The probability to select an internal crossover point (instead of a leaf node).", new PercentValue(0.9)));
       Parameters.Add(new ValueLookupParameter<BoolValue>(WindowingParameterName, "Use proportional sampling with windowing for cutpoint selection.", new BoolValue(false)));
       Parameters.Add(new ValueLookupParameter<BoolValue>(ProportionalSamplingParameterName, "Select cutpoints proportionally using probabilities as weights instead of randomly.", new BoolValue(true)));
+      Parameters.Add(new FixedValueParameter<BoolValue>(StrictHashingParameterName, "Use strict hashing when calculating subtree hash values."));
     }
 
-    private SymbolicDataAnalysisExpressionDiversityPreservingCrossover(SymbolicDataAnalysisExpressionDiversityPreservingCrossover<T> original, Cloner cloner) : base(original, cloner) {
-    }
+    private SymbolicDataAnalysisExpressionDiversityPreservingCrossover(SymbolicDataAnalysisExpressionDiversityPreservingCrossover<T> original, Cloner cloner) : base(original, cloner) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new SymbolicDataAnalysisExpressionDiversityPreservingCrossover<T>(this, cloner);
@@ -71,11 +107,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       return tree.Root.GetSubtree(0).GetSubtree(0);
     }
 
-    public static ISymbolicExpressionTree Cross(IRandom random, ISymbolicExpressionTree parent0, ISymbolicExpressionTree parent1, double internalCrossoverPointProbability, int maxLength, int maxDepth, bool windowing, bool proportionalSampling = false) {
-      var leafCrossoverPointProbability = 1 - internalCrossoverPointProbability;
-
-      var nodes0 = ActualRoot(parent0).MakeNodes().Sort(hashFunction);
-      var nodes1 = ActualRoot(parent1).MakeNodes().Sort(hashFunction);
+    public static ISymbolicExpressionTree Cross(IRandom random, ISymbolicExpressionTree parent0, ISymbolicExpressionTree parent1, double internalCrossoverPointProbability, int maxLength, int maxDepth, bool windowing, bool proportionalSampling = false, bool strictHashing = false) {
+      var nodes0 = ActualRoot(parent0).MakeNodes(strictHashing).Sort(hashFunction);
+      var nodes1 = ActualRoot(parent1).MakeNodes(strictHashing).Sort(hashFunction);
 
       IList<HashNode<ISymbolicExpressionTreeNode>> sampled0;
       IList<HashNode<ISymbolicExpressionTreeNode>> sampled1;
@@ -125,7 +159,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       var windowing = Windowing.Value;
       var proportionalSampling = ProportionalSampling.Value;
 
-      return Cross(random, parent0, parent1, internalCrossoverPointProbability, maxLength, maxDepth, windowing, proportionalSampling);
+      return Cross(random, parent0, parent1, internalCrossoverPointProbability, maxLength, maxDepth, windowing, proportionalSampling, StrictHashing);
     }
 
     private static List<HashNode<ISymbolicExpressionTreeNode>> ChooseNodes(IRandom random, IEnumerable<HashNode<ISymbolicExpressionTreeNode>> nodes, double internalCrossoverPointProbability) {

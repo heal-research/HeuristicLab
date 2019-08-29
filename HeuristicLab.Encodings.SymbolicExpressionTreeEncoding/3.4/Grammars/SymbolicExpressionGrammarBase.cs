@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,9 +22,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   /// <summary>
@@ -37,31 +37,32 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   public abstract class SymbolicExpressionGrammarBase : NamedItem, ISymbolicExpressionGrammarBase {
 
     #region properties for separation between implementation and persistence
+    private IEnumerable<ISymbol> storableSymbols;
     [Storable(Name = "Symbols")]
     private IEnumerable<ISymbol> StorableSymbols {
       get { return symbols.Values.ToArray(); }
-      set { foreach (var s in value) symbols.Add(s.Name, s); }
+      set { storableSymbols = value; }
     }
 
+    private IEnumerable<KeyValuePair<ISymbol, Tuple<int, int>>> storableSymbolSubtreeCount;
     [Storable(Name = "SymbolSubtreeCount")]
     private IEnumerable<KeyValuePair<ISymbol, Tuple<int, int>>> StorableSymbolSubtreeCount {
       get { return symbolSubtreeCount.Select(x => new KeyValuePair<ISymbol, Tuple<int, int>>(GetSymbol(x.Key), x.Value)).ToArray(); }
-      set { foreach (var pair in value) symbolSubtreeCount.Add(pair.Key.Name, pair.Value); }
+      set { storableSymbolSubtreeCount = value; }
     }
 
+    private IEnumerable<KeyValuePair<ISymbol, IEnumerable<ISymbol>>> storableAllowedChildSymbols;
     [Storable(Name = "AllowedChildSymbols")]
     private IEnumerable<KeyValuePair<ISymbol, IEnumerable<ISymbol>>> StorableAllowedChildSymbols {
       get { return allowedChildSymbols.Select(x => new KeyValuePair<ISymbol, IEnumerable<ISymbol>>(GetSymbol(x.Key), x.Value.Select(GetSymbol).ToArray())).ToArray(); }
-      set { foreach (var pair in value) allowedChildSymbols.Add(pair.Key.Name, pair.Value.Select(y => y.Name).ToList()); }
+      set { storableAllowedChildSymbols = value; }
     }
 
+    private IEnumerable<KeyValuePair<Tuple<ISymbol, int>, IEnumerable<ISymbol>>> storableAllowedChildSymbolsPerIndex;
     [Storable(Name = "AllowedChildSymbolsPerIndex")]
     private IEnumerable<KeyValuePair<Tuple<ISymbol, int>, IEnumerable<ISymbol>>> StorableAllowedChildSymbolsPerIndex {
       get { return allowedChildSymbolsPerIndex.Select(x => new KeyValuePair<Tuple<ISymbol, int>, IEnumerable<ISymbol>>(Tuple.Create(GetSymbol(x.Key.Item1), x.Key.Item2), x.Value.Select(GetSymbol).ToArray())).ToArray(); }
-      set {
-        foreach (var pair in value)
-          allowedChildSymbolsPerIndex.Add(Tuple.Create(pair.Key.Item1.Name, pair.Key.Item2), pair.Value.Select(y => y.Name).ToList());
-      }
+      set { storableAllowedChildSymbolsPerIndex = value; }
     }
     #endregion
 
@@ -87,6 +88,20 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       allowedChildSymbolsPerIndex = new Dictionary<Tuple<string, int>, List<string>>();
 
       suppressEvents = false;
+    }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      foreach (var s in storableSymbols) symbols.Add(s.Name, s);
+      foreach (var pair in storableSymbolSubtreeCount) symbolSubtreeCount.Add(pair.Key.Name, pair.Value);
+      foreach (var pair in storableAllowedChildSymbols) allowedChildSymbols.Add(pair.Key.Name, pair.Value.Select(y => y.Name).ToList());
+      foreach (var pair in storableAllowedChildSymbolsPerIndex)
+        allowedChildSymbolsPerIndex.Add(Tuple.Create(pair.Key.Item1.Name, pair.Key.Item2), pair.Value.Select(y => y.Name).ToList());
+
+      storableSymbols = null;
+      storableSymbolSubtreeCount = null;
+      storableAllowedChildSymbols = null;
+      storableAllowedChildSymbolsPerIndex = null;
     }
 
     protected SymbolicExpressionGrammarBase(SymbolicExpressionGrammarBase original, Cloner cloner)

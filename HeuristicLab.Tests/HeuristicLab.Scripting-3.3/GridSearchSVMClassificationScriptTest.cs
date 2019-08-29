@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,7 +21,7 @@
 
 using System.IO;
 using System.Linq;
-using HeuristicLab.Persistence.Default.Xml;
+using HEAL.Attic;
 using HeuristicLab.Problems.DataAnalysis;
 using HeuristicLab.Problems.Instances.DataAnalysis;
 using HeuristicLab.Scripting;
@@ -37,13 +37,15 @@ namespace HeuristicLab.Tests {
     private const string ProblemInstanceDataVaribleName = "problem";
     private const string BestSolutionVariableName = "bestSolution";
 
+    private static readonly ProtoBufSerializer serializer = new ProtoBufSerializer();
+
     [TestMethod]
     [TestCategory("Scripts.Create")]
     [TestProperty("Time", "short")]
     public void CreateGridSearchSVMClassificationScriptTest() {
       var script = CreateGridSearchSVMClassificationScript();
       string path = Path.Combine(ScriptingUtils.ScriptsDirectory, ScriptFileName + ScriptingUtils.ScriptFileExtension);
-      XmlGenerator.Serialize(script, path);
+      serializer.Serialize(script, path);
     }
 
     [TestMethod]

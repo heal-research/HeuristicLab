@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -410,8 +410,7 @@ namespace HeuristicLab.DataPreprocessing.Views {
         bool[] filteredRows = GetFilterResult(filters, true);
         var foundIndices = new List<int>();
         for (int idx = 0; idx < filteredRows.Length; ++idx) {
-          var notFilteredThusFound = !filteredRows[idx];
-          if (notFilteredThusFound) {
+          if (filteredRows[idx]) {
             foundIndices.Add(idx);
           }
         }

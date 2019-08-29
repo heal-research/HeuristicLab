@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -580,7 +580,7 @@ namespace HeuristicLab.Services.Access {
           Membership.UpdateUser(membershipUser);
         }
       } else {
-        MembershipUser membershipUser = Membership.CreateUser(aspUser.UserName, aspUser.UserName, aspMembership.Email);
+        MembershipUser membershipUser = Membership.CreateUser(aspUser.UserName, Membership.GeneratePassword(32, 8), aspMembership.Email);
         membershipUser.IsApproved = aspMembership.IsApproved;
         membershipUser.Comment = aspMembership.Comment;
         Membership.UpdateUser(membershipUser);

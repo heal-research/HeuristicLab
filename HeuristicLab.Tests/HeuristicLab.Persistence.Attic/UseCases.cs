@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -275,7 +275,6 @@ namespace HeuristicLab.Persistence.Attic.Tests {
 
       for (int i = 0; i < REPS; i++) {
         var original = XmlParser.Deserialize(fileName);
-        byte[] buf;
         System.GC.Collect();
         var collection0 = System.GC.CollectionCount(0);
         var collection1 = System.GC.CollectionCount(1);
@@ -335,7 +334,7 @@ namespace HeuristicLab.Persistence.Attic.Tests {
       var path = SamplesUtils.SamplesDirectory;
       var serializer = new ProtoBufSerializer();
       foreach (var fileName in Directory.EnumerateFiles(path, "*.hl")) {
-        var original = XmlParser.Deserialize(fileName);
+        var original = serializer.Deserialize(fileName);
         var ok = true;
         foreach (var t in original.GetObjectGraphObjects().Select(o => o.GetType())) {
           if (
@@ -370,7 +369,7 @@ namespace HeuristicLab.Persistence.Attic.Tests {
       var path = SamplesUtils.SamplesDirectory;
       var serializer = new ProtoBufSerializer();
       foreach (var fileName in Directory.EnumerateFiles(path, "*.hl")) {
-        var original = XmlParser.Deserialize(fileName);
+        var original = serializer.Deserialize(fileName);
 
         var exec = original as IExecutable;
         if (exec != null) {

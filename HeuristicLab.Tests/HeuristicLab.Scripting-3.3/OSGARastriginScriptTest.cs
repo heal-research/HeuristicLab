@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -20,8 +20,8 @@
 #endregion
 
 using System.IO;
+using HEAL.Attic;
 using HeuristicLab.Data;
-using HeuristicLab.Persistence.Default.Xml;
 using HeuristicLab.Scripting;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -37,13 +37,15 @@ namespace HeuristicLab.Tests {
     private const string SeedVariableName = "seed";
     private const string BestQualityVariableName = "bestFitness";
 
+    private static readonly ProtoBufSerializer serializer = new ProtoBufSerializer();
+
     [TestMethod]
     [TestCategory("Scripts.Create")]
     [TestProperty("Time", "short")]
     public void CreateOSGARastriginScriptTest() {
       var script = CreateOSGARastriginScript();
       string path = Path.Combine(ScriptingUtils.ScriptsDirectory, ScriptFileName + ScriptingUtils.ScriptFileExtension);
-      XmlGenerator.Serialize(script, path);
+      serializer.Serialize(script, path);
     }
 
     [TestMethod]

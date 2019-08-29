@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,8 +21,8 @@
 
 using System.IO;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Algorithms.GeneticAlgorithm;
-using HeuristicLab.Persistence.Default.Xml;
 using HeuristicLab.Problems.Instances;
 using HeuristicLab.Problems.Instances.VehicleRouting;
 using HeuristicLab.Problems.VehicleRouting;
@@ -37,13 +37,15 @@ namespace HeuristicLab.Tests {
   public class GAVrpSampleTest {
     private const string SampleFileName = "GA_VRP";
 
+    private static readonly ProtoBufSerializer serializer = new ProtoBufSerializer();
+
     [TestMethod]
     [TestCategory("Samples.Create")]
     [TestProperty("Time", "medium")]
     public void CreateGaVrpSampleTest() {
       var ga = CreateGaVrpSample();
       string path = Path.Combine(SamplesUtils.SamplesDirectory, SampleFileName + SamplesUtils.SampleFileExtension);
-      XmlGenerator.Serialize(ga, path);
+      serializer.Serialize(ga, path);
     }
 
     [TestMethod]

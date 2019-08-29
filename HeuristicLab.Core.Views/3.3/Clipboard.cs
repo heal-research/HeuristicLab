@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,14 +23,12 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.IO.Compression;
 using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
 using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.MainForm;
-using HeuristicLab.Persistence.Default.Xml;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Core.Views {
@@ -156,15 +154,15 @@ namespace HeuristicLab.Core.Views {
       string[] items = Directory.GetFiles(ItemsPath);
       foreach (string filename in items) {
         try {
-          var ser = new ProtoBufSerializer();
-          T item = (T)ser.Deserialize(filename);
+          T item = null;
+          if (HeuristicLab.Persistence.Default.Xml.XmlParser.CanOpen(filename)) {
+            item = HeuristicLab.Persistence.Default.Xml.XmlParser.Deserialize<T>(filename);
+          } else {
+            item = (T)new ProtoBufSerializer().Deserialize(filename);
+          }
           OnItemLoaded(item, progressBar.Maximum / items.Length);
         } catch (Exception) {
-          try {
-            // try old format if protobuf deserialization fails
-            T item = XmlParser.Deserialize<T>(filename);
-            OnItemLoaded(item, progressBar.Maximum / items.Length);
-          } catch (Exception) { }
+          // ignore if loading a clipboad item fails.
         }
       }
       OnAllItemsLoaded();

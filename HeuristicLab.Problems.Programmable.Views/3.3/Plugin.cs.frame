@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,7 +22,7 @@
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Problems.Programmable.Views {
-  [Plugin("HeuristicLab.Problems.Programmable.Views", "Views for programmable problem for defining custom representation and evaluation function.", "3.3.15.$WCREV$")]
+  [Plugin("HeuristicLab.Problems.Programmable.Views", "Views for programmable problem for defining custom representation and evaluation function.", "3.3.16.$WCREV$")]
   [PluginFile("HeuristicLab.Problems.Programmable.Views-3.3.dll", PluginFileType.Assembly)]
   [PluginDependency("HeuristicLab.Common", "3.3")]
   [PluginDependency("HeuristicLab.CodeEditor", "3.4")]

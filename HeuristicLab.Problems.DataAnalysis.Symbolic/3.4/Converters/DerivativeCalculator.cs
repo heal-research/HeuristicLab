@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -178,6 +178,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         var fxp = Derive(branch.GetSubtree(0), variableName);
         var u = (ISymbolicExpressionTreeNode)branch.GetSubtree(0).Clone();
         return Div(fxp, Square(Cosine(u)));
+      }
+      if (branch.Symbol is HyperbolicTangent) {
+        // tanh(f(x))' = f(x)'sech²(f(x)) = f(x)'(1 - tanh²(f(x)))
+        var fxp = Derive(branch.GetSubtree(0), variableName);
+        var tanh = (ISymbolicExpressionTreeNode)branch.Clone();
+        return Product(fxp, Subtract(CreateConstant(1.0), Square(tanh)));
       }
       throw new NotSupportedException(string.Format("Symbol {0} is not supported.", branch.Symbol));
     }

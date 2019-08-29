@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,7 +25,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   /// <summary>
   /// Plugin class for HeuristicLab.Algorithms.DataAnalysis.Glmnet plugin which wraps the glmnet implementation by Jerome Friedman, Trevor Hastie, Noah Simon, Rob Tibshirani, see https://cran.r-project.org/web/packages/glmnet/index.html
   /// </summary>
-  [Plugin("HeuristicLab.Algorithms.DataAnalysis.Glmnet", "Plugin class for HeuristicLab.Algorithms.DataAnalysis.Glmnet plugin which wraps the glmnet implementation by Jerome Friedman, Trevor Hastie, Noah Simon, Rob Tibshirani, see https://cran.r-project.org/web/packages/glmnet/index.html", "3.4.1.$WCREV$")]
+  [Plugin("HeuristicLab.Algorithms.DataAnalysis.Glmnet", "Plugin class for HeuristicLab.Algorithms.DataAnalysis.Glmnet plugin which wraps the glmnet implementation by Jerome Friedman, Trevor Hastie, Noah Simon, Rob Tibshirani, see https://cran.r-project.org/web/packages/glmnet/index.html", "3.4.2.$WCREV$")]
   [PluginFile("HeuristicLab.Algorithms.DataAnalysis.Glmnet-3.4.dll", PluginFileType.Assembly)]
   [PluginFile("glmnet-x86.dll", PluginFileType.NativeDll)]
   [PluginFile("glmnet-x64.dll", PluginFileType.NativeDll)]

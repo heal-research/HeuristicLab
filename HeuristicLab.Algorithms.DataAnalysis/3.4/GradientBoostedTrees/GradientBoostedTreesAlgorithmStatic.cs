@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  * and the BEACON Center for the Study of Evolution in Action.
  * 
  * This file is part of HeuristicLab.
@@ -100,13 +100,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       }
 
       public IRegressionModel GetModel() {
-#pragma warning disable 618
-        var model = new GradientBoostedTreesModel(models, weights);
-#pragma warning restore 618
-        // we don't know the number of iterations here but the number of weights is equal 
-        // to the number of iterations + 1 (for the constant model)
-        // wrap the actual model in a surrogate that enables persistence and lazy recalculation of the model if necessary
-        return new GradientBoostedTreesModelSurrogate(problemData, randSeed, lossFunction, weights.Count - 1, maxSize, r, m, nu, model);
+        return new GradientBoostedTreesModel(models, weights);
       }
       public IEnumerable<KeyValuePair<string, double>> GetVariableRelevance() {
         return treeBuilder.GetVariableRelevance();

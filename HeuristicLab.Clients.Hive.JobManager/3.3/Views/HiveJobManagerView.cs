@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -142,7 +142,11 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
 
     protected override void OnClosed(FormClosedEventArgs e) {
       if (Content != null && Content.Jobs != null) {
-        Content.ClearHiveClient();
+        // clear hive client only if it is not displayed by any other content view (i.e. job manager)
+        var contentViews = MainFormManager.MainForm.Views.OfType<IContentView>();
+        if (contentViews.All(x => x.Content != Content || x == this))
+          Content.ClearHiveClient();
+
         Content = null;
       }
       base.OnClosed(e);

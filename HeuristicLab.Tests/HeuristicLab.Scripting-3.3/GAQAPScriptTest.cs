@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,7 +21,7 @@
 
 using System.IO;
 using System.Linq;
-using HeuristicLab.Persistence.Default.Xml;
+using HEAL.Attic;
 using HeuristicLab.Problems.Instances.QAPLIB;
 using HeuristicLab.Problems.QuadraticAssignment;
 using HeuristicLab.Scripting;
@@ -36,13 +36,15 @@ namespace HeuristicLab.Tests {
     private const string ProblemInstanceName = "dre56";
     private const string BestQualityVariableName = "bestQuality";
 
+    private static readonly ProtoBufSerializer serializer = new ProtoBufSerializer();
+
     [TestMethod]
     [TestCategory("Scripts.Create")]
     [TestProperty("Time", "short")]
     public void CreateGAQAPScriptScriptTest() {
       var script = CreateGAQAPScript();
       string path = Path.Combine(ScriptingUtils.ScriptsDirectory, ScriptFileName + ScriptingUtils.ScriptFileExtension);
-      XmlGenerator.Serialize(script, path);
+      serializer.Serialize(script, path);
     }
 
     [TestMethod]

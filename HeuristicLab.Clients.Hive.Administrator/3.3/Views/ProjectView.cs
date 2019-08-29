@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -94,7 +94,6 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
         nameTextBox.Text = Content.Name;
         descriptionTextBox.Text = Content.Description;
 
-        ownerComboBox.SelectedIndexChanged -= ownerComboBox_SelectedIndexChanged;
         if (AccessClient.Instance.UsersAndGroups != null) {
           var users = AccessClient.Instance.UsersAndGroups.OfType<LightweightUser>();
           if (!Content.ParentProjectId.HasValue) users = users.Where(x => x.Roles.Select(y => y.Name).Contains(HiveRoles.Administrator));
@@ -102,7 +101,6 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
           ownerComboBox.DataSource = users.OrderBy(x => x.UserName).ToList();
           ownerComboBox.SelectedItem = users.FirstOrDefault(x => x.Id == projectOwnerId);
         }
-        ownerComboBox.SelectedIndexChanged += ownerComboBox_SelectedIndexChanged;
 
         createdTextBox.Text = Content.DateCreated.ToString("ddd, dd.MM.yyyy, HH:mm:ss");
         startDateTimePicker.Value = Content.StartDate;
@@ -174,7 +172,9 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
           ownerComboBox.SelectedIndexChanged -= ownerComboBox_SelectedIndexChanged;
           var users = AccessClient.Instance.UsersAndGroups.OfType<LightweightUser>();
           if (Content != null && !Content.ParentProjectId.HasValue) users = users.Where(x => x.Roles.Select(y => y.Name).Contains(HiveRoles.Administrator));
+          var projectOwnerId = Content != null ? Content.OwnerUserId : (Guid?)null;
           ownerComboBox.DataSource = users.OrderBy(x => x.UserName).ToList();
+          ownerComboBox.SelectedItem = projectOwnerId.HasValue ? users.FirstOrDefault(x => x.Id == projectOwnerId) : null;
           ownerComboBox.SelectedIndexChanged += ownerComboBox_SelectedIndexChanged;
         });
     }

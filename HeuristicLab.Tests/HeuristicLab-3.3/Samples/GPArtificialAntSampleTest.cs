@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,9 +21,9 @@
 
 using System.IO;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Algorithms.GeneticAlgorithm;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Persistence.Default.Xml;
 using HeuristicLab.Problems.GeneticProgramming.ArtificialAnt;
 using HeuristicLab.Selection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -33,13 +33,15 @@ namespace HeuristicLab.Tests {
   public class GPArtificialAntSampleTest {
     private const string SampleFileName = "SGP_SantaFe";
 
+    private static readonly ProtoBufSerializer serializer = new ProtoBufSerializer();
+
     [TestMethod]
     [TestCategory("Samples.Create")]
     [TestProperty("Time", "medium")]
     public void CreateGpArtificialAntSampleTest() {
       var ga = CreateGpArtificialAntSample();
       string path = Path.Combine(SamplesUtils.SamplesDirectory, SampleFileName + SamplesUtils.SampleFileExtension);
-      XmlGenerator.Serialize(ga, path);
+      serializer.Serialize(ga, path);
     }
 
     [TestMethod]
@@ -65,7 +67,7 @@ namespace HeuristicLab.Tests {
       antProblem.Encoding.TreeLength = 100;
       antProblem.Encoding.FunctionDefinitions = 3;
       antProblem.Encoding.FunctionArguments = 3;
-      antProblem.MaxTimeSteps.Value = 600;
+      antProblem.MaxTimeSteps = 600;
       #endregion
       #region Algorithm Configuration
       ga.Name = "Genetic Programming - Artificial Ant";

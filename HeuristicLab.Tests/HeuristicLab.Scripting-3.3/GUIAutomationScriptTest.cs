@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -20,7 +20,7 @@
 #endregion
 
 using System.IO;
-using HeuristicLab.Persistence.Default.Xml;
+using HEAL.Attic;
 using HeuristicLab.Scripting;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -31,13 +31,15 @@ namespace HeuristicLab.Tests {
     private const string ScriptItemName = "GUI Automation Script";
     private const string ScriptItemDescription = "A script that runs a genetic algorithm on a traveling salesman problem with 5 different settings for population sizes and with 10 repetitions, then opens a bubble chart of the results and chooses the appropriate values for x and y axis automatically";
 
+    private static readonly ProtoBufSerializer serializer = new ProtoBufSerializer();
+
     [TestMethod]
     [TestCategory("Scripts.Create")]
     [TestProperty("Time", "short")]
     public void CreateGUIAutomationScriptTest() {
       var script = CreateGUIAutomationScript();
       string path = Path.Combine(ScriptingUtils.ScriptsDirectory, ScriptFileName + ScriptingUtils.ScriptFileExtension);
-      XmlGenerator.Serialize(script, path);
+      serializer.Serialize(script, path);
     }
 
     private CSharpScript CreateGUIAutomationScript() {

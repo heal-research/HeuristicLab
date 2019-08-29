@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,10 +22,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HEAL.Attic;
 using HeuristicLab.Problems.DataAnalysis;
 using HeuristicLab.Problems.DataAnalysis.Symbolic;
 
@@ -33,7 +33,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   /// <summary>
   /// Represents a random forest model for regression and classification
   /// </summary>
-  [StorableType("A4F688CD-1F42-4103-8449-7DE52AEF6C69")]
+  [Obsolete("This class only exists for backwards compatibility reasons for stored models with the XML Persistence. Use RFModelSurrogate or RFModelFull instead.")]
+  [StorableType("9AA4CCC2-CD75-4471-8DF6-949E5B783642")]
   [Item("RandomForestModel", "Represents a random forest for regression and classification.")]
   public sealed class RandomForestModel : ClassificationModel, IRandomForestModel {
     // not persisted
@@ -138,7 +139,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     public IEnumerable<double> GetEstimatedValues(IDataset dataset, IEnumerable<int> rows) {
       double[,] inputData = dataset.ToArray(AllowedInputVariables, rows);
-      AssertInputMatrix(inputData);
+      RandomForestUtil.AssertInputMatrix(inputData);
 
       int n = inputData.GetLength(0);
       int columns = inputData.GetLength(1);
@@ -156,7 +157,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     public IEnumerable<double> GetEstimatedVariances(IDataset dataset, IEnumerable<int> rows) {
       double[,] inputData = dataset.ToArray(AllowedInputVariables, rows);
-      AssertInputMatrix(inputData);
+      RandomForestUtil.AssertInputMatrix(inputData);
 
       int n = inputData.GetLength(0);
       int columns = inputData.GetLength(1);
@@ -174,7 +175,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     public override IEnumerable<double> GetEstimatedClassValues(IDataset dataset, IEnumerable<int> rows) {
       double[,] inputData = dataset.ToArray(AllowedInputVariables, rows);
-      AssertInputMatrix(inputData);
+      RandomForestUtil.AssertInputMatrix(inputData);
 
       int n = inputData.GetLength(0);
       int columns = inputData.GetLength(1);
@@ -314,7 +315,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       double[,] inputMatrix = problemData.Dataset.ToArray(variables, trainingIndices);
 
       alglib.dfreport rep;
-      var dForest = CreateRandomForestModel(seed, inputMatrix, nTrees, r, m, 1, out rep);
+      var dForest = RandomForestUtil.CreateRandomForestModel(seed, inputMatrix, nTrees, r, m, 1, out rep);
 
       rmsError = rep.rmserror;
       outOfBagRmsError = rep.oobrmserror;
@@ -352,7 +353,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       }
 
       alglib.dfreport rep;
-      var dForest = CreateRandomForestModel(seed, inputMatrix, nTrees, r, m, nClasses, out rep);
+      var dForest = RandomForestUtil.CreateRandomForestModel(seed, inputMatrix, nTrees, r, m, nClasses, out rep);
 
       rmsError = rep.rmserror;
       outOfBagRmsError = rep.oobrmserror;
@@ -360,34 +361,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       outOfBagRelClassificationError = rep.oobrelclserror;
 
       return new RandomForestModel(problemData.TargetVariable, dForest, seed, problemData, nTrees, r, m, classValues);
-    }
-
-    private static alglib.decisionforest CreateRandomForestModel(int seed, double[,] inputMatrix, int nTrees, double r, double m, int nClasses, out alglib.dfreport rep) {
-      AssertParameters(r, m);
-      AssertInputMatrix(inputMatrix);
-
-      int info = 0;
-      alglib.math.rndobject = new System.Random(seed);
-      var dForest = new alglib.decisionforest();
-      rep = new alglib.dfreport();
-      int nRows = inputMatrix.GetLength(0);
-      int nColumns = inputMatrix.GetLength(1);
-      int sampleSize = Math.Max((int)Math.Round(r * nRows), 1);
-      int nFeatures = Math.Max((int)Math.Round(m * (nColumns - 1)), 1);
-
-      alglib.dforest.dfbuildinternal(inputMatrix, nRows, nColumns - 1, nClasses, nTrees, sampleSize, nFeatures, alglib.dforest.dfusestrongsplits + alglib.dforest.dfuseevs, ref info, dForest.innerobj, rep.innerobj);
-      if (info != 1) throw new ArgumentException("Error in calculation of random forest model");
-      return dForest;
-    }
-
-    private static void AssertParameters(double r, double m) {
-      if (r <= 0 || r > 1) throw new ArgumentException("The R parameter for random forest modeling must be between 0 and 1.");
-      if (m <= 0 || m > 1) throw new ArgumentException("The M parameter for random forest modeling must be between 0 and 1.");
-    }
-
-    private static void AssertInputMatrix(double[,] inputMatrix) {
-      if (inputMatrix.ContainsNanOrInfinity())
-        throw new NotSupportedException("Random forest modeling does not support NaN or infinity values in the input dataset.");
     }
 
     #region persistence for backwards compatibility

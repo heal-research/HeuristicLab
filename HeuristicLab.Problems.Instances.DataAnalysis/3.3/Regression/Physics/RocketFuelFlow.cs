@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using HeuristicLab.Common;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
@@ -35,16 +36,16 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
           "modeling generalized separable systems\", Expert Systems with Applications, Volume 109, 2018, " +
           "Pages 25-34 https://doi.org/10.1016/j.eswa.2018.05.021. " + Environment.NewLine +
           "Function: m_dot = p0 A / sqrt(T0) * sqrt(γ/R (2/(γ+1))^((γ+1) / (γ-1)))" + Environment.NewLine +
-          "with p0 ∈ [4e5 Pa, 6e5 Pa]," + Environment.NewLine +
-          "A ∈ [0.5m², 1.5m²]," + Environment.NewLine +
-          "T0 ∈ [250°K, 260°K]," + Environment.NewLine +
-          "γ=1.4 and R=287 J/(kg*K)" + Environment.NewLine +
-          "The factor sqrt(γ/R (2/(γ+1))^((γ+1) / (γ-1))) is constant as γ and R are constants.";
+          "with total pressure p0 ∈ [4e5 Pa, 6e5 Pa]," + Environment.NewLine +
+          "cross-sectional area of the nozzle A ∈ [0.5m², 1.5m²]," + Environment.NewLine +
+          "total temperature T0 ∈ [250°K, 260°K]," + Environment.NewLine +
+          "specific heat capacity γ = 1.4 and gas constant R = 287 J/(kg*K)" + Environment.NewLine +
+          "The factor sqrt(γ/R (2/(γ+1))^((γ+1) / (γ-1))) is constant because γ and R are constants.";
       }
     }
 
     protected override string TargetVariable { get { return "m_dot"; } }
-    protected override string[] VariableNames { get { return new string[] { "p0", "A", "T0", "m_dot" }; } }
+    protected override string[] VariableNames { get { return new string[] { "p0", "A", "T0", "m_dot", "m_dot_noise" }; } }
     protected override string[] AllowedInputVariables { get { return new string[] { "p0", "A", "T0" }; } }
     protected override int TrainingPartitionStart { get { return 0; } }
     protected override int TrainingPartitionEnd { get { return 100; } }
@@ -67,11 +68,13 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
       var A = ValueGenerator.GenerateUniformDistributedValues(rand.Next(), TestPartitionEnd, 0.5, 1.5).ToList();
       var T0 = ValueGenerator.GenerateUniformDistributedValues(rand.Next(), TestPartitionEnd, 250.0, 260.0).ToList();
 
-      List<double> m_dot = new List<double>();
+      var m_dot = new List<double>();
+      var m_dot_noise = new List<double>();
       data.Add(p0);
       data.Add(A);
       data.Add(T0);
       data.Add(m_dot);
+      data.Add(m_dot_noise);
       double R = 287.0;
       double γ = 1.4;
       var c = Math.Sqrt(γ / R * Math.Pow(2 / (γ + 1), (γ + 1) / (γ - 1)));
@@ -80,6 +83,8 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
         m_dot.Add(m_dot_i);
       }
 
+      var sigma_noise = 0.05 * m_dot.StandardDeviationPop();
+      m_dot_noise.AddRange(m_dot.Select(md => md + NormalDistributedRandom.NextDouble(rand, 0, sigma_noise)));
       return data;
     }
   }

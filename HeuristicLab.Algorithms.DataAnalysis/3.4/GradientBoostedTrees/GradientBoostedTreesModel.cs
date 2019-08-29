@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  * and the BEACON Center for the Study of Evolution in Action.
  * 
  * This file is part of HeuristicLab.
@@ -33,29 +33,22 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   [Item("Gradient boosted trees model", "")]
   // this is essentially a collection of weighted regression models
   public sealed class GradientBoostedTreesModel : RegressionModel, IGradientBoostedTreesModel {
-    // BackwardsCompatibility3.4 for allowing deserialization & serialization of old models
-    #region Backwards compatible code, remove with 3.5
-    private bool isCompatibilityLoaded = false; // only set to true if the model is deserialized from the old format, needed to make sure that information is serialized again if it was loaded from the old format
-
     [Storable(Name = "models")]
     private IList<IRegressionModel> __persistedModels {
       set {
-        this.isCompatibilityLoaded = true;
         this.models.Clear();
         foreach (var m in value) this.models.Add(m);
       }
-      get { if (this.isCompatibilityLoaded) return models; else return null; }
+      get { return models; }
     }
     [Storable(Name = "weights")]
     private IList<double> __persistedWeights {
       set {
-        this.isCompatibilityLoaded = true;
         this.weights.Clear();
         foreach (var w in value) this.weights.Add(w);
       }
-      get { if (this.isCompatibilityLoaded) return weights; else return null; }
+      get { return weights; }
     }
-    #endregion
 
     public override IEnumerable<string> VariablesUsedForPrediction {
       get { return models.SelectMany(x => x.VariablesUsedForPrediction).Distinct().OrderBy(x => x); }
@@ -76,9 +69,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       : base(original, cloner) {
       this.weights = new List<double>(original.weights);
       this.models = new List<IRegressionModel>(original.models.Select(m => cloner.Clone(m)));
-      this.isCompatibilityLoaded = original.isCompatibilityLoaded;
     }
-    [Obsolete("The constructor of GBTModel should not be used directly anymore (use GBTModelSurrogate instead)")]
+
     internal GradientBoostedTreesModel(IEnumerable<IRegressionModel> models, IEnumerable<double> weights)
       : base(string.Empty, "Gradient boosted tree model", string.Empty) {
       this.models = new List<IRegressionModel>(models);

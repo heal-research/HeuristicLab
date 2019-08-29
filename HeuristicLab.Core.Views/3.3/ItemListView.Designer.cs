@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -154,6 +154,11 @@ namespace HeuristicLab.Core.Views {
       this.itemsListView.DragOver += new System.Windows.Forms.DragEventHandler(this.itemsListView_DragOver);
       this.itemsListView.DoubleClick += new System.EventHandler(this.itemsListView_DoubleClick);
       this.itemsListView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.itemsListView_KeyDown);
+      this.itemsListView.Layout += new System.Windows.Forms.LayoutEventHandler(this.itemsListView_Layout);
+      // 
+      // listViewColumnHeader
+      // 
+      this.listViewColumnHeader.Width = 190;
       // 
       // imageList
       // 

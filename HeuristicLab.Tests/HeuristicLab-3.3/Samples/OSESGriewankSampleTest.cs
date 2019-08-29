@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -20,10 +20,10 @@
 #endregion
 
 using System.IO;
+using HEAL.Attic;
 using HeuristicLab.Algorithms.OffspringSelectionEvolutionStrategy;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.RealVectorEncoding;
-using HeuristicLab.Persistence.Default.Xml;
 using HeuristicLab.Problems.TestFunctions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -31,6 +31,7 @@ namespace HeuristicLab.Tests {
   [TestClass]
   public class OSESGriewankSampleTest {
     private const string SampleFileName = "OSES_Griewank";
+    private static readonly ProtoBufSerializer serializer = new ProtoBufSerializer();
 
     [TestMethod]
     [TestCategory("Samples.Create")]
@@ -38,7 +39,7 @@ namespace HeuristicLab.Tests {
     public void CreateOSESGriewankSampleTest() {
       var es = CreateOSESGriewankSample();
       string path = Path.Combine(SamplesUtils.SamplesDirectory, SampleFileName + SamplesUtils.SampleFileExtension);
-      XmlGenerator.Serialize(es, path);
+      serializer.Serialize(es, path);
     }
 
     [TestMethod]

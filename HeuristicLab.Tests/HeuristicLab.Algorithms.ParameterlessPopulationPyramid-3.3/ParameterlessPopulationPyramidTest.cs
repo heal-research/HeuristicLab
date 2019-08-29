@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -22,6 +22,7 @@
 using System;
 using System.Threading;
 using HeuristicLab.Common;
+using HeuristicLab.Encodings.BinaryVectorEncoding;
 using HeuristicLab.Problems.Binary;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -30,7 +31,7 @@ namespace ParameterlessPopulationPyramid.Test {
   public class ParameterlessPopulationPyramidTest {
 
     // Utility function that sets up and executes the run, then asserts the results
-    private PrivateObject DoRun(BinaryProblem problem, int maximumEvaluations, int seed, double bestQuality, int foundOn) {
+    private PrivateObject DoRun(BinaryVectorProblem problem, int maximumEvaluations, int seed, double bestQuality, int foundOn) {
       var solver = new HeuristicLab.Algorithms.ParameterlessPopulationPyramid.ParameterlessPopulationPyramid();
       solver.Problem = problem;
       solver.MaximumEvaluations = maximumEvaluations;
