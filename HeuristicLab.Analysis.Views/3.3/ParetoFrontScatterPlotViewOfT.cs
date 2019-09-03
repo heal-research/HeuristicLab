@@ -20,29 +20,29 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
-using HeuristicLab.Analysis;
 using HeuristicLab.Common;
+using HeuristicLab.Core;
 using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
-using HeuristicLab.Problems.TestFunctions.MultiObjective;
 
-namespace HeuristicLab.Problems.TestFunctions.Views {
+namespace HeuristicLab.Analysis.Views {
   [View("Scatter Plot")]
-  [Content(typeof(ParetoFrontScatterPlot))]
-  public partial class ParetoFrontScatterPlotView : ItemView {
+  [Content(typeof(ParetoFrontScatterPlot<>))]
+  public partial class ParetoFrontScatterPlotView<T> : ItemView where T : class, IItem {
 
     private readonly ScatterPlot scatterPlot;
-    private readonly ScatterPlotDataRow qualitiesRow;
-    private readonly ScatterPlotDataRow paretoFrontRow;
+    private LinkedList<ScatterPlotDataRow> frontsRow;
+    private ScatterPlotDataRow bestKnownFrontRow;
 
     private int oldObjectives = -1;
-    private int oldProblemSize = -1;
 
     private bool suppressEvents;
 
-    public new ParetoFrontScatterPlot Content {
-      get { return (ParetoFrontScatterPlot)base.Content; }
+    public new ParetoFrontScatterPlot<T> Content {
+      get { return (ParetoFrontScatterPlot<T>)base.Content; }
       set { base.Content = value; }
     }
 
@@ -50,22 +50,6 @@ namespace HeuristicLab.Problems.TestFunctions.Views {
       InitializeComponent();
 
       scatterPlot = new ScatterPlot();
-
-      qualitiesRow = new ScatterPlotDataRow("Qualities", string.Empty, Enumerable.Empty<Point2D<double>>()) {
-        VisualProperties = {
-          PointSize = 8 ,
-          PointStyle = ScatterPlotDataRowVisualProperties.ScatterPlotDataRowPointStyle.Circle
-        }
-      };
-      scatterPlot.Rows.Add(qualitiesRow);
-
-      paretoFrontRow = new ScatterPlotDataRow("Best Known Pareto Front", string.Empty, Enumerable.Empty<Point2D<double>>()) {
-        VisualProperties = {
-            PointSize = 4,
-            PointStyle = ScatterPlotDataRowVisualProperties.ScatterPlotDataRowPointStyle.Square
-          }
-      };
-      scatterPlot.Rows.Add(paretoFrontRow);
     }
 
     protected override void OnContentChanged() {
@@ -82,13 +66,12 @@ namespace HeuristicLab.Problems.TestFunctions.Views {
 
       scatterPlotView.Content = scatterPlot;
 
-      if (oldObjectives != Content.Objectives || oldProblemSize != Content.ProblemSize)
+      if (oldObjectives != Content.Objectives)
         UpdateAxisComboBoxes();
 
       UpdateChartData();
 
       oldObjectives = Content.Objectives;
-      oldProblemSize = Content.ProblemSize;
     }
 
     private void UpdateChartData() {
@@ -97,13 +80,58 @@ namespace HeuristicLab.Problems.TestFunctions.Views {
         return;
       }
 
-      int xDimGlobal = xAxisComboBox.SelectedIndex;
-      int yDimGlobal = yAxisComboBox.SelectedIndex;
+      int xDimIndex = xAxisComboBox.SelectedIndex;
+      int yDimIndex = yAxisComboBox.SelectedIndex;
 
-      qualitiesRow.Points.Replace(CreatePoints(Content.Qualities, Content.Solutions, xDimGlobal, yDimGlobal));
+      if (Content.BestKnownFront != null && Content.BestKnownFront.Count > 0) {
+        if (bestKnownFrontRow == null) {
+          bestKnownFrontRow = new ScatterPlotDataRow("Best Known Pareto Front", string.Empty, Enumerable.Empty<Point2D<double>>()) {
+            VisualProperties = {
+            PointSize = 4,
+            PointStyle = ScatterPlotDataRowVisualProperties.ScatterPlotDataRowPointStyle.Square,
+            Color = Color.Gray
+          }
+          };
+          scatterPlot.Rows.Add(bestKnownFrontRow);
+        }
+        bestKnownFrontRow.Points.Replace(CreatePoints(Content.BestKnownFront, null, xDimIndex, yDimIndex));
+      } else if (bestKnownFrontRow != null) {
+        scatterPlot.Rows.Remove(bestKnownFrontRow);
+        bestKnownFrontRow = null;
+      }
 
-      paretoFrontRow.Points.Replace(CreatePoints(Content.ParetoFront, null, xDimGlobal, yDimGlobal));
-      paretoFrontRow.VisualProperties.IsVisibleInLegend = paretoFrontRow.Points.Count > 0; // hide if empty
+      if (Content.Fronts == null || Content.Fronts.Count == 0) {
+        if (frontsRow != null) {
+          foreach (var row in frontsRow) scatterPlot.Rows.Remove(row);
+          frontsRow = null;
+        }
+      } else {
+        if (frontsRow == null) frontsRow = new LinkedList<ScatterPlotDataRow>();
+        var row = frontsRow.First;
+        var front = 0;
+        while (front < Content.Fronts.Count) {
+          if (Content.Fronts[front].Length == 0) break;
+          if(row == null) {
+            row = frontsRow.AddLast(new ScatterPlotDataRow("Front " + front, "Points on Front #" + front, Enumerable.Empty<Point2D<double>>()) {
+              VisualProperties = {
+                  PointSize = 8,
+                  PointStyle = front == 0 ? ScatterPlotDataRowVisualProperties.ScatterPlotDataRowPointStyle.Diamond : ScatterPlotDataRowVisualProperties.ScatterPlotDataRowPointStyle.Circle,
+                  Color = front == 0 ? Color.Goldenrod : Color.DodgerBlue
+                }
+            });
+            scatterPlot.Rows.Add(row.Value);
+          }
+          row.Value.Points.Replace(CreatePoints(Content.Fronts[front], Content.Items[front], xDimIndex, yDimIndex));
+          row = row.Next;
+          front++;
+        }
+        while (row != null) {
+          scatterPlot.Rows.Remove(row.Value);
+          var next = row.Next;
+          frontsRow.Remove(row);
+          row = next;
+        }
+      }
     }
 
     private void UpdateAxisComboBoxes() {
@@ -120,12 +148,6 @@ namespace HeuristicLab.Problems.TestFunctions.Views {
         for (int i = 0; i < Content.Objectives; i++) {
           xAxisComboBox.Items.Add("Objective " + i);
           yAxisComboBox.Items.Add("Objective " + i);
-        }
-
-        // Add Problem Dimension
-        for (int i = 0; i < Content.ProblemSize; i++) {
-          xAxisComboBox.Items.Add("Problem Dimension " + i);
-          yAxisComboBox.Items.Add("Problem Dimension " + i);
         }
 
         // Selection
@@ -154,24 +176,12 @@ namespace HeuristicLab.Problems.TestFunctions.Views {
       scatterPlot.VisualProperties.YAxisTitle = (string)yAxisComboBox.SelectedItem;
     }
 
-    private static Point2D<double>[] CreatePoints(double[][] qualities, double[][] solutions, int xDimGlobal, int yDimGlobal) {
-      if (qualities == null || qualities.Length == 0) return new Point2D<double>[0];
-
-      int objectives = qualities[0].Length;
-
-      // "Global" dimension index describes the index as if the qualities and solutions would be in a single array
-      // If the global dimension index is too long for the qualities, use solutions
-      var xDimArray = xDimGlobal < objectives ? qualities : solutions;
-      var yDimArray = yDimGlobal < objectives ? qualities : solutions;
-      var xDimIndex = xDimGlobal < objectives ? xDimGlobal : xDimGlobal - objectives;
-      var yDimIndex = yDimGlobal < objectives ? yDimGlobal : yDimGlobal - objectives;
-
-      if (xDimArray == null || yDimArray == null)
-        return new Point2D<double>[0];
-
-      var points = new Point2D<double>[xDimArray.Length];
-      for (int i = 0; i < xDimArray.Length; i++) {
-        points[i] = new Point2D<double>(xDimArray[i][xDimIndex], yDimArray[i][yDimIndex]);
+    private static Point2D<double>[] CreatePoints(IList<double[]> front, T[] solutions, int xDimIndex, int yDimIndex) {
+      if (front == null || front.Count == 0) return new Point2D<double>[0];
+      
+      var points = new Point2D<double>[front.Count];
+      for (int i = 0; i < front.Count; i++) {
+        points[i] = new Point2D<double>(front[i][xDimIndex], front[i][yDimIndex], solutions != null ? solutions[i] : null);
       }
       return points;
     }

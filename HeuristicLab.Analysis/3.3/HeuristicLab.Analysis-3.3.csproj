@@ -154,6 +154,7 @@
     <Compile Include="MultiObjective\HypervolumeAnalyzer.cs" />
     <Compile Include="MultiObjective\InvertedGenerationalDistanceAnalyzer.cs" />
     <Compile Include="MultiObjective\MultiObjectiveSuccessAnalyzer.cs" />
+    <Compile Include="MultiObjective\ParetoFrontScatterPlot.cs" />
     <Compile Include="MultiObjective\RankBasedParetoFrontAnalyzer.cs" />
     <Compile Include="MultiObjective\ParetoFrontAnalyzer.cs" />
     <Compile Include="MultiObjective\SpacingAnalyzer.cs" />

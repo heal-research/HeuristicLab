@@ -19,7 +19,7 @@
  */
 #endregion
 
-namespace HeuristicLab.Problems.TestFunctions.Views {
+namespace HeuristicLab.Analysis.Views {
   partial class ParetoFrontScatterPlotView {
     /// <summary> 
     /// Required designer variable.

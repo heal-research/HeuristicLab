@@ -106,12 +106,6 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ParetoFrontScatterPlotView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="ParetoFrontScatterPlotView.Designer.cs">
-      <DependentUpon>ParetoFrontScatterPlotView.cs</DependentUpon>
-    </Compile>
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

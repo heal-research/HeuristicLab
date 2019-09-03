@@ -19,15 +19,71 @@
  */
 #endregion
 
+using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HEAL.Attic;
 
-namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
+namespace HeuristicLab.Analysis {
+  [StorableType("1bc5f640-ed3a-49dd-9dca-aa034cc81e12")]
+  [Item("Pareto Front Scatter Plot", "The optimal front, current front(s) and associated items.")]
+  public class ParetoFrontScatterPlot<T> : Item where T: class, IItem {
+
+    public static new Image StaticItemImage {
+      get { return HeuristicLab.Common.Resources.VSImageLibrary.Performance; }
+    }
+
+    [Storable]
+    private int objectives;
+    public int Objectives {
+      get { return objectives; }
+    }
+
+    [Storable]
+    private IList<double[][]> fronts;
+    public IList<double[][]> Fronts {
+      get { return fronts; }
+    }
+
+    [Storable]
+    private IList<T[]> items;
+    public IList<T[]> Items {
+      get { return items; }
+    }
+
+    [Storable]
+    private IList<double[]> bestKnownFront;
+    public IList<double[]> BestKnownFront {
+      get { return bestKnownFront; }
+    }
+
+    [StorableConstructor]
+    protected ParetoFrontScatterPlot(StorableConstructorFlag _) : base(_) { }
+    public ParetoFrontScatterPlot() { }
+    public ParetoFrontScatterPlot(IList<double[][]> qualities, IList<T[]> items, IList<double[]> paretoFront, int objectives) {
+      this.fronts = qualities;
+      this.items = items;
+      this.bestKnownFront = paretoFront;
+      this.objectives = objectives;
+    }
+    protected ParetoFrontScatterPlot(ParetoFrontScatterPlot<T> original, Cloner cloner)
+      : base(original, cloner) {
+      if (original.fronts != null) fronts = original.fronts.Select(s => s.Select(x => x.ToArray()).ToArray()).ToArray();
+      if (original.items != null) items = original.items.Select(s => s.Select(cloner.Clone).ToArray()).ToArray();
+      if (original.bestKnownFront != null) bestKnownFront = original.bestKnownFront.Select(s => s.ToArray()).ToArray();
+      objectives = original.objectives;
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new ParetoFrontScatterPlot<T>(this, cloner);
+    }
+  }
+
   [StorableType("3BF7AD0E-8D55-4033-974A-01DB16F9E41A")]
   [Item("Pareto Front Scatter Plot", "The optimal front, current front and its associated Points in the searchspace")]
+  [Obsolete("Use the generic ParetoFrontScatterPlot<T> instead.")]
   public class ParetoFrontScatterPlot : Item {
     public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Performance; }

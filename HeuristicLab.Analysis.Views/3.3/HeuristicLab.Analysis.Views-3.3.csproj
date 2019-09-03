@@ -143,6 +143,18 @@
     <Compile Include="IndexedDataTableView.Designer.cs">
       <DependentUpon>IndexedDataTableView.cs</DependentUpon>
     </Compile>
+    <Compile Include="ParetoFrontScatterPlotViewOfT.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ParetoFrontScatterPlotViewOfT.Designer.cs">
+      <DependentUpon>ParetoFrontScatterPlotViewOfT.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ParetoFrontScatterPlotView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ParetoFrontScatterPlotView.Designer.cs">
+      <DependentUpon>ParetoFrontScatterPlotView.cs</DependentUpon>
+    </Compile>
     <Compile Include="ScatterPlotView.cs">
       <SubType>UserControl</SubType>
     </Compile>

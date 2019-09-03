@@ -20,13 +20,13 @@
 #endregion
 
 using System.Linq;
+using HEAL.Attic;
+using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Data;
 using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 
 namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
   [StorableType("720E2726-7F31-4425-B478-327D24BA2FF3")]
@@ -37,8 +37,8 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
       get { return (IScopeTreeLookupParameter<RealVector>)Parameters["Individuals"]; }
     }
 
-    public IResultParameter<ParetoFrontScatterPlot> ScatterPlotResultParameter {
-      get { return (IResultParameter<ParetoFrontScatterPlot>)Parameters["Scatterplot"]; }
+    public IResultParameter<ParetoFrontScatterPlot<RealVector>> ScatterPlotResultParameter {
+      get { return (IResultParameter<ParetoFrontScatterPlot<RealVector>>)Parameters["Scatterplot"]; }
     }
 
     [StorableConstructor]
@@ -50,15 +50,14 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
 
     public ScatterPlotAnalyzer() {
       Parameters.Add(new ScopeTreeLookupParameter<RealVector>("Individuals", "The individual solutions to the problem"));
-      Parameters.Add(new ResultParameter<ParetoFrontScatterPlot>("Scatterplot", "The scatterplot for the current and optimal (if known front)"));
+      Parameters.Add(new ResultParameter<ParetoFrontScatterPlot<RealVector>>("Scatterplot", "The scatterplot for the current and optimal (if known front)"));
     }
 
     public override IOperation Apply() {
       var qualities = QualitiesParameter.ActualValue;
       var individuals = IndividualsParameter.ActualValue;
       var testFunction = TestFunctionParameter.ActualValue;
-      var objectives = qualities.Length != 0 ? qualities[0].Length:0;    
-      var problemSize = individuals.Length != 0 ? individuals[0].Length:0;
+      var objectives = qualities.Length != 0 ? qualities[0].Length:0;
 
       var optimalFront = new double[0][];               
       if (testFunction != null) {
@@ -70,10 +69,12 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
         optimalFront = mat == null ? null : Enumerable.Range(0, mat.Rows).Select(r => Enumerable.Range(0, mat.Columns).Select(c => mat[r, c]).ToArray()).ToArray();
       }
 
-      var qualityClones = qualities.Select(s => s.ToArray()).ToArray();
-      var solutionClones = individuals.Select(s => s.ToArray()).ToArray();
-
-      ScatterPlotResultParameter.ActualValue = new ParetoFrontScatterPlot(qualityClones, solutionClones, optimalFront, objectives, problemSize);
+      var fronts = DominationCalculator.CalculateAllParetoFronts(individuals.ToArray(), qualities.Select(x => x.ToArray()).ToArray(), testFunction.Maximization(objectives), out var rank);
+      
+      ScatterPlotResultParameter.ActualValue = new ParetoFrontScatterPlot<RealVector>(
+        fronts.Select(x => x.Select(y => y.Item2).ToArray()).ToArray(),
+        fronts.Select(x => x.Select(y => y.Item1).ToArray()).ToArray(),
+        optimalFront, objectives);
       return base.Apply();
     }
   }

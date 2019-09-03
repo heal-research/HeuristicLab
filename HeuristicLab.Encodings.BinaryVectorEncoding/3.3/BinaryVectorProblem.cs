@@ -1,4 +1,5 @@
-﻿#region License Information
+﻿
+#region License Information
 /* HeuristicLab
  * Copyright (C) Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
