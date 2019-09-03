@@ -176,7 +176,7 @@ namespace HeuristicLab.Analysis.Views {
       scatterPlot.VisualProperties.YAxisTitle = (string)yAxisComboBox.SelectedItem;
     }
 
-    private static Point2D<double>[] CreatePoints(IList<double[]> front, T[] solutions, int xDimIndex, int yDimIndex) {
+    private static Point2D<double>[] CreatePoints(IReadOnlyList<double[]> front, T[] solutions, int xDimIndex, int yDimIndex) {
       if (front == null || front.Count == 0) return new Point2D<double>[0];
       
       var points = new Point2D<double>[front.Count];

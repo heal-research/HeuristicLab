@@ -23,6 +23,7 @@
 
 using System.Linq;
 using HEAL.Attic;
+using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
@@ -51,9 +52,10 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     public override void Analyze(ISymbolicExpressionTree[] trees, double[][] qualities, ResultCollection results,
       IRandom random) {
       base.Analyze(trees, qualities, results, random);
-      var front = DominationCalculator.CalculateBestParetoFront(trees, qualities, Maximization);
 
-      // TODO: Calculate Pareto front and add to results
+      var fronts = DominationCalculator.CalculateAllParetoFrontsIndices(trees, qualities, Maximization);
+      var plot = new ParetoFrontScatterPlot<ISymbolicExpressionTree>(fronts, trees, qualities, Objectives, BestKnownFront);
+      results.AddOrUpdateResult("Pareto Front Scatter Plot", plot);
     }
 
     protected override void OnEncodingChanged() {

@@ -60,7 +60,10 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
 
     public override void Analyze(BinaryVector[] individuals, double[][] qualities, ResultCollection results, IRandom random) {
       base.Analyze(individuals, qualities, results, random);
-      // TODO: Calculate Pareto front and add to results
+
+      var fronts = DominationCalculator.CalculateAllParetoFrontsIndices(individuals, qualities, Maximization);
+      var plot = new ParetoFrontScatterPlot<BinaryVector>(fronts, individuals, qualities, Objectives, BestKnownFront);
+      results.AddOrUpdateResult("Pareto Front Scatter Plot", plot);
     }
 
     protected override void OnEncodingChanged() {

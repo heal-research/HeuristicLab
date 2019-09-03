@@ -43,31 +43,55 @@ namespace HeuristicLab.Analysis {
     }
 
     [Storable]
-    private IList<double[][]> fronts;
-    public IList<double[][]> Fronts {
+    private IReadOnlyList<double[][]> fronts;
+    public IReadOnlyList<double[][]> Fronts {
       get { return fronts; }
     }
 
     [Storable]
-    private IList<T[]> items;
-    public IList<T[]> Items {
+    private IReadOnlyList<T[]> items;
+    public IReadOnlyList<T[]> Items {
       get { return items; }
     }
 
     [Storable]
-    private IList<double[]> bestKnownFront;
-    public IList<double[]> BestKnownFront {
+    private IReadOnlyList<double[]> bestKnownFront;
+    public IReadOnlyList<double[]> BestKnownFront {
       get { return bestKnownFront; }
     }
 
     [StorableConstructor]
     protected ParetoFrontScatterPlot(StorableConstructorFlag _) : base(_) { }
     public ParetoFrontScatterPlot() { }
-    public ParetoFrontScatterPlot(IList<double[][]> qualities, IList<T[]> items, IList<double[]> paretoFront, int objectives) {
+    /// <summary>
+    /// Provides the data for displaying a multi-objective population in a scatter plot.
+    /// </summary>
+    /// <param name="items">The solutions grouped by pareto front (first is best).</param>
+    /// <param name="qualities">The objective vectors grouped by pareto front (first is best).</param>
+    /// <param name="objectives">The number of objectives.</param>
+    /// <param name="bestKnownParetoFront">Optional, the best known front in objective space.</param>
+    public ParetoFrontScatterPlot(IReadOnlyList<T[]> items, IReadOnlyList<double[][]> qualities, int objectives, IReadOnlyList<double[]> bestKnownParetoFront = null)
+    {
       this.fronts = qualities;
       this.items = items;
-      this.bestKnownFront = paretoFront;
+      this.bestKnownFront = bestKnownParetoFront;
       this.objectives = objectives;
+    }
+    /// <summary>
+    /// Provides the data for displaying a multi-objective population in a scatter plot.
+    /// </summary>
+    /// <param name="fronts">The fronts (first is best) with the indices of the solutions and qualities.</param>
+    /// <param name="items">The solutions.</param>
+    /// <param name="qualities">The objective vectors for each solution.</param>
+    /// <param name="objectives">The number of objectives.</param>
+    /// <param name="bestKnownParetoFront">Optional, the best known front in objective space.</param>
+    public ParetoFrontScatterPlot(List<List<int>> fronts, IReadOnlyList<T> items, IReadOnlyList<double[]> qualities, int objectives, IReadOnlyList<double[]> bestKnownParetoFront = null)
+    {
+      this.fronts = fronts.Select(x => x.Select(y => qualities[y]).ToArray()).ToArray();
+      this.items = fronts.Select(x => x.Select(y => items[y]).ToArray()).ToArray();
+      this.bestKnownFront = bestKnownParetoFront;
+      this.objectives = objectives;
+
     }
     protected ParetoFrontScatterPlot(ParetoFrontScatterPlot<T> original, Cloner cloner)
       : base(original, cloner) {

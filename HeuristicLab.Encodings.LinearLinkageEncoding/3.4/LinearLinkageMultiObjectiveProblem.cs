@@ -63,8 +63,9 @@ namespace HeuristicLab.Encodings.LinearLinkageEncoding {
     public override void Analyze(LinearLinkage[] individuals, double[][] qualities, ResultCollection results, IRandom random) {
       base.Analyze(individuals, qualities, results, random);
 
-      var result = DominationCalculator.CalculateBestParetoFront(individuals, qualities, Maximization);
-      // TODO: Add results
+      var fronts = DominationCalculator.CalculateAllParetoFrontsIndices(individuals, qualities, Maximization);
+      var plot = new ParetoFrontScatterPlot<LinearLinkage>(fronts, individuals, qualities, Objectives, BestKnownFront);
+      results.AddOrUpdateResult("Pareto Front Scatter Plot", plot);
     }
 
     protected override void OnEncodingChanged() {

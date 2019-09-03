@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using HEAL.Attic;
 
 namespace HeuristicLab.Optimization {
@@ -130,6 +131,104 @@ namespace HeuristicLab.Optimization {
         if (dominationCounter[pI] == 0) {
           rank[pI] = 0;
           front.Add(Tuple.Create(p, qualities[pI]));
+        }
+      }
+      return front;
+    }
+
+    /// <summary>
+    /// Calculates all pareto fronts by returning the index of the parameters in each front.
+    /// The first in the list is the best front.
+    /// The fast non-dominated sorting algorithm is used as described in
+    /// Deb, K., Pratap, A., Agarwal, S., and Meyarivan, T. (2002).
+    /// A Fast and Elitist Multiobjective Genetic Algorithm: NSGA-II.
+    /// IEEE Transactions on Evolutionary Computation, 6(2), 182-197.
+    /// </summary>
+    /// <remarks>
+    /// When there are plateaus in the fitness landscape several solutions might have exactly
+    /// the same fitness vector. In this case parameter <paramref name="dominateOnEqualQualities"/>
+    /// can be set to true to avoid plateaus becoming too attractive for the search process.
+    /// </remarks>
+    /// <param name="solutions">The solutions of the population.</param>
+    /// <param name="qualities">The qualities resp. fitness for each solution.</param>
+    /// <param name="maximization">The objective in each dimension.</param>
+    /// <param name="dominateOnEqualQualities">Whether solutions of exactly equal quality should dominate one another.</param>
+    /// <returns>A sorted list of the pareto fronts where each front contains the indices of the <paramref name="solutions"/> and <paramref name="qualities"/>.</returns>
+    public static List<List<int>> CalculateAllParetoFrontsIndices<T>(T[] solutions, double[][] qualities, bool[] maximization, bool dominateOnEqualQualities = true) {
+      return CalculateAllParetoFrontsIndices(solutions, qualities, maximization, out var rank, dominateOnEqualQualities);
+    }
+
+    /// <summary>
+    /// Calculates all pareto fronts by returning the index of the parameters in each front.
+    /// The first in the list is the best front.
+    /// The fast non-dominated sorting algorithm is used as described in
+    /// Deb, K., Pratap, A., Agarwal, S., and Meyarivan, T. (2002).
+    /// A Fast and Elitist Multiobjective Genetic Algorithm: NSGA-II.
+    /// IEEE Transactions on Evolutionary Computation, 6(2), 182-197.
+    /// </summary>
+    /// <remarks>
+    /// When there are plateaus in the fitness landscape several solutions might have exactly
+    /// the same fitness vector. In this case parameter <paramref name="dominateOnEqualQualities"/>
+    /// can be set to true to avoid plateaus becoming too attractive for the search process.
+    /// </remarks>
+    /// <param name="solutions">The solutions of the population.</param>
+    /// <param name="qualities">The qualities resp. fitness for each solution.</param>
+    /// <param name="maximization">The objective in each dimension.</param>
+    /// <param name="rank">The rank of each of the solutions, corresponds to the front it is put in.</param>
+    /// <param name="dominateOnEqualQualities">Whether solutions of exactly equal quality should dominate one another.</param>
+    /// <returns>A sorted list of the pareto fronts where each front contains the indices of the <paramref name="solutions"/> and <paramref name="qualities"/>.</returns>
+    public static List<List<int>> CalculateAllParetoFrontsIndices<T>(T[] solutions, double[][] qualities, bool[] maximization, out int[] rank, bool dominateOnEqualQualities = true) {
+      var populationSize = solutions.Length;
+
+      var dominatedIndividuals = Enumerable.Range(0, qualities.Length).Select(x => new List<int>()).ToArray();
+      var dominationCounter = new int[populationSize];
+      rank = new int[populationSize];
+      var fronts = new List<List<int>>();
+      fronts.Add(CalculateBestFrontIndices(solutions, qualities, maximization, dominateOnEqualQualities, populationSize, dominatedIndividuals, dominationCounter, rank));
+      var i = 0;
+      while (i < fronts.Count && fronts[i].Count > 0) {
+        var nextFront = new List<int>();
+        foreach (var p in fronts[i]) {
+          if (dominatedIndividuals[p].Count > 0) {
+            for (var k = 0; k < dominatedIndividuals[p].Count; k++) {
+              var dominatedIndividual = dominatedIndividuals[p][k];
+              dominationCounter[dominatedIndividual] -= 1;
+              if (dominationCounter[dominatedIndividual] == 0) {
+                rank[dominatedIndividual] = i + 1;
+                nextFront.Add(dominatedIndividual);
+              }
+            }
+          }
+        }
+        i += 1;
+        fronts.Add(nextFront);
+      }
+      return fronts;
+    }
+
+    private static List<int> CalculateBestFrontIndices<T>(T[] solutions, double[][] qualities, bool[] maximization, bool dominateOnEqualQualities, int populationSize, List<int>[] dominatedIndividuals, int[] dominationCounter, int[] rank) {
+      var front = new List<int>();
+      for (var pI = 0; pI < populationSize - 1; pI++) {
+        var p = solutions[pI];
+        for (var qI = pI + 1; qI < populationSize; qI++) {
+          var test = Dominates(qualities[pI], qualities[qI], maximization, dominateOnEqualQualities);
+          if (test == DominationResult.Dominates) {
+            dominatedIndividuals[pI].Add(qI);
+            dominationCounter[qI] += 1;
+          } else if (test == DominationResult.IsDominated) {
+            dominationCounter[pI] += 1;
+            dominatedIndividuals[qI].Add(pI);
+          }
+          if (pI == populationSize - 2
+            && qI == populationSize - 1
+            && dominationCounter[qI] == 0) {
+            rank[qI] = 0;
+            front.Add(qI);
+          }
+        }
+        if (dominationCounter[pI] == 0) {
+          rank[pI] = 0;
+          front.Add(pI);
         }
       }
       return front;

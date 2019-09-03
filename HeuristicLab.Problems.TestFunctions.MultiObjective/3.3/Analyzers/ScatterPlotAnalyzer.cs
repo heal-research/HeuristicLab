@@ -69,12 +69,11 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
         optimalFront = mat == null ? null : Enumerable.Range(0, mat.Rows).Select(r => Enumerable.Range(0, mat.Columns).Select(c => mat[r, c]).ToArray()).ToArray();
       }
 
-      var fronts = DominationCalculator.CalculateAllParetoFronts(individuals.ToArray(), qualities.Select(x => x.ToArray()).ToArray(), testFunction.Maximization(objectives), out var rank);
-      
-      ScatterPlotResultParameter.ActualValue = new ParetoFrontScatterPlot<RealVector>(
-        fronts.Select(x => x.Select(y => y.Item2).ToArray()).ToArray(),
-        fronts.Select(x => x.Select(y => y.Item1).ToArray()).ToArray(),
-        optimalFront, objectives);
+      var q = qualities.Select(x => x.ToArray()).ToArray();
+      var s = individuals.ToArray();
+      var fronts = DominationCalculator.CalculateAllParetoFrontsIndices(s, q, testFunction.Maximization(objectives), out var rank);
+      ScatterPlotResultParameter.ActualValue = new ParetoFrontScatterPlot<RealVector>(fronts, s, q, objectives, optimalFront);
+
       return base.Apply();
     }
   }

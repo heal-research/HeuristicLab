@@ -62,7 +62,10 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
 
     public override void Analyze(RealVector[] individuals, double[][] qualities, ResultCollection results, IRandom random) {
       base.Analyze(individuals, qualities, results, random);
-      // TODO: Calculate Pareto front and add to results
+
+      var fronts = DominationCalculator.CalculateAllParetoFrontsIndices(individuals, qualities, Maximization);
+      var plot = new ParetoFrontScatterPlot<RealVector>(fronts, individuals, qualities, Objectives, BestKnownFront);
+      results.AddOrUpdateResult("Pareto Front Scatter Plot", plot);
     }
 
     protected override void OnEncodingChanged() {
