@@ -50,50 +50,62 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
     public override bool Maximization { get { return false; } }
 
     #region Parameter Properties
+    [Storable]
+    private IValueParameter<ItemSet<Permutation>> bestKnownSolutionsParameter;
     public IValueParameter<ItemSet<Permutation>> BestKnownSolutionsParameter {
-      get { return (IValueParameter<ItemSet<Permutation>>)Parameters["BestKnownSolutions"]; }
+      get { return bestKnownSolutionsParameter; }
     }
+    [Storable]
+    private IValueParameter<Permutation> bestKnownSolutionParameter;
     public IValueParameter<Permutation> BestKnownSolutionParameter {
-      get { return (IValueParameter<Permutation>)Parameters["BestKnownSolution"]; }
+      get { return bestKnownSolutionParameter; }
     }
+    [Storable]
+    private IValueParameter<DoubleMatrix> weightsParameter;
     public IValueParameter<DoubleMatrix> WeightsParameter {
-      get { return (IValueParameter<DoubleMatrix>)Parameters["Weights"]; }
+      get { return weightsParameter; }
     }
+    [Storable]
+    private IValueParameter<DoubleMatrix> distancesParameter;
     public IValueParameter<DoubleMatrix> DistancesParameter {
-      get { return (IValueParameter<DoubleMatrix>)Parameters["Distances"]; }
+      get { return distancesParameter; }
     }
+    [Storable]
+    private IValueParameter<DoubleValue> lowerBoundParameter;
     public IValueParameter<DoubleValue> LowerBoundParameter {
-      get { return (IValueParameter<DoubleValue>)Parameters["LowerBound"]; }
+      get { return lowerBoundParameter; }
     }
+    [Storable]
+    private IValueParameter<DoubleValue> averageQualityParameter;
     public IValueParameter<DoubleValue> AverageQualityParameter {
-      get { return (IValueParameter<DoubleValue>)Parameters["AverageQuality"]; }
+      get { return averageQualityParameter; }
     }
     #endregion
 
     #region Properties
     public ItemSet<Permutation> BestKnownSolutions {
-      get { return BestKnownSolutionsParameter.Value; }
-      set { BestKnownSolutionsParameter.Value = value; }
+      get { return bestKnownSolutionsParameter.Value; }
+      set { bestKnownSolutionsParameter.Value = value; }
     }
     public Permutation BestKnownSolution {
-      get { return BestKnownSolutionParameter.Value; }
-      set { BestKnownSolutionParameter.Value = value; }
+      get { return bestKnownSolutionParameter.Value; }
+      set { bestKnownSolutionParameter.Value = value; }
     }
     public DoubleMatrix Weights {
-      get { return WeightsParameter.Value; }
-      set { WeightsParameter.Value = value; }
+      get { return weightsParameter.Value; }
+      set { weightsParameter.Value = value; }
     }
     public DoubleMatrix Distances {
-      get { return DistancesParameter.Value; }
-      set { DistancesParameter.Value = value; }
+      get { return distancesParameter.Value; }
+      set { distancesParameter.Value = value; }
     }
     public DoubleValue LowerBound {
-      get { return LowerBoundParameter.Value; }
-      set { LowerBoundParameter.Value = value; }
+      get { return lowerBoundParameter.Value; }
+      set { lowerBoundParameter.Value = value; }
     }
     public DoubleValue AverageQuality {
-      get { return AverageQualityParameter.Value; }
-      set { AverageQualityParameter.Value = value; }
+      get { return averageQualityParameter.Value; }
+      set { averageQualityParameter.Value = value; }
     }
 
     private BestQAPSolutionAnalyzer BestQAPSolutionAnalyzer {
@@ -113,16 +125,22 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
     private QuadraticAssignmentProblem(StorableConstructorFlag _) : base(_) { }
     private QuadraticAssignmentProblem(QuadraticAssignmentProblem original, Cloner cloner)
       : base(original, cloner) {
+      bestKnownSolutionsParameter = cloner.Clone(original.bestKnownSolutionsParameter);
+      bestKnownSolutionParameter = cloner.Clone(original.bestKnownSolutionParameter);
+      weightsParameter = cloner.Clone(original.weightsParameter);
+      distancesParameter = cloner.Clone(original.distancesParameter);
+      lowerBoundParameter = cloner.Clone(original.lowerBoundParameter);
+      averageQualityParameter = cloner.Clone(original.averageQualityParameter);
       RegisterEventHandlers();
     }
     public QuadraticAssignmentProblem()
       : base(new PermutationEncoding("Assignment") { Length = 5 }) {
-      Parameters.Add(new OptionalValueParameter<ItemSet<Permutation>>("BestKnownSolutions", "The list of best known solutions which is updated whenever a new better solution is found or may be the optimal solution if it is known beforehand.", null));
-      Parameters.Add(new OptionalValueParameter<Permutation>("BestKnownSolution", "The best known solution which is updated whenever a new better solution is found or may be the optimal solution if it is known beforehand.", null));
-      Parameters.Add(new ValueParameter<DoubleMatrix>("Weights", "The strength of the connection between the facilities.", new DoubleMatrix(5, 5)));
-      Parameters.Add(new ValueParameter<DoubleMatrix>("Distances", "The distance matrix which can either be specified directly without the coordinates, or can be calculated automatically from the coordinates.", new DoubleMatrix(5, 5)));
-      Parameters.Add(new OptionalValueParameter<DoubleValue>("LowerBound", "The Gilmore-Lawler lower bound to the solution quality."));
-      Parameters.Add(new OptionalValueParameter<DoubleValue>("AverageQuality", "The expected quality of a random solution."));
+      Parameters.Add(bestKnownSolutionsParameter = new OptionalValueParameter<ItemSet<Permutation>>("BestKnownSolutions", "The list of best known solutions which is updated whenever a new better solution is found or may be the optimal solution if it is known beforehand.", null));
+      Parameters.Add(bestKnownSolutionParameter = new OptionalValueParameter<Permutation>("BestKnownSolution", "The best known solution which is updated whenever a new better solution is found or may be the optimal solution if it is known beforehand.", null));
+      Parameters.Add(weightsParameter = new ValueParameter<DoubleMatrix>("Weights", "The strength of the connection between the facilities.", new DoubleMatrix(5, 5)));
+      Parameters.Add(distancesParameter = new ValueParameter<DoubleMatrix>("Distances", "The distance matrix which can either be specified directly without the coordinates, or can be calculated automatically from the coordinates.", new DoubleMatrix(5, 5)));
+      Parameters.Add(lowerBoundParameter = new OptionalValueParameter<DoubleValue>("LowerBound", "The Gilmore-Lawler lower bound to the solution quality."));
+      Parameters.Add(averageQualityParameter = new OptionalValueParameter<DoubleValue>("AverageQuality", "The expected quality of a random solution."));
 
       WeightsParameter.GetsCollected = false;
       Weights = new DoubleMatrix(new double[,] {
@@ -166,6 +184,21 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
 
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
+      // BackwardsCompatibility3.3
+      #region Backwards compatible code, remove with 3.4
+      if (bestKnownSolutionsParameter == null)
+        bestKnownSolutionsParameter = (IValueParameter<ItemSet<Permutation>>)Parameters["BestKnownSolutions"];
+      if (bestKnownSolutionParameter == null)
+        bestKnownSolutionParameter = (IValueParameter<Permutation>)Parameters["BestKnownSolution"];
+      if (weightsParameter == null)
+        weightsParameter = (IValueParameter<DoubleMatrix>)Parameters["Weights"];
+      if (distancesParameter == null)
+        distancesParameter = (IValueParameter<DoubleMatrix>)Parameters["Distances"];
+      if (lowerBoundParameter == null)
+        lowerBoundParameter = (IValueParameter<DoubleValue>)Parameters["LowerBound"];
+      if (averageQualityParameter == null)
+        averageQualityParameter = (IValueParameter<DoubleValue>)Parameters["AverageQuality"];
+      #endregion
       RegisterEventHandlers();
     }
 
