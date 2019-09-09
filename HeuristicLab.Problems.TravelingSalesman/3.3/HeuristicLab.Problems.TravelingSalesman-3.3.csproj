@@ -155,6 +155,8 @@
     <Compile Include="MoveEvaluators\TSPPathMoveEvaluator.cs" />
     <Compile Include="MoveEvaluators\TSPMoveEvaluator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TSP.cs" />
+    <Compile Include="TSPData.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\HeuristicLab.Analysis\3.3\HeuristicLab.Analysis-3.3.csproj">
