@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 using HeuristicLab.Core.Views;
@@ -47,16 +48,12 @@ namespace HeuristicLab.Problems.TravelingSalesman.Views {
     }
 
     protected override void DeregisterContentEvents() {
-      Content.QualityChanged -= new EventHandler(Content_QualityChanged);
-      Content.CoordinatesChanged -= new EventHandler(Content_CoordinatesChanged);
-      Content.PermutationChanged -= new EventHandler(Content_PermutationChanged);
+      Content.PropertyChanged -= ContentOnPropertyChanged;
       base.DeregisterContentEvents();
     }
     protected override void RegisterContentEvents() {
       base.RegisterContentEvents();
-      Content.QualityChanged += new EventHandler(Content_QualityChanged);
-      Content.CoordinatesChanged += new EventHandler(Content_CoordinatesChanged);
-      Content.PermutationChanged += new EventHandler(Content_PermutationChanged);
+      Content.PropertyChanged += ContentOnPropertyChanged;
     }
 
     protected override void OnContentChanged() {
@@ -66,9 +63,9 @@ namespace HeuristicLab.Problems.TravelingSalesman.Views {
         pictureBox.Image = null;
         tourViewHost.Content = null;
       } else {
-        qualityViewHost.Content = Content.Quality;
+        qualityViewHost.Content = Content.TourLength;
         GenerateImage();
-        tourViewHost.Content = Content.Permutation;
+        tourViewHost.Content = Content.Tour;
       }
     }
 
@@ -85,7 +82,7 @@ namespace HeuristicLab.Problems.TravelingSalesman.Views {
           pictureBox.Image = null;
         } else {
           DoubleMatrix coordinates = Content.Coordinates;
-          Permutation permutation = Content.Permutation;
+          Permutation permutation = Content.Tour;
           Bitmap bitmap = new Bitmap(pictureBox.Width, pictureBox.Height);
 
           if ((coordinates != null) && (coordinates.Rows > 0) && (coordinates.Columns == 2)) {
@@ -132,24 +129,22 @@ namespace HeuristicLab.Problems.TravelingSalesman.Views {
       }
     }
 
-    private void Content_QualityChanged(object sender, EventArgs e) {
+    private void ContentOnPropertyChanged(object sender, PropertyChangedEventArgs e) {
       if (InvokeRequired)
-        Invoke(new EventHandler(Content_QualityChanged), sender, e);
-      else
-        qualityViewHost.Content = Content.Quality;
-    }
-    private void Content_CoordinatesChanged(object sender, EventArgs e) {
-      if (InvokeRequired)
-        Invoke(new EventHandler(Content_CoordinatesChanged), sender, e);
-      else
-        GenerateImage();
-    }
-    private void Content_PermutationChanged(object sender, EventArgs e) {
-      if (InvokeRequired)
-        Invoke(new EventHandler(Content_PermutationChanged), sender, e);
+        Invoke((Action<object, PropertyChangedEventArgs>)ContentOnPropertyChanged, sender, e);
       else {
-        GenerateImage();
-        tourViewHost.Content = Content.Permutation;
+        switch (e.PropertyName) {
+          case nameof(Content.Coordinates):
+            GenerateImage();
+            break;
+          case nameof(Content.Tour):
+            GenerateImage();
+            tourViewHost.Content = Content.Tour;
+            break;
+          case nameof(Content.TourLength):
+            qualityViewHost.Content = Content.TourLength;
+            break;
+        }
       }
     }
 

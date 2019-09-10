@@ -127,12 +127,6 @@
       <DependentUpon>PathTSPTourView.cs</DependentUpon>
     </Compile>
     <Compile Include="Plugin.cs" />
-    <Compile Include="TravelingSalesmanProblemView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="TravelingSalesmanProblemView.Designer.cs">
-      <DependentUpon>TravelingSalesmanProblemView.cs</DependentUpon>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

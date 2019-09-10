@@ -1,60 +1,54 @@
-#region License Information
-/* HeuristicLab
- * Copyright (C) Heuristic and Evolutionary Algorithms Laboratory (HEAL)
- *
- * This file is part of HeuristicLab.
- *
- * HeuristicLab is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * HeuristicLab is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
- */
-#endregion
-
-using System;
+﻿using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Operators;
-using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 
 namespace HeuristicLab.Problems.TravelingSalesman {
-  /// <summary>
-  /// A base class for operators which evaluate TSP solutions.
-  /// </summary>
-  [Item("TSPMoveEvaluator", "A base class for operators which evaluate TSP moves.")]
-  [StorableType("25573174-DE4B-4076-B439-CCB5F01CE652")]
-  public abstract class TSPMoveEvaluator : SingleSuccessorOperator, ITSPMoveEvaluator, IMoveOperator {
+  [StorableType("17477ad2-2c84-4b02-b5ac-f35ef6cc667f")]
+  public interface ITSPMoveEvaluator : IOperator {
+    ILookupParameter<Permutation> TSPTourParameter { get; }
+    ILookupParameter<ITSPData> TSPDataParameter { get; }
+    ILookupParameter<DoubleValue> TourLengthParameter { get; }
+    ILookupParameter<DoubleValue> TourLengthWithMoveParameter { get; }
+  }
 
-    public abstract Type EvaluatorType { get; }
-    public override bool CanChangeName {
-      get { return false; }
-    }
-
-    public ILookupParameter<DoubleValue> QualityParameter {
-      get { return (ILookupParameter<DoubleValue>)Parameters["Quality"]; }
-    }
-    public ILookupParameter<DoubleValue> MoveQualityParameter {
-      get { return (ILookupParameter<DoubleValue>)Parameters["MoveQuality"]; }
-    }
+  [Item("TSP Move Evaluator", "Base class for all move evaluators of the TSP.")]
+  [StorableType("44af3845-ccdf-4014-805a-5878c64f67f5")]
+  public abstract class TSPMoveEvaluator : SingleSuccessorOperator, ITSPMoveEvaluator {
+    [Storable] public ILookupParameter<Permutation> TSPTourParameter { get; private set; }
+    [Storable] public ILookupParameter<ITSPData> TSPDataParameter { get; private set; }
+    [Storable] public ILookupParameter<DoubleValue> TourLengthParameter { get; private set; }
+    [Storable] public ILookupParameter<DoubleValue> TourLengthWithMoveParameter { get; private set; }
 
     [StorableConstructor]
     protected TSPMoveEvaluator(StorableConstructorFlag _) : base(_) { }
-    protected TSPMoveEvaluator(TSPMoveEvaluator original, Cloner cloner) : base(original, cloner) { }
-    protected TSPMoveEvaluator()
-      : base() {
-      Parameters.Add(new LookupParameter<DoubleValue>("Quality", "The quality of a TSP solution."));
-      Parameters.Add(new LookupParameter<DoubleValue>("MoveQuality", "The evaluated quality of a move on a TSP solution."));
+    protected TSPMoveEvaluator(TSPMoveEvaluator original, Cloner cloner)
+      : base(original, cloner) {
+      TSPTourParameter = cloner.Clone(original.TSPTourParameter);
+      TSPDataParameter = cloner.Clone(original.TSPDataParameter);
+      TourLengthParameter = cloner.Clone(original.TourLengthParameter);
+      TourLengthWithMoveParameter = cloner.Clone(original.TourLengthWithMoveParameter);
     }
+    public TSPMoveEvaluator() {
+      Parameters.Add(TSPTourParameter = new LookupParameter<Permutation>("TSPTour", "The tour that describes a solution to the TSP."));
+      Parameters.Add(TSPDataParameter = new LookupParameter<ITSPData>("TSPData", "The main parameters of the TSP."));
+      Parameters.Add(TourLengthParameter = new LookupParameter<DoubleValue>("TourLength", "The length of a TSP tour."));
+      Parameters.Add(TourLengthWithMoveParameter = new LookupParameter<DoubleValue>("TourLengthWithMove", "The length of the TSP tour if the move was applied."));
+    }
+
+    public sealed override IOperation Apply() {
+      var tour = TSPTourParameter.ActualValue;
+      var tspData = TSPDataParameter.ActualValue;
+      var tourLength = TourLengthParameter.ActualValue.Value;
+      TourLengthWithMoveParameter.ActualValue = new DoubleValue(
+        CalculateTourLengthWithMove(tspData, tour, tourLength)
+      );
+      return base.Apply();
+    }
+
+    protected abstract double CalculateTourLengthWithMove(ITSPData tspData, Permutation tspTour, double tourLength);
   }
 }

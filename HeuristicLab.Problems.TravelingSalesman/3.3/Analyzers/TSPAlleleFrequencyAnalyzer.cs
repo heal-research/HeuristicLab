@@ -19,36 +19,31 @@
  */
 #endregion
 
-using System;
+using HEAL.Attic;
 using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 
 namespace HeuristicLab.Problems.TravelingSalesman {
   /// <summary>
   /// An operator for analyzing the frequency of alleles in solutions of Traveling Salesman Problems given in path representation.
   /// </summary>
   [Item("TSPAlleleFrequencyAnalyzer", "An operator for analyzing the frequency of alleles in solutions of Traveling Salesman Problems given in path representation.")]
-  [StorableType("C1BBEC5A-27EF-4882-AEC6-0919FC2EF1DB")]
+  [StorableType("43a9ec34-c917-43f8-bd14-4d42e2d0a458")]
   public sealed class TSPAlleleFrequencyAnalyzer : AlleleFrequencyAnalyzer<Permutation> {
-    public LookupParameter<DoubleMatrix> CoordinatesParameter {
-      get { return (LookupParameter<DoubleMatrix>)Parameters["Coordinates"]; }
-    }
-    public LookupParameter<DistanceMatrix> DistanceMatrixParameter {
-      get { return (LookupParameter<DistanceMatrix>)Parameters["DistanceMatrix"]; }
-    }
+    [Storable] public ILookupParameter<ITSPData> TSPDataParameter { get; private set; }
 
     [StorableConstructor]
     private TSPAlleleFrequencyAnalyzer(StorableConstructorFlag _) : base(_) { }
-    private TSPAlleleFrequencyAnalyzer(TSPAlleleFrequencyAnalyzer original, Cloner cloner) : base(original, cloner) { }
+    private TSPAlleleFrequencyAnalyzer(TSPAlleleFrequencyAnalyzer original, Cloner cloner)
+      : base(original, cloner) {
+      TSPDataParameter = cloner.Clone(original.TSPDataParameter);
+    }
     public TSPAlleleFrequencyAnalyzer()
       : base() {
-      Parameters.Add(new LookupParameter<DoubleMatrix>("Coordinates", "The x- and y-coordinates of the cities."));
-      Parameters.Add(new LookupParameter<DistanceMatrix>("DistanceMatrix", "The matrix which contains the distances between the cities."));
+      Parameters.Add(TSPDataParameter = new LookupParameter<ITSPData>("TSPData", "The main parameters of the TSP."));
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -56,10 +51,8 @@ namespace HeuristicLab.Problems.TravelingSalesman {
     }
 
     protected override Allele[] CalculateAlleles(Permutation solution) {
+      var tspData = TSPDataParameter.ActualValue;
       Allele[] alleles = new Allele[solution.Length];
-      DoubleMatrix coords = CoordinatesParameter.ActualValue;
-      DistanceMatrix dm = DistanceMatrixParameter.ActualValue;
-      if (dm == null && coords == null) throw new InvalidOperationException("Neither a distance matrix nor coordinates were given.");
       int source, target, h;
       double impact;
 
@@ -67,20 +60,16 @@ namespace HeuristicLab.Problems.TravelingSalesman {
         source = solution[i];
         target = solution[i + 1];
         if (source > target) { h = source; source = target; target = h; }
-        impact = dm != null ? dm[source, target] : CalculateLength(coords[source, 0], coords[source, 1], coords[target, 0], coords[target, 1]);
+        impact = tspData.GetDistance(source, target);
         alleles[i] = new Allele(source.ToString() + "-" + target.ToString(), impact);
       }
       source = solution[solution.Length - 1];
       target = solution[0];
       if (source > target) { h = source; source = target; target = h; }
-      impact = dm != null ? dm[source, target] : CalculateLength(coords[source, 0], coords[source, 1], coords[target, 0], coords[target, 1]);
+      impact = tspData.GetDistance(source, target);
       alleles[alleles.Length - 1] = new Allele(source.ToString() + "-" + target.ToString(), impact);
 
       return alleles;
-    }
-
-    private double CalculateLength(double x1, double y1, double x2, double y2) {
-      return Math.Sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
     }
   }
 }

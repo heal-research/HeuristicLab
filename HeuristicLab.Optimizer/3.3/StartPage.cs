@@ -109,8 +109,9 @@ namespace HeuristicLab.Optimizer {
           LoadSample(resourceName, assembly, uncategorizedGroup, count);
         }
 
-        OnAllSamplesLoaded();
+      } catch {
       } finally {
+        OnAllSamplesLoaded();
         Progress.HideFromControl(samplesListView);
       }
     }

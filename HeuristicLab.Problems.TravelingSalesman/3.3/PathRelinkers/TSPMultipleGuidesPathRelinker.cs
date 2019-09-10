@@ -22,13 +22,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 
 namespace HeuristicLab.Problems.TravelingSalesman {
   /// <summary>
@@ -38,35 +38,26 @@ namespace HeuristicLab.Problems.TravelingSalesman {
   /// The operator incrementally changes the initiating solution towards the guiding solution by correcting edges as needed. For each city it choses the best edge from all guiding solutions.
   /// </remarks>
   [Item("TSPMultipleGuidesPathRelinker", "An operator that relinks paths between traveling salesman solutions using a multiple guiding strategy. The operator incrementally changes the initiating solution towards the guiding solution by correcting edges as needed. For each city it choses the best edge from all guiding solutions.")]
-  [StorableType("6B5B2622-AB1D-47E6-8BBC-C6088D393149")]
+  [StorableType("13e879fd-7621-402e-9345-7dbfdd78e3b6")]
   public sealed class TSPMultipleGuidesPathRelinker : SingleObjectivePathRelinker {
-    #region Parameter properties
-    public ILookupParameter<DistanceMatrix> DistanceMatrixParameter {
-      get { return (ILookupParameter<DistanceMatrix>)Parameters["DistanceMatrix"]; }
-    }
-    #endregion
-
-    #region Properties
-    public DistanceMatrix DistanceMatrix {
-      get { return DistanceMatrixParameter.ActualValue; }
-    }
-    #endregion
+    [Storable] public ILookupParameter<ITSPData> TSPDataParameter { get; private set; }
 
     [StorableConstructor]
     private TSPMultipleGuidesPathRelinker(StorableConstructorFlag _) : base(_) { }
-    private TSPMultipleGuidesPathRelinker(TSPMultipleGuidesPathRelinker original, Cloner cloner) : base(original, cloner) { }
+    private TSPMultipleGuidesPathRelinker(TSPMultipleGuidesPathRelinker original, Cloner cloner)
+      : base(original, cloner) {
+      TSPDataParameter = cloner.Clone(original.TSPDataParameter);
+    }
     public TSPMultipleGuidesPathRelinker()
       : base() {
-      #region Create parameters
-      Parameters.Add(new LookupParameter<DistanceMatrix>("DistanceMatrix", "The matrix which contains the distances between the cities."));
-      #endregion
+      Parameters.Add(TSPDataParameter = new LookupParameter<ITSPData>("TSPData", "The main parameters of the TSP."));
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new TSPMultipleGuidesPathRelinker(this, cloner);
     }
 
-    public static ItemArray<IItem> Apply(IItem initiator, IItem[] guides, DistanceMatrix distances, PercentValue n) {
+    public static ItemArray<IItem> Apply(IItem initiator, IItem[] guides, ITSPData tspData, PercentValue n) {
       if (!(initiator is Permutation) || guides.Any(x => !(x is Permutation)))
         throw new ArgumentException("Cannot relink path because some of the provided solutions have the wrong type.");
       if (n.Value <= 0.0)
@@ -83,7 +74,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
       for (int i = 0; i < v1.Length; i++) {
         int currCityIndex = i;
         int bestCityIndex = (i + 1) % v1.Length;
-        double currDistance = distances[v1[currCityIndex], v1[bestCityIndex]];
+        double currDistance = tspData.GetDistance(v1[currCityIndex], v1[bestCityIndex]);
         // check each guiding solution
         targets.ToList().ForEach(solution => {
           // locate current city
@@ -91,7 +82,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
           int pred = solution[(node.Index - 1 + solution.Length) % solution.Length];
           int succ = solution[(node.Index + 1) % solution.Length];
           // get distances to neighbors
-          var results = new[] { pred, succ }.Select(x => new { Id = x, Distance = distances[x, node.Id] });
+          var results = new[] { pred, succ }.Select(x => new { Id = x, Distance = tspData.GetDistance(x, node.Id) });
           var bestCity = results.Where(x => x.Distance < currDistance).OrderBy(x => x.Distance).FirstOrDefault();
           if (bestCity != null) {
             bestCityIndex = v1.Select((x, index) => new { Id = x, Index = index }).Single(x => x.Id == bestCity.Id).Index;
@@ -128,7 +119,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
     protected override ItemArray<IItem> Relink(ItemArray<IItem> parents, PercentValue n) {
       if (parents.Length < 2)
         throw new ArgumentException("The number of parents is smaller than 2.");
-      return Apply(parents[0], parents.Skip(1).ToArray(), DistanceMatrix, n);
+      return Apply(parents[0], parents.Skip(1).ToArray(), TSPDataParameter.ActualValue, n);
     }
   }
 }

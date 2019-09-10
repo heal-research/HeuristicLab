@@ -22,14 +22,15 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Optimization.Operators;
-using HEAL.Attic;
 
 namespace HeuristicLab.Problems.TravelingSalesman {
+
   /// <summary>
   /// An operator that relinks paths between traveling salesman solutions.
   /// </summary>
@@ -37,7 +38,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
   /// The operator incrementally assimilates the initiating solution into the guiding solution by correcting edges as needed.
   /// </remarks>
   [Item("TSPPathRelinker", "An operator that relinks paths between traveling salesman solutions. The operator incrementally assimilates the initiating solution into the guiding solution by correcting edges as needed.")]
-  [StorableType("0997A24C-0592-4CE4-A681-70C97890D3F7")]
+  [StorableType("a2c5de50-a050-4269-b80e-1c995eb51626")]
   public sealed class TSPPathRelinker : SingleObjectivePathRelinker {
     [StorableConstructor]
     private TSPPathRelinker(StorableConstructorFlag _) : base(_) { }

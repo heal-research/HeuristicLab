@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -27,7 +28,6 @@ using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 
 namespace HeuristicLab.Problems.TravelingSalesman {
   /// <summary>
@@ -37,55 +37,35 @@ namespace HeuristicLab.Problems.TravelingSalesman {
   /// The operator tries to improve the traveling salesman solution by swapping two randomly chosen edges for a certain number of times.
   /// </remarks>
   [Item("TSPImprovementOperator", "An operator that improves traveling salesman solutions. The operator tries to improve the traveling salesman solution by swapping two randomly chosen edges for a certain number of times.")]
-  [StorableType("9C3B53A4-8FE7-45FC-833B-FF3DAE578010")]
+  [StorableType("1b3cbc66-6dcc-4f61-9cbe-8b50cc54413a")]
   public sealed class TSPImprovementOperator : SingleSuccessorOperator, ISingleObjectiveImprovementOperator {
-    #region Parameter properties
-    public ScopeParameter CurrentScopeParameter {
-      get { return (ScopeParameter)Parameters["CurrentScope"]; }
-    }
-    public ILookupParameter<DistanceMatrix> DistanceMatrixParameter {
-      get { return (ILookupParameter<DistanceMatrix>)Parameters["DistanceMatrix"]; }
-    }
-    public IValueParameter<IntValue> ImprovementAttemptsParameter {
-      get { return (IValueParameter<IntValue>)Parameters["ImprovementAttempts"]; }
-    }
-    public ILookupParameter<IRandom> RandomParameter {
-      get { return (ILookupParameter<IRandom>)Parameters["Random"]; }
-    }
-    public IValueLookupParameter<IItem> SolutionParameter {
-      get { return (IValueLookupParameter<IItem>)Parameters["Solution"]; }
-    }
-    #endregion
+    
+    [Storable] public ILookupParameter<ITSPData> TSPDataParameter { get; private set; }
+    [Storable] public IValueParameter<IntValue> ImprovementAttemptsParameter { get; private set; }
+    [Storable] public ILookupParameter<IRandom> RandomParameter { get; private set; }
+    [Storable] public IValueLookupParameter<IItem> SolutionParameter { get; private set; }
 
-    #region Properties
-    public IScope CurrentScope {
-      get { return CurrentScopeParameter.ActualValue; }
+    public int ImprovementAttempts {
+      get { return ImprovementAttemptsParameter.Value.Value; }
+      set { ImprovementAttemptsParameter.Value.Value = value; }
     }
-    public DistanceMatrix DistanceMatrix {
-      get { return DistanceMatrixParameter.ActualValue; }
-      set { DistanceMatrixParameter.ActualValue = value; }
-    }
-    public IntValue ImprovementAttempts {
-      get { return ImprovementAttemptsParameter.Value; }
-      set { ImprovementAttemptsParameter.Value = value; }
-    }
-    public IRandom Random {
-      get { return RandomParameter.ActualValue; }
-      set { RandomParameter.ActualValue = value; }
-    }
-    #endregion
 
     [StorableConstructor]
     private TSPImprovementOperator(StorableConstructorFlag _) : base(_) { }
-    private TSPImprovementOperator(TSPImprovementOperator original, Cloner cloner) : base(original, cloner) { }
+    private TSPImprovementOperator(TSPImprovementOperator original, Cloner cloner)
+      : base(original, cloner) {
+      TSPDataParameter = cloner.Clone(original.TSPDataParameter);
+      ImprovementAttemptsParameter = cloner.Clone(original.ImprovementAttemptsParameter);
+      RandomParameter = cloner.Clone(original.RandomParameter);
+      SolutionParameter = cloner.Clone(original.SolutionParameter);
+    }
     public TSPImprovementOperator()
       : base() {
       #region Create parameters
-      Parameters.Add(new ScopeParameter("CurrentScope", "The current scope that contains the solution to be improved."));
-      Parameters.Add(new LookupParameter<DistanceMatrix>("DistanceMatrix", "The matrix which contains the distances between the cities."));
-      Parameters.Add(new ValueParameter<IntValue>("ImprovementAttempts", "The number of improvement attempts the operator should perform.", new IntValue(100)));
-      Parameters.Add(new LookupParameter<IRandom>("Random", "A pseudo random number generator."));
-      Parameters.Add(new ValueLookupParameter<IItem>("Solution", "The solution to be improved. This parameter is used for name translation only."));
+      Parameters.Add(TSPDataParameter = new LookupParameter<ITSPData>("TSPData", "The main parameters of the TSP."));
+      Parameters.Add(ImprovementAttemptsParameter = new ValueParameter<IntValue>("ImprovementAttempts", "The number of improvement attempts the operator should perform.", new IntValue(100)));
+      Parameters.Add(RandomParameter = new LookupParameter<IRandom>("Random", "A pseudo random number generator."));
+      Parameters.Add(SolutionParameter = new ValueLookupParameter<IItem>("Solution", "The solution to be improved. This parameter is used for name translation only."));
       #endregion
     }
 
@@ -94,20 +74,22 @@ namespace HeuristicLab.Problems.TravelingSalesman {
     }
 
     public override IOperation Apply() {
-      var solution = CurrentScope.Variables[SolutionParameter.ActualName].Value as Permutation;
+      var random = RandomParameter.ActualValue;
+      var solution = ExecutionContext.Scope.Variables[SolutionParameter.ActualName].Value as Permutation;
       if (solution == null)
         throw new ArgumentException("Cannot improve solution because it has the wrong type.");
       if (solution.PermutationType != PermutationTypes.RelativeUndirected)
         throw new ArgumentException("Cannot improve solution because the permutation type is not supported.");
+      var tspData = TSPDataParameter.ActualValue;
 
-      for (int i = 0; i < ImprovementAttempts.Value; i++) {
-        var move = StochasticInversionSingleMoveGenerator.Apply(solution, Random);
-        double moveQualtiy = TSPInversionMovePathEvaluator.EvaluateByDistanceMatrix(solution, move, DistanceMatrix);
+      for (int i = 0; i < ImprovementAttempts; i++) {
+        var move = StochasticInversionSingleMoveGenerator.Apply(solution, random);
+        double moveQualtiy = TSPInversionMoveEvaluator.CalculateTourLengthDelta(tspData, solution, move);
         if (moveQualtiy < 0)
           InversionManipulator.Apply(solution, move.Index1, move.Index2);
       }
 
-      CurrentScope.Variables.Add(new Variable("LocalEvaluatedSolutions", ImprovementAttempts));
+      ExecutionContext.Scope.Variables.Add(new Variable("LocalEvaluatedSolutions", new IntValue(ImprovementAttempts)));
 
       return base.Apply();
     }
