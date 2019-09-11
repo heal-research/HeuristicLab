@@ -32,18 +32,18 @@ namespace HeuristicLab.Problems.TravelingSalesman.Views {
   /// <summary>
   /// The base class for visual representations of a path tour for a TSP.
   /// </summary>
-  [View("PathTSPTour View")]
-  [Content(typeof(PathTSPTour), true)]
-  public sealed partial class PathTSPTourView : ItemView {
-    public new PathTSPTour Content {
-      get { return (PathTSPTour)base.Content; }
+  [View("TSP Solution View")]
+  [Content(typeof(TSPSolution), true)]
+  public sealed partial class TSPSolutionView : ItemView {
+    public new TSPSolution Content {
+      get { return (TSPSolution)base.Content; }
       set { base.Content = value; }
     }
 
     /// <summary>
-    /// Initializes a new instance of <see cref="PathTSPTourView"/>.
+    /// Initializes a new instance of <see cref="TSPSolutionView"/>.
     /// </summary>
-    public PathTSPTourView() {
+    public TSPSolutionView() {
       InitializeComponent();
     }
 

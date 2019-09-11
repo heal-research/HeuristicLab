@@ -25,9 +25,9 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HEAL.Attic;
 
 namespace HeuristicLab.Data {
   [Item("ValueTypeMatrix", "An abstract base class for representing matrices of value types.")]
@@ -171,20 +171,20 @@ namespace HeuristicLab.Data {
       : this(rows, columns, columnNames) {
       RowNames = rowNames;
     }
-    protected ValueTypeMatrix(T[,] elements) {
+    protected ValueTypeMatrix(T[,] elements, bool @readonly = false) {
       if (elements == null) throw new ArgumentNullException();
       matrix = (T[,])elements.Clone();
       columnNames = new List<string>();
       rowNames = new List<string>();
       sortableView = false;
-      readOnly = false;
+      readOnly = @readonly;
     }
-    protected ValueTypeMatrix(T[,] elements, IEnumerable<string> columnNames)
-      : this(elements) {
+    protected ValueTypeMatrix(T[,] elements, IEnumerable<string> columnNames, bool @readonly = false)
+      : this(elements, @readonly) {
       ColumnNames = columnNames;
     }
-    protected ValueTypeMatrix(T[,] elements, IEnumerable<string> columnNames, IEnumerable<string> rowNames)
-      : this(elements, columnNames) {
+    protected ValueTypeMatrix(T[,] elements, IEnumerable<string> columnNames, IEnumerable<string> rowNames, bool @readonly = false)
+      : this(elements, columnNames, @readonly) {
       RowNames = rowNames;
     }
 

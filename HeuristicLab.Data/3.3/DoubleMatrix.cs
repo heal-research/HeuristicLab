@@ -21,9 +21,9 @@
 
 using System.Collections.Generic;
 using System.Text;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HEAL.Attic;
 
 namespace HeuristicLab.Data {
   [Item("DoubleMatrix", "Represents a matrix of double values.")]
@@ -38,9 +38,9 @@ namespace HeuristicLab.Data {
     public DoubleMatrix(int rows, int columns) : base(rows, columns) { }
     public DoubleMatrix(int rows, int columns, IEnumerable<string> columnNames) : base(rows, columns, columnNames) { }
     public DoubleMatrix(int rows, int columns, IEnumerable<string> columnNames, IEnumerable<string> rowNames) : base(rows, columns, columnNames, rowNames) { }
-    public DoubleMatrix(double[,] elements) : base(elements) { }
-    public DoubleMatrix(double[,] elements, IEnumerable<string> columnNames) : base(elements, columnNames) { }
-    public DoubleMatrix(double[,] elements, IEnumerable<string> columnNames, IEnumerable<string> rowNames) : base(elements, columnNames, rowNames) { }
+    public DoubleMatrix(double[,] elements, bool @readonly = false) : base(elements, @readonly) { }
+    public DoubleMatrix(double[,] elements, IEnumerable<string> columnNames, bool @readonly = false) : base(elements, columnNames, @readonly) { }
+    public DoubleMatrix(double[,] elements, IEnumerable<string> columnNames, IEnumerable<string> rowNames, bool @readonly = false) : base(elements, columnNames, rowNames, @readonly) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new DoubleMatrix(this, cloner);

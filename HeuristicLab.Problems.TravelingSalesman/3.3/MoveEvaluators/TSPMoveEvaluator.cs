@@ -4,11 +4,12 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Operators;
+using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 
 namespace HeuristicLab.Problems.TravelingSalesman {
   [StorableType("17477ad2-2c84-4b02-b5ac-f35ef6cc667f")]
-  public interface ITSPMoveEvaluator : IOperator {
+  public interface ITSPMoveEvaluator : IOperator, ISingleObjectiveMoveEvaluator, IMoveOperator {
     ILookupParameter<Permutation> TSPTourParameter { get; }
     ILookupParameter<ITSPData> TSPDataParameter { get; }
     ILookupParameter<DoubleValue> TourLengthParameter { get; }
@@ -22,6 +23,9 @@ namespace HeuristicLab.Problems.TravelingSalesman {
     [Storable] public ILookupParameter<ITSPData> TSPDataParameter { get; private set; }
     [Storable] public ILookupParameter<DoubleValue> TourLengthParameter { get; private set; }
     [Storable] public ILookupParameter<DoubleValue> TourLengthWithMoveParameter { get; private set; }
+
+    ILookupParameter<DoubleValue> ISingleObjectiveMoveEvaluator.QualityParameter => TourLengthParameter;
+    ILookupParameter<DoubleValue> ISingleObjectiveMoveEvaluator.MoveQualityParameter => TourLengthWithMoveParameter;
 
     [StorableConstructor]
     protected TSPMoveEvaluator(StorableConstructorFlag _) : base(_) { }

@@ -1,4 +1,26 @@
-﻿using System;
+﻿#region License Information
+/* HeuristicLab
+ * Copyright (C) Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ *
+ * This file is part of HeuristicLab.
+ *
+ * HeuristicLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * HeuristicLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
+ */
+#endregion
+
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using HEAL.Attic;
 using HeuristicLab.Common;
@@ -24,13 +46,13 @@ namespace HeuristicLab.Problems.TravelingSalesman {
     public override bool Maximization => false;
 
     [Storable] public IValueParameter<ITSPData> TSPDataParameter { get; private set; }
-    [Storable] public IValueParameter<Permutation> BestKnownSolutionParameter { get; private set; }
+    [Storable] public IValueParameter<ITSPSolution> BestKnownSolutionParameter { get; private set; }
 
     public ITSPData TSPData {
       get { return TSPDataParameter.Value; }
       set { TSPDataParameter.Value = value; }
     }
-    public Permutation BestKnownSolution {
+    public ITSPSolution BestKnownSolution {
       get { return BestKnownSolutionParameter.Value; }
       set { BestKnownSolutionParameter.Value = value; }
     }
@@ -46,7 +68,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
 
     public TSP() : base(new PermutationEncoding("Tour", 16, PermutationTypes.RelativeUndirected)) {
       Parameters.Add(TSPDataParameter = new ValueParameter<ITSPData>("TSPData", "The main parameters of the TSP."));
-      Parameters.Add(BestKnownSolutionParameter = new OptionalValueParameter<Permutation>("BestKnownSolution", "The best known solution."));
+      Parameters.Add(BestKnownSolutionParameter = new OptionalValueParameter<ITSPSolution>("BestKnownSolution", "The best known solution."));
       
       TSPData = new EuclideanTSPData() {
         Coordinates = new DoubleMatrix(new double[,] {
@@ -84,16 +106,23 @@ namespace HeuristicLab.Problems.TravelingSalesman {
       if (!Maximization)
         i = qualities.Select((x, index) => new { index, Fitness = x }).OrderBy(x => x.Fitness).First().index;
       else i = qualities.Select((x, index) => new { index, Fitness = x }).OrderByDescending(x => x.Fitness).First().index;
+      var solution = TSPData.GetSolution(solutions[i], qualities[i]);
 
       if (double.IsNaN(BestKnownQuality) ||
           Maximization && qualities[i] > BestKnownQuality ||
           !Maximization && qualities[i] < BestKnownQuality) {
-        BestKnownQualityParameter.ActualValue = new DoubleValue(qualities[i]);
-        BestKnownSolutionParameter.ActualValue = (Permutation)solutions[i].Clone();
+        BestKnownQualityParameter.Value = new DoubleValue(qualities[i]);
+        BestKnownSolutionParameter.Value = solution;
       }
-
-      var solution = TSPData.GetSolution(solutions[i], qualities[i]);
       results.AddOrUpdateResult("Best TSP Solution", solution);
+    }
+
+    public override IEnumerable<Permutation> GetNeighbors(Permutation solution, IRandom random) {
+      foreach (var move in ExhaustiveInversionMoveGenerator.Generate(solution)) {
+        var clone = (Permutation)solution.Clone();
+        InversionManipulator.Apply(clone, move.Index1, move.Index2);
+        yield return clone;
+      }
     }
 
     public void Load(TSPData data) {
@@ -140,8 +169,10 @@ namespace HeuristicLab.Problems.TravelingSalesman {
 
       if (data.BestKnownTour != null) {
         try {
-          BestKnownSolution = new Permutation(PermutationTypes.RelativeUndirected, data.BestKnownTour);
-          BestKnownQuality = Evaluate(BestKnownSolution);
+          var tour = new Permutation(PermutationTypes.RelativeUndirected, data.BestKnownTour);
+          var tourLength = Evaluate(tour);
+          BestKnownSolution = new TSPSolution(data.Coordinates != null ? new DoubleMatrix(data.Coordinates) : null, tour, new DoubleValue(tourLength));
+          BestKnownQuality = tourLength;
         } catch (InvalidOperationException) {
           if (data.BestKnownQuality.HasValue)
             BestKnownQuality = data.BestKnownQuality.Value;
@@ -169,9 +200,10 @@ namespace HeuristicLab.Problems.TravelingSalesman {
       Operators.Add(new TSPSimultaneousPathRelinker());
 
       Operators.Add(new TSPAlleleFrequencyAnalyzer());
-      foreach (var op in ApplicationManager.Manager.GetInstances<ITSPMoveEvaluator>())
+      foreach (var op in ApplicationManager.Manager.GetInstances<ITSPMoveEvaluator>()) {
+        Encoding.ConfigureOperator(op);
         Operators.Add(op);
-
+      }
       ParameterizeOperators();
     }
 

@@ -20,7 +20,7 @@
 #endregion
 
 namespace HeuristicLab.Problems.TravelingSalesman.Views {
-  partial class PathTSPTourView {
+  partial class TSPSolutionView {
     /// <summary> 
     /// Required designer variable.
     /// </summary>
@@ -58,6 +58,7 @@ namespace HeuristicLab.Problems.TravelingSalesman.Views {
       this.visualizationTabPage.SuspendLayout();
       this.valueTabPage.SuspendLayout();
       this.tourGroupBox.SuspendLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
       this.splitContainer.Panel1.SuspendLayout();
       this.splitContainer.Panel2.SuspendLayout();
       this.splitContainer.SuspendLayout();
@@ -66,29 +67,30 @@ namespace HeuristicLab.Problems.TravelingSalesman.Views {
       // 
       // pictureBox
       // 
-      this.pictureBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.pictureBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.pictureBox.BackColor = System.Drawing.Color.White;
       this.pictureBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
       this.pictureBox.Location = new System.Drawing.Point(6, 6);
       this.pictureBox.Name = "pictureBox";
-      this.pictureBox.Size = new System.Drawing.Size(403, 288);
+      this.pictureBox.Size = new System.Drawing.Size(403, 291);
       this.pictureBox.TabIndex = 0;
       this.pictureBox.TabStop = false;
       this.pictureBox.SizeChanged += new System.EventHandler(this.pictureBox_SizeChanged);
       // 
       // tabControl
       // 
-      this.tabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.tabControl.AllowDrop = true;
+      this.tabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.tabControl.Controls.Add(this.visualizationTabPage);
       this.tabControl.Controls.Add(this.valueTabPage);
       this.tabControl.Location = new System.Drawing.Point(0, 3);
       this.tabControl.Name = "tabControl";
       this.tabControl.SelectedIndex = 0;
-      this.tabControl.Size = new System.Drawing.Size(423, 326);
+      this.tabControl.Size = new System.Drawing.Size(423, 329);
       this.tabControl.TabIndex = 0;
       // 
       // visualizationTabPage
@@ -98,7 +100,7 @@ namespace HeuristicLab.Problems.TravelingSalesman.Views {
       this.visualizationTabPage.Location = new System.Drawing.Point(4, 22);
       this.visualizationTabPage.Name = "visualizationTabPage";
       this.visualizationTabPage.Padding = new System.Windows.Forms.Padding(3);
-      this.visualizationTabPage.Size = new System.Drawing.Size(415, 300);
+      this.visualizationTabPage.Size = new System.Drawing.Size(415, 303);
       this.visualizationTabPage.TabIndex = 0;
       this.visualizationTabPage.Text = "Visualization";
       // 
@@ -115,9 +117,9 @@ namespace HeuristicLab.Problems.TravelingSalesman.Views {
       // 
       // tourGroupBox
       // 
-      this.tourGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.tourGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.tourGroupBox.Controls.Add(this.tourViewHost);
       this.tourGroupBox.Location = new System.Drawing.Point(6, 6);
       this.tourGroupBox.Name = "tourGroupBox";
@@ -128,20 +130,24 @@ namespace HeuristicLab.Problems.TravelingSalesman.Views {
       // 
       // tourViewHost
       // 
-      this.tourViewHost.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.tourViewHost.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.tourViewHost.Caption = "View";
       this.tourViewHost.Content = null;
+      this.tourViewHost.Enabled = false;
       this.tourViewHost.Location = new System.Drawing.Point(6, 19);
       this.tourViewHost.Name = "tourViewHost";
       this.tourViewHost.ReadOnly = false;
       this.tourViewHost.Size = new System.Drawing.Size(391, 263);
       this.tourViewHost.TabIndex = 0;
+      this.tourViewHost.ViewsLabelVisible = true;
       this.tourViewHost.ViewType = null;
       // 
       // splitContainer
       // 
       this.splitContainer.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.splitContainer.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
       this.splitContainer.Location = new System.Drawing.Point(0, 0);
       this.splitContainer.Name = "splitContainer";
       this.splitContainer.Orientation = System.Windows.Forms.Orientation.Horizontal;
@@ -154,41 +160,43 @@ namespace HeuristicLab.Problems.TravelingSalesman.Views {
       // 
       this.splitContainer.Panel2.Controls.Add(this.tabControl);
       this.splitContainer.Size = new System.Drawing.Size(423, 402);
-      this.splitContainer.SplitterDistance = 69;
+      this.splitContainer.SplitterDistance = 66;
       this.splitContainer.TabIndex = 0;
       // 
       // qualityGroupBox
       // 
-      this.qualityGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.qualityGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.qualityGroupBox.Controls.Add(this.qualityViewHost);
       this.qualityGroupBox.Location = new System.Drawing.Point(0, 0);
       this.qualityGroupBox.Name = "qualityGroupBox";
-      this.qualityGroupBox.Size = new System.Drawing.Size(423, 66);
+      this.qualityGroupBox.Size = new System.Drawing.Size(423, 63);
       this.qualityGroupBox.TabIndex = 0;
       this.qualityGroupBox.TabStop = false;
       this.qualityGroupBox.Text = "Quality";
       // 
       // qualityViewHost
       // 
-      this.qualityViewHost.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.qualityViewHost.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.qualityViewHost.Caption = "View";
       this.qualityViewHost.Content = null;
+      this.qualityViewHost.Enabled = false;
       this.qualityViewHost.Location = new System.Drawing.Point(6, 19);
       this.qualityViewHost.Name = "qualityViewHost";
       this.qualityViewHost.ReadOnly = false;
-      this.qualityViewHost.Size = new System.Drawing.Size(411, 41);
+      this.qualityViewHost.Size = new System.Drawing.Size(411, 38);
       this.qualityViewHost.TabIndex = 0;
+      this.qualityViewHost.ViewsLabelVisible = true;
       this.qualityViewHost.ViewType = null;
       // 
-      // PathTSPTourView
+      // TSPSolutionView
       // 
-      this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
       this.Controls.Add(this.splitContainer);
-      this.Name = "PathTSPTourView";
+      this.Name = "TSPSolutionView";
       this.Size = new System.Drawing.Size(423, 402);
       ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).EndInit();
       this.tabControl.ResumeLayout(false);
@@ -197,6 +205,7 @@ namespace HeuristicLab.Problems.TravelingSalesman.Views {
       this.tourGroupBox.ResumeLayout(false);
       this.splitContainer.Panel1.ResumeLayout(false);
       this.splitContainer.Panel2.ResumeLayout(false);
+      ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).EndInit();
       this.splitContainer.ResumeLayout(false);
       this.qualityGroupBox.ResumeLayout(false);
       this.ResumeLayout(false);

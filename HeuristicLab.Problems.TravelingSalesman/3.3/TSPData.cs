@@ -1,6 +1,26 @@
-﻿using System;
+﻿#region License Information
+/* HeuristicLab
+ * Copyright (C) Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ *
+ * This file is part of HeuristicLab.
+ *
+ * HeuristicLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * HeuristicLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
+ */
+#endregion
+
+using System;
 using System.ComponentModel;
-using System.Drawing;
 using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -14,43 +34,45 @@ namespace HeuristicLab.Problems.TravelingSalesman {
     ITSPSolution GetSolution(Permutation tspTour, double tourLength);
   }
 
-  [StorableType("f08a63d9-0b83-4944-9251-42925baeb872")]
-  public interface ITSPSolution : IItem {
-    DoubleMatrix Coordinates { get; }
-    Permutation Tour { get; }
-    DoubleValue TourLength { get; }
-  }
-
   [Item("Matrix-based TSP Data", "TSP that is representd by a distance matrix.")]
   [StorableType("4df58a35-679d-4414-b815-9450ae100823")]
-  public class MatrixTSPData : Item, ITSPData {
-    [Storable]
-    private double[,] Matrix { get; set; }
+  public sealed class MatrixTSPData : Item, ITSPData, INotifyPropertyChanged {
 
     [Storable]
-    public DoubleMatrix DisplayCoordinates { get; set; }
+    public DoubleMatrix Matrix { get; private set; }
+
+    [Storable]
+    private DoubleMatrix displayCoordinates;
+    public DoubleMatrix DisplayCoordinates {
+      get => displayCoordinates;
+      set {
+        if (displayCoordinates == value) return;
+        displayCoordinates = value;
+        OnPropertyChanged(nameof(DisplayCoordinates));
+      }
+    }
 
     [StorableConstructor]
-    protected MatrixTSPData(StorableConstructorFlag _) : base(_) { }
-    protected MatrixTSPData(MatrixTSPData original, Cloner cloner) : base(original, cloner) {
+    private MatrixTSPData(StorableConstructorFlag _) : base(_) { }
+    private MatrixTSPData(MatrixTSPData original, Cloner cloner) : base(original, cloner) {
       Matrix = original.Matrix;
-      DisplayCoordinates = cloner.Clone(original.DisplayCoordinates);
+      displayCoordinates = cloner.Clone(original.displayCoordinates);
     }
     public MatrixTSPData() {
-      Matrix = new double[0, 0];
+      Matrix = new DoubleMatrix(new double[0, 0], @readonly: true);
       DisplayCoordinates = null;
     }
     public MatrixTSPData(double[,] matrix, double[,] coordinates = null) {
-      Matrix = (double[,])matrix.Clone();
+      Matrix = new DoubleMatrix(matrix, @readonly: true);
       if (coordinates != null) DisplayCoordinates = new DoubleMatrix(coordinates);
       if (DisplayCoordinates != null && DisplayCoordinates.Columns != 2)
         throw new ArgumentException("Argument must have exactly two columns.", nameof(coordinates));
-      if (DisplayCoordinates != null && DisplayCoordinates.Rows != Matrix.GetLength(0))
+      if (DisplayCoordinates != null && DisplayCoordinates.Rows != Matrix.Rows)
         throw new ArgumentException("Unequal number of rows in " + nameof(matrix) + " and " + nameof(coordinates) + ".");
     }
 
     public ITSPSolution GetSolution(Permutation tour, double tourLength) {
-      return new PathTSPTour(DisplayCoordinates, tour, new DoubleValue(tourLength));
+      return new TSPSolution(DisplayCoordinates, tour, new DoubleValue(tourLength));
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -58,25 +80,33 @@ namespace HeuristicLab.Problems.TravelingSalesman {
     }
 
     public void SetMatrix(double[,] matrix, double[,] coordinates = null) {
-      Matrix = (double[,])matrix.Clone();
+      Matrix = new DoubleMatrix(matrix, @readonly: true);
+      OnPropertyChanged(nameof(Matrix));
       if (coordinates == null) DisplayCoordinates = null;
       else DisplayCoordinates = new DoubleMatrix(coordinates);
       if (DisplayCoordinates != null && DisplayCoordinates.Columns != 2)
         throw new ArgumentException("Argument must have exactly two columns.", nameof(coordinates));
-      if (DisplayCoordinates != null && DisplayCoordinates.Rows != Matrix.GetLength(0))
+      if (DisplayCoordinates != null && DisplayCoordinates.Rows != Matrix.Rows)
         throw new ArgumentException("Unequal number of rows in " + nameof(matrix) + " and " + nameof(coordinates) + ".");
     }
 
-    public void SetMatrix(ValueTypeMatrix<double> matrix, DoubleMatrix coordinates = null) {
-      Matrix = matrix.CloneAsMatrix();
+    public void SetMatrix(DoubleMatrix matrix, DoubleMatrix coordinates = null) {
+      Matrix = (DoubleMatrix)matrix.AsReadOnly();
+      OnPropertyChanged(nameof(Matrix));
       DisplayCoordinates = (DoubleMatrix)coordinates?.Clone();
       if (DisplayCoordinates != null && DisplayCoordinates.Columns != 2)
         throw new ArgumentException("Argument must have exactly two columns.", nameof(coordinates));
-      if (DisplayCoordinates != null && DisplayCoordinates.Rows != Matrix.GetLength(0))
+      if (DisplayCoordinates != null && DisplayCoordinates.Rows != Matrix.Rows)
         throw new ArgumentException("Unequal number of rows in " + nameof(matrix) + " and " + nameof(coordinates) + ".");
     }
 
     public double GetDistance(int fromCity, int toCity) => Matrix[fromCity, toCity];
+
+
+    public event PropertyChangedEventHandler PropertyChanged;
+    private void OnPropertyChanged(string property) {
+      PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
+    }
   }
 
   [Item("Coordinates-based TSP Data", "TSP that is represented by coordinates of locations.")]
@@ -107,7 +137,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
     public abstract double GetDistance(double fromX, double fromY, double toX, double toY);
 
     public ITSPSolution GetSolution(Permutation tour, double tourLength) {
-      return new PathTSPTour(Coordinates, tour, new DoubleValue(tourLength));
+      return new TSPSolution(Coordinates, tour, new DoubleValue(tourLength));
     }
   }
 
@@ -178,82 +208,6 @@ namespace HeuristicLab.Problems.TravelingSalesman {
 
     private double ConvertToRadian(double x) {
       return PI * (Math.Truncate(x) + 5.0 * (x - Math.Truncate(x)) / 3.0) / 180.0;
-    }
-  }
-  /// <summary>
-  /// Represents a tour of a Traveling Salesman Problem given in path representation which can be visualized in the GUI.
-  /// </summary>
-  [Item("PathTSPTour", "Represents a tour of a Traveling Salesman Problem given in path representation which can be visualized in the GUI.")]
-  [StorableType("2CAE7C49-751B-4802-9025-62E2268E47AE")]
-  public sealed class PathTSPTour : Item, ITSPSolution, INotifyPropertyChanged {
-    public static new Image StaticItemImage {
-      get { return HeuristicLab.Common.Resources.VSImageLibrary.Image; }
-    }
-
-    [Storable]
-    private DoubleMatrix coordinates;
-    public DoubleMatrix Coordinates {
-      get { return coordinates; }
-      set {
-        if (coordinates == value) return;
-        coordinates = value;
-        OnPropertyChanged(nameof(Coordinates));
-      }
-    }
-
-    [Storable(Name = "tour", OldName = "permutation")]
-    private Permutation tour;
-    public Permutation Tour {
-      get { return tour; }
-      set {
-        if (tour == value) return;
-        tour = value;
-        OnPropertyChanged(nameof(Tour));
-      }
-    }
-    [Storable(Name = "tourLength", OldName = "quality")]
-    private DoubleValue tourLength;
-    public DoubleValue TourLength {
-      get { return tourLength; }
-      set {
-        if (tourLength == value) return;
-        tourLength = value;
-        OnPropertyChanged(nameof(TourLength));
-      }
-    }
-
-    [StorableConstructor]
-    private PathTSPTour(StorableConstructorFlag _) : base(_) { }
-    private PathTSPTour(PathTSPTour original, Cloner cloner)
-      : base(original, cloner) {
-      this.coordinates = cloner.Clone(original.coordinates);
-      this.tour = cloner.Clone(original.tour);
-      this.tourLength = cloner.Clone(original.tourLength);
-    }
-    public PathTSPTour() : base() { }
-    public PathTSPTour(DoubleMatrix coordinates)
-      : base() {
-      this.coordinates = coordinates;
-    }
-    public PathTSPTour(DoubleMatrix coordinates, Permutation permutation)
-      : base() {
-      this.coordinates = coordinates;
-      this.tour = permutation;
-    }
-    public PathTSPTour(DoubleMatrix coordinates, Permutation permutation, DoubleValue quality)
-      : base() {
-      this.coordinates = coordinates;
-      this.tour = permutation;
-      this.tourLength = quality;
-    }
-
-    public override IDeepCloneable Clone(Cloner cloner) {
-      return new PathTSPTour(this, cloner);
-    }
-
-    public event PropertyChangedEventHandler PropertyChanged;
-    private void OnPropertyChanged(string property) {
-      PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
     }
   }
 }

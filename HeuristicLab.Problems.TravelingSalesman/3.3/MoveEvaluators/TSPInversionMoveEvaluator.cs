@@ -30,7 +30,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
 
     protected override double CalculateTourLengthWithMove(ITSPData tspData, Permutation tspTour, double tourLength) {
       var move = MoveParameter.ActualValue;
-      return CalculateTourLengthDelta(tspData, tspTour, move);
+      return tourLength + CalculateTourLengthDelta(tspData, tspTour, move);
     }
 
     public static double CalculateTourLengthDelta(ITSPData tspData, Permutation tspTour, InversionMove move) {
