@@ -33,6 +33,7 @@ namespace HeuristicLab.Random {
   /// </summary>
   [Item("NormalDistributedRandom", "A pseudo random number generator which uses the Ziggurat method to create normally distributed random numbers.")]
   [StorableType("240F7050-C05B-4E85-82C3-2871FE2138B1")]
+  [Obsolete("Use NormalDistributedRandomPolar instead.")]
   public sealed class NormalDistributedRandom : Item, IRandom {
     [Storable]
     private double mu;
@@ -448,10 +449,6 @@ namespace HeuristicLab.Random {
       2.6696291752e-03
     };
 
-    /// <summary>
-    /// Used by HeuristicLab.Persistence to initialize new instances during deserialization.
-    /// </summary>
-    /// <param name="deserializing">true, if the constructor is called during deserialization.</param>
     [StorableConstructor]
     private NormalDistributedRandom(StorableConstructorFlag _) : base(_) { }
 
@@ -479,7 +476,7 @@ namespace HeuristicLab.Random {
 
     /// <summary>
     /// Initializes a new instance of <see cref="NormalDistributedRandom"/> with the given parameters.
-    /// <note type="caution"> No CopyConstructor! The random number generator is not copied!</note>
+    /// <note type="caution">The random number generator is not copied!</note>
     /// </summary>    
     /// <param name="uniformRandom">The random number generator.</param>
     /// <param name="mu">The value for µ.</param>
@@ -536,9 +533,7 @@ namespace HeuristicLab.Random {
     /// <summary>
     /// Clones the current instance (deep clone).
     /// </summary>
-    /// <remarks>Deep clone through <see cref="cloner.Clone"/> method of helper class 
-    /// <see cref="Auxiliary"/>.</remarks>
-    /// <param name="clonedObjects">Dictionary of all already cloned objects. (Needed to avoid cycles.)</param>
+    /// <remarks>Deep clone through <see cref="cloner.Clone"/> method of helper class.</remarks>
     /// <returns>The cloned object as <see cref="NormalDistributedRandom"/>.</returns>
     public override IDeepCloneable Clone(Cloner cloner) {
       return new NormalDistributedRandom(this, cloner);
