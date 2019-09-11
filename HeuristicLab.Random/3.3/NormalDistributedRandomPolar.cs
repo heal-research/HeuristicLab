@@ -154,7 +154,7 @@ namespace HeuristicLab.Random {
         u = uniformRandom.NextDouble() * 2 - 1;
         v = uniformRandom.NextDouble() * 2 - 1;
         s = u * u + v * v;
-      } while (s >= 1 || s == 0);
+      } while (s > 1 || s == 0);
       s = Math.Sqrt(-2.0 * Math.Log(s) / s);
       return mu + sigma * u * s; 
     }
