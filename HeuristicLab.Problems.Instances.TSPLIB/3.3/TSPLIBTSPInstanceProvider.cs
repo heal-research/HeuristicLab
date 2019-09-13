@@ -95,5 +95,74 @@ namespace HeuristicLab.Problems.Instances.TSPLIB {
       return data;
     }
 
+    public override bool CanExportData => true;
+
+    public override void ExportData(TSPData instance, string path) {
+      using (var writer = new StreamWriter(File.OpenWrite(path))) {
+        writer.WriteLine("NAME: " + instance.Name);
+        writer.WriteLine("TYPE: TSP");
+        writer.WriteLine("COMMENT: " + instance.Description.Replace(Environment.NewLine, " \\\\ " ));
+        writer.WriteLine("DIMENSION: " + instance.Dimension);
+
+        if (instance.DistanceMeasure == DistanceMeasure.Euclidean) {
+          // TSPLIB only knows rounded euclidean distance
+          instance.Distances = instance.GetDistanceMatrix();
+          instance.DistanceMeasure = DistanceMeasure.Direct;
+        }
+
+        if (instance.DistanceMeasure == DistanceMeasure.Direct) {
+          writer.WriteLine("EDGE_WEIGHT_TYPE: EXPLICIT");
+          writer.WriteLine("EDGE_WEIGHT_FORMAT: UPPER_ROW");
+          if (instance.Coordinates != null && instance.Coordinates.GetLength(1) == 2) {
+            writer.WriteLine("DISPLAY_DATA_TYPE: TWOD_DISPLAY");
+          }
+        } else {
+          writer.Write("EDGE_WEIGHT_TYPE: ");
+          switch (instance.DistanceMeasure) {
+            case DistanceMeasure.RoundedEuclidean:
+              writer.WriteLine("EUC_2D");
+              break;
+            case DistanceMeasure.UpperEuclidean:
+              writer.WriteLine("CEIL_2D");
+              break;
+            case DistanceMeasure.Att:
+              writer.WriteLine("ATT");
+              break;
+            case DistanceMeasure.Geo:
+              writer.WriteLine("GEO");
+              break;
+            case DistanceMeasure.Manhattan:
+              writer.WriteLine("MAN_2D");
+              break;
+            case DistanceMeasure.Maximum:
+              writer.WriteLine("MAX_2D");
+              break;
+            default: throw new InvalidOperationException("Unknown distance measure: " + instance.DistanceMeasure);
+          }
+          writer.WriteLine("DISPLAY_DATA_TYPE: COORD_DISPLAY");
+        }
+
+        if (instance.DistanceMeasure == DistanceMeasure.Direct) {
+          writer.WriteLine("EDGE_WEIGHT_SECTION");
+          for (var i = 0; i < instance.Distances.GetLength(0) - 1; i++) {
+            for (var j = i + 1; j < instance.Distances.GetLength(1); j++) {
+              writer.Write(instance.Distances[i, j] + " ");
+            }
+            writer.WriteLine();
+          }
+        }
+
+        if (instance.Coordinates != null && instance.Coordinates.GetLength(1) == 2) {
+          if (instance.DistanceMeasure == DistanceMeasure.Direct)
+            writer.WriteLine("DISPLAY_DATA_SECTION");
+          else writer.WriteLine("NODE_COORD_SECTION");
+          for (var i = 1; i <= instance.Coordinates.GetLength(0); i++) {
+            writer.WriteLine(i + " " + instance.Coordinates[i - 1, 0] + " " + instance.Coordinates[i - 1, 1]);
+          }
+        }
+        writer.WriteLine("EOF");
+        writer.Flush();
+      }
+    }
   }
 }

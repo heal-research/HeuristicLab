@@ -36,7 +36,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
   [Item("Traveling Salesman Problem (TSP)", "Represents a symmetric Traveling Salesman Problem.")]
   [Creatable(CreatableAttribute.Categories.CombinatorialProblems, Priority = 100)]
   [StorableType("8415476a-69de-45ad-95be-298ed7c97e84")]
-  public class TSP : PermutationProblem, IProblemInstanceConsumer<TSPData> {
+  public class TSP : PermutationProblem, IProblemInstanceConsumer<TSPData>, IProblemInstanceExporter<TSPData> {
     /// <summary>
     /// This limit governs when a distance matrix is used. For all problems smaller than that, the distance matrix is
     /// computed. This greatly speeds up computation time.
@@ -69,16 +69,8 @@ namespace HeuristicLab.Problems.TravelingSalesman {
     public TSP() : base(new PermutationEncoding("Tour", 16, PermutationTypes.RelativeUndirected)) {
       Parameters.Add(TSPDataParameter = new ValueParameter<ITSPData>("TSPData", "The main parameters of the TSP."));
       Parameters.Add(BestKnownSolutionParameter = new OptionalValueParameter<ITSPSolution>("BestKnownSolution", "The best known solution."));
-      
-      TSPData = new EuclideanTSPData() {
-        Coordinates = new DoubleMatrix(new double[,] {
-        { 100, 100 }, { 100, 200 }, { 100, 300 }, { 100, 400 },
-        { 200, 100 }, { 200, 200 }, { 200, 300 }, { 200, 400 },
-        { 300, 100 }, { 300, 200 }, { 300, 300 }, { 300, 400 },
-        { 400, 100 }, { 400, 200 }, { 400, 300 }, { 400, 400 }
-        }),
-        Rounding = EuclideanTSPData.RoundingMode.Midpoint
-      };
+
+      TSPData = new EuclideanTSPData();
 
       InitializeOperators();
     }
@@ -143,22 +135,22 @@ namespace HeuristicLab.Problems.TravelingSalesman {
         || data.DistanceMeasure == DistanceMeasure.Manhattan
         || data.DistanceMeasure == DistanceMeasure.Maximum
         || data.Dimension <= DistanceMatrixSizeLimit) {
-        TSPData = new MatrixTSPData(data.GetDistanceMatrix(), data.Coordinates);
+        TSPData = new MatrixTSPData(data.Name, data.GetDistanceMatrix(), data.Coordinates) { Description = data.Description };
       } else if (data.DistanceMeasure == DistanceMeasure.Direct && data.Distances != null) {
-        TSPData = new MatrixTSPData(data.Distances, data.Coordinates);
+        TSPData = new MatrixTSPData(data.Name, data.Distances, data.Coordinates) { Description = data.Description };
       } else {
         switch (data.DistanceMeasure) {
           case DistanceMeasure.Euclidean:
-            TSPData = new EuclideanTSPData(data.Coordinates) { Rounding = EuclideanTSPData.RoundingMode.None };
+            TSPData = new EuclideanTSPData(data.Name, data.Coordinates, EuclideanTSPData.DistanceRounding.None) { Description = data.Description };
             break;
           case DistanceMeasure.RoundedEuclidean:
-            TSPData = new EuclideanTSPData(data.Coordinates) { Rounding = EuclideanTSPData.RoundingMode.Midpoint };
+            TSPData = new EuclideanTSPData(data.Name, data.Coordinates, EuclideanTSPData.DistanceRounding.Midpoint) { Description = data.Description };
             break;
           case DistanceMeasure.UpperEuclidean:
-            TSPData = new EuclideanTSPData(data.Coordinates) { Rounding = EuclideanTSPData.RoundingMode.Ceiling };
+            TSPData = new EuclideanTSPData(data.Name, data.Coordinates, EuclideanTSPData.DistanceRounding.Ceiling) { Description = data.Description };
             break;
           case DistanceMeasure.Geo:
-            TSPData = new GeoTSPData(data.Coordinates);
+            TSPData = new GeoTSPData(data.Name, data.Coordinates) { Description = data.Description };
             break;
           default:
             throw new System.IO.InvalidDataException("An unknown distance measure is given in the instance!");
@@ -181,6 +173,15 @@ namespace HeuristicLab.Problems.TravelingSalesman {
         BestKnownQuality = data.BestKnownQuality.Value;
       }
       OnReset();
+    }
+
+    public TSPData Export() {
+      var instance = TSPData.Export();
+      if (!double.IsNaN(BestKnownQuality))
+        instance.BestKnownQuality = BestKnownQuality;
+      if (BestKnownSolution?.Tour != null)
+        instance.BestKnownTour = BestKnownSolution.Tour.ToArray();
+      return instance;
     }
 
     protected override void OnEncodingChanged() {

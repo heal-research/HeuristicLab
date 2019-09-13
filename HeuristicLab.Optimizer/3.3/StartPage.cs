@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -109,7 +110,6 @@ namespace HeuristicLab.Optimizer {
           LoadSample(resourceName, assembly, uncategorizedGroup, count);
         }
 
-      } catch {
       } finally {
         OnAllSamplesLoaded();
         Progress.HideFromControl(samplesListView);
@@ -119,7 +119,12 @@ namespace HeuristicLab.Optimizer {
     private void LoadSample(string name, Assembly assembly, ListViewGroup group, int count) {
       using (var stream = assembly.GetManifestResourceStream(name)) {
         var serializer = new ProtoBufSerializer();
-        var item = (NamedItem)serializer.Deserialize(stream, false);
+        NamedItem item;
+        try {
+          item = (NamedItem)serializer.Deserialize(stream, false);
+        } catch {
+          item = new ErrorMessage(name, "Sample failed to load!");
+        }
         OnSampleLoaded(item, group, 1.0 / count);
       }
     }
@@ -195,6 +200,18 @@ namespace HeuristicLab.Optimizer {
     private void showStartPageCheckBox_CheckedChanged(object sender, EventArgs e) {
       Properties.Settings.Default.ShowStartPage = showStartPageCheckBox.Checked;
       Properties.Settings.Default.Save();
+    }
+
+    [Item("Error Message", "")]
+    class ErrorMessage : NamedItem {
+      public override Image ItemImage => Common.Resources.VSImageLibrary.Error;
+
+      protected ErrorMessage(ErrorMessage original, Cloner cloner) : base(original, cloner) { }
+      public ErrorMessage(string error, string description) : base(error, description) { }
+
+      public override IDeepCloneable Clone(Cloner cloner) {
+        return new ErrorMessage(this, cloner);
+      }
     }
   }
 }

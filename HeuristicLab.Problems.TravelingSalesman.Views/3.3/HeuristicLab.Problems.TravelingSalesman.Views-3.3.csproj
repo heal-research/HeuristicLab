@@ -122,6 +122,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CoordinatesTSPDataView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="CoordinatesTSPDataView.Designer.cs">
+      <DependentUpon>CoordinatesTSPDataView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="EuclideanTSPDataView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="EuclideanTSPDataView.Designer.cs">
+      <DependentUpon>EuclideanTSPDataView.cs</DependentUpon>
+    </Compile>
     <Compile Include="MatrixTSPDataView.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -234,14 +246,6 @@
       <Name>HeuristicLab.Problems.TravelingSalesman-3.3</Name>
       <Private>False</Private>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="MatrixTSPDataView.resx">
-      <DependentUpon>MatrixTSPDataView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="TSPSolutionView.resx">
-      <DependentUpon>TSPSolutionView.cs</DependentUpon>
-    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

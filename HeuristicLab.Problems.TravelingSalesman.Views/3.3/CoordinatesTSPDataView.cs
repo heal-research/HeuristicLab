@@ -28,49 +28,48 @@ using HeuristicLab.MainForm.WindowsForms;
 
 namespace HeuristicLab.Problems.TravelingSalesman.Views {
   [View("Matrix TSP Data View")]
-  [Content(typeof(MatrixTSPData), IsDefaultView = true)]
-  public partial class MatrixTSPDataView : NamedItemView {
+  [Content(typeof(CoordinatesTSPData), IsDefaultView = true)]
+  public partial class CoordinatesTSPDataView : NamedItemView {
 
-    public new MatrixTSPData Content {
-      get { return (MatrixTSPData)base.Content; }
+    public new CoordinatesTSPData Content {
+      get { return (CoordinatesTSPData)base.Content; }
       set { base.Content = value; }
     }
 
-    public MatrixTSPDataView() {
+    public CoordinatesTSPDataView() {
       InitializeComponent();
     }
 
     protected override void OnContentChanged() {
       base.OnContentChanged();
       if (Content == null) {
-        distanceMatrixView.Content = null;
         coordinatesMatrixView.Content = null;
         coordinatesPictureBox.Image = null;
       } else {
-        distanceMatrixView.Content = Content.Matrix;
-        coordinatesMatrixView.Content = Content.DisplayCoordinates;
+        coordinatesMatrixView.Content = Content.Coordinates;
         GenerateImage();
       }
     }
 
     protected override void SetEnabledStateOfControls() {
       base.SetEnabledStateOfControls();
-      distanceMatrixView.Enabled = !ReadOnly && !Locked && Content != null;
       coordinatesMatrixView.Enabled = !ReadOnly && !Locked && Content != null;
     }
 
-    private void GenerateImage() {
+    protected virtual void GenerateImage() {
       if (coordinatesPictureBox.Width > 0 && coordinatesPictureBox.Height > 0) {
-        DoubleMatrix coordinates = Content?.DisplayCoordinates;
+        DoubleMatrix coordinates = Content.Coordinates;
+        var xAxis = Content is GeoTSPData ? 1 : 0;
+        var yAxis = 1 - xAxis;
         var bitmap = new Bitmap(coordinatesPictureBox.Width, coordinatesPictureBox.Height);
 
-        if ((coordinates != null) && (coordinates.Rows > 0) && (coordinates.Columns == 2)) {
+        if (coordinates.Rows > 0 && coordinates.Columns == 2) {
           double xMin = double.MaxValue, yMin = double.MaxValue, xMax = double.MinValue, yMax = double.MinValue;
           for (int i = 0; i < coordinates.Rows; i++) {
-            if (xMin > coordinates[i, 0]) xMin = coordinates[i, 0];
-            if (yMin > coordinates[i, 1]) yMin = coordinates[i, 1];
-            if (xMax < coordinates[i, 0]) xMax = coordinates[i, 0];
-            if (yMax < coordinates[i, 1]) yMax = coordinates[i, 1];
+            if (xMin > coordinates[i, xAxis]) xMin = coordinates[i, xAxis];
+            if (yMin > coordinates[i, yAxis]) yMin = coordinates[i, yAxis];
+            if (xMax < coordinates[i, xAxis]) xMax = coordinates[i, xAxis];
+            if (yMax < coordinates[i, yAxis]) yMax = coordinates[i, yAxis];
           }
 
           int border = 20;
@@ -79,8 +78,8 @@ namespace HeuristicLab.Problems.TravelingSalesman.Views {
 
           Point[] points = new Point[coordinates.Rows];
           for (int i = 0; i < coordinates.Rows; i++)
-            points[i] = new Point(border + ((int)((coordinates[i, 0] - xMin) * xStep)),
-                                  bitmap.Height - (border + ((int)((coordinates[i, 1] - yMin) * yStep))));
+            points[i] = new Point(border + ((int)((coordinates[i, xAxis] - xMin) * xStep)),
+                                  bitmap.Height - (border + ((int)((coordinates[i, yAxis] - yMin) * yStep))));
 
           using (Graphics graphics = Graphics.FromImage(bitmap)) {
             for (int i = 0; i < points.Length; i++)
