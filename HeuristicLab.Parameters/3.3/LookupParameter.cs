@@ -21,9 +21,9 @@
 
 using System;
 using System.Threading;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HEAL.Attic;
 
 namespace HeuristicLab.Parameters {
   /// <summary>
@@ -135,16 +135,17 @@ namespace HeuristicLab.Parameters {
 
       while (currentExecutionContext != null) {
         IParameter param = null;
-        while (currentExecutionContext != null && !currentExecutionContext.Parameters.TryGetValue(translatedName, out param))
+        while (currentExecutionContext != null && (!currentExecutionContext.Parameters.TryGetValue(translatedName, out param)
+          || param is IContextLookupParameter))
           currentExecutionContext = currentExecutionContext.Parent;
         if (currentExecutionContext == null) break;
 
         valueParam = param as IValueParameter;
         lookupParam = param as ILookupParameter;
 
-        if ((valueParam == null) && (lookupParam == null))
+        if (valueParam == null && lookupParam == null)
           throw new InvalidOperationException(
-            string.Format("Parameter look-up chain broken. Parameter \"{0}\" is not an \"{1}\" or an \"{2}\".",
+            string.Format("Parameter look-up chain broken. Parameter \"{0}\" is neither an \"{1}\" nor an \"{2}\".",
                           translatedName, typeof(IValueParameter).GetPrettyName(), typeof(ILookupParameter).GetPrettyName())
           );
 

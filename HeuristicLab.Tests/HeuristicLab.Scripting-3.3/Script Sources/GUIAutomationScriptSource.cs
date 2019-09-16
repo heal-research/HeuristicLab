@@ -13,7 +13,7 @@ public class GUIAutomationScript : HeuristicLab.Scripting.CSharpScriptBase {
     var ga = new GeneticAlgorithm {
       MaximumGenerations = { Value = 50 },
       PopulationSize = { Value = 10 },
-      Problem = new TravelingSalesmanProblem()
+      Problem = new TSP()
     };
 
     var experiment = new Experiment();

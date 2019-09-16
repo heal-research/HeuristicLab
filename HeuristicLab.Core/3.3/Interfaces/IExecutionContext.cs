@@ -19,8 +19,8 @@
  */
 #endregion
 
-using HeuristicLab.Common;
 using HEAL.Attic;
+using HeuristicLab.Common;
 
 namespace HeuristicLab.Core {
   [StorableType("90ba79ce-8166-4cc2-8871-0653b4dd59cc")]
@@ -31,6 +31,8 @@ namespace HeuristicLab.Core {
     IExecutionContext Parent { get; }
     IKeyedItemCollection<string, IParameter> Parameters { get; }
     IScope Scope { get; }
+
+    IParameterizedItem Item { get; }
 
     IAtomicOperation CreateOperation(IOperator op);
     IAtomicOperation CreateOperation(IOperator op, IScope scope);

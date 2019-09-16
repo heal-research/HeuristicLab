@@ -35,4 +35,14 @@ namespace HeuristicLab.Core {
   public interface ILookupParameter<T> : ILookupParameter where T : class, IItem {
     new T ActualValue { get; set; }
   }
+
+  [StorableType("285d7903-5c4b-4136-bd69-491dc1766825")]
+  public interface IContextLookupParameter : IParameter {
+    IExecutionContext ExecutionContext { get; set; }
+  }
+
+  [StorableType("26db2a08-7537-4e0e-b93c-4d4478698cd1")]
+  public interface IContextLookupParameter<T> : IContextLookupParameter where T : class, IParameterizedItem {
+    new T ActualValue { get; }
+  }
 }

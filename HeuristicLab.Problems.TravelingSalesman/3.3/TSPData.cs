@@ -197,7 +197,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
   }
 
   [Item("Geo TSP Data", "TSP that is represented by geo coordinates.")]
-  [StorableType("4bf58348-cd98-46c5-a4c0-55f486ca88b4")]
+  [StorableType("dc859a89-e6c2-4af3-a3b6-9aa3041b14a9")]
   public class GeoTSPData : CoordinatesTSPData {
     [StorableConstructor]
     protected GeoTSPData(StorableConstructorFlag _) : base(_) { }

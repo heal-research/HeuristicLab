@@ -20,8 +20,8 @@
 #endregion
 
 using System;
-using HeuristicLab.Common;
 using HEAL.Attic;
+using HeuristicLab.Common;
 
 namespace HeuristicLab.Core {
   [StorableType("83851945-1115-4C08-BD46-318A1FFC54E2")]
@@ -38,6 +38,8 @@ namespace HeuristicLab.Core {
     public IKeyedItemCollection<string, IParameter> Parameters {
       get { return parameterizedItem.Parameters; }
     }
+
+    public IParameterizedItem Item => parameterizedItem;
 
     public IOperator Operator {
       get { return parameterizedItem as IOperator; }
