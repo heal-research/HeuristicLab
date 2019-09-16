@@ -189,10 +189,10 @@ namespace HeuristicLab.Data {
     }
 
     public virtual ValueTypeMatrix<T> AsReadOnly() {
-      if (readOnly) return this;
-      var readOnlyValueTypeMatrix = (ValueTypeMatrix<T>)this.Clone();
-      readOnlyValueTypeMatrix.readOnly = true;
-      return readOnlyValueTypeMatrix;
+      if (ReadOnly) return this;
+      var clone = (ValueTypeMatrix<T>)this.Clone();
+      clone.readOnly = true;
+      return clone;
     }
 
    

@@ -143,6 +143,11 @@
       <Name>HeuristicLab.Problems.Instances-3.3</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Problems.TravelingSalesman\3.3\HeuristicLab.Problems.TravelingSalesman-3.3.csproj">
+      <Project>{d767c38d-8014-46b0-9a32-03a3aecce34a}</Project>
+      <Name>HeuristicLab.Problems.TravelingSalesman-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Random\3.3\HeuristicLab.Random-3.3.csproj">
       <Project>{F4539FB6-4708-40C9-BE64-0A1390AEA197}</Project>
       <Name>HeuristicLab.Random-3.3</Name>
@@ -159,19 +164,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="PTSPData.cs" />
     <None Include="Properties\AssemblyInfo.cs.frame" />
     <None Include="Plugin.cs.frame" />
     <Compile Include="AnalyticalPTSP.cs" />
-    <Compile Include="Analyzers\BestPTSPSolutionAnalyzer.cs" />
-    <Compile Include="DistanceCalculators\MaximumDistance.cs" />
-    <Compile Include="DistanceCalculators\ManhattanDistance.cs" />
-    <Compile Include="DistanceCalculators\GeoDistance.cs" />
-    <Compile Include="DistanceCalculators\DistanceCalculator.cs" />
-    <Compile Include="DistanceCalculators\AttDistance.cs" />
-    <Compile Include="DistanceCalculators\UpperEuclideanDistance.cs" />
-    <Compile Include="DistanceCalculators\RoundedEuclideanDistance.cs" />
-    <Compile Include="DistanceCalculators\EuclideanDistance.cs" />
-    <Compile Include="DistanceMatrix.cs" />
     <Compile Include="EstimatedPTSP.cs" />
     <Compile Include="Improvers\PTSPAnalyticalInsertionLocalImprovement.cs" />
     <Compile Include="Improvers\PTSPAnalyticalTwoPointFiveLocalImprovement.cs" />
@@ -198,7 +194,6 @@
     <Compile Include="Moves\TwoPointFiveOpt\TwoPointFiveMoveGenerator.cs" />
     <Compile Include="Moves\TwoPointFiveOpt\TwoPointFiveMoveMaker.cs" />
     <Compile Include="Moves\TwoPointFiveOpt\TwoPointFiveMove.cs" />
-    <Compile Include="PathPTSPTour.cs" />
     <Compile Include="PTSP.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

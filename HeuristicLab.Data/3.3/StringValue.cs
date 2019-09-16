@@ -21,9 +21,9 @@
 
 using System;
 using System.Drawing;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HEAL.Attic;
 
 namespace HeuristicLab.Data {
   [Item("StringValue", "Represents a string.")]
@@ -65,9 +65,9 @@ namespace HeuristicLab.Data {
       this.value = string.Empty;
       this.readOnly = false;
     }
-    public StringValue(string value) {
+    public StringValue(string value, bool @readonly = false) {
       this.value = value != null ? value : string.Empty;
-      this.readOnly = false;
+      this.readOnly = @readonly;
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -75,9 +75,10 @@ namespace HeuristicLab.Data {
     }
 
     public virtual StringValue AsReadOnly() {
-      StringValue readOnlyStringValue = (StringValue)this.Clone();
-      readOnlyStringValue.readOnly = true;
-      return readOnlyStringValue;
+      if (ReadOnly) return this;
+      var clone = (StringValue)this.Clone();
+      clone.readOnly = true;
+      return clone;
     }
 
     public override string ToString() {

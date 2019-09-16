@@ -20,7 +20,10 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -28,7 +31,6 @@ using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 
 namespace HeuristicLab.Problems.PTSP {
   /// <summary>
@@ -69,12 +71,12 @@ namespace HeuristicLab.Problems.PTSP {
       get { return (ILookupParameter<BoolValue>)Parameters["Maximization"]; }
     }
 
-    public ILookupParameter<DistanceMatrix> DistanceMatrixParameter {
-      get { return (ILookupParameter<DistanceMatrix>)Parameters["DistanceMatrix"]; }
+    public ILookupParameter<IProbabilisticTSPData> ProbabilisticTSPDataParameter {
+      get { return (ILookupParameter<IProbabilisticTSPData>)Parameters["PTSP Data"]; }
     }
 
-    public ILookupParameter<ItemList<BoolArray>> RealizationsParameter {
-      get { return (ILookupParameter<ItemList<BoolArray>>)Parameters["Realizations"]; }
+    public ILookupParameter<ReadOnlyItemList<BoolArray>> RealizationsParameter {
+      get { return (ILookupParameter<ReadOnlyItemList<BoolArray>>)Parameters["Realizations"]; }
     }
 
     [StorableConstructor]
@@ -89,7 +91,7 @@ namespace HeuristicLab.Problems.PTSP {
       Parameters.Add(new LookupParameter<ResultCollection>("Results", "The collection where to store results."));
       Parameters.Add(new LookupParameter<DoubleValue>("Quality", "The quality value of the assignment."));
       Parameters.Add(new LookupParameter<BoolValue>("Maximization", "True if the problem should be maximized or minimized."));
-      Parameters.Add(new LookupParameter<DistanceMatrix>("DistanceMatrix", "The matrix which contains the distances between the cities."));
+      Parameters.Add(new LookupParameter<IProbabilisticTSPData>("PTSP Data", "The main parameters of the p-TSP."));
       Parameters.Add(new LookupParameter<ItemList<BoolArray>>("Realizations", "The list of samples drawn from all possible stochastic instances."));
     }
 
@@ -97,16 +99,14 @@ namespace HeuristicLab.Problems.PTSP {
       return new PTSPEstimatedInversionLocalImprovement(this, cloner);
     }
 
-    public static void Improve(Permutation assignment, DoubleMatrix distances, DoubleValue quality, IntValue localIterations, IntValue evaluatedSolutions, bool maximization, int maxIterations, ItemList<BoolArray> realizations, CancellationToken cancellation) {
-      var distanceM = (DistanceMatrix)distances;
-      Func<int, int, double> distance = (a, b) => distanceM[a, b];
+    public static void Improve(Permutation assignment, IProbabilisticTSPData data, DoubleValue quality, IntValue localIterations, IntValue evaluatedSolutions, bool maximization, int maxIterations, IEnumerable<BoolArray> realizations, CancellationToken cancellation) {
       for (var i = localIterations.Value; i < maxIterations; i++) {
         InversionMove bestMove = null;
         double bestQuality = 0; // we have to make an improvement, so 0 is the baseline
         double evaluations = 0.0;
         foreach (var move in ExhaustiveInversionMoveGenerator.Generate(assignment)) {
-          double moveQuality = PTSPEstimatedInversionMoveEvaluator.EvaluateMove(assignment, move, distance, realizations);
-          evaluations += realizations.Count * 4.0 / (assignment.Length * assignment.Length);
+          double moveQuality = PTSPEstimatedInversionMoveEvaluator.EvaluateMove(assignment, move, data, realizations);
+          evaluations += realizations.Count() * 4.0 / (assignment.Length * assignment.Length);
           if (maximization && moveQuality > bestQuality
             || !maximization && moveQuality < bestQuality) {
             bestQuality = moveQuality;
@@ -126,17 +126,17 @@ namespace HeuristicLab.Problems.PTSP {
       var maxIterations = MaximumIterationsParameter.ActualValue.Value;
       var assignment = PermutationParameter.ActualValue;
       var maximization = MaximizationParameter.ActualValue.Value;
-      var distances = DistanceMatrixParameter.ActualValue;
       var quality = QualityParameter.ActualValue;
       var localIterations = LocalIterationsParameter.ActualValue;
       var evaluations = EvaluatedSolutionsParameter.ActualValue;
+      var data = ProbabilisticTSPDataParameter.ActualValue;
       var realizations = RealizationsParameter.ActualValue;
       if (localIterations == null) {
         localIterations = new IntValue(0);
         LocalIterationsParameter.ActualValue = localIterations;
       }
 
-      Improve(assignment, distances, quality, localIterations, evaluations, maximization, maxIterations, realizations, CancellationToken);
+      Improve(assignment, data, quality, localIterations, evaluations, maximization, maxIterations, realizations, CancellationToken);
 
       localIterations.Value = 0;
       return base.Apply();

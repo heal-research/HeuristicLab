@@ -19,33 +19,22 @@
  */
 #endregion
 
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HEAL.Attic;
 
 namespace HeuristicLab.Data {
   [Item("TextValue", "Represents a multiline string.")]
   [StorableType("136E9CD4-D340-44B1-A7CE-CF1A70D1C032")]
   public class TextValue : StringValue, ITextValue {
 
-    public TextValue() {
-      this.value = string.Empty;
-      this.readOnly = false;
-    }
-
-    public TextValue(string value) {
-      this.value = value ?? string.Empty;
-      this.readOnly = false;
-    }
+    public TextValue() : base() { }
+    public TextValue(string value, bool @readonly = false) : base(value ?? string.Empty, @readonly) { }
 
     [StorableConstructor]
     protected TextValue(StorableConstructorFlag _) : base(_) { }
 
-    protected TextValue(TextValue original, Cloner cloner)
-      : base(original, cloner) {
-      this.value = original.value ?? string.Empty;
-      this.readOnly = original.readOnly;
-    }
+    protected TextValue(TextValue original, Cloner cloner) : base(original, cloner) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new TextValue(this, cloner);

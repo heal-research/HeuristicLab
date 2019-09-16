@@ -20,9 +20,9 @@
 #endregion
 
 using System.Text;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HEAL.Attic;
 
 namespace HeuristicLab.Data {
   [Item("IntArray", "Represents an array of integer values.")]
@@ -35,7 +35,7 @@ namespace HeuristicLab.Data {
     }
     public IntArray() : base() { }
     public IntArray(int length) : base(length) { }
-    public IntArray(int[] elements) : base(elements) { }
+    public IntArray(int[] elements, bool @readonly = false) : base(elements, @readonly) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new IntArray(this, cloner);
@@ -65,6 +65,10 @@ namespace HeuristicLab.Data {
       } else {
         return false;
       }
+    }
+
+    public new IntArray AsReadOnly() {
+      return (IntArray)base.AsReadOnly();
     }
   }
 }

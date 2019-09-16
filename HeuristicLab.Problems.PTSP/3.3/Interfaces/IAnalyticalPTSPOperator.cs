@@ -19,13 +19,12 @@
  */
 #endregion
 
-using HeuristicLab.Core;
-using HeuristicLab.Data;
 using HEAL.Attic;
+using HeuristicLab.Core;
 
 namespace HeuristicLab.Problems.PTSP {
-  [StorableType("1BB8344B-894B-48E9-9805-49938AE3F83F")]
+  [StorableType("2b0bd347-7bb6-449a-bbcf-24aa452abc0a")]
   public interface IAnalyticalPTSPOperator : IItem {
-    ILookupParameter<DoubleArray> ProbabilitiesParameter { get; }
+    ILookupParameter<IProbabilisticTSPData> ProbabilisticTSPDataParameter { get; }
   }
 }

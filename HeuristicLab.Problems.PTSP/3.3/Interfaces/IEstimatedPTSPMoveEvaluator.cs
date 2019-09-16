@@ -19,18 +19,12 @@
  */
 #endregion
 
-using HeuristicLab.Core;
-using HeuristicLab.Data;
+using HEAL.Attic;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Optimization;
-using HEAL.Attic;
 
 namespace HeuristicLab.Problems.PTSP {
-  [StorableType("FECFFE5C-64EE-4615-A9FC-786F2B37143A")]
+  [StorableType("96103e8b-bfc4-4e42-a579-074bfdd8d589")]
   public interface IEstimatedPTSPMoveEvaluator : IEstimatedPTSPOperator, ISingleObjectiveMoveEvaluator, IPermutationMoveOperator {
-    ILookupParameter<DoubleMatrix> CoordinatesParameter { get; }
-    ILookupParameter<DistanceCalculator> DistanceCalculatorParameter { get; }
-    ILookupParameter<DistanceMatrix> DistanceMatrixParameter { get; }
-    ILookupParameter<BoolValue> UseDistanceMatrixParameter { get; }
   }
 }

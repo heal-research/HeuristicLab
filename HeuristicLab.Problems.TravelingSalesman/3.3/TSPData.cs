@@ -30,6 +30,8 @@ using HeuristicLab.Problems.Instances;
 namespace HeuristicLab.Problems.TravelingSalesman {
   [StorableType("1a9bf60c-b6a6-4c95-8e99-5a2dec0ee892")]
   public interface ITSPData : INamedItem {
+    int Cities { get; }
+
     double GetDistance(int fromCity, int toCity);
     ITSPSolution GetSolution(Permutation tspTour, double tourLength);
     TSPData Export();
@@ -37,13 +39,15 @@ namespace HeuristicLab.Problems.TravelingSalesman {
 
   [Item("Matrix-based TSP Data", "TSP that is representd by a distance matrix.")]
   [StorableType("4df58a35-679d-4414-b815-9450ae100823")]
-  public sealed class MatrixTSPData : NamedItem, ITSPData {
-    [Storable] public DoubleMatrix Matrix { get; private set; }
-    [Storable] public DoubleMatrix DisplayCoordinates { get; private set; }
+  public class MatrixTSPData : NamedItem, ITSPData {
+    [Storable] public DoubleMatrix Matrix { get; protected set; }
+    [Storable] public DoubleMatrix DisplayCoordinates { get; protected set; }
+
+    public int Cities => Matrix.Rows;
 
     [StorableConstructor]
-    private MatrixTSPData(StorableConstructorFlag _) : base(_) { }
-    private MatrixTSPData(MatrixTSPData original, Cloner cloner) : base(original, cloner) {
+    protected  MatrixTSPData(StorableConstructorFlag _) : base(_) { }
+    protected MatrixTSPData(MatrixTSPData original, Cloner cloner) : base(original, cloner) {
       Matrix = original.Matrix;
       DisplayCoordinates = original.DisplayCoordinates;
     }
@@ -67,11 +71,11 @@ namespace HeuristicLab.Problems.TravelingSalesman {
       if (coordinates != null && coordinates.Rows != matrix.Rows)
         throw new ArgumentException("Unequal number of rows in " + nameof(matrix) + " and " + nameof(coordinates) + ".");
       Name = name;
-      Matrix = (DoubleMatrix)matrix.AsReadOnly();
-      DisplayCoordinates = (DoubleMatrix)coordinates?.AsReadOnly();
+      Matrix = matrix.AsReadOnly();
+      DisplayCoordinates = coordinates?.AsReadOnly();
     }
 
-    public ITSPSolution GetSolution(Permutation tour, double tourLength) {
+    public virtual ITSPSolution GetSolution(Permutation tour, double tourLength) {
       return new TSPSolution(DisplayCoordinates, tour, new DoubleValue(tourLength));
     }
 
@@ -96,7 +100,9 @@ namespace HeuristicLab.Problems.TravelingSalesman {
   [Item("Coordinates-based TSP Data", "TSP that is represented by coordinates of locations.")]
   [StorableType("3955d07a-d43c-4a01-9505-d2effb1ea865")]
   public abstract class CoordinatesTSPData : NamedItem, ITSPData {
-    [Storable] public DoubleMatrix Coordinates { get; private set; }
+    [Storable] public DoubleMatrix Coordinates { get; protected set; }
+
+    public int Cities => Coordinates.Rows;
 
     [StorableConstructor]
     protected CoordinatesTSPData(StorableConstructorFlag _) : base(_) { }
@@ -117,7 +123,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
       if (coordinates == null) throw new ArgumentNullException(nameof(coordinates));
       if (coordinates.Columns != 2) throw new ArgumentException("Argument must have exactly two columns.", nameof(coordinates));
       Name = name;
-      Coordinates = (DoubleMatrix)coordinates.AsReadOnly();
+      Coordinates = coordinates.AsReadOnly();
     }
 
     public double GetDistance(int fromCity, int toCity) {
@@ -127,7 +133,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
 
     public abstract double GetDistance(double fromX, double fromY, double toX, double toY);
 
-    public ITSPSolution GetSolution(Permutation tour, double tourLength) {
+    public virtual ITSPSolution GetSolution(Permutation tour, double tourLength) {
       return new TSPSolution(Coordinates, tour, new DoubleValue(tourLength));
     }
 
@@ -136,15 +142,15 @@ namespace HeuristicLab.Problems.TravelingSalesman {
 
   [Item("Euclidean TSP Data", "TSP that is represented by coordinates in an Euclidean plane.")]
   [StorableType("4bf58348-cd98-46c5-a4c0-55f486ca88b4")]
-  public sealed class EuclideanTSPData : CoordinatesTSPData {
+  public class EuclideanTSPData : CoordinatesTSPData {
     public enum DistanceRounding { None, Midpoint, Ceiling }
 
     [Storable]
-    public DistanceRounding Rounding { get; private set; }
+    public DistanceRounding Rounding { get; protected set; }
 
     [StorableConstructor]
-    private EuclideanTSPData(StorableConstructorFlag _) : base(_) { }
-    private EuclideanTSPData(EuclideanTSPData original, Cloner cloner) : base(original, cloner) {
+    protected EuclideanTSPData(StorableConstructorFlag _) : base(_) { }
+    protected EuclideanTSPData(EuclideanTSPData original, Cloner cloner) : base(original, cloner) {
       Rounding = original.Rounding;
     }
     public EuclideanTSPData()
@@ -165,7 +171,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
     }
 
     public override double GetDistance(double fromX, double fromY, double toX, double toY) {
-      var dist = Math.Sqrt((fromX - toX) * (fromX - toX) + (fromY - toY) * (fromY - toY));
+      var dist = DistanceHelper.EuclideanDistance(fromX, fromY, toX, toY);
       switch (Rounding) {
         case DistanceRounding.None: return dist;
         case DistanceRounding.Midpoint: return Math.Round(dist);
@@ -192,13 +198,10 @@ namespace HeuristicLab.Problems.TravelingSalesman {
 
   [Item("Geo TSP Data", "TSP that is represented by geo coordinates.")]
   [StorableType("4bf58348-cd98-46c5-a4c0-55f486ca88b4")]
-  public sealed class GeoTSPData : CoordinatesTSPData {
-    public const double PI = 3.141592;
-    public const double RADIUS = 6378.388;
-
+  public class GeoTSPData : CoordinatesTSPData {
     [StorableConstructor]
-    private GeoTSPData(StorableConstructorFlag _) : base(_) { }
-    private GeoTSPData(GeoTSPData original, Cloner cloner) : base(original, cloner) { }
+    protected GeoTSPData(StorableConstructorFlag _) : base(_) { }
+    protected GeoTSPData(GeoTSPData original, Cloner cloner) : base(original, cloner) { }
     public GeoTSPData() : base() { }
     public GeoTSPData(string name, double[,] coordinates) : base(name, coordinates) { }
     public GeoTSPData(string name, DoubleMatrix coordinates) : base(name, coordinates) { }
@@ -208,25 +211,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
     }
 
     public override double GetDistance(double fromX, double fromY, double toX, double toY) {
-      double latitude1, longitude1, latitude2, longitude2;
-      double q1, q2, q3;
-      double length;
-
-      latitude1 = ConvertToRadian(fromX);
-      longitude1 = ConvertToRadian(fromY);
-      latitude2 = ConvertToRadian(toX);
-      longitude2 = ConvertToRadian(toY);
-
-      q1 = Math.Cos(longitude1 - longitude2);
-      q2 = Math.Cos(latitude1 - latitude2);
-      q3 = Math.Cos(latitude1 + latitude2);
-
-      length = (int)(RADIUS * Math.Acos(0.5 * ((1.0 + q1) * q2 - (1.0 - q1) * q3)) + 1.0);
-      return (length);
-    }
-
-    private double ConvertToRadian(double x) {
-      return PI * (Math.Truncate(x) + 5.0 * (x - Math.Truncate(x)) / 3.0) / 180.0;
+      return DistanceHelper.GeoDistance(fromX, fromY, toX, toY);
     }
 
     public override TSPData Export() {
@@ -236,6 +221,93 @@ namespace HeuristicLab.Problems.TravelingSalesman {
         Coordinates = Coordinates.CloneAsMatrix(),
         Dimension = Coordinates.Rows,
         DistanceMeasure = DistanceMeasure.Geo
+      };
+    }
+  }
+
+  [Item("ATT TSP Data", "TSP that is represented by ATT coordinates.")]
+  [StorableType("d7a0add3-6ec1-42e0-b1d7-b6454694d485")]
+  public class AttTSPData : CoordinatesTSPData {
+    [StorableConstructor]
+    protected AttTSPData(StorableConstructorFlag _) : base(_) { }
+    protected AttTSPData(AttTSPData original, Cloner cloner) : base(original, cloner) { }
+    public AttTSPData() : base() { }
+    public AttTSPData(string name, double[,] coordinates) : base(name, coordinates) { }
+    public AttTSPData(string name, DoubleMatrix coordinates) : base(name, coordinates) { }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new AttTSPData(this, cloner);
+    }
+
+    public override double GetDistance(double fromX, double fromY, double toX, double toY) {
+      return DistanceHelper.AttDistance(fromX, fromY, toX, toY);
+    }
+
+    public override TSPData Export() {
+      return new TSPData() {
+        Name = name,
+        Description = description,
+        Coordinates = Coordinates.CloneAsMatrix(),
+        Dimension = Coordinates.Rows,
+        DistanceMeasure = DistanceMeasure.Att
+      };
+    }
+  }
+
+  [Item("Manhattan TSP Data", "TSP that is represented by Manhattan coordinates.")]
+  [StorableType("5f1ef9e2-cbd1-400e-8f87-6855f091fc9e")]
+  public class ManhattanTSPData : CoordinatesTSPData {
+    [StorableConstructor]
+    protected ManhattanTSPData(StorableConstructorFlag _) : base(_) { }
+    protected ManhattanTSPData(ManhattanTSPData original, Cloner cloner) : base(original, cloner) { }
+    public ManhattanTSPData() : base() { }
+    public ManhattanTSPData(string name, double[,] coordinates) : base(name, coordinates) { }
+    public ManhattanTSPData(string name, DoubleMatrix coordinates) : base(name, coordinates) { }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new ManhattanTSPData(this, cloner);
+    }
+
+    public override double GetDistance(double fromX, double fromY, double toX, double toY) {
+      return DistanceHelper.ManhattanDistance(fromX, fromY, toX, toY);
+    }
+
+    public override TSPData Export() {
+      return new TSPData() {
+        Name = name,
+        Description = description,
+        Coordinates = Coordinates.CloneAsMatrix(),
+        Dimension = Coordinates.Rows,
+        DistanceMeasure = DistanceMeasure.Manhattan
+      };
+    }
+  }
+
+  [Item("Manhattan TSP Data", "TSP that is represented by the maximum absolute distance in either x or y coordinates.")]
+  [StorableType("c6294a6c-fe62-4906-9765-4bc306d3e4a8")]
+  public class MaximumTSPData : CoordinatesTSPData {
+    [StorableConstructor]
+    protected MaximumTSPData(StorableConstructorFlag _) : base(_) { }
+    protected MaximumTSPData(MaximumTSPData original, Cloner cloner) : base(original, cloner) { }
+    public MaximumTSPData() : base() { }
+    public MaximumTSPData(string name, double[,] coordinates) : base(name, coordinates) { }
+    public MaximumTSPData(string name, DoubleMatrix coordinates) : base(name, coordinates) { }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new MaximumTSPData(this, cloner);
+    }
+
+    public override double GetDistance(double fromX, double fromY, double toX, double toY) {
+      return DistanceHelper.MaximumDistance(fromX, fromY, toX, toY);
+    }
+
+    public override TSPData Export() {
+      return new TSPData() {
+        Name = name,
+        Description = description,
+        Coordinates = Coordinates.CloneAsMatrix(),
+        Dimension = Coordinates.Rows,
+        DistanceMeasure = DistanceMeasure.Maximum
       };
     }
   }

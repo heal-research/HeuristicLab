@@ -21,9 +21,9 @@
 
 using System.Collections.Generic;
 using System.Text;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HEAL.Attic;
 
 namespace HeuristicLab.Data {
   [Item("BoolMatrix", "Represents a matrix of boolean values.")]
@@ -38,9 +38,9 @@ namespace HeuristicLab.Data {
     public BoolMatrix(int rows, int columns) : base(rows, columns) { }
     public BoolMatrix(int rows, int columns, IEnumerable<string> columnNames) : base(rows, columns, columnNames) { }
     public BoolMatrix(int rows, int columns, IEnumerable<string> columnNames, IEnumerable<string> rowNames) : base(rows, columns, columnNames, rowNames) { }
-    public BoolMatrix(bool[,] elements) : base(elements) { }
-    public BoolMatrix(bool[,] elements, IEnumerable<string> columnNames) : base(elements, columnNames) { }
-    public BoolMatrix(bool[,] elements, IEnumerable<string> columnNames, IEnumerable<string> rowNames) : base(elements, columnNames, rowNames) { }
+    public BoolMatrix(bool[,] elements, bool @readonly = false) : base(elements, @readonly) { }
+    public BoolMatrix(bool[,] elements, IEnumerable<string> columnNames, bool @readonly = false) : base(elements, columnNames, @readonly) { }
+    public BoolMatrix(bool[,] elements, IEnumerable<string> columnNames, IEnumerable<string> rowNames, bool @readonly = false) : base(elements, columnNames, rowNames, @readonly) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new BoolMatrix(this, cloner);
@@ -70,6 +70,10 @@ namespace HeuristicLab.Data {
       } else {
         return false;
       }
+    }
+
+    public new BoolMatrix AsReadOnly() {
+      return (BoolMatrix)base.AsReadOnly();
     }
 
     #region IStringConvertibleMatrix Members

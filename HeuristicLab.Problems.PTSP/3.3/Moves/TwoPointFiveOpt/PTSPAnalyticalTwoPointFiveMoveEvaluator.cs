@@ -19,13 +19,11 @@
  */
 #endregion
 
-using System;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 
 namespace HeuristicLab.Problems.PTSP {
   [Item("PTSP Analytical 2.5-MoveEvaluator", "Operator that evaluates 2.5-p-opt moves of PTSP by a full solution evaluation.")]
@@ -48,17 +46,17 @@ namespace HeuristicLab.Problems.PTSP {
       return new PTSPAnalyticalTwoPointFiveMoveEvaluator(this, cloner);
     }
 
-    protected override double EvaluateMove(Permutation permutation, Func<int, int, double> distance, DoubleArray probabilities) {
-      return EvaluateMove(permutation, TwoPointFiveMoveParameter.ActualValue, distance, probabilities);
+    protected override double EvaluateMove(Permutation permutation, IProbabilisticTSPData data) {
+      return EvaluateMove(permutation, TwoPointFiveMoveParameter.ActualValue, data);
     }
 
-    public static double EvaluateMove(Permutation permutation, TwoPointFiveMove move, Func<int, int, double> distance, DoubleArray probabilities) {
+    public static double EvaluateMove(Permutation permutation, TwoPointFiveMove move, IProbabilisticTSPData data) {
       if (move.IsInvert) {
         return PTSPAnalyticalInversionMoveEvaluator.EvaluateMove(permutation,
-          new InversionMove(move.Index1, move.Index2, move.Permutation), distance, probabilities);
+          new InversionMove(move.Index1, move.Index2, move.Permutation), data);
       } else {
         return PTSPAnalyticalInsertionMoveEvaluator.EvaluateMove(permutation,
-          new TranslocationMove(move.Index1, move.Index1, move.Index2), distance, probabilities);
+          new TranslocationMove(move.Index1, move.Index1, move.Index2), data);
       }
     }
   }

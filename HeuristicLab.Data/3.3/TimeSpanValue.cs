@@ -22,9 +22,9 @@
 using System;
 using System.Globalization;
 using System.Text;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HEAL.Attic;
 
 namespace HeuristicLab.Data {
   [Item("TimeSpanValue", "Represents a duration of time.")]
@@ -36,7 +36,7 @@ namespace HeuristicLab.Data {
       : base(original, cloner) {
     }
     public TimeSpanValue() : base() { }
-    public TimeSpanValue(TimeSpan value) : base(value) { }
+    public TimeSpanValue(TimeSpan value, bool @readonly = false) : base(value, @readonly) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new TimeSpanValue(this, cloner);
@@ -77,6 +77,10 @@ namespace HeuristicLab.Data {
     }
     public override string ToString() {
       return Value.ToString("c");
+    }
+
+    public new TimeSpanValue AsReadOnly() {
+      return (TimeSpanValue)base.AsReadOnly();
     }
 
     #region IStringConvertibleValue Members

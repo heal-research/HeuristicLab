@@ -20,9 +20,9 @@
 #endregion
 
 using System.Text;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HEAL.Attic;
 
 namespace HeuristicLab.Data {
   [Item("DoubleArray", "Represents an array of double values.")]
@@ -35,7 +35,7 @@ namespace HeuristicLab.Data {
     }
     public DoubleArray() : base() { }
     public DoubleArray(int length) : base(length) { }
-    public DoubleArray(double[] elements) : base(elements) { }
+    public DoubleArray(double[] elements, bool @readonly = false) : base(elements, @readonly) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new DoubleArray(this, cloner);
@@ -65,6 +65,10 @@ namespace HeuristicLab.Data {
       } else {
         return false;
       }
+    }
+
+    public new DoubleArray AsReadOnly() {
+      return (DoubleArray)base.AsReadOnly();
     }
   }
 }

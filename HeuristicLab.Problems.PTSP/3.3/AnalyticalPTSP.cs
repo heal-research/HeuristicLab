@@ -19,27 +19,22 @@
  */
 #endregion
 
-using System;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
-using HeuristicLab.Optimization;
-using HEAL.Attic;
 
 namespace HeuristicLab.Problems.PTSP {
-  [Item("Analytical Probabilistic Traveling Salesman Problem (PTSP)", "Represents a probabilistic traveling salesman problem where the expected tour length is calculated exactly.")]
+  [Item("Analytical Probabilistic TSP (p-TSP)", "Represents a probabilistic traveling salesman problem where the expected tour length is calculated exactly.")]
   [Creatable(CreatableAttribute.Categories.CombinatorialProblems)]
   [StorableType("509B6AB5-F4DE-4144-A031-43EEBAD02CA6")]
-  public sealed class AnalyticalProbabilisticTravelingSalesmanProblem : ProbabilisticTravelingSalesmanProblem {
+  public sealed class AnalyticalPTSP : ProbabilisticTSP {
 
     [StorableConstructor]
-    private AnalyticalProbabilisticTravelingSalesmanProblem(StorableConstructorFlag _) : base(_) { }
-    private AnalyticalProbabilisticTravelingSalesmanProblem(AnalyticalProbabilisticTravelingSalesmanProblem original, Cloner cloner) : base(original, cloner) { }
-    public AnalyticalProbabilisticTravelingSalesmanProblem() {
-      Operators.Add(new BestPTSPSolutionAnalyzer());
-
+    private AnalyticalPTSP(StorableConstructorFlag _) : base(_) { }
+    private AnalyticalPTSP(AnalyticalPTSP original, Cloner cloner) : base(original, cloner) { }
+    public AnalyticalPTSP() {
       Operators.Add(new PTSPAnalyticalInversionMoveEvaluator());
       Operators.Add(new PTSPAnalyticalInsertionMoveEvaluator());
       Operators.Add(new PTSPAnalyticalInversionLocalImprovement());
@@ -52,10 +47,6 @@ namespace HeuristicLab.Problems.PTSP {
       Operators.Add(new TwoPointFiveMoveMaker());
       Operators.Add(new PTSPAnalyticalTwoPointFiveMoveEvaluator());
 
-      Operators.RemoveAll(x => x is SingleObjectiveMoveGenerator);
-      Operators.RemoveAll(x => x is SingleObjectiveMoveMaker);
-      Operators.RemoveAll(x => x is SingleObjectiveMoveEvaluator);
-
       Encoding.ConfigureOperators(Operators.OfType<IOperator>());
       foreach (var twopointfiveMoveOperator in Operators.OfType<ITwoPointFiveMoveOperator>()) {
         twopointfiveMoveOperator.TwoPointFiveMoveParameter.ActualName = "Permutation.TwoPointFiveMove";
@@ -63,23 +54,21 @@ namespace HeuristicLab.Problems.PTSP {
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new AnalyticalProbabilisticTravelingSalesmanProblem(this, cloner);
+      return new AnalyticalPTSP(this, cloner);
     }
 
     public override double Evaluate(Permutation tour, IRandom random) {
-      // abeham: Cache in local variable for performance reasons
-      var distanceMatrix = DistanceMatrix;
-      return Evaluate(tour, (a, b) => distanceMatrix[a, b], Probabilities);
+      return Evaluate(tour, ProbabilisticTSPData);
     }
 
-    public static double Evaluate(Permutation tour, Func<int, int, double> distance, DoubleArray probabilities) {
+    public static double Evaluate(Permutation tour, IProbabilisticTSPData data) {
       // Analytical evaluation
       var firstSum = 0.0;
       for (var i = 0; i < tour.Length - 1; i++) {
         for (var j = i + 1; j < tour.Length; j++) {
-          var prod1 = distance(tour[i], tour[j]) * probabilities[tour[i]] * probabilities[tour[j]];
+          var prod1 = data.GetDistance(tour[i], tour[j]) * data.GetProbability(tour[i]) * data.GetProbability(tour[j]);
           for (var k = i + 1; k < j; k++) {
-            prod1 = prod1 * (1 - probabilities[tour[k]]);
+            prod1 *= (1 - data.GetProbability(tour[k]));
           }
           firstSum += prod1;
         }
@@ -87,21 +76,17 @@ namespace HeuristicLab.Problems.PTSP {
       var secondSum = 0.0;
       for (var j = 0; j < tour.Length; j++) {
         for (var i = 0; i < j; i++) {
-          var prod2 = distance(tour[j], tour[i]) * probabilities[tour[i]] * probabilities[tour[j]];
+          var prod2 = data.GetDistance(tour[j], tour[i]) * data.GetProbability(tour[i]) * data.GetProbability(tour[j]);
           for (var k = j + 1; k < tour.Length; k++) {
-            prod2 = prod2 * (1 - probabilities[tour[k]]);
+            prod2 *= (1 - data.GetProbability(tour[k]));
           }
           for (var k = 0; k < i; k++) {
-            prod2 = prod2 * (1 - probabilities[tour[k]]);
+            prod2 *= (1 - data.GetProbability(tour[k]));
           }
           secondSum += prod2;
         }
       }
       return firstSum + secondSum;
-    }
-
-    public static double Evaluate(Permutation tour, DistanceMatrix distanceMatrix, DoubleArray probabilities) {
-      return Evaluate(tour, (a, b) => distanceMatrix[a, b], probabilities);
     }
   }
 }

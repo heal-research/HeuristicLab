@@ -25,9 +25,9 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HEAL.Attic;
 
 namespace HeuristicLab.Data {
   [Item("ValueTypeArray", "An abstract base class for representing arrays of value types.")]
@@ -136,18 +136,19 @@ namespace HeuristicLab.Data {
       resizable = true;
       elementNames = new List<string>();
     }
-    protected ValueTypeArray(T[] elements) {
+    protected ValueTypeArray(T[] elements, bool @readonly = false) {
       if (elements == null) throw new ArgumentNullException();
       array = (T[])elements.Clone();
-      readOnly = false;
+      readOnly = @readonly;
       resizable = true;
       elementNames = new List<string>();
     }
 
     public virtual IValueTypeArray AsReadOnly() {
-      ValueTypeArray<T> readOnlyValueTypeArray = (ValueTypeArray<T>)this.Clone();
-      readOnlyValueTypeArray.readOnly = true;
-      return readOnlyValueTypeArray;
+      if (ReadOnly) return this;
+      var clone = (ValueTypeArray<T>)this.Clone();
+      clone.readOnly = true;
+      return clone;
     }
 
     public T[] CloneAsArray() {

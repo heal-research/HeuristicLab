@@ -25,9 +25,9 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HEAL.Attic;
 
 namespace HeuristicLab.Data {
   [Item("StringArray", "Represents an array of strings.")]
@@ -130,12 +130,12 @@ namespace HeuristicLab.Data {
       resizable = true;
       elementNames = new List<string>();
     }
-    public StringArray(string[] elements) {
+    public StringArray(string[] elements, bool @readonly = false) {
       if (elements == null) throw new ArgumentNullException();
       array = new string[elements.Length];
       for (int i = 0; i < array.Length; i++)
         array[i] = elements[i] == null ? string.Empty : elements[i];
-      readOnly = false;
+      readOnly = @readonly;
       resizable = true;
       elementNames = new List<string>();
     }
@@ -145,9 +145,10 @@ namespace HeuristicLab.Data {
     }
 
     public virtual StringArray AsReadOnly() {
-      StringArray readOnlyStringArray = (StringArray)this.Clone();
-      readOnlyStringArray.readOnly = true;
-      return readOnlyStringArray;
+      if (ReadOnly) return this;
+      var clone = (StringArray)this.Clone();
+      clone.readOnly = true;
+      return clone;
     }
     IValueTypeArray IValueTypeArray.AsReadOnly() {
       return AsReadOnly();

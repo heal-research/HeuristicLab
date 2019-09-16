@@ -21,9 +21,9 @@
 
 using System;
 using System.Drawing;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HEAL.Attic;
 
 namespace HeuristicLab.Data {
   [Item("ValueTypeValue", "An abstract base class for representing values of value types.")]
@@ -63,15 +63,16 @@ namespace HeuristicLab.Data {
       this.value = default(T);
       this.readOnly = false;
     }
-    protected ValueTypeValue(T value) {
+    protected ValueTypeValue(T value, bool @readonly = false) {
       this.value = value;
-      this.readOnly = false;
+      this.readOnly = @readonly;
     }
 
     public virtual ValueTypeValue<T> AsReadOnly() {
-      ValueTypeValue<T> readOnlyValueTypeValue = (ValueTypeValue<T>)this.Clone();
-      readOnlyValueTypeValue.readOnly = true;
-      return readOnlyValueTypeValue;
+      if (ReadOnly) return this;
+      var clone = (ValueTypeValue<T>)this.Clone();
+      clone.readOnly = true;
+      return clone;
     }
 
     public override string ToString() {

@@ -19,13 +19,11 @@
  */
 #endregion
 
-using System;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 
 namespace HeuristicLab.Problems.PTSP {
   [Item("PTSP Analytical Insertion Move Evaluator", "Evaluates an insertion move (1-shift) by a full solution evaluation")]
@@ -48,14 +46,14 @@ namespace HeuristicLab.Problems.PTSP {
       return new PTSPAnalyticalInsertionMoveEvaluator(this, cloner);
     }
 
-    public static double EvaluateMove(Permutation tour, TranslocationMove move, Func<int, int, double> distance, DoubleArray probabilities) {
+    public static double EvaluateMove(Permutation tour, TranslocationMove move, IProbabilisticTSPData data) {
       var afterMove = (Permutation)tour.Clone();
       TranslocationManipulator.Apply(afterMove, move.Index1, move.Index1, move.Index3);
-      return AnalyticalProbabilisticTravelingSalesmanProblem.Evaluate(afterMove, distance, probabilities);
+      return AnalyticalPTSP.Evaluate(afterMove, data);
     }
 
-    protected override double EvaluateMove(Permutation tour, Func<int, int, double> distance, DoubleArray probabilities) {
-      return EvaluateMove(tour, TranslocationMoveParameter.ActualValue, distance, probabilities);
+    protected override double EvaluateMove(Permutation tour, IProbabilisticTSPData data) {
+      return EvaluateMove(tour, TranslocationMoveParameter.ActualValue, data);
     }
   }
 }

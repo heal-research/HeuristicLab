@@ -20,9 +20,9 @@
 #endregion
 
 using System.Text;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HEAL.Attic;
 
 namespace HeuristicLab.Data {
   [Item("BoolArray", "Represents an array of boolean values.")]
@@ -35,7 +35,7 @@ namespace HeuristicLab.Data {
     }
     public BoolArray() : base() { }
     public BoolArray(int length) : base(length) { }
-    public BoolArray(bool[] elements) : base(elements) { }
+    public BoolArray(bool[] elements, bool @readonly = false) : base(elements, @readonly) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new BoolArray(this, cloner);
@@ -65,6 +65,10 @@ namespace HeuristicLab.Data {
       } else {
         return false;
       }
+    }
+
+    public new BoolArray AsReadOnly() {
+      return (BoolArray)base.AsReadOnly();
     }
   }
 }

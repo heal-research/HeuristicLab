@@ -71,9 +71,12 @@ namespace HeuristicLab.Problems.TravelingSalesman {
       Parameters.Add(BestKnownSolutionParameter = new OptionalValueParameter<ITSPSolution>("BestKnownSolution", "The best known solution."));
 
       TSPData = new EuclideanTSPData();
+      Encoding.Length = TSPData.Cities;
 
       InitializeOperators();
     }
+
+    // TODO: encoding length should not be changeable
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new TSP(this, cloner);
@@ -98,15 +101,23 @@ namespace HeuristicLab.Problems.TravelingSalesman {
       if (!Maximization)
         i = qualities.Select((x, index) => new { index, Fitness = x }).OrderBy(x => x.Fitness).First().index;
       else i = qualities.Select((x, index) => new { index, Fitness = x }).OrderByDescending(x => x.Fitness).First().index;
-      var solution = TSPData.GetSolution(solutions[i], qualities[i]);
 
       if (double.IsNaN(BestKnownQuality) ||
           Maximization && qualities[i] > BestKnownQuality ||
           !Maximization && qualities[i] < BestKnownQuality) {
+        var bestKnown = TSPData.GetSolution(solutions[i], qualities[i]);
         BestKnownQualityParameter.Value = new DoubleValue(qualities[i]);
-        BestKnownSolutionParameter.Value = solution;
+        BestKnownSolutionParameter.Value = bestKnown;
       }
-      results.AddOrUpdateResult("Best TSP Solution", solution);
+
+      IResult bestSolutionResult;
+      if (results.TryGetValue("Best TSP Solution", out bestSolutionResult)) {
+        var bestSolution = bestSolutionResult.Value as ITSPSolution;
+        if (bestSolution == null || Maximization && bestSolution.TourLength.Value < qualities[i]
+          || !Maximization && bestSolution.TourLength.Value > qualities[i]) {
+          bestSolutionResult.Value = TSPData.GetSolution(solutions[i], qualities[i]);
+        }
+      } else results.Add(new Result("Best TSP Solution", TSPData.GetSolution(solutions[i], qualities[i])));
     }
 
     public override IEnumerable<Permutation> GetNeighbors(Permutation solution, IRandom random) {
@@ -131,15 +142,15 @@ namespace HeuristicLab.Problems.TravelingSalesman {
       Name = data.Name;
       Description = data.Description;
 
-      if (data.DistanceMeasure == DistanceMeasure.Att
-        || data.DistanceMeasure == DistanceMeasure.Manhattan
-        || data.DistanceMeasure == DistanceMeasure.Maximum
-        || data.Dimension <= DistanceMatrixSizeLimit) {
+      if (data.Dimension <= DistanceMatrixSizeLimit) {
         TSPData = new MatrixTSPData(data.Name, data.GetDistanceMatrix(), data.Coordinates) { Description = data.Description };
       } else if (data.DistanceMeasure == DistanceMeasure.Direct && data.Distances != null) {
         TSPData = new MatrixTSPData(data.Name, data.Distances, data.Coordinates) { Description = data.Description };
       } else {
         switch (data.DistanceMeasure) {
+          case DistanceMeasure.Att:
+            TSPData = new AttTSPData(data.Name, data.Coordinates) { Description = data.Description };
+            break;
           case DistanceMeasure.Euclidean:
             TSPData = new EuclideanTSPData(data.Name, data.Coordinates, EuclideanTSPData.DistanceRounding.None) { Description = data.Description };
             break;
@@ -151,6 +162,12 @@ namespace HeuristicLab.Problems.TravelingSalesman {
             break;
           case DistanceMeasure.Geo:
             TSPData = new GeoTSPData(data.Name, data.Coordinates) { Description = data.Description };
+            break;
+          case DistanceMeasure.Manhattan:
+            TSPData = new ManhattanTSPData(data.Name, data.Coordinates) { Description = data.Description };
+            break;
+          case DistanceMeasure.Maximum:
+            TSPData = new MaximumTSPData(data.Name, data.Coordinates) { Description = data.Description };
             break;
           default:
             throw new System.IO.InvalidDataException("An unknown distance measure is given in the instance!");
@@ -184,8 +201,10 @@ namespace HeuristicLab.Problems.TravelingSalesman {
       return instance;
     }
 
+
     protected override void OnEncodingChanged() {
       base.OnEncodingChanged();
+      Encoding.Length = TSPData.Cities;
       ParameterizeOperators();
     }
 

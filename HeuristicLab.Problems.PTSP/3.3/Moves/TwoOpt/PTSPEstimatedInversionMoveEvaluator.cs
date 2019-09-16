@@ -20,12 +20,13 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 
 namespace HeuristicLab.Problems.PTSP {
   [Item("PTSP Estimated Inversion Move Evaluator", "Evaluates an inversion move (2-opt) over several realizations of tours by summing up the length of all added edges and subtracting the length of all deleted edges.")]
@@ -48,7 +49,7 @@ namespace HeuristicLab.Problems.PTSP {
       return new PTSPEstimatedInversionMoveEvaluator(this, cloner);
     }
 
-    public static double EvaluateMove(Permutation tour, InversionMove move, Func<int, int, double> distance, ItemList<BoolArray> realizations) {
+    public static double EvaluateMove(Permutation tour, InversionMove move, IProbabilisticTSPData data, IEnumerable<BoolArray> realizations) {
       double moveQuality = 0;
       var edges = new int[4];
       var indices = new int[4];
@@ -63,6 +64,7 @@ namespace HeuristicLab.Problems.PTSP {
       indices[3] = move.Index2 + 1;
       if (indices[3] == tour.Length + 1) indices[3] = 0;
       var aPosteriori = new int[4];
+      var count = 0;
       foreach (var realization in realizations) {
         for (var i = 0; i < edges.Length; i++) {
           if (realization[edges[i]]) {
@@ -86,17 +88,18 @@ namespace HeuristicLab.Problems.PTSP {
         }
         // compute cost difference between the two a posteriori solutions
         if (!(aPosteriori[0] == aPosteriori[2] && aPosteriori[1] == aPosteriori[3])) {
-          moveQuality = moveQuality + distance(aPosteriori[0], aPosteriori[2]) + distance(aPosteriori[1], aPosteriori[3])
-            - distance(aPosteriori[0], aPosteriori[1]) - distance(aPosteriori[2], aPosteriori[3]);
+          moveQuality = moveQuality + data.GetDistance(aPosteriori[0], aPosteriori[2]) + data.GetDistance(aPosteriori[1], aPosteriori[3])
+            - data.GetDistance(aPosteriori[0], aPosteriori[1]) - data.GetDistance(aPosteriori[2], aPosteriori[3]);
         }
         Array.Clear(aPosteriori, 0, aPosteriori.Length);
+        count++;
       }
       // return average of cost differences
-      return moveQuality / realizations.Count;
+      return moveQuality / count;
     }
 
-    protected override double EvaluateMove(Permutation tour, Func<int, int, double> distance, ItemList<BoolArray> realizations) {
-      return EvaluateMove(tour, InversionMoveParameter.ActualValue, distance, realizations);
+    protected override double EvaluateMove(Permutation tour, IProbabilisticTSPData data, ReadOnlyItemList<BoolArray> realizations) {
+      return EvaluateMove(tour, InversionMoveParameter.ActualValue, data, realizations);
     }
   }
 }

@@ -20,9 +20,9 @@
 #endregion
 
 using System;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HEAL.Attic;
 
 namespace HeuristicLab.Data {
   [Item("PercentValue", "Represents a double value in percent.")]
@@ -50,14 +50,15 @@ namespace HeuristicLab.Data {
       restrictToUnitInterval = original.restrictToUnitInterval;
     }
     public PercentValue() : base() { }
-    public PercentValue(double value) : base(value) { }
-
-    public PercentValue(double value, bool restrictToUnitInterval)
+    public PercentValue(double value, bool @readonly = false) : base(value, @readonly) { }
+    // TODO: suggest to remove the following constructor [ABE]
+    public PercentValue(double value, bool restrictToUnitInterval, bool @readonly = false)
       : base() {
       this.restrictToUnitInterval = restrictToUnitInterval;
       if (restrictToUnitInterval && (value < 0 || value > 1))
         throw new ArgumentException("Value must lie in the interval [0,1].");
       this.value = value;
+      this.readOnly = @readonly;
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -99,6 +100,10 @@ namespace HeuristicLab.Data {
       } else {
         return false;
       }
+    }
+
+    public new PercentValue AsReadOnly() {
+      return (PercentValue)base.AsReadOnly();
     }
   }
 }

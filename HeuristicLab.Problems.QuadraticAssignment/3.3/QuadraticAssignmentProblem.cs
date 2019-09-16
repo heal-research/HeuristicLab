@@ -176,6 +176,7 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
     #region Events
     protected override void OnEncodingChanged() {
       base.OnEncodingChanged();
+      Encoding.Length = Weights.Rows;
       Parameterize();
     }
     protected override void OnEvaluatorChanged() {

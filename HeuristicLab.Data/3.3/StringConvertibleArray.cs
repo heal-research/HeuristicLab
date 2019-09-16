@@ -21,9 +21,9 @@
 
 #endregion
 
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HEAL.Attic;
 
 namespace HeuristicLab.Data {
   [Item("StringConvertibleArray", "Represents an array of string convertible values.")]
@@ -36,7 +36,7 @@ namespace HeuristicLab.Data {
 
     protected StringConvertibleArray() : base() { }
     protected StringConvertibleArray(int length) : base(length) { }
-    protected StringConvertibleArray(T[] elements) : base(elements) { }
+    protected StringConvertibleArray(T[] elements, bool @readonly = false) : base(elements, @readonly) { }
 
     protected abstract bool Validate(string value, out string errorMessage);
     protected abstract string GetValue(int index);

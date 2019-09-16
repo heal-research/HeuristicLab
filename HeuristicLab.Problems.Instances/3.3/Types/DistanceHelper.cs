@@ -89,17 +89,17 @@ namespace HeuristicLab.Problems.Instances {
       }
     }
 
-    private static double AttDistance(double x1, double y1, double x2, double y2) {
+    public static double AttDistance(double x1, double y1, double x2, double y2) {
       return Math.Ceiling(Math.Sqrt(((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2)) / 10.0));
     }
 
-    private static double EuclideanDistance(double x1, double y1, double x2, double y2) {
+    public static double EuclideanDistance(double x1, double y1, double x2, double y2) {
       return Math.Sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
     }
 
     private const double PI = 3.141592;
     private const double RADIUS = 6378.388;
-    private static double GeoDistance(double x1, double y1, double x2, double y2) {
+    public static double GeoDistance(double x1, double y1, double x2, double y2) {
       double latitude1, longitude1, latitude2, longitude2;
       double q1, q2, q3;
       double length;
@@ -121,11 +121,11 @@ namespace HeuristicLab.Problems.Instances {
       return PI * (Math.Truncate(x) + 5.0 * (x - Math.Truncate(x)) / 3.0) / 180.0;
     }
 
-    private static double ManhattanDistance(double x1, double y1, double x2, double y2) {
+    public static double ManhattanDistance(double x1, double y1, double x2, double y2) {
       return Math.Round(Math.Abs(x1 - x2) + Math.Abs(y1 - y2), MidpointRounding.AwayFromZero);
     }
 
-    private static double MaximumDistance(double x1, double y1, double x2, double y2) {
+    public static double MaximumDistance(double x1, double y1, double x2, double y2) {
       return Math.Max(Math.Round(Math.Abs(x1 - x2), MidpointRounding.AwayFromZero), Math.Round(Math.Abs(y1 - y2), MidpointRounding.AwayFromZero));
     }
     #endregion

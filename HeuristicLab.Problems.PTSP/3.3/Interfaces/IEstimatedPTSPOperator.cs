@@ -19,13 +19,14 @@
  */
 #endregion
 
+using HEAL.Attic;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HEAL.Attic;
 
 namespace HeuristicLab.Problems.PTSP {
-  [StorableType("1998604C-41FF-4388-B413-8BD658D073E5")]
+  [StorableType("5bcc1ef1-b865-42be-8a63-e5f810c52d01")]
   public interface IEstimatedPTSPOperator : IItem {
-    ILookupParameter<ItemList<BoolArray>> RealizationsParameter { get; }
+    ILookupParameter<IProbabilisticTSPData> ProbabilisticTSPDataParameter { get; }
+    ILookupParameter<ReadOnlyItemList<BoolArray>> RealizationsParameter { get; }
   }
 }

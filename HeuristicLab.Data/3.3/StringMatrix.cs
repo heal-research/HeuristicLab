@@ -25,9 +25,9 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HEAL.Attic;
 
 namespace HeuristicLab.Data {
   [Item("StringMatrix", "Represents a matrix of strings.")]
@@ -177,7 +177,7 @@ namespace HeuristicLab.Data {
       : this(rows, columns, columnNames) {
       RowNames = rowNames;
     }
-    public StringMatrix(string[,] elements) {
+    public StringMatrix(string[,] elements, bool @readonly = false) {
       if (elements == null) throw new ArgumentNullException();
       matrix = new string[elements.GetLength(0), elements.GetLength(1)];
       for (int i = 0; i < matrix.GetLength(0); i++) {
@@ -187,14 +187,14 @@ namespace HeuristicLab.Data {
       columnNames = new List<string>();
       rowNames = new List<string>();
       sortableView = false;
-      readOnly = false;
+      readOnly = @readonly;
     }
-    protected StringMatrix(string[,] elements, IEnumerable<string> columnNames)
-      : this(elements) {
+    protected StringMatrix(string[,] elements, IEnumerable<string> columnNames, bool @readonly = false)
+      : this(elements, @readonly) {
       ColumnNames = columnNames;
     }
-    protected StringMatrix(string[,] elements, IEnumerable<string> columnNames, IEnumerable<string> rowNames)
-      : this(elements, columnNames) {
+    protected StringMatrix(string[,] elements, IEnumerable<string> columnNames, IEnumerable<string> rowNames, bool @readonly = false)
+      : this(elements, columnNames, @readonly ) {
       RowNames = rowNames;
     }
 
@@ -203,9 +203,10 @@ namespace HeuristicLab.Data {
     }
 
     public virtual StringMatrix AsReadOnly() {
-      StringMatrix readOnlyStringMatrix = (StringMatrix)this.Clone();
-      readOnlyStringMatrix.readOnly = true;
-      return readOnlyStringMatrix;
+      if (ReadOnly) return this;
+      var clone = (StringMatrix)this.Clone();
+      clone.readOnly = true;
+      return clone;
     }
 
     public string[,] CloneAsMatrix() {

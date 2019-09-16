@@ -72,6 +72,10 @@ namespace HeuristicLab.Data {
       }
     }
 
+    public new DoubleMatrix AsReadOnly() {
+      return (DoubleMatrix)base.AsReadOnly();
+    }
+
     #region IStringConvertibleMatrix Members
     int IStringConvertibleMatrix.Rows {
       get { return Rows; }

@@ -21,9 +21,9 @@
 
 using System.Collections.Generic;
 using System.Text;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HEAL.Attic;
 
 namespace HeuristicLab.Data {
   [Item("IntMatrix", "Represents a matrix of integer values.")]
@@ -38,9 +38,9 @@ namespace HeuristicLab.Data {
     public IntMatrix(int rows, int columns) : base(rows, columns) { }
     public IntMatrix(int rows, int columns, IEnumerable<string> columnNames) : base(rows, columns, columnNames) { }
     public IntMatrix(int rows, int columns, IEnumerable<string> columnNames,IEnumerable<string> rowNames) : base(rows, columns, columnNames,rowNames) { }
-    public IntMatrix(int[,] elements) : base(elements) { }
-    public IntMatrix(int[,] elements, IEnumerable<string> columnNames) : base(elements,columnNames) { }
-    public IntMatrix(int[,] elements, IEnumerable<string> columnNames, IEnumerable<string> rowNames) : base(elements,columnNames,rowNames) { }
+    public IntMatrix(int[,] elements, bool @readonly = false) : base(elements, @readonly) { }
+    public IntMatrix(int[,] elements, IEnumerable<string> columnNames, bool @readonly = false) : base(elements, columnNames, @readonly) { }
+    public IntMatrix(int[,] elements, IEnumerable<string> columnNames, IEnumerable<string> rowNames, bool @readonly = false) : base(elements, columnNames, rowNames, @readonly) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new IntMatrix(this, cloner);
@@ -70,6 +70,10 @@ namespace HeuristicLab.Data {
       } else {
         return false;
       }
+    }
+
+    public new IntMatrix AsReadOnly() {
+      return (IntMatrix)base.AsReadOnly();
     }
 
     #region IStringConvertibleMatrix Members

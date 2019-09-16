@@ -19,14 +19,13 @@
  */
 #endregion
 
-using System;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 
 namespace HeuristicLab.Problems.PTSP {
   [Item("AnalyticalPTSPMoveEvaluator", "A base class for operators which evaluate PTSP moves.")]
@@ -40,26 +39,14 @@ namespace HeuristicLab.Problems.PTSP {
     public ILookupParameter<Permutation> PermutationParameter {
       get { return (ILookupParameter<Permutation>)Parameters["Permutation"]; }
     }
-    public ILookupParameter<DoubleMatrix> CoordinatesParameter {
-      get { return (ILookupParameter<DoubleMatrix>)Parameters["Coordinates"]; }
-    }
-    public ILookupParameter<DistanceMatrix> DistanceMatrixParameter {
-      get { return (ILookupParameter<DistanceMatrix>)Parameters["DistanceMatrix"]; }
-    }
-    public ILookupParameter<BoolValue> UseDistanceMatrixParameter {
-      get { return (ILookupParameter<BoolValue>)Parameters["UseDistanceMatrix"]; }
-    }
-    public ILookupParameter<DoubleArray> ProbabilitiesParameter {
-      get { return (ILookupParameter<DoubleArray>)Parameters["Probabilities"]; }
-    }
     public ILookupParameter<DoubleValue> QualityParameter {
       get { return (ILookupParameter<DoubleValue>)Parameters["Quality"]; }
     }
     public ILookupParameter<DoubleValue> MoveQualityParameter {
       get { return (ILookupParameter<DoubleValue>)Parameters["MoveQuality"]; }
     }
-    public ILookupParameter<DistanceCalculator> DistanceCalculatorParameter {
-      get { return (ILookupParameter<DistanceCalculator>)Parameters["DistanceCalculator"]; }
+    public ILookupParameter<IProbabilisticTSPData> ProbabilisticTSPDataParameter {
+      get { return (ILookupParameter<IProbabilisticTSPData>)Parameters["PTSP Data"]; }
     }
 
     [StorableConstructor]
@@ -68,32 +55,17 @@ namespace HeuristicLab.Problems.PTSP {
     protected AnalyticalPTSPMoveEvaluator()
       : base() {
       Parameters.Add(new LookupParameter<Permutation>("Permutation", "The solution as permutation."));
-      Parameters.Add(new LookupParameter<DoubleMatrix>("Coordinates", "The city's coordinates."));
-      Parameters.Add(new LookupParameter<DistanceMatrix>("DistanceMatrix", "The matrix which contains the distances between the cities."));
-      Parameters.Add(new LookupParameter<BoolValue>("UseDistanceMatrix", "True if a distance matrix should be calculated (if it does not exist already) and used for evaluation, otherwise false."));
-      Parameters.Add(new LookupParameter<DoubleArray>("Probabilities", "The list of probabilities for each city to appear."));
       Parameters.Add(new LookupParameter<DoubleValue>("Quality", "The quality of a TSP solution."));
       Parameters.Add(new LookupParameter<DoubleValue>("MoveQuality", "The evaluated quality of a move on a TSP solution."));
-      Parameters.Add(new LookupParameter<DistanceCalculator>("DistanceCalculator", "The class that can compute distances between coordinates."));
+      Parameters.Add(new LookupParameter<IProbabilisticTSPData>("PTSP Data", "The main parameters of the p-TSP."));
     }
 
     public override IOperation Apply() {
       var permutation = PermutationParameter.ActualValue;
-      var coordinates = CoordinatesParameter.ActualValue;
-      var probabilities = ProbabilitiesParameter.ActualValue;
-      Func<int, int, double> distance = null;
-      if (UseDistanceMatrixParameter.ActualValue.Value) {
-        var distanceMatrix = DistanceMatrixParameter.ActualValue;
-        if (distanceMatrix == null) throw new InvalidOperationException("The distance matrix has not been calculated.");
-        distance = (a, b) => distanceMatrix[a, b];
-      } else {
-        if (coordinates == null) throw new InvalidOperationException("No coordinates were given.");
-        var distanceCalculator = DistanceCalculatorParameter.ActualValue;
-        if (distanceCalculator == null) throw new InvalidOperationException("Distance calculator is null!");
-        distance = (a, b) => distanceCalculator.Calculate(a, b, coordinates);
-      }
+      var data = ProbabilisticTSPDataParameter.ActualValue;
+
       // here moves are not delta-evaluated
-      var newQuality = EvaluateMove(permutation, distance, probabilities);
+      var newQuality = EvaluateMove(permutation, data);
       var moveQuality = MoveQualityParameter.ActualValue;
       if (moveQuality == null) MoveQualityParameter.ActualValue = new DoubleValue(newQuality);
       else moveQuality.Value = newQuality;
@@ -101,6 +73,6 @@ namespace HeuristicLab.Problems.PTSP {
       return base.Apply();
     }
 
-    protected abstract double EvaluateMove(Permutation permutation, Func<int, int, double> distance, DoubleArray probabilities);
+    protected abstract double EvaluateMove(Permutation tour, IProbabilisticTSPData data);
   }
 }

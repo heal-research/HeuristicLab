@@ -21,9 +21,9 @@
 
 using System.Collections.Generic;
 using System.Text;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HEAL.Attic;
 
 namespace HeuristicLab.Data {
   [Item("PercentMatrix", "Represents a matrix of double values in percent.")]
@@ -38,9 +38,9 @@ namespace HeuristicLab.Data {
     public PercentMatrix(int rows, int columns) : base(rows, columns) { }
     public PercentMatrix(int rows, int columns, IEnumerable<string> columnNames) : base(rows, columns, columnNames) { }
     public PercentMatrix(int rows, int columns, IEnumerable<string> columnNames, IEnumerable<string> rowNames) : base(rows, columns, columnNames, rowNames) { }
-    public PercentMatrix(double[,] elements) : base(elements) { }
-    public PercentMatrix(double[,] elements, IEnumerable<string> columnNames) : base(elements, columnNames) { }
-    public PercentMatrix(double[,] elements, IEnumerable<string> columnNames, IEnumerable<string> rowNames) : base(elements, columnNames, rowNames) { }
+    public PercentMatrix(double[,] elements, bool @readonly = false) : base(elements, @readonly) { }
+    public PercentMatrix(double[,] elements, IEnumerable<string> columnNames, bool @readonly = false) : base(elements, columnNames, @readonly) { }
+    public PercentMatrix(double[,] elements, IEnumerable<string> columnNames, IEnumerable<string> rowNames, bool @readonly = false) : base(elements, columnNames, rowNames, @readonly) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new PercentMatrix(this, cloner);
@@ -83,6 +83,10 @@ namespace HeuristicLab.Data {
       } else {
         return false;
       }
+    }
+
+    public new PercentMatrix AsReadOnly() {
+      return (PercentMatrix)base.AsReadOnly();
     }
   }
 }

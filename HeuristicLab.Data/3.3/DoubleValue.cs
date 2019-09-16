@@ -22,9 +22,9 @@
 using System;
 using System.Drawing;
 using System.Text;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HEAL.Attic;
 
 namespace HeuristicLab.Data {
   [Item("DoubleValue", "Represents a double value.")]
@@ -40,7 +40,7 @@ namespace HeuristicLab.Data {
       : base(original, cloner) {
     }
     public DoubleValue() : base() { }
-    public DoubleValue(double value) : base(value) { }
+    public DoubleValue(double value, bool @readonly = false) : base(value, @readonly) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new DoubleValue(this, cloner);
@@ -82,6 +82,10 @@ namespace HeuristicLab.Data {
       } else {
         return false;
       }
+    }
+
+    public new DoubleValue AsReadOnly() {
+      return (DoubleValue)base.AsReadOnly();
     }
 
     #region IStringConvertibleValue Members

@@ -20,9 +20,9 @@
 #endregion
 
 using System.Text;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HEAL.Attic;
 
 namespace HeuristicLab.Data {
   [Item("PercentArray", "Represents an array of double values in percent.")]
@@ -35,7 +35,7 @@ namespace HeuristicLab.Data {
     }
     public PercentArray() : base() { }
     public PercentArray(int length) : base(length) { }
-    public PercentArray(double[] elements) : base(elements) { }
+    public PercentArray(double[] elements, bool @readonly = false) : base(elements, @readonly) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new PercentArray(this, cloner);
@@ -75,6 +75,10 @@ namespace HeuristicLab.Data {
       } else {
         return false;
       }
+    }
+
+    public new PercentArray AsReadOnly() {
+      return (PercentArray)base.AsReadOnly();
     }
   }
 }

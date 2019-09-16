@@ -20,12 +20,13 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 
 namespace HeuristicLab.Problems.PTSP {
   [Item("PTSP Estimated Insertion Move Evaluator", "Evaluates an insertion move (1-shift)")]
@@ -48,7 +49,7 @@ namespace HeuristicLab.Problems.PTSP {
       return new PTSPEstimatedInsertionMoveEvaluator(this, cloner);
     }
 
-    public static double EvaluateMove(Permutation tour, TranslocationMove move, Func<int, int, double> distance, ItemList<BoolArray> realizations) {
+    public static double EvaluateMove(Permutation tour, TranslocationMove move, IProbabilisticTSPData data, IEnumerable<BoolArray> realizations) {
       var afterMove = (Permutation)tour.Clone();
       TranslocationManipulator.Apply(afterMove, move.Index1, move.Index1, move.Index3);
       double moveQuality = 0;
@@ -92,6 +93,7 @@ namespace HeuristicLab.Problems.PTSP {
         indices[11] = indices[3];
       }
       int[] aPosteriori = new int[12];
+      var count = 0;
       foreach (var realization in realizations) {
         for (int i = 0; i < edges.Length; i++) {
           Permutation tempPermutation;
@@ -123,13 +125,14 @@ namespace HeuristicLab.Problems.PTSP {
           !(aPosteriori[0] == aPosteriori[4] && aPosteriori[1] == aPosteriori[5]) &&
           !(aPosteriori[2] == aPosteriori[4] && aPosteriori[3] == aPosteriori[5])) {
           // compute cost difference between the two a posteriori solutions
-          moveQuality = moveQuality + distance(aPosteriori[6], aPosteriori[7]) + distance(aPosteriori[8], aPosteriori[9]) + distance(aPosteriori[10], aPosteriori[11]);
-          moveQuality = moveQuality - distance(aPosteriori[0], aPosteriori[1]) - distance(aPosteriori[2], aPosteriori[3]) - distance(aPosteriori[4], aPosteriori[5]);
+          moveQuality = moveQuality + data.GetDistance(aPosteriori[6], aPosteriori[7]) + data.GetDistance(aPosteriori[8], aPosteriori[9]) + data.GetDistance(aPosteriori[10], aPosteriori[11]);
+          moveQuality = moveQuality - data.GetDistance(aPosteriori[0], aPosteriori[1]) - data.GetDistance(aPosteriori[2], aPosteriori[3]) - data.GetDistance(aPosteriori[4], aPosteriori[5]);
         }
         Array.Clear(aPosteriori, 0, aPosteriori.Length);
+        count++;
       }
       // return average of cost differences
-      return moveQuality / realizations.Count;
+      return moveQuality / count;
     }
 
     private static int DecreaseCircularIndex(int length, int index) {
@@ -148,8 +151,8 @@ namespace HeuristicLab.Problems.PTSP {
       return result;
     }
 
-    protected override double EvaluateMove(Permutation tour, Func<int, int, double> distance, ItemList<BoolArray> realizations) {
-      return EvaluateMove(tour, TranslocationMoveParameter.ActualValue, distance, realizations);
+    protected override double EvaluateMove(Permutation tour, IProbabilisticTSPData data, ReadOnlyItemList<BoolArray> realizations) {
+      return EvaluateMove(tour, TranslocationMoveParameter.ActualValue, data, realizations);
     }
   }
 }

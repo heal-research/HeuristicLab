@@ -20,55 +20,59 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
-using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
-using HeuristicLab.Problems.Instances;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.Problems.PTSP {
-  [Item("Estimated Probabilistic Traveling Salesman Problem (PTSP)", "Represents a probabilistic traveling salesman problem where the expected tour length is estimated by averaging over the length of tours on a number of, so called, realizations.")]
+  [Item("Estimated Probabilistic TSP (p-TSP)", "Represents a probabilistic traveling salesman problem where the expected tour length is estimated by averaging over the length of tours on a number of, so called, realizations.")]
   [Creatable(CreatableAttribute.Categories.CombinatorialProblems)]
-  [StorableType("D1F1DE71-54E3-40B6-856F-685CD71D97F9")]
-  public sealed class EstimatedProbabilisticTravelingSalesmanProblem : ProbabilisticTravelingSalesmanProblem {
+  [StorableType("d1b4149b-8ab9-4314-8d96-9ea04a4d5b8b")]
+  public sealed class EstimatedPTSP : ProbabilisticTSP {
 
     #region Parameter Properties
-    public IValueParameter<ItemList<BoolArray>> RealizationsParameter {
-      get { return (IValueParameter<ItemList<BoolArray>>)Parameters["Realizations"]; }
-    }
-    public IFixedValueParameter<IntValue> RealizationsSizeParameter {
-      get { return (IFixedValueParameter<IntValue>)Parameters["RealizationsSize"]; }
-    }
+    [Storable] public IFixedValueParameter<IntValue> RealizationsSeedParameter { get; private set; }
+    [Storable] public IFixedValueParameter<IntValue> RealizationsParameter { get; private set; }
+    [Storable] private IValueParameter<ReadOnlyItemList<BoolArray>> RealizationDataParameter { get; set; }
     #endregion
 
     #region Properties
-    public ItemList<BoolArray> Realizations {
-      get { return RealizationsParameter.Value; }
-      set { RealizationsParameter.Value = value; }
+
+    public int RealizationsSeed {
+      get { return RealizationsSeedParameter.Value.Value; }
+      set { RealizationsSeedParameter.Value.Value = value; }
     }
 
-    public int RealizationsSize {
-      get { return RealizationsSizeParameter.Value.Value; }
-      set { RealizationsSizeParameter.Value.Value = value; }
+    public int Realizations {
+      get { return RealizationsParameter.Value.Value; }
+      set { RealizationsParameter.Value.Value = value; }
+    }
+    
+    private ReadOnlyItemList<BoolArray> RealizationData {
+      get { return RealizationDataParameter.Value; }
+      set { RealizationDataParameter.Value = value; }
     }
     #endregion
 
     [StorableConstructor]
-    private EstimatedProbabilisticTravelingSalesmanProblem(StorableConstructorFlag _) : base(_) { }
-    private EstimatedProbabilisticTravelingSalesmanProblem(EstimatedProbabilisticTravelingSalesmanProblem original, Cloner cloner)
+    private EstimatedPTSP(StorableConstructorFlag _) : base(_) { }
+    private EstimatedPTSP(EstimatedPTSP original, Cloner cloner)
       : base(original, cloner) {
+      RealizationsSeedParameter = cloner.Clone(original.RealizationsSeedParameter);
+      RealizationsParameter = cloner.Clone(original.RealizationsParameter);
+      RealizationDataParameter = cloner.Clone(original.RealizationDataParameter);
       RegisterEventHandlers();
     }
-    public EstimatedProbabilisticTravelingSalesmanProblem() {
-      Parameters.Add(new FixedValueParameter<IntValue>("RealizationsSize", "Size of the sample for the estimation-based evaluation", new IntValue(100)));
-      Parameters.Add(new ValueParameter<ItemList<BoolArray>>("Realizations", "The list of samples drawn from all possible stochastic instances.", new ItemList<BoolArray>()));
-
-      Operators.Add(new BestPTSPSolutionAnalyzer());
+    public EstimatedPTSP() {
+      Parameters.Add(RealizationsSeedParameter = new FixedValueParameter<IntValue>("RealizationsSeed", "The starting seed of the RNG from which realizations should be drawn.", new IntValue(1)));
+      Parameters.Add(RealizationsParameter = new FixedValueParameter<IntValue>("Realizations", "The number of realizations that should be made.", new IntValue(100)));
+      Parameters.Add(RealizationDataParameter = new ValueParameter<ReadOnlyItemList<BoolArray>>("RealizationData", "The actual realizations.") { Hidden = true, GetsCollected = false });
 
       Operators.Add(new PTSPEstimatedInversionMoveEvaluator());
       Operators.Add(new PTSPEstimatedInsertionMoveEvaluator());
@@ -82,10 +86,6 @@ namespace HeuristicLab.Problems.PTSP {
       Operators.Add(new TwoPointFiveMoveMaker());
       Operators.Add(new PTSPEstimatedTwoPointFiveMoveEvaluator());
 
-      Operators.RemoveAll(x => x is SingleObjectiveMoveGenerator);
-      Operators.RemoveAll(x => x is SingleObjectiveMoveMaker);
-      Operators.RemoveAll(x => x is SingleObjectiveMoveEvaluator);
-
       Encoding.ConfigureOperators(Operators.OfType<IOperator>());
       foreach (var twopointfiveMoveOperator in Operators.OfType<ITwoPointFiveMoveOperator>()) {
         twopointfiveMoveOperator.TwoPointFiveMoveParameter.ActualName = "Permutation.TwoPointFiveMove";
@@ -96,7 +96,11 @@ namespace HeuristicLab.Problems.PTSP {
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new EstimatedProbabilisticTravelingSalesmanProblem(this, cloner);
+      return new EstimatedPTSP(this, cloner);
+    }
+
+    public override double Evaluate(Permutation tour, IRandom random) {
+      return Evaluate(tour, ProbabilisticTSPData, RealizationData);
     }
 
     [StorableHook(HookType.AfterDeserialization)]
@@ -104,75 +108,50 @@ namespace HeuristicLab.Problems.PTSP {
       RegisterEventHandlers();
     }
 
-    private void RegisterEventHandlers() {
-      RealizationsSizeParameter.Value.ValueChanged += RealizationsSizeParameter_ValueChanged;
-    }
-
-    private void RealizationsSizeParameter_ValueChanged(object sender, EventArgs e) {
-      UpdateRealizations();
-    }
-
-    public override double Evaluate(Permutation tour, IRandom random) {
-      // abeham: Cache parameters in local variables for performance reasons
-      var realizations = Realizations;
-      var realizationsSize = RealizationsSize;
-      var useDistanceMatrix = UseDistanceMatrix;
-      var distanceMatrix = DistanceMatrix;
-      var distanceCalculator = DistanceCalculator;
-      var coordinates = Coordinates;
-
+    public static double Evaluate(Permutation tour, IProbabilisticTSPData data, IEnumerable<BoolArray> realizations) {
       // Estimation-based evaluation, here without calculating variance for faster evaluation
       var estimatedSum = 0.0;
-      for (var i = 0; i < realizations.Count; i++) {
+      var count = 0;
+      foreach (var r in realizations) {
         int singleRealization = -1, firstNode = -1;
-        for (var j = 0; j < realizations[i].Length; j++) {
-          if (realizations[i][tour[j]]) {
+        for (var j = 0; j < data.Cities; j++) {
+          if (r[tour[j]]) {
             if (singleRealization != -1) {
-              estimatedSum += useDistanceMatrix ? distanceMatrix[singleRealization, tour[j]] : distanceCalculator.Calculate(singleRealization, tour[j], coordinates);
+              estimatedSum += data.GetDistance(singleRealization, tour[j]);
             } else {
               firstNode = tour[j];
             }
             singleRealization = tour[j];
           }
         }
-        if (singleRealization != -1) {
-          estimatedSum += useDistanceMatrix ? distanceMatrix[singleRealization, firstNode] : distanceCalculator.Calculate(singleRealization, firstNode, coordinates);
-        }
+        if (singleRealization != -1)
+          estimatedSum += data.GetDistance(singleRealization, firstNode);
+        count++;
       }
-      return estimatedSum / realizationsSize;
+      return estimatedSum / count;
     }
 
     /// <summary>
     /// An evaluate method that can be used if mean as well as variance should be calculated
     /// </summary>
     /// <param name="tour">The tour between all cities.</param>
-    /// <param name="distanceMatrix">The distances between the cities.</param>
-    /// <param name="realizations">A sample of realizations of the stochastic instance</param>
+    /// <param name="data">The main parameters of the p-TSP.</param>
+    /// <param name="realizations">How many realizations to achieve.</param>
+    /// <param name="seed">The starting seed of generating the realizations.</param>
     /// <param name="variance">The estimated variance will be returned in addition to the mean.</param>
     /// <returns>A vector with length two containing mean and variance.</returns>
-    public static double Evaluate(Permutation tour, DistanceMatrix distanceMatrix, ItemList<BoolArray> realizations, out double variance) {
-      return Evaluate(tour, (a, b) => distanceMatrix[a, b], realizations, out variance);
-    }
-
-    /// <summary>
-    /// An evaluate method that can be used if mean as well as variance should be calculated
-    /// </summary>
-    /// <param name="tour">The tour between all cities.</param>
-    /// <param name="distance">A func that accepts the index of two cities and returns the distance as a double.</param>
-    /// <param name="realizations">A sample of realizations of the stochastic instance</param>
-    /// <param name="variance">The estimated variance will be returned in addition to the mean.</param>
-    /// <returns>A vector with length two containing mean and variance.</returns>
-    public static double Evaluate(Permutation tour, Func<int, int, double> distance, ItemList<BoolArray> realizations, out double variance) {
+    public static double Evaluate(Permutation tour, IProbabilisticTSPData data, IEnumerable<BoolArray> realizations, out double variance) {
       // Estimation-based evaluation
       var estimatedSum = 0.0;
-      var partialSums = new double[realizations.Count];
-      for (var i = 0; i < realizations.Count; i++) {
-        partialSums[i] = 0;
+      var partialSums = new List<double>();
+      var count = 0;
+      foreach (var r in realizations) {
+        var pSum = 0.0;
         int singleRealization = -1, firstNode = -1;
-        for (var j = 0; j < realizations[i].Length; j++) {
-          if (realizations[i][tour[j]]) {
+        for (var j = 0; j < data.Cities; j++) {
+          if (r[tour[j]]) {
             if (singleRealization != -1) {
-              partialSums[i] += distance(singleRealization, tour[j]);
+              pSum += data.GetDistance(singleRealization, tour[j]);
             } else {
               firstNode = tour[j];
             }
@@ -180,45 +159,52 @@ namespace HeuristicLab.Problems.PTSP {
           }
         }
         if (singleRealization != -1) {
-          partialSums[i] += distance(singleRealization, firstNode);
+          pSum += data.GetDistance(singleRealization, firstNode);
         }
-        estimatedSum += partialSums[i];
+        estimatedSum += pSum;
+        partialSums.Add(pSum);
+        count++;
       }
-      var mean = estimatedSum / realizations.Count;
+      var mean = estimatedSum / count;
       variance = 0.0;
-      for (var i = 0; i < realizations.Count; i++) {
+      for (var i = 0; i < count; i++) {
         variance += Math.Pow((partialSums[i] - mean), 2);
       }
-      variance = variance / realizations.Count;
+      variance = variance / count;
       return mean;
     }
 
-    public override void Load(PTSPData data) {
-      base.Load(data);
-      UpdateRealizations();
+    private void RegisterEventHandlers() {
+      RealizationsParameter.Value.ValueChanged += RealizationsOnChanged;
+      RealizationsSeedParameter.Value.ValueChanged += RealizationsSeedOnChanged;
+    }
 
-      foreach (var op in Operators.OfType<IEstimatedPTSPOperator>()) {
-        op.RealizationsParameter.ActualName = RealizationsParameter.Name;
-      }
+    private void RealizationsSeedOnChanged(object sender, EventArgs e) {
+      UpdateRealizations();
+    }
+
+    private void RealizationsOnChanged(object sender, EventArgs e) {
+      if (Realizations <= 0) Realizations = 1;
+      else UpdateRealizations();
     }
 
     private void UpdateRealizations() {
-      var realizations = new ItemList<BoolArray>(RealizationsSize);
-      var rand = new MersenneTwister();
-      for (var i = 0; i < RealizationsSize; i++) {
-        var newRealization = new BoolArray(Probabilities.Length);
-        var countOnes = 0;
-        do {
-          countOnes = 0;
-          for (var j = 0; j < Probabilities.Length; j++) {
-            newRealization[j] = Probabilities[j] < rand.NextDouble();
-            if (newRealization[j]) countOnes++;
+      var data = new List<BoolArray>(Realizations);
+      var rng = new FastRandom(RealizationsSeed);
+      for (var i = 0; i < Realizations; i++) {
+        var cities = 0;
+        var r = new bool[ProbabilisticTSPData.Cities];
+        for (var j = 0; j < ProbabilisticTSPData.Cities; j++) {
+          if (rng.NextDouble() < ProbabilisticTSPData.GetProbability(j)) {
+            r[j] = true;
+            cities++;
           }
-          // only generate realizations with at least 4 cities visited
-        } while (countOnes < 4 && Probabilities.Length > 3);
-        realizations.Add(newRealization);
+        }
+        if (cities > 0) {
+          data.Add(new BoolArray(r, @readonly: true));
+        }
       }
-      Realizations = realizations;
+      RealizationData = (new ItemList<BoolArray>(data)).AsReadOnly();
     }
   }
 }

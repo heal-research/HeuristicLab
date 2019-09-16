@@ -21,9 +21,9 @@
 
 using System;
 using System.Drawing;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HEAL.Attic;
 
 namespace HeuristicLab.Data {
   [Item("EnumValue", "An abstract base class for representing values of enum types.")]
@@ -38,14 +38,8 @@ namespace HeuristicLab.Data {
         throw new InvalidOperationException("Generic type " + typeof(T).Name + " is not an enum.");
     }
 
-    public EnumValue() {
-      this.value = default(T);
-      this.readOnly = false;
-    }
-    public EnumValue(T value) {
-      this.value = value;
-      this.readOnly = false;
-    }
+    public EnumValue() : base(default(T)) { }
+    public EnumValue(T value, bool @readonly = false) : base(value, @readonly) { }
 
     [StorableConstructor]
     private EnumValue(StorableConstructorFlag _) : base(_) { }
@@ -59,6 +53,10 @@ namespace HeuristicLab.Data {
 
     public int CompareTo(EnumValue<T> other) {
       return Value.CompareTo(other.Value);
+    }
+
+    public new EnumValue<T> AsReadOnly() {
+      return (EnumValue<T>)base.AsReadOnly();
     }
   }
 }

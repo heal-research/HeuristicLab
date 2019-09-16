@@ -22,9 +22,9 @@
 using System;
 using System.Drawing;
 using System.Text;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HEAL.Attic;
 
 namespace HeuristicLab.Data {
   [Item("BoolValue", "Represents a boolean value.")]
@@ -40,7 +40,7 @@ namespace HeuristicLab.Data {
       : base(original, cloner) {
     }
     public BoolValue() : base() { }
-    public BoolValue(bool value) : base(value) { }
+    public BoolValue(bool value, bool @readonly = false) : base(value, @readonly) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new BoolValue(this, cloner);
@@ -78,6 +78,10 @@ namespace HeuristicLab.Data {
       } else {
         return false;
       }
+    }
+
+    public new BoolValue AsReadOnly() {
+      return (BoolValue)base.AsReadOnly();
     }
 
     #region IStringConvertibleValue Members

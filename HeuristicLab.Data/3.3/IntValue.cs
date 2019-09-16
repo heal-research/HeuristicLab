@@ -22,9 +22,9 @@
 using System;
 using System.Drawing;
 using System.Text;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HEAL.Attic;
 
 namespace HeuristicLab.Data {
   [Item("IntValue", "Represents an integer value.")]
@@ -40,7 +40,7 @@ namespace HeuristicLab.Data {
       : base(original, cloner) {
     }
     public IntValue() : base() { }
-    public IntValue(int value) : base(value) { }
+    public IntValue(int value, bool @readonly = false) : base(value, @readonly) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new IntValue(this, cloner);
@@ -78,6 +78,10 @@ namespace HeuristicLab.Data {
       } else {
         return false;
       }
+    }
+
+    public new IntValue AsReadOnly() {
+      return (IntValue)base.AsReadOnly();
     }
 
     #region IStringConvertibleValue Members
