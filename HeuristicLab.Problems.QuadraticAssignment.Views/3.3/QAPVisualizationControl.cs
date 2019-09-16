@@ -42,9 +42,7 @@ namespace HeuristicLab.Problems.QuadraticAssignment.Views {
     public DoubleMatrix Distances {
       get { return distances; }
       set {
-        DeregisterDistancesEvents();
         distances = value;
-        RegisterDistancesEvents();
         OnRedraw();
       }
     }
@@ -53,9 +51,7 @@ namespace HeuristicLab.Problems.QuadraticAssignment.Views {
     public DoubleMatrix Weights {
       get { return weights; }
       set {
-        DeregisterWeightsEvents();
         weights = value;
-        RegisterWeightsEvents();
         OnRedraw();
       }
     }
@@ -73,41 +69,6 @@ namespace HeuristicLab.Problems.QuadraticAssignment.Views {
     #endregion
 
     #region Event Handling
-    private void DeregisterDistancesEvents() {
-      if (Distances != null) {
-        Distances.Reset -= new EventHandler(RedrawNecessary);
-        Distances.RowsChanged -= new EventHandler(RedrawNecessary);
-        Distances.ColumnsChanged -= new EventHandler(RedrawNecessary);
-        Distances.ItemChanged -= new EventHandler<EventArgs<int, int>>(RedrawNecessary);
-      }
-    }
-
-    private void RegisterDistancesEvents() {
-      if (Distances != null) {
-        Distances.Reset += new EventHandler(RedrawNecessary);
-        Distances.RowsChanged += new EventHandler(RedrawNecessary);
-        Distances.ColumnsChanged += new EventHandler(RedrawNecessary);
-        Distances.ItemChanged += new EventHandler<EventArgs<int, int>>(RedrawNecessary);
-      }
-    }
-
-    private void DeregisterWeightsEvents() {
-      if (Weights != null) {
-        Weights.Reset -= new EventHandler(RedrawNecessary);
-        Weights.RowsChanged -= new EventHandler(RedrawNecessary);
-        Weights.ColumnsChanged -= new EventHandler(RedrawNecessary);
-        Weights.ItemChanged -= new EventHandler<EventArgs<int, int>>(RedrawNecessary);
-      }
-    }
-
-    private void RegisterWeightsEvents() {
-      if (Weights != null) {
-        Weights.Reset += new EventHandler(RedrawNecessary);
-        Weights.RowsChanged += new EventHandler(RedrawNecessary);
-        Weights.ColumnsChanged += new EventHandler(RedrawNecessary);
-        Weights.ItemChanged += new EventHandler<EventArgs<int, int>>(RedrawNecessary);
-      }
-    }
 
     private void DeregisterAssignmentEvents() {
       if (Assignment != null) {
@@ -537,8 +498,6 @@ namespace HeuristicLab.Problems.QuadraticAssignment.Views {
     #endregion
 
     private void CustomDispose(bool disposing) {
-      DeregisterDistancesEvents();
-      DeregisterWeightsEvents();
       DeregisterAssignmentEvents();
       if (bitmap != null) bitmap.Dispose();
       bitmap = null;

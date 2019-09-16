@@ -80,11 +80,12 @@ namespace HeuristicLab.Problems.Instances.Views {
       // openFileDialog
       // 
       this.openFileDialog.Filter = "All files|*.*";
+      this.openFileDialog.Title = "Import Problem Data...";
       // 
       // saveFileDialog
       // 
-      this.saveFileDialog.Filter = "CSV files|*.csv|All files|*.*";
-      this.saveFileDialog.Title = "Save RegressionInstance...";
+      this.saveFileDialog.Filter = "All files|*.*";
+      this.saveFileDialog.Title = "Export Problem Data...";
       // 
       // instanceLabel
       // 

@@ -149,6 +149,10 @@ namespace HeuristicLab.Problems.Instances.Views {
     }
 
     protected virtual void importButton_Click(object sender, EventArgs e) {
+      var exts = Content.ImportFileExtensions.ToArray();
+      openFileDialog.AddExtension = exts.Length > 0;
+      openFileDialog.Filter = exts.Length > 0 ? string.Join("|", exts.Select(x => x + " files|*." + x)) : "All files|*.*"; ;
+      openFileDialog.DefaultExt = exts.FirstOrDefault() ?? string.Empty;
       openFileDialog.FileName = Content.Name + " instance";
       if (openFileDialog.ShowDialog() == DialogResult.OK) {
         T instance = default(T);
@@ -168,6 +172,13 @@ namespace HeuristicLab.Problems.Instances.Views {
     }
 
     protected virtual void exportButton_Click(object sender, EventArgs e) {
+      var exts = Content.ExportFileExtensions.ToArray();
+      saveFileDialog.AddExtension = exts.Length > 0;
+      saveFileDialog.Filter = exts.Length > 0 ? string.Join("|", exts.Select(x => x + " files|*." + x)) : "All files|*.*"; ;
+      saveFileDialog.DefaultExt = exts.FirstOrDefault() ?? string.Empty;
+      try {
+        saveFileDialog.FileName = ((dynamic)Exporter).Name;
+      } catch { saveFileDialog.FileName = "Data"; }
       if (saveFileDialog.ShowDialog(this) == DialogResult.OK) {
         try {
           Content.ExportData(GenericExporter.Export(), saveFileDialog.FileName);

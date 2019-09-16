@@ -24,13 +24,11 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using HEAL.Attic;
-using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Optimization;
-using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
 using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Problems.Instances;
@@ -41,7 +39,8 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
   [StorableType("A86B1F49-D8E6-45E4-8EFB-8F5CCA2F9DC7")]
   public sealed class QuadraticAssignmentProblem : PermutationProblem,
     IProblemInstanceConsumer<QAPData>,
-    IProblemInstanceConsumer<TSPData> {
+    IProblemInstanceConsumer<TSPData>, IProblemInstanceExporter<QAPData> {
+    public static int ProblemSizeLimit = 1000;
 
     public static new Image StaticItemImage {
       get { return Common.Resources.VSImageLibrary.Type; }
@@ -50,62 +49,38 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
     public override bool Maximization { get { return false; } }
 
     #region Parameter Properties
-    [Storable]
-    private IValueParameter<ItemSet<Permutation>> bestKnownSolutionsParameter;
-    public IValueParameter<ItemSet<Permutation>> BestKnownSolutionsParameter {
-      get { return bestKnownSolutionsParameter; }
-    }
-    [Storable]
-    private IValueParameter<Permutation> bestKnownSolutionParameter;
-    public IValueParameter<Permutation> BestKnownSolutionParameter {
-      get { return bestKnownSolutionParameter; }
-    }
-    [Storable]
-    private IValueParameter<DoubleMatrix> weightsParameter;
-    public IValueParameter<DoubleMatrix> WeightsParameter {
-      get { return weightsParameter; }
-    }
-    [Storable]
-    private IValueParameter<DoubleMatrix> distancesParameter;
-    public IValueParameter<DoubleMatrix> DistancesParameter {
-      get { return distancesParameter; }
-    }
-    [Storable]
-    private IValueParameter<DoubleValue> lowerBoundParameter;
-    public IValueParameter<DoubleValue> LowerBoundParameter {
-      get { return lowerBoundParameter; }
-    }
-    [Storable]
-    private IValueParameter<DoubleValue> averageQualityParameter;
-    public IValueParameter<DoubleValue> AverageQualityParameter {
-      get { return averageQualityParameter; }
-    }
+    [Storable] public IValueParameter<ItemSet<Permutation>> BestKnownSolutionsParameter { get; private set; }
+    [Storable] public IValueParameter<Permutation> BestKnownSolutionParameter { get; private set; }
+    [Storable] public IValueParameter<DoubleMatrix> WeightsParameter { get; private set; }
+    [Storable] public IValueParameter<DoubleMatrix> DistancesParameter { get; private set; }
+    [Storable] public IValueParameter<DoubleValue> LowerBoundParameter { get; private set; }
+    [Storable] public IValueParameter<DoubleValue> AverageQualityParameter { get; private set; }
     #endregion
 
     #region Properties
     public ItemSet<Permutation> BestKnownSolutions {
-      get { return bestKnownSolutionsParameter.Value; }
-      set { bestKnownSolutionsParameter.Value = value; }
+      get { return BestKnownSolutionsParameter.Value; }
+      set { BestKnownSolutionsParameter.Value = value; }
     }
     public Permutation BestKnownSolution {
-      get { return bestKnownSolutionParameter.Value; }
-      set { bestKnownSolutionParameter.Value = value; }
+      get { return BestKnownSolutionParameter.Value; }
+      set { BestKnownSolutionParameter.Value = value; }
     }
     public DoubleMatrix Weights {
-      get { return weightsParameter.Value; }
-      set { weightsParameter.Value = value; }
+      get { return WeightsParameter.Value; }
+      set { WeightsParameter.Value = value; }
     }
     public DoubleMatrix Distances {
-      get { return distancesParameter.Value; }
-      set { distancesParameter.Value = value; }
+      get { return DistancesParameter.Value; }
+      set { DistancesParameter.Value = value; }
     }
     public DoubleValue LowerBound {
-      get { return lowerBoundParameter.Value; }
-      set { lowerBoundParameter.Value = value; }
+      get { return LowerBoundParameter.Value; }
+      set { LowerBoundParameter.Value = value; }
     }
     public DoubleValue AverageQuality {
-      get { return averageQualityParameter.Value; }
-      set { averageQualityParameter.Value = value; }
+      get { return AverageQualityParameter.Value; }
+      set { AverageQualityParameter.Value = value; }
     }
 
     private BestQAPSolutionAnalyzer BestQAPSolutionAnalyzer {
@@ -115,32 +90,28 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
     private QAPAlleleFrequencyAnalyzer QAPAlleleFrequencyAnalyzer {
       get { return Operators.OfType<QAPAlleleFrequencyAnalyzer>().FirstOrDefault(); }
     }
-
-    private QAPPopulationDiversityAnalyzer QAPPopulationDiversityAnalyzer {
-      get { return Operators.OfType<QAPPopulationDiversityAnalyzer>().FirstOrDefault(); }
-    }
     #endregion
 
     [StorableConstructor]
     private QuadraticAssignmentProblem(StorableConstructorFlag _) : base(_) { }
     private QuadraticAssignmentProblem(QuadraticAssignmentProblem original, Cloner cloner)
       : base(original, cloner) {
-      bestKnownSolutionsParameter = cloner.Clone(original.bestKnownSolutionsParameter);
-      bestKnownSolutionParameter = cloner.Clone(original.bestKnownSolutionParameter);
-      weightsParameter = cloner.Clone(original.weightsParameter);
-      distancesParameter = cloner.Clone(original.distancesParameter);
-      lowerBoundParameter = cloner.Clone(original.lowerBoundParameter);
-      averageQualityParameter = cloner.Clone(original.averageQualityParameter);
+      BestKnownSolutionsParameter = cloner.Clone(original.BestKnownSolutionsParameter);
+      BestKnownSolutionParameter = cloner.Clone(original.BestKnownSolutionParameter);
+      WeightsParameter = cloner.Clone(original.WeightsParameter);
+      DistancesParameter = cloner.Clone(original.DistancesParameter);
+      LowerBoundParameter = cloner.Clone(original.LowerBoundParameter);
+      AverageQualityParameter = cloner.Clone(original.AverageQualityParameter);
       RegisterEventHandlers();
     }
     public QuadraticAssignmentProblem()
       : base(new PermutationEncoding("Assignment") { Length = 5 }) {
-      Parameters.Add(bestKnownSolutionsParameter = new OptionalValueParameter<ItemSet<Permutation>>("BestKnownSolutions", "The list of best known solutions which is updated whenever a new better solution is found or may be the optimal solution if it is known beforehand.", null));
-      Parameters.Add(bestKnownSolutionParameter = new OptionalValueParameter<Permutation>("BestKnownSolution", "The best known solution which is updated whenever a new better solution is found or may be the optimal solution if it is known beforehand.", null));
-      Parameters.Add(weightsParameter = new ValueParameter<DoubleMatrix>("Weights", "The strength of the connection between the facilities.", new DoubleMatrix(5, 5)));
-      Parameters.Add(distancesParameter = new ValueParameter<DoubleMatrix>("Distances", "The distance matrix which can either be specified directly without the coordinates, or can be calculated automatically from the coordinates.", new DoubleMatrix(5, 5)));
-      Parameters.Add(lowerBoundParameter = new OptionalValueParameter<DoubleValue>("LowerBound", "The Gilmore-Lawler lower bound to the solution quality."));
-      Parameters.Add(averageQualityParameter = new OptionalValueParameter<DoubleValue>("AverageQuality", "The expected quality of a random solution."));
+      Parameters.Add(BestKnownSolutionsParameter = new OptionalValueParameter<ItemSet<Permutation>>("BestKnownSolutions", "The list of best known solutions which is updated whenever a new better solution is found or may be the optimal solution if it is known beforehand.", null));
+      Parameters.Add(BestKnownSolutionParameter = new OptionalValueParameter<Permutation>("BestKnownSolution", "The best known solution which is updated whenever a new better solution is found or may be the optimal solution if it is known beforehand.", null));
+      Parameters.Add(WeightsParameter = new ValueParameter<DoubleMatrix>("Weights", "The strength of the connection between the facilities."));
+      Parameters.Add(DistancesParameter = new ValueParameter<DoubleMatrix>("Distances", "The distance matrix which can either be specified directly without the coordinates, or can be calculated automatically from the coordinates."));
+      Parameters.Add(LowerBoundParameter = new OptionalValueParameter<DoubleValue>("LowerBound", "The Gilmore-Lawler lower bound to the solution quality."));
+      Parameters.Add(AverageQualityParameter = new OptionalValueParameter<DoubleValue>("AverageQuality", "The expected quality of a random solution."));
 
       WeightsParameter.GetsCollected = false;
       Weights = new DoubleMatrix(new double[,] {
@@ -149,7 +120,7 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
         { 0, 1, 0, 1, 0 },
         { 0, 0, 1, 0, 1 },
         { 1, 0, 0, 1, 0 }
-      });
+      }, @readonly: true);
 
       DistancesParameter.GetsCollected = false;
       Distances = new DoubleMatrix(new double[,] {
@@ -158,7 +129,7 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
         { 582, 360,   0, 360, 582 },
         { 582, 582, 360,   0, 360 },
         { 360, 582, 582, 360,   0 }
-      });
+      }, @readonly: true);
 
       InitializeOperators();
       RegisterEventHandlers();
@@ -186,28 +157,27 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
     private void AfterDeserialization() {
       // BackwardsCompatibility3.3
       #region Backwards compatible code, remove with 3.4
-      if (bestKnownSolutionsParameter == null)
-        bestKnownSolutionsParameter = (IValueParameter<ItemSet<Permutation>>)Parameters["BestKnownSolutions"];
-      if (bestKnownSolutionParameter == null)
-        bestKnownSolutionParameter = (IValueParameter<Permutation>)Parameters["BestKnownSolution"];
-      if (weightsParameter == null)
-        weightsParameter = (IValueParameter<DoubleMatrix>)Parameters["Weights"];
-      if (distancesParameter == null)
-        distancesParameter = (IValueParameter<DoubleMatrix>)Parameters["Distances"];
-      if (lowerBoundParameter == null)
-        lowerBoundParameter = (IValueParameter<DoubleValue>)Parameters["LowerBound"];
-      if (averageQualityParameter == null)
-        averageQualityParameter = (IValueParameter<DoubleValue>)Parameters["AverageQuality"];
+      if (BestKnownSolutionsParameter == null)
+        BestKnownSolutionsParameter = (IValueParameter<ItemSet<Permutation>>)Parameters["BestKnownSolutions"];
+      if (BestKnownSolutionParameter == null)
+        BestKnownSolutionParameter = (IValueParameter<Permutation>)Parameters["BestKnownSolution"];
+      if (WeightsParameter == null)
+        WeightsParameter = (IValueParameter<DoubleMatrix>)Parameters["Weights"];
+      if (DistancesParameter == null)
+        DistancesParameter = (IValueParameter<DoubleMatrix>)Parameters["Distances"];
+      if (LowerBoundParameter == null)
+        LowerBoundParameter = (IValueParameter<DoubleValue>)Parameters["LowerBound"];
+      if (AverageQualityParameter == null)
+        AverageQualityParameter = (IValueParameter<DoubleValue>)Parameters["AverageQuality"];
       #endregion
       RegisterEventHandlers();
     }
 
     #region Events
-    //TODO check with abhem if this is necessary
-    //protected override void OnSolutionCreatorChanged() {
-    //  Parameterize();
-    //  base.OnSolutionCreatorChanged();
-    //}
+    protected override void OnEncodingChanged() {
+      base.OnEncodingChanged();
+      Parameterize();
+    }
     protected override void OnEvaluatorChanged() {
       Evaluator.QualityParameter.ActualNameChanged += Evaluator_QualityParameter_ActualNameChanged;
       Parameterize();
@@ -216,82 +186,24 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
     private void Evaluator_QualityParameter_ActualNameChanged(object sender, EventArgs e) {
       Parameterize();
     }
-    private void WeightsParameter_ValueChanged(object sender, EventArgs e) {
-      Weights.RowsChanged += Weights_RowsChanged;
-      Weights.ColumnsChanged += Weights_ColumnsChanged;
-      Weights.ToStringChanged += Weights_ToStringChanged;
-      AdjustDistanceMatrix();
-    }
-    private void Weights_RowsChanged(object sender, EventArgs e) {
-      if (Weights.Rows != Weights.Columns)
-        ((IStringConvertibleMatrix)Weights).Columns = Weights.Rows;
-      else {
-        AdjustDistanceMatrix();
-      }
-    }
-    private void Weights_ColumnsChanged(object sender, EventArgs e) {
-      if (Weights.Rows != Weights.Columns)
-        ((IStringConvertibleMatrix)Weights).Rows = Weights.Columns;
-      else {
-        AdjustDistanceMatrix();
-      }
-    }
-    private void Weights_ToStringChanged(object sender, EventArgs e) {
-      UpdateParameterValues();
-    }
-    private void DistancesParameter_ValueChanged(object sender, EventArgs e) {
-      Distances.RowsChanged += Distances_RowsChanged;
-      Distances.ColumnsChanged += Distances_ColumnsChanged;
-      Distances.ToStringChanged += Distances_ToStringChanged;
-      AdjustWeightsMatrix();
-    }
-    private void Distances_RowsChanged(object sender, EventArgs e) {
-      if (Distances.Rows != Distances.Columns)
-        ((IStringConvertibleMatrix)Distances).Columns = Distances.Rows;
-      else {
-        AdjustWeightsMatrix();
-      }
-    }
-    private void Distances_ColumnsChanged(object sender, EventArgs e) {
-      if (Distances.Rows != Distances.Columns)
-        ((IStringConvertibleMatrix)Distances).Rows = Distances.Columns;
-      else {
-        AdjustWeightsMatrix();
-      }
-    }
-    private void Distances_ToStringChanged(object sender, EventArgs e) {
-      UpdateParameterValues();
-    }
     #endregion
 
     private void RegisterEventHandlers() {
-      WeightsParameter.ValueChanged += WeightsParameter_ValueChanged;
-      Weights.RowsChanged += Weights_RowsChanged;
-      Weights.ColumnsChanged += Weights_ColumnsChanged;
-      Weights.ToStringChanged += Weights_ToStringChanged;
-      DistancesParameter.ValueChanged += DistancesParameter_ValueChanged;
-      Distances.RowsChanged += Distances_RowsChanged;
-      Distances.ColumnsChanged += Distances_ColumnsChanged;
-      Distances.ToStringChanged += Distances_ToStringChanged;
+      Encoding.LengthParameter.Value.ValueChanged += EncodingLengthOnChanged;
+    }
+
+    private void EncodingLengthOnChanged(object sender, EventArgs e) {
+      if (Encoding.Length != Weights.Rows) Encoding.Length = Weights.Rows;
     }
 
     #region Helpers
     private void InitializeOperators() {
-      var defaultOperators = new HashSet<IPermutationOperator>(new IPermutationOperator[] {
-        new PartiallyMatchedCrossover(),
-        new Swap2Manipulator(),
-        new ExhaustiveSwap2MoveGenerator()
-      });
-      Operators.AddRange(defaultOperators);
       Operators.AddRange(ApplicationManager.Manager.GetInstances<IQAPMoveEvaluator>());
       Operators.AddRange(ApplicationManager.Manager.GetInstances<IQAPLocalImprovementOperator>());
       Operators.Add(new BestQAPSolutionAnalyzer());
       Operators.Add(new QAPAlleleFrequencyAnalyzer());
 
-      Operators.Add(new HammingSimilarityCalculator());
       Operators.Add(new QAPSimilarityCalculator());
-      Operators.Add(new QualitySimilarityCalculator());
-      Operators.Add(new PopulationSimilarityAnalyzer(Operators.OfType<ISolutionSimilarityCalculator>()));
       Parameterize();
     }
     private void Parameterize() {
@@ -312,11 +224,6 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
         QAPAlleleFrequencyAnalyzer.DistancesParameter.ActualName = DistancesParameter.Name;
         QAPAlleleFrequencyAnalyzer.MaximizationParameter.ActualName = MaximizationParameter.Name;
         QAPAlleleFrequencyAnalyzer.WeightsParameter.ActualName = WeightsParameter.Name;
-      }
-      if (QAPPopulationDiversityAnalyzer != null) {
-        operators.Add(QAPPopulationDiversityAnalyzer);
-        QAPPopulationDiversityAnalyzer.MaximizationParameter.ActualName = MaximizationParameter.Name;
-        QAPPopulationDiversityAnalyzer.QualityParameter.ActualName = Evaluator.QualityParameter.ActualName;
       }
       foreach (var localOpt in Operators.OfType<IQAPLocalImprovementOperator>()) {
         operators.Add(localOpt);
@@ -358,6 +265,7 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
         }
       }
       foreach (var similarityCalculator in Operators.OfType<ISolutionSimilarityCalculator>()) {
+        operators.Add(similarityCalculator);
         similarityCalculator.SolutionVariableName = Encoding.Name;
         similarityCalculator.QualityVariableName = Evaluator.QualityParameter.ActualName;
         var qapsimcalc = similarityCalculator as QAPSimilarityCalculator;
@@ -368,20 +276,6 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
       }
 
       if (operators.Count > 0) Encoding.ConfigureOperators(operators);
-    }
-
-    private void AdjustDistanceMatrix() {
-      if (Distances.Rows != Weights.Rows || Distances.Columns != Weights.Columns) {
-        ((IStringConvertibleMatrix)Distances).Rows = Weights.Rows;
-        Encoding.Length = Weights.Rows;
-      }
-    }
-
-    private void AdjustWeightsMatrix() {
-      if (Weights.Rows != Distances.Rows || Weights.Columns != Distances.Columns) {
-        ((IStringConvertibleMatrix)Weights).Rows = Distances.Rows;
-        Encoding.Length = Distances.Rows;
-      }
     }
 
     private void UpdateParameterValues() {
@@ -417,8 +311,9 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
     #endregion
 
     public void Load(QAPData data) {
-      var weights = new DoubleMatrix(data.Weights);
-      var distances = new DoubleMatrix(data.Distances);
+      if (data.Dimension > ProblemSizeLimit) throw new System.IO.InvalidDataException("The problem is limited to instance of size " + ProblemSizeLimit + ". You can change this limit by modifying " + nameof(QuadraticAssignmentProblem) + "." + nameof(ProblemSizeLimit) +"!");
+      var weights = new DoubleMatrix(data.Weights, @readonly: true);
+      var distances = new DoubleMatrix(data.Distances, @readonly: true);
       Name = data.Name;
       Description = data.Description;
       Load(weights, distances);
@@ -428,12 +323,12 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
     }
 
     public void Load(TSPData data) {
-      if (data.Dimension > 1000)
-        throw new System.IO.InvalidDataException("Instances with more than 1000 customers are not supported by the QAP.");
-      var weights = new DoubleMatrix(data.Dimension, data.Dimension);
+      if (data.Dimension > ProblemSizeLimit) throw new System.IO.InvalidDataException("The problem is limited to instance of size " + ProblemSizeLimit + ". You can change this limit by modifying " + nameof(QuadraticAssignmentProblem) + "." + nameof(ProblemSizeLimit) + "!");
+      var w = new double[data.Dimension, data.Dimension];
       for (int i = 0; i < data.Dimension; i++)
-        weights[i, (i + 1) % data.Dimension] = 1;
-      var distances = new DoubleMatrix(data.GetDistanceMatrix());
+        w[i, (i + 1) % data.Dimension] = 1;
+      var weights = new DoubleMatrix(w, @readonly: true);
+      var distances = new DoubleMatrix(data.GetDistanceMatrix(), @readonly: true);
       Name = data.Name;
       Description = data.Description;
       Load(weights, distances);
@@ -471,6 +366,18 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
       BestKnownQuality = result;
       BestKnownSolution = vector;
       BestKnownSolutions = new ItemSet<Permutation> { (Permutation)vector.Clone() };
+    }
+
+    public QAPData Export() {
+      return new QAPData() {
+        Name = Name,
+        Description = Description,
+        Dimension = Weights.Rows,
+        Weights = Weights.CloneAsMatrix(),
+        Distances = Distances.CloneAsMatrix(),
+        BestKnownAssignment = BestKnownSolution?.ToArray(),
+        BestKnownQuality = !double.IsNaN(BestKnownQuality) ? BestKnownQuality : (double?)null
+      };
     }
   }
 }

@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace HeuristicLab.Problems.Instances {
   public abstract class ProblemInstanceProvider<TData> : IProblemInstanceProvider<TData> {
@@ -33,6 +34,7 @@ namespace HeuristicLab.Problems.Instances {
 
     public abstract TData LoadData(IDataDescriptor descriptor);
 
+    public virtual IEnumerable<string> ImportFileExtensions => Enumerable.Empty<string>();
     public virtual bool CanImportData {
       get { return false; }
     }
@@ -40,6 +42,7 @@ namespace HeuristicLab.Problems.Instances {
       throw new NotSupportedException();
     }
 
+    public virtual IEnumerable<string> ExportFileExtensions => Enumerable.Empty<string>();
     public virtual bool CanExportData {
       get { return false; }
     }

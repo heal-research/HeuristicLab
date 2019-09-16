@@ -37,6 +37,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
 
     public event ProgressChangedEventHandler ProgressChanged;
 
+    public override IEnumerable<string> ImportFileExtensions => new[] { "csv" };
     public TData ImportData(string path, ImportType type, DataAnalysisCSVFormat csvFormat) {
       TableFileParser csvFileParser = new TableFileParser();
       csvFileParser.Encoding = csvFormat.Encoding;
@@ -80,6 +81,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
       return shuffled;
     }
 
+    public override IEnumerable<string> ExportFileExtensions => new[] { "csv" };
     public override bool CanExportData {
       get { return true; }
     }

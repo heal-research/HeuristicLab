@@ -35,9 +35,11 @@ namespace HeuristicLab.Problems.Instances {
     IEnumerable<IDataDescriptor> GetDataDescriptors();
     TData LoadData(IDataDescriptor descriptor);
 
+    IEnumerable<string> ImportFileExtensions { get; }
     bool CanImportData { get; }
     TData ImportData(string path);
 
+    IEnumerable<string> ExportFileExtensions { get; }
     bool CanExportData { get; }
     void ExportData(TData instance, string path);
   }

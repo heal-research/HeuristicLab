@@ -229,9 +229,9 @@ Journal of Global Optimization, 10, pp. 391-403.";
       }
     }
 
-    public override bool CanImportData {
-      get { return true; }
-    }
+    public override IEnumerable<string> ImportFileExtensions => new[] { "dat" };
+    public override bool CanImportData => true;
+
     public override QAPData ImportData(string path) {
       var parser = new QAPLIBParser();
       parser.Parse(path);
@@ -247,6 +247,29 @@ Journal of Global Optimization, 10, pp. 391-403.";
       instance.Distances = parser.Distances;
       instance.Weights = parser.Weights;
       return instance;
+    }
+
+    public override IEnumerable<string> ExportFileExtensions => new[] { "dat" };
+    public override bool CanExportData => true;
+    public override void ExportData(QAPData instance, string path) {
+      using (var writer = new StreamWriter(path, append: false)) {
+        writer.WriteLine(instance.Dimension);
+        writer.WriteLine();
+        WriteMatrix(instance.Weights, writer);
+        writer.WriteLine();
+        WriteMatrix(instance.Distances, writer);
+        writer.WriteLine();
+        writer.Flush();
+      }
+    }
+
+    private static void WriteMatrix(double[,] matrix, StreamWriter writer) {
+      for (var i = 0; i < matrix.GetLength(0); i++) {
+        for (var j = 0; j < matrix.GetLength(1); j++) {
+          writer.Write(matrix[i, j] + " ");
+        }
+        writer.WriteLine();
+      }
     }
 
     private string GetDescription() {
