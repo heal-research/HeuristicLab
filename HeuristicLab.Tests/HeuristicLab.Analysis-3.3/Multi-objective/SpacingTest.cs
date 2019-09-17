@@ -21,24 +21,23 @@
 using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace HeuristicLab.Problems.TestFunctions.MultiObjective.Tests {
+namespace HeuristicLab.Analysis.MultiObjective.Tests {
   [TestClass]
-  public class CrowdingTest {
-
+  public class SpacingTest {
     [TestMethod]
     [ExpectedException(typeof(ArgumentException))]
-    [TestCategory("Problems.TestFunctions.MultiObjective")]
+    [TestCategory("Analysis.MultiObjective")]
     [TestProperty("Time", "short")]
-    public void CrowdingTestEmptyFront() {
+    public void SpacingTestEmptyFront() {
       double[][] front = { };
 
-      Crowding.Calculate(front, null);
+      SpacingAnalyzer.CalculateSpacing(front);
     }
 
     [TestMethod]
-    [TestCategory("Problems.TestFunctions.MultiObjective")]
+    [TestCategory("Analysis.MultiObjective")]
     [TestProperty("Time", "short")]
-    public void CrowdingTestSamePoint() {
+    public void SpacingTestSamePoint() {
 
       double[] point = new double[2];
       point[0] = 0.5;
@@ -48,77 +47,81 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective.Tests {
       point1[0] = 0.5;
       point1[1] = 0.5;
       double[][] front = { point, point1 };
-      double dist = Crowding.Calculate(front, new double[,] { { 0, 1 }, { 0, 1 } });
-      Assert.AreEqual(double.PositiveInfinity, dist);
+      double dist = SpacingAnalyzer.CalculateSpacing(front);
+      Assert.AreEqual(0, dist);
     }
 
     [TestMethod]
-    [TestCategory("Problems.TestFunctions.MultiObjective")]
+    [TestCategory("Analysis.MultiObjective")]
     [TestProperty("Time", "short")]
-    public void CrowdingTestSinglePoint() {
+    public void SpacingTestSinglePoint() {
       double[] point = new double[2];
       point[0] = 0;
       point[1] = 0;
       double[][] front = { point };
-      double dist = Crowding.Calculate(front, new double[,] { { 0, 1 }, { 0, 1 } });
-      Assert.AreEqual(double.PositiveInfinity, dist);
+      double dist = SpacingAnalyzer.CalculateSpacing(front);
+      Assert.AreEqual(0, dist);
     }
 
     [TestMethod]
-    [TestCategory("Problems.TestFunctions.MultiObjective")]
+    [TestCategory("Analysis.MultiObjective")]
     [TestProperty("Time", "short")]
-    public void CrowdingTestDiagonal() {
+    public void SpacingTestQuadratic() {
       double[] point = new double[2];
       point[0] = 0;
       point[1] = 0;
       double[] point1 = new double[2];
-      point1[0] = 0.5;
-      point1[1] = 0.5;
+      point1[0] = 0;
+      point1[1] = 1;
 
       double[] point2 = new double[2];
       point2[0] = 1;
-      point2[1] = 1;
-      double[][] front = { point, point1, point2 };
-      double dist = Crowding.Calculate(front, new double[,] { { 0, 1 }, { 0, 1 } });
-      Assert.AreEqual(2, dist);
+      point2[1] = 0;
+      double[] point3 = new double[2];
+      point3[0] = 1;
+      point3[1] = 1;
+      double[][] front = { point, point1, point2, point3 };
+      double dist = SpacingAnalyzer.CalculateSpacing(front);
+      Assert.AreEqual(0, dist);
     }
 
     [TestMethod]
-    [TestCategory("Problems.TestFunctions.MultiObjective")]
+    [TestCategory("Analysis.MultiObjective")]
     [TestProperty("Time", "short")]
-    public void CrowdingTestDiamond() {
+    public void SpacingTestRectangular() {
       double[] point = new double[2];
       point[0] = 0;
       point[1] = 0;
       double[] point1 = new double[2];
-      point1[0] = 1;
-      point1[1] = 1.5;
+      point1[0] = 0;
+      point1[1] = 1;
 
       double[] point2 = new double[2];
-      point2[0] = 3;
-      point2[1] = 0.5;
+      point2[0] = 2;
+      point2[1] = 0;
       double[] point3 = new double[2];
-      point3[0] = 4;
-      point3[1] = 2;
+      point3[0] = 2;
+      point3[1] = 1;
       double[][] front = { point, point1, point2, point3 };
-      double dist = Crowding.Calculate(front, new double[,] { { 0, 4 }, { 0, 2 } });
-      Assert.AreEqual(1.5, dist);
+      double dist = SpacingAnalyzer.CalculateSpacing(front);
+      Assert.AreEqual(0, dist);
     }
 
     /// <summary> 
-    /// deltoid with 4 points of the 1-unit-square and the northeastern point at 4,4
-    /// 
+    /// deltoid with 3 points of the 1-unit-square and the northeastern point at 4,4
+    /// which gives d=(1,1,1,5) for minimal distances. Mean of d is 2 and variance of d is 3
+    /// Spacing is defined as the standard deviation of d
     /// </summary>
     [TestMethod]
-    [TestCategory("Problems.TestFunctions.MultiObjective")]
+    [TestCategory("Analysis.MultiObjective")]
     [TestProperty("Time", "short")]
-    public void CrowdingTestDeltoid() {
+    public void SpacingTestDeltoid() {
       double[] point = new double[2];
       point[0] = 0;
       point[1] = 0;
       double[] point1 = new double[2];
-      point1[0] = 0.00000001;         //points should not be exactly equal because sorting behaviour could change result
-      point1[1] = 1.00000001;
+      point1[0] = 0;
+      point1[1] = 1;
 
       double[] point2 = new double[2];
       point2[0] = 1;
@@ -126,15 +129,9 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective.Tests {
       double[] point3 = new double[2];
       point3[0] = 4;
       point3[1] = 4;
-
-
-      double[][] front = { point, point1, point2, point3, };
-      double dist = Crowding.Calculate(front, new double[,] { { 0, 4 }, { 0, 4 } });
-      Assert.AreEqual(1.25, dist);
+      double[][] front = { point, point1, point2, point3 };
+      double dist = SpacingAnalyzer.CalculateSpacing(front);
+      Assert.AreEqual(Math.Sqrt(3), dist);
     }
-
-
   }
-
-
 }

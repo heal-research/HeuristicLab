@@ -19,44 +19,46 @@
  */
 #endregion
 using System;
+using HeuristicLab.Analysis;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace HeuristicLab.Problems.TestFunctions.MultiObjective.Tests {
+namespace HeuristicLab.Analysis.MultiObjective.Tests {
   [TestClass]
-  public class InvertedGenerationalDistanceTest {
+  public class GenerationalDistanceTest {
 
     [TestMethod]
     [ExpectedException(typeof(ArgumentException))]
-    [TestCategory("Problems.TestFunctions.MultiObjective")]
+    [TestCategory("Analysis.MultiObjective")]
     [TestProperty("Time", "short")]
-    public void InvertedGenerationalDistanceTestEmptyOptimalFront() {
+    public void GenerationalDistanceTestEmptyOptimalFront() {
 
       double[] point = new double[2];
       point[0] = 0.5;
       point[1] = 0.5;
       double[][] front = { point };
       double[][] referencefront = { };
-      InvertedGenerationalDistance.Calculate(front, referencefront, 1);
+      GenerationalDistanceAnalyzer.CalculateGenerationalDistance(front, referencefront, 1);
     }
 
     [TestMethod]
     [ExpectedException(typeof(ArgumentException))]
-    [TestCategory("Problems.TestFunctions.MultiObjective")]
+    [TestCategory("Analysis.MultiObjective")]
     [TestProperty("Time", "short")]
-    public void InvertedGenerationalDistanceTestEmptyFront() {
+    public void GenerationalDistanceTestEmptyFront() {
 
       double[] point = new double[2];
       point[0] = 0.5;
       point[1] = 0.5;
       double[][] front = { };
       double[][] referencefront = { point };
-      InvertedGenerationalDistance.Calculate(front, referencefront, 1);
+      GenerationalDistanceAnalyzer.CalculateGenerationalDistance(front, referencefront, 1);
     }
 
     [TestMethod]
-    [TestCategory("Problems.TestFunctions.MultiObjective")]
+    [TestCategory("Analysis.MultiObjective")]
     [TestProperty("Time", "short")]
-    public void InvertedGenerationalDistanceTestSamePoint() {
+    public void GenerationalDistanceTestSamePoint() {
+
       double[] point = new double[2];
       point[0] = 0.5;
       point[1] = 0.5;
@@ -65,14 +67,14 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective.Tests {
       point1[0] = 0.5;
       point1[1] = 0.5;
       double[][] referencefront = { point1 };
-      double dist = GenerationalDistance.Calculate(front, referencefront, 1);
+      double dist = GenerationalDistanceAnalyzer.CalculateGenerationalDistance(front, referencefront, 1);
       Assert.AreEqual(0, dist);
     }
 
     [TestMethod]
-    [TestCategory("Problems.TestFunctions.MultiObjective")]
+    [TestCategory("Analysis.MultiObjective")]
     [TestProperty("Time", "short")]
-    public void InvertedGenerationalDistanceTestSinglePoint() {
+    public void GenerationalDistanceTestSinglePoint() {
       double[] point = new double[2];
       point[0] = 0;
       point[1] = 0;
@@ -81,14 +83,14 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective.Tests {
       point2[0] = 1;
       point2[1] = 1;
       double[][] referencefront = { point2 };
-      double dist = InvertedGenerationalDistance.Calculate(front, referencefront, 1);
+      double dist = GenerationalDistanceAnalyzer.CalculateGenerationalDistance(front, referencefront, 1);
       Assert.AreEqual(Math.Sqrt(2), dist);
     }
 
     [TestMethod]
-    [TestCategory("Problems.TestFunctions.MultiObjective")]
+    [TestCategory("Analysis.MultiObjective")]
     [TestProperty("Time", "short")]
-    public void InvertedGenerationalDistanceTestDifferentSizes() {
+    public void GenerationalDistanceTestDifferentSizes() {
       double[] point = new double[2];
       point[0] = 0;
       point[1] = 0;
@@ -100,14 +102,14 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective.Tests {
       point2[0] = 1;
       point2[1] = 0;
       double[][] referencefront = { point2 };
-      double dist = InvertedGenerationalDistance.Calculate(front, referencefront, 1);
-      Assert.AreEqual(0.5, dist);
+      double dist = GenerationalDistanceAnalyzer.CalculateGenerationalDistance(front, referencefront, 1);
+      Assert.AreEqual(0.75, dist);
     }
 
     [TestMethod]
-    [TestCategory("Problems.TestFunctions.MultiObjective")]
+    [TestCategory("Analysis.MultiObjective")]
     [TestProperty("Time", "short")]
-    public void InvertedGenerationalDistanceTestQuadratic() {
+    public void GenerationalDistanceTestQuadratic() {
       double[] point = new double[2];
       point[0] = 0;
       point[1] = 0;
@@ -122,10 +124,8 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective.Tests {
       point3[0] = 1;
       point3[1] = 1;
       double[][] referencefront = { point2, point3 };
-      double dist = InvertedGenerationalDistance.Calculate(front, referencefront, 1);
+      double dist = GenerationalDistanceAnalyzer.CalculateGenerationalDistance(front, referencefront, 1);
       Assert.AreEqual(1, dist);
     }
   }
-
-
 }

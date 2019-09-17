@@ -19,9 +19,11 @@
  */
 #endregion
 using System;
+using System.Linq;
+using HeuristicLab.Optimization;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace HeuristicLab.Problems.TestFunctions.MultiObjective.Tests {
+namespace HeuristicLab.Analysis.MultiObjective.Tests {
   [TestClass]
   public class HypervolumeTest {
 
@@ -33,12 +35,12 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective.Tests {
     /// |     |
     /// +-----+
     /// 
-    /// box between(0,0) and(1,1) with singular point pareto front at(0.5,0.5)
+    /// box between(0,0) and(1,1) with singular point Pareto front at(0.5,0.5)
     /// Hypervolume to each of the corners should be 0.25;  
     /// 
     /// </summary>
     [TestMethod]
-    [TestCategory("Problems.TestFunctions.MultiObjective")]
+    [TestCategory("Analysis.MultiObjective")]
     [TestProperty("Time", "short")]
     public void HypervolumeTestSinglePoint() {
 
@@ -55,28 +57,28 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective.Tests {
       maximization = new bool[] { false, false };
       referencePoint[0] = 1;
       referencePoint[1] = 1;
-      double ne = Hypervolume.Calculate(front, referencePoint, maximization);
+      double ne = HypervolumeCalculator.CalculateHypervolume(front, referencePoint, maximization);
       Assert.AreEqual(0.25, ne);
 
       //NorthWest
       maximization = new bool[] { true, false };
       referencePoint[0] = 0;
       referencePoint[1] = 1;
-      double nw = Hypervolume.Calculate(front, referencePoint, maximization);
+      double nw = HypervolumeCalculator.CalculateHypervolume(front, referencePoint, maximization);
       Assert.AreEqual(0.25, nw);
 
       //SouthWest
       maximization = new bool[] { true, true };
       referencePoint[0] = 0;
       referencePoint[1] = 0;
-      double sw = Hypervolume.Calculate(front, referencePoint, maximization);
+      double sw = HypervolumeCalculator.CalculateHypervolume(front, referencePoint, maximization);
       Assert.AreEqual(0.25, sw);
 
       //SouthEast
       maximization = new bool[] { false, true };
       referencePoint[0] = 1;
       referencePoint[1] = 0;
-      double se = Hypervolume.Calculate(front, referencePoint, maximization);
+      double se = HypervolumeCalculator.CalculateHypervolume(front, referencePoint, maximization);
       Assert.AreEqual(0.25, se);
 
 
@@ -90,12 +92,12 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective.Tests {
     /// |     |
     /// +-----+
     /// 
-    /// box between(0,0) and(1,1) with singular point pareto front at a random Location
+    /// box between(0,0) and(1,1) with singular point Pareto front at a random Location
     /// Sum of the Hypervolume to each of the corners should be 1;  
     /// 
     /// </summary>
     [TestMethod]
-    [TestCategory("Problems.TestFunctions.MultiObjective")]
+    [TestCategory("Analysis.MultiObjective")]
     [TestProperty("Time", "short")]
     public void HypervolumeTestRandomSinglePoint() {
       //Front with a single Point
@@ -113,25 +115,25 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective.Tests {
       maximization = new bool[] { false, false };
       referencePoint[0] = 1;
       referencePoint[1] = 1;
-      double ne = Hypervolume.Calculate(front, referencePoint, maximization);
+      double ne = HypervolumeCalculator.CalculateHypervolume(front, referencePoint, maximization);
 
       //NorthWest
       maximization = new bool[] { true, false };
       referencePoint[0] = 0;
       referencePoint[1] = 1;
-      double nw = Hypervolume.Calculate(front, referencePoint, maximization);
+      double nw = HypervolumeCalculator.CalculateHypervolume(front, referencePoint, maximization);
 
       //SouthWest
       maximization = new bool[] { true, true };
       referencePoint[0] = 0;
       referencePoint[1] = 0;
-      double sw = Hypervolume.Calculate(front, referencePoint, maximization);
+      double sw = HypervolumeCalculator.CalculateHypervolume(front, referencePoint, maximization);
 
       //SouthEast
       maximization = new bool[] { false, true };
       referencePoint[0] = 1;
       referencePoint[1] = 0;
-      double se = Hypervolume.Calculate(front, referencePoint, maximization);
+      double se = HypervolumeCalculator.CalculateHypervolume(front, referencePoint, maximization);
       Assert.AreEqual(1.0, ne + se + nw + sw, 1e8);
     }
 
@@ -143,12 +145,12 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective.Tests {
     /// |     |
     /// +-----x
     /// 
-    /// box between(0,0) and(1,1) with three point (pareto) front at (1,0), (0.5,0.5)  and (0,1) 
-    /// Hypervolume to (1,0) and (0,1) of the corners should be 1 (dominated Points need to be reemoved beforehand and   
+    /// box between(0,0) and(1,1) with three point (Pareto) front at (1,0), (0.5,0.5)  and (0,1) 
+    /// Hypervolume to (1,0) and (0,1) of the corners should be 1 (dominated Points need to be removed beforehand and   
     /// Hypervolume to (0,0) and (1,1) of the corners should be 0.25
     /// </summary>
     [TestMethod]
-    [TestCategory("Problems.TestFunctions.MultiObjective")]
+    [TestCategory("Analysis.MultiObjective")]
     [TestProperty("Time", "short")]
     public void HypervolumeTestDiagonalPoint() {
       //Front with three points
@@ -170,35 +172,37 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective.Tests {
       maximization = new bool[] { false, false };
       referencePoint[0] = 1;
       referencePoint[1] = 1;
-      double ne = Hypervolume.Calculate(front, referencePoint, maximization);
+      double ne = HypervolumeCalculator.CalculateHypervolume(front, referencePoint, maximization);
       Assert.AreEqual(0.25, ne);
 
       //NorthWest
       maximization = new bool[] { true, false };
       referencePoint[0] = 0;
       referencePoint[1] = 1;
-      double nw = Hypervolume.Calculate(NonDominatedSelect.SelectNonDominatedVectors(front, maximization, true), referencePoint, maximization);
+      var nonDominatedFront = DominationCalculator.CalculateBestParetoFront(front, front, maximization, false).Select(i => i.Item2).ToList();
+      double nw = HypervolumeCalculator.CalculateHypervolume(nonDominatedFront, referencePoint, maximization);
       Assert.AreEqual(1, nw);
 
       //SouthWest
       maximization = new bool[] { true, true };
       referencePoint[0] = 0;
       referencePoint[1] = 0;
-      double sw = Hypervolume.Calculate(front, referencePoint, maximization);
+      double sw = HypervolumeCalculator.CalculateHypervolume(front, referencePoint, maximization);
       Assert.AreEqual(0.25, sw);
 
       //SouthEast
       maximization = new bool[] { false, true };
       referencePoint[0] = 1;
       referencePoint[1] = 0;
-      double se = Hypervolume.Calculate(NonDominatedSelect.SelectNonDominatedVectors(front, maximization, true), referencePoint, maximization);
+      nonDominatedFront = DominationCalculator.CalculateBestParetoFront(front, front, maximization, false).Select(i => i.Item2).ToList();
+      double se = HypervolumeCalculator.CalculateHypervolume(nonDominatedFront, referencePoint, maximization);
       Assert.AreEqual(1, se);
 
     }
 
     [TestMethod()]
     [ExpectedException(typeof(ArgumentException))]
-    [TestCategory("Problems.TestFunctions.MultiObjective")]
+    [TestCategory("Analysis.MultiObjective")]
     [TestProperty("Time", "short")]
     public void HypervolumeTestReferencePointViolationNE() {
       //Front with a single Point
@@ -214,12 +218,12 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective.Tests {
       maximization = new bool[] { true, true };
       referencePoint[0] = 1;
       referencePoint[1] = 1;
-      double ne = Hypervolume.Calculate(front, referencePoint, maximization);
+      double ne = HypervolumeCalculator.CalculateHypervolume(front, referencePoint, maximization);
     }
 
     [TestMethod()]
     [ExpectedException(typeof(ArgumentException))]
-    [TestCategory("Problems.TestFunctions.MultiObjective")]
+    [TestCategory("Analysis.MultiObjective")]
     [TestProperty("Time", "short")]
     public void HypervolumeTestReferencePointViolationNW() {
       //Front with a single Point
@@ -235,13 +239,13 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective.Tests {
       maximization = new bool[] { false, true };
       referencePoint[0] = 0;
       referencePoint[1] = 1;
-      double nw = Hypervolume.Calculate(front, referencePoint, maximization);
+      double nw = HypervolumeCalculator.CalculateHypervolume(front, referencePoint, maximization);
       Assert.AreEqual(0.25, nw);
     }
 
     [TestMethod()]
     [ExpectedException(typeof(ArgumentException))]
-    [TestCategory("Problems.TestFunctions.MultiObjective")]
+    [TestCategory("Analysis.MultiObjective")]
     [TestProperty("Time", "short")]
     public void HypervolumeTestReferencePointViolationSW() {
       //Front with a single Point
@@ -257,13 +261,13 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective.Tests {
       maximization = new bool[] { false, false };
       referencePoint[0] = 0;
       referencePoint[1] = 0;
-      double sw = Hypervolume.Calculate(front, referencePoint, maximization);
+      double sw = HypervolumeCalculator.CalculateHypervolume(front, referencePoint, maximization);
       Assert.AreEqual(0.25, sw);
     }
 
     [TestMethod()]
     [ExpectedException(typeof(ArgumentException))]
-    [TestCategory("Problems.TestFunctions.MultiObjective")]
+    [TestCategory("Analysis.MultiObjective")]
     [TestProperty("Time", "short")]
     public void HypervolumeTestReferencePointViolationSE() {
       //Front with a single Point
@@ -279,7 +283,7 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective.Tests {
       maximization = new bool[] { true, false };
       referencePoint[0] = 1;
       referencePoint[1] = 0;
-      double se = Hypervolume.Calculate(front, referencePoint, maximization);
+      double se = HypervolumeCalculator.CalculateHypervolume(front, referencePoint, maximization);
       Assert.AreEqual(0.25, se);
     }
   }

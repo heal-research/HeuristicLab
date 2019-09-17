@@ -19,9 +19,10 @@
  */
 #endregion
 using System;
+using HeuristicLab.Optimization;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace HeuristicLab.Problems.TestFunctions.MultiObjective.Tests {
+namespace HeuristicLab.Analysis.MultiObjective.Tests {
   [TestClass]
   public class FastHypervolumeTest {
     /// <summary>
@@ -37,13 +38,13 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective.Tests {
     /// 
     /// </summary>
     [TestMethod]
-    [TestCategory("Problems.TestFunctions.MultiObjective")]
+    [TestCategory("Analysis.MultiObjective")]
     [TestProperty("Time", "short")]
     public void FastHypervolumeTestSinglePoint() {
       double[] point = new double[] { 0.5, 0.5, 0.5 };
       double[][] front = { point };
       double[] referencePoint = new double[] { 1, 1, 1 };
-      double hv = Hypervolume.Calculate(front, referencePoint, new bool[3]);
+      double hv = HypervolumeCalculator.CalculateHypervolume(front, referencePoint, new bool[3]);
       Assert.AreEqual(0.125, hv);
     }
 
@@ -55,12 +56,12 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective.Tests {
     /// |     |
     /// +-----+
     /// 
-    /// box between(0,0) and(1,1) with singular point pareto front at a random Location
+    /// box between(0,0) and(1,1) with singular point Pareto front at a random Location
     /// Sum of the Hypervolume to each of the corners should be 1;  
     /// 
     /// </summary>
     [TestMethod]
-    [TestCategory("Problems.TestFunctions.MultiObjective")]
+    [TestCategory("Analysis.MultiObjective")]
     [TestProperty("Time", "short")]
     public void FastHypervolumeTestRandomSinglePoint() {
       //Front with a single Point
@@ -78,7 +79,7 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective.Tests {
       referencePoint[0] = 1;
       referencePoint[1] = 1;
       referencePoint[2] = 1;
-      double hv = Hypervolume.Calculate(front, referencePoint, new bool[3]);
+      double hv = HypervolumeCalculator.CalculateHypervolume(front, referencePoint, new bool[3]);
       double hv2 = 1;
       foreach (double d in point) {
         hv2 *= Math.Abs(d - 1);
@@ -94,11 +95,11 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective.Tests {
     /// |     |
     /// +-----x
     /// 
-    /// box between(0,0,0) and(1,1,1) with three point (pareto) front at (1,0,0), (0.5,0.5,0)  and (0,1,0) 
+    /// box between(0,0,0) and(1,1,1) with three point (Pareto) front at (1,0,0), (0.5,0.5,0)  and (0,1,0) 
     /// Hypervolume should be 0.25
     /// </summary>
     [TestMethod]
-    [TestCategory("Problems.TestFunctions.MultiObjective")]
+    [TestCategory("Analysis.MultiObjective")]
     [TestProperty("Time", "short")]
     public void FastHypervolumeTestDiagonalPoint() {
       //Front with three points
@@ -108,7 +109,7 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective.Tests {
       double[][] front = { point1, point2, point3 };
 
       double[] referencePoint = new double[] { 1, 1, 1 };
-      double hv = Hypervolume.Calculate(front, referencePoint, new bool[3]);
+      double hv = HypervolumeCalculator.CalculateHypervolume(front, referencePoint, new bool[3]);
       Assert.AreEqual(0.5, hv);
     }
   }
