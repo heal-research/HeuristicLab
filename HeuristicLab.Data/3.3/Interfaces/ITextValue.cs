@@ -19,10 +19,9 @@
  */
 #endregion
 
-using System;
-using HeuristicLab.Common;
+using HEAL.Attic;
 
 namespace HeuristicLab.Data {
-  public interface ITextValue : IStringConvertibleValue {
-  }
+  [StorableType("6fe7970b-66de-4dcf-aa2b-c1aa9d7da29f")]
+  public interface ITextValue : IStringConvertibleValue { }
 }
