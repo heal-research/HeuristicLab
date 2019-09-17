@@ -27,7 +27,7 @@ using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
 
 namespace HeuristicLab.Problems.TravelingSalesman.Views {
-  [View("Matrix TSP Data View")]
+  [View("Coordinates TSP Data View")]
   [Content(typeof(CoordinatesTSPData), IsDefaultView = true)]
   public partial class CoordinatesTSPDataView : NamedItemView {
 

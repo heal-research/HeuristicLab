@@ -165,12 +165,12 @@
 
     #endregion
 
-    private Data.Views.StringConvertibleMatrixView distanceMatrixView;
-    private System.Windows.Forms.TabControl tabControl;
-    private System.Windows.Forms.TabPage coordinatesTabPage;
-    private System.Windows.Forms.SplitContainer coordinatesSplitContainer;
-    private Data.Views.StringConvertibleMatrixView coordinatesMatrixView;
-    private System.Windows.Forms.TabPage distancesTabPage;
-    private System.Windows.Forms.PictureBox coordinatesPictureBox;
+    protected Data.Views.StringConvertibleMatrixView distanceMatrixView;
+    protected System.Windows.Forms.TabControl tabControl;
+    protected System.Windows.Forms.TabPage coordinatesTabPage;
+    protected System.Windows.Forms.SplitContainer coordinatesSplitContainer;
+    protected Data.Views.StringConvertibleMatrixView coordinatesMatrixView;
+    protected System.Windows.Forms.TabPage distancesTabPage;
+    protected System.Windows.Forms.PictureBox coordinatesPictureBox;
   }
 }

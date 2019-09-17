@@ -26,7 +26,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Encodings.PermutationEncoding;
 
 namespace HeuristicLab.Problems.PTSP {
-  [Item("Analytical Probabilistic TSP (p-TSP)", "Represents a probabilistic traveling salesman problem where the expected tour length is calculated exactly.")]
+  [Item("Analytical Probabilistic TSP (pTSP)", "Represents a probabilistic traveling salesman problem where the expected tour length is calculated exactly.")]
   [Creatable(CreatableAttribute.Categories.CombinatorialProblems)]
   [StorableType("509B6AB5-F4DE-4144-A031-43EEBAD02CA6")]
   public sealed class AnalyticalPTSP : ProbabilisticTSP {

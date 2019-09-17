@@ -29,7 +29,7 @@ using HeuristicLab.Encodings.PermutationEncoding;
 
 namespace HeuristicLab.Problems.TravelingSalesman {
   [StorableType("f08a63d9-0b83-4944-9251-42925baeb872")]
-  public interface ITSPSolution : IItem {
+  public interface ITSPSolution : IItem, INotifyPropertyChanged {
     DoubleMatrix Coordinates { get; }
     Permutation Tour { get; }
     DoubleValue TourLength { get; }
@@ -40,7 +40,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
   /// </summary>
   [Item("TSP Solution", "Represents a tour of a Traveling Salesman Problem given in path representation which can be visualized in the GUI.")]
   [StorableType("38d1aac3-3047-40d9-bcf9-4b3ca0b9f95c")]
-  public sealed class TSPSolution : Item, ITSPSolution, INotifyPropertyChanged {
+  public class TSPSolution : Item, ITSPSolution {
     public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Image; }
     }
@@ -78,8 +78,8 @@ namespace HeuristicLab.Problems.TravelingSalesman {
     }
 
     [StorableConstructor]
-    private TSPSolution(StorableConstructorFlag _) : base(_) { }
-    private TSPSolution(TSPSolution original, Cloner cloner)
+    protected TSPSolution(StorableConstructorFlag _) : base(_) { }
+    protected TSPSolution(TSPSolution original, Cloner cloner)
       : base(original, cloner) {
       this.coordinates = cloner.Clone(original.coordinates);
       this.tour = cloner.Clone(original.tour);
@@ -107,7 +107,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
     }
 
     public event PropertyChangedEventHandler PropertyChanged;
-    private void OnPropertyChanged(string property) {
+    protected void OnPropertyChanged(string property) {
       PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
     }
   }

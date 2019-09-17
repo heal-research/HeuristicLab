@@ -86,7 +86,7 @@
 
     #endregion
 
-    private System.Windows.Forms.ComboBox roundingModeComboBox;
-    private System.Windows.Forms.Label roundingModeLabel;
+    protected System.Windows.Forms.ComboBox roundingModeComboBox;
+    protected System.Windows.Forms.Label roundingModeLabel;
   }
 }

@@ -24,6 +24,7 @@ using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Problems.Instances;
 using HeuristicLab.Problems.TravelingSalesman;
 
@@ -31,39 +32,44 @@ namespace HeuristicLab.Problems.PTSP {
   [StorableType("dd2d0ecc-372e-46f1-846f-fb4ca2afa124")]
   public interface IProbabilisticTSPData : ITSPData {
     double GetProbability(int city);
+    new IProbabilisticTSPSolution GetSolution(Permutation tspTour, double tourLength);
     new PTSPData Export();
   }
 
-  [Item("Matrix-based p-TSP Data", "p-TSP that is representd by a distance matrix.")]
+  [Item("Matrix-based pTSP Data", "pTSP that is representd by a distance matrix.")]
   [StorableType("30ebade1-d28c-4e45-b195-c7fa32a15df5")]
-  public class MatrixProbabilisticTSPData : MatrixTSPData, IProbabilisticTSPData {
+  public class MatrixPTSPData : MatrixTSPData, IProbabilisticTSPData {
     [Storable] public PercentArray Probabilities { get; protected set; }
 
     [StorableConstructor]
-    protected MatrixProbabilisticTSPData(StorableConstructorFlag _) : base(_) { }
-    protected MatrixProbabilisticTSPData(MatrixProbabilisticTSPData original, Cloner cloner) : base(original, cloner) {
+    protected MatrixPTSPData(StorableConstructorFlag _) : base(_) { }
+    protected MatrixPTSPData(MatrixPTSPData original, Cloner cloner) : base(original, cloner) {
       Probabilities = original.Probabilities;
     }
-    public MatrixProbabilisticTSPData() {
+    public MatrixPTSPData() {
       Name = PTSPDefaultInstance.Name;
       Matrix = PTSPDefaultInstance.Distances;
       Probabilities = PTSPDefaultInstance.Probabilities;
       DisplayCoordinates = PTSPDefaultInstance.Coordinates;
     }
-    public MatrixProbabilisticTSPData(string name, double[,] matrix, double[] probabilities, double[,] coordinates = null)
+    public MatrixPTSPData(string name, double[,] matrix, double[] probabilities, double[,] coordinates = null)
       : base(name, matrix, coordinates) {
       Probabilities = new PercentArray(probabilities, @readonly: true);
     }
-    public MatrixProbabilisticTSPData(string name, DoubleMatrix matrix, PercentArray probabilities, DoubleMatrix coordinates = null)
+    public MatrixPTSPData(string name, DoubleMatrix matrix, PercentArray probabilities, DoubleMatrix coordinates = null)
       : base(name, matrix, coordinates) {
       Probabilities = probabilities.AsReadOnly();
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new MatrixProbabilisticTSPData(this, cloner);
+      return new MatrixPTSPData(this, cloner);
     }
 
     public double GetProbability(int city) => Probabilities[city];
+
+    public new IProbabilisticTSPSolution GetSolution(Permutation tspTour, double tourLength) {
+      return new ProbabilisticTSPSolution(DisplayCoordinates, Probabilities, tspTour, new DoubleValue(tourLength));
+    }
 
     public new PTSPData Export() {
       return new PTSPData() {
@@ -78,7 +84,7 @@ namespace HeuristicLab.Problems.PTSP {
     }
   }
 
-  [Item("Euclidean p-TSP Data", "p-TSP that is represented by coordinates in an Euclidean plane.")]
+  [Item("Euclidean pTSP Data", "pTSP that is represented by coordinates in an Euclidean plane.")]
   [StorableType("8d4cf257-9013-4746-bc6c-37615954c3fb")]
   public class EuclideanPTSPData : EuclideanTSPData, IProbabilisticTSPData {
     [Storable] public PercentArray Probabilities { get; protected set; }
@@ -111,6 +117,10 @@ namespace HeuristicLab.Problems.PTSP {
 
     public double GetProbability(int city) => Probabilities[city];
 
+    public new IProbabilisticTSPSolution GetSolution(Permutation tspTour, double tourLength) {
+      return new ProbabilisticTSPSolution(Coordinates, Probabilities, tspTour, new DoubleValue(tourLength));
+    }
+
     public new PTSPData Export() {
       var data = new PTSPData() {
         Name = name,
@@ -128,40 +138,64 @@ namespace HeuristicLab.Problems.PTSP {
     }
   }
 
-  [Item("Geo p-TSP Data", "p-TSP that is represented by geo coordinates.")]
-  [StorableType("b175e0be-5706-4c44-b3f0-dcb948d5c47a")]
-  public class GeoPTSPData : GeoTSPData, IProbabilisticTSPData {
+  [Item("Coordinates pTSP Data", "pTSP that is represented by a distance between coordinates.")]
+  [StorableType("db0ff368-23cf-4a28-bd82-5979c6a93ee5")]
+  public abstract class CoordinatesPTSPData : CoordinatesTSPData, IProbabilisticTSPData {
     [Storable] public PercentArray Probabilities { get; protected set; }
 
     [StorableConstructor]
-    protected GeoPTSPData(StorableConstructorFlag _) : base(_) { }
-    protected GeoPTSPData(GeoPTSPData original, Cloner cloner)
+    protected CoordinatesPTSPData(StorableConstructorFlag _) : base(_) { }
+    protected CoordinatesPTSPData(CoordinatesPTSPData original, Cloner cloner)
       : base(original, cloner) {
       Probabilities = original.Probabilities;
     }
-    public GeoPTSPData() : base() {
+    protected CoordinatesPTSPData() : base() {
       Name = PTSPDefaultInstance.Name;
       Coordinates = PTSPDefaultInstance.Coordinates;
       Probabilities = PTSPDefaultInstance.Probabilities;
     }
-    public GeoPTSPData(string name, double[,] coordinates, double[] probabilities)
+    protected CoordinatesPTSPData(string name, double[,] coordinates, double[] probabilities)
       : base(name, coordinates) {
       if (coordinates.GetLength(0) != probabilities.Length) throw new InvalidOperationException("Number of cities is ambiguous between " + nameof(coordinates) + " and " + nameof(probabilities) + ".");
       Probabilities = new PercentArray(probabilities, @readonly: true);
     }
-    public GeoPTSPData(string name, DoubleMatrix coordinates, PercentArray probabilities)
+    protected CoordinatesPTSPData(string name, DoubleMatrix coordinates, PercentArray probabilities)
       : base(name, coordinates) {
       if (coordinates.Rows != probabilities.Length) throw new InvalidOperationException("Number of cities is ambiguous between " + nameof(coordinates) + " and " + nameof(probabilities) + ".");
       Probabilities = probabilities.AsReadOnly();
     }
 
+    public double GetProbability(int city) => Probabilities[city];
+
+    public new IProbabilisticTSPSolution GetSolution(Permutation tspTour, double tourLength) {
+      return new ProbabilisticTSPSolution(Coordinates, Probabilities, tspTour, new DoubleValue(tourLength));
+    }
+
+    PTSPData IProbabilisticTSPData.Export() {
+      return (PTSPData)Export();
+    }
+  }
+
+  [Item("Geo pTSP Data", "pTSP that is represented by geo coordinates.")]
+  [StorableType("b175e0be-5706-4c44-b3f0-dcb948d5c47a")]
+  public class GeoPTSPData : CoordinatesPTSPData {
+
+    [StorableConstructor]
+    protected GeoPTSPData(StorableConstructorFlag _) : base(_) { }
+    protected GeoPTSPData(GeoPTSPData original, Cloner cloner) : base(original, cloner) { }
+    public GeoPTSPData() : base() { }
+    public GeoPTSPData(string name, double[,] coordinates, double[] probabilities) : base(name, coordinates, probabilities) { }
+    public GeoPTSPData(string name, DoubleMatrix coordinates, PercentArray probabilities) : base(name, coordinates, probabilities) { }
+
     public override IDeepCloneable Clone(Cloner cloner) {
       return new GeoPTSPData(this, cloner);
     }
 
-    public double GetProbability(int city) => Probabilities[city];
+    public override double GetDistance(double fromX, double fromY, double toX, double toY) {
+      return DistanceHelper.GeoDistance(fromX, fromY, toX, toY);
+    }
 
-    public new PTSPData Export() {
+    public override TSPData Export() {
       return new PTSPData() {
         Name = name,
         Description = description,
@@ -173,40 +207,26 @@ namespace HeuristicLab.Problems.PTSP {
     }
   }
 
-  [Item("ATT p-TSP Data", "p-TSP that is represented by ATT distance.")]
+  [Item("ATT pTSP Data", "pTSP that is represented by ATT distance.")]
   [StorableType("7a2aa605-58d2-4533-a763-3d474e185460")]
-  public class AttPTSPData : AttTSPData, IProbabilisticTSPData {
-    [Storable] public PercentArray Probabilities { get; protected set; }
+  public class AttPTSPData : CoordinatesPTSPData {
 
     [StorableConstructor]
     protected AttPTSPData(StorableConstructorFlag _) : base(_) { }
-    protected AttPTSPData(AttPTSPData original, Cloner cloner)
-      : base(original, cloner) {
-      Probabilities = original.Probabilities;
-    }
-    public AttPTSPData() : base() {
-      Name = PTSPDefaultInstance.Name;
-      Coordinates = PTSPDefaultInstance.Coordinates;
-      Probabilities = PTSPDefaultInstance.Probabilities;
-    }
-    public AttPTSPData(string name, double[,] coordinates, double[] probabilities)
-      : base(name, coordinates) {
-      if (coordinates.GetLength(0) != probabilities.Length) throw new InvalidOperationException("Number of cities is ambiguous between " + nameof(coordinates) + " and " + nameof(probabilities) + ".");
-      Probabilities = new PercentArray(probabilities, @readonly: true);
-    }
-    public AttPTSPData(string name, DoubleMatrix coordinates, PercentArray probabilities)
-      : base(name, coordinates) {
-      if (coordinates.Rows != probabilities.Length) throw new InvalidOperationException("Number of cities is ambiguous between " + nameof(coordinates) + " and " + nameof(probabilities) + ".");
-      Probabilities = probabilities.AsReadOnly();
-    }
+    protected AttPTSPData(AttPTSPData original, Cloner cloner) : base(original, cloner) { }
+    public AttPTSPData() : base() { }
+    public AttPTSPData(string name, double[,] coordinates, double[] probabilities) : base(name, coordinates, probabilities) { }
+    public AttPTSPData(string name, DoubleMatrix coordinates, PercentArray probabilities) : base(name, coordinates, probabilities) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new AttPTSPData(this, cloner);
     }
 
-    public double GetProbability(int city) => Probabilities[city];
+    public override double GetDistance(double fromX, double fromY, double toX, double toY) {
+      return DistanceHelper.AttDistance(fromX, fromY, toX, toY);
+    }
 
-    public new PTSPData Export() {
+    public override TSPData Export() {
       return new PTSPData() {
         Name = name,
         Description = description,
@@ -218,40 +238,26 @@ namespace HeuristicLab.Problems.PTSP {
     }
   }
 
-  [Item("Manhattan p-TSP Data", "p-TSP that is represented by Manhattan distance.")]
+  [Item("Manhattan pTSP Data", "pTSP that is represented by Manhattan distance.")]
   [StorableType("cc43d1db-3da9-4d6e-becb-6b475b42fc59")]
-  public class ManhattanPTSPData : ManhattanTSPData, IProbabilisticTSPData {
-    [Storable] public PercentArray Probabilities { get; protected set; }
+  public class ManhattanPTSPData : CoordinatesPTSPData {
 
     [StorableConstructor]
     protected ManhattanPTSPData(StorableConstructorFlag _) : base(_) { }
-    protected ManhattanPTSPData(ManhattanPTSPData original, Cloner cloner)
-      : base(original, cloner) {
-      Probabilities = original.Probabilities;
-    }
-    public ManhattanPTSPData() : base() {
-      Name = PTSPDefaultInstance.Name;
-      Coordinates = PTSPDefaultInstance.Coordinates;
-      Probabilities = PTSPDefaultInstance.Probabilities;
-    }
-    public ManhattanPTSPData(string name, double[,] coordinates, double[] probabilities)
-      : base(name, coordinates) {
-      if (coordinates.GetLength(0) != probabilities.Length) throw new InvalidOperationException("Number of cities is ambiguous between " + nameof(coordinates) + " and " + nameof(probabilities) + ".");
-      Probabilities = new PercentArray(probabilities, @readonly: true);
-    }
-    public ManhattanPTSPData(string name, DoubleMatrix coordinates, PercentArray probabilities)
-      : base(name, coordinates) {
-      if (coordinates.Rows != probabilities.Length) throw new InvalidOperationException("Number of cities is ambiguous between " + nameof(coordinates) + " and " + nameof(probabilities) + ".");
-      Probabilities = probabilities.AsReadOnly();
-    }
+    protected ManhattanPTSPData(ManhattanPTSPData original, Cloner cloner) : base(original, cloner) { }
+    public ManhattanPTSPData() : base() { }
+    public ManhattanPTSPData(string name, double[,] coordinates, double[] probabilities) : base(name, coordinates, probabilities) { }
+    public ManhattanPTSPData(string name, DoubleMatrix coordinates, PercentArray probabilities) : base(name, coordinates, probabilities) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new ManhattanPTSPData(this, cloner);
     }
 
-    public double GetProbability(int city) => Probabilities[city];
+    public override double GetDistance(double fromX, double fromY, double toX, double toY) {
+      return DistanceHelper.ManhattanDistance(fromX, fromY, toX, toY);
+    }
 
-    public new PTSPData Export() {
+    public override TSPData Export() {
       return new PTSPData() {
         Name = name,
         Description = description,
@@ -263,40 +269,26 @@ namespace HeuristicLab.Problems.PTSP {
     }
   }
 
-  [Item("Maximum p-TSP Data", "p-TSP that is represented by maximum absolute distance in either the x or y coordinates.")]
+  [Item("Maximum pTSP Data", "pTSP that is represented by maximum absolute distance in either the x or y coordinates.")]
   [StorableType("82e9cde2-a942-403a-80ff-8deae4fa8214")]
-  public class MaximumPTSPData : MaximumTSPData, IProbabilisticTSPData {
-    [Storable] public PercentArray Probabilities { get; protected set; }
+  public class MaximumPTSPData : CoordinatesPTSPData {
 
     [StorableConstructor]
     protected MaximumPTSPData(StorableConstructorFlag _) : base(_) { }
-    protected MaximumPTSPData(MaximumPTSPData original, Cloner cloner)
-      : base(original, cloner) {
-      Probabilities = original.Probabilities;
-    }
-    public MaximumPTSPData() : base() {
-      Name = PTSPDefaultInstance.Name;
-      Coordinates = PTSPDefaultInstance.Coordinates;
-      Probabilities = PTSPDefaultInstance.Probabilities;
-    }
-    public MaximumPTSPData(string name, double[,] coordinates, double[] probabilities)
-      : base(name, coordinates) {
-      if (coordinates.GetLength(0) != probabilities.Length) throw new InvalidOperationException("Number of cities is ambiguous between " + nameof(coordinates) + " and " + nameof(probabilities) + ".");
-      Probabilities = new PercentArray(probabilities, @readonly: true);
-    }
-    public MaximumPTSPData(string name, DoubleMatrix coordinates, PercentArray probabilities)
-      : base(name, coordinates) {
-      if (coordinates.Rows != probabilities.Length) throw new InvalidOperationException("Number of cities is ambiguous between " + nameof(coordinates) + " and " + nameof(probabilities) + ".");
-      Probabilities = probabilities.AsReadOnly();
-    }
+    protected MaximumPTSPData(MaximumPTSPData original, Cloner cloner) : base(original, cloner) { }
+    public MaximumPTSPData() : base() { }
+    public MaximumPTSPData(string name, double[,] coordinates, double[] probabilities) : base(name, coordinates, probabilities) { }
+    public MaximumPTSPData(string name, DoubleMatrix coordinates, PercentArray probabilities) : base(name, coordinates, probabilities) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new MaximumPTSPData(this, cloner);
     }
 
-    public double GetProbability(int city) => Probabilities[city];
+    public override double GetDistance(double fromX, double fromY, double toX, double toY) {
+      return DistanceHelper.MaximumDistance(fromX, fromY, toX, toY);
+    }
 
-    public new PTSPData Export() {
+    public override TSPData Export() {
       return new PTSPData() {
         Name = name,
         Description = description,

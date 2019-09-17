@@ -33,7 +33,7 @@ using HeuristicLab.Problems.TravelingSalesman;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.Problems.PTSP {
-  [Item("Probabilistic TSP (p-TSP)", "Represents a Probabilistic Traveling Salesman Problem.")]
+  [Item("Probabilistic TSP (pTSP)", "Represents a Probabilistic Traveling Salesman Problem.")]
   [StorableType("86041a8c-14e6-46e1-b20f-566892c871f6")]
   public abstract class ProbabilisticTSP : PermutationProblem,
       IProblemInstanceConsumer<PTSPData> {
@@ -43,7 +43,7 @@ namespace HeuristicLab.Problems.PTSP {
 
     #region Parameter Properties
     [Storable] public ValueParameter<IProbabilisticTSPData> PTSPDataParameter { get; private set; }
-    [Storable] public OptionalValueParameter<ITSPSolution> BestKnownSolutionParameter { get; private set; }
+    [Storable] public OptionalValueParameter<IProbabilisticTSPSolution> BestKnownSolutionParameter { get; private set; }
     #endregion
 
     #region Properties
@@ -51,7 +51,7 @@ namespace HeuristicLab.Problems.PTSP {
       get { return PTSPDataParameter.Value; }
       set { PTSPDataParameter.Value = value; }
     }
-    public ITSPSolution BestKnownSolution {
+    public IProbabilisticTSPSolution BestKnownSolution {
       get { return BestKnownSolutionParameter.Value; }
       set { BestKnownSolutionParameter.Value = value; }
     }
@@ -68,11 +68,11 @@ namespace HeuristicLab.Problems.PTSP {
       PTSPDataParameter = cloner.Clone(original.PTSPDataParameter);
       BestKnownSolutionParameter = cloner.Clone(original.BestKnownSolutionParameter);
     }
-    protected ProbabilisticTSP() {
-      Parameters.Add(PTSPDataParameter = new ValueParameter<IProbabilisticTSPData>("PTSP Data", "The main parameters for the p-TSP."));
-      Parameters.Add(BestKnownSolutionParameter = new OptionalValueParameter<ITSPSolution>("BestKnownSolution", "The best known solution of this p-TSP instance."));
+    protected ProbabilisticTSP() : base(new PermutationEncoding("Tour")) {
+      Parameters.Add(PTSPDataParameter = new ValueParameter<IProbabilisticTSPData>("PTSP Data", "The main parameters for the pTSP."));
+      Parameters.Add(BestKnownSolutionParameter = new OptionalValueParameter<IProbabilisticTSPSolution>("BestKnownSolution", "The best known solution of this pTSP instance."));
 
-      ProbabilisticTSPData = new MatrixProbabilisticTSPData();
+      ProbabilisticTSPData = new MatrixPTSPData();
       Encoding.Length = ProbabilisticTSPData.Cities;
     }
 
@@ -85,8 +85,8 @@ namespace HeuristicLab.Problems.PTSP {
       base.Analyze(solutions, qualities, results, random);
       var max = Maximization;
 
-      var i = !max ? qualities.Select((x, index) => new { index, x }).OrderBy(x => x).First().index
-                   : qualities.Select((x, index) => new { index, x }).OrderByDescending(x => x).First().index;
+      var i = !max ? qualities.Select((x, index) => new { index, Quality = x }).OrderBy(x => x.Quality).First().index
+                   : qualities.Select((x, index) => new { index, Quality = x }).OrderByDescending(x => x.Quality).First().index;
 
       if (double.IsNaN(BestKnownQuality) ||
           max && qualities[i] > BestKnownQuality ||
@@ -96,13 +96,13 @@ namespace HeuristicLab.Problems.PTSP {
       }
 
       IResult bestSolutionResult;
-      if (results.TryGetValue("Best p-TSP Solution", out bestSolutionResult)) {
+      if (results.TryGetValue("Best pTSP Solution", out bestSolutionResult)) {
         var bestSolution = bestSolutionResult.Value as ITSPSolution;
         if (bestSolution == null || Maximization && bestSolution.TourLength.Value < qualities[i]
           || !Maximization && bestSolution.TourLength.Value > qualities[i]) {
           bestSolutionResult.Value = ProbabilisticTSPData.GetSolution(solutions[i], qualities[i]);
         }
-      } else results.Add(new Result("Best p-TSP Solution", ProbabilisticTSPData.GetSolution(solutions[i], qualities[i])));
+      } else results.Add(new Result("Best pTSP Solution", ProbabilisticTSPData.GetSolution(solutions[i], qualities[i])));
     }
 
     public virtual void Load(PTSPData data) {
@@ -120,9 +120,9 @@ namespace HeuristicLab.Problems.PTSP {
       Description = data.Description;
 
       if (data.Dimension <= DistanceMatrixSizeLimit) {
-        ProbabilisticTSPData = new MatrixProbabilisticTSPData(data.Name, data.GetDistanceMatrix(), data.Probabilities, data.Coordinates) { Description = data.Description };
+        ProbabilisticTSPData = new MatrixPTSPData(data.Name, data.GetDistanceMatrix(), data.Probabilities, data.Coordinates) { Description = data.Description };
       } else if (data.DistanceMeasure == DistanceMeasure.Direct && data.Distances != null) {
-        ProbabilisticTSPData = new MatrixProbabilisticTSPData(data.Name, data.Distances, data.Probabilities, data.Coordinates) { Description = data.Description };
+        ProbabilisticTSPData = new MatrixPTSPData(data.Name, data.Distances, data.Probabilities, data.Coordinates) { Description = data.Description };
       } else {
         switch (data.DistanceMeasure) {
           case DistanceMeasure.Att:
@@ -157,7 +157,7 @@ namespace HeuristicLab.Problems.PTSP {
         try {
           var tour = new Permutation(PermutationTypes.RelativeUndirected, data.BestKnownTour);
           var tourLength = Evaluate(tour, new FastRandom(1));
-          BestKnownSolution = new TSPSolution(data.Coordinates != null ? new DoubleMatrix(data.Coordinates) : null, tour, new DoubleValue(tourLength));
+          BestKnownSolution = new ProbabilisticTSPSolution(data.Coordinates != null ? new DoubleMatrix(data.Coordinates) : null, new PercentArray(data.Probabilities), tour, new DoubleValue(tourLength));
           BestKnownQuality = tourLength;
         } catch (InvalidOperationException) {
           if (data.BestKnownQuality.HasValue)

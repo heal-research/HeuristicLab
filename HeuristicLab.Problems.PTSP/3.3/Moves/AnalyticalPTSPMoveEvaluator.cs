@@ -57,7 +57,7 @@ namespace HeuristicLab.Problems.PTSP {
       Parameters.Add(new LookupParameter<Permutation>("Permutation", "The solution as permutation."));
       Parameters.Add(new LookupParameter<DoubleValue>("Quality", "The quality of a TSP solution."));
       Parameters.Add(new LookupParameter<DoubleValue>("MoveQuality", "The evaluated quality of a move on a TSP solution."));
-      Parameters.Add(new LookupParameter<IProbabilisticTSPData>("PTSP Data", "The main parameters of the p-TSP."));
+      Parameters.Add(new LookupParameter<IProbabilisticTSPData>("PTSP Data", "The main parameters of the pTSP."));
     }
 
     public override IOperation Apply() {

@@ -214,15 +214,15 @@ namespace HeuristicLab.Problems.TravelingSalesman.Views {
 
     #endregion
 
-    private System.Windows.Forms.PictureBox pictureBox;
-    private HeuristicLab.MainForm.WindowsForms.DragOverTabControl tabControl;
-    private System.Windows.Forms.TabPage visualizationTabPage;
-    private System.Windows.Forms.TabPage valueTabPage;
-    private System.Windows.Forms.GroupBox tourGroupBox;
-    private HeuristicLab.MainForm.WindowsForms.ViewHost tourViewHost;
-    private System.Windows.Forms.SplitContainer splitContainer;
-    private System.Windows.Forms.GroupBox qualityGroupBox;
-    private HeuristicLab.MainForm.WindowsForms.ViewHost qualityViewHost;
+    protected System.Windows.Forms.PictureBox pictureBox;
+    protected HeuristicLab.MainForm.WindowsForms.DragOverTabControl tabControl;
+    protected System.Windows.Forms.TabPage visualizationTabPage;
+    protected System.Windows.Forms.TabPage valueTabPage;
+    protected System.Windows.Forms.GroupBox tourGroupBox;
+    protected HeuristicLab.MainForm.WindowsForms.ViewHost tourViewHost;
+    protected System.Windows.Forms.SplitContainer splitContainer;
+    protected System.Windows.Forms.GroupBox qualityGroupBox;
+    protected HeuristicLab.MainForm.WindowsForms.ViewHost qualityViewHost;
 
 
   }

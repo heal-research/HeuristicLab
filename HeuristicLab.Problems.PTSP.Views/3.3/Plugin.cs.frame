@@ -35,6 +35,8 @@ namespace HeuristicLab.Problems.PTSP.Views {
   [PluginDependency("HeuristicLab.Optimization.Views", "3.3")]
   [PluginDependency("HeuristicLab.Parameters", "3.3")]
   [PluginDependency("HeuristicLab.Problems.PTSP", "3.3")]
+  [PluginDependency("HeuristicLab.Problems.TravelingSalesman", "3.3")]
+  [PluginDependency("HeuristicLab.Problems.TravelingSalesman.Views", "3.3")]
   [PluginDependency("HeuristicLab.Random", "3.3")]
   public class HeuristicLabProblemsPTSPViewsPlugin : PluginBase {
   }

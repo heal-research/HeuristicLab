@@ -90,7 +90,7 @@ namespace HeuristicLab.Problems.PTSP {
       Parameters.Add(new LookupParameter<ResultCollection>("Results", "The collection where to store results."));
       Parameters.Add(new LookupParameter<DoubleValue>("Quality", "The quality value of the assignment."));
       Parameters.Add(new LookupParameter<BoolValue>("Maximization", "True if the problem should be maximized or minimized."));
-      Parameters.Add(new LookupParameter<IProbabilisticTSPData>("PTSP Data", "The main parameters of the p-TSP."));
+      Parameters.Add(new LookupParameter<IProbabilisticTSPData>("PTSP Data", "The main parameters of the pTSP."));
       Parameters.Add(new LookupParameter<ReadOnlyItemList<BoolArray>>("Realizations", "The list of samples drawn from all possible stochastic instances."));
     }
 

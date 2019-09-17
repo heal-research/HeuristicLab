@@ -26,6 +26,7 @@ using System.Reflection;
 using System.Text;
 using HEAL.Attic;
 using HeuristicLab.Common;
+using HeuristicLab.MainForm;
 using HeuristicLab.PluginInfrastructure;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -89,6 +90,37 @@ namespace HeuristicLab.Tests {
           errorMessage.Append(Environment.NewLine + type.Namespace + "." + type.GetPrettyName() + ": Contains a storable constructor but is not a storable type.");
         } else if (storableMembers.Any()) {
           errorMessage.Append(Environment.NewLine + type.Namespace + "." + type.GetPrettyName() + ": Contains at least one storable member but is not a storable type.");
+        }
+      }
+      Assert.IsTrue(errorMessage.Length == 0, errorMessage.ToString());
+    }
+
+    [TestMethod]
+    [TestCategory("General")]
+    [TestCategory("Essential")]
+    [TestProperty("Time", "short")]
+    public void TestStorableTypeAttributePresence() {
+      var errorMessage = new StringBuilder();
+      foreach (Assembly ass in AppDomain.CurrentDomain.GetAssemblies().Where(x => x.GetName().Name.StartsWith("HeuristicLab"))) {
+        if (ass == Assembly.GetExecutingAssembly()) continue;
+        foreach (Type t in ass.GetExportedTypes()) {
+          if (t.IsAbstract && t.IsSealed) continue; // static classes are abstract and sealed at IL level
+          if (t.Namespace != null && (t.Namespace.EndsWith(".Views")
+            || t.Namespace.StartsWith("ICSharpCode")
+            || t.Namespace.StartsWith("HeuristicLab.Problems.Instances")
+            || t.Namespace.StartsWith("HeuristicLab.PluginInfrastructure")
+            || t.Namespace.StartsWith("HeuristicLab.Persistence")
+            || t.Namespace.StartsWith("HeuristicLab.MainForm")
+            || t.Namespace.StartsWith("HeuristicLab.Clients")
+            || t.Namespace.StartsWith("HeuristicLab.CodeEditor")))
+            continue;
+          if (typeof(IPlugin).IsAssignableFrom(t) || typeof(Attribute).IsAssignableFrom(t) || typeof(Exception).IsAssignableFrom(t)
+            || typeof(EventArgs).IsAssignableFrom(t)
+            || typeof(IView).IsAssignableFrom(t) || typeof(System.Windows.Forms.Control).IsAssignableFrom(t)) continue;
+          var attr = StorableTypeAttribute.GetStorableTypeAttribute(t);
+          if (attr == null) {
+            errorMessage.AppendLine(t.FullName + ": Does not contain a storable type attribute.");
+          }
         }
       }
       Assert.IsTrue(errorMessage.Length == 0, errorMessage.ToString());

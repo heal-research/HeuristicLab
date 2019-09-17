@@ -164,7 +164,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="PTSPData.cs" />
+    <Compile Include="ProbabilisticTSPData.cs" />
+    <Compile Include="ProbabilisticTSPSolution.cs" />
     <None Include="Properties\AssemblyInfo.cs.frame" />
     <None Include="Plugin.cs.frame" />
     <Compile Include="AnalyticalPTSP.cs" />
@@ -194,7 +195,7 @@
     <Compile Include="Moves\TwoPointFiveOpt\TwoPointFiveMoveGenerator.cs" />
     <Compile Include="Moves\TwoPointFiveOpt\TwoPointFiveMoveMaker.cs" />
     <Compile Include="Moves\TwoPointFiveOpt\TwoPointFiveMove.cs" />
-    <Compile Include="PTSP.cs" />
+    <Compile Include="ProbabilisticTSP.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

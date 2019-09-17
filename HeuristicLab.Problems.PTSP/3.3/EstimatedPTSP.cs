@@ -31,7 +31,7 @@ using HeuristicLab.Parameters;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.Problems.PTSP {
-  [Item("Estimated Probabilistic TSP (p-TSP)", "Represents a probabilistic traveling salesman problem where the expected tour length is estimated by averaging over the length of tours on a number of, so called, realizations.")]
+  [Item("Estimated Probabilistic TSP (pTSP)", "Represents a probabilistic traveling salesman problem where the expected tour length is estimated by averaging over the length of tours on a number of, so called, realizations.")]
   [Creatable(CreatableAttribute.Categories.CombinatorialProblems)]
   [StorableType("d1b4149b-8ab9-4314-8d96-9ea04a4d5b8b")]
   public sealed class EstimatedPTSP : ProbabilisticTSP {
@@ -135,7 +135,7 @@ namespace HeuristicLab.Problems.PTSP {
     /// An evaluate method that can be used if mean as well as variance should be calculated
     /// </summary>
     /// <param name="tour">The tour between all cities.</param>
-    /// <param name="data">The main parameters of the p-TSP.</param>
+    /// <param name="data">The main parameters of the pTSP.</param>
     /// <param name="realizations">How many realizations to achieve.</param>
     /// <param name="seed">The starting seed of generating the realizations.</param>
     /// <param name="variance">The estimated variance will be returned in addition to the mean.</param>

@@ -58,7 +58,7 @@ namespace HeuristicLab.Problems.PTSP {
     protected EstimatedPTSPMoveEvaluator()
       : base() {
       Parameters.Add(new LookupParameter<Permutation>("Permutation", "The solution as permutation."));
-      Parameters.Add(new LookupParameter<IProbabilisticTSPData>("PTSP Data", "The main parameters of the p-TSP."));
+      Parameters.Add(new LookupParameter<IProbabilisticTSPData>("PTSP Data", "The main parameters of the pTSP."));
       Parameters.Add(new LookupParameter<ReadOnlyItemList<BoolArray>>("Realizations", "The list of samples drawn from all possible stochastic instances."));
       Parameters.Add(new LookupParameter<DoubleValue>("Quality", "The quality of a TSP solution."));
       Parameters.Add(new LookupParameter<DoubleValue>("MoveQuality", "The evaluated quality of a move on a TSP solution."));

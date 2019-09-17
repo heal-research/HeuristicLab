@@ -37,7 +37,7 @@ namespace HeuristicLab.Problems.PTSP {
   /// <remarks>
   /// The operator tries to improve the probabilistic traveling salesman solution by swapping two randomly chosen edges for a certain number of times.
   /// </remarks>
-  [Item("PTSP Analytical Inversion Local Improvement", "An operator that improves probabilistic traveling salesman solutions. The operator tries to improve the probabilistic traveling salesman solution by swapping two randomly chosen edges for a certain number of times.")]
+  [Item("pTSP Analytical Inversion Local Improvement", "An operator that improves probabilistic traveling salesman solutions. The operator tries to improve the probabilistic traveling salesman solution by swapping two randomly chosen edges for a certain number of times.")]
   [StorableType("88147d6a-e843-4f65-8058-421453b5206a")]
   public sealed class PTSPAnalyticalInversionLocalImprovement : SingleSuccessorOperator, IAnalyticalPTSPOperator, ILocalImprovementOperator {
 
@@ -85,7 +85,7 @@ namespace HeuristicLab.Problems.PTSP {
       Parameters.Add(new LookupParameter<ResultCollection>("Results", "The collection where to store results."));
       Parameters.Add(new LookupParameter<DoubleValue>("Quality", "The quality value of the assignment."));
       Parameters.Add(new LookupParameter<BoolValue>("Maximization", "True if the problem should be maximized or minimized."));
-      Parameters.Add(new LookupParameter<IProbabilisticTSPData>("PTSP Data", "The main parameters of the p-TSP."));
+      Parameters.Add(new LookupParameter<IProbabilisticTSPData>("PTSP Data", "The main parameters of the pTSP."));
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {

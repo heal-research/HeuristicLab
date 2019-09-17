@@ -59,7 +59,7 @@ namespace HeuristicLab.Problems.TravelingSalesman.Views {
       coordinatesMatrixView.Enabled = !ReadOnly && !Locked && Content != null;
     }
 
-    private void GenerateImage() {
+    protected virtual void GenerateImage() {
       if (coordinatesPictureBox.Width > 0 && coordinatesPictureBox.Height > 0) {
         DoubleMatrix coordinates = Content?.DisplayCoordinates;
         var bitmap = new Bitmap(coordinatesPictureBox.Width, coordinatesPictureBox.Height);

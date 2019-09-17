@@ -39,7 +39,7 @@ namespace HeuristicLab.Problems.PTSP {
   /// <remarks>
   /// The operator tries to improve the probabilistic traveling salesman solution by inserting a city in the tour between two other cities for a certain number of times.
   /// </remarks>
-  [Item("PTSP Estimated Insertion Local Improvement", "An operator that improves probabilistic traveling salesman solutions. The operator tries to improve the probabilistic traveling salesman solution by swapping two randomly chosen edges for a certain number of times.")]
+  [Item("pTSP Estimated Insertion Local Improvement", "An operator that improves probabilistic traveling salesman solutions. The operator tries to improve the probabilistic traveling salesman solution by swapping two randomly chosen edges for a certain number of times.")]
   [StorableType("B2D60579-A97D-4E44-B11C-61CDA6EBEBA7")]
   public sealed class PTSPEstimatedInsertionLocalImprovement : SingleSuccessorOperator, IEstimatedPTSPOperator, ILocalImprovementOperator {
 
@@ -91,7 +91,7 @@ namespace HeuristicLab.Problems.PTSP {
       Parameters.Add(new LookupParameter<ResultCollection>("Results", "The collection where to store results."));
       Parameters.Add(new LookupParameter<DoubleValue>("Quality", "The quality value of the assignment."));
       Parameters.Add(new LookupParameter<BoolValue>("Maximization", "True if the problem should be maximized or minimized."));
-      Parameters.Add(new LookupParameter<IProbabilisticTSPData>("PTSP Data", "The main parameters of the p-TSP."));
+      Parameters.Add(new LookupParameter<IProbabilisticTSPData>("PTSP Data", "The main parameters of the pTSP."));
       Parameters.Add(new LookupParameter<ItemList<BoolArray>>("Realizations", "The list of samples drawn from all possible stochastic instances."));
     }
 

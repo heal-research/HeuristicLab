@@ -20,72 +20,42 @@
 #endregion
 
 using System;
-using System.ComponentModel;
 using System.Drawing;
-using System.Windows.Forms;
-using HeuristicLab.Core.Views;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.MainForm;
+using HeuristicLab.Problems.TravelingSalesman.Views;
 
-namespace HeuristicLab.Problems.TravelingSalesman.Views {
+namespace HeuristicLab.Problems.PTSP.Views {
   /// <summary>
-  /// The base class for visual representations of a path tour for a TSP.
+  /// The base class for visual representations of a path tour for a PTSP.
   /// </summary>
-  [View("TSP Solution View")]
-  [Content(typeof(ITSPSolution), true)]
-  public partial class TSPSolutionView : ItemView {
-    public new ITSPSolution Content {
-      get { return (ITSPSolution)base.Content; }
+  [View("PathPTSPTour View")]
+  [Content(typeof(IProbabilisticTSPSolution), true)]
+  public sealed partial class ProbabilisticTSPSolutionView : TSPSolutionView {
+    public new IProbabilisticTSPSolution Content {
+      get { return (IProbabilisticTSPSolution)base.Content; }
       set { base.Content = value; }
     }
 
     /// <summary>
-    /// Initializes a new instance of <see cref="TSPSolutionView"/>.
+    /// Initializes a new instance of <see cref="ProbabilisticTSPSolutionView"/>.
     /// </summary>
-    public TSPSolutionView() {
+    public ProbabilisticTSPSolutionView() {
       InitializeComponent();
     }
 
-    protected override void DeregisterContentEvents() {
-      Content.PropertyChanged -= ContentOnPropertyChanged;
-      base.DeregisterContentEvents();
-    }
-    protected override void RegisterContentEvents() {
-      base.RegisterContentEvents();
-      Content.PropertyChanged += ContentOnPropertyChanged;
-    }
-
-    protected override void OnContentChanged() {
-      base.OnContentChanged();
-      if (Content == null) {
-        qualityViewHost.Content = null;
-        pictureBox.Image = null;
-        tourViewHost.Content = null;
-      } else {
-        qualityViewHost.Content = Content.TourLength;
-        GenerateImage();
-        tourViewHost.Content = Content.Tour;
-      }
-    }
-
-    protected override void SetEnabledStateOfControls() {
-      base.SetEnabledStateOfControls();
-      qualityGroupBox.Enabled = Content != null;
-      pictureBox.Enabled = Content != null;
-      tourGroupBox.Enabled = Content != null;
-    }
-
-    protected virtual void GenerateImage() {
+    protected override void GenerateImage() {
       if ((pictureBox.Width > 0) && (pictureBox.Height > 0)) {
         if (Content == null) {
           pictureBox.Image = null;
         } else {
           DoubleMatrix coordinates = Content.Coordinates;
           Permutation permutation = Content.Tour;
+          DoubleArray probabilities = Content.Probabilities;
           Bitmap bitmap = new Bitmap(pictureBox.Width, pictureBox.Height);
 
-          if ((coordinates != null) && (coordinates.Rows > 0) && (coordinates.Columns == 2)) {
+          if ((coordinates != null) && (coordinates.Rows > 0) && (coordinates.Columns == 2) && (probabilities.Length == coordinates.Rows)) {
             double xMin = double.MaxValue, yMin = double.MaxValue, xMax = double.MinValue, yMax = double.MinValue;
             for (int i = 0; i < coordinates.Rows; i++) {
               if (xMin > coordinates[i, 0]) xMin = coordinates[i, 0];
@@ -113,7 +83,7 @@ namespace HeuristicLab.Problems.TravelingSalesman.Views {
                 graphics.DrawPolygon(Pens.Black, tour);
               }
               for (int i = 0; i < points.Length; i++)
-                graphics.FillRectangle(Brushes.Red, points[i].X - 2, points[i].Y - 2, 6, 6);
+                graphics.FillRectangle(Brushes.Red, points[i].X - 2, points[i].Y - 2, Convert.ToInt32(probabilities[i] * 20), Convert.ToInt32(probabilities[i] * 20));
             }
           } else {
             using (Graphics graphics = Graphics.FromImage(bitmap)) {
@@ -127,29 +97,6 @@ namespace HeuristicLab.Problems.TravelingSalesman.Views {
           pictureBox.Image = bitmap;
         }
       }
-    }
-
-    protected virtual void ContentOnPropertyChanged(object sender, PropertyChangedEventArgs e) {
-      if (InvokeRequired)
-        Invoke((Action<object, PropertyChangedEventArgs>)ContentOnPropertyChanged, sender, e);
-      else {
-        switch (e.PropertyName) {
-          case nameof(Content.Coordinates):
-            GenerateImage();
-            break;
-          case nameof(Content.Tour):
-            GenerateImage();
-            tourViewHost.Content = Content.Tour;
-            break;
-          case nameof(Content.TourLength):
-            qualityViewHost.Content = Content.TourLength;
-            break;
-        }
-      }
-    }
-
-    private void pictureBox_SizeChanged(object sender, EventArgs e) {
-      GenerateImage();
     }
   }
 }
