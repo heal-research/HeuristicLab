@@ -99,8 +99,7 @@ namespace HeuristicLab.Parameters {
 
       while (currentExecutionContext != null) {
         IParameter param = null;
-        while (currentExecutionContext != null && (!currentExecutionContext.Parameters.TryGetValue(translatedName, out param)
-          || param is IContextParameter))
+        while (currentExecutionContext != null && !currentExecutionContext.Parameters.TryGetValue(translatedName, out param))
           currentExecutionContext = currentExecutionContext.Parent;
         if (currentExecutionContext == null) break;
 
