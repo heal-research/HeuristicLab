@@ -24,6 +24,7 @@ using HEAL.Attic;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.Optimization {
+  [StorableType("80849d87-5cc6-4dc0-8c10-966ecb68d582")]
   public interface ISingleObjectiveProblemDefinition {
     bool Maximization { get; }
     bool IsBetter(double quality, double bestQuality);

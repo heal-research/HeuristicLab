@@ -20,7 +20,6 @@
 #endregion
 
 using System;
-using System.Threading;
 using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -31,7 +30,7 @@ namespace HeuristicLab.Parameters {
   /// </summary>
   [Item("LookupParameter", "A parameter whose value is retrieved from or written to a scope.")]
   [StorableType("84FE5F33-94B8-4E30-B1CB-CD15314FB83B")]
-  public class LookupParameter<T> : Parameter, IStatefulItem, ILookupParameter<T> where T : class, IItem {
+  public class LookupParameter<T> : ContextParameter, ILookupParameter<T> where T : class, IItem {
     [Storable]
     private string actualName;
     public string ActualName {
@@ -59,62 +58,27 @@ namespace HeuristicLab.Parameters {
       set { base.ActualValue = value; }
     }
 
-    private Lazy<ThreadLocal<IItem>> cachedActualValues;
-    protected IItem CachedActualValue {
-      get { return cachedActualValues.Value.Value; }
-      set { cachedActualValues.Value.Value = value; }
-    }
-
-    private Lazy<ThreadLocal<IExecutionContext>> executionContexts;
-    public IExecutionContext ExecutionContext {
-      get { return executionContexts.Value.Value; }
-      set {
-        if (value != executionContexts.Value.Value) {
-          executionContexts.Value.Value = value;
-          cachedActualValues.Value.Value = null;
-        }
-      }
-    }
-
     [StorableConstructor]
-    protected LookupParameter(StorableConstructorFlag _) : base(_) {
-      cachedActualValues = new Lazy<ThreadLocal<IItem>>(() => { return new ThreadLocal<IItem>(); }, LazyThreadSafetyMode.ExecutionAndPublication);
-      executionContexts = new Lazy<ThreadLocal<IExecutionContext>>(() => { return new ThreadLocal<IExecutionContext>(); }, LazyThreadSafetyMode.ExecutionAndPublication);
-    }
+    protected LookupParameter(StorableConstructorFlag _) : base(_) { }
     protected LookupParameter(LookupParameter<T> original, Cloner cloner)
       : base(original, cloner) {
       actualName = original.actualName;
-      this.Hidden = original.Hidden;
-      cachedActualValues = new Lazy<ThreadLocal<IItem>>(() => { return new ThreadLocal<IItem>(); }, LazyThreadSafetyMode.ExecutionAndPublication);
-      executionContexts = new Lazy<ThreadLocal<IExecutionContext>>(() => { return new ThreadLocal<IExecutionContext>(); }, LazyThreadSafetyMode.ExecutionAndPublication);
     }
     public LookupParameter()
       : base("Anonymous", typeof(T)) {
       this.actualName = Name;
-      this.Hidden = false;
-      cachedActualValues = new Lazy<ThreadLocal<IItem>>(() => { return new ThreadLocal<IItem>(); }, LazyThreadSafetyMode.ExecutionAndPublication);
-      executionContexts = new Lazy<ThreadLocal<IExecutionContext>>(() => { return new ThreadLocal<IExecutionContext>(); }, LazyThreadSafetyMode.ExecutionAndPublication);
     }
     public LookupParameter(string name)
       : base(name, typeof(T)) {
       this.actualName = Name;
-      this.Hidden = false;
-      cachedActualValues = new Lazy<ThreadLocal<IItem>>(() => { return new ThreadLocal<IItem>(); }, LazyThreadSafetyMode.ExecutionAndPublication);
-      executionContexts = new Lazy<ThreadLocal<IExecutionContext>>(() => { return new ThreadLocal<IExecutionContext>(); }, LazyThreadSafetyMode.ExecutionAndPublication);
     }
     public LookupParameter(string name, string description)
       : base(name, description, typeof(T)) {
       this.actualName = Name;
-      this.Hidden = false;
-      cachedActualValues = new Lazy<ThreadLocal<IItem>>(() => { return new ThreadLocal<IItem>(); }, LazyThreadSafetyMode.ExecutionAndPublication);
-      executionContexts = new Lazy<ThreadLocal<IExecutionContext>>(() => { return new ThreadLocal<IExecutionContext>(); }, LazyThreadSafetyMode.ExecutionAndPublication);
     }
     public LookupParameter(string name, string description, string actualName)
       : base(name, description, typeof(T)) {
       this.actualName = string.IsNullOrWhiteSpace(actualName) ? Name : actualName;
-      this.Hidden = false;
-      cachedActualValues = new Lazy<ThreadLocal<IItem>>(() => { return new ThreadLocal<IItem>(); }, LazyThreadSafetyMode.ExecutionAndPublication);
-      executionContexts = new Lazy<ThreadLocal<IExecutionContext>>(() => { return new ThreadLocal<IExecutionContext>(); }, LazyThreadSafetyMode.ExecutionAndPublication);
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -136,7 +100,7 @@ namespace HeuristicLab.Parameters {
       while (currentExecutionContext != null) {
         IParameter param = null;
         while (currentExecutionContext != null && (!currentExecutionContext.Parameters.TryGetValue(translatedName, out param)
-          || param is IContextLookupParameter))
+          || param is IContextParameter))
           currentExecutionContext = currentExecutionContext.Parent;
         if (currentExecutionContext == null) break;
 
@@ -166,9 +130,7 @@ namespace HeuristicLab.Parameters {
       return scope != null ? variable : null;
     }
 
-    protected override IItem GetActualValue() {
-      if (CachedActualValue != null) return CachedActualValue;
-
+    protected override IItem GetActualValueFromContext() {
       string translatedName = Name;
       var value = GetValue(ExecutionContext, ref translatedName);
       if (value != null && !(value is T))
@@ -177,7 +139,6 @@ namespace HeuristicLab.Parameters {
                         translatedName,
                         typeof(T).GetPrettyName())
         );
-      CachedActualValue = value;
       return value;
     }
 
@@ -220,19 +181,6 @@ namespace HeuristicLab.Parameters {
 
       // create new variable
       executionContext.Scope.Variables.Add(new Variable(name, value));
-    }
-
-    public virtual void InitializeState() {
-    }
-    public virtual void ClearState() {
-      if (cachedActualValues.IsValueCreated) {
-        cachedActualValues.Value.Dispose();
-        cachedActualValues = new Lazy<ThreadLocal<IItem>>(() => { return new ThreadLocal<IItem>(); }, LazyThreadSafetyMode.ExecutionAndPublication);
-      }
-      if (executionContexts.IsValueCreated) {
-        executionContexts.Value.Dispose();
-        executionContexts = new Lazy<ThreadLocal<IExecutionContext>>(() => { return new ThreadLocal<IExecutionContext>(); }, LazyThreadSafetyMode.ExecutionAndPublication);
-      }
     }
 
     public event EventHandler ActualNameChanged;

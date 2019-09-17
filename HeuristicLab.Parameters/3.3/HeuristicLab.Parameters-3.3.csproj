@@ -122,6 +122,7 @@
     <None Include="Plugin.cs.frame" />
     <Compile Include="ConstrainedValueParameter.cs" />
     <Compile Include="ContextLookupParameter.cs" />
+    <Compile Include="ContextParameter.cs" />
     <Compile Include="FixedValueParameter.cs" />
     <Compile Include="OptionalConstrainedValueParameter.cs" />
     <Compile Include="Plugin.cs" />

@@ -118,18 +118,14 @@ namespace HeuristicLab.Operators {
       try {
         ExecutionContext = context;
         this.cancellationToken = cancellationToken;
-        foreach (var param in Parameters.OfType<ILookupParameter>())
-          param.ExecutionContext = context;
-        foreach (var param in Parameters.OfType<IContextLookupParameter>())
+        foreach (var param in Parameters.OfType<IContextParameter>())
           param.ExecutionContext = context;
         IOperation next = Apply();
         OnExecuted();
         return next;
       }
       finally {
-        foreach (var param in Parameters.OfType<ILookupParameter>())
-          param.ExecutionContext = null;
-        foreach (var param in Parameters.OfType<IContextLookupParameter>())
+        foreach (var param in Parameters.OfType<IContextParameter>())
           param.ExecutionContext = null;
         ExecutionContext = null;
       }

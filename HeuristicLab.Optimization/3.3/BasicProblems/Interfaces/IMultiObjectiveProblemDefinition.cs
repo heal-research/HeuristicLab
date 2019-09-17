@@ -19,13 +19,12 @@
  */
 #endregion
 
-using System.Collections;
 using System.Collections.Generic;
 using HEAL.Attic;
 using HeuristicLab.Core;
-using HeuristicLab.Data;
 
 namespace HeuristicLab.Optimization {
+  [StorableType("609e74a2-d5e7-4495-b47c-2d365a8d717c")]
   public interface IMultiObjectiveProblemDefinition {
     int Objectives { get; }
     bool[] Maximization { get; }

@@ -20,11 +20,13 @@
 #endregion
 
 
+using HEAL.Attic;
+
 namespace HeuristicLab.Optimization {
-  public interface ISingleObjectiveProblem : ISingleObjectiveHeuristicOptimizationProblem {
+  [StorableType("24830fd5-7d97-41a5-9d7e-d84f1b7ab259")]
+  public interface ISingleObjectiveProblem : ISingleObjectiveHeuristicOptimizationProblem { }
 
-  }
-
+  [StorableType("9cc9422f-0bb5-41e8-9d9e-6e0b66a66449")]
   public interface ISingleObjectiveProblem<TEncoding, TEncodedSolution> : ISingleObjectiveProblem, IProblem<TEncoding, TEncodedSolution>
     where TEncoding : class, IEncoding<TEncodedSolution>
     where TEncodedSolution : class, IEncodedSolution { }

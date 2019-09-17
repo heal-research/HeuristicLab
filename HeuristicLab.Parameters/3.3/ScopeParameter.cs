@@ -20,9 +20,9 @@
 #endregion
 
 using System;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HEAL.Attic;
 
 namespace HeuristicLab.Parameters {
   /// <summary>
@@ -60,7 +60,7 @@ namespace HeuristicLab.Parameters {
       return Name;
     }
 
-    protected override IItem GetActualValue() {
+    protected override IItem GetActualValueFromContext() {
       return ExecutionContext.Scope;
     }
     protected override void SetActualValue(IItem value) {

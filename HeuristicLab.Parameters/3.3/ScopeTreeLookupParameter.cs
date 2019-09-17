@@ -22,9 +22,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HEAL.Attic;
 
 namespace HeuristicLab.Parameters {
   /// <summary>
@@ -85,7 +85,7 @@ namespace HeuristicLab.Parameters {
       return new ScopeTreeLookupParameter<T>(this, cloner);
     }
 
-    protected override IItem GetActualValue() {
+    protected override IItem GetActualValueFromContext() {
       IEnumerable<IScope> scopes = new IScope[] { ExecutionContext.Scope };
       for (int i = 0; i < depth; i++)
         scopes = scopes.Select(x => (IEnumerable<IScope>)x.SubScopes).Aggregate((a, b) => a.Concat(b));

@@ -21,8 +21,10 @@
 
 #endregion
 
+using HEAL.Attic;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.Optimization {
+  [StorableType("c81bebf8-812c-4f8b-a1bc-d310fb844367")]
   public interface IEncodedSolution : IItem { }
 }

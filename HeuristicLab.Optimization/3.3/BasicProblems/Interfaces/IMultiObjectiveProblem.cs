@@ -19,14 +19,13 @@
  */
 #endregion
 
-using HeuristicLab.Core;
-using HeuristicLab.Data;
+using HEAL.Attic;
 
 namespace HeuristicLab.Optimization {
-  public interface IMultiObjectiveProblem : IProblem, IMultiObjectiveHeuristicOptimizationProblem {
+  [StorableType("251d79f1-a065-47f9-85a3-2e8dbdbf685e")]
+  public interface IMultiObjectiveProblem : IProblem, IMultiObjectiveHeuristicOptimizationProblem { }
 
-  }
-
+  [StorableType("806fb361-1469-4903-9f54-f8678b0717b9")]
   public interface IMultiObjectiveProblem<TEncoding, TEncodedSolution> : IMultiObjectiveProblem, IProblem<TEncoding, TEncodedSolution>
     where TEncoding : class, IEncoding<TEncodedSolution>
     where TEncodedSolution : class, IEncodedSolution { }

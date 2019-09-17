@@ -23,11 +23,15 @@ using System;
 using HEAL.Attic;
 
 namespace HeuristicLab.Core {
+  [StorableType("285d7903-5c4b-4136-bd69-491dc1766825")]
+  public interface IContextParameter : IParameter {
+    IExecutionContext ExecutionContext { get; set; }
+  }
+
   [StorableType("78e29fa3-e603-4a2e-a3e0-2dee459891f1")]
-  public interface ILookupParameter : IParameter {
+  public interface ILookupParameter : IContextParameter {
     string ActualName { get; set; }
     string TranslatedName { get; }
-    IExecutionContext ExecutionContext { get; set; }
     event EventHandler ActualNameChanged;
   }
 
@@ -36,13 +40,8 @@ namespace HeuristicLab.Core {
     new T ActualValue { get; set; }
   }
 
-  [StorableType("285d7903-5c4b-4136-bd69-491dc1766825")]
-  public interface IContextLookupParameter : IParameter {
-    IExecutionContext ExecutionContext { get; set; }
-  }
-
   [StorableType("26db2a08-7537-4e0e-b93c-4d4478698cd1")]
-  public interface IContextLookupParameter<T> : IContextLookupParameter where T : class, IParameterizedItem {
+  public interface IContextLookupParameter<T> : IContextParameter where T : class, IParameterizedItem {
     new T ActualValue { get; }
   }
 }
