@@ -95,21 +95,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Analyzers\ScatterPlotAnalyzer.cs" />
-    <Compile Include="Analyzers\CrowdingAnalyzer.cs" />
-    <Compile Include="Analyzers\InvertedGenerationalDistanceAnalyzer.cs" />
-    <Compile Include="Analyzers\HypervolumeAnalyzer.cs" />
-    <Compile Include="Analyzers\MOTFAnalyzer.cs" />
-    <Compile Include="Analyzers\GenerationalDistanceAnalyzer.cs" />
-    <Compile Include="Analyzers\SpacingAnalyzer.cs" />
     <Compile Include="Instances\IHRInstanceProvider.cs" />
     <Compile Include="Interfaces\IConstrainedTestFunction.cs" />
-    <Compile Include="Interfaces\IMultiObjectiveTestFunctionAnalyzer.cs" />
-    <Compile Include="Calculators\Crowding.cs" />
-    <Compile Include="Calculators\Spacing.cs" />
-    <Compile Include="Calculators\HyperVolume.cs" />
-    <Compile Include="Calculators\InvertedGenerationalDistance.cs" />
-    <Compile Include="Calculators\GenerationalDistance.cs" />
     <Compile Include="Utilities.cs" />
     <Compile Include="Instances\MISCInstanceProvider.cs" />
     <Compile Include="Instances\ZDTInstanceProvider.cs" />
@@ -124,7 +111,6 @@
     <Compile Include="TestFunctions\IHR\IHR3.cs" />
     <Compile Include="TestFunctions\IHR\IHR2.cs" />
     <Compile Include="TestFunctions\Misc\ELLI1.cs" />
-    <Compile Include="NonDominatedSelect.cs" />
     <Compile Include="Interfaces\IMultiObjectiveTestFunction.cs" />
     <Compile Include="MultiObjectiveTestFunctionProblem.cs" />
     <Compile Include="TestFunctions\ParetoFrontStore.cs" />

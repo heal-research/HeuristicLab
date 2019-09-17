@@ -32,7 +32,6 @@ using HeuristicLab.Data;
 using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Problems.TestFunctions.MultiObjective;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.Algorithms.MOCMAEvolutionStrategy {
@@ -326,7 +325,7 @@ namespace HeuristicLab.Algorithms.MOCMAEvolutionStrategy {
     private void InitSolutions() {
       solutions = new Individual[PopulationSize];
       for (var i = 0; i < PopulationSize; i++) {
-        var x = new RealVector(Encoding.Length); // Uniform distibution in all dimensions assumed.
+        var x = new RealVector(Encoding.Length); // Uniform distribution in all dimensions assumed.
         var bounds = Encoding.Bounds;
         for (var j = 0; j < Encoding.Length; j++) {
           var dim = j % bounds.Rows;
@@ -349,14 +348,14 @@ namespace HeuristicLab.Algorithms.MOCMAEvolutionStrategy {
       successThreshold = 0.44;
     }
     private void InitResults() {
-      Results.Add(new Result(IterationsResultName, "The number of gererations evaluated", new IntValue(0)));
-      Results.Add(new Result(EvaluationsResultName, "The number of function evaltions performed", new IntValue(0)));
-      Results.Add(new Result(HypervolumeResultName, "The hypervolume of the current front considering the Referencepoint defined in the Problem", new DoubleValue(0.0)));
-      Results.Add(new Result(BestHypervolumeResultName, "The best hypervolume of the current run considering the Referencepoint defined in the Problem", new DoubleValue(0.0)));
-      Results.Add(new Result(BestKnownHypervolumeResultName, "The best knwon hypervolume considering the Referencepoint defined in the Problem", new DoubleValue(double.NaN)));
-      Results.Add(new Result(DifferenceToBestKnownHypervolumeResultName, "The difference between the current and the best known hypervolume", new DoubleValue(double.NaN)));
-      Results.Add(new Result(GenerationalDistanceResultName, "The generational distance to an optimal pareto front defined in the Problem", new DoubleValue(double.NaN)));
-      Results.Add(new Result(InvertedGenerationalDistanceResultName, "The inverted generational distance to an optimal pareto front defined in the Problem", new DoubleValue(double.NaN)));
+      Results.Add(new Result(IterationsResultName, "The number of generations evaluated", new IntValue(0)));
+      Results.Add(new Result(EvaluationsResultName, "The number of function evaluations performed", new IntValue(0)));
+      Results.Add(new Result(HypervolumeResultName, "The hyper volume of the current front considering the reference point defined in the Problem", new DoubleValue(0.0)));
+      Results.Add(new Result(BestHypervolumeResultName, "The best hyper volume of the current run considering the reference point defined in the Problem", new DoubleValue(0.0)));
+      Results.Add(new Result(BestKnownHypervolumeResultName, "The best known hyper volume considering the reference point defined in the Problem", new DoubleValue(double.NaN)));
+      Results.Add(new Result(DifferenceToBestKnownHypervolumeResultName, "The difference between the current and the best known hyper volume", new DoubleValue(double.NaN)));
+      Results.Add(new Result(GenerationalDistanceResultName, "The generational distance to an optimal Pareto front defined in the Problem", new DoubleValue(double.NaN)));
+      Results.Add(new Result(InvertedGenerationalDistanceResultName, "The inverted generational distance to an optimal Pareto front defined in the Problem", new DoubleValue(double.NaN)));
       Results.Add(new Result(CrowdingResultName, "The average crowding value for the current front (excluding infinities)", new DoubleValue(0.0)));
       Results.Add(new Result(SpacingResultName, "The spacing for the current front (excluding infinities)", new DoubleValue(0.0)));
 
@@ -368,9 +367,9 @@ namespace HeuristicLab.Algorithms.MOCMAEvolutionStrategy {
       table.Rows.Add(new DataRow(InvertedGenerationalDistanceResultName));
       table.Rows.Add(new DataRow(DifferenceToBestKnownHypervolumeResultName));
       table.Rows.Add(new DataRow(SpacingResultName));
-      Results.Add(new Result(TimetableResultName, "Different quality meassures in a timeseries", table));
+      Results.Add(new Result(TimetableResultName, "Different quality measures in a time series", table));
       Results.Add(new Result(CurrentFrontResultName, "The current front", new DoubleMatrix()));
-      Results.Add(new Result(ScatterPlotResultName, "A scatterplot displaying the evaluated solutions and (if available) the analytically optimal front", new ParetoFrontScatterPlot()));
+      Results.Add(new Result(ScatterPlotResultName, "A scatter plot displaying the evaluated solutions and (if available) the analytically optimal front", new ParetoFrontScatterPlot()));
 
       var problem = Problem;
       if (problem == null) return;
@@ -454,7 +453,7 @@ namespace HeuristicLab.Algorithms.MOCMAEvolutionStrategy {
     #endregion
 
     private void SelectParents(IReadOnlyList<Individual> parents, int length) {
-      //perform a nondominated sort to assign the rank to every element
+      //perform a non-dominated sort to assign the rank to every element
       int[] ranks;
       var fronts = DominationCalculator.CalculateAllParetoFronts(parents.ToArray(), parents.Select(i => i.PenalizedFitness).ToArray(), Problem.Maximization, out ranks);
 
@@ -468,7 +467,7 @@ namespace HeuristicLab.Algorithms.MOCMAEvolutionStrategy {
         rank--;
       }
 
-      //now use the indicator to deselect the approximatingly worst elements of the last selected front
+      //now use the indicator to deselect the approximately worst elements of the last selected front
       var front1 = fronts[rank].OrderBy(x => x.Item1.PenalizedFitness[0]).ToList();
       for (; popSize > length; popSize--) {
         var lc = Indicator.LeastContributer(front1.Select(i => i.Item1).ToArray(), Problem);
@@ -500,11 +499,11 @@ namespace HeuristicLab.Algorithms.MOCMAEvolutionStrategy {
 
       if (qualities.Length == 0) return;
       ResultsCrowding = CrowdingCalculator.CalculateCrowding(qualities);
-      ResultsSpacing = Spacing.Calculate(qualities);
+      ResultsSpacing = SpacingAnalyzer.CalculateSpacing(qualities);
 
 
-      ResultsGenerationalDistance = problem.BestKnownFront != null ? GenerationalDistance.Calculate(qualities, problem.BestKnownFront, 1) : double.NaN;
-      ResultsInvertedGenerationalDistance = problem.BestKnownFront != null ? InvertedGenerationalDistance.Calculate(qualities, problem.BestKnownFront, 1) : double.NaN;
+      ResultsGenerationalDistance = problem.BestKnownFront != null ? GenerationalDistanceAnalyzer.CalculateGenerationalDistance(qualities, problem.BestKnownFront, 1) : double.NaN;
+      ResultsInvertedGenerationalDistance = problem.BestKnownFront != null ? GenerationalDistanceAnalyzer.CalculateInverseGenerationalDistance(qualities, problem.BestKnownFront, 1) : double.NaN;
       ResultsHypervolume = problem.ReferencePoint != null ? HypervolumeCalculator.CalculateHypervolume(qualities, problem.ReferencePoint, Problem.Maximization) : double.NaN;
       ResultsBestHypervolume = Math.Max(ResultsHypervolume, ResultsBestHypervolume);
       ResultsDifferenceBestKnownHypervolume = ResultsBestKnownHypervolume - ResultsBestHypervolume;

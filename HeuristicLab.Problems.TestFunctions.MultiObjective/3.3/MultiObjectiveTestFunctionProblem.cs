@@ -19,7 +19,6 @@
  */
 #endregion
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using HEAL.Attic;
 using HeuristicLab.Analysis;
@@ -147,10 +146,10 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
       Parameters.Remove(BestKnownFrontParameterName);
       var front = TestFunction.OptimalParetoFront(Objectives);
       var bkf = front != null ? (DoubleMatrix)Utilities.ToMatrix(front).AsReadOnly() : null;
-      Parameters.Add(new FixedValueParameter<DoubleMatrix>(BestKnownFrontParameterName, "A double matrix representing the best known qualites for this problem (aka points on the Pareto front). Points are to be given in a row-wise fashion.", bkf));
+      Parameters.Add(new FixedValueParameter<DoubleMatrix>(BestKnownFrontParameterName, "A double matrix representing the best known qualities for this problem (aka points on the Pareto front). Points are to be given in a row-wise fashion.", bkf));
 
       Parameters.Remove(ReferencePointParameterName);
-      Parameters.Add(new FixedValueParameter<DoubleArray>(ReferencePointParameterName, "The refrence point for hypervolume calculations on this problem", new DoubleArray(TestFunction.ReferencePoint(Objectives))));
+      Parameters.Add(new FixedValueParameter<DoubleArray>(ReferencePointParameterName, "The reference point for hypervolume calculations on this problem", new DoubleArray(TestFunction.ReferencePoint(Objectives))));
 
       BoundsParameter.Value = new DoubleMatrix(TestFunction.Bounds(Objectives));
     }
@@ -158,21 +157,18 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
     protected override void OnEncodingChanged() {
       base.OnEncodingChanged();
       UpdateParameterValues();
-      ParameterizeAnalyzers();
     }
 
     protected override void OnEvaluatorChanged() {
       base.OnEvaluatorChanged();
       UpdateParameterValues();
-      ParameterizeAnalyzers();
     }
 
     private void TestFunctionParameterOnValueChanged(object sender, EventArgs eventArgs) {
       ProblemSize = Math.Max(TestFunction.MinimumSolutionLength, Math.Min(ProblemSize, TestFunction.MaximumSolutionLength));
       Objectives = Math.Max(TestFunction.MinimumObjectives, Math.Min(Objectives, TestFunction.MaximumObjectives));
       Parameters.Remove(ReferencePointParameterName);
-      Parameters.Add(new FixedValueParameter<DoubleArray>(ReferencePointParameterName, "The refrence point for hypervolume calculations on this problem", new DoubleArray(TestFunction.ReferencePoint(Objectives))));
-      ParameterizeAnalyzers();
+      Parameters.Add(new FixedValueParameter<DoubleArray>(ReferencePointParameterName, "The reference point for hypervolume calculations on this problem", new DoubleArray(TestFunction.ReferencePoint(Objectives))));
       UpdateParameterValues();
       OnReset();
     }
@@ -196,24 +192,6 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
       Operators.Add(new HypervolumeAnalyzer());
       Operators.Add(new SpacingAnalyzer());
       Operators.Add(new TimelineAnalyzer());
-      Operators.Add(new ScatterPlotAnalyzer());
-      ParameterizeAnalyzers();
-    }
-
-    private IEnumerable<IMultiObjectiveTestFunctionAnalyzer> Analyzers {
-      get { return Operators.OfType<IMultiObjectiveTestFunctionAnalyzer>(); }
-    }
-
-    private void ParameterizeAnalyzers() {
-      foreach (var analyzer in Analyzers) {
-        analyzer.ResultsParameter.ActualName = "Results";
-        analyzer.QualitiesParameter.ActualName = Evaluator.QualitiesParameter.ActualName;
-        analyzer.TestFunctionParameter.ActualName = TestFunctionParameter.Name;
-        analyzer.BestKnownFrontParameter.ActualName = BestKnownFrontParameter.Name;
-        var scatterPlotAnalyzer = analyzer as ScatterPlotAnalyzer;
-        if (scatterPlotAnalyzer != null)
-          scatterPlotAnalyzer.IndividualsParameter.ActualName = Encoding.Name;
-      }
     }
     #endregion
   }
