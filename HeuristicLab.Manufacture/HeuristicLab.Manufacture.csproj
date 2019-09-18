@@ -1,0 +1,225 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{0E3AAB5E-F152-44E0-A054-4D9A83ECEE08}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>ParameterTest</RootNamespace>
+    <AssemblyName>ParameterTest</AssemblyName>
+    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="HEAL.Attic, Version=1.4.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\bin\HEAL.Attic.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Extensions\IItemExtensions.cs" />
+    <Compile Include="Extensions\ObjectExtensions.cs" />
+    <Compile Include="Extensions\TypeExtensions.cs" />
+    <Compile Include="JCGenerator.cs" />
+    <Compile Include="JCInstantiator.cs" />
+    <Compile Include="ParameterTransformer\ConstrainedValueParameterTransformer.cs" />
+    <Compile Include="ParameterTransformer\ParameterBaseTransformer.cs" />
+    <Compile Include="ParameterTransformer\ValueParameterTransformer.cs" />
+    <Compile Include="TypeTransformer\EnumTypeTransformer.cs" />
+    <Compile Include="TypeTransformer\StringValueTransformer.cs" />
+    <Compile Include="TypeTransformer\ValueTypeArrayTransformer.cs" />
+    <Compile Include="TypeTransformer\BaseTransformer.cs" />
+    <Compile Include="TypeTransformer\ValueTypeMatrixTransformer.cs" />
+    <Compile Include="TypeTransformer\ValueTypeValueTransformer.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Template.cs" />
+    <Compile Include="Interfaces\ITypeTransformer.cs" />
+    <Compile Include="Transformer.cs" />
+    <Compile Include="Util.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\HeuristicLab.Algorithms.ALPS\3.3\HeuristicLab.Algorithms.ALPS-3.3.csproj">
+      <Project>{59f354cb-fe13-4253-aed2-ad86372bec27}</Project>
+      <Name>HeuristicLab.Algorithms.ALPS-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Algorithms.Benchmarks\3.3\HeuristicLab.Algorithms.Benchmarks-3.3.csproj">
+      <Project>{068c70a7-8caf-4ab6-8721-4564d62292bc}</Project>
+      <Name>HeuristicLab.Algorithms.Benchmarks-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Algorithms.CMAEvolutionStrategy\3.4\HeuristicLab.Algorithms.CMAEvolutionStrategy-3.4.csproj">
+      <Project>{291010e4-2f4e-4d29-a795-753cff293fdb}</Project>
+      <Name>HeuristicLab.Algorithms.CMAEvolutionStrategy-3.4</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Algorithms.DataAnalysis.DecisionTrees\3.4\HeuristicLab.Algorithms.DataAnalysis.DecisionTrees-3.4.csproj">
+      <Project>{541a53f3-e6a7-402f-91bb-d76041cdd9fd}</Project>
+      <Name>HeuristicLab.Algorithms.DataAnalysis.DecisionTrees-3.4</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Algorithms.DataAnalysis.Glmnet\3.4\HeuristicLab.Algorithms.DataAnalysis.Glmnet-3.4.csproj">
+      <Project>{4c7f6d8a-b279-4898-acd6-7be39111def9}</Project>
+      <Name>HeuristicLab.Algorithms.DataAnalysis.Glmnet-3.4</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Algorithms.EvolutionStrategy\3.3\HeuristicLab.Algorithms.EvolutionStrategy-3.3.csproj">
+      <Project>{e0b45023-cb84-48a1-a1b7-8295b64b7bad}</Project>
+      <Name>HeuristicLab.Algorithms.EvolutionStrategy-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Algorithms.GeneticAlgorithm\3.3\HeuristicLab.Algorithms.GeneticAlgorithm-3.3.csproj">
+      <Project>{a51da44f-cb35-4f6f-99f5-2a2e904ab93b}</Project>
+      <Name>HeuristicLab.Algorithms.GeneticAlgorithm-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Algorithms.GradientDescent\3.3\HeuristicLab.Algorithms.GradientDescent-3.3.csproj">
+      <Project>{1256b945-eea9-4be4-9880-76b5b113f089}</Project>
+      <Name>HeuristicLab.Algorithms.GradientDescent-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Algorithms.LocalSearch\3.3\HeuristicLab.Algorithms.LocalSearch-3.3.csproj">
+      <Project>{4ae3fc69-c575-42d2-bc46-0fad5850efc5}</Project>
+      <Name>HeuristicLab.Algorithms.LocalSearch-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Algorithms.MOCMAEvolutionStrategy\3.3\HeuristicLab.Algorithms.MOCMAEvolutionStrategy-3.3.csproj">
+      <Project>{0e2e224f-e9b2-41f3-b510-09183eeba2af}</Project>
+      <Name>HeuristicLab.Algorithms.MOCMAEvolutionStrategy-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Algorithms.NSGA2\3.3\HeuristicLab.Algorithms.NSGA2-3.3.csproj">
+      <Project>{15452b9f-a436-4139-8ee7-da72fb8d3664}</Project>
+      <Name>HeuristicLab.Algorithms.NSGA2-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Algorithms.OffspringSelectionEvolutionStrategy\3.3\HeuristicLab.Algorithms.OffspringSelectionEvolutionStrategy-3.3.csproj">
+      <Project>{1d41eae6-cc79-41d4-858c-589c4db5e50d}</Project>
+      <Name>HeuristicLab.Algorithms.OffspringSelectionEvolutionStrategy-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm\3.3\HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm-3.3.csproj">
+      <Project>{f409dd9e-1e9c-4eb1-aa3a-9f6e987c6e58}</Project>
+      <Name>HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Algorithms.ParameterlessPopulationPyramid\3.3\HeuristicLab.Algorithms.ParameterlessPopulationPyramid-3.3.csproj">
+      <Project>{9319c447-8183-4dbc-8145-0e3cf98084cc}</Project>
+      <Name>HeuristicLab.Algorithms.ParameterlessPopulationPyramid-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Algorithms.ParticleSwarmOptimization\3.3\HeuristicLab.Algorithms.ParticleSwarmOptimization-3.3.csproj">
+      <Project>{2c429157-9c34-4dd3-9d5f-b444b751e39a}</Project>
+      <Name>HeuristicLab.Algorithms.ParticleSwarmOptimization-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Algorithms.RandomSearch\3.3\HeuristicLab.Algorithms.RandomSearch-3.3.csproj">
+      <Project>{4a15dc1a-51ee-4cb7-ac05-f5afddece1b1}</Project>
+      <Name>HeuristicLab.Algorithms.RandomSearch-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Algorithms.RAPGA\3.3\HeuristicLab.Algorithms.RAPGA-3.3.csproj">
+      <Project>{b03c4e41-1d01-4c60-b0f4-dbb257d98ca8}</Project>
+      <Name>HeuristicLab.Algorithms.RAPGA-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Algorithms.ScatterSearch\3.3\HeuristicLab.Algorithms.ScatterSearch-3.3.csproj">
+      <Project>{5fee5db4-7fd9-4cbd-bec2-3fee17b31a94}</Project>
+      <Name>HeuristicLab.Algorithms.ScatterSearch-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Algorithms.SimulatedAnnealing\3.3\HeuristicLab.Algorithms.SimulatedAnnealing-3.3.csproj">
+      <Project>{96e5ed5b-187d-4012-9cda-d85cdad38342}</Project>
+      <Name>HeuristicLab.Algorithms.SimulatedAnnealing-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Algorithms.TabuSearch\3.3\HeuristicLab.Algorithms.TabuSearch-3.3.csproj">
+      <Project>{d58a232d-04ba-4186-b73e-0ec86fd31abe}</Project>
+      <Name>HeuristicLab.Algorithms.TabuSearch-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Algorithms.VariableNeighborhoodSearch\3.3\HeuristicLab.Algorithms.VariableNeighborhoodSearch-3.3.csproj">
+      <Project>{e4cfb0c3-0589-4893-b38e-8bedf885c765}</Project>
+      <Name>HeuristicLab.Algorithms.VariableNeighborhoodSearch-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Analysis\3.3\HeuristicLab.Analysis-3.3.csproj">
+      <Project>{887425B4-4348-49ED-A457-B7D2C26DDBF9}</Project>
+      <Name>HeuristicLab.Analysis-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Collections\3.3\HeuristicLab.Collections-3.3.csproj">
+      <Project>{958B43BC-CC5C-4FA2-8628-2B3B01D890B6}</Project>
+      <Name>HeuristicLab.Collections-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Common\3.3\HeuristicLab.Common-3.3.csproj">
+      <Project>{A9AD58B9-3EF9-4CC1-97E5-8D909039FF5C}</Project>
+      <Name>HeuristicLab.Common-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Core\3.3\HeuristicLab.Core-3.3.csproj">
+      <Project>{C36BD924-A541-4A00-AFA8-41701378DDC5}</Project>
+      <Name>HeuristicLab.Core-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Data\3.3\HeuristicLab.Data-3.3.csproj">
+      <Project>{BBAB9DF5-5EF3-4BA8-ADE9-B36E82114937}</Project>
+      <Name>HeuristicLab.Data-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Encodings.PermutationEncoding\3.3\HeuristicLab.Encodings.PermutationEncoding-3.3.csproj">
+      <Project>{DBECB8B0-B166-4133-BAF1-ED67C3FD7FCA}</Project>
+      <Name>HeuristicLab.Encodings.PermutationEncoding-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Operators\3.3\HeuristicLab.Operators-3.3.csproj">
+      <Project>{23DA7FF4-D5B8-41B6-AA96-F0561D24F3EE}</Project>
+      <Name>HeuristicLab.Operators-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Optimization\3.3\HeuristicLab.Optimization-3.3.csproj">
+      <Project>{14AB8D24-25BC-400C-A846-4627AA945192}</Project>
+      <Name>HeuristicLab.Optimization-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Parameters\3.3\HeuristicLab.Parameters-3.3.csproj">
+      <Project>{56F9106A-079F-4C61-92F6-86A84C2D84B7}</Project>
+      <Name>HeuristicLab.Parameters-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.PluginInfrastructure\3.3\HeuristicLab.PluginInfrastructure-3.3.csproj">
+      <Project>{94186a6a-5176-4402-ae83-886557b53cca}</Project>
+      <Name>HeuristicLab.PluginInfrastructure-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Problems.Instances\3.3\HeuristicLab.Problems.Instances-3.3.csproj">
+      <Project>{3540E29E-4793-49E7-8EE2-FEA7F61C3994}</Project>
+      <Name>HeuristicLab.Problems.Instances-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Problems.Knapsack\3.3\HeuristicLab.Problems.Knapsack-3.3.csproj">
+      <Project>{E10F395F-C8A6-48AD-B470-9AA7A1F43809}</Project>
+      <Name>HeuristicLab.Problems.Knapsack-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Problems.TravelingSalesman\3.3\HeuristicLab.Problems.TravelingSalesman-3.3.csproj">
+      <Project>{d767c38d-8014-46b0-9a32-03a3aecce34a}</Project>
+      <Name>HeuristicLab.Problems.TravelingSalesman-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Problems.VehicleRouting\3.4\HeuristicLab.Problems.VehicleRouting-3.4.csproj">
+      <Project>{B94FFB82-43D4-40AB-9980-B03470ADF221}</Project>
+      <Name>HeuristicLab.Problems.VehicleRouting-3.4</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.SequentialEngine\3.3\HeuristicLab.SequentialEngine-3.3.csproj">
+      <Project>{dc3d7072-7999-4719-b65d-3997744d5dc1}</Project>
+      <Name>HeuristicLab.SequentialEngine-3.3</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
