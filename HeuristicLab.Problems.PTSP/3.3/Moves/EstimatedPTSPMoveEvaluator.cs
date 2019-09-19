@@ -42,8 +42,8 @@ namespace HeuristicLab.Problems.PTSP {
     public ILookupParameter<IProbabilisticTSPData> ProbabilisticTSPDataParameter {
       get { return (ILookupParameter<IProbabilisticTSPData>)Parameters["PTSP Data"]; }
     }
-    public ILookupParameter<ReadOnlyItemList<BoolArray>> RealizationsParameter {
-      get { return (ILookupParameter<ReadOnlyItemList<BoolArray>>)Parameters["Realizations"]; }
+    public ILookupParameter<ReadOnlyItemList<BoolArray>> RealizationDataParameter {
+      get { return (ILookupParameter<ReadOnlyItemList<BoolArray>>)Parameters["RealizationData"]; }
     }
     public ILookupParameter<DoubleValue> QualityParameter {
       get { return (ILookupParameter<DoubleValue>)Parameters["Quality"]; }
@@ -59,14 +59,14 @@ namespace HeuristicLab.Problems.PTSP {
       : base() {
       Parameters.Add(new LookupParameter<Permutation>("Permutation", "The solution as permutation."));
       Parameters.Add(new LookupParameter<IProbabilisticTSPData>("PTSP Data", "The main parameters of the pTSP."));
-      Parameters.Add(new LookupParameter<ReadOnlyItemList<BoolArray>>("Realizations", "The list of samples drawn from all possible stochastic instances."));
+      Parameters.Add(new LookupParameter<ReadOnlyItemList<BoolArray>>("RealizationData", "The list of samples drawn from all possible stochastic instances."));
       Parameters.Add(new LookupParameter<DoubleValue>("Quality", "The quality of a TSP solution."));
       Parameters.Add(new LookupParameter<DoubleValue>("MoveQuality", "The evaluated quality of a move on a TSP solution."));
     }
 
     public override IOperation Apply() {
       var permutation = PermutationParameter.ActualValue;
-      var realizations = RealizationsParameter.ActualValue;
+      var realizations = RealizationDataParameter.ActualValue;
       var data = ProbabilisticTSPDataParameter.ActualValue;
       var relativeQualityDifference = EvaluateMove(permutation, data, realizations);
       var moveQuality = MoveQualityParameter.ActualValue;

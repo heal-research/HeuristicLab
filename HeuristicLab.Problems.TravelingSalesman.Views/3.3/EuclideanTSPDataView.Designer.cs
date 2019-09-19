@@ -30,6 +30,7 @@
       this.coordinatesSplitContainer.Panel2.SuspendLayout();
       this.coordinatesSplitContainer.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.coordinatesPictureBox)).BeginInit();
+      ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
       this.SuspendLayout();
       // 
       // coordinatesSplitContainer
@@ -47,7 +48,13 @@
             | System.Windows.Forms.AnchorStyles.Right)));
       this.coordinatesMatrixView.Dock = System.Windows.Forms.DockStyle.None;
       this.coordinatesMatrixView.Location = new System.Drawing.Point(0, 30);
+      this.coordinatesMatrixView.ShowStatisticalInformation = false;
       this.coordinatesMatrixView.Size = new System.Drawing.Size(256, 598);
+      // 
+      // nameTextBox
+      // 
+      this.errorProvider.SetIconAlignment(this.nameTextBox, System.Windows.Forms.ErrorIconAlignment.MiddleLeft);
+      this.errorProvider.SetIconPadding(this.nameTextBox, 2);
       // 
       // roundingModeLabel
       // 
@@ -80,7 +87,9 @@
       ((System.ComponentModel.ISupportInitialize)(this.coordinatesSplitContainer)).EndInit();
       this.coordinatesSplitContainer.ResumeLayout(false);
       ((System.ComponentModel.ISupportInitialize)(this.coordinatesPictureBox)).EndInit();
+      ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
       this.ResumeLayout(false);
+      this.PerformLayout();
 
     }
 

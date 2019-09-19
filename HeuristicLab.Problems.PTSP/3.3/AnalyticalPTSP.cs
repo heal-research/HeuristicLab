@@ -19,7 +19,6 @@
  */
 #endregion
 
-using System.Linq;
 using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -47,14 +46,16 @@ namespace HeuristicLab.Problems.PTSP {
       Operators.Add(new TwoPointFiveMoveMaker());
       Operators.Add(new PTSPAnalyticalTwoPointFiveMoveEvaluator());
 
-      Encoding.ConfigureOperators(Operators.OfType<IOperator>());
-      foreach (var twopointfiveMoveOperator in Operators.OfType<ITwoPointFiveMoveOperator>()) {
-        twopointfiveMoveOperator.TwoPointFiveMoveParameter.ActualName = "Permutation.TwoPointFiveMove";
-      }
+      Encoding.ConfigureOperators(Operators);
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new AnalyticalPTSP(this, cloner);
+    }
+
+    protected override void OnEncodingChanged() {
+      base.OnEncodingChanged();
+      Encoding.ConfigureOperators(Operators);
     }
 
     public override double Evaluate(Permutation tour, IRandom random) {

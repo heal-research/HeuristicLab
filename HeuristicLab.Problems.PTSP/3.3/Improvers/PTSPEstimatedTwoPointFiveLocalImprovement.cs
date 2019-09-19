@@ -41,7 +41,7 @@ namespace HeuristicLab.Problems.PTSP {
   /// </remarks>
   [Item("PTSP Estimated 2.5 Local Improvement", "An operator that improves probabilistic traveling salesman solutions. The operator tries to improve the probabilistic traveling salesman solution by swapping two randomly chosen edges for a certain number of times.")]
   [StorableType("8B04265A-50AD-4FAD-99F8-2357D6F10CC3")]
-  public sealed class PTSPEstimatedTwoPointFiveLocalImprovement : SingleSuccessorOperator, IEstimatedPTSPOperator, ILocalImprovementOperator {
+  public sealed class PTSPEstimatedTwoPointFiveLocalImprovement : SingleSuccessorOperator, IEstimatedPTSPOperator, IPermutationLocalImprovementOperator {
 
     public ILookupParameter<IntValue> LocalIterationsParameter {
       get { return (ILookupParameter<IntValue>)Parameters["LocalIterations"]; }
@@ -74,8 +74,8 @@ namespace HeuristicLab.Problems.PTSP {
     public ILookupParameter<IProbabilisticTSPData> ProbabilisticTSPDataParameter {
       get { return (ILookupParameter<IProbabilisticTSPData>)Parameters["PTSP Data"]; }
     }
-    public ILookupParameter<ReadOnlyItemList<BoolArray>> RealizationsParameter {
-      get { return (ILookupParameter<ReadOnlyItemList<BoolArray>>)Parameters["Realizations"]; }
+    public ILookupParameter<ReadOnlyItemList<BoolArray>> RealizationDataParameter {
+      get { return (ILookupParameter<ReadOnlyItemList<BoolArray>>)Parameters["RealizationData"]; }
     }
 
     [StorableConstructor]
@@ -91,7 +91,7 @@ namespace HeuristicLab.Problems.PTSP {
       Parameters.Add(new LookupParameter<DoubleValue>("Quality", "The quality value of the assignment."));
       Parameters.Add(new LookupParameter<BoolValue>("Maximization", "True if the problem should be maximized or minimized."));
       Parameters.Add(new LookupParameter<IProbabilisticTSPData>("PTSP Data", "The main parameters of the pTSP."));
-      Parameters.Add(new LookupParameter<ReadOnlyItemList<BoolArray>>("Realizations", "The list of samples drawn from all possible stochastic instances."));
+      Parameters.Add(new LookupParameter<ReadOnlyItemList<BoolArray>>("RealizationData", "The list of samples drawn from all possible stochastic instances."));
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -130,7 +130,7 @@ namespace HeuristicLab.Problems.PTSP {
       var localIterations = LocalIterationsParameter.ActualValue;
       var evaluations = EvaluatedSolutionsParameter.ActualValue;
       var data = ProbabilisticTSPDataParameter.ActualValue;
-      var realizations = RealizationsParameter.ActualValue;
+      var realizations = RealizationDataParameter.ActualValue;
       if (localIterations == null) {
         localIterations = new IntValue(0);
         LocalIterationsParameter.ActualValue = localIterations;

@@ -39,7 +39,7 @@ namespace HeuristicLab.Problems.PTSP {
   /// </remarks>
   [Item("pTSP Analytical Insertion Local Improvement", "An operator that improves probabilistic traveling salesman solutions. The operator tries to improve the probabilistic traveling salesman solution by swapping two randomly chosen edges for a certain number of times.")]
   [StorableType("5adca9d8-02b2-4937-9f79-a24d8ea8ea19")]
-  public sealed class PTSPAnalyticalInsertionLocalImprovement : SingleSuccessorOperator, IAnalyticalPTSPOperator, ILocalImprovementOperator {
+  public sealed class PTSPAnalyticalInsertionLocalImprovement : SingleSuccessorOperator, IAnalyticalPTSPOperator, IPermutationLocalImprovementOperator {
 
     public ILookupParameter<IntValue> LocalIterationsParameter {
       get { return (ILookupParameter<IntValue>)Parameters["LocalIterations"]; }

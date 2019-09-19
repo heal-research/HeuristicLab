@@ -84,7 +84,7 @@
       this.distanceMatrixView.Name = "distanceMatrixView";
       this.distanceMatrixView.ReadOnly = false;
       this.distanceMatrixView.ShowRowsAndColumnsTextBox = true;
-      this.distanceMatrixView.ShowStatisticalInformation = true;
+      this.distanceMatrixView.ShowStatisticalInformation = false;
       this.distanceMatrixView.Size = new System.Drawing.Size(757, 538);
       this.distanceMatrixView.TabIndex = 0;
       // 
@@ -94,7 +94,7 @@
       this.coordinatesTabPage.Location = new System.Drawing.Point(4, 22);
       this.coordinatesTabPage.Name = "coordinatesTabPage";
       this.coordinatesTabPage.Padding = new System.Windows.Forms.Padding(3);
-      this.coordinatesTabPage.Size = new System.Drawing.Size(763, 570);
+      this.coordinatesTabPage.Size = new System.Drawing.Size(763, 544);
       this.coordinatesTabPage.TabIndex = 1;
       this.coordinatesTabPage.Text = "Display Coordinates";
       this.coordinatesTabPage.UseVisualStyleBackColor = true;
@@ -112,7 +112,7 @@
       // coordinatesSplitContainer.Panel2
       // 
       this.coordinatesSplitContainer.Panel2.Controls.Add(this.coordinatesPictureBox);
-      this.coordinatesSplitContainer.Size = new System.Drawing.Size(757, 564);
+      this.coordinatesSplitContainer.Size = new System.Drawing.Size(757, 538);
       this.coordinatesSplitContainer.SplitterDistance = 252;
       this.coordinatesSplitContainer.TabIndex = 0;
       // 
@@ -125,8 +125,8 @@
       this.coordinatesMatrixView.Name = "coordinatesMatrixView";
       this.coordinatesMatrixView.ReadOnly = false;
       this.coordinatesMatrixView.ShowRowsAndColumnsTextBox = true;
-      this.coordinatesMatrixView.ShowStatisticalInformation = true;
-      this.coordinatesMatrixView.Size = new System.Drawing.Size(252, 564);
+      this.coordinatesMatrixView.ShowStatisticalInformation = false;
+      this.coordinatesMatrixView.Size = new System.Drawing.Size(252, 538);
       this.coordinatesMatrixView.TabIndex = 1;
       // 
       // coordinatesPictureBox
@@ -134,7 +134,7 @@
       this.coordinatesPictureBox.Dock = System.Windows.Forms.DockStyle.Fill;
       this.coordinatesPictureBox.Location = new System.Drawing.Point(0, 0);
       this.coordinatesPictureBox.Name = "coordinatesPictureBox";
-      this.coordinatesPictureBox.Size = new System.Drawing.Size(501, 564);
+      this.coordinatesPictureBox.Size = new System.Drawing.Size(501, 538);
       this.coordinatesPictureBox.TabIndex = 0;
       this.coordinatesPictureBox.TabStop = false;
       // 

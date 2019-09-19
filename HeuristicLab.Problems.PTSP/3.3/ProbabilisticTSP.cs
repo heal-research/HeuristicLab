@@ -156,7 +156,7 @@ namespace HeuristicLab.Problems.PTSP {
       if (data.BestKnownTour != null) {
         try {
           var tour = new Permutation(PermutationTypes.RelativeUndirected, data.BestKnownTour);
-          var tourLength = Evaluate(tour, new FastRandom(1));
+          var tourLength = Evaluate(tour, new MersenneTwister(1));
           BestKnownSolution = new ProbabilisticTSPSolution(data.Coordinates != null ? new DoubleMatrix(data.Coordinates) : null, new PercentArray(data.Probabilities), tour, new DoubleValue(tourLength));
           BestKnownQuality = tourLength;
         } catch (InvalidOperationException) {

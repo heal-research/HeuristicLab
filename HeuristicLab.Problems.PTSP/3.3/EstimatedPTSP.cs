@@ -28,6 +28,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Parameters;
+using HeuristicLab.Problems.Instances;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.Problems.PTSP {
@@ -188,10 +189,17 @@ namespace HeuristicLab.Problems.PTSP {
       else UpdateRealizations();
     }
 
+    public override void Load(PTSPData data) {
+      base.Load(data);
+      UpdateRealizations();
+    }
+
     private void UpdateRealizations() {
       var data = new List<BoolArray>(Realizations);
-      var rng = new FastRandom(RealizationsSeed);
-      for (var i = 0; i < Realizations; i++) {
+      var rng = new MersenneTwister((uint)RealizationsSeed);
+      if (Enumerable.Range(0, ProbabilisticTSPData.Cities).All(c => ProbabilisticTSPData.GetProbability(c) <= 0))
+        throw new InvalidOperationException("All probabilities are zero.");
+      while (data.Count < Realizations) {
         var cities = 0;
         var r = new bool[ProbabilisticTSPData.Cities];
         for (var j = 0; j < ProbabilisticTSPData.Cities; j++) {

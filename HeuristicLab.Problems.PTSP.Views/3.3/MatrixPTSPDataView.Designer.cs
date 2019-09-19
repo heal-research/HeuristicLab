@@ -37,6 +37,10 @@
       this.probabilitiesTabPage.SuspendLayout();
       this.SuspendLayout();
       // 
+      // distanceMatrixView
+      // 
+      this.distanceMatrixView.ShowStatisticalInformation = false;
+      // 
       // tabControl
       // 
       this.tabControl.Controls.Add(this.probabilitiesTabPage);
@@ -54,6 +58,7 @@
       // 
       // coordinatesMatrixView
       // 
+      this.coordinatesMatrixView.ShowStatisticalInformation = false;
       this.coordinatesMatrixView.Size = new System.Drawing.Size(252, 538);
       // 
       // coordinatesPictureBox
@@ -87,10 +92,10 @@
       this.probabilitiesView.Size = new System.Drawing.Size(757, 538);
       this.probabilitiesView.TabIndex = 0;
       // 
-      // MatrixProbabilisticTSPDataView
+      // MatrixPTSPDataView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-      this.Name = "MatrixProbabilisticTSPDataView";
+      this.Name = "MatrixPTSPDataView";
       this.tabControl.ResumeLayout(false);
       this.coordinatesTabPage.ResumeLayout(false);
       this.coordinatesSplitContainer.Panel1.ResumeLayout(false);

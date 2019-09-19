@@ -72,7 +72,7 @@
       this.coordinatesMatrixView.Name = "coordinatesMatrixView";
       this.coordinatesMatrixView.ReadOnly = false;
       this.coordinatesMatrixView.ShowRowsAndColumnsTextBox = true;
-      this.coordinatesMatrixView.ShowStatisticalInformation = true;
+      this.coordinatesMatrixView.ShowStatisticalInformation = false;
       this.coordinatesMatrixView.Size = new System.Drawing.Size(256, 570);
       this.coordinatesMatrixView.TabIndex = 1;
       // 
