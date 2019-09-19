@@ -21,7 +21,6 @@
 
 using System;
 using System.IO;
-using System.Linq;
 
 namespace HeuristicLab.Problems.Instances.TSPLIB {
   public abstract class TSPLIBPTSPInstanceProvider : TSPLIBInstanceProvider<PTSPData> {
@@ -75,25 +74,18 @@ namespace HeuristicLab.Problems.Instances.TSPLIB {
 
     protected abstract double[] GetProbabilities(IDataDescriptor descriptor, PTSPData instance);
 
+    public override PTSPData LoadData(IDataDescriptor id) {
+      var tsplibId = (id as TSPLIBDataDescriptor);
+      if (tsplibId != null) tsplibId.SolutionIdentifier = null;
+      return base.LoadData(tsplibId ?? id);
+    }
+
     protected override void LoadSolution(TSPLIBParser parser, PTSPData instance) {
-      parser.Parse();
-      instance.BestKnownTour = parser.Tour.FirstOrDefault();
+      // solutions are not defined for pTSP
     }
 
     protected override void LoadQuality(double? bestQuality, PTSPData instance) {
-      instance.BestKnownQuality = bestQuality;
+      // best known qualities are not defined for pTSP
     }
-
-    public PTSPData LoadData(string tspFile, string tourFile, double? bestQuality) {
-      var data = LoadInstance(new TSPLIBParser(tspFile));
-      if (!String.IsNullOrEmpty(tourFile)) {
-        var tourParser = new TSPLIBParser(tourFile);
-        LoadSolution(tourParser, data);
-      }
-      if (bestQuality.HasValue)
-        data.BestKnownQuality = bestQuality.Value;
-      return data;
-    }
-
   }
 }
