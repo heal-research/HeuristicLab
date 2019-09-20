@@ -5,16 +5,13 @@ using System.Text;
 using System.Threading.Tasks;
 using HeuristicLab.Core;
 
-namespace ParameterTest {
+namespace HeuristicLab.Manufacture {
   public abstract class ParameterBaseTransformer : BaseTransformer {
-    public override IItem FromData(ParameterData obj, Type targetType) {
-      throw new NotImplementedException();
-    }
+    public override ParameterData ExtractData(IItem value) => ExtractData(value.Cast<IParameter>());
+    public abstract ParameterData ExtractData(IParameter value);
 
+    public override void InjectData(IItem item, ParameterData data) => InjectData(item.Cast<IParameter>(), data);
 
-
-    public override void SetValue(IItem item, ParameterData data) => SetValue(item.Cast<IParameter>(), data);
-
-    public abstract void SetValue(IParameter parameter, ParameterData data);
+    public abstract void InjectData(IParameter parameter, ParameterData data);
   }
 }

@@ -6,22 +6,16 @@ using System.Threading.Tasks;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 
-namespace ParameterTest {
+namespace HeuristicLab.Manufacture {
   public class EnumTypeTransformer : BaseTransformer {
-    public override IItem FromData(ParameterData obj, Type targetType) {
-      Type enumType = targetType.GenericTypeArguments.First();
-      var data = Enum.Parse(enumType, CastValue<string>(obj.Default));
-      //item.Cast<dynamic>().Value = data;
-      return Instantiate(targetType, data);
-    }
 
-    public override void SetValue(IItem item, ParameterData data) {
-      Type enumType = item.GetType().GenericTypeArguments.First();
-      item.Cast<dynamic>().Value = Enum.Parse(enumType, CastValue<string>(data.Default));
-    }
+    public override void InjectData(IItem item, ParameterData data) =>
+      item.Cast<dynamic>().Value = Enum.Parse(
+        item.GetType().GenericTypeArguments.First(), 
+        CastValue<string>(data.Default));
 
-    public override ParameterData ToData(IItem value) {
-      ParameterData data = base.ToData(value);
+    public override ParameterData ExtractData(IItem value) {
+      ParameterData data = new ParameterData();
       object val = ((dynamic)value).Value;
       Type enumType = val.GetType();
       data.Default = Enum.GetName(enumType, val);

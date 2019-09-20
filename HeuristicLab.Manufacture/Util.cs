@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using HeuristicLab.Core;
 
-namespace ParameterTest {
+namespace HeuristicLab.Manufacture {
   public class Util {
     public static bool IsTypeOf(object obj, Type t) {
       if (obj == null || t == null) return false;

@@ -7,27 +7,25 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using Newtonsoft.Json.Linq;
 
-namespace ParameterTest {
+namespace HeuristicLab.Manufacture {
   public class ValueTypeArrayTransformer<ArrayType, T> : BaseTransformer
     where ArrayType : ValueTypeArray<T>
     where T : struct 
   {
-    public override IItem FromData(ParameterData obj, Type targetType) =>
-      Instantiate<ArrayType>(CastValue<T[]>(obj.Default));
+    public override void InjectData(IItem item, ParameterData data) => 
+      CopyArrayData(item.Cast<ArrayType>(), CastValue<T[]>(data.Default));
 
-    public override void SetValue(IItem item, ParameterData data) {
-      T[] arr = CastValue<T[]>(data.Default);
-      ArrayType valueArray = item.Cast<ArrayType>();
-      for (int i = 0; i < arr.Length; ++i) {
-        valueArray[i] = arr[i];
+    public override ParameterData ExtractData(IItem value) => 
+      new ParameterData() {
+        Default = value.Cast<ArrayType>().CloneAsArray()
+      };
+
+    #region Helper
+    private void CopyArrayData(ArrayType array, T[] data) {
+      for (int i = 0; i < data.Length; ++i) {
+        array[i] = data[i];
       }
     }
-      //item.Cast<StringValue>().Value = CastValue<string>(data.Default);
-
-    public override ParameterData ToData(IItem value) {
-      ParameterData data = base.ToData(value);
-      data.Default = value.Cast<ArrayType>().CloneAsArray();
-      return data;
-    }
+    #endregion
   }
 }

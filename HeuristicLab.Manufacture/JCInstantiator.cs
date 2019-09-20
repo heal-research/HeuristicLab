@@ -11,7 +11,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using Newtonsoft.Json.Linq;
 
-namespace ParameterTest {
+namespace HeuristicLab.Manufacture {
 
   
   public class JCInstantiator {
@@ -27,8 +27,30 @@ namespace ParameterTest {
     #endregion
 
     public IAlgorithm Instantiate(string configFile) {
-      JObject config = JObject.Parse(File.ReadAllText(configFile));
+      JArray config = JArray.Parse(File.ReadAllText(configFile));
+      JCObject obj = config[0].ToObject<JCObject>();
+      IAlgorithm algorithm = CreateObject<IAlgorithm>(obj);
 
+      foreach(var sp in obj.StaticParameters) {
+        if(algorithm.Parameters.TryGetValue(sp.Name, out IParameter param)) {
+          Transformer.Inject(param, sp);
+        }
+      }
+
+      foreach (var sp in obj.FreeParameters) {
+        if (algorithm.Parameters.TryGetValue(sp.Name, out IParameter param)) {
+          if(IsInRangeList(sp.Range, sp.Default) || 
+            IsInNumericRange<long>(sp.Default, sp.Range[0], sp.Range[1]) || 
+            IsInNumericRange<double>(sp.Default, sp.Range[0], sp.Range[1]))
+          Transformer.Inject(param, sp);
+        }
+      }
+
+
+      return algorithm;
+
+
+      /*
       TypeList = config[SParametersID][TListID].ToObject<Dictionary<string, string>>();
 
       JCObject algorithmData = config[SParametersID][AlgorithmID].ToObject<JCObject>();
@@ -45,6 +67,12 @@ namespace ParameterTest {
       UseFreeParams(algorithmData.Name, freeAlgorithmParameters, algorithm);
       UseFreeParams(problemData.Name, freeProblemParameters, algorithm.Problem);
       return algorithm;
+      */
+    }
+
+    private T CreateObject<T>(JCObject obj) {
+      Type type = Type.GetType(obj.Type);
+      return (T)Activator.CreateInstance(type);
     }
 
     private T CreateTypeListObject<T>(string key) {
@@ -55,7 +83,7 @@ namespace ParameterTest {
     }
 
     private void ProcessParameters(JCObject obj, IParameterizedItem instance) {
-      foreach (var param in obj.Parameters)
+      foreach (var param in obj.StaticParameters)
         if (param.Default != null)
           SetParameterValue(FindPropertyByKey(instance, param.Name), param.Default);
     }

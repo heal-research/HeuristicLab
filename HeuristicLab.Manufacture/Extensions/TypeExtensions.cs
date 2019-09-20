@@ -4,8 +4,21 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ParameterTest {
+namespace HeuristicLab.Manufacture {
   public static class TypeExtensions {
+    public static int GetInterfaceDistance(this Type type, Type interfaceType) {
+      if (!interfaceType.IsInterface) return -1;
+      int distance = 0;
+      Type baseType = type;
+      while (baseType != typeof(object)) {
+        var interfaces = baseType.GetInterfaces();
+        var minimalInterfaces = interfaces.Except(interfaces.SelectMany(i => i.GetInterfaces()));
+        if (baseType == interfaceType && minimalInterfaces.Any(i => i == interfaceType))
+          ++distance;
+        baseType = baseType.BaseType;
+      }
+      return distance;
+    }
     public static bool IsEqualTo(this Type type, Type other) {
       if (other == null) throw new ArgumentNullException("other");
       if (type == other) return true;

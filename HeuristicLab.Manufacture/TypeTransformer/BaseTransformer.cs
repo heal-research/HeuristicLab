@@ -6,24 +6,33 @@ using System.Threading.Tasks;
 using HeuristicLab.Core;
 using Newtonsoft.Json.Linq;
 
-namespace ParameterTest {
+namespace HeuristicLab.Manufacture {
   public abstract class BaseTransformer : ITypeTransformer
   {
-    public abstract void SetValue(IItem item, ParameterData data);
-    public abstract IItem FromData(ParameterData obj, Type targetType);
-    public virtual ParameterData ToData(IItem value) => 
-      new ParameterData() { Name = value.ItemName };
+    public ParameterData Extract(IItem value) {
+      ParameterData data = ExtractData(value);
+      data.Name = String.IsNullOrEmpty(data.Name) ? value.ItemName : data.Name;
+      return data;
+    }
 
+    public void Inject(IItem item, ParameterData data) => InjectData(item, data);
+
+    public abstract void InjectData(IItem item, ParameterData data);
+    public abstract ParameterData ExtractData(IItem value);
+
+    #region Helper
     protected ValueType CastValue<ValueType>(object obj) {
       if (obj is JToken)
-        return ((JToken)obj).ToObject<ValueType>();
-      else
-        return (ValueType)obj;
+        return (obj.Cast<JToken>()).ToObject<ValueType>();
+      else if (obj is IConvertible)
+        return Convert.ChangeType(obj, typeof(ValueType)).Cast<ValueType>();
+      else return (ValueType)obj;
     }
 
     protected IItem Instantiate(Type type, params object[] args) =>
       (IItem)Activator.CreateInstance(type,args);
 
     protected IItem Instantiate<T>(params object[] args) => Instantiate(typeof(T), args);
+    #endregion
   }
 }
