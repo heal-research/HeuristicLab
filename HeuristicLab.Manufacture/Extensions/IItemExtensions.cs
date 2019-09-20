@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using HeuristicLab.Core;
 
-namespace ParameterTest {
+namespace HeuristicLab.Manufacture {
   public static class IItemExtensions {
     public static void SetWithParameterData(this IItem item, ParameterData data) {
 

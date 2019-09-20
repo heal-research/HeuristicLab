@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 
-namespace ParameterTest {
+namespace HeuristicLab.Manufacture {
   public static class Transformer {
     private static IDictionary<Type, ITypeTransformer> transformers = new Dictionary<Type, ITypeTransformer>();
     
@@ -19,14 +19,33 @@ namespace ParameterTest {
     public static void Register<T>(ITypeTransformer transformer) => Register(typeof(T), transformer);
 
     public static ITypeTransformer Get(Type type) {
+      IList<KeyValuePair<Type, ITypeTransformer>> possibleTransformers = new List<KeyValuePair<Type, ITypeTransformer>>();
       foreach (var x in transformers) {
-        if (type.IsEqualTo(x.Key)) return x.Value;
+        if (type.IsEqualTo(x.Key))
+          possibleTransformers.Add(x);
       }
-      return null;
+
+      if(possibleTransformers.Count > 0) {
+        ITypeTransformer nearest = possibleTransformers.First().Value;
+        int nearestDistance = -1;
+        foreach (var x in possibleTransformers) {
+          int d = type.GetInterfaceDistance(x.Key);
+          if (d != -1 && (nearestDistance == -1 || d < nearestDistance)) {
+            nearestDistance = d;
+            nearest = x.Value;
+          }
+        }
+        return nearest;
+      }
+      return new DummyTransformer();
     }
 
-    internal static void SetValue(IItem item, ParameterData data) {
-      Get(item.GetType()).SetValue(item, data);
+    internal static void Inject(IItem item, ParameterData data) {
+      Get(item.GetType()).Inject(item, data);
+    }
+
+    internal static ParameterData Extract(IItem item) {
+      return Get(item.GetType()).Extract(item);
     }
 
 
@@ -47,6 +66,10 @@ namespace ParameterTest {
       Register<DoubleMatrix>(new ValueTypeMatrixTransformer<DoubleMatrix, double>());
       Register<PercentMatrix>(new ValueTypeMatrixTransformer<PercentMatrix, double>());
       Register<BoolMatrix>(new ValueTypeMatrixTransformer<BoolMatrix, bool>());
+
+      Register(typeof(IConstrainedValueParameter<>), new ConstrainedValueParameterTransformer());
+      Register(typeof(ILookupParameter), new LookupParameterTransformer());
+      Register(typeof(IValueParameter), new ValueParameterTransformer());
     }
 
   }
