@@ -7,56 +7,89 @@ using HeuristicLab.Core;
 using Newtonsoft.Json;
 
 namespace HeuristicLab.Manufacture {   
-  public class JCObject { //Blueprint, Component,  ?
+  /*
+  public class ParameterData { //Blueprint, Component,  ?
     public string Name { get; set; }
     public string Type { get; set; }
     public IList<ParameterData> FreeParameters { get; set; }
     public IList<ParameterData> StaticParameters { get; set; }
 
-    public override string ToString() {
-      StringBuilder sb = new StringBuilder();
-      sb.Append($"{Name}: [");
-      foreach(var x in StaticParameters) {
-        sb.Append(x?.ToString());
-      }
-      sb.Append($"\n]");
-      return sb.ToString();
-    }
-  }
+  }*/
 
   public class ParameterData {
     public string Name { get; set; }
-    [JsonIgnore]
     public string Type { get; set; }
     public object Default { get; set; }
-    //[JsonIgnore]
     public string Path { get; set; }
     public IList<object> Range { get; set; }
+
     public IList<ParameterData> Parameters { get; set; }
     public IList<ParameterData> Operators { get; set; }
 
-    public ParameterData() { }
-    /*
-    public ParameterData(ParameterData original) {
-      this.Name = original.Name;
-      this.Type = original.Type;
-      this.Default = original.Default;
-      this.Path = original.Path;
-      this.Name = original.Name;
-      this.Name = original.Name;
-    }*/
-    public override string ToString() {
-      StringBuilder sb = new StringBuilder();
-      sb.Append($"\n{Name}, {Default}, Range[");
-      if(Range != null) {
-        foreach (var x in Range) {
-          sb.Append(x.ToString() + ", ");
-        }
+    [JsonIgnore]
+    public ParameterData this[string index] {
+      get {
+        if (Parameters == null) return null;
+        foreach (var p in Parameters)
+          if (p.Name == index) return p;
+        return null;
       }
-      sb.Append($"],");
-      return sb.ToString();
+      set {
+        if (Parameters == null) 
+          Parameters = new List<ParameterData>();
+        ParameterData data = this[index];
+        if (data != null && CheckConstraints(value))
+          Merge(data, value);
+        else
+          Parameters.Add(value);
+      }
     }
+
+    public override bool Equals(object obj) {
+      if (!(obj is ParameterData)) 
+        return false;
+      else 
+        return obj.Cast<ParameterData>().Name == this.Name;
+    }
+
+    public override int GetHashCode() {
+      return Name.GetHashCode();
+    }
+
+    [JsonIgnore]
+    public IList<ParameterData> ParameterizedItems { get; set; }
+
+    [JsonIgnore]
+    public ParameterData Reference { get; set; }
+
+    #region Helper
+    public static void Merge(ParameterData target, ParameterData from) {
+      target.Name = from.Name ?? target.Name;
+      target.Type = from.Type ?? target.Type;
+      target.Range = from.Range ?? target.Range;
+      target.Path = from.Path ?? target.Path;
+      target.Default = from.Default ?? target.Default;
+      target.Reference = from.Reference ?? target.Reference;
+      target.Parameters = from.Parameters ?? target.Parameters;
+      target.ParameterizedItems = from.ParameterizedItems ?? target.ParameterizedItems;
+    }
+
+    private bool CheckConstraints(ParameterData data) => 
+      data.Range != null && data.Default != null && (
+      IsInRangeList(data.Range, data.Default) ||
+      IsInNumericRange<long>(data.Default, data.Range[0], data.Range[1]) ||
+      IsInNumericRange<double>(data.Default, data.Range[0], data.Range[1]));
+
+    private bool IsInRangeList(IEnumerable<object> list, object value) {
+      foreach (var x in list)
+        if (x.Equals(value)) return true;
+      return false;
+    }
+
+    private bool IsInNumericRange<T>(object value, object min, object max) where T : IComparable =>
+      (value != null && min != null && max != null && value is T && min is T && max is T &&
+        (((T)min).CompareTo(value) == -1 || ((T)min).CompareTo(value) == 0) &&
+        (((T)max).CompareTo(value) == 1 || ((T)max).CompareTo(value) == 0));
+    #endregion
   }
-
-
 }

@@ -3,22 +3,27 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using HeuristicLab.Core;
 
 namespace HeuristicLab.Manufacture {
   public static class TypeExtensions {
     public static int GetInterfaceDistance(this Type type, Type interfaceType) {
       if (!interfaceType.IsInterface) return -1;
-      int distance = 0;
+      int distance = int.MaxValue;
       Type baseType = type;
       while (baseType != typeof(object)) {
         var interfaces = baseType.GetInterfaces();
         var minimalInterfaces = interfaces.Except(interfaces.SelectMany(i => i.GetInterfaces()));
-        if (baseType == interfaceType && minimalInterfaces.Any(i => i == interfaceType))
-          ++distance;
+        if (minimalInterfaces.Any(i => {
+          if (i.IsGenericType)
+            return i.GetGenericTypeDefinition() == interfaceType;
+          return i == interfaceType;
+        })) --distance;
         baseType = baseType.BaseType;
       }
       return distance;
     }
+
     public static bool IsEqualTo(this Type type, Type other) {
       if (other == null) throw new ArgumentNullException("other");
       if (type == other) return true;
@@ -29,16 +34,6 @@ namespace HeuristicLab.Manufacture {
             .Where(i => i.IsGenericType)
             .Any(i => i.GetGenericTypeDefinition() == other);
       else if (other.IsInterface) {
-        /*
-        Type baseType = type;
-        while (baseType != typeof(object)) {
-          var interfaces = baseType.GetInterfaces();
-          var minimalInterfaces = interfaces.Except(interfaces.SelectMany(i => i.GetInterfaces()));
-          if (baseType == other && minimalInterfaces.Any(i => i == other))
-            return true;
-          baseType = baseType.BaseType;
-        }
-        */
         return type.GetInterfaces().Any(i => i == other);
       }
         

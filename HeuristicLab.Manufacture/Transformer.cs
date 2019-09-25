@@ -18,12 +18,15 @@ namespace HeuristicLab.Manufacture {
 
     public static void Register<T>(ITypeTransformer transformer) => Register(typeof(T), transformer);
 
-    public static ITypeTransformer Get(Type type) {
+    public static IEnumerable<ITypeTransformer> Get(Type type) {
       IList<KeyValuePair<Type, ITypeTransformer>> possibleTransformers = new List<KeyValuePair<Type, ITypeTransformer>>();
+
+
       foreach (var x in transformers) {
         if (type.IsEqualTo(x.Key))
           possibleTransformers.Add(x);
       }
+
 
       if(possibleTransformers.Count > 0) {
         ITypeTransformer nearest = possibleTransformers.First().Value;
@@ -35,17 +38,28 @@ namespace HeuristicLab.Manufacture {
             nearest = x.Value;
           }
         }
-        return nearest;
+        return new ITypeTransformer[] { nearest };
+        /*
+        return possibleTransformers.OrderBy(x => {
+          return type.GetInterfaceDistance(x.Key);
+        }).Select(x => x.Value);
+        */
       }
-      return new DummyTransformer();
+      return new ITypeTransformer[] { new DummyTransformer() };
     }
 
     internal static void Inject(IItem item, ParameterData data) {
-      Get(item.GetType()).Inject(item, data);
+      IEnumerable<ITypeTransformer> arr = Get(item.GetType());
+      foreach (var transformer in arr)
+        transformer.Inject(item, data);
     }
 
     internal static ParameterData Extract(IItem item) {
-      return Get(item.GetType()).Extract(item);
+      IEnumerable<ITypeTransformer> arr = Get(item.GetType());
+      ParameterData data = new ParameterData();
+      foreach (var transformer in arr)
+        ParameterData.Merge(data, transformer.Extract(item));
+      return data;
     }
 
 
@@ -70,6 +84,8 @@ namespace HeuristicLab.Manufacture {
       Register(typeof(IConstrainedValueParameter<>), new ConstrainedValueParameterTransformer());
       Register(typeof(ILookupParameter), new LookupParameterTransformer());
       Register(typeof(IValueParameter), new ValueParameterTransformer());
+      Register(typeof(IParameterizedItem), new ParameterizedItemTransformer());
+      Register(typeof(ICheckedMultiOperator<>), new MultiCheckedOperatorTransformer());
     }
 
   }

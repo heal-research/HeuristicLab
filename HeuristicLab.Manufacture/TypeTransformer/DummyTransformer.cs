@@ -12,6 +12,7 @@ namespace HeuristicLab.Manufacture {
       // there are no values to inject
     }
 
-    public override ParameterData ExtractData(IItem value) => new ParameterData();
+    public override ParameterData ExtractData(IItem value) => 
+      new ParameterData() { Default = value.GetType().Name };
   }
 }
