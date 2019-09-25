@@ -12,7 +12,11 @@ namespace HeuristicLab.Manufacture {
       Transformer.Inject(parameter.ActualValue, data);
 
     public override ParameterData ExtractData(IParameter value) {
-      ParameterData data = Transformer.Extract(value.ActualValue);
+      ParameterData data = null;
+      if (value.ActualValue == null)
+        data = new ParameterData();
+      else
+        data = Transformer.Extract(value.ActualValue);
       data.Name = value.Name;
       return data;
     }

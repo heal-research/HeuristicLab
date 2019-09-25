@@ -30,17 +30,14 @@ namespace HeuristicLab.Manufacture {
   
   public class Program {
     static void Main(string[] args) {
-      //GeneticAlgorithm ga = new GeneticAlgorithm();
       GeneticAlgorithm alg = new GeneticAlgorithm();
       TravelingSalesmanProblem tsp = new TravelingSalesmanProblem();
 
       JCGenerator gen = new JCGenerator();
-      File.WriteAllText(@"C:\Workspace\TemplateProto10.json", gen.GenerateTemplate(alg, tsp));
+      //File.WriteAllText(@"C:\Workspace\TemplateProto10.json", gen.GenerateTemplate(alg, tsp));
       
       JCInstantiator configurator = new JCInstantiator();
       configurator.Instantiate(@"C:\Workspace\TemplateProto10.json");
-      //Configure(@"C:\Workspace\TemplateProto9.json");
-      //Console.WriteLine(Optimizer);
 
       //Console.ReadLine();
     }

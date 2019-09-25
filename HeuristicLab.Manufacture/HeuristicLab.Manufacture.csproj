@@ -50,17 +50,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Extensions\IItemExtensions.cs" />
     <Compile Include="Extensions\ObjectExtensions.cs" />
     <Compile Include="Extensions\TypeExtensions.cs" />
     <Compile Include="JCGenerator.cs" />
     <Compile Include="JCInstantiator.cs" />
     <Compile Include="ParameterTransformer\ConstrainedValueParameterTransformer.cs" />
     <Compile Include="ParameterTransformer\ParameterBaseTransformer.cs" />
+    <Compile Include="ParameterTransformer\ParameterizedItemTransformer.cs" />
     <Compile Include="ParameterTransformer\ValueParameterTransformer.cs" />
     <Compile Include="TypeTransformer\EnumTypeTransformer.cs" />
     <Compile Include="TypeTransformer\DummyTransformer.cs" />
     <Compile Include="ParameterTransformer\LookupParameterTransformer.cs" />
+    <Compile Include="TypeTransformer\MultiCheckedOperatorTransformer.cs" />
     <Compile Include="TypeTransformer\StringValueTransformer.cs" />
     <Compile Include="TypeTransformer\ValueTypeArrayTransformer.cs" />
     <Compile Include="TypeTransformer\BaseTransformer.cs" />
