@@ -86,7 +86,7 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
     }
 
     private async Tpl.Task UpdateUsersAsync() {
-      await Tpl.Task.Run(UpdateUsers);
+      await Tpl.Task.Run(() => UpdateUsers());
     }
 
     private void UpdateUsers() {
