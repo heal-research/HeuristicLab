@@ -43,8 +43,6 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
 
       AccessClient.Instance.Refreshing += AccessClient_Instance_Refreshing;
       AccessClient.Instance.Refreshed += AccessClient_Instance_Refreshed;
-
-      UpdateUsers();
     }
 
     #region Overrides
@@ -77,7 +75,7 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
         idTextBox.Text = Content.Id.ToString();
         nameTextBox.Text = Content.Name;
         descriptionTextBox.Text = Content.Description;
-        ownerComboBox.SelectedItem = AccessClient.Instance.UsersAndGroups.OfType<LightweightUser>().SingleOrDefault(x => x.Id == Content.OwnerUserId);
+        ownerComboBox.SelectedItem = AccessClient.Instance.UsersAndGroups?.OfType<LightweightUser>().SingleOrDefault(x => x.Id == Content.OwnerUserId);
         createdTextBox.Text = Content.DateCreated.ToString("ddd, dd.MM.yyyy, HH:mm:ss");
         startDateTimePicker.Value = Content.StartDate;
         endDateTimePicker.Value = Content.EndDate.GetValueOrDefault(Content.StartDate);
@@ -145,6 +143,16 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
     #endregion
 
     #region Event Handlers
+    private void ProjectView_Load(object sender, EventArgs e) {
+      Locked = true;
+      try {
+        UpdateUsers();
+        UpdateView();
+      } finally {
+        Locked = false;
+      }
+    }
+
     private void Content_PropertyChanged(object sender, PropertyChangedEventArgs e) {
       UpdateView();
     }
@@ -174,6 +182,16 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       if (Content.OwnerUserId == selectedOwnerUserId) return;
 
       Content.OwnerUserId = selectedOwnerUserId;
+    }
+
+    private async void refreshButton_Click(object sender, EventArgs e) {
+      Locked = true;
+      try {
+        await UpdateUsersAsync();
+        UpdateView();
+      } finally {
+        Locked = false;
+      }
     }
 
     private void startDateTimePicker_ValueChanged(object sender, EventArgs e) {
@@ -259,15 +277,5 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       SetEnabledStateOfControls();
     }
     #endregion
-
-    private async void refreshButton_Click(object sender, EventArgs e) {
-      Locked = true;
-      try {
-        await UpdateUsersAsync();
-        UpdateView();
-      } finally {
-        Locked = false;
-      }
-    }
   }
 }
