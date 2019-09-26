@@ -5,64 +5,48 @@ using System.Text;
 using System.Threading.Tasks;
 using HeuristicLab.Core;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
-namespace HeuristicLab.Manufacture {   
-  /*
-  public class ParameterData { //Blueprint, Component,  ?
-    public string Name { get; set; }
-    public string Type { get; set; }
-    public IList<ParameterData> FreeParameters { get; set; }
-    public IList<ParameterData> StaticParameters { get; set; }
-
-  }*/
-
+namespace HeuristicLab.Manufacture {
   public class Component {
+    private IList<object> range;
+    private object defaultValue;
+
     public string Name { get; set; }
     public string Type { get; set; }
-    public object Default { get; set; }
+    public object Default {
+      get => defaultValue; 
+      set {
+        defaultValue = value;
+        if(Range != null && value != null && !FulfillConstraints())
+          throw new ArgumentOutOfRangeException("Default", "Default is not in range.");
+      } 
+    }
     public string Path { get; set; }
-    public IList<object> Range { get; set; }
+
+    public IList<object> Range { 
+      get => range; 
+      set {
+        range = value;
+        if (Default != null && value != null && !FulfillConstraints())
+          throw new ArgumentOutOfRangeException("Default", "Default is not in range.");
+      } 
+    }
 
     public IList<Component> Parameters { get; set; }
     public IList<Component> Operators { get; set; }
-
-    [JsonIgnore]
-    public Component this[string index] {
-      get {
-        if (Parameters == null) return null;
-        foreach (var p in Parameters)
-          if (p.Name == index) return p;
-        return null;
-      }
-      set {
-        if (Parameters == null) 
-          Parameters = new List<Component>();
-        Component data = this[index];
-        if (data != null && CheckConstraints(value))
-          Merge(data, value);
-        else
-          Parameters.Add(value);
-      }
-    }
-
-    public override bool Equals(object obj) {
-      if (!(obj is Component)) 
-        return false;
-      else 
-        return obj.Cast<Component>().Name == this.Name;
-    }
-
-    public override int GetHashCode() {
-      return Name.GetHashCode();
-    }
+    
+    public override bool Equals(object obj) => 
+      (obj is Component ? (obj.Cast<Component>().Name == this.Name) : false);
+      
+    public override int GetHashCode() => Name.GetHashCode();
 
     [JsonIgnore]
     public IList<Component> ParameterizedItems { get; set; }
 
     [JsonIgnore]
     public Component Reference { get; set; }
-
-    #region Helper
+    
     public static void Merge(Component target, Component from) {
       target.Name = from.Name ?? target.Name;
       target.Type = from.Type ?? target.Type;
@@ -72,21 +56,30 @@ namespace HeuristicLab.Manufacture {
       target.Reference = from.Reference ?? target.Reference;
       target.Parameters = from.Parameters ?? target.Parameters;
       target.ParameterizedItems = from.ParameterizedItems ?? target.ParameterizedItems;
+      target.Operators = from.Operators ?? target.Operators;
     }
 
-    private bool CheckConstraints(Component data) => 
+    public bool FulfillConstraints() => FulfillConstraints(this);
+
+    public static bool FulfillConstraints(Component data) =>
       data.Range != null && data.Default != null && (
       IsInRangeList(data.Range, data.Default) ||
       IsInNumericRange<long>(data.Default, data.Range[0], data.Range[1]) ||
+      IsInNumericRange<int>(data.Default, data.Range[0], data.Range[1]) ||
+      IsInNumericRange<short>(data.Default, data.Range[0], data.Range[1]) ||
+      IsInNumericRange<byte>(data.Default, data.Range[0], data.Range[1]) ||
+      IsInNumericRange<float>(data.Default, data.Range[0], data.Range[1]) ||
       IsInNumericRange<double>(data.Default, data.Range[0], data.Range[1]));
 
-    private bool IsInRangeList(IEnumerable<object> list, object value) {
+    #region Helper
+
+    private static bool IsInRangeList(IEnumerable<object> list, object value) {
       foreach (var x in list)
         if (x.Equals(value)) return true;
       return false;
     }
 
-    private bool IsInNumericRange<T>(object value, object min, object max) where T : IComparable =>
+    private static bool IsInNumericRange<T>(object value, object min, object max) where T : IComparable =>
       (value != null && min != null && max != null && value is T && min is T && max is T &&
         (((T)min).CompareTo(value) == -1 || ((T)min).CompareTo(value) == 0) &&
         (((T)max).CompareTo(value) == 1 || ((T)max).CompareTo(value) == 0));

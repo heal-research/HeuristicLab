@@ -12,14 +12,14 @@ using HeuristicLab.Optimization;
 using Newtonsoft.Json.Linq;
 
 namespace HeuristicLab.Manufacture {
-
-  
   public class JCInstantiator {
 
     private JToken Config { get; set; }
+    private Dictionary<string, string> TypeList = new Dictionary<string, string>();
 
     public IAlgorithm Instantiate(string configFile) {
       Config = JToken.Parse(File.ReadAllText(configFile));
+      TypeList = Config["Types"].ToObject<Dictionary<string, string>>();
 
       Component algorithmData = GetData(Config["Metadata"]["Algorithm"].ToString());
       ResolveReferences(algorithmData);
@@ -36,57 +36,67 @@ namespace HeuristicLab.Manufacture {
       return algorithm;
     }
 
-    /*
-     * resolve references
-     */
-
     private void ResolveReferences(Component data) {
-      foreach (var p in data.Parameters) {
-        if (p.Default is string && p.Reference == null) {
+      foreach (var p in data.Parameters)
+        if (p.Default is string && p.Reference == null)
           p.Reference = GetData(p.Default.Cast<string>());
-        }
-      }
     }
 
     private Component GetData(string key)
     {
       foreach(JObject item in Config["Objects"])
       {
-        Component data = BuildDataFromJObject(item);
+        Component data = item.ToObject<Component>();// Component.Build(item);
         if (data.Name == key) return data;
       }
       return null;
     }
 
-    private Component BuildDataFromJObject(JObject obj) {
-      Component data = new Component() {
-        Name = obj["Name"]?.ToString(),
-        Default = obj["Default"]?.ToObject<object>(),
-        Range = obj["Range"]?.ToObject<object[]>(),
-        Type = obj["Type"]?.ToObject<string>()
+    private T CreateObject<T>(Component data) {
+      if (TypeList.TryGetValue(data.Name, out string typeName)) {
+        Type type = Type.GetType(typeName);
+        return (T)Activator.CreateInstance(type);
+      } else throw new TypeLoadException($"Cannot find AssemblyQualifiedName for {data.Name}.");
+    }
+
+    private Component BuildComponent(JObject obj) =>
+      new Component() {
+        Name = obj[nameof(Component.Name)]?.ToString(),
+        Default = obj[nameof(Component.Default)]?.ToObject<object>(),
+        Range = obj[nameof(Component.Range)]?.ToObject<object[]>(),
+        Type = obj[nameof(Component.Type)]?.ToObject<string>(),
+        Parameters = PopulateParameters(obj),
+        Operators = PopulateOperators(obj)
       };
 
-      if(obj["StaticParameters"] != null)
-        foreach (JObject sp in obj["StaticParameters"])
-          data[sp["Name"].ToString()] = BuildDataFromJObject(sp);
+    private IList<Component> PopulateParameters(JObject obj) {
+      IList<Component> list = new List<Component>();
+      if (obj["StaticParameters"] != null)
+        foreach (JObject param in obj["StaticParameters"])
+          list.Add(BuildComponent(param));
 
-      if (obj["FreeParameters"] != null)
-        foreach (JObject sp in obj["FreeParameters"])
-          data[sp["Name"].ToString()] = BuildDataFromJObject(sp);
-
-      if (obj["Operators"] != null) {
-        data.Operators = new List<Component>();
-        foreach (JObject sp in obj["Operators"])
-          data.Operators.Add(BuildDataFromJObject(sp));
+      if (obj["FreeParameters"] != null) {
+        foreach (JObject param in obj["FreeParameters"]) {
+          Component tmp = BuildComponent(param);
+          Component comp = null;
+          foreach (var p in list)
+            if (p.Name == tmp.Name) comp = p;
+          if (comp != null) 
+            Component.Merge(comp, tmp);
+          else list.Add(tmp);
+        }
       }
-
-      return data;
+      return list;
     }
 
-    private T CreateObject<T>(Component data) {
-      Type type = Type.GetType(data.Type);
-      return (T)Activator.CreateInstance(type);
+    private IList<Component> PopulateOperators(JObject obj) {
+      IList<Component> list = new List<Component>();
+      if (obj[nameof(Operators)] != null)
+        foreach (JObject sp in obj[nameof(Operators)]) {
+          Component tmp = BuildComponent(sp);
+          list.Add(tmp);
+        }
+      return list;
     }
-
   }
 }

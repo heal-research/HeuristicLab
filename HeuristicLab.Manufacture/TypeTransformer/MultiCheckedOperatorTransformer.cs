@@ -9,6 +9,7 @@ namespace HeuristicLab.Manufacture {
   public class MultiCheckedOperatorTransformer : ParameterizedItemTransformer {
     public override Component ExtractData(IItem value) {
       Component data = base.ExtractData(value);
+      data.Default = value.GetType().Name;
 
       data.Operators = new List<Component>();
       dynamic val = value.Cast<dynamic>();

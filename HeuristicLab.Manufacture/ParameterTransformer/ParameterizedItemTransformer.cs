@@ -12,9 +12,11 @@ namespace HeuristicLab.Manufacture
     public override void InjectData(IItem item, Component data) {
       IParameterizedItem pItem = item.Cast<IParameterizedItem>();
 
-      foreach (var sp in data.Parameters)
-        if (pItem.Parameters.TryGetValue(sp.Name, out IParameter param))
-          Transformer.Inject(param, sp);
+      if(data.Parameters != null) {
+        foreach (var sp in data.Parameters)
+          if (pItem.Parameters.TryGetValue(sp.Name, out IParameter param))
+            Transformer.Inject(param, sp);
+      }
     }
 
     public override Component ExtractData(IItem value) {
@@ -24,12 +26,13 @@ namespace HeuristicLab.Manufacture
       obj.Name = value.ItemName;
       obj.Type = value.GetType().AssemblyQualifiedName;
       obj.ParameterizedItems = list;
+      obj.Parameters = new List<Component>();
       list.Add(obj);
 
       foreach (var param in value.Cast<IParameterizedItem>().Parameters) {
         if (!param.Hidden) {
           Component data = Transformer.Extract(param);
-          obj[data.Name] = data;
+          obj.Parameters.Add(data);
           if(data.ParameterizedItems != null)
             list.AddRange(data.ParameterizedItems);
         }
