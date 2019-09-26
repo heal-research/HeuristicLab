@@ -21,11 +21,11 @@ namespace HeuristicLab.Manufacture {
     public IAlgorithm Instantiate(string configFile) {
       Config = JToken.Parse(File.ReadAllText(configFile));
 
-      ParameterData algorithmData = GetData(Config["Metadata"]["Algorithm"].ToString());
+      Component algorithmData = GetData(Config["Metadata"]["Algorithm"].ToString());
       ResolveReferences(algorithmData);
       IAlgorithm algorithm = CreateObject<IAlgorithm>(algorithmData);
      
-      ParameterData problemData = GetData(Config["Metadata"]["Problem"].ToString());
+      Component problemData = GetData(Config["Metadata"]["Problem"].ToString());
       ResolveReferences(problemData);
       IProblem problem = CreateObject<IProblem>(problemData);
       algorithm.Problem = problem;
@@ -40,7 +40,7 @@ namespace HeuristicLab.Manufacture {
      * resolve references
      */
 
-    private void ResolveReferences(ParameterData data) {
+    private void ResolveReferences(Component data) {
       foreach (var p in data.Parameters) {
         if (p.Default is string && p.Reference == null) {
           p.Reference = GetData(p.Default.Cast<string>());
@@ -48,18 +48,18 @@ namespace HeuristicLab.Manufacture {
       }
     }
 
-    private ParameterData GetData(string key)
+    private Component GetData(string key)
     {
       foreach(JObject item in Config["Objects"])
       {
-        ParameterData data = BuildDataFromJObject(item);
+        Component data = BuildDataFromJObject(item);
         if (data.Name == key) return data;
       }
       return null;
     }
 
-    private ParameterData BuildDataFromJObject(JObject obj) {
-      ParameterData data = new ParameterData() {
+    private Component BuildDataFromJObject(JObject obj) {
+      Component data = new Component() {
         Name = obj["Name"]?.ToString(),
         Default = obj["Default"]?.ToObject<object>(),
         Range = obj["Range"]?.ToObject<object[]>(),
@@ -75,7 +75,7 @@ namespace HeuristicLab.Manufacture {
           data[sp["Name"].ToString()] = BuildDataFromJObject(sp);
 
       if (obj["Operators"] != null) {
-        data.Operators = new List<ParameterData>();
+        data.Operators = new List<Component>();
         foreach (JObject sp in obj["Operators"])
           data.Operators.Add(BuildDataFromJObject(sp));
       }
@@ -83,7 +83,7 @@ namespace HeuristicLab.Manufacture {
       return data;
     }
 
-    private T CreateObject<T>(ParameterData data) {
+    private T CreateObject<T>(Component data) {
       Type type = Type.GetType(data.Type);
       return (T)Activator.CreateInstance(type);
     }

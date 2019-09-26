@@ -7,13 +7,13 @@ using HeuristicLab.Core;
 
 namespace HeuristicLab.Manufacture {
   public class MultiCheckedOperatorTransformer : ParameterizedItemTransformer {
-    public override ParameterData ExtractData(IItem value) {
-      ParameterData data = base.ExtractData(value);
+    public override Component ExtractData(IItem value) {
+      Component data = base.ExtractData(value);
 
-      data.Operators = new List<ParameterData>();
+      data.Operators = new List<Component>();
       dynamic val = value.Cast<dynamic>();
       foreach (var op in val.Operators) {
-        data.Operators.Add(new ParameterData() {
+        data.Operators.Add(new Component() {
           Name = op.Name,
           Default = val.Operators.ItemChecked(op),
           Range = new object[] { false, true }
@@ -22,7 +22,7 @@ namespace HeuristicLab.Manufacture {
       return data;
     }
 
-    public override void InjectData(IItem item, ParameterData data) {
+    public override void InjectData(IItem item, Component data) {
       base.InjectData(item, data);
 
       dynamic val = item.Cast<dynamic>();
@@ -31,7 +31,7 @@ namespace HeuristicLab.Manufacture {
       }
     }
 
-    private bool GetOperatorState(string name, ParameterData data) {
+    private bool GetOperatorState(string name, Component data) {
       foreach(var op in data.Operators) {
         if (op.Name == name) return op.Default.Cast<bool>();
       }

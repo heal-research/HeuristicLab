@@ -16,18 +16,18 @@ namespace HeuristicLab.Manufacture {
 
   }*/
 
-  public class ParameterData {
+  public class Component {
     public string Name { get; set; }
     public string Type { get; set; }
     public object Default { get; set; }
     public string Path { get; set; }
     public IList<object> Range { get; set; }
 
-    public IList<ParameterData> Parameters { get; set; }
-    public IList<ParameterData> Operators { get; set; }
+    public IList<Component> Parameters { get; set; }
+    public IList<Component> Operators { get; set; }
 
     [JsonIgnore]
-    public ParameterData this[string index] {
+    public Component this[string index] {
       get {
         if (Parameters == null) return null;
         foreach (var p in Parameters)
@@ -36,8 +36,8 @@ namespace HeuristicLab.Manufacture {
       }
       set {
         if (Parameters == null) 
-          Parameters = new List<ParameterData>();
-        ParameterData data = this[index];
+          Parameters = new List<Component>();
+        Component data = this[index];
         if (data != null && CheckConstraints(value))
           Merge(data, value);
         else
@@ -46,10 +46,10 @@ namespace HeuristicLab.Manufacture {
     }
 
     public override bool Equals(object obj) {
-      if (!(obj is ParameterData)) 
+      if (!(obj is Component)) 
         return false;
       else 
-        return obj.Cast<ParameterData>().Name == this.Name;
+        return obj.Cast<Component>().Name == this.Name;
     }
 
     public override int GetHashCode() {
@@ -57,13 +57,13 @@ namespace HeuristicLab.Manufacture {
     }
 
     [JsonIgnore]
-    public IList<ParameterData> ParameterizedItems { get; set; }
+    public IList<Component> ParameterizedItems { get; set; }
 
     [JsonIgnore]
-    public ParameterData Reference { get; set; }
+    public Component Reference { get; set; }
 
     #region Helper
-    public static void Merge(ParameterData target, ParameterData from) {
+    public static void Merge(Component target, Component from) {
       target.Name = from.Name ?? target.Name;
       target.Type = from.Type ?? target.Type;
       target.Range = from.Range ?? target.Range;
@@ -74,7 +74,7 @@ namespace HeuristicLab.Manufacture {
       target.ParameterizedItems = from.ParameterizedItems ?? target.ParameterizedItems;
     }
 
-    private bool CheckConstraints(ParameterData data) => 
+    private bool CheckConstraints(Component data) => 
       data.Range != null && data.Default != null && (
       IsInRangeList(data.Range, data.Default) ||
       IsInNumericRange<long>(data.Default, data.Range[0], data.Range[1]) ||

@@ -61,9 +61,9 @@ namespace HeuristicLab.Manufacture {
     
     public string GenerateTemplate(IAlgorithm algorithm, IProblem problem, params string[] freeParameters) {
       algorithm.Problem = problem;
-      ParameterData algorithmData = Transformer.Extract(algorithm);
-      ParameterData problemData = Transformer.Extract(problem);
-      IList<ParameterData> items = algorithmData.ParameterizedItems;
+      Component algorithmData = Transformer.Extract(algorithm);
+      Component problemData = Transformer.Extract(problem);
+      IList<Component> items = algorithmData.ParameterizedItems;
       foreach (var pItem in problemData.ParameterizedItems) items.Add(pItem);
       JArray jsonItems = new JArray();
       
@@ -92,7 +92,7 @@ namespace HeuristicLab.Manufacture {
 
       IList<JObject> objToRemove = new List<JObject>();
       TransformNodes(x => {
-        var p = x.ToObject<ParameterData>();
+        var p = x.ToObject<Component>();
 
         /*bool isSelected = false;
         string name = x["Name"].ToObject<string>();
@@ -113,7 +113,7 @@ namespace HeuristicLab.Manufacture {
     private void RefactorStaticParameters(JToken token) {
       IList<JObject> objToRemove = new List<JObject>();
       TransformNodes(x => {
-        var p = x.ToObject<ParameterData>();
+        var p = x.ToObject<Component>();
         x.Property("Range")?.Remove();
         if (p.Default == null) objToRemove.Add(x);
       }, token["StaticParameters"]);

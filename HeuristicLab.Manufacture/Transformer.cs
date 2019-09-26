@@ -48,17 +48,17 @@ namespace HeuristicLab.Manufacture {
       return new ITypeTransformer[] { new DummyTransformer() };
     }
 
-    internal static void Inject(IItem item, ParameterData data) {
+    internal static void Inject(IItem item, Component data) {
       IEnumerable<ITypeTransformer> arr = Get(item.GetType());
       foreach (var transformer in arr)
         transformer.Inject(item, data);
     }
 
-    internal static ParameterData Extract(IItem item) {
+    internal static Component Extract(IItem item) {
       IEnumerable<ITypeTransformer> arr = Get(item.GetType());
-      ParameterData data = new ParameterData();
+      Component data = new Component();
       foreach (var transformer in arr)
-        ParameterData.Merge(data, transformer.Extract(item));
+        Component.Merge(data, transformer.Extract(item));
       return data;
     }
 
