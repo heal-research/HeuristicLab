@@ -7,12 +7,12 @@ using HeuristicLab.Core;
 
 namespace HeuristicLab.Manufacture {
   public class DummyTransformer : BaseTransformer {
-    public override void InjectData(IItem item, ParameterData data) {
+    public override void InjectData(IItem item, Component data) {
       // do nothing because the instance already exists and 
       // there are no values to inject
     }
 
-    public override ParameterData ExtractData(IItem value) => 
-      new ParameterData() { Default = value.GetType().Name };
+    public override Component ExtractData(IItem value) => 
+      new Component() { Default = value.GetType().Name };
   }
 }

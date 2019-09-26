@@ -8,11 +8,11 @@ using HeuristicLab.Data;
 
 namespace HeuristicLab.Manufacture {
   public class StringValueTransformer : BaseTransformer {
-    public override void InjectData(IItem item, ParameterData data) =>
+    public override void InjectData(IItem item, Component data) =>
       item.Cast<StringValue>().Value = CastValue<string>(data.Default);
 
-    public override ParameterData ExtractData(IItem value) => 
-      new ParameterData() {
+    public override Component ExtractData(IItem value) => 
+      new Component() {
         Default = value.Cast<StringValue>().Value
       };
   }

@@ -7,7 +7,7 @@ using HeuristicLab.Core;
 
 namespace HeuristicLab.Manufacture {
   public class ConstrainedValueParameterTransformer : ParameterBaseTransformer {
-    public override void InjectData(IParameter parameter, ParameterData data) {
+    public override void InjectData(IParameter parameter, Component data) {
       foreach (var x in parameter.Cast<dynamic>().ValidValues)
         if (x.GetType().Name == CastValue<string>(data.Default))
           parameter.ActualValue = x;
@@ -16,9 +16,9 @@ namespace HeuristicLab.Manufacture {
         Transformer.Inject(parameter.ActualValue, data.Reference);
     }
 
-    public override ParameterData ExtractData(IParameter value) {
+    public override Component ExtractData(IParameter value) {
 
-      return new ParameterData() {
+      return new Component() {
         Name = value.Name,
         Default = value.ActualValue?.GetType().Name,
         Range = GetValidValues(value),
@@ -34,13 +34,13 @@ namespace HeuristicLab.Manufacture {
       return list.ToArray();
     }
 
-    private IList<ParameterData> GetParameterizedChilds(IParameter value) {
-      List<ParameterData> list = new List<ParameterData>();
+    private IList<Component> GetParameterizedChilds(IParameter value) {
+      List<Component> list = new List<Component>();
       var values = value.Cast<dynamic>().ValidValues;
       foreach(var x in values) {
         if (x is IParameterizedItem &&
             ((IParameterizedItem)x).Parameters.Any(p => !p.Hidden)) {
-          ParameterData tmp = Transformer.Extract(x);
+          Component tmp = Transformer.Extract(x);
           if (tmp.ParameterizedItems != null)
             list.AddRange(tmp.ParameterizedItems);
           else

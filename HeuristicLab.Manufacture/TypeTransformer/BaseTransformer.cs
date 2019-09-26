@@ -9,16 +9,16 @@ using Newtonsoft.Json.Linq;
 namespace HeuristicLab.Manufacture {
   public abstract class BaseTransformer : ITypeTransformer
   {
-    public ParameterData Extract(IItem value) {
-      ParameterData data = ExtractData(value);
+    public Component Extract(IItem value) {
+      Component data = ExtractData(value);
       data.Name = String.IsNullOrEmpty(data.Name) ? value.ItemName : data.Name;
       return data;
     }
 
-    public void Inject(IItem item, ParameterData data) => InjectData(item, data);
+    public void Inject(IItem item, Component data) => InjectData(item, data);
 
-    public abstract void InjectData(IItem item, ParameterData data);
-    public abstract ParameterData ExtractData(IItem value);
+    public abstract void InjectData(IItem item, Component data);
+    public abstract Component ExtractData(IItem value);
 
     #region Helper
     protected ValueType CastValue<ValueType>(object obj) {

@@ -12,11 +12,11 @@ namespace HeuristicLab.Manufacture {
     where MatrixType : ValueTypeMatrix<T> 
     where T : struct 
   {
-    public override void InjectData(IItem item, ParameterData data) => 
+    public override void InjectData(IItem item, Component data) => 
       CopyMatrixData(item.Cast<MatrixType>(), CastValue<T[,]>(data.Default));
 
-    public override ParameterData ExtractData(IItem value) =>
-      new ParameterData() {
+    public override Component ExtractData(IItem value) =>
+      new Component() {
         Default = value.Cast<MatrixType>().CloneAsMatrix()
       };
 

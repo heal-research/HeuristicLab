@@ -9,8 +9,8 @@ using Newtonsoft.Json.Linq;
 namespace HeuristicLab.Manufacture {
   //IDataProcessor?
   public interface ITypeTransformer {
-    ParameterData Extract(IItem value);
-    void Inject(IItem item, ParameterData data);
+    Component Extract(IItem value);
+    void Inject(IItem item, Component data);
   }
 }
 

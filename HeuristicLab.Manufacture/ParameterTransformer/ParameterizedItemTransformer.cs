@@ -9,7 +9,7 @@ namespace HeuristicLab.Manufacture
 {
   public class ParameterizedItemTransformer : BaseTransformer {
     
-    public override void InjectData(IItem item, ParameterData data) {
+    public override void InjectData(IItem item, Component data) {
       IParameterizedItem pItem = item.Cast<IParameterizedItem>();
 
       foreach (var sp in data.Parameters)
@@ -17,10 +17,10 @@ namespace HeuristicLab.Manufacture
           Transformer.Inject(param, sp);
     }
 
-    public override ParameterData ExtractData(IItem value) {
-      List<ParameterData> list = new List<ParameterData>();
+    public override Component ExtractData(IItem value) {
+      List<Component> list = new List<Component>();
 
-      ParameterData obj = new ParameterData();
+      Component obj = new Component();
       obj.Name = value.ItemName;
       obj.Type = value.GetType().AssemblyQualifiedName;
       obj.ParameterizedItems = list;
@@ -28,7 +28,7 @@ namespace HeuristicLab.Manufacture
 
       foreach (var param in value.Cast<IParameterizedItem>().Parameters) {
         if (!param.Hidden) {
-          ParameterData data = Transformer.Extract(param);
+          Component data = Transformer.Extract(param);
           obj[data.Name] = data;
           if(data.ParameterizedItems != null)
             list.AddRange(data.ParameterizedItems);
