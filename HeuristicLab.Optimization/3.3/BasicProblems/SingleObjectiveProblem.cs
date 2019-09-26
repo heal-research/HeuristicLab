@@ -37,13 +37,8 @@ namespace HeuristicLab.Optimization {
     where TEncoding : class, IEncoding<TEncodedSolution>
     where TEncodedSolution : class, IEncodedSolution {
 
-    protected IValueParameter<DoubleValue> BestKnownQualityParameter {
-      get { return (IValueParameter<DoubleValue>)Parameters["BestKnownQuality"]; }
-    }
-
-    protected IFixedValueParameter<BoolValue> MaximizationParameter {
-      get { return (IFixedValueParameter<BoolValue>)Parameters["Maximization"]; }
-    }
+    [Storable] protected IValueParameter<DoubleValue> BestKnownQualityParameter { get; set; }
+    [Storable] protected IValueParameter<BoolValue> MaximizationParameter { get; set; }
 
     public double BestKnownQuality {
       get {
@@ -60,17 +55,27 @@ namespace HeuristicLab.Optimization {
       }
     }
 
+    public bool Maximization {
+      get { return MaximizationParameter.Value.Value; }
+      protected set {
+        if (MaximizationParameter.Value.Value == value) return;
+        MaximizationParameter.Value = new BoolValue(value).AsReadOnly();
+      }
+    }
+
     [StorableConstructor]
     protected SingleObjectiveProblem(StorableConstructorFlag _) : base(_) { }
 
     protected SingleObjectiveProblem(SingleObjectiveProblem<TEncoding, TEncodedSolution> original, Cloner cloner)
       : base(original, cloner) {
+      BestKnownQualityParameter = cloner.Clone(original.BestKnownQualityParameter);
+      MaximizationParameter = cloner.Clone(original.MaximizationParameter);
       ParameterizeOperators();
     }
   
     protected SingleObjectiveProblem() : base() {
-      Parameters.Add(new FixedValueParameter<BoolValue>("Maximization", "Set to false if the problem should be minimized.", (BoolValue)new BoolValue(Maximization).AsReadOnly()) { Hidden = true });
-      Parameters.Add(new OptionalValueParameter<DoubleValue>("BestKnownQuality", "The quality of the best known solution of this problem."));
+      Parameters.Add(MaximizationParameter = new ValueParameter<BoolValue>("Maximization", "Whether the problem should be maximized (True) or minimized (False).", new BoolValue(false).AsReadOnly()) { Hidden = true, ReadOnly = true });
+      Parameters.Add(BestKnownQualityParameter = new OptionalValueParameter<DoubleValue>("BestKnownQuality", "The quality of the best known solution of this problem."));
 
       Operators.Add(Evaluator);
       Operators.Add(new SingleObjectiveAnalyzer<TEncodedSolution>());
@@ -83,8 +88,8 @@ namespace HeuristicLab.Optimization {
     }
 
     protected SingleObjectiveProblem(TEncoding encoding) : base(encoding) {
-      Parameters.Add(new FixedValueParameter<BoolValue>("Maximization", "Set to false if the problem should be minimized.", (BoolValue)new BoolValue(Maximization).AsReadOnly()) { Hidden = true });
-      Parameters.Add(new OptionalValueParameter<DoubleValue>("BestKnownQuality", "The quality of the best known solution of this problem."));
+      Parameters.Add(MaximizationParameter = new ValueParameter<BoolValue>("Maximization", "Set to false if the problem should be minimized.", new BoolValue(false).AsReadOnly()) { Hidden = true, ReadOnly = true });
+      Parameters.Add(BestKnownQualityParameter = new OptionalValueParameter<DoubleValue>("BestKnownQuality", "The quality of the best known solution of this problem."));
 
       Operators.Add(Evaluator);
       Operators.Add(new SingleObjectiveAnalyzer<TEncodedSolution>());
@@ -101,7 +106,6 @@ namespace HeuristicLab.Optimization {
       ParameterizeOperators();
     }
 
-    public abstract bool Maximization { get; }
     public abstract double Evaluate(TEncodedSolution solution, IRandom random);
     public virtual void Analyze(TEncodedSolution[] solutions, double[] qualities, ResultCollection results, IRandom random) { }
     public virtual IEnumerable<TEncodedSolution> GetNeighbors(TEncodedSolution solution, IRandom random) {

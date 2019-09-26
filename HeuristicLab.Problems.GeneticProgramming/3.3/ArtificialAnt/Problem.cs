@@ -97,10 +97,6 @@ namespace HeuristicLab.Problems.GeneticProgramming.ArtificialAnt {
     }
     #endregion
 
-    public override bool Maximization {
-      get { return true; }
-    }
-
     #region item cloning and persistence
     // persistence
     [StorableConstructor]
@@ -116,6 +112,7 @@ namespace HeuristicLab.Problems.GeneticProgramming.ArtificialAnt {
     #endregion
 
     public Problem() : base(new SymbolicExpressionTreeEncoding()) {
+      Maximization = true;
       BoolMatrix world = new BoolMatrix(ToBoolMatrix(santaFeAntTrail));
       Parameters.Add(new ValueParameter<BoolMatrix>("World", "The world for the artificial ant with scattered food items.", world));
       Parameters.Add(new FixedValueParameter<IntValue>("MaximumTimeSteps", "The number of time steps the artificial ant has available to collect all food items.", new IntValue(600)));

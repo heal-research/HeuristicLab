@@ -43,8 +43,6 @@ namespace HeuristicLab.Problems.TravelingSalesman {
     /// </summary>
     public static int DistanceMatrixSizeLimit { get; set; } = 1000;
 
-    public override bool Maximization => false;
-
     [Storable] public IValueParameter<ITSPData> TSPDataParameter { get; private set; }
     [Storable] public IValueParameter<ITSPSolution> BestKnownSolutionParameter { get; private set; }
 
@@ -67,6 +65,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
     }
 
     public TSP() : base(new PermutationEncoding("Tour", 16, PermutationTypes.RelativeUndirected)) {
+      Maximization = false;
       Parameters.Add(TSPDataParameter = new ValueParameter<ITSPData>("TSPData", "The main parameters of the TSP."));
       Parameters.Add(BestKnownSolutionParameter = new OptionalValueParameter<ITSPSolution>("BestKnownSolution", "The best known solution."));
 

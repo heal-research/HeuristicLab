@@ -92,8 +92,8 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
     }
     public ExternalEvaluationProblem(TEncoding encoding)
       : base(encoding) {
-      Parameters.Remove("Maximization"); // readonly in base class
-      Parameters.Add(new FixedValueParameter<BoolValue>("Maximization", "Set to false if the problem should be minimized.", new BoolValue()));
+      MaximizationParameter.ReadOnly = false;
+      MaximizationParameter.Value = new BoolValue(); // is a read-only boolvalue in base class
       Parameters.Add(new OptionalValueParameter<EvaluationCache>("Cache", "Cache of previously evaluated solutions."));
       Parameters.Add(new ValueParameter<CheckedItemCollection<IEvaluationServiceClient>>("Clients", "The clients that are used to communicate with the external application.", new CheckedItemCollection<IEvaluationServiceClient>() { new EvaluationServiceClient() }));
       Parameters.Add(new ValueParameter<SolutionMessageBuilder>("MessageBuilder", "The message builder that converts from HeuristicLab objects to SolutionMessage representation.", new SolutionMessageBuilder()) { Hidden = true });
@@ -103,14 +103,6 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
     }
 
     #region Single Objective Problem Overrides
-    public override bool Maximization {
-      get { return Parameters.ContainsKey("Maximization") && ((IValueParameter<BoolValue>)Parameters["Maximization"]).Value.Value; }
-    }
-
-    public virtual void SetMaximization(bool maximization) {
-      MaximizationParameter.Value.Value = maximization;
-    }
-
     public override double Evaluate(TEncodedSolution solution, IRandom random) {
       var qualityMessage = Evaluate(BuildSolutionMessage(solution));
       if (!qualityMessage.HasExtension(SingleObjectiveQualityMessage.QualityMessage_))

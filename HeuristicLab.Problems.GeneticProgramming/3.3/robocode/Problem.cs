@@ -73,6 +73,7 @@ namespace HeuristicLab.Problems.GeneticProgramming.Robocode {
     }
 
     public Problem() : base(new SymbolicExpressionTreeEncoding(new Grammar(), maximumLength: 1000, maximumDepth: 10)) {
+      Maximization = true;
       DirectoryValue robocodeDir = new DirectoryValue { Value = @"robocode" };
 
       var robotList = EnemyCollection.ReloadEnemies(robocodeDir.Value);
@@ -121,10 +122,6 @@ namespace HeuristicLab.Problems.GeneticProgramming.Robocode {
       } else {
         results["BestSolution"].Value = bestSolution;
       }
-    }
-
-    public override bool Maximization {
-      get { return true; }
     }
 
     private void RegisterEventHandlers() {

@@ -43,10 +43,6 @@ namespace HeuristicLab.Problems.Binary {
       return new DeceptiveTrapProblem(this, cloner);
     }
 
-    public override bool Maximization {
-      get { return true; }
-    }
-
     private const string TrapSizeParameterName = "Trap Size";
 
     public IFixedValueParameter<IntValue> TrapSizeParameter {
@@ -63,6 +59,7 @@ namespace HeuristicLab.Problems.Binary {
     }
 
     public DeceptiveTrapProblem() : base() {
+      Maximization = true;
       Parameters.Add(new FixedValueParameter<IntValue>(TrapSizeParameterName, "", new IntValue(7)));
       Encoding.Length = 49;
     }

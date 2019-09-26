@@ -134,10 +134,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
     #endregion
 
-    public override bool Maximization {
-      get { return true; } // return log likelihood (instead of negative log likelihood as in GPR
-    }
-
     // problem stores a few variables for information exchange from Evaluate() to Analyze()
     private readonly object problemStateLocker = new object();
     [Storable]
@@ -150,6 +146,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     private ICovarianceFunction covFunc;
 
     public GaussianProcessCovarianceOptimizationProblem() : base(new SymbolicExpressionTreeEncoding()) {
+      Maximization = true; // return log likelihood (instead of negative log likelihood as in GPR)
       Parameters.Add(new ValueParameter<IRegressionProblemData>(ProblemDataParameterName, "The data for the regression problem", new RegressionProblemData()));
       Parameters.Add(new FixedValueParameter<IntValue>(ConstantOptIterationsParameterName, "Number of optimization steps for hyperparameter values", new IntValue(50)));
       Parameters.Add(new FixedValueParameter<IntValue>(RestartsParameterName, "The number of random restarts for constant optimization.", new IntValue(10)));

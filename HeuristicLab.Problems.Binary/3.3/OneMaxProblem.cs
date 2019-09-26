@@ -31,11 +31,9 @@ namespace HeuristicLab.Problems.Binary {
   [Creatable(CreatableAttribute.Categories.CombinatorialProblems, Priority = 210)]
   [StorableType("A290ADDE-33F5-4607-ABC0-19349CD0FBF1")]
   public class OneMaxProblem : BinaryVectorProblem {
-    public override bool Maximization {
-      get { return true; }
-    }
 
     public OneMaxProblem() : base() {
+      Maximization = true;
       Encoding.Length = 10;
       BestKnownQuality = Encoding.Length;
     }

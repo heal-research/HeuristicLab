@@ -67,10 +67,6 @@ namespace HeuristicLab.Problems.GrammaticalEvolution {
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() { }
 
-    public override bool Maximization {
-      get { return true; }
-    }
-
     [Storable]
     // parameters of the wrapped problem cannot be changed therefore it is not strictly necessary to clone and store it
     private readonly HeuristicLab.Problems.GeneticProgramming.ArtificialAnt.Problem wrappedAntProblem;
@@ -85,6 +81,7 @@ namespace HeuristicLab.Problems.GrammaticalEvolution {
     }
 
     public GEArtificialAntProblem() : base(new IntegerVectorEncoding()) {
+      Maximization = true;
       wrappedAntProblem = new HeuristicLab.Problems.GeneticProgramming.ArtificialAnt.Problem();
       Parameters.Add(new ValueParameter<BoolMatrix>("World", "The world for the artificial ant with scattered food items.", wrappedAntProblem.World));
       Parameters.Add(new FixedValueParameter<IntValue>("MaximumTimeSteps", "The number of time steps the artificial ant has available to collect all food items.", new IntValue(600)));

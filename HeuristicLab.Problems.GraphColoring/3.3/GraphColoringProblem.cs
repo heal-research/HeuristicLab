@@ -41,10 +41,6 @@ namespace HeuristicLab.Problems.GraphColoring {
   public sealed class GraphColoringProblem : LinearLinkageProblem,
     IProblemInstanceConsumer<GCPData>, IProblemInstanceExporter<GCPData> {
 
-    public override bool Maximization {
-      get { return false; }
-    }
-
     [Storable]
     private IValueParameter<IntMatrix> adjacencyListParameter;
     public IValueParameter<IntMatrix> AdjacencyListParameter {
@@ -75,6 +71,7 @@ namespace HeuristicLab.Problems.GraphColoring {
       RegisterEventHandlers();
     }
     public GraphColoringProblem() {
+      Maximization = false;
       Parameters.Add(adjacencyListParameter = new ValueParameter<IntMatrix>("Adjacency List", "The adjacency list that describes the (symmetric) edges in the graph with nodes from 0 to N-1."));
       Parameters.Add(fitnessFunctionParameter = new ValueParameter<EnumValue<FitnessFunction>>("Fitness Function", "The function to use for evaluating the quality of a solution.", new EnumValue<FitnessFunction>(FitnessFunction.Penalized)));
       Parameters.Add(bestKnownColorsParameter = new OptionalValueParameter<IntValue>("BestKnownColors", "The least amount of colors in a valid coloring."));

@@ -59,10 +59,6 @@ namespace HeuristicLab.Problems.GeneticProgramming.BasicSymbolicRegression {
 
     public event EventHandler ProblemDataChanged;
 
-    public override bool Maximization {
-      get { return true; }
-    }
-
     #region item cloning and persistence
     // persistence
     [StorableConstructor]
@@ -81,6 +77,7 @@ namespace HeuristicLab.Problems.GeneticProgramming.BasicSymbolicRegression {
     #endregion
 
     public Problem() : base(new SymbolicExpressionTreeEncoding()) {
+      Maximization = true;
       Parameters.Add(new ValueParameter<IRegressionProblemData>(ProblemDataParameterName, "The data for the regression problem", new RegressionProblemData()));
 
       Encoding.TreeLength = 100;

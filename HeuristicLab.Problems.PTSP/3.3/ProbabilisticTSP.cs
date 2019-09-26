@@ -57,10 +57,6 @@ namespace HeuristicLab.Problems.PTSP {
     }
     #endregion
 
-    public override bool Maximization {
-      get { return false; }
-    }
-
     [StorableConstructor]
     protected ProbabilisticTSP(StorableConstructorFlag _) : base(_) { }
     protected ProbabilisticTSP(ProbabilisticTSP original, Cloner cloner)
@@ -69,6 +65,7 @@ namespace HeuristicLab.Problems.PTSP {
       BestKnownSolutionParameter = cloner.Clone(original.BestKnownSolutionParameter);
     }
     protected ProbabilisticTSP() : base(new PermutationEncoding("Tour")) {
+      Maximization = false;
       Parameters.Add(PTSPDataParameter = new ValueParameter<IProbabilisticTSPData>("PTSP Data", "The main parameters for the pTSP."));
       Parameters.Add(BestKnownSolutionParameter = new OptionalValueParameter<IProbabilisticTSPSolution>("BestKnownSolution", "The best known solution of this pTSP instance."));
 

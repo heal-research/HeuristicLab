@@ -55,10 +55,6 @@ namespace HeuristicLab.Problems.GeneticProgramming.Boolean {
     }
     #endregion
 
-    public override bool Maximization {
-      get { return true; }
-    }
-
     #region item cloning and persistence
     // persistence
     [StorableConstructor]
@@ -81,6 +77,7 @@ namespace HeuristicLab.Problems.GeneticProgramming.Boolean {
 
     public MultiplexerProblem()
       : base(new SymbolicExpressionTreeEncoding()) {
+      Maximization = true;
       Parameters.Add(new FixedValueParameter<IntValue>(NumberOfBitsParameterName,
         "The number of bits for the input parameter for the multiplexer function. This is the sum of the number of address bits and the number of input lines. E.g. the 11-MUX has 3 address bits and 8 input lines",
         new IntValue(11)));

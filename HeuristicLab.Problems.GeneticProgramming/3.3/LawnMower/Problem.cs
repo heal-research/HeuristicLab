@@ -45,10 +45,6 @@ namespace HeuristicLab.Problems.GeneticProgramming.LawnMower {
       get { return (IFixedValueParameter<IntValue>)Parameters[LawnLengthParameterName]; }
     }
 
-    public override bool Maximization {
-      get { return true; }
-    }
-
     #region item cloning and persistence
     [StorableConstructor]
     protected Problem(StorableConstructorFlag _) : base(_) { }
@@ -62,6 +58,7 @@ namespace HeuristicLab.Problems.GeneticProgramming.LawnMower {
     #endregion
 
     public Problem() : base(new SymbolicExpressionTreeEncoding()) {
+      Maximization = true;
       Parameters.Add(new FixedValueParameter<IntValue>(LawnWidthParameterName, "Width of the lawn.", new IntValue(8)));
       Parameters.Add(new FixedValueParameter<IntValue>(LawnLengthParameterName, "Length of the lawn.", new IntValue(8)));
 

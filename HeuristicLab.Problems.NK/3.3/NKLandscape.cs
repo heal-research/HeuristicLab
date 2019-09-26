@@ -22,14 +22,13 @@
 using System;
 using System.Linq;
 using System.Security.Cryptography;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.BinaryVectorEncoding;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 using HeuristicLab.PluginInfrastructure;
-using HeuristicLab.Problems.Binary;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.Problems.NK {
@@ -37,9 +36,6 @@ namespace HeuristicLab.Problems.NK {
   [Creatable(CreatableAttribute.Categories.CombinatorialProblems, Priority = 215)]
   [StorableType("04294537-87F2-4A9F-BC14-7D4CA700F326")]
   public sealed class NKLandscape : BinaryVectorProblem {
-    public override bool Maximization {
-      get { return false; }
-    }
 
     #region Parameters
     public IValueParameter<BoolMatrix> GeneInteractionsParameter {
@@ -143,6 +139,7 @@ namespace HeuristicLab.Problems.NK {
     }
     public NKLandscape()
       : base() {
+      Maximization = false;
       random = new MersenneTwister();
 
       Parameters.Add(new ValueParameter<BoolMatrix>("GeneInteractions", "Every column gives the participating genes for each fitness component."));

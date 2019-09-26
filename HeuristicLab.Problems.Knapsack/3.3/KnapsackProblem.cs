@@ -37,7 +37,6 @@ namespace HeuristicLab.Problems.Knapsack {
   [Creatable(CreatableAttribute.Categories.CombinatorialProblems, Priority = 200)]
   [StorableType("8CEDAFA2-6E0A-4D4B-B6C6-F85CC58B824E")]
   public sealed class KnapsackProblem : BinaryVectorProblem {
-    public override bool Maximization { get { return true; } }
 
     #region Parameter Properties
     public ValueParameter<IntValue> KnapsackCapacityParameter {
@@ -84,6 +83,7 @@ namespace HeuristicLab.Problems.Knapsack {
     }
     public KnapsackProblem()
       : base(new BinaryVectorEncoding("Selection")) {
+      Maximization = true;
       Parameters.Add(new ValueParameter<IntValue>("KnapsackCapacity", "Capacity of the Knapsack.", new IntValue(1)));
       Parameters.Add(new ValueParameter<IntArray>("Weights", "The weights of the items.", new IntArray(5)));
       Parameters.Add(new ValueParameter<IntArray>("Values", "The values of the items.", new IntArray(5)));

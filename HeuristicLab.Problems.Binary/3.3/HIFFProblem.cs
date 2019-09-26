@@ -41,11 +41,8 @@ namespace HeuristicLab.Problems.Binary {
       return new HIFFProblem(this, cloner);
     }
 
-    public override bool Maximization {
-      get { return true; }
-    }
-
     public HIFFProblem() : base() {
+      Maximization = true;
       Encoding.Length = 64;
     }
     // In the GECCO paper, Section 4.1

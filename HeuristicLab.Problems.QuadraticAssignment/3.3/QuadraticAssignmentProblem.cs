@@ -46,8 +46,6 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
       get { return Common.Resources.VSImageLibrary.Type; }
     }
 
-    public override bool Maximization { get { return false; } }
-
     #region Parameter Properties
     [Storable] public IValueParameter<ItemSet<Permutation>> BestKnownSolutionsParameter { get; private set; }
     [Storable] public IValueParameter<Permutation> BestKnownSolutionParameter { get; private set; }
@@ -106,6 +104,7 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
     }
     public QuadraticAssignmentProblem()
       : base(new PermutationEncoding("Assignment") { Length = 5 }) {
+      Maximization = false;
       Parameters.Add(BestKnownSolutionsParameter = new OptionalValueParameter<ItemSet<Permutation>>("BestKnownSolutions", "The list of best known solutions which is updated whenever a new better solution is found or may be the optimal solution if it is known beforehand.", null));
       Parameters.Add(BestKnownSolutionParameter = new OptionalValueParameter<Permutation>("BestKnownSolution", "The best known solution which is updated whenever a new better solution is found or may be the optimal solution if it is known beforehand.", null));
       Parameters.Add(WeightsParameter = new ValueParameter<DoubleMatrix>("Weights", "The strength of the connection between the facilities."));

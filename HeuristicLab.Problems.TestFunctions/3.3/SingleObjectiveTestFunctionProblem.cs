@@ -39,10 +39,6 @@ namespace HeuristicLab.Problems.TestFunctions {
   public sealed class SingleObjectiveTestFunctionProblem : RealVectorProblem,
     IProblemInstanceConsumer<SOTFData> {
 
-    public override bool Maximization {
-      get { return Parameters.ContainsKey("TestFunction") && TestFunction.Maximization; }
-    }
-
     #region Parameter Properties
     private IFixedValueParameter<IntValue> ProblemSizeParameter {
       get { return (IFixedValueParameter<IntValue>)Parameters["ProblemSize"]; }
@@ -85,6 +81,7 @@ namespace HeuristicLab.Problems.TestFunctions {
       Parameters.Add(new ValueParameter<DoubleMatrix>("Bounds", "The bounds of the solution given as either one line for all variables or a line for each variable. The first column specifies lower bound, the second upper bound.", new DoubleMatrix(new double[,] { { -100, 100 } })));
       Parameters.Add(new OptionalValueParameter<RealVector>("BestKnownSolution", "The best known solution for this test function instance."));
       Parameters.Add(new ValueParameter<ISingleObjectiveTestFunction>("TestFunction", "The function that is to be optimized.", new Ackley()));
+      Maximization = TestFunction.Maximization;
 
       Encoding.LengthParameter = ProblemSizeParameter;
       Encoding.BoundsParameter = BoundsParameter;
@@ -169,6 +166,7 @@ namespace HeuristicLab.Problems.TestFunctions {
       Bounds = (DoubleMatrix)TestFunction.Bounds.Clone();
       var bestSolution = TestFunction.GetBestKnownSolution(ProblemSize);
       BestKnownSolutionParameter.Value = bestSolution;
+      Maximization = TestFunction.Maximization;
 
       OnReset();
     }

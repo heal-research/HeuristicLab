@@ -53,10 +53,6 @@ namespace HeuristicLab.Problems.GeneticProgramming.Boolean {
     }
     #endregion
 
-    public override bool Maximization {
-      get { return true; }
-    }
-
     #region item cloning and persistence
     // persistence
     [StorableConstructor]
@@ -78,6 +74,7 @@ namespace HeuristicLab.Problems.GeneticProgramming.Boolean {
 
     public EvenParityProblem()
       : base(new SymbolicExpressionTreeEncoding()) {
+      Maximization = true;
       Parameters.Add(new FixedValueParameter<IntValue>(NumberOfBitsParameterName, "The number of bits for the input parameter for the even parity function", new IntValue(4)));
 
       Encoding.TreeLength = 100;
