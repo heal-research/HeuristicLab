@@ -15,7 +15,12 @@ namespace HeuristicLab.Manufacture {
       return data;
     }
 
-    public void Inject(IItem item, Component data) => InjectData(item, data);
+    public void Inject(IItem item, Component data) {
+      if(data.Reference != null) {
+        Component.Merge(data, data.Reference);
+      }
+      InjectData(item, data);
+    }
 
     public abstract void InjectData(IItem item, Component data);
     public abstract Component ExtractData(IItem value);
