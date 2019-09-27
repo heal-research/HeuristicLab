@@ -81,9 +81,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     // wrap an actual model in a surrogate
     public RandomForestModelSurrogate(IRandomForestModel model, string targetVariable, IDataAnalysisProblemData originalTrainingData,
-      int seed, int nTrees, double r, double m, double[] classValues = null) : this(targetVariable, originalTrainingData, seed, nTrees, r, m, classValues) {
+      int seed, int nTrees, double r, double m, double[] classValues = null)
+      : this(targetVariable, originalTrainingData, seed, nTrees, r, m, classValues) {
       fullModel = model;
-      actualModel = CreateLazyInitFunc();
     }
 
     [StorableConstructor]

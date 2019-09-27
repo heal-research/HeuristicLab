@@ -117,7 +117,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       ILossFunction lossFunction, int iterations, int maxSize, double r, double m, double nu)
       : this(trainingProblemData, seed, lossFunction, iterations, maxSize, r, m, nu) {
       fullModel = model;
-      actualModel = CreateLazyInitFunc();
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
