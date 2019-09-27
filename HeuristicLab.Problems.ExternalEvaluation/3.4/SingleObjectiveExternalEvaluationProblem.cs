@@ -92,8 +92,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
     }
     public ExternalEvaluationProblem(TEncoding encoding)
       : base(encoding) {
-      MaximizationParameter.ReadOnly = false;
-      MaximizationParameter.Value = new BoolValue(); // is a read-only boolvalue in base class
+      MaximizationParameter.Value = new BoolValue(); // is a read-only bool value in base class
       Parameters.Add(new OptionalValueParameter<EvaluationCache>("Cache", "Cache of previously evaluated solutions."));
       Parameters.Add(new ValueParameter<CheckedItemCollection<IEvaluationServiceClient>>("Clients", "The clients that are used to communicate with the external application.", new CheckedItemCollection<IEvaluationServiceClient>() { new EvaluationServiceClient() }));
       Parameters.Add(new ValueParameter<SolutionMessageBuilder>("MessageBuilder", "The message builder that converts from HeuristicLab objects to SolutionMessage representation.", new SolutionMessageBuilder()) { Hidden = true });
@@ -147,8 +146,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
       }
       try {
         return client.Evaluate(message, GetQualityMessageExtensions());
-      }
-      finally {
+      } finally {
         lock (clientLock) {
           activeClients.Remove(client);
           Monitor.PulseAll(clientLock);
@@ -165,8 +163,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
         foreach (var variable in scope.Variables) {
           try {
             MessageBuilder.AddToMessage(variable.Value, variable.Name, protobufBuilder);
-          }
-          catch (ArgumentException ex) {
+          } catch (ArgumentException ex) {
             throw new InvalidOperationException(string.Format("ERROR while building solution message: Parameter {0} cannot be added to the message", Name), ex);
           }
         }
