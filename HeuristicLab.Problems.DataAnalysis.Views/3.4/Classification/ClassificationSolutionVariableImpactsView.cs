@@ -39,6 +39,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     }
     private CancellationTokenSource cancellationToken = new CancellationTokenSource();
     private List<Tuple<string, double>> rawVariableImpacts = new List<Tuple<string, double>>();
+    private bool attachedToProgress = false;
 
     public new IClassificationSolution Content {
       get { return (IClassificationSolution)base.Content; }
@@ -85,8 +86,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         UpdateVariableImpact();
       }
     }
-    private void ClassificationSolutionVariableImpactsView_VisibleChanged(object sender, EventArgs e) {
+    protected override void OnHidden(EventArgs e) {
+      base.OnHidden(e);
       cancellationToken.Cancel();
+
+      if (attachedToProgress) {
+        Progress.Hide(this);
+        attachedToProgress = false;
+      }
     }
 
     private void dataPartitionComboBox_SelectedIndexChanged(object sender, EventArgs e) {
@@ -125,6 +132,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
 
       variableImpactsArrayView.Caption = Content.Name + " Variable Impacts";
       progress = Progress.Show(this, "Calculating variable impacts for " + Content.Name);
+      attachedToProgress = true;
       cancellationToken = new CancellationTokenSource();
 
       try {
@@ -143,7 +151,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         rawVariableImpacts.AddRange(impacts);
         UpdateOrdering();
       } finally {
-        Progress.Hide(this);
+        if (attachedToProgress) {
+          Progress.Hide(this);
+          attachedToProgress = false;
+        }
       }
     }
     private List<Tuple<string, double>> CalculateVariableImpacts(List<string> originalVariableOrdering,
