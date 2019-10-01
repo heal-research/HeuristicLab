@@ -11,11 +11,11 @@ namespace HeuristicLab.Manufacture {
     where ValueType : ValueTypeValue<T>
     where T : struct {
 
-    public override void InjectData(IItem item, Component data) =>
+    public override void InjectData(IItem item, JsonItem data) =>
       item.Cast<ValueType>().Value = CastValue<T>(data.Default);
 
-    public override Component ExtractData(IItem value) => 
-      new Component() {
+    public override JsonItem ExtractData(IItem value) => 
+      new JsonItem() {
         Default = value.Cast<ValueType>().Value,
         Range = new object[] { GetMinValue(), GetMaxValue() }
       };

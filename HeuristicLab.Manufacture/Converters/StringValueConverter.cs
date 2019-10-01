@@ -8,11 +8,11 @@ using HeuristicLab.Data;
 
 namespace HeuristicLab.Manufacture {
   public class StringValueConverter : BaseConverter {
-    public override void InjectData(IItem item, Component data) =>
+    public override void InjectData(IItem item, JsonItem data) =>
       item.Cast<StringValue>().Value = CastValue<string>(data.Default);
 
-    public override Component ExtractData(IItem value) => 
-      new Component() {
+    public override JsonItem ExtractData(IItem value) => 
+      new JsonItem() {
         Default = value.Cast<StringValue>().Value
       };
   }

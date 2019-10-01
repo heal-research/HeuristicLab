@@ -7,19 +7,14 @@ using HeuristicLab.Core;
 
 namespace HeuristicLab.Manufacture {
   public class MultiCheckedOperatorConverter : ParameterizedItemConverter {
-    public override Component ExtractData(IItem value) {
-      Component data = base.ExtractData(value);
+    public override JsonItem ExtractData(IItem value) {
+      JsonItem data = base.ExtractData(value);
 
       data.Default = value.GetType().Name;
-      data.Operators = new List<Component>();
-      /*
-      if (data.ParameterizedItems == null)
-        data.ParameterizedItems = new List<Component>();
-      data.ParameterizedItems.Add(data);
-      */
+      data.Operators = new List<JsonItem>();
       dynamic val = value.Cast<dynamic>();
       foreach (var op in val.Operators) {
-        data.Operators.Add(new Component() {
+        data.Operators.Add(new JsonItem() {
           Name = op.Name,
           Default = val.Operators.ItemChecked(op),
           Range = new object[] { false, true },
@@ -29,7 +24,7 @@ namespace HeuristicLab.Manufacture {
       return data;
     }
 
-    public override void InjectData(IItem item, Component data) {
+    public override void InjectData(IItem item, JsonItem data) {
       base.InjectData(item, data);
 
       dynamic val = item.Cast<dynamic>();
@@ -38,7 +33,7 @@ namespace HeuristicLab.Manufacture {
       }
     }
 
-    private bool GetOperatorState(string name, Component data) {
+    private bool GetOperatorState(string name, JsonItem data) {
       foreach(var op in data.Operators) {
         if (op.Name == name) return op.Default.Cast<bool>();
       }
