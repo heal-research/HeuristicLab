@@ -8,7 +8,6 @@ using HeuristicLab.Data;
 
 namespace HeuristicLab.Manufacture {
   public class EnumTypeTransformer : BaseTransformer {
-
     public override void InjectData(IItem item, Component data) =>
       item.Cast<dynamic>().Value = Enum.Parse(
         item.GetType().GenericTypeArguments.First(), 

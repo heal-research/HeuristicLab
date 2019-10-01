@@ -9,15 +9,21 @@ namespace HeuristicLab.Manufacture {
   public class MultiCheckedOperatorTransformer : ParameterizedItemTransformer {
     public override Component ExtractData(IItem value) {
       Component data = base.ExtractData(value);
-      data.Default = value.GetType().Name;
 
+      data.Default = value.GetType().Name;
       data.Operators = new List<Component>();
+      /*
+      if (data.ParameterizedItems == null)
+        data.ParameterizedItems = new List<Component>();
+      data.ParameterizedItems.Add(data);
+      */
       dynamic val = value.Cast<dynamic>();
       foreach (var op in val.Operators) {
         data.Operators.Add(new Component() {
           Name = op.Name,
           Default = val.Operators.ItemChecked(op),
-          Range = new object[] { false, true }
+          Range = new object[] { false, true },
+          Path = data.Path + "." + op.Name
         });
       }
       return data;

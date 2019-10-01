@@ -8,7 +8,6 @@ using HeuristicLab.Core;
 namespace HeuristicLab.Manufacture
 {
   public class ParameterizedItemTransformer : BaseTransformer {
-    
     public override void InjectData(IItem item, Component data) {
       IParameterizedItem pItem = item.Cast<IParameterizedItem>();
 
@@ -20,22 +19,21 @@ namespace HeuristicLab.Manufacture
     }
 
     public override Component ExtractData(IItem value) {
-      List<Component> list = new List<Component>();
-
       Component obj = new Component();
       obj.Name = value.ItemName;
       obj.Type = value.GetType().AssemblyQualifiedName;
-      obj.ParameterizedItems = list;
-      obj.Parameters = new List<Component>();
-      list.Add(obj);
+      obj.Path = value.ItemName;
 
       foreach (var param in value.Cast<IParameterizedItem>().Parameters) {
-        if (!param.Hidden) {
-          Component data = Transformer.Extract(param);
-          obj.Parameters.Add(data);
-          if(data.ParameterizedItems != null)
-            list.AddRange(data.ParameterizedItems);
-        }
+        Component data = Transformer.Extract(param);
+        data.Name = param.Name;
+        data.Path = param.Name;
+        data.PrependPath(obj.Path);
+        data.UpdatePaths();
+        
+        if (obj.Parameters == null)
+          obj.Parameters = new List<Component>();
+        obj.Parameters.Add(data);
       }
       return obj;
     }
