@@ -34,7 +34,7 @@ namespace HeuristicLab.Manufacture {
       TravelingSalesmanProblem tsp = new TravelingSalesmanProblem();
 
       JCGenerator gen = new JCGenerator();
-      //File.WriteAllText(@"C:\Workspace\TemplateProto11.json", gen.GenerateTemplate(alg, tsp));
+      File.WriteAllText(@"C:\Workspace\TemplateProto11.json", gen.GenerateTemplate(alg, tsp));
       
       JCInstantiator configurator = new JCInstantiator();
       configurator.Instantiate(@"C:\Workspace\TemplateProto11.json");

@@ -8,85 +8,71 @@ using HeuristicLab.Data;
 
 namespace HeuristicLab.Manufacture {
   public static class JsonItemConverter {
-    private static IDictionary<Type, IJsonItemConverter> transformers = new Dictionary<Type, IJsonItemConverter>();
+
+    private struct ConverterPriorityContainer {
+      public IJsonItemConverter Converter { get; set; }
+      public int Priority { get; set; }
+    }
+
+    private static IDictionary<Type, ConverterPriorityContainer> transformers = new Dictionary<Type, ConverterPriorityContainer>();
     
-    public static void Register(Type type, IJsonItemConverter transformer) { // TODO: explizit
+    public static void Register(Type type, IJsonItemConverter converter, int priority) {
       if (!transformers.ContainsKey(type))
-        transformers.Add(type, transformer);
+        transformers.Add(type, new ConverterPriorityContainer() { Converter = converter, Priority = priority });
     }
 
 
-    public static void Register<T>(IJsonItemConverter transformer) => Register(typeof(T), transformer);
+    public static void Register<T>(IJsonItemConverter converter, int priority) => Register(typeof(T), converter, priority);
 
-    public static IEnumerable<IJsonItemConverter> Get(Type type) { 
-      IList<KeyValuePair<Type, IJsonItemConverter>> possibleTransformers = new List<KeyValuePair<Type, IJsonItemConverter>>();
+    public static IJsonItemConverter Get(Type type) { 
+      IList<ConverterPriorityContainer> possibleConverters = new List<ConverterPriorityContainer>();
 
-
-      foreach (var x in transformers) {
+      foreach (var x in transformers)
         if (type.IsEqualTo(x.Key))
-          possibleTransformers.Add(x);
-      }
+          possibleConverters.Add(x.Value);
 
-
-      if(possibleTransformers.Count > 0) {
-        IJsonItemConverter nearest = possibleTransformers.First().Value;
-        int nearestDistance = -1;
-        foreach (var x in possibleTransformers) {
-          int d = type.GetInterfaceDistance(x.Key);
-          if (d != -1 && (nearestDistance == -1 || d < nearestDistance)) {
-            nearestDistance = d;
-            nearest = x.Value;
-          }
+      if(possibleConverters.Count > 0) {
+        ConverterPriorityContainer best = possibleConverters.First();
+        foreach (var x in possibleConverters) {
+          if (x.Priority > best.Priority)
+            best = x;
         }
-        return new IJsonItemConverter[] { nearest };
-        /*
-        return possibleTransformers.OrderBy(x => {
-          return type.GetInterfaceDistance(x.Key);
-        }).Select(x => x.Value);
-        */
+        return best.Converter;
       }
-      return new IJsonItemConverter[] { new DummyConverter() };
+      return new DummyConverter();
     }
 
-    internal static void Inject(IItem item, Component data) {
-      IEnumerable<IJsonItemConverter> arr = Get(item.GetType());
-      foreach (var transformer in arr)
-        transformer.Inject(item, data);
-    }
+    internal static void Inject(IItem item, Component data) =>
+      Get(item.GetType()).Inject(item, data);
 
-    internal static Component Extract(IItem item) {
-      IEnumerable<IJsonItemConverter> arr = Get(item.GetType());
-      Component data = new Component();
-      foreach (var transformer in arr)
-        Component.Merge(data, transformer.Extract(item));
-      return data;
-    }
+    internal static Component Extract(IItem item) => 
+      Get(item.GetType()).Extract(item);
 
 
     static JsonItemConverter() {
-      Register<IntValue>(new ValueTypeValueConverter<IntValue, int>());
-      Register<DoubleValue>(new ValueTypeValueConverter<DoubleValue, double>());
-      Register<PercentValue>(new ValueTypeValueConverter<PercentValue, double>());
-      Register<BoolValue>(new ValueTypeValueConverter<BoolValue, bool>());
-      Register<DateTimeValue>(new ValueTypeValueConverter<DateTimeValue, DateTime>());
-      Register<StringValue>(new StringValueConverter());
+      Register<IntValue>(new ValueTypeValueConverter<IntValue, int>(), 1);
+      Register<DoubleValue>(new ValueTypeValueConverter<DoubleValue, double>(), 1);
+      Register<PercentValue>(new ValueTypeValueConverter<PercentValue, double>(), 1);
+      Register<BoolValue>(new ValueTypeValueConverter<BoolValue, bool>(), 1);
+      Register<DateTimeValue>(new ValueTypeValueConverter<DateTimeValue, DateTime>(), 1);
+      Register<StringValue>(new StringValueConverter(), 1);
 
-      Register<IntArray>(new ValueTypeArrayConverter<IntArray, int>());
-      Register<DoubleArray>(new ValueTypeArrayConverter<DoubleArray, double>());
-      Register<PercentArray>(new ValueTypeArrayConverter<PercentArray, double>());
-      Register<BoolArray>(new ValueTypeArrayConverter<BoolArray, bool>());
+      Register<IntArray>(new ValueTypeArrayConverter<IntArray, int>(), 1);
+      Register<DoubleArray>(new ValueTypeArrayConverter<DoubleArray, double>(), 1);
+      Register<PercentArray>(new ValueTypeArrayConverter<PercentArray, double>(), 1);
+      Register<BoolArray>(new ValueTypeArrayConverter<BoolArray, bool>(), 1);
 
-      Register<IntMatrix>(new ValueTypeMatrixConverter<IntMatrix, int>());
-      Register<DoubleMatrix>(new ValueTypeMatrixConverter<DoubleMatrix, double>());
-      Register<PercentMatrix>(new ValueTypeMatrixConverter<PercentMatrix, double>());
-      Register<BoolMatrix>(new ValueTypeMatrixConverter<BoolMatrix, bool>());
+      Register<IntMatrix>(new ValueTypeMatrixConverter<IntMatrix, int>(), 1);
+      Register<DoubleMatrix>(new ValueTypeMatrixConverter<DoubleMatrix, double>(), 1);
+      Register<PercentMatrix>(new ValueTypeMatrixConverter<PercentMatrix, double>(), 1);
+      Register<BoolMatrix>(new ValueTypeMatrixConverter<BoolMatrix, bool>(), 1);
 
-      Register(typeof(IConstrainedValueParameter<>), new ConstrainedValueParameterConverter());
-      Register(typeof(ILookupParameter), new LookupParameterConverter());
-      Register(typeof(IValueParameter), new ValueParameterConverter());
-      Register(typeof(IParameterizedItem), new ParameterizedItemConverter());
-      Register(typeof(ICheckedMultiOperator<>), new MultiCheckedOperatorConverter());
-      Register(typeof(EnumValue<>), new EnumTypeConverter())
+      Register(typeof(IConstrainedValueParameter<>), new ConstrainedValueParameterConverter(), 1);
+      Register(typeof(ILookupParameter), new LookupParameterConverter(), 1);
+      Register(typeof(IValueParameter), new ValueParameterConverter(), 1);
+      Register(typeof(IParameterizedItem), new ParameterizedItemConverter(), 1);
+      Register(typeof(ICheckedMultiOperator<>), new MultiCheckedOperatorConverter(), 2);
+      Register(typeof(EnumValue<>), new EnumTypeConverter(), 1);
     }
 
   }
