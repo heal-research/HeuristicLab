@@ -6,14 +6,14 @@ using System.Threading.Tasks;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.Manufacture {
-  public class ConstrainedValueParameterTransformer : ParameterBaseTransformer {
+  public class ConstrainedValueParameterConverter : ParameterBaseConverter {
     public override void InjectData(IParameter parameter, Component data) {
       foreach (var x in parameter.Cast<dynamic>().ValidValues)
         if (x.GetType().Name == CastValue<string>(data.Default))
           parameter.ActualValue = x;
 
       if (parameter.ActualValue is IParameterizedItem && data.Reference != null)
-        Transformer.Inject(parameter.ActualValue, data.Reference);
+        JsonItemConverter.Inject(parameter.ActualValue, data.Reference);
     }
 
     public override Component ExtractData(IParameter value) =>
@@ -37,7 +37,7 @@ namespace HeuristicLab.Manufacture {
       var values = value.Cast<dynamic>().ValidValues;
       foreach(var x in values) {
         if (x is IParameterizedItem) {
-          Component tmp = Transformer.Extract(x);
+          Component tmp = JsonItemConverter.Extract(x);
           tmp.PrependPath(value.Name);
           list.Add(tmp);
         }

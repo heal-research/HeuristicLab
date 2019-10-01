@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.Manufacture {
-  public abstract class ParameterBaseTransformer : BaseTransformer {
+  public abstract class ParameterBaseConverter : BaseConverter {
     public override Component ExtractData(IItem value) {
       IParameter param = value.Cast<IParameter>();
       Component comp = ExtractData(param);

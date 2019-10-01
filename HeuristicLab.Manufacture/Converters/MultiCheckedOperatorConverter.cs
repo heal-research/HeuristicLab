@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.Manufacture {
-  public class MultiCheckedOperatorTransformer : ParameterizedItemTransformer {
+  public class MultiCheckedOperatorConverter : ParameterizedItemConverter {
     public override Component ExtractData(IItem value) {
       Component data = base.ExtractData(value);
 

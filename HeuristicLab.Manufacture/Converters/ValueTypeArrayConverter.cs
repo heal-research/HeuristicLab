@@ -8,7 +8,7 @@ using HeuristicLab.Data;
 using Newtonsoft.Json.Linq;
 
 namespace HeuristicLab.Manufacture {
-  public class ValueTypeArrayTransformer<ArrayType, T> : BaseTransformer
+  public class ValueTypeArrayConverter<ArrayType, T> : BaseConverter
     where ArrayType : ValueTypeArray<T>
     where T : struct 
   {

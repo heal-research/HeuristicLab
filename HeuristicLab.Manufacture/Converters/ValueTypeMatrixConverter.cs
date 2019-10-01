@@ -8,7 +8,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.Manufacture {
-  public class ValueTypeMatrixTransformer<MatrixType, T> : BaseTransformer
+  public class ValueTypeMatrixConverter<MatrixType, T> : BaseConverter
     where MatrixType : ValueTypeMatrix<T> 
     where T : struct 
   {

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.Manufacture {
-  public class LookupParameterTransformer : ParameterBaseTransformer {
+  public class LookupParameterConverter : ParameterBaseConverter {
     public override Component ExtractData(IParameter value) {
       return new Component() { Name = value.Name };
     }
