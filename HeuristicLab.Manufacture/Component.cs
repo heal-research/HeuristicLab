@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace HeuristicLab.Manufacture {
+  //JsonItem
   public class Component {
     private IList<object> range;
     private object defaultValue;
@@ -22,7 +23,7 @@ namespace HeuristicLab.Manufacture {
           throw new ArgumentOutOfRangeException("Default", "Default is not in range.");
       } 
     }
-    public string Path { get; set; }
+    public string Path { get; set; } = "";
 
     public IList<object> Range { 
       get => range; 
@@ -42,9 +43,6 @@ namespace HeuristicLab.Manufacture {
     public override int GetHashCode() => Name.GetHashCode();
 
     [JsonIgnore]
-    public IList<Component> ParameterizedItems { get; set; }
-
-    [JsonIgnore]
     public Component Reference { get; set; }
     
     public static void Merge(Component target, Component from) {
@@ -55,7 +53,6 @@ namespace HeuristicLab.Manufacture {
       target.Default = from.Default ?? target.Default;
       target.Reference = from.Reference ?? target.Reference;
       target.Parameters = from.Parameters ?? target.Parameters;
-      target.ParameterizedItems = from.ParameterizedItems ?? target.ParameterizedItems;
       target.Operators = from.Operators ?? target.Operators;
     }
 
@@ -71,8 +68,36 @@ namespace HeuristicLab.Manufacture {
       IsInNumericRange<float>(data.Default, data.Range[0], data.Range[1]) ||
       IsInNumericRange<double>(data.Default, data.Range[0], data.Range[1]));
 
-    #region Helper
 
+
+    public void UpdatePaths() {
+      if (Parameters != null) {
+        foreach (var p in Parameters) {
+          p.Path = Path + "." + p.Name;
+        }
+      }
+
+      if (Operators != null) {
+        foreach (var p in Operators) {
+          p.Path = Path + "." + p.Name;
+        }
+      }
+    }
+
+    public void PrependPath(string str) {
+      Path = $"{str}.{Path}";
+      PrependPathHelper(Parameters, str);
+      PrependPathHelper(Operators, str);
+    }
+
+    private void PrependPathHelper(IEnumerable<Component> components, string str) {
+      if (components != null) {
+        foreach (var p in components)
+          p.PrependPath(str);
+      }
+    }
+
+    #region Helper
     private static bool IsInRangeList(IEnumerable<object> list, object value) {
       foreach (var x in list)
         if (x.Equals(value)) return true;

@@ -16,15 +16,13 @@ namespace HeuristicLab.Manufacture {
         Transformer.Inject(parameter.ActualValue, data.Reference);
     }
 
-    public override Component ExtractData(IParameter value) {
-
-      return new Component() {
+    public override Component ExtractData(IParameter value) =>
+      new Component() {
         Name = value.Name,
         Default = value.ActualValue?.GetType().Name,
         Range = GetValidValues(value),
-        ParameterizedItems = GetParameterizedChilds(value)
+        Parameters = GetParameterizedChilds(value)
       };
-    }
 
     #region Helper
     private object[] GetValidValues(IParameter value) {
@@ -33,18 +31,15 @@ namespace HeuristicLab.Manufacture {
       foreach (var x in values) list.Add(x.GetType().Name);
       return list.ToArray();
     }
-
+    // id = kombi aus path + default 
     private IList<Component> GetParameterizedChilds(IParameter value) {
       List<Component> list = new List<Component>();
       var values = value.Cast<dynamic>().ValidValues;
       foreach(var x in values) {
-        if (x is IParameterizedItem &&
-            ((IParameterizedItem)x).Parameters.Any(p => !p.Hidden)) {
+        if (x is IParameterizedItem) {
           Component tmp = Transformer.Extract(x);
-          if (tmp.ParameterizedItems != null)
-            list.AddRange(tmp.ParameterizedItems);
-          else
-            list.Add(tmp);
+          tmp.PrependPath(value.Name);
+          list.Add(tmp);
         }
       }
       return list.Count == 0 ? null : list;

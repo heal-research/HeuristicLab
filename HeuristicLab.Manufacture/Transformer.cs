@@ -10,15 +10,15 @@ namespace HeuristicLab.Manufacture {
   public static class Transformer {
     private static IDictionary<Type, ITypeTransformer> transformers = new Dictionary<Type, ITypeTransformer>();
     
-    public static void Register(Type type, ITypeTransformer transformer) {
-      if(!transformers.ContainsKey(type))
+    public static void Register(Type type, ITypeTransformer transformer) { // TODO: explizit
+      if (!transformers.ContainsKey(type))
         transformers.Add(type, transformer);
     }
 
 
     public static void Register<T>(ITypeTransformer transformer) => Register(typeof(T), transformer);
 
-    public static IEnumerable<ITypeTransformer> Get(Type type) {
+    public static IEnumerable<ITypeTransformer> Get(Type type) { 
       IList<KeyValuePair<Type, ITypeTransformer>> possibleTransformers = new List<KeyValuePair<Type, ITypeTransformer>>();
 
 

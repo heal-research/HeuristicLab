@@ -46,7 +46,7 @@ namespace HeuristicLab.Manufacture {
     {
       foreach(JObject item in Config["Objects"])
       {
-        Component data = item.ToObject<Component>();// Component.Build(item);
+        Component data = BuildComponent(item);
         if (data.Name == key) return data;
       }
       return null;
@@ -79,7 +79,7 @@ namespace HeuristicLab.Manufacture {
         foreach (JObject param in obj["FreeParameters"]) {
           Component tmp = BuildComponent(param);
           Component comp = null;
-          foreach (var p in list)
+          foreach (var p in list) // TODO: nicht notwendig, da immer alle params im static block sind
             if (p.Name == tmp.Name) comp = p;
           if (comp != null) 
             Component.Merge(comp, tmp);
