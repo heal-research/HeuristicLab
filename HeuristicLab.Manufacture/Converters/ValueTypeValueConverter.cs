@@ -7,7 +7,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 
 namespace HeuristicLab.Manufacture {
-  public class ValueTypeValueTransformer<ValueType, T> : BaseTransformer
+  public class ValueTypeValueConverter<ValueType, T> : BaseConverter
     where ValueType : ValueTypeValue<T>
     where T : struct {
 

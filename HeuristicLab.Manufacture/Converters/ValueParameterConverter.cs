@@ -6,17 +6,17 @@ using System.Threading.Tasks;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.Manufacture {
-  public class ValueParameterTransformer : ParameterBaseTransformer {
+  public class ValueParameterConverter : ParameterBaseConverter {
 
     public override void InjectData(IParameter parameter, Component data) => 
-      Transformer.Inject(parameter.ActualValue, data);
+      JsonItemConverter.Inject(parameter.ActualValue, data);
 
     public override Component ExtractData(IParameter value) {
       Component data = null;
       if (value.ActualValue == null)
         data = new Component();
       else
-        data = Transformer.Extract(value.ActualValue);
+        data = JsonItemConverter.Extract(value.ActualValue);
       data.Name = value.Name;
       return data;
     }

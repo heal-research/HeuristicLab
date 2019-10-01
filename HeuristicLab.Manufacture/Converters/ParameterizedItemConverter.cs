@@ -7,14 +7,14 @@ using HeuristicLab.Core;
 
 namespace HeuristicLab.Manufacture
 {
-  public class ParameterizedItemTransformer : BaseTransformer {
+  public class ParameterizedItemConverter : BaseConverter {
     public override void InjectData(IItem item, Component data) {
       IParameterizedItem pItem = item.Cast<IParameterizedItem>();
 
       if(data.Parameters != null) {
         foreach (var sp in data.Parameters)
           if (pItem.Parameters.TryGetValue(sp.Name, out IParameter param))
-            Transformer.Inject(param, sp);
+            JsonItemConverter.Inject(param, sp);
       }
     }
 
@@ -25,7 +25,7 @@ namespace HeuristicLab.Manufacture
       obj.Path = value.ItemName;
 
       foreach (var param in value.Cast<IParameterizedItem>().Parameters) {
-        Component data = Transformer.Extract(param);
+        Component data = JsonItemConverter.Extract(param);
         data.Name = param.Name;
         data.Path = param.Name;
         data.PrependPath(obj.Path);

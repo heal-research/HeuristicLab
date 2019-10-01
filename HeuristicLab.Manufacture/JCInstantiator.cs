@@ -30,8 +30,8 @@ namespace HeuristicLab.Manufacture {
       IProblem problem = CreateObject<IProblem>(problemData);
       algorithm.Problem = problem;
 
-      Transformer.Inject(algorithm, algorithmData);
-      Transformer.Inject(algorithm, problemData);
+      JsonItemConverter.Inject(algorithm, algorithmData);
+      JsonItemConverter.Inject(algorithm, problemData);
 
       return algorithm;
     }

@@ -54,8 +54,8 @@ namespace HeuristicLab.Manufacture {
 
     public string GenerateTemplate(IAlgorithm algorithm, IProblem problem, params string[] freeParameters) {
       algorithm.Problem = problem;
-      Component algorithmData = Transformer.Extract(algorithm);
-      Component problemData = Transformer.Extract(problem);
+      Component algorithmData = JsonItemConverter.Extract(algorithm);
+      Component problemData = JsonItemConverter.Extract(problem);
       PopulateJsonItems(algorithmData);
       PopulateJsonItems(problemData);
 

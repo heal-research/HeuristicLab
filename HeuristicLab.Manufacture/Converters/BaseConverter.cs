@@ -7,7 +7,7 @@ using HeuristicLab.Core;
 using Newtonsoft.Json.Linq;
 
 namespace HeuristicLab.Manufacture {
-  public abstract class BaseTransformer : ITypeTransformer
+  public abstract class BaseConverter : IJsonItemConverter
   {
     public Component Extract(IItem value) {
       Component data = ExtractData(value);

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.Manufacture {
-  public class DummyTransformer : BaseTransformer {
+  public class DummyConverter : BaseConverter {
     public override void InjectData(IItem item, Component data) {
       // do nothing because the instance already exists and 
       // there are no values to inject
