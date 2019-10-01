@@ -2,7 +2,7 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace HeuristicLab.Manufacture {
+namespace HeuristicLab.JsonInterface {
   internal class CustomJsonWriter : JsonTextWriter {
     private bool isRangeArray = false;
     public override void WriteStartArray() {

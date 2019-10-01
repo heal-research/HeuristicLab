@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using HeuristicLab.Core;
 using Newtonsoft.Json.Linq;
 
-namespace HeuristicLab.Manufacture {
+namespace HeuristicLab.JsonInterface {
   public interface IJsonItemConverter {
     /// <summary>
     /// Extracts all infos out of an IItem to create a JsonItem. 

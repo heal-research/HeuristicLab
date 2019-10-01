@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using HeuristicLab.Core;
 
-namespace HeuristicLab.Manufacture {
+namespace HeuristicLab.JsonInterface {
   public class MultiCheckedOperatorConverter : ParameterizedItemConverter {
     public override JsonItem ExtractData(IItem value) {
       JsonItem data = base.ExtractData(value);

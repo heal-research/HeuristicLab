@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;JsonItem obj
+using System.Text;
 using System.Threading.Tasks;
 using HeuristicLab.Core;
 
-namespace HeuristicLab.Manufacture
-{
+namespace HeuristicLab.JsonInterface {
   public class ParameterizedItemConverter : BaseConverter {
     public override void InjectData(IItem item, JsonItem data) {
       IParameterizedItem pItem = item.Cast<IParameterizedItem>();

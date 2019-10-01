@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 
-namespace HeuristicLab.Manufacture {
+namespace HeuristicLab.JsonInterface {
   public class EnumTypeConverter : BaseConverter {
     public override void InjectData(IItem item, JsonItem data) =>
       item.Cast<dynamic>().Value = Enum.Parse(

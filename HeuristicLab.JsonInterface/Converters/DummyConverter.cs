@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using HeuristicLab.Core;
 
-namespace HeuristicLab.Manufacture {
+namespace HeuristicLab.JsonInterface {
   public class DummyConverter : BaseConverter {
     public override void InjectData(IItem item, JsonItem data) {
       // do nothing because the instance already exists and 

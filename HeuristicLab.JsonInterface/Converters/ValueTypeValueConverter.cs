@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 
-namespace HeuristicLab.Manufacture {
+namespace HeuristicLab.JsonInterface {
   public class ValueTypeValueConverter<ValueType, T> : BaseConverter
     where ValueType : ValueTypeValue<T>
     where T : struct {

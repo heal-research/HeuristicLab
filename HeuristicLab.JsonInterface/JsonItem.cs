@@ -7,8 +7,7 @@ using HeuristicLab.Core;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace HeuristicLab.Manufacture {
-  //JsonItem
+namespace HeuristicLab.JsonInterface {
   public class JsonItem {
     private IList<object> range;
     private object defaultValue;

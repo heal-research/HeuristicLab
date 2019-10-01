@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using HeuristicLab.Core;
 
-namespace HeuristicLab.Manufacture {
+namespace HeuristicLab.JsonInterface {
   public class LookupParameterConverter : ParameterBaseConverter {
     public override JsonItem ExtractData(IParameter value) {
       return new JsonItem() { Name = value.Name };

@@ -26,7 +26,7 @@ using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 
 
-namespace HeuristicLab.Manufacture {
+namespace HeuristicLab.JsonInterface {
   
   public class Program {
     static void Main(string[] args) {
