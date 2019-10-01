@@ -7,22 +7,6 @@ using HeuristicLab.Core;
 
 namespace HeuristicLab.Manufacture {
   public static class TypeExtensions {
-    public static int GetInterfaceDistance(this Type type, Type interfaceType) {
-      if (!interfaceType.IsInterface) return -1;
-      int distance = int.MaxValue;
-      Type baseType = type;
-      while (baseType != typeof(object)) {
-        var interfaces = baseType.GetInterfaces();
-        var minimalInterfaces = interfaces.Except(interfaces.SelectMany(i => i.GetInterfaces()));
-        if (minimalInterfaces.Any(i => {
-          if (i.IsGenericType)
-            return i.GetGenericTypeDefinition() == interfaceType;
-          return i == interfaceType;
-        })) --distance;
-        baseType = baseType.BaseType;
-      }
-      return distance;
-    }
 
     public static bool IsEqualTo(this Type type, Type other) {
       if (other == null) throw new ArgumentNullException("other");
