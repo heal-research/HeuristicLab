@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using HeuristicLab.Core;
 using Newtonsoft.Json.Linq;
 
-namespace HeuristicLab.Manufacture {
+namespace HeuristicLab.JsonInterface {
   public abstract class BaseConverter : IJsonItemConverter
   {
     public JsonItem Extract(IItem value) {

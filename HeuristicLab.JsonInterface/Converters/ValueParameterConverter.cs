@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using HeuristicLab.Core;
 
-namespace HeuristicLab.Manufacture {
+namespace HeuristicLab.JsonInterface {
   public class ValueParameterConverter : ParameterBaseConverter {
 
     public override void InjectData(IParameter parameter, JsonItem data) => 

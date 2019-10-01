@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{0E3AAB5E-F152-44E0-A054-4D9A83ECEE08}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>HeuristicLab.Manufacture</RootNamespace>
-    <AssemblyName>HeuristicLab.Manufacture</AssemblyName>
+    <RootNamespace>HeuristicLab.JsonInterface</RootNamespace>
+    <AssemblyName>HeuristicLab.JsonInterface</AssemblyName>
     <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>

@@ -11,7 +11,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using Newtonsoft.Json.Linq;
 
-namespace HeuristicLab.Manufacture {
+namespace HeuristicLab.JsonInterface {
   public class JCInstantiator {
 
     private JToken Config { get; set; }

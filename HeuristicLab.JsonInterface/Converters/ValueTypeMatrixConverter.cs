@@ -7,7 +7,7 @@ using Newtonsoft.Json.Linq;
 using HeuristicLab.Data;
 using HeuristicLab.Core;
 
-namespace HeuristicLab.Manufacture {
+namespace HeuristicLab.JsonInterface {
   public class ValueTypeMatrixConverter<MatrixType, T> : BaseConverter
     where MatrixType : ValueTypeMatrix<T> 
     where T : struct 

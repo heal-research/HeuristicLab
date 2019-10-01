@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using HeuristicLab.Core;
 
-namespace HeuristicLab.Manufacture {
+namespace HeuristicLab.JsonInterface {
   public static class TypeExtensions {
 
     public static bool IsEqualTo(this Type type, Type other) {

@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using HeuristicLab.Core;
 
-namespace HeuristicLab.Manufacture {
+namespace HeuristicLab.JsonInterface {
   public abstract class ParameterBaseConverter : BaseConverter {
     public override JsonItem ExtractData(IItem value) {
       IParameter param = value.Cast<IParameter>();
