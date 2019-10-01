@@ -26,18 +26,18 @@ namespace HeuristicLab.Manufacture {
     private Dictionary<string, string> TypeList = new Dictionary<string, string>();
 
     JArray jsonItems = new JArray();
-    private void PopulateJsonItems(Component component) {
-      if (component.Parameters != null) {
-        if(component.Range == null)
-          jsonItems.Add(Serialize(component));
-        foreach (var p in component.Parameters)
+    private void PopulateJsonItems(JsonItem item) {
+      if (item.Parameters != null) {
+        if(item.Range == null)
+          jsonItems.Add(Serialize(item));
+        foreach (var p in item.Parameters)
           if(p.Parameters != null)
             PopulateJsonItems(p);
       }
     }
 
-    private JObject Serialize(Component component) {
-      JObject obj = JObject.FromObject(component, Settings());
+    private JObject Serialize(JsonItem item) {
+      JObject obj = JObject.FromObject(item, Settings());
       obj["StaticParameters"] = obj["Parameters"];
       obj["FreeParameters"] = obj["Parameters"];
 
@@ -48,14 +48,14 @@ namespace HeuristicLab.Manufacture {
       obj.Property("Default")?.Remove();
       obj.Property("Type")?.Remove();
 
-      TypeList.Add(component.Path, component.Type);
+      TypeList.Add(item.Path, item.Type);
       return obj;
     }
 
     public string GenerateTemplate(IAlgorithm algorithm, IProblem problem, params string[] freeParameters) {
       algorithm.Problem = problem;
-      Component algorithmData = JsonItemConverter.Extract(algorithm);
-      Component problemData = JsonItemConverter.Extract(problem);
+      JsonItem algorithmData = JsonItemConverter.Extract(algorithm);
+      JsonItem problemData = JsonItemConverter.Extract(problem);
       PopulateJsonItems(algorithmData);
       PopulateJsonItems(problemData);
 
@@ -73,7 +73,7 @@ namespace HeuristicLab.Manufacture {
 
       IList<JObject> objToRemove = new List<JObject>();
       TransformNodes(x => {
-        var p = x.ToObject<Component>();
+        var p = x.ToObject<JsonItem>();
 
         /*bool isSelected = false;
         string name = x["Name"].ToObject<string>();
@@ -95,7 +95,7 @@ namespace HeuristicLab.Manufacture {
     private void RefactorStaticParameters(JToken token) {
       IList<JObject> objToRemove = new List<JObject>();
       TransformNodes(x => {
-        var p = x.ToObject<Component>();
+        var p = x.ToObject<JsonItem>();
         x.Property("Range")?.Remove();
         x.Property("Operators")?.Remove();
         x.Property("Parameters")?.Remove();
@@ -104,7 +104,6 @@ namespace HeuristicLab.Manufacture {
       }, token["StaticParameters"]);
       foreach (var x in objToRemove) x.Remove();
     }
-
 
     private JsonSerializer Settings() => new JsonSerializer() {
       TypeNameHandling = TypeNameHandling.None,

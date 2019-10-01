@@ -21,11 +21,11 @@ namespace HeuristicLab.Manufacture {
       Config = JToken.Parse(File.ReadAllText(configFile));
       TypeList = Config["Types"].ToObject<Dictionary<string, string>>();
 
-      Component algorithmData = GetData(Config["Metadata"]["Algorithm"].ToString());
+      JsonItem algorithmData = GetData(Config["Metadata"]["Algorithm"].ToString());
       ResolveReferences(algorithmData);
       IAlgorithm algorithm = CreateObject<IAlgorithm>(algorithmData);
      
-      Component problemData = GetData(Config["Metadata"]["Problem"].ToString());
+      JsonItem problemData = GetData(Config["Metadata"]["Problem"].ToString());
       ResolveReferences(problemData);
       IProblem problem = CreateObject<IProblem>(problemData);
       algorithm.Problem = problem;
@@ -36,64 +36,64 @@ namespace HeuristicLab.Manufacture {
       return algorithm;
     }
 
-    private void ResolveReferences(Component data) {
+    private void ResolveReferences(JsonItem data) {
       foreach (var p in data.Parameters)
         if (p.Default is string && p.Reference == null)
           p.Reference = GetData(p.Default.Cast<string>());
     }
 
-    private Component GetData(string key)
+    private JsonItem GetData(string key)
     {
       foreach(JObject item in Config["Objects"])
       {
-        Component data = BuildComponent(item);
+        JsonItem data = BuildJsonItem(item);
         if (data.Name == key) return data;
       }
       return null;
     }
 
-    private T CreateObject<T>(Component data) {
+    private T CreateObject<T>(JsonItem data) {
       if (TypeList.TryGetValue(data.Name, out string typeName)) {
         Type type = Type.GetType(typeName);
         return (T)Activator.CreateInstance(type);
       } else throw new TypeLoadException($"Cannot find AssemblyQualifiedName for {data.Name}.");
     }
 
-    private Component BuildComponent(JObject obj) =>
-      new Component() {
-        Name = obj[nameof(Component.Name)]?.ToString(),
-        Default = obj[nameof(Component.Default)]?.ToObject<object>(),
-        Range = obj[nameof(Component.Range)]?.ToObject<object[]>(),
-        Type = obj[nameof(Component.Type)]?.ToObject<string>(),
+    private JsonItem BuildJsonItem(JObject obj) =>
+      new JsonItem() {
+        Name = obj[nameof(JsonItem.Name)]?.ToString(),
+        Default = obj[nameof(JsonItem.Default)]?.ToObject<object>(),
+        Range = obj[nameof(JsonItem.Range)]?.ToObject<object[]>(),
+        Type = obj[nameof(JsonItem.Type)]?.ToObject<string>(),
         Parameters = PopulateParameters(obj),
         Operators = PopulateOperators(obj)
       };
 
-    private IList<Component> PopulateParameters(JObject obj) {
-      IList<Component> list = new List<Component>();
+    private IList<JsonItem> PopulateParameters(JObject obj) {
+      IList<JsonItem> list = new List<JsonItem>();
       if (obj["StaticParameters"] != null)
         foreach (JObject param in obj["StaticParameters"])
-          list.Add(BuildComponent(param));
+          list.Add(BuildJsonItem(param));
 
       if (obj["FreeParameters"] != null) {
         foreach (JObject param in obj["FreeParameters"]) {
-          Component tmp = BuildComponent(param);
-          Component comp = null;
+          JsonItem tmp = BuildJsonItem(param);
+          JsonItem comp = null;
           foreach (var p in list) // TODO: nicht notwendig, da immer alle params im static block sind
             if (p.Name == tmp.Name) comp = p;
           if (comp != null) 
-            Component.Merge(comp, tmp);
+            JsonItem.Merge(comp, tmp);
           else list.Add(tmp);
         }
       }
       return list;
     }
 
-    private IList<Component> PopulateOperators(JObject obj) {
-      IList<Component> list = new List<Component>();
+    private IList<JsonItem> PopulateOperators(JObject obj) {
+      IList<JsonItem> list = new List<JsonItem>();
       if (obj[nameof(Operators)] != null)
         foreach (JObject sp in obj[nameof(Operators)]) {
-          Component tmp = BuildComponent(sp);
+          JsonItem tmp = BuildJsonItem(sp);
           list.Add(tmp);
         }
       return list;

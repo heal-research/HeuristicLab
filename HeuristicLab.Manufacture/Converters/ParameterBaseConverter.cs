@@ -7,9 +7,9 @@ using HeuristicLab.Core;
 
 namespace HeuristicLab.Manufacture {
   public abstract class ParameterBaseConverter : BaseConverter {
-    public override Component ExtractData(IItem value) {
+    public override JsonItem ExtractData(IItem value) {
       IParameter param = value.Cast<IParameter>();
-      Component comp = ExtractData(param);
+      JsonItem comp = ExtractData(param);
       //comp.Path = value.Cast<IParameter>().ActualValue?.ItemName;
       /*comp.Path = value.Cast<IParameter>().Name + "." + comp.Path;
       if(comp.ParameterizedItems != null) {
@@ -19,10 +19,10 @@ namespace HeuristicLab.Manufacture {
       }*/
       return comp;
     }
-    public abstract Component ExtractData(IParameter value);
+    public abstract JsonItem ExtractData(IParameter value);
 
-    public override void InjectData(IItem item, Component data) => InjectData(item.Cast<IParameter>(), data);
+    public override void InjectData(IItem item, JsonItem data) => InjectData(item.Cast<IParameter>(), data);
 
-    public abstract void InjectData(IParameter parameter, Component data);
+    public abstract void InjectData(IParameter parameter, JsonItem data);
   }
 }

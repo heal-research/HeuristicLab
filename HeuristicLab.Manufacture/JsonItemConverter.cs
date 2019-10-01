@@ -21,7 +21,6 @@ namespace HeuristicLab.Manufacture {
         transformers.Add(type, new ConverterPriorityContainer() { Converter = converter, Priority = priority });
     }
 
-
     public static void Register<T>(IJsonItemConverter converter, int priority) => Register(typeof(T), converter, priority);
 
     public static IJsonItemConverter Get(Type type) { 
@@ -42,10 +41,10 @@ namespace HeuristicLab.Manufacture {
       return new DummyConverter();
     }
 
-    internal static void Inject(IItem item, Component data) =>
+    internal static void Inject(IItem item, JsonItem data) =>
       Get(item.GetType()).Inject(item, data);
 
-    internal static Component Extract(IItem item) => 
+    internal static JsonItem Extract(IItem item) => 
       Get(item.GetType()).Extract(item);
 
 

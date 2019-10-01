@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System.Text;JsonItem obj
 using System.Threading.Tasks;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.Manufacture
 {
   public class ParameterizedItemConverter : BaseConverter {
-    public override void InjectData(IItem item, Component data) {
+    public override void InjectData(IItem item, JsonItem data) {
       IParameterizedItem pItem = item.Cast<IParameterizedItem>();
 
       if(data.Parameters != null) {
@@ -18,24 +18,24 @@ namespace HeuristicLab.Manufacture
       }
     }
 
-    public override Component ExtractData(IItem value) {
-      Component obj = new Component();
-      obj.Name = value.ItemName;
-      obj.Type = value.GetType().AssemblyQualifiedName;
-      obj.Path = value.ItemName;
+    public override JsonItem ExtractData(IItem value) {
+      JsonItem item = new JsonItem();
+      item.Name = value.ItemName;
+      item.Type = value.GetType().AssemblyQualifiedName;
+      item.Path = value.ItemName;
 
       foreach (var param in value.Cast<IParameterizedItem>().Parameters) {
-        Component data = JsonItemConverter.Extract(param);
+        JsonItem data = JsonItemConverter.Extract(param);
         data.Name = param.Name;
         data.Path = param.Name;
-        data.PrependPath(obj.Path);
+        data.PrependPath(item.Path);
         data.UpdatePaths();
         
-        if (obj.Parameters == null)
-          obj.Parameters = new List<Component>();
-        obj.Parameters.Add(data);
+        if (item.Parameters == null)
+          item.Parameters = new List<JsonItem>();
+        item.Parameters.Add(data);
       }
-      return obj;
+      return item;
     }
   }
 }

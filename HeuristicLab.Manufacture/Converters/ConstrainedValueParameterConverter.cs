@@ -7,7 +7,7 @@ using HeuristicLab.Core;
 
 namespace HeuristicLab.Manufacture {
   public class ConstrainedValueParameterConverter : ParameterBaseConverter {
-    public override void InjectData(IParameter parameter, Component data) {
+    public override void InjectData(IParameter parameter, JsonItem data) {
       foreach (var x in parameter.Cast<dynamic>().ValidValues)
         if (x.GetType().Name == CastValue<string>(data.Default))
           parameter.ActualValue = x;
@@ -16,8 +16,8 @@ namespace HeuristicLab.Manufacture {
         JsonItemConverter.Inject(parameter.ActualValue, data.Reference);
     }
 
-    public override Component ExtractData(IParameter value) =>
-      new Component() {
+    public override JsonItem ExtractData(IParameter value) =>
+      new JsonItem() {
         Name = value.Name,
         Default = value.ActualValue?.GetType().Name,
         Range = GetValidValues(value),
@@ -32,12 +32,12 @@ namespace HeuristicLab.Manufacture {
       return list.ToArray();
     }
     // id = kombi aus path + default 
-    private IList<Component> GetParameterizedChilds(IParameter value) {
-      List<Component> list = new List<Component>();
+    private IList<JsonItem> GetParameterizedChilds(IParameter value) {
+      List<JsonItem> list = new List<JsonItem>();
       var values = value.Cast<dynamic>().ValidValues;
       foreach(var x in values) {
         if (x is IParameterizedItem) {
-          Component tmp = JsonItemConverter.Extract(x);
+          JsonItem tmp = JsonItemConverter.Extract(x);
           tmp.PrependPath(value.Name);
           list.Add(tmp);
         }

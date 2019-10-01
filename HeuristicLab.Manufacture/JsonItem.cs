@@ -9,7 +9,7 @@ using Newtonsoft.Json.Linq;
 
 namespace HeuristicLab.Manufacture {
   //JsonItem
-  public class Component {
+  public class JsonItem {
     private IList<object> range;
     private object defaultValue;
 
@@ -34,18 +34,18 @@ namespace HeuristicLab.Manufacture {
       } 
     }
 
-    public IList<Component> Parameters { get; set; }
-    public IList<Component> Operators { get; set; }
+    public IList<JsonItem> Parameters { get; set; }
+    public IList<JsonItem> Operators { get; set; }
     
     public override bool Equals(object obj) => 
-      (obj is Component ? (obj.Cast<Component>().Name == this.Name) : false);
+      (obj is JsonItem ? (obj.Cast<JsonItem>().Name == this.Name) : false);
       
     public override int GetHashCode() => Name.GetHashCode();
 
     [JsonIgnore]
-    public Component Reference { get; set; }
+    public JsonItem Reference { get; set; }
     
-    public static void Merge(Component target, Component from) {
+    public static void Merge(JsonItem target, JsonItem from) {
       target.Name = from.Name ?? target.Name;
       target.Type = from.Type ?? target.Type;
       target.Range = from.Range ?? target.Range;
@@ -58,7 +58,7 @@ namespace HeuristicLab.Manufacture {
 
     public bool FulfillConstraints() => FulfillConstraints(this);
 
-    public static bool FulfillConstraints(Component data) =>
+    public static bool FulfillConstraints(JsonItem data) =>
       data.Range != null && data.Default != null && (
       IsInRangeList(data.Range, data.Default) ||
       IsInNumericRange<long>(data.Default, data.Range[0], data.Range[1]) ||
@@ -90,9 +90,9 @@ namespace HeuristicLab.Manufacture {
       PrependPathHelper(Operators, str);
     }
 
-    private void PrependPathHelper(IEnumerable<Component> components, string str) {
-      if (components != null) {
-        foreach (var p in components)
+    private void PrependPathHelper(IEnumerable<JsonItem> items, string str) {
+      if (items != null) {
+        foreach (var p in items)
           p.PrependPath(str);
       }
     }

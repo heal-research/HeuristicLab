@@ -8,13 +8,13 @@ using HeuristicLab.Core;
 namespace HeuristicLab.Manufacture {
   public class ValueParameterConverter : ParameterBaseConverter {
 
-    public override void InjectData(IParameter parameter, Component data) => 
+    public override void InjectData(IParameter parameter, JsonItem data) => 
       JsonItemConverter.Inject(parameter.ActualValue, data);
 
-    public override Component ExtractData(IParameter value) {
-      Component data = null;
+    public override JsonItem ExtractData(IParameter value) {
+      JsonItem data = null;
       if (value.ActualValue == null)
-        data = new Component();
+        data = new JsonItem();
       else
         data = JsonItemConverter.Extract(value.ActualValue);
       data.Name = value.Name;
