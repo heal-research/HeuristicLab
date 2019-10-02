@@ -14,14 +14,7 @@ using Newtonsoft.Json.Serialization;
 namespace HeuristicLab.JsonInterface {
   public class JCGenerator {
 
-    private JObject template = JObject.Parse(@"{
-      'Metadata': {
-        'Algorithm':'',
-        'Problem':''
-      },
-      'Objects': [],
-      'Types': {}
-    }");
+    private JObject template = JObject.Parse(Constants.Template);
 
     private Dictionary<string, string> TypeList = new Dictionary<string, string>();
 
@@ -38,15 +31,15 @@ namespace HeuristicLab.JsonInterface {
 
     private JObject Serialize(JsonItem item) {
       JObject obj = JObject.FromObject(item, Settings());
-      obj["StaticParameters"] = obj["Parameters"];
-      obj["FreeParameters"] = obj["Parameters"];
+      obj[Constants.StaticParameters] = obj[nameof(JsonItem.Parameters)];
+      obj[Constants.FreeParameters] = obj[nameof(JsonItem.Parameters)];
 
-      obj.Property("Parameters")?.Remove();
+      obj.Property(nameof(JsonItem.Parameters))?.Remove();
       RefactorFreeParameters(obj, null);
       RefactorStaticParameters(obj);
 
-      obj.Property("Default")?.Remove();
-      obj.Property("Type")?.Remove();
+      obj.Property(nameof(JsonItem.Default))?.Remove();
+      obj.Property(nameof(JsonItem.Type))?.Remove();
 
       TypeList.Add(item.Path, item.Type);
       return obj;
@@ -59,10 +52,10 @@ namespace HeuristicLab.JsonInterface {
       PopulateJsonItems(algorithmData);
       PopulateJsonItems(problemData);
 
-      template["Metadata"]["Algorithm"] = algorithm.Name;
-      template["Metadata"]["Problem"] = problem.Name;
-      template["Objects"] = jsonItems;
-      template["Types"] = JObject.FromObject(TypeList);
+      template[Constants.Metadata][Constants.Algorithm] = algorithm.Name;
+      template[Constants.Metadata][Constants.Problem] = problem.Name;
+      template[Constants.Objects] = jsonItems;
+      template[Constants.Types] = JObject.FromObject(TypeList);
 
       return CustomJsonWriter.Serialize(template);
     }
@@ -83,25 +76,24 @@ namespace HeuristicLab.JsonInterface {
         if (/*!isSelected ||*/ p.Default == null || (p.Default != null && p.Default.GetType() == typeof(string) && p.Range == null)) {
           objToRemove.Add(x);
         } else {
-          x.Property("Path")?.Remove();
-          x.Property("Type")?.Remove();
-          x.Property("Parameters")?.Remove();
+          x.Property(nameof(JsonItem.Path))?.Remove();
+          x.Property(nameof(JsonItem.Type))?.Remove();
+          x.Property(nameof(JsonItem.Parameters))?.Remove();
         }
-      }, token["FreeParameters"]);
+      }, token[Constants.FreeParameters]);
       foreach (var x in objToRemove) x.Remove();
-
     }
 
     private void RefactorStaticParameters(JToken token) {
       IList<JObject> objToRemove = new List<JObject>();
       TransformNodes(x => {
         var p = x.ToObject<JsonItem>();
-        x.Property("Range")?.Remove();
-        x.Property("Operators")?.Remove();
-        x.Property("Parameters")?.Remove();
-        x.Property("Type")?.Remove();
+        x.Property(nameof(JsonItem.Range))?.Remove();
+        x.Property(nameof(JsonItem.Operators))?.Remove();
+        x.Property(nameof(JsonItem.Parameters))?.Remove();
+        x.Property(nameof(JsonItem.Type))?.Remove();
         if (p.Default == null) objToRemove.Add(x);
-      }, token["StaticParameters"]);
+      }, token[Constants.StaticParameters]);
       foreach (var x in objToRemove) x.Remove();
     }
 

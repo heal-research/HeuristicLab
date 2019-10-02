@@ -41,7 +41,6 @@ namespace HeuristicLab.JsonInterface {
       
     public override int GetHashCode() => Name.GetHashCode();
 
-    [JsonIgnore]
     public JsonItem Reference { get; set; }
     
     public static void Merge(JsonItem target, JsonItem from) {
@@ -67,20 +66,14 @@ namespace HeuristicLab.JsonInterface {
       IsInNumericRange<float>(data.Default, data.Range[0], data.Range[1]) ||
       IsInNumericRange<double>(data.Default, data.Range[0], data.Range[1]));
 
-
-
     public void UpdatePaths() {
-      if (Parameters != null) {
-        foreach (var p in Parameters) {
+      if (Parameters != null)
+        foreach (var p in Parameters)
           p.Path = Path + "." + p.Name;
-        }
-      }
 
-      if (Operators != null) {
-        foreach (var p in Operators) {
+      if (Operators != null) 
+        foreach (var p in Operators)
           p.Path = Path + "." + p.Name;
-        }
-      }
     }
 
     public void PrependPath(string str) {
@@ -90,10 +83,9 @@ namespace HeuristicLab.JsonInterface {
     }
 
     private void PrependPathHelper(IEnumerable<JsonItem> items, string str) {
-      if (items != null) {
+      if (items != null)
         foreach (var p in items)
           p.PrependPath(str);
-      }
     }
 
     #region Helper

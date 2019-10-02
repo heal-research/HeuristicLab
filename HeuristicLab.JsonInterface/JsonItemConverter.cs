@@ -51,28 +51,30 @@ namespace HeuristicLab.JsonInterface {
     static JsonItemConverter() {
       Register<IntValue>(new ValueTypeValueConverter<IntValue, int>(), 1);
       Register<DoubleValue>(new ValueTypeValueConverter<DoubleValue, double>(), 1);
-      Register<PercentValue>(new ValueTypeValueConverter<PercentValue, double>(), 1);
+      Register<PercentValue>(new ValueTypeValueConverter<PercentValue, double>(), 2);
       Register<BoolValue>(new ValueTypeValueConverter<BoolValue, bool>(), 1);
       Register<DateTimeValue>(new ValueTypeValueConverter<DateTimeValue, DateTime>(), 1);
       Register<StringValue>(new StringValueConverter(), 1);
 
       Register<IntArray>(new ValueTypeArrayConverter<IntArray, int>(), 1);
       Register<DoubleArray>(new ValueTypeArrayConverter<DoubleArray, double>(), 1);
-      Register<PercentArray>(new ValueTypeArrayConverter<PercentArray, double>(), 1);
+      Register<PercentArray>(new ValueTypeArrayConverter<PercentArray, double>(), 2);
       Register<BoolArray>(new ValueTypeArrayConverter<BoolArray, bool>(), 1);
 
       Register<IntMatrix>(new ValueTypeMatrixConverter<IntMatrix, int>(), 1);
       Register<DoubleMatrix>(new ValueTypeMatrixConverter<DoubleMatrix, double>(), 1);
-      Register<PercentMatrix>(new ValueTypeMatrixConverter<PercentMatrix, double>(), 1);
+      Register<PercentMatrix>(new ValueTypeMatrixConverter<PercentMatrix, double>(), 2);
       Register<BoolMatrix>(new ValueTypeMatrixConverter<BoolMatrix, bool>(), 1);
 
-      Register(typeof(IConstrainedValueParameter<>), new ConstrainedValueParameterConverter(), 1);
-      Register(typeof(ILookupParameter), new LookupParameterConverter(), 1);
-      Register(typeof(IValueParameter), new ValueParameterConverter(), 1);
-      Register(typeof(IParameterizedItem), new ParameterizedItemConverter(), 1);
-      Register(typeof(ICheckedMultiOperator<>), new MultiCheckedOperatorConverter(), 2);
       Register(typeof(EnumValue<>), new EnumTypeConverter(), 1);
-    }
 
+      Register<IValueParameter>(new ValueParameterConverter(), 1);
+      Register<IParameterizedItem>(new ParameterizedItemConverter(), 1);
+      Register<ILookupParameter>(new LookupParameterConverter(), 2);
+      Register<IValueLookupParameter>(new ValueLookupParameterConverter(), 3);
+
+      Register(typeof(IConstrainedValueParameter<>), new ConstrainedValueParameterConverter(), 2);
+      Register(typeof(ICheckedMultiOperator<>), new MultiCheckedOperatorConverter(), 2);
+    }
   }
 }

@@ -29,7 +29,7 @@ namespace HeuristicLab.JsonInterface {
           baseType = baseType.BaseType;
         }
       }
-      return type.IsAssignableFrom(other);
+      return false;//type.IsAssignableFrom(other);
     }
   }
 }

@@ -19,13 +19,13 @@ namespace HeuristicLab.JsonInterface {
 
     public IAlgorithm Instantiate(string configFile) {
       Config = JToken.Parse(File.ReadAllText(configFile));
-      TypeList = Config["Types"].ToObject<Dictionary<string, string>>();
+      TypeList = Config[Constants.Types].ToObject<Dictionary<string, string>>();
 
-      JsonItem algorithmData = GetData(Config["Metadata"]["Algorithm"].ToString());
+      JsonItem algorithmData = GetData(Config[Constants.Metadata][Constants.Algorithm].ToString());
       ResolveReferences(algorithmData);
       IAlgorithm algorithm = CreateObject<IAlgorithm>(algorithmData);
      
-      JsonItem problemData = GetData(Config["Metadata"]["Problem"].ToString());
+      JsonItem problemData = GetData(Config[Constants.Metadata][Constants.Problem].ToString());
       ResolveReferences(problemData);
       IProblem problem = CreateObject<IProblem>(problemData);
       algorithm.Problem = problem;
@@ -44,7 +44,7 @@ namespace HeuristicLab.JsonInterface {
 
     private JsonItem GetData(string key)
     {
-      foreach(JObject item in Config["Objects"])
+      foreach(JObject item in Config[Constants.Objects])
       {
         JsonItem data = BuildJsonItem(item);
         if (data.Name == key) return data;
@@ -65,18 +65,21 @@ namespace HeuristicLab.JsonInterface {
         Default = obj[nameof(JsonItem.Default)]?.ToObject<object>(),
         Range = obj[nameof(JsonItem.Range)]?.ToObject<object[]>(),
         Type = obj[nameof(JsonItem.Type)]?.ToObject<string>(),
+        Reference = obj[nameof(JsonItem.Type)] == null ? 
+                    null : 
+                    BuildJsonItem(obj[nameof(JsonItem.Type)].ToObject<JObject>()),
         Parameters = PopulateParameters(obj),
         Operators = PopulateOperators(obj)
       };
 
     private IList<JsonItem> PopulateParameters(JObject obj) {
       IList<JsonItem> list = new List<JsonItem>();
-      if (obj["StaticParameters"] != null)
-        foreach (JObject param in obj["StaticParameters"])
+      if (obj[Constants.StaticParameters] != null)
+        foreach (JObject param in obj[Constants.StaticParameters])
           list.Add(BuildJsonItem(param));
 
-      if (obj["FreeParameters"] != null) {
-        foreach (JObject param in obj["FreeParameters"]) {
+      if (obj[Constants.FreeParameters] != null) {
+        foreach (JObject param in obj[Constants.FreeParameters]) {
           JsonItem tmp = BuildJsonItem(param);
           JsonItem comp = null;
           foreach (var p in list) // TODO: nicht notwendig, da immer alle params im static block sind
