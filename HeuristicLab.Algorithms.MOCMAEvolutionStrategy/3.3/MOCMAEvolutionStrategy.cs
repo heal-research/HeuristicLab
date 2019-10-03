@@ -375,7 +375,7 @@ namespace HeuristicLab.Algorithms.MOCMAEvolutionStrategy {
       if (problem == null) return;
       var bkf = problem.BestKnownFront == null ? null : problem.BestKnownFront.ToArray();
       if (bkf != null && problem.ReferencePoint != null) {
-        ResultsBestKnownHypervolume = HypervolumeCalculator.CalculateHypervolume(bkf, problem.ReferencePoint, Problem.Maximization);
+        ResultsBestKnownHypervolume = HypervolumeCalculator.CalculateHypervolume(bkf, problem.ReferencePoint, Problem.Maximization.CloneAsArray());
         ResultsDifferenceBestKnownHypervolume = ResultsBestKnownHypervolume;
       }
       ResultsScatterPlot = new ParetoFrontScatterPlot(new double[0][], new double[0][], bkf, Problem.Objectives, Problem.Encoding.Length);
@@ -455,7 +455,7 @@ namespace HeuristicLab.Algorithms.MOCMAEvolutionStrategy {
     private void SelectParents(IReadOnlyList<Individual> parents, int length) {
       //perform a non-dominated sort to assign the rank to every element
       int[] ranks;
-      var fronts = DominationCalculator.CalculateAllParetoFronts(parents.ToArray(), parents.Select(i => i.PenalizedFitness).ToArray(), Problem.Maximization, out ranks);
+      var fronts = DominationCalculator.CalculateAllParetoFronts(parents.ToArray(), parents.Select(i => i.PenalizedFitness).ToArray(), Problem.Maximization.CloneAsArray(), out ranks);
 
       //deselect the highest rank fronts until we would end up with less or equal mu elements
       var rank = fronts.Count - 1;

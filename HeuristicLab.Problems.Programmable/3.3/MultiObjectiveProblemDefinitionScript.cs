@@ -23,7 +23,6 @@ using System.Collections.Generic;
 using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 
 namespace HeuristicLab.Problems.Programmable {
@@ -51,7 +50,7 @@ namespace HeuristicLab.Problems.Programmable {
     public int Objectives => CompiledProblemDefinition.Objectives;
     public IReadOnlyList<double[]> BestKnownFront => CompiledProblemDefinition.BestKnownFront;
     public double[] ReferencePoint => CompiledProblemDefinition.ReferencePoint;
-    public bool[] Maximization => CompiledProblemDefinition.Maximization;
+    public IReadOnlyList<bool> Maximization => CompiledProblemDefinition.Maximization;
 
 
     double[] IMultiObjectiveProblemDefinition<TEncoding, TEncodedSolution>.Evaluate(TEncodedSolution individual, IRandom random) {

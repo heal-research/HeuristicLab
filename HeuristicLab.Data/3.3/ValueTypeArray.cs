@@ -137,11 +137,19 @@ namespace HeuristicLab.Data {
       elementNames = new List<string>();
     }
     protected ValueTypeArray(T[] elements, bool @readonly = false) {
-      if (elements == null) throw new ArgumentNullException();
+      if (elements == null) throw new ArgumentNullException(nameof(elements));
       array = (T[])elements.Clone();
       readOnly = @readonly;
       resizable = true;
       elementNames = new List<string>();
+    }
+    
+    protected ValueTypeArray(IReadOnlyList<T> elements) {
+      if (elements == null) throw new ArgumentNullException(nameof(elements));
+      array = elements.ToArray(); // TODO: array should be an IList<T>
+      readOnly = true;
+      resizable = true; // TODO: really?
+      elementNames = new List<string>(); // TODO: wasteful
     }
 
     public virtual IValueTypeArray AsReadOnly() {

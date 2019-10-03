@@ -21,6 +21,7 @@
 
 #endregion
 
+using System.Collections.Generic;
 using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -37,6 +38,7 @@ namespace HeuristicLab.Data {
     protected StringConvertibleArray() : base() { }
     protected StringConvertibleArray(int length) : base(length) { }
     protected StringConvertibleArray(T[] elements, bool @readonly = false) : base(elements, @readonly) { }
+    protected StringConvertibleArray(IReadOnlyList<T> elements) : base(elements) { }
 
     protected abstract bool Validate(string value, out string errorMessage);
     protected abstract string GetValue(int index);

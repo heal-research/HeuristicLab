@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System.Collections.Generic;
 using System.Text;
 using HEAL.Attic;
 using HeuristicLab.Common;
@@ -36,6 +37,7 @@ namespace HeuristicLab.Data {
     public BoolArray() : base() { }
     public BoolArray(int length) : base(length) { }
     public BoolArray(bool[] elements, bool @readonly = false) : base(elements, @readonly) { }
+    public BoolArray(IReadOnlyList<bool> elements) : base(elements) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new BoolArray(this, cloner);

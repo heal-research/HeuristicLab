@@ -22,7 +22,6 @@
 using System;
 using System.Collections.Generic;
 using HeuristicLab.Core;
-using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 
 namespace HeuristicLab.Problems.Programmable {
@@ -77,8 +76,8 @@ namespace HeuristicLab.Problems.Programmable {
       : base(encoding) { }
 
     #region ISingleObjectiveProblemDefinition<TEncoding,TEncodedSolution> Members
-    public int Objectives => Maximization.Length;
-    public abstract bool[] Maximization { get; }
+    public int Objectives => Maximization.Count;
+    public abstract IReadOnlyList<bool> Maximization { get; }
     public abstract IReadOnlyList<double[]> BestKnownFront { get; }
     public abstract double[] ReferencePoint { get; }
     public abstract double[] Evaluate(TEncodedSolution individual, IRandom random);

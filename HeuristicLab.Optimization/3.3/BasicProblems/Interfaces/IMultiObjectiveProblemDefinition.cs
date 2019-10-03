@@ -27,7 +27,7 @@ namespace HeuristicLab.Optimization {
   [StorableType("609e74a2-d5e7-4495-b47c-2d365a8d717c")]
   public interface IMultiObjectiveProblemDefinition {
     int Objectives { get; }
-    bool[] Maximization { get; }
+    IReadOnlyList<bool> Maximization { get; }
     IReadOnlyList<double[]> BestKnownFront { get; }
     double[] ReferencePoint { get; }
   }
