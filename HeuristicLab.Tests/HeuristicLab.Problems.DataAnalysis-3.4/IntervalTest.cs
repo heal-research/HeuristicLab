@@ -158,7 +158,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
     [TestProperty("Time", "short")]
     public void TestIntervalCbrtOperator() {
       Assert.AreEqual<Interval>(new Interval(1, 2), Interval.CubicRoot(new Interval(1, 8)));
-      Assert.AreEqual<Interval>(new Interval(double.NaN, double.NaN), Interval.CubicRoot(new Interval(-8, -1)));
+      Assert.AreEqual<Interval>(new Interval(-2, -2), Interval.CubicRoot(new Interval(-8, -8)));
+      Assert.AreEqual<Interval>(new Interval(-2, 2), Interval.CubicRoot(new Interval(-8, 8)));
+      Assert.AreEqual(new Interval(2, 2), Interval.CubicRoot(new Interval(8, 8)));
+      Assert.AreEqual(new Interval(-Math.Pow(6, 1.0 / 3), 2), Interval.CubicRoot(new Interval(-6, 8)));
+      Assert.AreEqual(new Interval(2, 2), Interval.CubicRoot(new Interval(8, 8)));
+      Assert.AreEqual(new Interval(-2, 0), Interval.CubicRoot(new Interval(-8, 0)));
     }
   }
 }
