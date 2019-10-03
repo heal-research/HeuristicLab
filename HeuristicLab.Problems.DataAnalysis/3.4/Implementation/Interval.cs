@@ -230,6 +230,12 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
       return new Interval(lower, upper);
     }
+
+    public static Interval Absolute(Interval a) {
+      var absLower = Math.Abs(a.LowerBound);
+      var absUpper = Math.Abs(a.UpperBound);
+      return new Interval(Math.Min(absLower, absUpper), Math.Max(absLower, absUpper));
+    }
     #endregion
   }
 }
