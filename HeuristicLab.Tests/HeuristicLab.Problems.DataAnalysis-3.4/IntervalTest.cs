@@ -165,5 +165,21 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
       Assert.AreEqual(new Interval(2, 2), Interval.CubicRoot(new Interval(8, 8)));
       Assert.AreEqual(new Interval(-2, 0), Interval.CubicRoot(new Interval(-8, 0)));
     }
+
+    [TestMethod]
+    [TestCategory("Problems.DataAnalysis")]
+    [TestProperty("Time", "short")]
+    public void TestIntervalAbsoluteOperator() {
+      Assert.AreEqual(new Interval(2, 2), Interval.Absolute(new Interval(-2, -2)));
+      Assert.AreEqual(new Interval(5, 5), Interval.Absolute(new Interval(5, 5)));
+      Assert.AreEqual(new Interval(2, 8), Interval.Absolute(new Interval(2, 8)));
+      Assert.AreEqual(new Interval(5, 14), Interval.Absolute(new Interval(-14, -5)));
+      Assert.AreEqual(new Interval(2, 7), Interval.Absolute(new Interval(-2, 7)));
+      Assert.AreEqual(new Interval(2, 22), Interval.Absolute(new Interval(-22, -2)));
+      Assert.AreEqual(new Interval(6, 22), Interval.Absolute(new Interval(-22, 6)));
+      Assert.AreEqual(new Interval(0, 0), Interval.Absolute(new Interval(0, 0)));
+      Assert.AreEqual(new Interval(0, 2), Interval.Absolute(new Interval(-2, 0)));
+      Assert.AreEqual(new Interval(0, 2), Interval.Absolute(new Interval(0, 2)));
+    }
   }
 }
