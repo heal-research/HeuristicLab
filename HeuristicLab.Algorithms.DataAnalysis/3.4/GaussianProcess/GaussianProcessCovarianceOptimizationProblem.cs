@@ -21,6 +21,7 @@
 
 using System;
 using System.Linq;
+using System.Threading;
 using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -196,7 +197,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     private readonly object syncRoot = new object();
     // Does not produce the same result for the same seed when using parallel engine (see below)!
-    public override double Evaluate(ISymbolicExpressionTree tree, IRandom random) {
+    public override double Evaluate(ISymbolicExpressionTree tree, IRandom random, CancellationToken cancellationToken) {
       var meanFunction = new MeanConst();
       var problemData = ProblemData;
       var ds = problemData.Dataset;

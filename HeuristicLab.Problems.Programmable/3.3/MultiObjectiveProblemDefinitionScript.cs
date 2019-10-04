@@ -20,10 +20,10 @@
 #endregion
 
 using System.Collections.Generic;
+using System.Threading;
 using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 
 namespace HeuristicLab.Problems.Programmable {
@@ -56,6 +56,10 @@ namespace HeuristicLab.Problems.Programmable {
 
     double[] IMultiObjectiveProblemDefinition<TEncoding, TEncodedSolution>.Evaluate(TEncodedSolution individual, IRandom random) {
       return CompiledProblemDefinition.Evaluate(individual, random);
+    }
+
+    double[] IMultiObjectiveProblemDefinition<TEncoding, TEncodedSolution>.Evaluate(TEncodedSolution individual, IRandom random, CancellationToken cancellationToken) {
+      return CompiledProblemDefinition.Evaluate(individual, random, cancellationToken);
     }
 
     void IMultiObjectiveProblemDefinition<TEncoding, TEncodedSolution>.Analyze(TEncodedSolution[] individuals, double[][] qualities, ResultCollection results, IRandom random) {

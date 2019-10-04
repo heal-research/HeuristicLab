@@ -19,6 +19,7 @@
  */
 #endregion
 using System;
+using System.Threading;
 using HEAL.Attic;
 using HeuristicLab.Analysis;
 using HeuristicLab.Common;
@@ -120,7 +121,7 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
       return constrainedTestFunction != null ? constrainedTestFunction.CheckConstraints(individual, Objectives) : new double[0];
     }
 
-    public override double[] Evaluate(RealVector solution, IRandom random) {
+    public override double[] Evaluate(RealVector solution, IRandom random, CancellationToken cancellationToken) {
       return TestFunction.Evaluate(solution, Objectives);
     }
 

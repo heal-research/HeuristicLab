@@ -105,16 +105,16 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
         array[i] = maximization[i];
     }
 
-    public override double[] Evaluate(TEncodedSolution individual, IRandom random) {
-      var qualityMessage = Evaluate(BuildSolutionMessage(individual));
+    public override double[] Evaluate(TEncodedSolution individual, IRandom random, CancellationToken cancellationToken) {
+      var qualityMessage = Evaluate(BuildSolutionMessage(individual), cancellationToken);
       if (!qualityMessage.HasExtension(MultiObjectiveQualityMessage.QualityMessage_))
         throw new InvalidOperationException("The received message is not a MultiObjectiveQualityMessage.");
       return qualityMessage.GetExtension(MultiObjectiveQualityMessage.QualityMessage_).QualitiesList.ToArray();
     }
-    public virtual QualityMessage Evaluate(SolutionMessage solutionMessage) {
+    public virtual QualityMessage Evaluate(SolutionMessage solutionMessage, CancellationToken cancellationToken) {
       return Cache == null
-        ? EvaluateOnNextAvailableClient(solutionMessage)
-        : Cache.GetValue(solutionMessage, EvaluateOnNextAvailableClient, GetQualityMessageExtensions());
+        ? EvaluateOnNextAvailableClient(solutionMessage, cancellationToken)
+        : Cache.GetValue(solutionMessage, EvaluateOnNextAvailableClient, GetQualityMessageExtensions(), cancellationToken);
     }
 
     public override void Analyze(TEncodedSolution[] individuals, double[][] qualities, ResultCollection results, IRandom random) {
@@ -131,9 +131,9 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
 
     #region Evaluation
     private HashSet<IEvaluationServiceClient> activeClients = new HashSet<IEvaluationServiceClient>();
-    private object clientLock = new object();
+    private readonly object clientLock = new object();
 
-    private QualityMessage EvaluateOnNextAvailableClient(SolutionMessage message) {
+    private QualityMessage EvaluateOnNextAvailableClient(SolutionMessage message, CancellationToken cancellationToken) {
       IEvaluationServiceClient client = null;
       lock (clientLock) {
         client = Clients.CheckedItems.FirstOrDefault(c => !activeClients.Contains(c));
@@ -146,8 +146,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
       }
       try {
         return client.Evaluate(message, GetQualityMessageExtensions());
-      }
-      finally {
+      } finally {
         lock (clientLock) {
           activeClients.Remove(client);
           Monitor.PulseAll(clientLock);
@@ -164,8 +163,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
         foreach (var variable in scope.Variables) {
           try {
             MessageBuilder.AddToMessage(variable.Value, variable.Name, protobufBuilder);
-          }
-          catch (ArgumentException ex) {
+          } catch (ArgumentException ex) {
             throw new InvalidOperationException(string.Format("ERROR while building solution message: Parameter {0} cannot be added to the message", Name), ex);
           }
         }

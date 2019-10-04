@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System.Threading;
 using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -49,7 +50,7 @@ namespace HeuristicLab.Problems.PTSP {
     public static double EvaluateMove(Permutation tour, InversionMove move, IProbabilisticTSPData data) {
       var afterMove = (Permutation)tour.Clone();
       InversionManipulator.Apply(afterMove, move.Index1, move.Index2);
-      return AnalyticalPTSP.Evaluate(afterMove, data);
+      return AnalyticalPTSP.Evaluate(afterMove, data, CancellationToken.None);
     }
 
     protected override double EvaluateMove(Permutation tour, IProbabilisticTSPData data) {

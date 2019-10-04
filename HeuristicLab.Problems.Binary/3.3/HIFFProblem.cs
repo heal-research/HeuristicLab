@@ -22,6 +22,7 @@
 #endregion
 
 using System;
+using System.Threading;
 using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -46,7 +47,7 @@ namespace HeuristicLab.Problems.Binary {
       Encoding.Length = 64;
     }
     // In the GECCO paper, Section 4.1
-    public override double Evaluate(BinaryVector individual, IRandom random) {
+    public override double Evaluate(BinaryVector individual, IRandom random, CancellationToken cancellationToken) {
       int[] level = new int[individual.Length];
       int levelLength = individual.Length;
 

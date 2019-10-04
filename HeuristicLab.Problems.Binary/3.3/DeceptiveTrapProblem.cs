@@ -22,6 +22,7 @@
 #endregion
 
 using System;
+using System.Threading;
 using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -79,7 +80,7 @@ namespace HeuristicLab.Problems.Binary {
       return result;
     }
 
-    public override double Evaluate(BinaryVector individual, IRandom random) {
+    public override double Evaluate(BinaryVector individual, IRandom random, CancellationToken cancellationToken) {
       if (individual.Length != Length) throw new ArgumentException("The individual has not the correct length.");
       int total = 0;
       var trapSize = TrapSize;

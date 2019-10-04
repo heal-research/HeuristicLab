@@ -30,12 +30,12 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using Google.ProtocolBuffers;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Common.Resources;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 
 namespace HeuristicLab.Problems.ExternalEvaluation {
 
@@ -49,7 +49,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
       private QualityMessage message;
       private byte[] rawMessage;
 
-      private object lockObject = new object();
+      private readonly object lockObject = new object();
 
       public byte[] RawMessage {
         get { return rawMessage; }
@@ -115,7 +115,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
       }
     }
 
-    public delegate QualityMessage Evaluator(SolutionMessage message);
+    public delegate QualityMessage Evaluator(SolutionMessage message, CancellationToken cancellationToken);
     #endregion
 
     #region Fields
@@ -123,7 +123,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
     private Dictionary<CacheEntry, LinkedListNode<CacheEntry>> index;
 
     private HashSet<string> activeEvaluations = new HashSet<string>();
-    private object cacheLock = new object();
+    private readonly object cacheLock = new object();
     #endregion
 
     #region Properties
@@ -220,7 +220,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
       CapacityParameter.Value.ValueChanged += new EventHandler(CapacityChanged);
     }
 
-    void CapacityChanged(object sender, EventArgs e) {
+    private void CapacityChanged(object sender, EventArgs e) {
       if (Capacity < 0)
         throw new ArgumentOutOfRangeException("Cache capacity cannot be less than zero");
       lock (cacheLock)
@@ -239,7 +239,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
       OnChanged();
     }
 
-    public QualityMessage GetValue(SolutionMessage message, Evaluator evaluate, ExtensionRegistry extensions) {
+    public QualityMessage GetValue(SolutionMessage message, Evaluator evaluate, ExtensionRegistry extensions, CancellationToken cancellationToken) {
       var entry = new CacheEntry(message.ToString());
       bool lockTaken = false;
       bool waited = false;
@@ -266,7 +266,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
               Monitor.Exit(cacheLock);
               OnChanged();
               try {
-                entry.SetMessage(evaluate(message));
+                entry.SetMessage(evaluate(message, cancellationToken));
                 Monitor.Enter(cacheLock, ref lockTaken);
                 index[entry] = list.AddLast(entry);
                 Trim();

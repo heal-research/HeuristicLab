@@ -20,6 +20,7 @@
 #endregion
 
 using System.Collections.Generic;
+using System.Threading;
 using HEAL.Attic;
 using HeuristicLab.Core;
 
@@ -34,7 +35,10 @@ namespace HeuristicLab.Optimization {
   public interface ISingleObjectiveProblemDefinition<TEncoding, TEncodedSolution> : ISingleObjectiveProblemDefinition, IProblemDefinition<TEncoding, TEncodedSolution>
     where TEncoding : class, IEncoding<TEncodedSolution>
     where TEncodedSolution : class, IEncodedSolution {
+
     double Evaluate(TEncodedSolution solution, IRandom random);
+    double Evaluate(TEncodedSolution solution, IRandom random, CancellationToken cancellationToken);
+
     void Analyze(TEncodedSolution[] solutions, double[] qualities, ResultCollection results, IRandom random);
     IEnumerable<TEncodedSolution> GetNeighbors(TEncodedSolution solution, IRandom random);
   }

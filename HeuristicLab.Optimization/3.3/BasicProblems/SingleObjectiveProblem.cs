@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -111,7 +112,10 @@ namespace HeuristicLab.Optimization {
       ParameterizeOperators();
     }
 
-    public abstract double Evaluate(TEncodedSolution solution, IRandom random);
+    public virtual double Evaluate(TEncodedSolution solution, IRandom random) {
+      return Evaluate(solution, random, CancellationToken.None);
+    }
+    public abstract double Evaluate(TEncodedSolution solution, IRandom random, CancellationToken cancellationToken);
     public virtual void Analyze(TEncodedSolution[] solutions, double[] qualities, ResultCollection results, IRandom random) { }
     public virtual IEnumerable<TEncodedSolution> GetNeighbors(TEncodedSolution solution, IRandom random) {
       return Enumerable.Empty<TEncodedSolution>();

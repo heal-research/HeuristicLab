@@ -22,6 +22,7 @@
 using System;
 using System.Linq;
 using System.Security.Cryptography;
+using System.Threading;
 using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -333,7 +334,7 @@ namespace HeuristicLab.Problems.NK {
       return F(x, g, w, (long)seed, ref f_i, q, p);
     }
 
-    public override double Evaluate(BinaryVector vector, IRandom random) {
+    public override double Evaluate(BinaryVector vector, IRandom random, CancellationToken cancellationToken) {
       double[] f_i; //useful for debugging
       double quality = Evaluate(vector, GeneInteractions, Weights, InteractionSeed.Value, out f_i, Q, P);
       return quality;

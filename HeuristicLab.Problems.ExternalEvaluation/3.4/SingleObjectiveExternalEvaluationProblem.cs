@@ -102,16 +102,16 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
     }
 
     #region Single Objective Problem Overrides
-    public override double Evaluate(TEncodedSolution solution, IRandom random) {
-      var qualityMessage = Evaluate(BuildSolutionMessage(solution));
+    public override double Evaluate(TEncodedSolution solution, IRandom random, CancellationToken cancellationToken) {
+      var qualityMessage = Evaluate(BuildSolutionMessage(solution), cancellationToken);
       if (!qualityMessage.HasExtension(SingleObjectiveQualityMessage.QualityMessage_))
         throw new InvalidOperationException("The received message is not a SingleObjectiveQualityMessage.");
       return qualityMessage.GetExtension(SingleObjectiveQualityMessage.QualityMessage_).Quality;
     }
-    public virtual QualityMessage Evaluate(SolutionMessage solutionMessage) {
+    public virtual QualityMessage Evaluate(SolutionMessage solutionMessage, CancellationToken cancellationToken) {
       return Cache == null
-        ? EvaluateOnNextAvailableClient(solutionMessage)
-        : Cache.GetValue(solutionMessage, EvaluateOnNextAvailableClient, GetQualityMessageExtensions());
+        ? EvaluateOnNextAvailableClient(solutionMessage,cancellationToken)
+        : Cache.GetValue(solutionMessage, EvaluateOnNextAvailableClient, GetQualityMessageExtensions(), cancellationToken);
     }
 
     public override void Analyze(TEncodedSolution[] solutions, double[] qualities, ResultCollection results, IRandom random) {
@@ -131,9 +131,9 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
 
     #region Evaluation
     private HashSet<IEvaluationServiceClient> activeClients = new HashSet<IEvaluationServiceClient>();
-    private object clientLock = new object();
+    private readonly object clientLock = new object();
 
-    private QualityMessage EvaluateOnNextAvailableClient(SolutionMessage message) {
+    private QualityMessage EvaluateOnNextAvailableClient(SolutionMessage message, CancellationToken cancellationToken) {
       IEvaluationServiceClient client = null;
       lock (clientLock) {
         client = Clients.CheckedItems.FirstOrDefault(c => !activeClients.Contains(c));

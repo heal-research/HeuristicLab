@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
+using System.Threading;
 using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -116,7 +117,7 @@ namespace HeuristicLab.Problems.GeneticProgramming.Boolean {
     }
 
 
-    public override double Evaluate(ISymbolicExpressionTree tree, IRandom random) {
+    public override double Evaluate(ISymbolicExpressionTree tree, IRandom random, CancellationToken cancellationToken) {
       if (NumberOfBits <= 0) throw new NotSupportedException("Number of bits must be larger than zero.");
       if (NumberOfBits > 37) throw new NotSupportedException("Multiplexer does not support problems with number of bits > 37.");
       var bs = Enumerable.Range(0, (int)Math.Pow(2, NumberOfBits));

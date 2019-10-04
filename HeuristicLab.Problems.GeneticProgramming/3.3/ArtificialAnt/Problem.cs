@@ -22,6 +22,7 @@
 using System;
 using System.Diagnostics.Contracts;
 using System.Linq;
+using System.Threading;
 using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -133,7 +134,7 @@ namespace HeuristicLab.Problems.GeneticProgramming.ArtificialAnt {
     }
 
 
-    public override double Evaluate(ISymbolicExpressionTree tree, IRandom random) {
+    public override double Evaluate(ISymbolicExpressionTree tree, IRandom random, CancellationToken cancellationToken) {
       var interpreter = new Interpreter(tree, World, MaxTimeSteps);
       interpreter.Run();
       return interpreter.FoodEaten;

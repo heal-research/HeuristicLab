@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Threading;
 using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -134,11 +135,11 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
       RegisterEventHandlers();
     }
 
-    public override double Evaluate(Permutation assignment, IRandom random) {
-      return Evaluate(assignment);
+    public override double Evaluate(Permutation assignment, IRandom random, CancellationToken cancellationToken) {
+      return Evaluate(assignment, cancellationToken);
     }
 
-    public double Evaluate(Permutation assignment) {
+    public double Evaluate(Permutation assignment, CancellationToken cancellationToken) {
       double quality = 0;
       for (int i = 0; i < assignment.Length; i++) {
         for (int j = 0; j < assignment.Length; j++) {
@@ -282,8 +283,8 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
       Permutation lbSolution;
       // calculate the optimum of a LAP relaxation and use it as lower bound of our QAP
       LowerBound = new DoubleValue(GilmoreLawlerBoundCalculator.CalculateLowerBound(Weights, Distances, out lbSolution));
-      // evalute the LAP optimal solution as if it was a QAP solution
-      var lbSolutionQuality = Evaluate(lbSolution);
+      // evaluate the LAP optimal solution as if it was a QAP solution
+      var lbSolutionQuality = Evaluate(lbSolution, CancellationToken.None);
       // in case both qualities are the same it means that the LAP optimum is also a QAP optimum
       if (LowerBound.Value.IsAlmost(lbSolutionQuality)) {
         BestKnownSolution = lbSolution;
@@ -311,7 +312,7 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
     #endregion
 
     public void Load(QAPData data) {
-      if (data.Dimension > ProblemSizeLimit) throw new System.IO.InvalidDataException("The problem is limited to instance of size " + ProblemSizeLimit + ". You can change this limit by modifying " + nameof(QuadraticAssignmentProblem) + "." + nameof(ProblemSizeLimit) +"!");
+      if (data.Dimension > ProblemSizeLimit) throw new System.IO.InvalidDataException("The problem is limited to instance of size " + ProblemSizeLimit + ". You can change this limit by modifying " + nameof(QuadraticAssignmentProblem) + "." + nameof(ProblemSizeLimit) + "!");
       var weights = new DoubleMatrix(data.Weights, @readonly: true);
       var distances = new DoubleMatrix(data.Distances, @readonly: true);
       Name = data.Name;
@@ -362,7 +363,7 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
     public void EvaluateAndLoadAssignment(int[] assignment) {
       if (assignment == null || assignment.Length == 0) return;
       var vector = new Permutation(PermutationTypes.Absolute, assignment);
-      var result = Evaluate(vector);
+      var result = Evaluate(vector, CancellationToken.None);
       BestKnownQuality = result;
       BestKnownSolution = vector;
       BestKnownSolutions = new ItemSet<Permutation> { (Permutation)vector.Clone() };

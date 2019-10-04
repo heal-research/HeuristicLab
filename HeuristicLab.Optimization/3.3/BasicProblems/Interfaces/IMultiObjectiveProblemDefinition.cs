@@ -20,6 +20,7 @@
 #endregion
 
 using System.Collections.Generic;
+using System.Threading;
 using HEAL.Attic;
 using HeuristicLab.Core;
 
@@ -37,6 +38,7 @@ namespace HeuristicLab.Optimization {
     where TEncoding : class, IEncoding<TEncodedSolution>
     where TEncodedSolution : class, IEncodedSolution {
     double[] Evaluate(TEncodedSolution solution, IRandom random);
+    double[] Evaluate(TEncodedSolution solution, IRandom random, CancellationToken cancellationToken);
     void Analyze(TEncodedSolution[] solutions, double[][] qualities, ResultCollection results, IRandom random);
   }
 }

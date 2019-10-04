@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -88,7 +89,7 @@ namespace HeuristicLab.Problems.GeneticProgramming.BasicSymbolicRegression {
     }
 
 
-    public override double Evaluate(ISymbolicExpressionTree tree, IRandom random) {
+    public override double Evaluate(ISymbolicExpressionTree tree, IRandom random, CancellationToken cancellationToken) {
       // Doesn't use classes from HeuristicLab.Problems.DataAnalysis.Symbolic to make sure that the implementation can be fully understood easily.
       // HeuristicLab.Problems.DataAnalysis.Symbolic would already provide all the necessary functionality (esp. interpreter) but at a much higher complexity.
       // Another argument is that we don't need a reference to HeuristicLab.Problems.DataAnalysis.Symbolic

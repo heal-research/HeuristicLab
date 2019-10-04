@@ -20,6 +20,7 @@
 #endregion
 
 using System.Collections.Generic;
+using System.Threading;
 using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -49,8 +50,12 @@ namespace HeuristicLab.Problems.Programmable {
 
     public bool Maximization => CompiledProblemDefinition.Maximization;
 
-    double ISingleObjectiveProblemDefinition<TEncoding, TEncodedSolution>.Evaluate(TEncodedSolution individual, IRandom random) {
-      return CompiledProblemDefinition.Evaluate(individual, random);
+    double ISingleObjectiveProblemDefinition<TEncoding, TEncodedSolution>.Evaluate(TEncodedSolution solution, IRandom random) {
+      return CompiledProblemDefinition.Evaluate(solution, random);
+    }
+
+    double ISingleObjectiveProblemDefinition<TEncoding, TEncodedSolution>.Evaluate(TEncodedSolution solution, IRandom random, CancellationToken cancellationToken) {
+      return CompiledProblemDefinition.Evaluate(solution, random, cancellationToken);
     }
 
     void ISingleObjectiveProblemDefinition<TEncoding, TEncodedSolution>.Analyze(TEncodedSolution[] individuals, double[] qualities, ResultCollection results, IRandom random) {

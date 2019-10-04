@@ -22,11 +22,12 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.BinaryVectorEncoding;
 using HeuristicLab.Optimization;
-using HEAL.Attic;
 
 namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
   // This code is based off the publication
@@ -92,9 +93,11 @@ namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
       BestFoundOnEvaluation = 0;
     }
 
-
-
     public double Evaluate(BinaryVector vector, IRandom random) {
+      return Evaluate(vector, random, CancellationToken.None);
+    }
+
+    public double Evaluate(BinaryVector vector, IRandom random, CancellationToken cancellationToken) {
       if (Evaluations >= maxEvaluations) throw new OperationCanceledException("Maximum Evaluation Limit Reached");
       Evaluations++;
       double fitness = problem.Evaluate(vector, random);

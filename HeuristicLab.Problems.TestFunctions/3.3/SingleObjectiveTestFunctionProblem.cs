@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using HEAL.Attic;
 using HeuristicLab.Analysis;
 using HeuristicLab.Common;
@@ -107,7 +108,7 @@ namespace HeuristicLab.Problems.TestFunctions {
       BoundsParameter.ValueChanged += BoundsParameterOnValueChanged;
     }
 
-    public override double Evaluate(RealVector individual, IRandom random) {
+    public override double Evaluate(RealVector individual, IRandom random, CancellationToken cancellationToken) {
       return TestFunction.Evaluate(individual);
     }
 

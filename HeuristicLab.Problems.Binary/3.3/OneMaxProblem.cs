@@ -21,6 +21,7 @@
 
 using System;
 using System.Linq;
+using System.Threading;
 using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -46,7 +47,7 @@ namespace HeuristicLab.Problems.Binary {
       return new OneMaxProblem(this, cloner);
     }
 
-    public override double Evaluate(BinaryVector vector, IRandom random) {
+    public override double Evaluate(BinaryVector vector, IRandom random, CancellationToken cancellationToken) {
       return vector.Count(b => b);
     }
 

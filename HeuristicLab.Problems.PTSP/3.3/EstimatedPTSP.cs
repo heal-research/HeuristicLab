@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -100,8 +101,8 @@ namespace HeuristicLab.Problems.PTSP {
       return new EstimatedPTSP(this, cloner);
     }
 
-    public override double Evaluate(Permutation tour, IRandom random) {
-      return Evaluate(tour, ProbabilisticTSPData, RealizationData);
+    public override double Evaluate(Permutation tour, IRandom random, CancellationToken cancellationToken) {
+      return Evaluate(tour, ProbabilisticTSPData, RealizationData, cancellationToken);
     }
 
     [StorableHook(HookType.AfterDeserialization)]
@@ -109,7 +110,7 @@ namespace HeuristicLab.Problems.PTSP {
       RegisterEventHandlers();
     }
 
-    public static double Evaluate(Permutation tour, IProbabilisticTSPData data, IEnumerable<BoolArray> realizations) {
+    public static double Evaluate(Permutation tour, IProbabilisticTSPData data, IEnumerable<BoolArray> realizations, CancellationToken cancellationToken) {
       // Estimation-based evaluation, here without calculating variance for faster evaluation
       var estimatedSum = 0.0;
       var count = 0;

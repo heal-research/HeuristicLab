@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System.Threading;
 using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -58,11 +59,11 @@ namespace HeuristicLab.Problems.PTSP {
       Encoding.ConfigureOperators(Operators);
     }
 
-    public override double Evaluate(Permutation tour, IRandom random) {
-      return Evaluate(tour, ProbabilisticTSPData);
+    public override double Evaluate(Permutation tour, IRandom random, CancellationToken cancellationToken) {
+      return Evaluate(tour, ProbabilisticTSPData, cancellationToken);
     }
 
-    public static double Evaluate(Permutation tour, IProbabilisticTSPData data) {
+    public static double Evaluate(Permutation tour, IProbabilisticTSPData data, CancellationToken cancellationToken) {
       // Analytical evaluation
       var firstSum = 0.0;
       for (var i = 0; i < tour.Length - 1; i++) {

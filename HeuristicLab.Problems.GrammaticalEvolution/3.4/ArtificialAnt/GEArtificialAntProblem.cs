@@ -22,6 +22,7 @@
 #endregion
 
 using System.Linq;
+using System.Threading;
 using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -94,7 +95,7 @@ namespace HeuristicLab.Problems.GrammaticalEvolution {
     }
 
     private readonly object syncRoot = new object();
-    public override double Evaluate(IntegerVector solution, IRandom random) {
+    public override double Evaluate(IntegerVector solution, IRandom random, CancellationToken cancellationToken) {
       var bounds = Encoding.Bounds;
       var len = Encoding.Length;
       var grammar = wrappedAntProblem.Encoding.Grammar;

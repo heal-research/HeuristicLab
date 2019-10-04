@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -81,7 +82,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
       return new TSP(this, cloner);
     }
 
-    public override double Evaluate(Permutation tour, IRandom random) {
+    public override double Evaluate(Permutation tour, IRandom random, CancellationToken cancellationToken) {
       return Evaluate(tour);
     }
 

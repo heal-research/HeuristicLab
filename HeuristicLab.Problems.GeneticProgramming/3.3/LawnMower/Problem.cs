@@ -21,6 +21,7 @@
 
 using System;
 using System.Linq;
+using System.Threading;
 using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -91,7 +92,7 @@ namespace HeuristicLab.Problems.GeneticProgramming.LawnMower {
       }
     }
 
-    public override double Evaluate(ISymbolicExpressionTree tree, IRandom random) {
+    public override double Evaluate(ISymbolicExpressionTree tree, IRandom random, CancellationToken cancellationToken) {
       var length = LawnLengthParameter.Value.Value;
       var width = LawnWidthParameter.Value.Value;
 

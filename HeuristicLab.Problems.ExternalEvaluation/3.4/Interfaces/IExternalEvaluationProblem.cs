@@ -19,10 +19,11 @@
  */
 #endregion
 
+using System.Threading;
 using Google.ProtocolBuffers;
+using HEAL.Attic;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
-using HEAL.Attic;
 
 namespace HeuristicLab.Problems.ExternalEvaluation {
   [StorableType("04901da1-d785-4124-a989-2a9c6bd1a81c")]
@@ -31,7 +32,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
     EvaluationCache Cache { get; }
     CheckedItemCollection<IEvaluationServiceClient> Clients { get; }
 
-    QualityMessage Evaluate(SolutionMessage solutionMessage);
+    QualityMessage Evaluate(SolutionMessage solutionMessage, CancellationToken cancellationToken);
     ExtensionRegistry GetQualityMessageExtensions();
   }
 }

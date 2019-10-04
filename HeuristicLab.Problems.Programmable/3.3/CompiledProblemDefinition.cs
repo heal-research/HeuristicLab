@@ -21,8 +21,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using HeuristicLab.Core;
-using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 
 namespace HeuristicLab.Problems.Programmable {
@@ -58,7 +58,11 @@ namespace HeuristicLab.Problems.Programmable {
 
     #region ISingleObjectiveProblemDefinition<TEncoding,TEncodedSolution> Members
     public abstract bool Maximization { get; }
-    public abstract double Evaluate(TEncodedSolution individual, IRandom random);
+
+    public virtual double Evaluate(TEncodedSolution solution, IRandom random) {
+      return Evaluate(solution, random, CancellationToken.None);
+    }
+    public abstract double Evaluate(TEncodedSolution solution, IRandom random, CancellationToken cancellationToken);
     public abstract void Analyze(TEncodedSolution[] individuals, double[] qualities, ResultCollection results, IRandom random);
     public abstract IEnumerable<TEncodedSolution> GetNeighbors(TEncodedSolution individual, IRandom random);
 
@@ -81,7 +85,11 @@ namespace HeuristicLab.Problems.Programmable {
     public abstract bool[] Maximization { get; }
     public abstract IReadOnlyList<double[]> BestKnownFront { get; }
     public abstract double[] ReferencePoint { get; }
-    public abstract double[] Evaluate(TEncodedSolution individual, IRandom random);
+
+    public virtual double[] Evaluate(TEncodedSolution solution, IRandom random) {
+      return Evaluate(solution, random, CancellationToken.None);
+    }
+    public abstract double[] Evaluate(TEncodedSolution solution, IRandom random, CancellationToken cancellationToken);
     public abstract void Analyze(TEncodedSolution[] individuals, double[][] qualities, ResultCollection results, IRandom random);
     public abstract IEnumerable<TEncodedSolution> GetNeighbors(TEncodedSolution individual, IRandom random);
     #endregion

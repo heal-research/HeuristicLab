@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using HEAL.Attic;
 using HeuristicLab.Analysis;
 using HeuristicLab.Common;
@@ -95,7 +96,7 @@ namespace HeuristicLab.Problems.Knapsack {
       RegisterEventHandlers();
     }
 
-    public override double Evaluate(BinaryVector solution, IRandom random) {
+    public override double Evaluate(BinaryVector solution, IRandom random, CancellationToken cancellationToken) {
       var totalWeight = 0.0;
       var totalValue = 0.0;
       for (var i = 0; i < solution.Length; i++) {

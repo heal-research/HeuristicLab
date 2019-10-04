@@ -21,6 +21,7 @@
 
 using System;
 using System.Linq;
+using System.Threading;
 using HEAL.Attic;
 using HeuristicLab.Analysis;
 using HeuristicLab.Common;
@@ -127,7 +128,7 @@ namespace HeuristicLab.Problems.GraphColoring {
       OnReset();
     }
 
-    public override double Evaluate(LinearLinkage lle, IRandom random) {
+    public override double Evaluate(LinearLinkage lle, IRandom random, CancellationToken cancellationToken) {
       var adjList = adjacencyListParameter.Value;
       var llee = lle.ToEndLinks(); // LLE-e encoding uses the highest indexed member as group number
 

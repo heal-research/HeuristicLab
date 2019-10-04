@@ -21,6 +21,7 @@
 
 using System.Collections.Generic;
 using System.Drawing;
+using System.Threading;
 using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Common.Resources;
@@ -116,6 +117,9 @@ namespace HeuristicLab.Problems.Programmable {
 
     public override double[] Evaluate(TEncodedSolution individual, IRandom random) {
       return ProblemDefinition.Evaluate(individual, random);
+    }
+    public override double[] Evaluate(TEncodedSolution individual, IRandom random, CancellationToken cancellationToken) {
+      return ProblemDefinition.Evaluate(individual, random, cancellationToken);
     }
 
     public override void Analyze(TEncodedSolution[] individuals, double[][] qualities, ResultCollection results, IRandom random) {
