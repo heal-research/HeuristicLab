@@ -58,10 +58,9 @@ namespace HeuristicLab.Optimization {
     public bool Maximization {
       get { return MaximizationParameter.Value.Value; }
       protected set {
-        if (MaximizationParameter.Value.Value == value) return;
-        MaximizationParameter.ReadOnly = false;
-        MaximizationParameter.Value = new BoolValue(value).AsReadOnly();
-        MaximizationParameter.ReadOnly = true;
+        if (Maximization == value) return;
+        MaximizationParameter.ForceValue(new BoolValue(value, @readonly: true));
+        OnMaximizationChanged();
       }
     }
 
@@ -184,5 +183,10 @@ namespace HeuristicLab.Optimization {
       get { return Evaluator; }
     }
     #endregion
+
+    public event EventHandler MaximizationChanged;
+    protected void OnMaximizationChanged() {
+      MaximizationChanged?.Invoke(this, EventArgs.Empty);
+    }
   }
 }

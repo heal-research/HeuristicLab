@@ -19,11 +19,12 @@
  */
 #endregion
 
+using System;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 
 namespace HeuristicLab.Optimization {
   [Item("Single-Objective Heuristic OptimizationProblem", "A base class for single-objective heuristic optimization problems.")]
@@ -36,17 +37,32 @@ namespace HeuristicLab.Optimization {
 
     [StorableConstructor]
     protected SingleObjectiveHeuristicOptimizationProblem(StorableConstructorFlag _) : base(_) { }
-    protected SingleObjectiveHeuristicOptimizationProblem(SingleObjectiveHeuristicOptimizationProblem<T, U> original, Cloner cloner) : base(original, cloner) { }
+    protected SingleObjectiveHeuristicOptimizationProblem(SingleObjectiveHeuristicOptimizationProblem<T, U> original, Cloner cloner)
+      : base(original, cloner) {
+      RegisterEventHandlers();
+    }
     protected SingleObjectiveHeuristicOptimizationProblem()
       : base() {
       Parameters.Add(new ValueParameter<BoolValue>(MaximizationParameterName, "Set to false if the problem should be minimized.", new BoolValue()));
       Parameters.Add(new OptionalValueParameter<DoubleValue>(BestKnownQualityParameterName, "The quality of the best known solution of this problem."));
+
+      RegisterEventHandlers();
     }
 
     protected SingleObjectiveHeuristicOptimizationProblem(T evaluator, U solutionCreator)
       : base(evaluator, solutionCreator) {
       Parameters.Add(new ValueParameter<BoolValue>(MaximizationParameterName, "Set to false if the problem should be minimized.", new BoolValue()));
       Parameters.Add(new OptionalValueParameter<DoubleValue>(BestKnownQualityParameterName, "The quality of the best known solution of this problem."));
+
+      RegisterEventHandlers();
+    }
+
+    private void RegisterEventHandlers() {
+      MaximizationParameter.ValueChanged += MaximizationParameterOnValueChanged;
+    }
+
+    private void MaximizationParameterOnValueChanged(object sender, EventArgs e) {
+      OnMaximizationChanged();
     }
 
     [StorableHook(HookType.AfterDeserialization)]
@@ -58,6 +74,7 @@ namespace HeuristicLab.Optimization {
         Parameters.Add(new OptionalValueParameter<DoubleValue>(BestKnownQualityParameterName, "The quality of the best known solution of this problem."));
       }
       #endregion
+      RegisterEventHandlers();
     }
     public ValueParameter<BoolValue> MaximizationParameter {
       get { return (ValueParameter<BoolValue>)Parameters[MaximizationParameterName]; }
@@ -67,7 +84,10 @@ namespace HeuristicLab.Optimization {
     }
     public BoolValue Maximization {
       get { return MaximizationParameter.Value; }
-      set { MaximizationParameter.Value = value; }
+      set {
+        if (Maximization == value) return;
+        MaximizationParameter.Value = value;
+      }
     }
 
     public IValueParameter<DoubleValue> BestKnownQualityParameter {
@@ -83,6 +103,11 @@ namespace HeuristicLab.Optimization {
 
     ISingleObjectiveEvaluator ISingleObjectiveHeuristicOptimizationProblem.Evaluator {
       get { return Evaluator; }
+    }
+
+    public event EventHandler MaximizationChanged;
+    protected void OnMaximizationChanged() {
+      MaximizationChanged?.Invoke(this, EventArgs.Empty);
     }
   }
 }

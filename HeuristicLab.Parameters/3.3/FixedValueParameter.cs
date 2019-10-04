@@ -31,13 +31,11 @@ namespace HeuristicLab.Parameters {
   [Item("FixedValueParameter", "A parameter whose value is defined in the parameter itself and cannot be set.")]
   [StorableType("7787B99D-5F32-4639-B47A-76CB4D204392")]
   public class FixedValueParameter<T> : ValueParameter<T>, IFixedValueParameter<T> where T : class, IItem, new() {
-
-    public override T Value {
-      get { return base.Value; }
-      set { throw new NotSupportedException("FixedValueParameters do not support setting their value."); }
-    }
-
     IItem IFixedValueParameter.Value { get { return Value; } }
+
+    public override void ForceValue(T value) {
+      throw new NotSupportedException("FixedValueParameters do not support setting their value.");
+    }
 
     [StorableConstructor]
     protected FixedValueParameter(StorableConstructorFlag _) : base(_) { }

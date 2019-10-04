@@ -19,13 +19,14 @@
  */
 #endregion
 
+using System;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableType("E9876DF8-ACFA-41C8-93B7-FA40C57CE459")]
@@ -76,18 +77,23 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     private void RegisterEventHandler() {
-      Evaluator.QualitiesParameter.ActualNameChanged += new System.EventHandler(QualitiesParameter_ActualNameChanged);
+      Evaluator.QualitiesParameter.ActualNameChanged += new EventHandler(QualitiesParameter_ActualNameChanged);
+      MaximizationParameter.ValueChanged += MaximizationParameter_ValueChanged;
     }
 
     protected override void OnEvaluatorChanged() {
       base.OnEvaluatorChanged();
-      Evaluator.QualitiesParameter.ActualNameChanged += new System.EventHandler(QualitiesParameter_ActualNameChanged);
+      Evaluator.QualitiesParameter.ActualNameChanged += new EventHandler(QualitiesParameter_ActualNameChanged);
       Maximization = new BoolArray(Evaluator.Maximization.ToArray());
       ParameterizeOperators();
     }
 
-    private void QualitiesParameter_ActualNameChanged(object sender, System.EventArgs e) {
+    private void QualitiesParameter_ActualNameChanged(object sender, EventArgs e) {
       ParameterizeOperators();
+    }
+
+    private void MaximizationParameter_ValueChanged(object sender, EventArgs e) {
+      OnMaximizationChanged();
     }
 
     protected override void ParameterizeOperators() {
@@ -96,6 +102,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         op.QualitiesParameter.ActualName = Evaluator.QualitiesParameter.ActualName;
         op.MaximizationParameter.ActualName = MaximizationParameterName;
       }
+    }
+
+    public event EventHandler MaximizationChanged;
+    protected void OnMaximizationChanged() {
+      MaximizationChanged?.Invoke(this, EventArgs.Empty);
     }
   }
 }

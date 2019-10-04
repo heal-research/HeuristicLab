@@ -19,11 +19,14 @@
  */
 #endregion
 
+using System;
 using HEAL.Attic;
 
 namespace HeuristicLab.Optimization {
   [StorableType("251d79f1-a065-47f9-85a3-2e8dbdbf685e")]
-  public interface IMultiObjectiveProblem : IProblem, IMultiObjectiveHeuristicOptimizationProblem { }
+  public interface IMultiObjectiveProblem : IProblem, IMultiObjectiveHeuristicOptimizationProblem {
+    event EventHandler MaximizationChanged;
+  }
 
   [StorableType("806fb361-1469-4903-9f54-f8678b0717b9")]
   public interface IMultiObjectiveProblem<TEncoding, TEncodedSolution> : IMultiObjectiveProblem, IProblem<TEncoding, TEncodedSolution>

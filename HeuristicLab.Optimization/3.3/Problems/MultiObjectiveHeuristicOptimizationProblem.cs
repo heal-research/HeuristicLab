@@ -19,11 +19,12 @@
  */
 #endregion
 
+using System;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 
 namespace HeuristicLab.Optimization {
   [Item("Multi-Objective Heuristic Optimization Problem", "A base class for multi-objective heuristic optimization problems.")]
@@ -35,15 +36,30 @@ namespace HeuristicLab.Optimization {
 
     [StorableConstructor]
     protected MultiObjectiveHeuristicOptimizationProblem(StorableConstructorFlag _) : base(_) { }
-    protected MultiObjectiveHeuristicOptimizationProblem(MultiObjectiveHeuristicOptimizationProblem<T, U> original, Cloner cloner) : base(original, cloner) { }
+    protected MultiObjectiveHeuristicOptimizationProblem(MultiObjectiveHeuristicOptimizationProblem<T, U> original, Cloner cloner)
+      : base(original, cloner) {
+      RegisterEventHandlers();
+    }
     protected MultiObjectiveHeuristicOptimizationProblem()
       : base() {
       Parameters.Add(new ValueParameter<BoolArray>(MaximizationParameterName, "Determines for each objective whether it should be maximized or minimized."));
+
+      RegisterEventHandlers();
     }
 
     protected MultiObjectiveHeuristicOptimizationProblem(T evaluator, U solutionCreator)
       : base(evaluator, solutionCreator) {
       Parameters.Add(new ValueParameter<BoolArray>(MaximizationParameterName, "Determines for each objective whether it should be maximized or minimized."));
+
+      RegisterEventHandlers();
+    }
+
+    private void RegisterEventHandlers() {
+      MaximizationParameter.ValueChanged += MaximizationParameterOnValueChanged;
+    }
+
+    private void MaximizationParameterOnValueChanged(object sender, EventArgs e) {
+      OnMaximizationChanged();
     }
 
     public ValueParameter<BoolArray> MaximizationParameter {
@@ -59,6 +75,11 @@ namespace HeuristicLab.Optimization {
 
     IMultiObjectiveEvaluator IMultiObjectiveHeuristicOptimizationProblem.Evaluator {
       get { return Evaluator; }
+    }
+
+    public event EventHandler MaximizationChanged;
+    protected void OnMaximizationChanged() {
+      MaximizationChanged?.Invoke(this, EventArgs.Empty);
     }
   }
 }

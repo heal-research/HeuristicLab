@@ -45,14 +45,21 @@ namespace HeuristicLab.Parameters {
       get { return this.value; }
       set {
         if (ReadOnly) throw new InvalidOperationException("Cannot set the value of a readonly parameter.");
-        if (value != this.value) {
-          DeregisterValueEvents();
-          this.value = value;
-          RegisterValueEvents();
-          OnValueChanged();
-        }
+        DoSetValue(value);
       }
     }
+    public virtual void ForceValue(T value) {
+      DoSetValue(value);
+    }
+    private void DoSetValue(T value) {
+      if (value != this.value) {
+        DeregisterValueEvents();
+        this.value = value;
+        RegisterValueEvents();
+        OnValueChanged();
+      }
+    }
+
     IItem IValueParameter.Value {
       get { return Value; }
       set {

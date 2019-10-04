@@ -21,12 +21,12 @@
 
 using System;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableType("BC7E7414-64B5-4428-AA89-270F8EF6E35E")]
@@ -94,6 +94,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
     private void RegisterEventHandler() {
       Evaluator.QualityParameter.ActualNameChanged += new EventHandler(QualityParameter_ActualNameChanged);
+      MaximizationParameter.ValueChanged += MaximizationParameter_ValueChanged;
     }
 
     protected override void OnEvaluatorChanged() {
@@ -107,6 +108,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       ParameterizeOperators();
     }
 
+    private void MaximizationParameter_ValueChanged(object sender, EventArgs e) {
+      OnMaximizationChanged();
+    }
+
     protected override void ParameterizeOperators() {
       base.ParameterizeOperators();
 
@@ -114,6 +119,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         op.QualityParameter.ActualName = Evaluator.QualityParameter.ActualName;
         op.MaximizationParameter.ActualName = MaximizationParameterName;
       }
+    }
+
+    public event EventHandler MaximizationChanged;
+    protected void OnMaximizationChanged() {
+      MaximizationChanged?.Invoke(this, EventArgs.Empty);
     }
   }
 }
