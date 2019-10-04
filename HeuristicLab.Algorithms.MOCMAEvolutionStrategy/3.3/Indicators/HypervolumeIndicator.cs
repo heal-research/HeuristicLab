@@ -25,6 +25,7 @@ using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
+using HeuristicLab.Problems.TestFunctions.MultiObjective;
 
 namespace HeuristicLab.Algorithms.MOCMAEvolutionStrategy {
   [Item("HypervolumeIndicator", "Selection of offspring based on contributing Hypervolume")]
@@ -51,7 +52,7 @@ namespace HeuristicLab.Algorithms.MOCMAEvolutionStrategy {
     }
 
     #region Helpers
-    private static double Contribution(IList<double[]> front, int idx, IReadOnlyList<bool> maximization, double[] refPoint) {
+    private static double Contribution(IList<double[]> front, int idx, bool[] maximization, double[] refPoint) {
       var point = front[idx];
       front.RemoveAt(idx);
       var contribution = -HypervolumeCalculator.CalculateHypervolume(front.ToArray(), refPoint, maximization);

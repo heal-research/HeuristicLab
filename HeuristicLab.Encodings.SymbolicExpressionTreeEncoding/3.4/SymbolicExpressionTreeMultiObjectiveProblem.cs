@@ -53,7 +53,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       IRandom random) {
       base.Analyze(trees, qualities, results, random);
 
-      var fronts = DominationCalculator.CalculateAllParetoFrontsIndices(trees, qualities, Maximization.CloneAsArray());
+      var fronts = DominationCalculator.CalculateAllParetoFrontsIndices(trees, qualities, Maximization);
       var plot = new ParetoFrontScatterPlot<ISymbolicExpressionTree>(fronts, trees, qualities, Objectives, BestKnownFront);
       results.AddOrUpdateResult("Pareto Front Scatter Plot", plot);
     }

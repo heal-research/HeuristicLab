@@ -15,7 +15,7 @@ using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 
 namespace HeuristicLab.Problems.Programmable {
   public class CompiledMultiObjectiveProblemDefinition : CompiledMultiObjectiveProblemDefinition<CombinedEncoding, CombinedSolution> {
-    public override IReadOnlyList<bool> Maximization { get { return new[] { true, false }; } }
+    public override bool[] Maximization { get { return new[] { true, false }; } }
     public override double[] ReferencePoint { get { return null; } }
     public override IReadOnlyList<double[]> BestKnownFront { get { return null; } }
 

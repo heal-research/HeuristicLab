@@ -19,6 +19,7 @@
  */
 #endregion
 using System;
+using System.Linq;
 using HEAL.Attic;
 using HeuristicLab.Analysis;
 using HeuristicLab.Common;
@@ -50,6 +51,14 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
     #endregion
 
     #region Properties
+    public override bool[] Maximization {
+      get {
+        //necessary because of virtual member call in base ctor
+        if (!Parameters.ContainsKey("TestFunction")) return new bool[0];
+        return TestFunction.Maximization(Objectives).ToArray();
+      }
+    }
+
     public int ProblemSize {
       get { return ProblemSizeParameter.Value.Value; }
       set { ProblemSizeParameter.Value.Value = value; }
@@ -131,7 +140,8 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
 
     #region Events
     private void UpdateParameterValues() {
-      Maximization = new BoolArray(TestFunction.Maximization(Objectives));
+      Parameters.Remove(MaximizationParameterName);
+      Parameters.Add(new FixedValueParameter<BoolArray>(MaximizationParameterName, "Set to false if the problem should be minimized.", (BoolArray)new BoolArray(TestFunction.Maximization(Objectives)).AsReadOnly()));
 
       Parameters.Remove(BestKnownFrontParameterName);
       var front = TestFunction.OptimalParetoFront(Objectives);

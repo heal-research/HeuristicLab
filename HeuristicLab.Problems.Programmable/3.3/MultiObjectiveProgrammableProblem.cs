@@ -93,7 +93,8 @@ namespace HeuristicLab.Problems.Programmable {
     }
 
     private void OnProblemDefinitionChanged() {
-      Maximization = new BoolArray(ProblemDefinition.Maximization);
+      Parameters.Remove("Maximization");
+      Parameters.Add(new ValueParameter<BoolArray>("Maximization", "Set to false if the problem should be minimized.", (BoolArray)new BoolArray(Maximization).AsReadOnly()) {Hidden = true});
       Encoding = (TEncoding)ProblemScript.Encoding.Clone();
 
       OnOperatorsChanged();
@@ -105,6 +106,10 @@ namespace HeuristicLab.Problems.Programmable {
     }
     private void OnProblemScriptNameChanged() {
       Name = ProblemScript.Name;
+    }
+
+    public override bool[] Maximization {
+      get { return Parameters.ContainsKey("ProblemScript") ? ProblemDefinition.Maximization : new[] {false}; }
     }
 
     public override IReadOnlyList<double[]> BestKnownFront {

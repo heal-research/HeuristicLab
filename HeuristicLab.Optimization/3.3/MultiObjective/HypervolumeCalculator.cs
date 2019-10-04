@@ -25,7 +25,7 @@ using HeuristicLab.Common;
 
 namespace HeuristicLab.Optimization {
   public static class HypervolumeCalculator {
-    public static double[] CalculateNadirPoint(IEnumerable<double[]> qualities, IReadOnlyList<bool> maximization) {
+    public static double[] CalculateNadirPoint(IEnumerable<double[]> qualities, bool[] maximization) {
       var res = maximization.Select(m => m ? double.MaxValue : double.MinValue).ToArray();
       foreach (var quality in qualities)
         for (var i = 0; i < quality.Length; i++)
@@ -58,13 +58,13 @@ namespace HeuristicLab.Optimization {
     /// 
     /// </summary>
     /// 
-    public static double CalculateHypervolume(IList<double[]> qualities, double[] referencePoint, IReadOnlyList<bool> maximization) {
+    public static double CalculateHypervolume(IList<double[]> qualities, double[] referencePoint, bool[] maximization) {
       qualities = qualities.Where(vec => DominationCalculator.Dominates(vec, referencePoint, maximization, false) == DominationResult.Dominates).ToArray();
       if (qualities.Count== 0) return 0; //TODO computation for negative hypervolume?
-      if (maximization.Count == 2)
+      if (maximization.Length == 2)
         return Calculate2D(qualities, referencePoint, maximization);
 
-      if (maximization.All(x => !x))
+      if (Array.TrueForAll(maximization, x => !x))
         return CalculateMultiDimensional(qualities, referencePoint);
       throw new NotImplementedException("HypervolumeCalculator calculation for more than two dimensions is supported only with minimization problems.");
     }
@@ -77,7 +77,7 @@ namespace HeuristicLab.Optimization {
     /// <param name="referencePoint"></param>
     /// <param name="maximization"></param>
     /// <returns></returns>
-    public static double Calculate2D(IList<double[]> front, double[] referencePoint, IReadOnlyList<bool> maximization) {
+    public static double Calculate2D(IList<double[]> front, double[] referencePoint, bool[] maximization) {
       if (front == null) throw new ArgumentNullException("front");
       if (referencePoint == null) throw new ArgumentNullException("referencePoint");
       if (maximization == null) throw new ArgumentNullException("maximization");
