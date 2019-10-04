@@ -24,7 +24,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Management;
-using System.Net.NetworkInformation;
 using HeuristicLab.Clients.Hive.SlaveCore.Properties;
 
 
@@ -132,23 +131,26 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
       Dictionary<Guid, TimeSpan> prog = new Dictionary<Guid, TimeSpan>();
       try {
         prog = jobManager.GetExecutionTimes();
-      }
-      catch (Exception ex) {
+      } catch (Exception ex) {
         SlaveClientCom.Instance.LogMessage(string.Format("Exception was thrown while trying to get execution times: {0}", ex.Message));
       }
       return prog;
     }
 
+    /// <summary>
+    /// Returns the unique machine id of the slave
+    /// </summary>
+    /// <returns><see cref="Guid"/></returns>
     public static Guid GetUniqueMachineId() {
-      Guid id;
-      try {
-        id = GetUniqueMachineIdFromMac();
+      // Due to the fact that repeated calculation of the machine ID can lead to a client registering at 
+      // the Hive server multiple times with different IDs it's better to set the unique machine id only 
+      // once, at first startup, and store it in core settings. 
+      if (Settings.Default.MachineId == Guid.Empty) {
+        Settings.Default.MachineId = Guid.NewGuid();
+        Settings.Default.Save();
       }
-      catch {
-        // fallback if something goes wrong...        
-        id = new Guid(Environment.MachineName.GetHashCode(), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-      }
-      return id;
+
+      return Settings.Default.MachineId;
     }
 
     /// <summary>
@@ -169,50 +171,6 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
       return (int)GetWMIValue("Win32_Processor", "MaxClockSpeed");
     }
 
-    /// <summary>
-    /// Generate a guid based on mac address of the first found nic (yes, mac addresses are not unique...)
-    /// and the machine name.
-    /// Format:
-    /// 
-    ///  D1      D2  D3  Res.   D4
-    /// +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-    /// |n a m e|0 0|0 0|0 0 mac address|
-    /// +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-    /// 
-    /// The mac address is saved in the last 48 bits of the Data 4 segment 
-    /// of the guid (first 2 bytes of Data 4 are reserved).
-    /// D1 contains the hash of the machinename. 
-    /// </summary>    
-    private static Guid GetUniqueMachineIdFromMac() {
-      //try to get a real network interface, not a virtual one 
-      NetworkInterface validNic = NetworkInterface.GetAllNetworkInterfaces()
-                      .FirstOrDefault(x =>
-                                  !x.Name.Contains(vmwareNameString) &&
-                                  !x.Name.Contains(virtualboxNameString) &&
-                                  (x.NetworkInterfaceType == NetworkInterfaceType.Ethernet ||
-                                   x.NetworkInterfaceType == NetworkInterfaceType.GigabitEthernet));
-
-      if (validNic == default(NetworkInterface)) {
-        validNic = NetworkInterface.GetAllNetworkInterfaces().First();
-      }
-
-      byte[] addr = validNic.GetPhysicalAddress().GetAddressBytes();
-      if (addr.Length < macLength || addr.Length > macLongLength) {
-        throw new ArgumentException(string.Format("Error generating slave UID: MAC address has to have a length between {0} and {1} bytes. Actual MAC address is: {2}",
-              macLength, macLongLength, addr));
-      }
-
-      if (addr.Length < macLongLength) {
-        byte[] b = new byte[8];
-        Array.Copy(addr, 0, b, 2, addr.Length);
-        addr = b;
-      }
-
-      // also get machine name and save it to the first 4 bytes                
-      Guid guid = new Guid(Environment.MachineName.GetHashCode(), 0, 0, addr);
-      return guid;
-    }
-
     private static long? GetWMIValue(string clazz, string property) {
       ManagementClass mgtClass = new ManagementClass(clazz);
       ManagementObjectCollection mgtCol = mgtClass.GetInstances();
@@ -222,8 +180,7 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
           if (prop.Value != null && prop.Name == property) {
             try {
               return long.Parse(prop.Value.ToString());
-            }
-            catch {
+            } catch {
               return null;
             }
           }
@@ -240,8 +197,7 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
 
       try {
         mb = (int)(memCounter.NextValue() / 1024 / 1024);
-      }
-      catch { }
+      } catch { }
       return mb;
     }
 
@@ -250,8 +206,7 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
 
       try {
         return cpuCounter.NextValue();
-      }
-      catch { }
+      } catch { }
       return cpuVal;
     }
   }
