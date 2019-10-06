@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using System.Threading;
 using HeuristicLab.Common;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
@@ -112,8 +113,8 @@ namespace HeuristicLab.Problems.QuadraticAssignment.Tests {
         double moveBefore = QAPSwap2MoveEvaluator.Apply(prevAssignment, currentMove, symmetricWeights, symmetricDistances);
         double moveAfter = QAPSwap2MoveEvaluator.Apply(assignment, currentMove,
                 moveBefore, symmetricWeights, symmetricDistances, lastMove);
-        double before = symmetricProblem.Evaluate(assignment);
-        double after = symmetricProblem.Evaluate(nextAssignment);
+        double before = symmetricProblem.Evaluate(assignment, CancellationToken.None);
+        double after = symmetricProblem.Evaluate(nextAssignment, CancellationToken.None);
 
         Assert.IsTrue(moveAfter.IsAlmost(after - before), "Failed on symmetric matrices: " + Environment.NewLine
           + "Quality changed from " + before + " to " + after + " (" + (after - before).ToString() + "), but move quality change was " + moveAfter + ".");
@@ -121,8 +122,8 @@ namespace HeuristicLab.Problems.QuadraticAssignment.Tests {
         moveBefore = QAPSwap2MoveEvaluator.Apply(prevAssignment, currentMove, asymmetricWeights, asymmetricDistances);
         moveAfter = QAPSwap2MoveEvaluator.Apply(assignment, currentMove,
                 moveBefore, asymmetricWeights, asymmetricDistances, lastMove);
-        before = asymmetricProblem.Evaluate(assignment);
-        after = asymmetricProblem.Evaluate(nextAssignment);
+        before = asymmetricProblem.Evaluate(assignment, CancellationToken.None);
+        after = asymmetricProblem.Evaluate(nextAssignment, CancellationToken.None);
 
         Assert.IsTrue(moveAfter.IsAlmost(after - before), "Failed on asymmetric matrices: " + Environment.NewLine
           + "Quality changed from " + before + " to " + after + " (" + (after - before).ToString() + "), but move quality change was " + moveAfter + ".");
@@ -130,8 +131,8 @@ namespace HeuristicLab.Problems.QuadraticAssignment.Tests {
         moveBefore = QAPSwap2MoveEvaluator.Apply(prevAssignment, currentMove, nonZeroDiagonalWeights, nonZeroDiagonalDistances);
         moveAfter = QAPSwap2MoveEvaluator.Apply(assignment, currentMove,
                 moveBefore, nonZeroDiagonalWeights, nonZeroDiagonalDistances, lastMove);
-        before = nonZeroDiagonalProblem.Evaluate(assignment);
-        after = nonZeroDiagonalProblem.Evaluate(nextAssignment);
+        before = nonZeroDiagonalProblem.Evaluate(assignment, CancellationToken.None);
+        after = nonZeroDiagonalProblem.Evaluate(nextAssignment, CancellationToken.None);
 
         Assert.IsTrue(moveAfter.IsAlmost(after - before), "Failed on non-zero diagonal matrices: " + Environment.NewLine
           + "Quality changed from " + before + " to " + after + " (" + (after - before).ToString() + "), but move quality change was " + moveAfter + ".");
@@ -148,25 +149,25 @@ namespace HeuristicLab.Problems.QuadraticAssignment.Tests {
         int index2 = random.Next(ProblemSize);
 
         // SYMMETRIC MATRICES
-        double before = symmetricProblem.Evaluate(assignment);
+        double before = symmetricProblem.Evaluate(assignment, CancellationToken.None);
         Swap2Manipulator.Apply(assignment, index1, index2);
-        double after = symmetricProblem.Evaluate(assignment);
+        double after = symmetricProblem.Evaluate(assignment, CancellationToken.None);
         double move = QAPSwap2MoveEvaluator.Apply(assignment, new Swap2Move(index1, index2, assignment), symmetricWeights, symmetricDistances);
         Assert.IsTrue(move.IsAlmost(before - after), "Failed on symmetric matrices");
 
         // ASYMMETRIC MATRICES
-        before = asymmetricProblem.Evaluate(assignment);
+        before = asymmetricProblem.Evaluate(assignment, CancellationToken.None);
         Permutation clone = (Permutation)assignment.Clone();
         Swap2Manipulator.Apply(assignment, index1, index2);
-        after = asymmetricProblem.Evaluate(assignment);
+        after = asymmetricProblem.Evaluate(assignment, CancellationToken.None);
         move = QAPSwap2MoveEvaluator.Apply(clone, new Swap2Move(index1, index2), asymmetricWeights, asymmetricDistances);
         Assert.IsTrue(move.IsAlmost(after - before), "Failed on asymmetric matrices");
 
         // NON-ZERO DIAGONAL ASSYMETRIC MATRICES
-        before = nonZeroDiagonalProblem.Evaluate(assignment);
+        before = nonZeroDiagonalProblem.Evaluate(assignment, CancellationToken.None);
         clone = (Permutation)assignment.Clone();
         Swap2Manipulator.Apply(assignment, index1, index2);
-        after = nonZeroDiagonalProblem.Evaluate(assignment);
+        after = nonZeroDiagonalProblem.Evaluate(assignment, CancellationToken.None);
         move = QAPSwap2MoveEvaluator.Apply(clone, new Swap2Move(index1, index2), nonZeroDiagonalWeights, nonZeroDiagonalDistances);
         Assert.IsTrue(move.IsAlmost(after - before), "Failed on non-zero diagonal matrices");
       }
@@ -182,25 +183,25 @@ namespace HeuristicLab.Problems.QuadraticAssignment.Tests {
         if (index1 > index2) { int h = index1; index1 = index2; index2 = h; }
 
         // SYMMETRIC MATRICES
-        double before = symmetricProblem.Evaluate(assignment);
+        double before = symmetricProblem.Evaluate(assignment, CancellationToken.None);
         InversionManipulator.Apply(assignment, Math.Min(index1, index2), Math.Max(index1, index2));
-        double after = symmetricProblem.Evaluate(assignment);
+        double after = symmetricProblem.Evaluate(assignment, CancellationToken.None);
         double move = QAPInversionMoveEvaluator.Apply(assignment, new InversionMove(index1, index2, assignment), symmetricWeights, symmetricDistances);
         Assert.IsTrue(move.IsAlmost(before - after), "Failed on symmetric matrices");
 
         // ASYMMETRIC MATRICES
-        before = asymmetricProblem.Evaluate(assignment);
+        before = asymmetricProblem.Evaluate(assignment, CancellationToken.None);
         Permutation clone = (Permutation)assignment.Clone();
         InversionManipulator.Apply(assignment, index1, index2);
-        after = asymmetricProblem.Evaluate(assignment);
+        after = asymmetricProblem.Evaluate(assignment, CancellationToken.None);
         move = QAPInversionMoveEvaluator.Apply(clone, new InversionMove(index1, index2), asymmetricWeights, asymmetricDistances);
         Assert.IsTrue(move.IsAlmost(after - before), "Failed on asymmetric matrices");
 
         // NON-ZERO DIAGONAL ASYMMETRIC MATRICES
-        before = nonZeroDiagonalProblem.Evaluate(assignment);
+        before = nonZeroDiagonalProblem.Evaluate(assignment, CancellationToken.None);
         clone = (Permutation)assignment.Clone();
         InversionManipulator.Apply(assignment, index1, index2);
-        after = nonZeroDiagonalProblem.Evaluate(assignment);
+        after = nonZeroDiagonalProblem.Evaluate(assignment, CancellationToken.None);
         move = QAPInversionMoveEvaluator.Apply(clone, new InversionMove(index1, index2), nonZeroDiagonalWeights, nonZeroDiagonalDistances);
         Assert.IsTrue(move.IsAlmost(after - before), "Failed on non-zero diagonal matrices");
       }
@@ -221,26 +222,26 @@ namespace HeuristicLab.Problems.QuadraticAssignment.Tests {
           insertPoint = 0;
 
         // SYMMETRIC MATRICES
-        double before = symmetricProblem.Evaluate(assignment);
+        double before = symmetricProblem.Evaluate(assignment, CancellationToken.None);
         Permutation clone = new Cloner().Clone(assignment);
         TranslocationManipulator.Apply(assignment, index1, index2, insertPoint);
-        double after = symmetricProblem.Evaluate(assignment);
+        double after = symmetricProblem.Evaluate(assignment, CancellationToken.None);
         double move = QAPTranslocationMoveEvaluator.Apply(clone, new TranslocationMove(index1, index2, insertPoint, assignment), symmetricWeights, symmetricDistances);
         Assert.IsTrue(move.IsAlmost(after - before), "Failed on symmetric matrices");
 
         // ASYMMETRIC MATRICES
-        before = asymmetricProblem.Evaluate(assignment);
+        before = asymmetricProblem.Evaluate(assignment, CancellationToken.None);
         clone = new Cloner().Clone(assignment);
         TranslocationManipulator.Apply(assignment, index1, index2, insertPoint);
-        after = asymmetricProblem.Evaluate(assignment);
+        after = asymmetricProblem.Evaluate(assignment, CancellationToken.None);
         move = QAPTranslocationMoveEvaluator.Apply(clone, new TranslocationMove(index1, index2, insertPoint, assignment), asymmetricWeights, asymmetricDistances);
         Assert.IsTrue(move.IsAlmost(after - before), "Failed on asymmetric matrices");
 
         // NON-ZERO DIAGONAL ASYMMETRIC MATRICES
-        before = nonZeroDiagonalProblem.Evaluate(assignment);
+        before = nonZeroDiagonalProblem.Evaluate(assignment, CancellationToken.None);
         clone = new Cloner().Clone(assignment);
         TranslocationManipulator.Apply(assignment, index1, index2, insertPoint);
-        after = nonZeroDiagonalProblem.Evaluate(assignment);
+        after = nonZeroDiagonalProblem.Evaluate(assignment, CancellationToken.None);
         move = QAPTranslocationMoveEvaluator.Apply(clone, new TranslocationMove(index1, index2, insertPoint, assignment), nonZeroDiagonalWeights, nonZeroDiagonalDistances);
         Assert.IsTrue(move.IsAlmost(after - before), "Failed on non-zero diagonal matrices");
       }
@@ -254,24 +255,24 @@ namespace HeuristicLab.Problems.QuadraticAssignment.Tests {
         ScrambleMove scramble = StochasticScrambleMultiMoveGenerator.GenerateRandomMove(assignment, random);
 
         // SYMMETRIC MATRICES
-        double before = symmetricProblem.Evaluate(assignment);
+        double before = symmetricProblem.Evaluate(assignment, CancellationToken.None);
         double move = QAPScrambleMoveEvaluator.Apply(assignment, scramble, symmetricWeights, symmetricDistances);
         ScrambleManipulator.Apply(assignment, scramble.StartIndex, scramble.ScrambledIndices);
-        double after = symmetricProblem.Evaluate(assignment);
+        double after = symmetricProblem.Evaluate(assignment, CancellationToken.None);
         Assert.IsTrue(move.IsAlmost(after - before), "Failed on symmetric matrices");
 
         // ASYMMETRIC MATRICES
-        before = asymmetricProblem.Evaluate(assignment);
+        before = asymmetricProblem.Evaluate(assignment, CancellationToken.None);
         move = QAPScrambleMoveEvaluator.Apply(assignment, scramble, asymmetricWeights, asymmetricDistances);
         ScrambleManipulator.Apply(assignment, scramble.StartIndex, scramble.ScrambledIndices);
-        after = asymmetricProblem.Evaluate(assignment);
+        after = asymmetricProblem.Evaluate(assignment, CancellationToken.None);
         Assert.IsTrue(move.IsAlmost(after - before), "Failed on asymmetric matrices");
 
         // NON-ZERO DIAGONAL ASYMMETRIC MATRICES
-        before = nonZeroDiagonalProblem.Evaluate(assignment);
+        before = nonZeroDiagonalProblem.Evaluate(assignment, CancellationToken.None);
         move = QAPScrambleMoveEvaluator.Apply(assignment, scramble, nonZeroDiagonalWeights, nonZeroDiagonalDistances);
         ScrambleManipulator.Apply(assignment, scramble.StartIndex, scramble.ScrambledIndices);
-        after = nonZeroDiagonalProblem.Evaluate(assignment);
+        after = nonZeroDiagonalProblem.Evaluate(assignment, CancellationToken.None);
         Assert.IsTrue(move.IsAlmost(after - before), "Failed on non-zero diagonal matrices");
       }
     }

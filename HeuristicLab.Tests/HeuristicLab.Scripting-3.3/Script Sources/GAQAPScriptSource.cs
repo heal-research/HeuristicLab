@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Linq;
-
+using System.Threading;
 using HeuristicLab.Analysis;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
@@ -41,7 +41,7 @@ public class GAQAPScript : HeuristicLab.Scripting.CSharpScriptBase {
 
     for (int i = 0; i < popSize; i++) {
       population[i] = new Permutation(PermutationTypes.Absolute, qap.Weights.Rows, random);
-      qualities[i] = qap.Evaluate(population[i]);
+      qualities[i] = qap.Evaluate(population[i], CancellationToken.None);
     }
     var bestQuality = qualities.Min();
     var bestQualityGeneration = 0;
@@ -51,7 +51,7 @@ public class GAQAPScript : HeuristicLab.Scripting.CSharpScriptBase {
       for (int i = 0; i < popSize; i++) {
         nextGen[i] = PartiallyMatchedCrossover.Apply(random, parents[i * 2], parents[i * 2 + 1]);
         if (random.NextDouble() < mutationRate) Swap2Manipulator.Apply(random, nextGen[i]);
-        nextQual[i] = qap.Evaluate(nextGen[i]);
+        nextQual[i] = qap.Evaluate(nextGen[i], CancellationToken.None);
         if (nextQual[i] < bestQuality) {
           bestQuality = nextQual[i];
           bestQualityGeneration = g;
