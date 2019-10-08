@@ -28,9 +28,8 @@ namespace HeuristicLab.JsonInterface {
       base.InjectData(item, data);
 
       dynamic val = item.Cast<dynamic>();
-      foreach (var op in val.Operators) {
+      foreach (var op in val.Operators)
         val.Operators.SetItemCheckedState(op, GetOperatorState(op.Name, data));
-      }
     }
 
     private bool GetOperatorState(string name, JsonItem data) {
