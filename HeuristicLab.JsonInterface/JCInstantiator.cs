@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
+using HeuristicLab.SequentialEngine;
 using Newtonsoft.Json.Linq;
 
 namespace HeuristicLab.JsonInterface {
@@ -48,12 +49,18 @@ namespace HeuristicLab.JsonInterface {
 
       //7. get problem data and object
       JsonItem problemData = GetData(problemName);
+      
       IProblem problem = CreateObject<IProblem>(problemData);
       algorithm.Problem = problem;
 
       //8. inject configuration
       JsonItemConverter.Inject(algorithm, algorithmData);
-      JsonItemConverter.Inject(problem, problemData);
+      //JsonItemConverter.Inject(problem, problemData);
+
+      if (algorithm is EngineAlgorithm) {
+        algorithm.Cast<EngineAlgorithm>().Engine = new SequentialEngine.SequentialEngine();
+        File.WriteAllText(@"C:\Workspace\test2.txt", "test");
+      }
 
       return algorithm;
     }
@@ -85,7 +92,10 @@ namespace HeuristicLab.JsonInterface {
       foreach(var x in ParameterizedItems.Values)
         foreach (var p in x.Parameters)
           if (p.Default is string) {
-            string key = $"{p.Path}.{p.Default.Cast<string>()}";
+            string key = p.Path;
+            if (p.Range != null)
+              key = $"{p.Path}.{p.Default.Cast<string>()}";
+
             if (ParameterizedItems.TryGetValue(key, out JsonItem value))
               p.Reference = value;
           }
@@ -170,7 +180,7 @@ namespace HeuristicLab.JsonInterface {
 
     private IList<JsonItem> PopulateOperators(JObject obj) {
       IList<JsonItem> list = new List<JsonItem>();
-      JToken operators = obj[nameof(Operators)];
+      JToken operators = obj[nameof(JsonItem.Operators)];
       if (operators != null)
         foreach (JObject sp in operators)
           list.Add(BuildJsonItem(sp));

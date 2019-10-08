@@ -14,7 +14,7 @@ namespace HeuristicLab.JsonInterface {
 
     public string Name { get; set; }
     public string Type { get; set; }
-    public string Path { get; set; } = "";
+    public string Path { get; set; }
     public IList<JsonItem> Parameters { get; set; }
     public IList<JsonItem> Operators { get; set; }
 

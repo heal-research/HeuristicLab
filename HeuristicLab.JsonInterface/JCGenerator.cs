@@ -1,28 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using HeuristicLab.Algorithms.GeneticAlgorithm;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Optimization;
-using HeuristicLab.Problems.TravelingSalesman;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Newtonsoft.Json.Serialization;
 
 namespace HeuristicLab.JsonInterface {
   public class JCGenerator {
 
     private JObject template = JObject.Parse(Constants.Template);
-
     private Dictionary<string, string> TypeList = new Dictionary<string, string>();
+    private JArray JsonItems { get; set; } = new JArray();
 
-    JArray jsonItems = new JArray();
     private void PopulateJsonItems(JsonItem item) {
       if (item.Parameters != null) {
         if(item.Range == null)
-          jsonItems.Add(Serialize(item));
+          JsonItems.Add(Serialize(item));
         foreach (var p in item.Parameters)
           if(p.Parameters != null)
             PopulateJsonItems(p);
@@ -46,6 +41,9 @@ namespace HeuristicLab.JsonInterface {
     }
 
     public string GenerateTemplate(IAlgorithm algorithm, IProblem problem, params string[] freeParameters) {
+      JsonItems.Clear();
+      TypeList.Clear();
+
       algorithm.Problem = problem;
       JsonItem algorithmData = JsonItemConverter.Extract(algorithm);
       JsonItem problemData = JsonItemConverter.Extract(problem);
@@ -54,7 +52,7 @@ namespace HeuristicLab.JsonInterface {
 
       template[Constants.Metadata][Constants.Algorithm] = algorithm.Name;
       template[Constants.Metadata][Constants.Problem] = problem.Name;
-      template[Constants.Objects] = jsonItems;
+      template[Constants.Objects] = JsonItems;
       template[Constants.Types] = JObject.FromObject(TypeList);
 
       return CustomJsonWriter.Serialize(template);
@@ -62,8 +60,6 @@ namespace HeuristicLab.JsonInterface {
 
     #region Helper
     private void RefactorFreeParameters(JToken token, string[] freeParameters) {
-
-
       IList<JObject> objToRemove = new List<JObject>();
       TransformNodes(x => {
         var p = x.ToObject<JsonItem>();
@@ -76,7 +72,6 @@ namespace HeuristicLab.JsonInterface {
         if (/*!isSelected ||*/ p.Default == null || (p.Default != null && p.Default.GetType() == typeof(string) && p.Range == null)) {
           objToRemove.Add(x);
         } else {
-          //x.Property(nameof(JsonItem.Path))?.Remove();
           x.Property(nameof(JsonItem.Type))?.Remove();
           x.Property(nameof(JsonItem.Parameters))?.Remove();
         }

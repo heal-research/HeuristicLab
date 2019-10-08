@@ -20,6 +20,7 @@ namespace HeuristicLab.JsonInterface.Tests {
       GeneticAlgorithm alg = new GeneticAlgorithm();
       TravelingSalesmanProblem tsp = new TravelingSalesmanProblem();
       JCGenerator gen = new JCGenerator();
+      //File.WriteAllText(@"C:\Workspace\Template.json", gen.GenerateTemplate(alg, tsp));
       File.WriteAllText(templateFilePath, gen.GenerateTemplate(alg, tsp));
       File.WriteAllText(configFilePath, "["+
         "{\"Name\": \"Seed\",\"Default\": 55555,\"Path\": \"Genetic Algorithm (GA).Seed\"},"+
