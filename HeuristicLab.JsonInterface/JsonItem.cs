@@ -14,6 +14,10 @@ namespace HeuristicLab.JsonInterface {
 
     public string Name { get; set; }
     public string Type { get; set; }
+    public string Path { get; set; } = "";
+    public IList<JsonItem> Parameters { get; set; }
+    public IList<JsonItem> Operators { get; set; }
+
     public object Default {
       get => defaultValue; 
       set {
@@ -22,7 +26,6 @@ namespace HeuristicLab.JsonInterface {
           throw new ArgumentOutOfRangeException("Default", "Default is not in range.");
       } 
     }
-    public string Path { get; set; } = "";
 
     public IList<object> Range { 
       get => range; 
@@ -32,17 +35,12 @@ namespace HeuristicLab.JsonInterface {
           throw new ArgumentOutOfRangeException("Default", "Default is not in range.");
       } 
     }
-
-    public IList<JsonItem> Parameters { get; set; }
-    public IList<JsonItem> Operators { get; set; }
-    
-    public override bool Equals(object obj) => 
-      (obj is JsonItem ? (obj.Cast<JsonItem>().Name == this.Name) : false);
-      
-    public override int GetHashCode() => Name.GetHashCode();
-
+        
     public JsonItem Reference { get; set; }
-    
+
+    [JsonIgnore]
+    public bool IsConfigurable => (Default != null && Range != null);
+
     public static void Merge(JsonItem target, JsonItem from) {
       target.Name = from.Name ?? target.Name;
       target.Type = from.Type ?? target.Type;
@@ -69,23 +67,17 @@ namespace HeuristicLab.JsonInterface {
     public void UpdatePaths() {
       if (Parameters != null)
         foreach (var p in Parameters)
-          p.Path = Path + "." + p.Name;
+          p.Path = $"{Path}.{p.Name}";
 
       if (Operators != null) 
         foreach (var p in Operators)
-          p.Path = Path + "." + p.Name;
+          p.Path = $"{Path}.{p.Name}";
     }
 
     public void PrependPath(string str) {
       Path = $"{str}.{Path}";
       PrependPathHelper(Parameters, str);
       PrependPathHelper(Operators, str);
-    }
-
-    private void PrependPathHelper(IEnumerable<JsonItem> items, string str) {
-      if (items != null)
-        foreach (var p in items)
-          p.PrependPath(str);
     }
 
     #region Helper
@@ -99,6 +91,12 @@ namespace HeuristicLab.JsonInterface {
       (value != null && min != null && max != null && value is T && min is T && max is T &&
         (((T)min).CompareTo(value) == -1 || ((T)min).CompareTo(value) == 0) &&
         (((T)max).CompareTo(value) == 1 || ((T)max).CompareTo(value) == 0));
+
+    private void PrependPathHelper(IEnumerable<JsonItem> items, string str) {
+      if (items != null)
+        foreach (var p in items)
+          p.PrependPath(str);
+    }
     #endregion
   }
 }

@@ -14,42 +14,103 @@ using Newtonsoft.Json.Linq;
 namespace HeuristicLab.JsonInterface {
   public class JCInstantiator {
 
-    private JToken Config { get; set; }
+    private JToken Template { get; set; }
+    private JArray Config { get; set; }
+
     private Dictionary<string, string> TypeList = new Dictionary<string, string>();
+    private IDictionary<string, JsonItem> ParameterizedItems { get; set; } = new Dictionary<string, JsonItem>();
+    private IDictionary<string, JsonItem> ConfigurableItems { get; set; } = new Dictionary<string, JsonItem>();
+    
+    public IAlgorithm Instantiate(string templateFile, string configFile) {
 
-    public IAlgorithm Instantiate(string configFile) {
-      Config = JToken.Parse(File.ReadAllText(configFile));
-      TypeList = Config[Constants.Types].ToObject<Dictionary<string, string>>();
+      //1. Parse Template and Config files
+      Template = JToken.Parse(File.ReadAllText(templateFile));
+      Config = JArray.Parse(File.ReadAllText(configFile));
+      TypeList = Template[Constants.Types].ToObject<Dictionary<string, string>>();
+      string algorithmName = Template[Constants.Metadata][Constants.Algorithm].ToString();
+      string problemName = Template[Constants.Metadata][Constants.Problem].ToString();
 
-      JsonItem algorithmData = GetData(Config[Constants.Metadata][Constants.Algorithm].ToString());
-      ResolveReferences(algorithmData);
+      //2. Collect all parameterizedItems from template
+      CollectParameterizedItems();
+
+      //3. select all ConfigurableItems
+      SelectConfigurableItems();
+
+      //4. Merge Template and Config
+      MergeTemplateWithConfig();
+
+      //5. resolve the references between parameterizedItems
+      ResolveReferences();
+
+      //6. get algorthm data and object
+      JsonItem algorithmData = GetData(algorithmName);
       IAlgorithm algorithm = CreateObject<IAlgorithm>(algorithmData);
-     
-      JsonItem problemData = GetData(Config[Constants.Metadata][Constants.Problem].ToString());
-      ResolveReferences(problemData);
+
+      //7. get problem data and object
+      JsonItem problemData = GetData(problemName);
       IProblem problem = CreateObject<IProblem>(problemData);
       algorithm.Problem = problem;
 
+      //8. inject configuration
       JsonItemConverter.Inject(algorithm, algorithmData);
-      JsonItemConverter.Inject(algorithm, problemData);
+      JsonItemConverter.Inject(problem, problemData);
 
       return algorithm;
     }
 
-    private void ResolveReferences(JsonItem data) {
-      foreach (var p in data.Parameters)
-        if (p.Default is string && p.Reference == null)
-          p.Reference = GetData(p.Default.Cast<string>());
+    private void CollectParameterizedItems() {
+      foreach (JObject item in Template[Constants.Objects]) {
+        JsonItem data = BuildJsonItem(item);
+        ParameterizedItems.Add(data.Path, data);
+      }
+    }
+
+    private void SelectConfigurableItems() {
+      foreach (var item in ParameterizedItems.Values) {
+        if (item.Parameters != null)
+          AddConfigurableItems(item.Parameters);
+
+        if (item.Operators != null)
+          AddConfigurableItems(item.Operators);
+      }
+    }
+
+    private void AddConfigurableItems(IEnumerable<JsonItem> items) {
+      foreach (var item in items)
+        if (item.IsConfigurable)
+          ConfigurableItems.Add(item.Path, item);
+    }
+
+    private void ResolveReferences() {
+      foreach(var x in ParameterizedItems.Values)
+        foreach (var p in x.Parameters)
+          if (p.Default is string) {
+            string key = $"{p.Path}.{p.Default.Cast<string>()}";
+            if (ParameterizedItems.TryGetValue(key, out JsonItem value))
+              p.Reference = value;
+          }
+    }
+
+    private void MergeTemplateWithConfig() {
+      foreach (JObject obj in Config) {
+        // build item from config object
+        JsonItem item = BuildJsonItem(obj);
+        // override default value
+        if (ConfigurableItems.TryGetValue(item.Path, out JsonItem param)) {
+          param.Default = item.Default;
+          // override default value of reference (for ValueLookupParameters)
+          if (param.Reference != null)
+            param.Reference.Default = item.Reference?.Default;
+        } else throw new InvalidDataException($"No {Constants.FreeParameters.Trim('s')} with path='{item.Path}' defined!");
+      }
     }
 
     private JsonItem GetData(string key)
     {
-      foreach(JObject item in Config[Constants.Objects])
-      {
-        JsonItem data = BuildJsonItem(item);
-        if (data.Name == key) return data;
-      }
-      return null;
+      if (ParameterizedItems.TryGetValue(key, out JsonItem value))
+        return value;
+      else
+        throw new InvalidDataException($"Type of item '{key}' is not defined!");
     }
 
     private T CreateObject<T>(JsonItem data) {
@@ -59,12 +120,14 @@ namespace HeuristicLab.JsonInterface {
       } else throw new TypeLoadException($"Cannot find AssemblyQualifiedName for {data.Name}.");
     }
 
+    #region BuildJsonItemMethods
     private JsonItem BuildJsonItem(JObject obj) =>
       new JsonItem() {
         Name = obj[nameof(JsonItem.Name)]?.ToString(),
+        Path = obj[nameof(JsonItem.Path)]?.ToString(),
         Default = obj[nameof(JsonItem.Default)]?.ToObject<object>(),
         Range = obj[nameof(JsonItem.Range)]?.ToObject<object[]>(),
-        Type = obj[nameof(JsonItem.Type)]?.ToObject<string>(),
+        Type = GetType(obj[nameof(JsonItem.Path)]?.ToObject<string>()),
         Reference = obj[nameof(JsonItem.Type)] == null ? 
                     null : 
                     BuildJsonItem(obj[nameof(JsonItem.Type)].ToObject<JObject>()),
@@ -72,21 +135,34 @@ namespace HeuristicLab.JsonInterface {
         Operators = PopulateOperators(obj)
       };
 
+    private string GetType(string path) {
+      if(!string.IsNullOrEmpty(path))
+        if (TypeList.TryGetValue(path, out string value))
+          return value;
+      return null;
+    }
+
     private IList<JsonItem> PopulateParameters(JObject obj) {
       IList<JsonItem> list = new List<JsonItem>();
+
+      // add staticParameters
       if (obj[Constants.StaticParameters] != null)
         foreach (JObject param in obj[Constants.StaticParameters])
           list.Add(BuildJsonItem(param));
 
+      // merge staticParameter with freeParameter
       if (obj[Constants.FreeParameters] != null) {
         foreach (JObject param in obj[Constants.FreeParameters]) {
           JsonItem tmp = BuildJsonItem(param);
+          
+          // search staticParameter from list
           JsonItem comp = null;
-          foreach (var p in list) // TODO: nicht notwendig, da immer alle params im static block sind
+          foreach (var p in list)
             if (p.Name == tmp.Name) comp = p;
-          if (comp != null) 
-            JsonItem.Merge(comp, tmp);
-          else list.Add(tmp);
+          if (comp == null)
+            throw new InvalidDataException($"Invalid {Constants.FreeParameters.Trim('s')}: '{tmp.Name}'!");
+
+          JsonItem.Merge(comp, tmp);
         }
       }
       return list;
@@ -94,12 +170,12 @@ namespace HeuristicLab.JsonInterface {
 
     private IList<JsonItem> PopulateOperators(JObject obj) {
       IList<JsonItem> list = new List<JsonItem>();
-      if (obj[nameof(Operators)] != null)
-        foreach (JObject sp in obj[nameof(Operators)]) {
-          JsonItem tmp = BuildJsonItem(sp);
-          list.Add(tmp);
-        }
+      JToken operators = obj[nameof(Operators)];
+      if (operators != null)
+        foreach (JObject sp in operators)
+          list.Add(BuildJsonItem(sp));
       return list;
     }
+    #endregion
   }
 }

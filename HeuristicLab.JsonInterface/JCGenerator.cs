@@ -76,7 +76,7 @@ namespace HeuristicLab.JsonInterface {
         if (/*!isSelected ||*/ p.Default == null || (p.Default != null && p.Default.GetType() == typeof(string) && p.Range == null)) {
           objToRemove.Add(x);
         } else {
-          x.Property(nameof(JsonItem.Path))?.Remove();
+          //x.Property(nameof(JsonItem.Path))?.Remove();
           x.Property(nameof(JsonItem.Type))?.Remove();
           x.Property(nameof(JsonItem.Parameters))?.Remove();
         }
