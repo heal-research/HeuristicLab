@@ -222,6 +222,11 @@
       <HintPath>..\bin\HeuristicLab.IGraph-0.8.0-pre.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="HeuristicLab.JsonInterface, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\bin\HeuristicLab.JsonInterface.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="HeuristicLab.MainForm-3.3">
       <HintPath>..\bin\HeuristicLab.MainForm-3.3.dll</HintPath>
       <Private>False</Private>
@@ -584,6 +589,7 @@
     <Compile Include="HeuristicLab.IGraph\IGraphWrappersGraphTest.cs" />
     <Compile Include="HeuristicLab.IGraph\IGraphWrappersMatrixTest.cs" />
     <Compile Include="HeuristicLab.IGraph\IGraphWrappersVectorTest.cs" />
+    <Compile Include="HeuristicLab.JsonInterface\GeneratorInstantiatorTest.cs" />
     <Compile Include="HeuristicLab.Persistence-3.3\StorableAttributeTests.cs" />
     <Compile Include="HeuristicLab.Persistence-3.3\UseCases.cs" />
     <Compile Include="HeuristicLab.Persistence.Attic\PersistenceConsistencyChecks.cs" />
