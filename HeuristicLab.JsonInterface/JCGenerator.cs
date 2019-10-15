@@ -14,12 +14,38 @@ namespace HeuristicLab.JsonInterface {
     private Dictionary<string, string> TypeList = new Dictionary<string, string>();
     private JArray JsonItems { get; set; } = new JArray();
 
+    public string GenerateTemplate(IAlgorithm algorithm) {
+      JsonItems.Clear();
+      TypeList.Clear();
+
+      // 1.1. extract JsonItem, save the name in the metadata section of the 
+      // template and save it an JArray incl. all parameters of the JsonItem, 
+      // which have parameters aswell
+      AddInstantiableIItem(Constants.Algorithm, algorithm);
+      if (algorithm.Problem != null) // 1.2. only when an problem exists
+        AddInstantiableIItem(Constants.Problem, algorithm.Problem);
+
+      // 2. save the JArray with JsonItems (= IParameterizedItems)
+      template[Constants.Objects] = JsonItems;
+      // 3. save the types of the JsonItems (for instatiation)
+      template[Constants.Types] = JObject.FromObject(TypeList);
+      // 4. serialize template and return string
+      return CustomJsonWriter.Serialize(template);
+    }
+
+    #region Helper
+    private void AddInstantiableIItem(string metaDataTagName, IItem item) {
+      JsonItem jsonItem = JsonItemConverter.Extract(item);
+      template[Constants.Metadata][metaDataTagName] = item.ItemName;
+      PopulateJsonItems(jsonItem);
+    }
+
     private void PopulateJsonItems(JsonItem item) {
       if (item.Parameters != null) {
-        if(item.Range == null)
+        if (item.Range == null)
           JsonItems.Add(Serialize(item));
         foreach (var p in item.Parameters)
-          if(p.Parameters != null)
+          if (p.Parameters != null)
             PopulateJsonItems(p);
       }
     }
@@ -30,7 +56,7 @@ namespace HeuristicLab.JsonInterface {
       obj[Constants.FreeParameters] = obj[nameof(JsonItem.Parameters)];
 
       obj.Property(nameof(JsonItem.Parameters))?.Remove();
-      RefactorFreeParameters(obj, null);
+      RefactorFreeParameters(obj);
       RefactorStaticParameters(obj);
 
       obj.Property(nameof(JsonItem.Default))?.Remove();
@@ -40,36 +66,11 @@ namespace HeuristicLab.JsonInterface {
       return obj;
     }
 
-    public string GenerateTemplate(IAlgorithm algorithm, IProblem problem, params string[] freeParameters) {
-      JsonItems.Clear();
-      TypeList.Clear();
-
-      algorithm.Problem = problem;
-      JsonItem algorithmData = JsonItemConverter.Extract(algorithm);
-      JsonItem problemData = JsonItemConverter.Extract(problem);
-      PopulateJsonItems(algorithmData);
-      PopulateJsonItems(problemData);
-
-      template[Constants.Metadata][Constants.Algorithm] = algorithm.Name;
-      template[Constants.Metadata][Constants.Problem] = problem.Name;
-      template[Constants.Objects] = JsonItems;
-      template[Constants.Types] = JObject.FromObject(TypeList);
-
-      return CustomJsonWriter.Serialize(template);
-    }
-
-    #region Helper
-    private void RefactorFreeParameters(JToken token, string[] freeParameters) {
+    private void RefactorFreeParameters(JToken token) {
       IList<JObject> objToRemove = new List<JObject>();
       TransformNodes(x => {
         var p = x.ToObject<JsonItem>();
-
-        /*bool isSelected = false;
-        string name = x["Name"].ToObject<string>();
-        foreach (var selected in freeParameters)
-          isSelected = (name == selected || isSelected);
-        */
-        if (/*!isSelected ||*/ p.Default == null || (p.Default != null && p.Default.GetType() == typeof(string) && p.Range == null)) {
+        if (p.Default == null || (p.Default != null && p.Default.GetType() == typeof(string) && p.Range == null)) {
           objToRemove.Add(x);
         } else {
           x.Property(nameof(JsonItem.Type))?.Remove();

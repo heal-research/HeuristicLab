@@ -18,10 +18,10 @@ namespace HeuristicLab.JsonInterface.Tests {
     [TestInitialize()]
     public void CreateTempFiles() {
       GeneticAlgorithm alg = new GeneticAlgorithm();
-      TravelingSalesmanProblem tsp = new TravelingSalesmanProblem();
+      alg.Problem = new TravelingSalesmanProblem();
       JCGenerator gen = new JCGenerator();
       //File.WriteAllText(@"C:\Workspace\Template.json", gen.GenerateTemplate(alg, tsp));
-      File.WriteAllText(templateFilePath, gen.GenerateTemplate(alg, tsp));
+      File.WriteAllText(templateFilePath, gen.GenerateTemplate(alg));
       File.WriteAllText(configFilePath, "["+
         "{\"Name\": \"Seed\",\"Default\": 55555,\"Path\": \"Genetic Algorithm (GA).Seed\"},"+
         "{\"Name\": \"Crossover\", \"Path\": \"Genetic Algorithm (GA).Crossover\", \"Default\": \"MultiPermutationCrossover\"}," +

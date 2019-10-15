@@ -26,7 +26,7 @@ namespace HeuristicLab.JsonInterface {
       foreach (var param in value.Cast<IParameterizedItem>().Parameters) {
         JsonItem data = JsonItemConverter.Extract(param);
         data.Name = param.Name;
-        data.Path = param.Name;
+        data.Path = data.Name;
         data.PrependPath(item.Path);
         data.UpdatePaths();
         
