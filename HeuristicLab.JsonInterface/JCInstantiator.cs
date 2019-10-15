@@ -22,11 +22,12 @@ namespace HeuristicLab.JsonInterface {
     private IDictionary<string, JsonItem> ParameterizedItems { get; set; } = new Dictionary<string, JsonItem>();
     private IDictionary<string, JsonItem> ConfigurableItems { get; set; } = new Dictionary<string, JsonItem>();
     
-    public IAlgorithm Instantiate(string templateFile, string configFile) {
+    public IAlgorithm Instantiate(string templateFile, string configFile = "") {
 
       //1. Parse Template and Config files
       Template = JToken.Parse(File.ReadAllText(templateFile));
-      Config = JArray.Parse(File.ReadAllText(configFile));
+      if(!string.IsNullOrEmpty(configFile))
+        Config = JArray.Parse(File.ReadAllText(configFile));
       TypeList = Template[Constants.Types].ToObject<Dictionary<string, string>>();
       string algorithmName = Template[Constants.Metadata][Constants.Algorithm].ToString();
       string problemName = Template[Constants.Metadata][Constants.Problem].ToString();
@@ -37,8 +38,9 @@ namespace HeuristicLab.JsonInterface {
       //3. select all ConfigurableItems
       SelectConfigurableItems();
 
-      //4. Merge Template and Config
-      MergeTemplateWithConfig();
+      //4. if config != null -> merge Template and Config 
+      if (Config != null)
+        MergeTemplateWithConfig();
 
       //5. resolve the references between parameterizedItems
       ResolveReferences();

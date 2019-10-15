@@ -7,15 +7,15 @@ using System.Threading.Tasks;
 namespace HeuristicLab.JsonInterface {
   internal class Constants {
 
-    public const string Metadata = "Metadata";
-    public const string Algorithm = "Algorithm";
-    public const string Problem = "Problem";
-    public const string Objects = "Objects";
-    public const string Types = "Types";
-    public const string StaticParameters = "StaticParameters";
-    public const string FreeParameters = "FreeParameters";
+    internal const string Metadata = "Metadata";
+    internal const string Algorithm = "Algorithm";
+    internal const string Problem = "Problem";
+    internal const string Objects = "Objects";
+    internal const string Types = "Types";
+    internal const string StaticParameters = "StaticParameters";
+    internal const string FreeParameters = "FreeParameters";
 
-    public const string Template = @"{
+    internal const string Template = @"{
       'Metadata': {
         'Algorithm':'',
         'Problem':''
