@@ -160,6 +160,8 @@
       <DependentUpon>ChangeNestingLevelDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="MenuItems\ChangeNestingLevelMenuItem.cs" />
+    <Compile Include="MenuItems\ExportMenuItem.cs" />
+    <Compile Include="MenuItems\ImportMenuItem.cs" />
     <Compile Include="OptimizerSingleDocumentMainForm.cs">
       <SubType>Form</SubType>
     </Compile>
