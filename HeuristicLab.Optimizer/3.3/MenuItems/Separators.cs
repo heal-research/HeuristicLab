@@ -23,13 +23,36 @@ using System.Collections.Generic;
 using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Optimizer.MenuItems {
-  internal class SeparatorMenuItem : MenuSeparatorItem, IOptimizerUserInterfaceItemProvider {
+  internal class FileBeforeExitSeperator : MenuSeparatorItem, IOptimizerUserInterfaceItemProvider {
     public override IEnumerable<string> Structure {
       get { return new string[] { "&File" }; }
     }
 
     public override int Position {
       get { return 1998; }
+    }
+  }
+
+  internal class FileAfterSaveAsSeperator : MenuSeparatorItem, IOptimizerUserInterfaceItemProvider {
+    public override IEnumerable<string> Structure {
+      get { return new string[] { "&File" }; }
+    }
+
+    public override int Position {
+      get { return 1499; }
+    }
+  }
+
+  internal class FileBeforeCloseSeperator : MenuSeparatorItem, IOptimizerUserInterfaceItemProvider
+  {
+    public override IEnumerable<string> Structure
+    {
+      get { return new string[] { "&File" }; }
+    }
+
+    public override int Position
+    {
+      get { return 1699; }
     }
   }
 }

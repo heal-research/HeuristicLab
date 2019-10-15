@@ -34,7 +34,7 @@ namespace HeuristicLab.Optimizer.MenuItems {
       get { return new string[] { "&File" }; }
     }
     public override int Position {
-      get { return 1500; }
+      get { return 1700; }
     }
     public override Keys ShortCutKeys {
       get { return Keys.Control | Keys.W; }
