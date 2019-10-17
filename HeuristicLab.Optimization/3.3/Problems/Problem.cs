@@ -33,6 +33,8 @@ namespace HeuristicLab.Optimization {
   [Item("Problem", "Represents the base class for a problem.")]
   [StorableType("6DC97432-9BD1-4304-802A-1FC48A0E0468")]
   public abstract class Problem : ParameterizedNamedItem, IProblem {
+    public string Filename { get; set; } 
+
     private const string OperatorsParameterName = "Operators";
     public IFixedValueParameter<ItemCollection<IItem>> OperatorsParameter {
       get { return (IFixedValueParameter<ItemCollection<IItem>>)Parameters[OperatorsParameterName]; }

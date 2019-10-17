@@ -35,7 +35,7 @@ namespace HeuristicLab.Optimization {
     where TEncoding : class, IEncoding<TEncodedSolution>
     where TEncodedSolution : class, IEncodedSolution
     where TEvaluator : class, IEvaluator {
-    public string Filename { get; set; } // TODO: Really okay here? should be in Problem (non-generic)
+   
 
     //TODO remove parameter for encoding?
     protected IValueParameter<TEncoding> EncodingParameter {

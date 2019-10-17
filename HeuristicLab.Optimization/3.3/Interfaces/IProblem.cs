@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using HEAL.Attic;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.Optimization {
@@ -29,7 +30,7 @@ namespace HeuristicLab.Optimization {
   /// <summary>
   /// Interface to represent an optimization problem.
   /// </summary>
-  public interface IProblem : IParameterizedNamedItem {
+  public interface IProblem : IParameterizedNamedItem , IStorableContent{
     IEnumerable<IItem> Operators { get; }
 
     IEnumerable<IParameterizedItem> ExecutionContextItems { get; }

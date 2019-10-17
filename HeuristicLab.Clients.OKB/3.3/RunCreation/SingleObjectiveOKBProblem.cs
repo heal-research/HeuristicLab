@@ -20,17 +20,16 @@
 #endregion
 
 using System;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
-using HEAL.Attic;
 
 namespace HeuristicLab.Clients.OKB.RunCreation {
   [Item("OKB Problem (single-objective)", "Represents a single-objective problem which is stored in the OKB.")]
   [Creatable(CreatableAttribute.Categories.TestingAndAnalysisOKB, Priority = 110)]
   [StorableType("1A1DF6E8-4A3F-4D91-9B1D-6FF6EC8D1055")]
-  public sealed class SingleObjectiveOKBProblem : OKBProblem, ISingleObjectiveHeuristicOptimizationProblem, IStorableContent {
-    public string Filename { get; set; }
+  public sealed class SingleObjectiveOKBProblem : OKBProblem, ISingleObjectiveHeuristicOptimizationProblem {
 
     public override Type ProblemType {
       get { return typeof(ISingleObjectiveHeuristicOptimizationProblem); }
