@@ -225,8 +225,16 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
 
     public static Interval CubicRoot(Interval a) {
-      if (a.LowerBound < 0) return new Interval(double.NaN, double.NaN);
-      return new Interval(Math.Pow(a.LowerBound, 1.0/3), Math.Pow(a.UpperBound, 1.0/3));
+      var lower = (a.LowerBound < 0) ? -Math.Pow(-a.LowerBound, 1d / 3d) : Math.Pow(a.LowerBound, 1d / 3d);
+      var upper = (a.UpperBound < 0) ? -Math.Pow(-a.UpperBound, 1d / 3d) : Math.Pow(a.UpperBound, 1d / 3d);
+
+      return new Interval(lower, upper);
+    }
+
+    public static Interval Absolute(Interval a) {
+      var absLower = Math.Abs(a.LowerBound);
+      var absUpper = Math.Abs(a.UpperBound);
+      return new Interval(Math.Min(absLower, absUpper), Math.Max(absLower, absUpper));
     }
     #endregion
   }

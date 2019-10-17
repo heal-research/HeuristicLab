@@ -77,5 +77,8 @@
     <Setting Name="CheckpointCheckInterval" Type="System.TimeSpan" Scope="User">
       <Value Profile="(Default)">00:05:00</Value>
     </Setting>
+    <Setting Name="MachineId" Type="System.Guid" Scope="User">
+      <Value Profile="(Default)">00000000-0000-0000-0000-000000000000</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
