@@ -88,8 +88,8 @@ namespace HeuristicLab.Problems.PTSP {
         }
         // compute cost difference between the two a posteriori solutions
         if (!(aPosteriori[0] == aPosteriori[2] && aPosteriori[1] == aPosteriori[3])) {
-          moveQuality = moveQuality + data.GetDistance(aPosteriori[0], aPosteriori[2]) + data.GetDistance(aPosteriori[1], aPosteriori[3])
-            - data.GetDistance(aPosteriori[0], aPosteriori[1]) - data.GetDistance(aPosteriori[2], aPosteriori[3]);
+          moveQuality = moveQuality + data.TSPData.GetDistance(aPosteriori[0], aPosteriori[2]) + data.TSPData.GetDistance(aPosteriori[1], aPosteriori[3])
+            - data.TSPData.GetDistance(aPosteriori[0], aPosteriori[1]) - data.TSPData.GetDistance(aPosteriori[2], aPosteriori[3]);
         }
         Array.Clear(aPosteriori, 0, aPosteriori.Length);
         count++;

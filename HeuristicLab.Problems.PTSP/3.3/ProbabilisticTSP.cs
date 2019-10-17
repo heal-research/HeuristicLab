@@ -24,7 +24,6 @@ using System.Linq;
 using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
@@ -69,13 +68,13 @@ namespace HeuristicLab.Problems.PTSP {
       Parameters.Add(PTSPDataParameter = new ValueParameter<IProbabilisticTSPData>("PTSP Data", "The main parameters for the pTSP."));
       Parameters.Add(BestKnownSolutionParameter = new OptionalValueParameter<IProbabilisticTSPSolution>("BestKnownSolution", "The best known solution of this pTSP instance."));
 
-      ProbabilisticTSPData = new MatrixPTSPData();
-      Encoding.Length = ProbabilisticTSPData.Cities;
+      ProbabilisticTSPData = new ProbabilisticTSPData();
+      Encoding.Length = ProbabilisticTSPData.TSPData.Cities;
     }
 
     protected override void OnEncodingChanged() {
       base.OnEncodingChanged();
-      Encoding.Length = ProbabilisticTSPData.Cities;
+      Encoding.Length = ProbabilisticTSPData.TSPData.Cities;
     }
 
     public override void Analyze(Permutation[] solutions, double[] qualities, ResultCollection results, IRandom random) {
@@ -116,45 +115,16 @@ namespace HeuristicLab.Problems.PTSP {
       Name = data.Name;
       Description = data.Description;
 
-      if (data.Dimension <= DistanceMatrixSizeLimit) {
-        ProbabilisticTSPData = new MatrixPTSPData(data.Name, data.GetDistanceMatrix(), data.Probabilities, data.Coordinates) { Description = data.Description };
-      } else if (data.DistanceMeasure == DistanceMeasure.Direct && data.Distances != null) {
-        ProbabilisticTSPData = new MatrixPTSPData(data.Name, data.Distances, data.Probabilities, data.Coordinates) { Description = data.Description };
-      } else {
-        switch (data.DistanceMeasure) {
-          case DistanceMeasure.Att:
-            ProbabilisticTSPData = new AttPTSPData(data.Name, data.Coordinates, data.Probabilities) { Description = data.Description };
-            break;
-          case DistanceMeasure.Euclidean:
-            ProbabilisticTSPData = new EuclideanPTSPData(data.Name, data.Coordinates, data.Probabilities, EuclideanTSPData.DistanceRounding.None) { Description = data.Description };
-            break;
-          case DistanceMeasure.RoundedEuclidean:
-            ProbabilisticTSPData = new EuclideanPTSPData(data.Name, data.Coordinates, data.Probabilities, EuclideanTSPData.DistanceRounding.Midpoint) { Description = data.Description };
-            break;
-          case DistanceMeasure.UpperEuclidean:
-            ProbabilisticTSPData = new EuclideanPTSPData(data.Name, data.Coordinates, data.Probabilities, EuclideanTSPData.DistanceRounding.Ceiling) { Description = data.Description };
-            break;
-          case DistanceMeasure.Geo:
-            ProbabilisticTSPData = new GeoPTSPData(data.Name, data.Coordinates, data.Probabilities) { Description = data.Description };
-            break;
-          case DistanceMeasure.Manhattan:
-            ProbabilisticTSPData = new ManhattanPTSPData(data.Name, data.Coordinates, data.Probabilities) { Description = data.Description };
-            break;
-          case DistanceMeasure.Maximum:
-            ProbabilisticTSPData = new MaximumPTSPData(data.Name, data.Coordinates, data.Probabilities) { Description = data.Description };
-            break;
-          default:
-            throw new System.IO.InvalidDataException("An unknown distance measure is given in the instance!");
-        }
-      }
+      var tspData = TSP.GetDataFromInstance(data);
+      ProbabilisticTSPData = new ProbabilisticTSPData(tspData, data.Probabilities);
       BestKnownSolution = null;
       BestKnownQuality = double.NaN;
 
       if (data.BestKnownTour != null) {
         try {
           var tour = new Permutation(PermutationTypes.RelativeUndirected, data.BestKnownTour);
-          var tourLength = Evaluate(tour, new MersenneTwister(1));
-          BestKnownSolution = new ProbabilisticTSPSolution(data.Coordinates != null ? new DoubleMatrix(data.Coordinates) : null, new PercentArray(data.Probabilities), tour, new DoubleValue(tourLength));
+          var tourLength = Evaluate(tour, new MersenneTwister(1));          
+          BestKnownSolution = ProbabilisticTSPData.GetSolution(tour, tourLength);
           BestKnownQuality = tourLength;
         } catch (InvalidOperationException) {
           if (data.BestKnownQuality.HasValue)

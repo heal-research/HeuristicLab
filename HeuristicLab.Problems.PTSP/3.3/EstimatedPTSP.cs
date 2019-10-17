@@ -116,10 +116,10 @@ namespace HeuristicLab.Problems.PTSP {
       var count = 0;
       foreach (var r in realizations) {
         int singleRealization = -1, firstNode = -1;
-        for (var j = 0; j < data.Cities; j++) {
+        for (var j = 0; j < data.TSPData.Cities; j++) {
           if (r[tour[j]]) {
             if (singleRealization != -1) {
-              estimatedSum += data.GetDistance(singleRealization, tour[j]);
+              estimatedSum += data.TSPData.GetDistance(singleRealization, tour[j]);
             } else {
               firstNode = tour[j];
             }
@@ -127,7 +127,7 @@ namespace HeuristicLab.Problems.PTSP {
           }
         }
         if (singleRealization != -1)
-          estimatedSum += data.GetDistance(singleRealization, firstNode);
+          estimatedSum += data.TSPData.GetDistance(singleRealization, firstNode);
         count++;
       }
       return estimatedSum / count;
@@ -150,10 +150,10 @@ namespace HeuristicLab.Problems.PTSP {
       foreach (var r in realizations) {
         var pSum = 0.0;
         int singleRealization = -1, firstNode = -1;
-        for (var j = 0; j < data.Cities; j++) {
+        for (var j = 0; j < data.TSPData.Cities; j++) {
           if (r[tour[j]]) {
             if (singleRealization != -1) {
-              pSum += data.GetDistance(singleRealization, tour[j]);
+              pSum += data.TSPData.GetDistance(singleRealization, tour[j]);
             } else {
               firstNode = tour[j];
             }
@@ -161,7 +161,7 @@ namespace HeuristicLab.Problems.PTSP {
           }
         }
         if (singleRealization != -1) {
-          pSum += data.GetDistance(singleRealization, firstNode);
+          pSum += data.TSPData.GetDistance(singleRealization, firstNode);
         }
         estimatedSum += pSum;
         partialSums.Add(pSum);
@@ -198,12 +198,12 @@ namespace HeuristicLab.Problems.PTSP {
     private void UpdateRealizations() {
       var data = new List<BoolArray>(Realizations);
       var rng = new MersenneTwister((uint)RealizationsSeed);
-      if (Enumerable.Range(0, ProbabilisticTSPData.Cities).All(c => ProbabilisticTSPData.GetProbability(c) <= 0))
+      if (Enumerable.Range(0, ProbabilisticTSPData.TSPData.Cities).All(c => ProbabilisticTSPData.GetProbability(c) <= 0))
         throw new InvalidOperationException("All probabilities are zero.");
       while (data.Count < Realizations) {
         var cities = 0;
-        var r = new bool[ProbabilisticTSPData.Cities];
-        for (var j = 0; j < ProbabilisticTSPData.Cities; j++) {
+        var r = new bool[ProbabilisticTSPData.TSPData.Cities];
+        for (var j = 0; j < ProbabilisticTSPData.TSPData.Cities; j++) {
           if (rng.NextDouble() < ProbabilisticTSPData.GetProbability(j)) {
             r[j] = true;
             cities++;

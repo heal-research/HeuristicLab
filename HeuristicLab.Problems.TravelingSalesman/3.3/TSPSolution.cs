@@ -30,7 +30,7 @@ using HeuristicLab.Encodings.PermutationEncoding;
 namespace HeuristicLab.Problems.TravelingSalesman {
   [StorableType("f08a63d9-0b83-4944-9251-42925baeb872")]
   public interface ITSPSolution : IItem, INotifyPropertyChanged {
-    DoubleMatrix Coordinates { get; }
+    ITSPData TSPData { get; }
     Permutation Tour { get; }
     DoubleValue TourLength { get; }
   }
@@ -40,19 +40,19 @@ namespace HeuristicLab.Problems.TravelingSalesman {
   /// </summary>
   [Item("TSP Solution", "Represents a tour of a Traveling Salesman Problem given in path representation which can be visualized in the GUI.")]
   [StorableType("38d1aac3-3047-40d9-bcf9-4b3ca0b9f95c")]
-  public class TSPSolution : Item, ITSPSolution {
+  public sealed class TSPSolution : Item, ITSPSolution {
     public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Image; }
     }
 
     [Storable]
-    private DoubleMatrix coordinates;
-    public DoubleMatrix Coordinates {
-      get { return coordinates; }
+    private ITSPData tspData;
+    public ITSPData TSPData {
+      get { return tspData; }
       set {
-        if (coordinates == value) return;
-        coordinates = value;
-        OnPropertyChanged(nameof(Coordinates));
+        if (tspData == value) return;
+        tspData = value;
+        OnPropertyChanged(nameof(TSPData));
       }
     }
 
@@ -78,26 +78,26 @@ namespace HeuristicLab.Problems.TravelingSalesman {
     }
 
     [StorableConstructor]
-    protected TSPSolution(StorableConstructorFlag _) : base(_) { }
-    protected TSPSolution(TSPSolution original, Cloner cloner)
+    private TSPSolution(StorableConstructorFlag _) : base(_) { }
+    private TSPSolution(TSPSolution original, Cloner cloner)
       : base(original, cloner) {
-      this.coordinates = cloner.Clone(original.coordinates);
+      this.tspData = cloner.Clone(original.tspData);
       this.tour = cloner.Clone(original.tour);
       this.tourLength = cloner.Clone(original.tourLength);
     }
     public TSPSolution() : base() { }
-    public TSPSolution(DoubleMatrix coordinates)
+    public TSPSolution(ITSPData data)
       : base() {
-      this.coordinates = coordinates;
+      this.tspData = data;
     }
-    public TSPSolution(DoubleMatrix coordinates, Permutation permutation)
+    public TSPSolution(ITSPData data, Permutation permutation)
       : base() {
-      this.coordinates = coordinates;
+      this.tspData = data;
       this.tour = permutation;
     }
-    public TSPSolution(DoubleMatrix coordinates, Permutation permutation, DoubleValue quality)
+    public TSPSolution(ITSPData data, Permutation permutation, DoubleValue quality)
       : base() {
-      this.coordinates = coordinates;
+      this.tspData = data;
       this.tour = permutation;
       this.tourLength = quality;
     }
@@ -107,7 +107,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
     }
 
     public event PropertyChangedEventHandler PropertyChanged;
-    protected void OnPropertyChanged(string property) {
+    private void OnPropertyChanged(string property) {
       PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
     }
   }

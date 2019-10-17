@@ -23,55 +23,44 @@ using System.Windows.Forms;
 using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
+using HeuristicLab.Problems.TravelingSalesman.Views;
 
-namespace HeuristicLab.Problems.TravelingSalesman.Views {
-  [View("Coordinates TSP Data View")]
-  [Content(typeof(CoordinatesTSPData), IsDefaultView = true)]
-  public partial class CoordinatesTSPDataView : NamedItemView, ITSPVisualizerView {
-    
-    private TSPVisualizer visualizer;
-    public TSPVisualizer Visualizer {
-      get => visualizer;
-      set {
-        if (visualizer == value) return;
-        visualizer = value;
-        if (Content != null) {
-          visualizer.Coordinates = Content.Coordinates;
-        }
-        GenerateImage();
-      }
-    }
+namespace HeuristicLab.Problems.PTSP.Views {
+  [View("Probabilistic TSP Data View")]
+  [Content(typeof(ProbabilisticTSPData), IsDefaultView = true)]
+  public partial class ProbabilisticTSPDataView : NamedItemView {
 
-    public new CoordinatesTSPData Content {
-      get { return (CoordinatesTSPData)base.Content; }
+    public ProbabilisticTSPVisualizer Visualizer { get; set; }
+
+    public new ProbabilisticTSPData Content {
+      get { return (ProbabilisticTSPData)base.Content; }
       set { base.Content = value; }
     }
 
-    public CoordinatesTSPDataView() {
+    public ProbabilisticTSPDataView() {
       InitializeComponent();
-      visualizer = new TSPVisualizer();
+      Visualizer = new ProbabilisticTSPVisualizer();
     }
 
     protected override void OnContentChanged() {
       base.OnContentChanged();
       if (Content == null) {
-        coordinatesMatrixView.Content = null;
-        coordinatesPictureBox.Image = null;
-        Visualizer.Coordinates = null;
+        probabilitiesView.Content = null;
+        tspViewHost.Content = null;
+        Visualizer.Probabilities = null;
       } else {
-        coordinatesMatrixView.Content = Content.Coordinates;
-        Visualizer.Coordinates = Content.Coordinates;
-        GenerateImage();
+        probabilitiesView.Content = Content.Probabilities;
+        Visualizer.Probabilities = Content.Probabilities;
+        tspViewHost.Content = Content.TSPData;
+        if (tspViewHost.ActiveView is ITSPVisualizerView view)
+          view.Visualizer = Visualizer;
       }
     }
 
     protected override void SetEnabledStateOfControls() {
       base.SetEnabledStateOfControls();
-      coordinatesMatrixView.Enabled = !ReadOnly && !Locked && Content != null;
-    }
-
-    protected virtual void GenerateImage() {
-      coordinatesPictureBox.Image = Visualizer.Draw(coordinatesPictureBox.Width, coordinatesPictureBox.Height);
+      probabilitiesView.Enabled = !ReadOnly && !Locked && Content != null;
+      tspViewHost.Enabled = !ReadOnly && !Locked && Content != null;
     }
   }
 }

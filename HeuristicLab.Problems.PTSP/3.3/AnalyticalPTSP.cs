@@ -68,7 +68,7 @@ namespace HeuristicLab.Problems.PTSP {
       var firstSum = 0.0;
       for (var i = 0; i < tour.Length - 1; i++) {
         for (var j = i + 1; j < tour.Length; j++) {
-          var prod1 = data.GetDistance(tour[i], tour[j]) * data.GetProbability(tour[i]) * data.GetProbability(tour[j]);
+          var prod1 = data.TSPData.GetDistance(tour[i], tour[j]) * data.GetProbability(tour[i]) * data.GetProbability(tour[j]);
           for (var k = i + 1; k < j; k++) {
             prod1 *= (1 - data.GetProbability(tour[k]));
           }
@@ -78,7 +78,7 @@ namespace HeuristicLab.Problems.PTSP {
       var secondSum = 0.0;
       for (var j = 0; j < tour.Length; j++) {
         for (var i = 0; i < j; i++) {
-          var prod2 = data.GetDistance(tour[j], tour[i]) * data.GetProbability(tour[i]) * data.GetProbability(tour[j]);
+          var prod2 = data.TSPData.GetDistance(tour[j], tour[i]) * data.GetProbability(tour[i]) * data.GetProbability(tour[j]);
           for (var k = j + 1; k < tour.Length; k++) {
             prod2 *= (1 - data.GetProbability(tour[k]));
           }

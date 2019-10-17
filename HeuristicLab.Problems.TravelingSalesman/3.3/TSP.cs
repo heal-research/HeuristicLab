@@ -142,37 +142,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
       Name = data.Name;
       Description = data.Description;
 
-      if (data.Dimension <= DistanceMatrixSizeLimit) {
-        TSPData = new MatrixTSPData(data.Name, data.GetDistanceMatrix(), data.Coordinates) { Description = data.Description };
-      } else if (data.DistanceMeasure == DistanceMeasure.Direct && data.Distances != null) {
-        TSPData = new MatrixTSPData(data.Name, data.Distances, data.Coordinates) { Description = data.Description };
-      } else {
-        switch (data.DistanceMeasure) {
-          case DistanceMeasure.Att:
-            TSPData = new AttTSPData(data.Name, data.Coordinates) { Description = data.Description };
-            break;
-          case DistanceMeasure.Euclidean:
-            TSPData = new EuclideanTSPData(data.Name, data.Coordinates, EuclideanTSPData.DistanceRounding.None) { Description = data.Description };
-            break;
-          case DistanceMeasure.RoundedEuclidean:
-            TSPData = new EuclideanTSPData(data.Name, data.Coordinates, EuclideanTSPData.DistanceRounding.Midpoint) { Description = data.Description };
-            break;
-          case DistanceMeasure.UpperEuclidean:
-            TSPData = new EuclideanTSPData(data.Name, data.Coordinates, EuclideanTSPData.DistanceRounding.Ceiling) { Description = data.Description };
-            break;
-          case DistanceMeasure.Geo:
-            TSPData = new GeoTSPData(data.Name, data.Coordinates) { Description = data.Description };
-            break;
-          case DistanceMeasure.Manhattan:
-            TSPData = new ManhattanTSPData(data.Name, data.Coordinates) { Description = data.Description };
-            break;
-          case DistanceMeasure.Maximum:
-            TSPData = new MaximumTSPData(data.Name, data.Coordinates) { Description = data.Description };
-            break;
-          default:
-            throw new System.IO.InvalidDataException("An unknown distance measure is given in the instance!");
-        }
-      }
+      TSPData = GetDataFromInstance(data);
       BestKnownSolution = null;
       BestKnownQuality = double.NaN;
 
@@ -180,7 +150,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
         try {
           var tour = new Permutation(PermutationTypes.RelativeUndirected, data.BestKnownTour);
           var tourLength = Evaluate(tour);
-          BestKnownSolution = new TSPSolution(data.Coordinates != null ? new DoubleMatrix(data.Coordinates) : null, tour, new DoubleValue(tourLength));
+          BestKnownSolution = new TSPSolution(TSPData, tour, new DoubleValue(tourLength));
           BestKnownQuality = tourLength;
         } catch (InvalidOperationException) {
           if (data.BestKnownQuality.HasValue)
@@ -190,6 +160,42 @@ namespace HeuristicLab.Problems.TravelingSalesman {
         BestKnownQuality = data.BestKnownQuality.Value;
       }
       OnReset();
+    }
+
+    public static ITSPData GetDataFromInstance(TSPData input) {
+      ITSPData tspData = null;
+      if (input.Dimension <= DistanceMatrixSizeLimit) {
+        tspData = new MatrixTSPData(input.Name, input.GetDistanceMatrix(), input.Coordinates) { Description = input.Description };
+      } else if (input.DistanceMeasure == DistanceMeasure.Direct && input.Distances != null) {
+        tspData = new MatrixTSPData(input.Name, input.Distances, input.Coordinates) { Description = input.Description };
+      } else {
+        switch (input.DistanceMeasure) {
+          case DistanceMeasure.Att:
+            tspData = new AttTSPData(input.Name, input.Coordinates) { Description = input.Description };
+            break;
+          case DistanceMeasure.Euclidean:
+            tspData = new EuclideanTSPData(input.Name, input.Coordinates, EuclideanTSPData.DistanceRounding.None) { Description = input.Description };
+            break;
+          case DistanceMeasure.RoundedEuclidean:
+            tspData = new EuclideanTSPData(input.Name, input.Coordinates, EuclideanTSPData.DistanceRounding.Midpoint) { Description = input.Description };
+            break;
+          case DistanceMeasure.UpperEuclidean:
+            tspData = new EuclideanTSPData(input.Name, input.Coordinates, EuclideanTSPData.DistanceRounding.Ceiling) { Description = input.Description };
+            break;
+          case DistanceMeasure.Geo:
+            tspData = new GeoTSPData(input.Name, input.Coordinates) { Description = input.Description };
+            break;
+          case DistanceMeasure.Manhattan:
+            tspData = new ManhattanTSPData(input.Name, input.Coordinates) { Description = input.Description };
+            break;
+          case DistanceMeasure.Maximum:
+            tspData = new MaximumTSPData(input.Name, input.Coordinates) { Description = input.Description };
+            break;
+          default:
+            throw new System.IO.InvalidDataException("An unknown distance measure is given in the instance!");
+        }
+      }
+      return tspData;
     }
 
     public TSPData Export() {

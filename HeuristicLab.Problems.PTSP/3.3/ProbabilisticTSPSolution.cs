@@ -19,17 +19,18 @@
  */
 #endregion
 
+using System.ComponentModel;
 using System.Drawing;
 using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Problems.TravelingSalesman;
 
 namespace HeuristicLab.Problems.PTSP {
   [StorableType("596f52b5-b2c8-45a0-a7bd-e5b9c787c960")]
-  public interface IProbabilisticTSPSolution : ITSPSolution {
+  public interface IProbabilisticTSPSolution : IItem, INotifyPropertyChanged {
+    ITSPSolution TSPSolution { get; }
     DoubleArray Probabilities { get; }
   }
 
@@ -38,9 +39,20 @@ namespace HeuristicLab.Problems.PTSP {
   /// </summary>
   [Item("pTSP Solution", "Represents a tour of a Probabilistic Traveling Salesman Problem given in path representation which can be visualized in the GUI.")]
   [StorableType("ea784622-41e5-493e-a1f3-4c38fed99216")]
-  public sealed class ProbabilisticTSPSolution : TSPSolution, IProbabilisticTSPSolution {
+  public sealed class ProbabilisticTSPSolution : Item, IProbabilisticTSPSolution {
     public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Image; }
+    }
+
+    [Storable]
+    private ITSPSolution tspSolution;
+    public ITSPSolution TSPSolution {
+      get { return tspSolution; }
+      set {
+        if (tspSolution == value) return;
+        tspSolution = value;
+        OnPropertyChanged(nameof(TSPSolution));
+      }
     }
 
     [Storable]
@@ -58,24 +70,23 @@ namespace HeuristicLab.Problems.PTSP {
     private ProbabilisticTSPSolution(StorableConstructorFlag _) : base(_) { }
     private ProbabilisticTSPSolution(ProbabilisticTSPSolution original, Cloner cloner)
       : base(original, cloner) {
+      this.tspSolution = cloner.Clone(original.tspSolution);
       this.probabilities = cloner.Clone(original.probabilities);
     }
     public ProbabilisticTSPSolution() : base() { }
-    public ProbabilisticTSPSolution(DoubleMatrix coordinates, PercentArray probabilities)
-      : base(coordinates) {
-      this.probabilities = probabilities;
-    }
-    public ProbabilisticTSPSolution(DoubleMatrix coordinates, PercentArray probabilities, Permutation permutation)
-      : base(coordinates, permutation) {
-      this.probabilities = probabilities;
-    }
-    public ProbabilisticTSPSolution(DoubleMatrix coordinates, PercentArray probabilities, Permutation permutation, DoubleValue quality)
-      : base(coordinates, permutation, quality) {
+    public ProbabilisticTSPSolution(ITSPSolution tspSolution, PercentArray probabilities)
+      : base() {
+      this.tspSolution = tspSolution;
       this.probabilities = probabilities;
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new ProbabilisticTSPSolution(this, cloner);
+    }
+
+    public event PropertyChangedEventHandler PropertyChanged;
+    private void OnPropertyChanged(string property) {
+      PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
     }
   }
 }

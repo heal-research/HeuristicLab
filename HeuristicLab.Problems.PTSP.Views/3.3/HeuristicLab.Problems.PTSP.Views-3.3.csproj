@@ -171,23 +171,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CoordinatesPTSPDataView.cs">
+    <Compile Include="ProbabilisticTSPDataView.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="CoordinatesPTSPDataView.Designer.cs">
-      <DependentUpon>CoordinatesPTSPDataView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="EuclideanPTSPDataView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="EuclideanPTSPDataView.Designer.cs">
-      <DependentUpon>EuclideanPTSPDataView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="MatrixPTSPDataView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="MatrixPTSPDataView.Designer.cs">
-      <DependentUpon>MatrixPTSPDataView.cs</DependentUpon>
+    <Compile Include="ProbabilisticTSPDataView.Designer.cs">
+      <DependentUpon>ProbabilisticTSPDataView.cs</DependentUpon>
     </Compile>
     <Compile Include="ProbabilisticTSPSolutionView.cs">
       <SubType>UserControl</SubType>
@@ -197,6 +185,7 @@
     </Compile>
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ProbabilisticTSPVisualizer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLab.snk" />

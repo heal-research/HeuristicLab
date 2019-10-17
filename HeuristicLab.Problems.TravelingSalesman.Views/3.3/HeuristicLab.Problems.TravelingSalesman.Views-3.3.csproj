@@ -134,6 +134,7 @@
     <Compile Include="EuclideanTSPDataView.Designer.cs">
       <DependentUpon>EuclideanTSPDataView.cs</DependentUpon>
     </Compile>
+    <Compile Include="ITSPDataView.cs" />
     <Compile Include="MatrixTSPDataView.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -148,6 +149,7 @@
     </Compile>
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TSPVisualizer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLab.snk" />
