@@ -23,7 +23,7 @@ using System.Linq;
 using HeuristicLab.Optimization;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace HeuristicLab.Analysis.MultiObjective.Tests {
+namespace HeuristicLab.Optimization.Tests {
   [TestClass]
   public class HypervolumeTest {
 
@@ -40,7 +40,7 @@ namespace HeuristicLab.Analysis.MultiObjective.Tests {
     /// 
     /// </summary>
     [TestMethod]
-    [TestCategory("Analysis.MultiObjective")]
+    [TestCategory("Optimization.MultiObjective")]
     [TestProperty("Time", "short")]
     public void HypervolumeTestSinglePoint() {
 
@@ -97,7 +97,7 @@ namespace HeuristicLab.Analysis.MultiObjective.Tests {
     /// 
     /// </summary>
     [TestMethod]
-    [TestCategory("Analysis.MultiObjective")]
+    [TestCategory("Optimization.MultiObjective")]
     [TestProperty("Time", "short")]
     public void HypervolumeTestRandomSinglePoint() {
       //Front with a single Point
@@ -150,7 +150,7 @@ namespace HeuristicLab.Analysis.MultiObjective.Tests {
     /// Hypervolume to (0,0) and (1,1) of the corners should be 0.25
     /// </summary>
     [TestMethod]
-    [TestCategory("Analysis.MultiObjective")]
+    [TestCategory("Optimization.MultiObjective")]
     [TestProperty("Time", "short")]
     public void HypervolumeTestDiagonalPoint() {
       //Front with three points
@@ -201,8 +201,7 @@ namespace HeuristicLab.Analysis.MultiObjective.Tests {
     }
 
     [TestMethod()]
-    [ExpectedException(typeof(ArgumentException))]
-    [TestCategory("Analysis.MultiObjective")]
+    [TestCategory("Optimization.MultiObjective")]
     [TestProperty("Time", "short")]
     public void HypervolumeTestReferencePointViolationNE() {
       //Front with a single Point
@@ -219,11 +218,11 @@ namespace HeuristicLab.Analysis.MultiObjective.Tests {
       referencePoint[0] = 1;
       referencePoint[1] = 1;
       double ne = HypervolumeCalculator.CalculateHypervolume(front, referencePoint, maximization);
+      Assert.AreEqual(0, ne);
     }
 
     [TestMethod()]
-    [ExpectedException(typeof(ArgumentException))]
-    [TestCategory("Analysis.MultiObjective")]
+    [TestCategory("Optimization.MultiObjective")]
     [TestProperty("Time", "short")]
     public void HypervolumeTestReferencePointViolationNW() {
       //Front with a single Point
@@ -240,12 +239,11 @@ namespace HeuristicLab.Analysis.MultiObjective.Tests {
       referencePoint[0] = 0;
       referencePoint[1] = 1;
       double nw = HypervolumeCalculator.CalculateHypervolume(front, referencePoint, maximization);
-      Assert.AreEqual(0.25, nw);
+      Assert.AreEqual(0, nw);
     }
 
     [TestMethod()]
-    [ExpectedException(typeof(ArgumentException))]
-    [TestCategory("Analysis.MultiObjective")]
+    [TestCategory("Optimization.MultiObjective")]
     [TestProperty("Time", "short")]
     public void HypervolumeTestReferencePointViolationSW() {
       //Front with a single Point
@@ -262,12 +260,11 @@ namespace HeuristicLab.Analysis.MultiObjective.Tests {
       referencePoint[0] = 0;
       referencePoint[1] = 0;
       double sw = HypervolumeCalculator.CalculateHypervolume(front, referencePoint, maximization);
-      Assert.AreEqual(0.25, sw);
+      Assert.AreEqual(0, sw);
     }
 
     [TestMethod()]
-    [ExpectedException(typeof(ArgumentException))]
-    [TestCategory("Analysis.MultiObjective")]
+    [TestCategory("Optimization.MultiObjective")]
     [TestProperty("Time", "short")]
     public void HypervolumeTestReferencePointViolationSE() {
       //Front with a single Point
@@ -284,7 +281,7 @@ namespace HeuristicLab.Analysis.MultiObjective.Tests {
       referencePoint[0] = 1;
       referencePoint[1] = 0;
       double se = HypervolumeCalculator.CalculateHypervolume(front, referencePoint, maximization);
-      Assert.AreEqual(0.25, se);
+      Assert.AreEqual(0, se);
     }
   }
 }

@@ -509,6 +509,7 @@
     <Compile Include="HeuristicLab.Analysis-3.3\ConfidenceIntervalsTests.cs" />
     <Compile Include="HeuristicLab.Analysis-3.3\EffectSizeUnitTests.cs" />
     <Compile Include="HeuristicLab.Analysis-3.3\KruskalWallisUnitTests.cs" />
+    <Compile Include="HeuristicLab.Analysis-3.3\Multi-objective\SpacingTest.cs" />
     <Compile Include="HeuristicLab.Analysis-3.3\MultidimensionalScalingTest.cs" />
     <Compile Include="HeuristicLab.Collections-3.3\BidirectionalDictionaryTest.cs" />
     <Compile Include="HeuristicLab.Collections-3.3\BidirectionalLookupTest.cs" />
@@ -589,6 +590,9 @@
     <Compile Include="HeuristicLab.IGraph\IGraphWrappersGraphTest.cs" />
     <Compile Include="HeuristicLab.IGraph\IGraphWrappersMatrixTest.cs" />
     <Compile Include="HeuristicLab.IGraph\IGraphWrappersVectorTest.cs" />
+    <Compile Include="HeuristicLab.Optimization-3.3\Multi-objective\CrowdingTest.cs" />
+    <Compile Include="HeuristicLab.Optimization-3.3\Multi-objective\FastHyperVolumeTests.cs" />
+    <Compile Include="HeuristicLab.Optimization-3.3\Multi-objective\HyperVolumeTests.cs" />
     <Compile Include="HeuristicLab.Persistence-3.3\StorableAttributeTests.cs" />
     <Compile Include="HeuristicLab.Persistence-3.3\UseCases.cs" />
     <Compile Include="HeuristicLab.Persistence.Attic\PersistenceConsistencyChecks.cs" />
@@ -635,12 +639,8 @@
     <Compile Include="HeuristicLab.Problems.TestFunctions-3.3\SphereEvaluatorTest.cs" />
     <Compile Include="HeuristicLab.Problems.TestFunctions-3.3\SumSquaresEvaluatorTest.cs" />
     <Compile Include="HeuristicLab.Problems.TestFunctions-3.3\ZakharovEvaluatorTest.cs" />
-    <Compile Include="HeuristicLab.Analysis-3.3\Multi-objective\CrowdingTest.cs" />
-    <Compile Include="HeuristicLab.Analysis-3.3\Multi-objective\FastHyperVolumeTests.cs" />
     <Compile Include="HeuristicLab.Analysis-3.3\Multi-objective\GenerationalDistanceTest.cs" />
-    <Compile Include="HeuristicLab.Analysis-3.3\Multi-objective\HyperVolumeTests.cs" />
     <Compile Include="HeuristicLab.Analysis-3.3\Multi-objective\InvertedGenerationalDistanceTest.cs" />
-    <Compile Include="HeuristicLab.Analysis-3.3\Multi-objective\SpacingTest.cs" />
     <Compile Include="HeuristicLab.Problems.TravelingSalesman-3.3\TSPMoveEvaluatorTest.cs" />
     <Compile Include="HeuristicLab.Problems.LinearAssignment-3.3\LinearAssignmentProblemSolverTest.cs" />
     <Compile Include="HeuristicLab.Problems.VehicleRouting-3.4\VRPInstancesTest.cs" />
@@ -715,6 +715,7 @@
       <CustomToolNamespace>HeuristicLab.Tests</CustomToolNamespace>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

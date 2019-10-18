@@ -22,7 +22,7 @@ using System;
 using HeuristicLab.Optimization;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace HeuristicLab.Analysis.MultiObjective.Tests {
+namespace HeuristicLab.Optimization.Tests {
   [TestClass]
   public class FastHypervolumeTest {
     /// <summary>
@@ -38,7 +38,7 @@ namespace HeuristicLab.Analysis.MultiObjective.Tests {
     /// 
     /// </summary>
     [TestMethod]
-    [TestCategory("Analysis.MultiObjective")]
+    [TestCategory("Optimization.MultiObjective")]
     [TestProperty("Time", "short")]
     public void FastHypervolumeTestSinglePoint() {
       double[] point = new double[] { 0.5, 0.5, 0.5 };
@@ -61,7 +61,7 @@ namespace HeuristicLab.Analysis.MultiObjective.Tests {
     /// 
     /// </summary>
     [TestMethod]
-    [TestCategory("Analysis.MultiObjective")]
+    [TestCategory("Optimization.MultiObjective")]
     [TestProperty("Time", "short")]
     public void FastHypervolumeTestRandomSinglePoint() {
       //Front with a single Point
@@ -99,7 +99,7 @@ namespace HeuristicLab.Analysis.MultiObjective.Tests {
     /// Hypervolume should be 0.25
     /// </summary>
     [TestMethod]
-    [TestCategory("Analysis.MultiObjective")]
+    [TestCategory("Optimization.MultiObjective")]
     [TestProperty("Time", "short")]
     public void FastHypervolumeTestDiagonalPoint() {
       //Front with three points
