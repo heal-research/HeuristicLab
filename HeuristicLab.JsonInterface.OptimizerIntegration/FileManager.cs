@@ -44,9 +44,7 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
         if (saveFileDialog.ShowDialog() == DialogResult.OK) {
           JCGenerator gen = new JCGenerator();
           IAlgorithm alg = namedItem as IAlgorithm;
-          Task.Run(() => {
-            File.WriteAllText(saveFileDialog.FileName, gen.GenerateTemplate(alg));
-          });
+          File.WriteAllText(saveFileDialog.FileName, gen.GenerateTemplate(alg));
         }
       }
     }

@@ -13,11 +13,10 @@ namespace HeuristicLab.JsonInterface.App {
       JCInstantiator instantiator = new JCInstantiator();
       IAlgorithm alg = instantiator.Instantiate(template, config);
   
-      //alg.Start();
       Task task = alg.StartAsync();
       while(!task.IsCompleted) {
         WriteResultsToFile(outputFile, alg);
-        Thread.Sleep(1000);
+        Thread.Sleep(100);
       }
       WriteResultsToFile(outputFile, alg);
     }

@@ -31,14 +31,13 @@ namespace HeuristicLab.JsonInterface {
       foreach (var x in values) list.Add(x.GetType().Name);
       return list.ToArray();
     }
-    // id = kombi aus path + default 
+
     private IList<JsonItem> GetParameterizedChilds(IParameter value) {
       List<JsonItem> list = new List<JsonItem>();
       var values = value.Cast<dynamic>().ValidValues;
       foreach(var x in values) {
         if (x is IParameterizedItem) {
           JsonItem tmp = JsonItemConverter.Extract(x);
-          tmp.PrependPath(value.Name);
           list.Add(tmp);
         }
       }

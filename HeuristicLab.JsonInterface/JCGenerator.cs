@@ -9,7 +9,6 @@ using Newtonsoft.Json.Linq;
 
 namespace HeuristicLab.JsonInterface {
   public class JCGenerator {
-
     private JObject template = JObject.Parse(Constants.Template);
     private Dictionary<string, string> TypeList = new Dictionary<string, string>();
     private JArray JsonItems { get; set; } = new JArray();
