@@ -51,18 +51,15 @@ namespace HeuristicLab.JsonInterface {
 
       //7. get problem data and object
       JsonItem problemData = GetData(problemName);
-      
       IProblem problem = CreateObject<IProblem>(problemData);
       algorithm.Problem = problem;
 
       //8. inject configuration
       JsonItemConverter.Inject(algorithm, algorithmData);
-      //JsonItemConverter.Inject(problem, problemData);
+      JsonItemConverter.Inject(problem, problemData);
 
-      if (algorithm is EngineAlgorithm) {
+      if (algorithm is EngineAlgorithm)
         algorithm.Cast<EngineAlgorithm>().Engine = new SequentialEngine.SequentialEngine();
-        File.WriteAllText(@"C:\Workspace\test2.txt", "test");
-      }
 
       return algorithm;
     }

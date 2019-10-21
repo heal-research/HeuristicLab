@@ -21,14 +21,10 @@ namespace HeuristicLab.JsonInterface {
       JsonItem item = new JsonItem();
       item.Name = value.ItemName;
       item.Type = value.GetType().AssemblyQualifiedName;
-      item.Path = value.ItemName;
 
       foreach (var param in value.Cast<IParameterizedItem>().Parameters) {
         JsonItem data = JsonItemConverter.Extract(param);
         data.Name = param.Name;
-        data.Path = data.Name;
-        data.PrependPath(item.Path);
-        data.UpdatePaths();
         
         if (item.Parameters == null)
           item.Parameters = new List<JsonItem>();

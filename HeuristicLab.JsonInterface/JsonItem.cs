@@ -9,15 +9,22 @@ using Newtonsoft.Json.Linq;
 
 namespace HeuristicLab.JsonInterface {
   public class JsonItem {
-    private IList<object> range;
-    private object defaultValue;
-
-    public string Name { get; set; }
+    
+    private string name;
+    public string Name { 
+      get => name; 
+      set {
+        name = value;
+        Path = Name;
+        UpdatePath();
+      } 
+    }
     public string Type { get; set; }
     public string Path { get; set; }
     public IList<JsonItem> Parameters { get; set; }
     public IList<JsonItem> Operators { get; set; }
 
+    private object defaultValue;
     public object Default {
       get => defaultValue; 
       set {
@@ -27,6 +34,7 @@ namespace HeuristicLab.JsonInterface {
       } 
     }
 
+    private IList<object> range;
     public IList<object> Range { 
       get => range; 
       set {
@@ -64,23 +72,28 @@ namespace HeuristicLab.JsonInterface {
       IsInNumericRange<float>(data.Default, data.Range[0], data.Range[1]) ||
       IsInNumericRange<double>(data.Default, data.Range[0], data.Range[1]));
 
-    public void UpdatePaths() {
+    public void UpdatePath() {
       if (Parameters != null)
-        foreach (var p in Parameters)
-          p.Path = $"{Path}.{p.Name}";
+        UpdatePathHelper(Parameters);
 
-      if (Operators != null) 
-        foreach (var p in Operators)
-          p.Path = $"{Path}.{p.Name}";
-    }
+      if (Operators != null)
+        UpdatePathHelper(Operators);
 
-    public void PrependPath(string str) {
-      Path = $"{str}.{Path}";
-      PrependPathHelper(Parameters, str);
-      PrependPathHelper(Operators, str);
+      if(Reference != null)
+        UpdatePathHelper(Reference);
     }
 
     #region Helper
+    private void UpdatePathHelper(params JsonItem[] items) => 
+      UpdatePathHelper((IEnumerable<JsonItem>)items);
+
+    private void UpdatePathHelper(IEnumerable<JsonItem> items) {
+      foreach (var item in items) {
+        item.Path = $"{Path}.{item.Name}";
+        item.UpdatePath();
+      }
+    }
+
     private static bool IsInRangeList(IEnumerable<object> list, object value) {
       foreach (var x in list)
         if (x.Equals(value)) return true;
@@ -91,12 +104,6 @@ namespace HeuristicLab.JsonInterface {
       (value != null && min != null && max != null && value is T && min is T && max is T &&
         (((T)min).CompareTo(value) == -1 || ((T)min).CompareTo(value) == 0) &&
         (((T)max).CompareTo(value) == 1 || ((T)max).CompareTo(value) == 0));
-
-    private void PrependPathHelper(IEnumerable<JsonItem> items, string str) {
-      if (items != null)
-        foreach (var p in items)
-          p.PrependPath(str);
-    }
     #endregion
   }
 }
