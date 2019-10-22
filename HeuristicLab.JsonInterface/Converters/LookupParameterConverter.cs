@@ -10,11 +10,10 @@ namespace HeuristicLab.JsonInterface {
     public override JsonItem ExtractData(IParameter value) => 
       new JsonItem() { 
         Name = value.Name,
-        Default = value.Cast<ILookupParameter>().ActualName
+        ActualName = value.Cast<ILookupParameter>().ActualName
       };
 
     public override void InjectData(IParameter parameter, JsonItem data) =>
-      parameter.Cast<ILookupParameter>().ActualName = data.Default.Cast<string>();
-    
+      parameter.Cast<ILookupParameter>().ActualName = data.ActualName.Cast<string>();
   }
 }

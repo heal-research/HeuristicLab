@@ -13,15 +13,20 @@ namespace HeuristicLab.JsonInterface {
     where T : struct 
   {
     public override void InjectData(IItem item, JsonItem data) => 
-      CopyMatrixData(item.Cast<MatrixType>(), CastValue<T[,]>(data.Default));
+      CopyMatrixData(item.Cast<MatrixType>(), CastValue<T[,]>(data.Value));
 
     public override JsonItem ExtractData(IItem value) =>
       new JsonItem() {
-        Default = value.Cast<MatrixType>().CloneAsMatrix()
+        Value = value.Cast<MatrixType>().CloneAsMatrix()
       };
 
     #region Helper
     private void CopyMatrixData(MatrixType matrix, T[,] data) {
+      var rowInfo = matrix.GetType().GetProperty("Rows");
+      rowInfo.SetValue(matrix, data.GetLength(0));
+      var colInfo = matrix.GetType().GetProperty("Columns");
+      colInfo.SetValue(matrix, data.GetLength(1));
+      //matrix.Cast<dynamic>().Columns = data.GetLength(1);
       for (int x = 0; x < data.GetLength(0); ++x) {
         for (int y = 0; y < data.GetLength(1); ++y) {
           matrix[x, y] = data[x, y];

@@ -12,11 +12,11 @@ namespace HeuristicLab.JsonInterface {
     where T : struct {
 
     public override void InjectData(IItem item, JsonItem data) =>
-      item.Cast<ValueType>().Value = CastValue<T>(data.Default);
+      item.Cast<ValueType>().Value = CastValue<T>(data.Value);
 
     public override JsonItem ExtractData(IItem value) => 
       new JsonItem() {
-        Default = value.Cast<ValueType>().Value,
+        Value = value.Cast<ValueType>().Value,
         Range = new object[] { GetMinValue(), GetMaxValue() }
       };
 

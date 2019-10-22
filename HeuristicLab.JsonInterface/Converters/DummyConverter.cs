@@ -13,6 +13,6 @@ namespace HeuristicLab.JsonInterface {
     }
 
     public override JsonItem ExtractData(IItem value) => 
-      new JsonItem() { Default = value.GetType().Name };
+      new JsonItem() { Value = value.GetType().Name };
   }
 }

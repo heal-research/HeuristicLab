@@ -58,7 +58,7 @@ namespace HeuristicLab.JsonInterface {
       RefactorFreeParameters(obj);
       RefactorStaticParameters(obj);
 
-      obj.Property(nameof(JsonItem.Default))?.Remove();
+      obj.Property(nameof(JsonItem.Value))?.Remove();
       obj.Property(nameof(JsonItem.Type))?.Remove();
 
       TypeList.Add(item.Path, item.Type);
@@ -69,7 +69,7 @@ namespace HeuristicLab.JsonInterface {
       IList<JObject> objToRemove = new List<JObject>();
       TransformNodes(x => {
         var p = x.ToObject<JsonItem>();
-        if (p.Default == null || (p.Default != null && p.Default.GetType() == typeof(string) && p.Range == null)) {
+        if ((p.Value == null || (p.Value != null && p.Value.GetType() == typeof(string) && p.Range == null) && p.ActualName == null)) {
           objToRemove.Add(x);
         } else {
           x.Property(nameof(JsonItem.Type))?.Remove();
@@ -87,7 +87,7 @@ namespace HeuristicLab.JsonInterface {
         x.Property(nameof(JsonItem.Operators))?.Remove();
         x.Property(nameof(JsonItem.Parameters))?.Remove();
         x.Property(nameof(JsonItem.Type))?.Remove();
-        if (p.Default == null) objToRemove.Add(x);
+        if (p.Value == null) objToRemove.Add(x);
       }, token[Constants.StaticParameters]);
       foreach (var x in objToRemove) x.Remove();
     }

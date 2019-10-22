@@ -11,13 +11,13 @@ namespace HeuristicLab.JsonInterface {
     public override void InjectData(IItem item, JsonItem data) =>
       item.Cast<dynamic>().Value = Enum.Parse(
         item.GetType().GenericTypeArguments.First(), 
-        CastValue<string>(data.Default));
+        CastValue<string>(data.Value));
 
     public override JsonItem ExtractData(IItem value) {
       JsonItem data = new JsonItem();
       object val = ((dynamic)value).Value;
       Type enumType = val.GetType();
-      data.Default = Enum.GetName(enumType, val);
+      data.Value = Enum.GetName(enumType, val);
       data.Range = Enum.GetNames(enumType);
       return data;
     }

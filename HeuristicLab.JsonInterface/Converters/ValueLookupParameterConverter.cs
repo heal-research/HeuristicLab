@@ -9,18 +9,26 @@ namespace HeuristicLab.JsonInterface {
   public class ValueLookupParameterConverter : ParameterBaseConverter {
     public override JsonItem ExtractData(IParameter value) {
       IValueLookupParameter param = value.Cast<IValueLookupParameter>();
+      object actualValue = null;
+      IList<object> actualRange = null;
+      if(param.Value != null) {
+        JsonItem tmp = JsonItemConverter.Extract(param.Value);
+        actualValue = tmp.Value;
+        actualRange = tmp.Range;
+      }
       return new JsonItem() {
         Name = value.Name,
-        Default = param.ActualName,
-        Reference = param.Value != null ? JsonItemConverter.Extract(param.Value) : null
+        ActualName = param.ActualName,
+        Value = actualValue,
+        Range = actualRange
       };
     }
 
     public override void InjectData(IParameter parameter, JsonItem data) {
       IValueLookupParameter param = parameter.Cast<IValueLookupParameter>();
-      param.ActualName = CastValue<string>(data.Default);
-      if (param.Value != null && data.Reference != null)
-        JsonItemConverter.Inject(param.Value, data.Reference);
+      param.ActualName = CastValue<string>(data.ActualName);
+      if (param.Value != null)
+        JsonItemConverter.Inject(param.Value, data);
     }
   }
 }
