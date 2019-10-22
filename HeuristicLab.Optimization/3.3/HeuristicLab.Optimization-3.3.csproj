@@ -159,7 +159,6 @@
     <Compile Include="Interfaces\IMultiObjectiveOperator.cs" />
     <Compile Include="MultiObjective\CrowdingCalculator.cs" />
     <Compile Include="MultiObjective\DominationCalculator.cs" />
-    <Compile Include="MultiObjective\GenerationalDistanceCalculator.cs" />
     <Compile Include="MultiObjective\HypervolumeCalculator.cs" />
     <Compile Include="Results\IResultParameter.cs" />
     <Compile Include="Interfaces\ISingleObjectiveOperator.cs" />
