@@ -19,7 +19,6 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration.MenuItems {
       get { return 1501; }
     }
 
-
     public override void Execute() {
       FileManager.ImportJsonTemplate();
     }

@@ -24,11 +24,11 @@ namespace HeuristicLab.JsonInterface {
     public IList<JsonItem> Parameters { get; set; }
     public IList<JsonItem> Operators { get; set; }
 
-    private object defaultValue;
-    public object Default {
-      get => defaultValue; 
+    private object value;
+    public object Value {
+      get => value; 
       set {
-        defaultValue = value;
+        this.value = value;
         if(Range != null && value != null && !FulfillConstraints())
           throw new ArgumentOutOfRangeException("Default", "Default is not in range.");
       } 
@@ -39,23 +39,27 @@ namespace HeuristicLab.JsonInterface {
       get => range; 
       set {
         range = value;
-        if (Default != null && value != null && !FulfillConstraints())
+        if (Value != null && value != null && !FulfillConstraints())
           throw new ArgumentOutOfRangeException("Default", "Default is not in range.");
       } 
     }
-        
+    
+    public string ActualName { get; set; }
+
+    [JsonIgnore]
     public JsonItem Reference { get; set; }
 
     [JsonIgnore]
-    public bool IsConfigurable => (Default != null && Range != null);
+    public bool IsConfigurable => (Value != null && Range != null);
 
     public static void Merge(JsonItem target, JsonItem from) {
       target.Name = from.Name ?? target.Name;
       target.Type = from.Type ?? target.Type;
       target.Range = from.Range ?? target.Range;
       target.Path = from.Path ?? target.Path;
-      target.Default = from.Default ?? target.Default;
+      target.Value = from.Value ?? target.Value;
       target.Reference = from.Reference ?? target.Reference;
+      target.ActualName = from.ActualName ?? target.ActualName;
       target.Parameters = from.Parameters ?? target.Parameters;
       target.Operators = from.Operators ?? target.Operators;
     }
@@ -63,14 +67,14 @@ namespace HeuristicLab.JsonInterface {
     public bool FulfillConstraints() => FulfillConstraints(this);
 
     public static bool FulfillConstraints(JsonItem data) =>
-      data.Range != null && data.Default != null && (
-      IsInRangeList(data.Range, data.Default) ||
-      IsInNumericRange<long>(data.Default, data.Range[0], data.Range[1]) ||
-      IsInNumericRange<int>(data.Default, data.Range[0], data.Range[1]) ||
-      IsInNumericRange<short>(data.Default, data.Range[0], data.Range[1]) ||
-      IsInNumericRange<byte>(data.Default, data.Range[0], data.Range[1]) ||
-      IsInNumericRange<float>(data.Default, data.Range[0], data.Range[1]) ||
-      IsInNumericRange<double>(data.Default, data.Range[0], data.Range[1]));
+      data.Range != null && data.Value != null && (
+      IsInRangeList(data.Range, data.Value) ||
+      IsInNumericRange<long>(data.Value, data.Range[0], data.Range[1]) ||
+      IsInNumericRange<int>(data.Value, data.Range[0], data.Range[1]) ||
+      IsInNumericRange<short>(data.Value, data.Range[0], data.Range[1]) ||
+      IsInNumericRange<byte>(data.Value, data.Range[0], data.Range[1]) ||
+      IsInNumericRange<float>(data.Value, data.Range[0], data.Range[1]) ||
+      IsInNumericRange<double>(data.Value, data.Range[0], data.Range[1]));
 
     public void UpdatePath() {
       if (Parameters != null)

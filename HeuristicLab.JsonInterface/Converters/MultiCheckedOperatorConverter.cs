@@ -10,13 +10,13 @@ namespace HeuristicLab.JsonInterface {
     public override JsonItem ExtractData(IItem value) {
       JsonItem data = base.ExtractData(value);
 
-      data.Default = value.GetType().Name;
+      data.Value = value.GetType().Name;
       data.Operators = new List<JsonItem>();
       dynamic val = value.Cast<dynamic>();
       foreach (var op in val.Operators) {
         data.Operators.Add(new JsonItem() {
           Name = op.Name,
-          Default = val.Operators.ItemChecked(op),
+          Value = val.Operators.ItemChecked(op),
           Range = new object[] { false, true },
           Path = data.Path + "." + op.Name
         });
@@ -34,7 +34,7 @@ namespace HeuristicLab.JsonInterface {
 
     private bool GetOperatorState(string name, JsonItem data) {
       foreach(var op in data.Operators) {
-        if (op.Name == name) return op.Default.Cast<bool>();
+        if (op.Name == name) return op.Value.Cast<bool>();
       }
       return false;
     }

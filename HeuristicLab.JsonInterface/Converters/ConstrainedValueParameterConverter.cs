@@ -9,7 +9,7 @@ namespace HeuristicLab.JsonInterface {
   public class ConstrainedValueParameterConverter : ParameterBaseConverter {
     public override void InjectData(IParameter parameter, JsonItem data) {
       foreach (var x in parameter.Cast<dynamic>().ValidValues)
-        if (x.GetType().Name == CastValue<string>(data.Default))
+        if (x.GetType().Name == CastValue<string>(data.Value))
           parameter.ActualValue = x;
 
       if (parameter.ActualValue is IParameterizedItem && data.Reference != null)
@@ -19,7 +19,7 @@ namespace HeuristicLab.JsonInterface {
     public override JsonItem ExtractData(IParameter value) =>
       new JsonItem() {
         Name = value.Name,
-        Default = value.ActualValue?.GetType().Name,
+        Value = value.ActualValue?.GetType().Name,
         Range = GetValidValues(value),
         Parameters = GetParameterizedChilds(value)
       };

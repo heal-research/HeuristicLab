@@ -9,11 +9,11 @@ using HeuristicLab.Data;
 namespace HeuristicLab.JsonInterface {
   public class StringValueConverter : BaseConverter {
     public override void InjectData(IItem item, JsonItem data) =>
-      item.Cast<StringValue>().Value = CastValue<string>(data.Default);
+      item.Cast<StringValue>().Value = CastValue<string>(data.Value);
 
     public override JsonItem ExtractData(IItem value) => 
       new JsonItem() {
-        Default = value.Cast<StringValue>().Value
+        Value = value.Cast<StringValue>().Value
       };
   }
 }

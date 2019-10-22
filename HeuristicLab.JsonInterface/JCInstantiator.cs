@@ -90,10 +90,10 @@ namespace HeuristicLab.JsonInterface {
     private void ResolveReferences() {
       foreach(var x in ParameterizedItems.Values)
         foreach (var p in x.Parameters)
-          if (p.Default is string) {
+          if (p.Value is string) {
             string key = p.Path;
             if (p.Range != null)
-              key = $"{p.Path}.{p.Default.Cast<string>()}";
+              key = $"{p.Path}.{p.Value.Cast<string>()}";
 
             if (ParameterizedItems.TryGetValue(key, out JsonItem value))
               p.Reference = value;
@@ -106,10 +106,10 @@ namespace HeuristicLab.JsonInterface {
         JsonItem item = BuildJsonItem(obj);
         // override default value
         if (ConfigurableItems.TryGetValue(item.Path, out JsonItem param)) {
-          param.Default = item.Default;
-          // override default value of reference (for ValueLookupParameters)
-          if (param.Reference != null)
-            param.Reference.Default = item.Reference?.Default;
+          param.Value = item.Value;
+          // override ActualName (for LookupParameters)
+          if (param.ActualName != null)
+            param.ActualName = item.ActualName;
         } else throw new InvalidDataException($"No {Constants.FreeParameters.Trim('s')} with path='{item.Path}' defined!");
       }
     }
@@ -134,12 +134,10 @@ namespace HeuristicLab.JsonInterface {
       new JsonItem() {
         Name = obj[nameof(JsonItem.Name)]?.ToString(),
         Path = obj[nameof(JsonItem.Path)]?.ToString(),
-        Default = obj[nameof(JsonItem.Default)]?.ToObject<object>(),
+        Value = obj[nameof(JsonItem.Value)]?.ToObject<object>(),
         Range = obj[nameof(JsonItem.Range)]?.ToObject<object[]>(),
         Type = GetType(obj[nameof(JsonItem.Path)]?.ToObject<string>()),
-        Reference = obj[nameof(JsonItem.Type)] == null ? 
-                    null : 
-                    BuildJsonItem(obj[nameof(JsonItem.Type)].ToObject<JObject>()),
+        ActualName = obj[nameof(JsonItem.ActualName)]?.ToString(),
         Parameters = PopulateParameters(obj),
         Operators = PopulateOperators(obj)
       };

@@ -13,11 +13,11 @@ namespace HeuristicLab.JsonInterface {
     where T : struct 
   {
     public override void InjectData(IItem item, JsonItem data) => 
-      CopyArrayData(item.Cast<ArrayType>(), CastValue<T[]>(data.Default));
+      CopyArrayData(item.Cast<ArrayType>(), CastValue<T[]>(data.Value));
 
     public override JsonItem ExtractData(IItem value) => 
       new JsonItem() {
-        Default = value.Cast<ArrayType>().CloneAsArray()
+        Value = value.Cast<ArrayType>().CloneAsArray()
       };
 
     #region Helper
