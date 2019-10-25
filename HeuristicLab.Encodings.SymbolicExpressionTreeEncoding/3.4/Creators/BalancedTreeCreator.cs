@@ -134,7 +134,9 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
           var parentCacheEntry = TryAddItem(parent);
           var maxChildArity = new int[parentCacheEntry.MaxSubtreeCount];
 
-          HasUnarySymbols |= parentCacheEntry.MaxSubtreeCount == 1;
+          if (!(parent is StartSymbol || parent is Defun)) {
+            HasUnarySymbols |= parentCacheEntry.MaxSubtreeCount == 1;
+          }
 
           foreach (var child in AllowedSymbols) {
             var childCacheEntry = TryAddItem(child);
