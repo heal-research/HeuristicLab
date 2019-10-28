@@ -22,6 +22,8 @@ namespace HeuristicLab.JsonInterface {
 
     #region Helper
     private void CopyArrayData(ArrayType array, T[] data) {
+      var colInfo = array.GetType().GetProperty("Length");
+      colInfo.SetValue(array, data.Length);
       for (int i = 0; i < data.Length; ++i) {
         array[i] = data[i];
       }
