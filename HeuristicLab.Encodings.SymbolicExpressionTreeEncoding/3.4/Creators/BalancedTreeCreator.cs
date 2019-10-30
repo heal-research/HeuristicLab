@@ -25,6 +25,8 @@ using System.Linq;
 using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
+using HeuristicLab.Data;
+using HeuristicLab.Parameters;
 using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Random;
 
@@ -33,24 +35,44 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   [StorableType("AA3649C4-18CF-480B-AA41-F5D6F148B494")]
   [Item("BalancedTreeCreator", "An operator that produces trees with a specified distribution")]
   public class BalancedTreeCreator : SymbolicExpressionTreeCreator {
+    private const string IrregularityBiasParameterName = "IrregularityBias";
+
+    public IFixedValueParameter<PercentValue> IrregularityBiasParameter {
+      get { return (IFixedValueParameter<PercentValue>)Parameters[IrregularityBiasParameterName]; }
+    }
+
+    public double IrregularityBias {
+      get { return IrregularityBiasParameter.Value.Value; }
+      set { IrregularityBiasParameter.Value.Value = value; }
+    }
+
     [StorableConstructor]
     protected BalancedTreeCreator(StorableConstructorFlag _) : base(_) { }
 
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      if (!Parameters.ContainsKey(IrregularityBiasParameterName)) {
+        Parameters.Add(new FixedValueParameter<PercentValue>(IrregularityBiasParameterName, new PercentValue(0.0)));
+      }
+    }
+
     protected BalancedTreeCreator(BalancedTreeCreator original, Cloner cloner) : base(original, cloner) { }
 
-    public BalancedTreeCreator() { }
+    public BalancedTreeCreator() {
+      Parameters.Add(new FixedValueParameter<PercentValue>(IrregularityBiasParameterName, new PercentValue(0.0)));
+    }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new BalancedTreeCreator(this, cloner);
     }
 
     public override ISymbolicExpressionTree CreateTree(IRandom random, ISymbolicExpressionGrammar grammar, int maxLength, int maxDepth) {
-      return Create(random, grammar, maxLength, maxDepth);
+      return Create(random, grammar, maxLength, maxDepth, IrregularityBias);
     }
 
-    public static ISymbolicExpressionTree Create(IRandom random, ISymbolicExpressionGrammar grammar, int maxLength, int maxDepth) {
+    public static ISymbolicExpressionTree Create(IRandom random, ISymbolicExpressionGrammar grammar, int maxLength, int maxDepth, double irregularityBias = 0) {
       int targetLength = random.Next(3, maxLength); // because we have 2 extra nodes for the root and start symbols, and the end is exclusive
-      return CreateExpressionTree(random, grammar, targetLength, maxDepth);
+      return CreateExpressionTree(random, grammar, targetLength, maxDepth, irregularityBias);
     }
 
     private class SymbolCacheEntry {
@@ -60,7 +82,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     }
 
     private class SymbolCache {
-      public SymbolCache(ISymbolicExpressionGrammar grammar) {
+      public SymbolCache(ISymbolicExpressionGrammarBase grammar) {
         Grammar = grammar;
       }
 
@@ -80,7 +102,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
           symbols.Add(child);
           weights.Add(child.InitialFrequency);
         }
-        if (!symbols.Any()) {
+        if (symbols.Count == 0) {
           throw new ArgumentException("SampleNode: parent symbol " + parent.Name
             + " does not have any allowed child symbols with min arity " + minArity
             + " and max arity " + maxArity + ". Please ensure the grammar is properly configured.");
@@ -93,7 +115,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
         return node;
       }
 
-      public ISymbolicExpressionGrammar Grammar {
+      public ISymbolicExpressionGrammarBase Grammar {
         get { return grammar; }
         set {
           grammar = value;
@@ -152,32 +174,28 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
         }
       }
 
-      private ISymbolicExpressionGrammar grammar;
+      private ISymbolicExpressionGrammarBase grammar;
       private Dictionary<Tuple<ISymbol, ISymbol>, bool[]> allowedCache;
       private Dictionary<ISymbol, SymbolCacheEntry> symbolCache;
     }
 
-    public static ISymbolicExpressionTree CreateExpressionTree(IRandom random, ISymbolicExpressionGrammar grammar, int targetLength, int maxDepth) {
+    public static ISymbolicExpressionTree CreateExpressionTree(IRandom random, ISymbolicExpressionGrammar grammar, int targetLength, int maxDepth, double irregularityBias = 1) {
       // even lengths cannot be achieved without symbols of odd arity
       // therefore we randomly pick a neighbouring odd length value
-      var symbolCache = new SymbolCache(grammar);
-      if (!symbolCache.HasUnarySymbols && targetLength % 2 == 0) {
-        targetLength += random.NextDouble() < 0.5 ? -1 : +1;
-      }
-      return CreateExpressionTree(random, symbolCache, targetLength, maxDepth);
+      var tree = MakeStump(random, grammar); // create a stump consisting of just a ProgramRootSymbol and a StartSymbol
+      CreateExpression(random, tree.Root.GetSubtree(0), targetLength - 2, maxDepth - 2, irregularityBias); // -2 because the stump has length 2 and depth 2
+      return tree;
     }
 
-    private static ISymbolicExpressionTree CreateExpressionTree(IRandom random, SymbolCache symbolCache, int targetLength, int maxDepth) {
-      var allowedSymbols = symbolCache.AllowedSymbols;
-      var tree = MakeStump(random, symbolCache.Grammar);
-      var tuples = new List<NodeInfo>(targetLength) {
-        new NodeInfo { Node = tree.Root, Depth = 0, Arity = 1 },
-        new NodeInfo { Node = tree.Root.GetSubtree(0), Depth = 1, Arity = 1 }
-      };
-      targetLength -= 2; // remaining length; -2 because we already have a root and start node
-      int openSlots = 1; // remaining extension points; startNode has arity 1
+    public static void CreateExpression(IRandom random, ISymbolicExpressionTreeNode root, int targetLength, int maxDepth, double irregularityBias = 1) {
+      var grammar = root.Grammar;
+      var symbolCache = new SymbolCache(grammar);
+      var entry = symbolCache[root.Symbol];
+      var arity = random.Next(entry.MinSubtreeCount, entry.MaxSubtreeCount + 1);
+      var tuples = new List<NodeInfo>(targetLength) { new NodeInfo { Node = root, Depth = 0, Arity = arity } };
+      int openSlots = arity;
 
-      for (int i = 1; i < tuples.Count; ++i) {
+      for (int i = 0; i < tuples.Count; ++i) {
         var t = tuples[i];
         var node = t.Node;
         var parentEntry = symbolCache[node.Symbol];
@@ -185,7 +203,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
         for (int childIndex = 0; childIndex < t.Arity; ++childIndex) {
           // min and max arity here refer to the required arity limits for the child node
           int maxChildArity = t.Depth == maxDepth - 1 ? 0 : Math.Min(parentEntry.MaxChildArity[childIndex], targetLength - openSlots);
-          int minChildArity = Math.Min(1, maxChildArity);
+          int minChildArity = Math.Min((openSlots - tuples.Count > 1 && random.NextDouble() < irregularityBias) ? 0 : 1, maxChildArity);
           var child = symbolCache.SampleNode(random, node.Symbol, childIndex, minChildArity, maxChildArity);
           var childEntry = symbolCache[child.Symbol];
           var childArity = random.Next(childEntry.MinSubtreeCount, childEntry.MaxSubtreeCount + 1);
@@ -195,7 +213,6 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
           openSlots += childArity;
         }
       }
-      return tree;
     }
 
     protected override ISymbolicExpressionTree Create(IRandom random) {
