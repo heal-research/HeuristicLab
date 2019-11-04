@@ -236,6 +236,20 @@ namespace HeuristicLab.Problems.DataAnalysis {
       var absUpper = Math.Abs(a.UpperBound);
       return new Interval(Math.Min(absLower, absUpper), Math.Max(absLower, absUpper));
     }
+
+    public static Interval AnalyticalQuotient(Interval a, Interval b) {
+      if (b.LowerBound <= 0 && b.UpperBound >= 0) //Second interval goes over zero or is zero
+        return new Interval(a.LowerBound, a.UpperBound);
+
+      var values = new List<double> {
+        a.LowerBound / Math.Sqrt(Math.Pow(b.LowerBound, 2) + 1),
+        a.LowerBound / Math.Sqrt(Math.Pow(b.UpperBound, 2) + 1),
+        a.UpperBound / Math.Sqrt(Math.Pow(b.LowerBound, 2) + 1),
+        a.UpperBound / Math.Sqrt(Math.Pow(b.UpperBound, 2) + 1)
+      };
+
+      return new Interval(values.Min(), values.Max());
+    }
     #endregion
   }
 }

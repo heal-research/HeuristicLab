@@ -181,5 +181,32 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
       Assert.AreEqual(new Interval(0, 2), Interval.Absolute(new Interval(-2, 0)));
       Assert.AreEqual(new Interval(0, 2), Interval.Absolute(new Interval(0, 2)));
     }
+
+    [TestMethod]
+    [TestCategory("Problems.DataAnalysis")]
+    [TestProperty("Time", "short")]
+    public void TestIntervalAnalyticalQuotient() {
+      //Second interval goes over zero
+      Assert.AreEqual(new Interval(-4, 2), Interval.AnalyticalQuotient(new Interval(-4, 2), new Interval(0, 5)));
+      Assert.AreEqual(new Interval(-4, 2), Interval.AnalyticalQuotient(new Interval(-4, 2), new Interval(-4, 0)));
+      Assert.AreEqual(new Interval(-4, 2), Interval.AnalyticalQuotient(new Interval(-4, 2), new Interval(-2, 4)));
+      Assert.AreEqual(new Interval(-4, -2), Interval.AnalyticalQuotient(new Interval(-4, -2), new Interval(0, 5)));
+      Assert.AreEqual(new Interval(-4, -2), Interval.AnalyticalQuotient(new Interval(-4, -2), new Interval(-4, 0)));
+      Assert.AreEqual(new Interval(-4, -2), Interval.AnalyticalQuotient(new Interval(-4, -2), new Interval(-2, 4)));
+      Assert.AreEqual(new Interval(3, 7), Interval.AnalyticalQuotient(new Interval(3, 7), new Interval(0, 5)));
+      Assert.AreEqual(new Interval(3, 7), Interval.AnalyticalQuotient(new Interval(3, 7), new Interval(-4, 0)));
+      Assert.AreEqual(new Interval(3, 7), Interval.AnalyticalQuotient(new Interval(3, 7), new Interval(-2, 4)));
+      Assert.AreEqual(new Interval(0, 0), Interval.AnalyticalQuotient(new Interval(0, 0), new Interval(0, 5)));
+      Assert.AreEqual(new Interval(-4, -4), Interval.AnalyticalQuotient(new Interval(-4, -4), new Interval(-4, 0)));
+      Assert.AreEqual(new Interval(4, 4), Interval.AnalyticalQuotient(new Interval(4, 4), new Interval(-2, 4)));
+
+      //First interval goes over zero
+      Assert.AreEqual(new Interval(-2.0/Math.Sqrt(5), 5.0 / Math.Sqrt(5)), Interval.AnalyticalQuotient(new Interval(-2, 5), new Interval(-5, -2)));
+      Assert.AreEqual(new Interval(-2.0 / Math.Sqrt(5), 5.0 / Math.Sqrt(5)), Interval.AnalyticalQuotient(new Interval(-2, 5), new Interval(2, 5)));
+      Assert.AreEqual(new Interval(2.0/Math.Sqrt(26), 5.0/Math.Sqrt(5)), Interval.AnalyticalQuotient(new Interval(2, 5), new Interval(-5, -2)));
+      Assert.AreEqual(new Interval(2.0 / Math.Sqrt(26), 5.0 / Math.Sqrt(5)), Interval.AnalyticalQuotient(new Interval(2, 5), new Interval(2, 5)));
+      Assert.AreEqual(new Interval(-5.0/Math.Sqrt(5), -2.0/Math.Sqrt(26)), Interval.AnalyticalQuotient(new Interval(-5, -2), new Interval(-5, -2)));
+      Assert.AreEqual(new Interval(-5.0 / Math.Sqrt(5), -2.0 / Math.Sqrt(26)), Interval.AnalyticalQuotient(new Interval(-5, -2), new Interval(2, 5)));
+    }
   }
 }
