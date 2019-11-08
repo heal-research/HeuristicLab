@@ -60,6 +60,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Attributes\ConvertableAttribute.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="Converters\ValueLookupParameterConverter.cs" />
     <Compile Include="CustomJsonWriter.cs" />
