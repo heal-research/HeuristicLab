@@ -9,8 +9,13 @@ using Newtonsoft.Json.Linq;
 
 namespace HeuristicLab.JsonInterface {
   public class JsonItem {
-    
+
+    #region Private Fields
     private string name;
+    private object value;
+    private IList<object> range;
+    #endregion
+    
     public string Name { 
       get => name; 
       set {
@@ -23,35 +28,34 @@ namespace HeuristicLab.JsonInterface {
     public string Path { get; set; }
     public IList<JsonItem> Parameters { get; set; }
     public IList<JsonItem> Operators { get; set; }
-
-    private object value;
     public object Value {
       get => value; 
       set {
         this.value = value;
-        if(Range != null && value != null && !FulfillConstraints())
-          throw new ArgumentOutOfRangeException("Default", "Default is not in range.");
+        CheckConstraints();
       } 
     }
-
-    private IList<object> range;
     public IList<object> Range { 
       get => range; 
       set {
         range = value;
-        if (Value != null && value != null && !FulfillConstraints())
-          throw new ArgumentOutOfRangeException("Default", "Default is not in range.");
+        CheckConstraints();
       } 
     }
-    
     public string ActualName { get; set; }
 
+    #region JsonIgnore Properties
     [JsonIgnore]
     public JsonItem Reference { get; set; }
 
     [JsonIgnore]
     public bool IsConfigurable => (Value != null && Range != null);
 
+    [JsonIgnore]
+    public bool IsParameterizedItem => Parameters != null;
+    #endregion
+
+    #region Public Static Methods
     public static void Merge(JsonItem target, JsonItem from) {
       target.Name = from.Name ?? target.Name;
       target.Type = from.Type ?? target.Type;
@@ -63,19 +67,9 @@ namespace HeuristicLab.JsonInterface {
       target.Parameters = from.Parameters ?? target.Parameters;
       target.Operators = from.Operators ?? target.Operators;
     }
+    #endregion
 
-    public bool FulfillConstraints() => FulfillConstraints(this);
-
-    public static bool FulfillConstraints(JsonItem data) =>
-      data.Range != null && data.Value != null && (
-      IsInRangeList(data.Range, data.Value) ||
-      IsInNumericRange<long>(data.Value, data.Range[0], data.Range[1]) ||
-      IsInNumericRange<int>(data.Value, data.Range[0], data.Range[1]) ||
-      IsInNumericRange<short>(data.Value, data.Range[0], data.Range[1]) ||
-      IsInNumericRange<byte>(data.Value, data.Range[0], data.Range[1]) ||
-      IsInNumericRange<float>(data.Value, data.Range[0], data.Range[1]) ||
-      IsInNumericRange<double>(data.Value, data.Range[0], data.Range[1]));
-
+    #region Public Methods
     public void UpdatePath() {
       if (Parameters != null)
         UpdatePathHelper(Parameters);
@@ -86,6 +80,7 @@ namespace HeuristicLab.JsonInterface {
       if(Reference != null)
         UpdatePathHelper(Reference);
     }
+    #endregion
 
     #region Helper
     private void UpdatePathHelper(params JsonItem[] items) => 
@@ -98,16 +93,35 @@ namespace HeuristicLab.JsonInterface {
       }
     }
 
-    private static bool IsInRangeList(IEnumerable<object> list, object value) {
-      foreach (var x in list)
-        if (x.Equals(value)) return true;
+    private void CheckConstraints() {
+      if (Range != null && Value != null && !IsInRange())
+        throw new ArgumentOutOfRangeException("Default", "Default is not in range.");
+    }
+
+
+    private bool IsInRange() => IsInRangeList() || IsInNumericRange();
+
+    private bool IsInRangeList() {
+      foreach (var x in Range)
+        if (x.Equals(Value)) return true;
       return false;
     }
 
-    private static bool IsInNumericRange<T>(object value, object min, object max) where T : IComparable =>
-      (value != null && min != null && max != null && value is T && min is T && max is T &&
-        (((T)min).CompareTo(value) == -1 || ((T)min).CompareTo(value) == 0) &&
-        (((T)max).CompareTo(value) == 1 || ((T)max).CompareTo(value) == 0));
+    private bool IsInNumericRange() =>
+      IsInNumericRange<long>()
+      || IsInNumericRange<int>()
+      || IsInNumericRange<short>()
+      || IsInNumericRange<byte>()
+      || IsInNumericRange<float>()
+      || IsInNumericRange<double>();
+
+    private bool IsInNumericRange<T>() where T : IComparable {
+      object value = Value, min = Range[0], max = Range[1];
+      return value != null && min != null && max != null && value is T && min is T && max is T &&
+            (((T)min).CompareTo(value) == -1 || ((T)min).CompareTo(value) == 0) &&
+            (((T)max).CompareTo(value) == 1 || ((T)max).CompareTo(value) == 0);
+    }
+      
     #endregion
   }
 }

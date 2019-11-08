@@ -42,9 +42,8 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
         saveFileDialog.FileName = suggestedFileName + " " + namedItem.GetType().Name;
 
         if (saveFileDialog.ShowDialog() == DialogResult.OK) {
-          JCGenerator gen = new JCGenerator();
           IAlgorithm alg = namedItem as IAlgorithm;
-          File.WriteAllText(saveFileDialog.FileName, gen.GenerateTemplate(alg));
+          File.WriteAllText(saveFileDialog.FileName, JCGenerator.GenerateTemplate(alg));
         }
       }
     }
@@ -61,9 +60,8 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
       }
 
       if (openFileDialog.ShowDialog() == DialogResult.OK) {
-        JCInstantiator instantiator = new JCInstantiator();
         try {
-          var content = instantiator.Instantiate(openFileDialog.FileName);
+          var content = JCInstantiator.Instantiate(openFileDialog.FileName);
           IView view = MainFormManager.MainForm.ShowContent(content);
           if (view == null)
             ErrorHandling.ShowErrorDialog("There is no view for the loaded item. It cannot be displayed.", new InvalidOperationException("No View Available"));

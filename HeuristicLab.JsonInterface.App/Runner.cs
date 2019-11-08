@@ -10,8 +10,7 @@ using HeuristicLab.Optimization;
 namespace HeuristicLab.JsonInterface.App {
   internal static class Runner {
     internal static void Run(string template, string config, string outputFile = @"C:\Workspace\test.txt") {
-      JCInstantiator instantiator = new JCInstantiator();
-      IAlgorithm alg = instantiator.Instantiate(template, config);
+      IAlgorithm alg = JCInstantiator.Instantiate(template, config);
   
       Task task = alg.StartAsync();
       while(!task.IsCompleted) {
