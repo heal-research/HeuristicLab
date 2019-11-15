@@ -51,7 +51,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     private static readonly MethodInfo Exp = typeof(Math).GetMethod("Exp", new[] { typeof(double) });
     private static readonly MethodInfo Log = typeof(Math).GetMethod("Log", new[] { typeof(double) });
     private static readonly MethodInfo IsNaN = typeof(double).GetMethod("IsNaN");
-    private static readonly MethodInfo IsAlmost = typeof(DoubleExtensions).GetMethod("IsAlmost");
+    private static readonly MethodInfo IsAlmost = typeof(DoubleExtensions).GetMethod("IsAlmost", new Type[] { typeof(double), typeof(double)});
     private static readonly MethodInfo Gamma = typeof(alglib).GetMethod("gammafunction", new[] { typeof(double) });
     private static readonly MethodInfo Psi = typeof(alglib).GetMethod("psi", new[] { typeof(double) });
     private static readonly MethodInfo DawsonIntegral = typeof(alglib).GetMethod("dawsonintegral", new[] { typeof(double) });
