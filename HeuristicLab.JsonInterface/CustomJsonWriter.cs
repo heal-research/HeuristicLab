@@ -3,6 +3,10 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace HeuristicLab.JsonInterface {
+  /// <summary>
+  /// Custom json writer for own formatting for templates.
+  /// It collapses arrays into a single line.
+  /// </summary>
   internal class CustomJsonWriter : JsonTextWriter {
     private bool isRangeArray = false;
     public override void WriteStartArray() {

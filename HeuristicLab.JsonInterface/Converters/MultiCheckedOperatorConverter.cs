@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.JsonInterface {
@@ -10,7 +11,7 @@ namespace HeuristicLab.JsonInterface {
     public override JsonItem ExtractData(IItem value) {
       JsonItem data = base.ExtractData(value);
 
-      data.Value = value.GetType().Name;
+      data.Value = value.GetType().GetPrettyName(false);
       data.Operators = new List<JsonItem>();
       dynamic val = value.Cast<dynamic>();
       foreach (var op in val.Operators) {
