@@ -74,8 +74,8 @@ namespace HeuristicLab.JsonInterface {
       obj[Constants.FreeParameters] = obj[nameof(JsonItem.Parameters)];
 
       obj.Property(nameof(JsonItem.Parameters))?.Remove();
-      RefactorFreeParameters(obj);
-      RefactorStaticParameters(obj);
+      RefactorFreeParameters(obj, genData);
+      RefactorStaticParameters(obj, genData);
 
       obj.Property(nameof(JsonItem.Value))?.Remove();
       obj.Property(nameof(JsonItem.Type))?.Remove();
@@ -86,10 +86,10 @@ namespace HeuristicLab.JsonInterface {
     }
 
     // deletes unnecessary properties for free parameters.
-    private static void RefactorFreeParameters(JToken token) {
+    private static void RefactorFreeParameters(JToken token, GenData genData) {
       IList<JObject> objToRemove = new List<JObject>();
       TransformNodes(x => {
-        var p = x.ToObject<JsonItem>();
+        var p = JsonItem.BuildJsonItem(x, genData.TypeList);
         x.Property(nameof(JsonItem.Type))?.Remove();
         x.Property(nameof(JsonItem.Parameters))?.Remove();
         /*
@@ -104,10 +104,10 @@ namespace HeuristicLab.JsonInterface {
     }
 
     // deletes unnecessary properties for static parameters.
-    private static void RefactorStaticParameters(JToken token) {
+    private static void RefactorStaticParameters(JToken token, GenData genData) {
       IList<JObject> objToRemove = new List<JObject>();
       TransformNodes(x => {
-        var p = x.ToObject<JsonItem>();
+        var p = JsonItem.BuildJsonItem(x, genData.TypeList);
         x.Property(nameof(JsonItem.Range))?.Remove();
         x.Property(nameof(JsonItem.Operators))?.Remove();
         x.Property(nameof(JsonItem.Parameters))?.Remove();

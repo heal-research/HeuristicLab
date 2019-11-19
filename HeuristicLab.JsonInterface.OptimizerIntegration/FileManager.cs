@@ -22,7 +22,8 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
         ExportJsonTemplate(activeView);
       }
     }
-    public static void ExportJsonTemplate(IContentView view) {
+    public static void ExportJsonTemplate(IContentView view) { 
+      // TODO: view to select free params, warning if no results are generated
       IStorableContent content = view.Content as IStorableContent;
       if (!view.Locked && content != null) {
         if (saveFileDialog == null) {

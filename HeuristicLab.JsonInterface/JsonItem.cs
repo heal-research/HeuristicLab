@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,35 +19,32 @@ namespace HeuristicLab.JsonInterface {
     private object value;
     private IEnumerable<object> range;
     #endregion
-    
-    public string Name { 
-      get => name; 
+
+    public string Name {
+      get => name;
       set {
         name = value;
         Path = Name;
         UpdatePath();
-      } 
+      }
     }
     public string Type { get; set; }
     public string Path { get; set; }
     public IList<JsonItem> Parameters { get; set; } // -> für flachen aufbau -> childs?
     public IList<JsonItem> Operators { get; set; }
     public object Value {
-      get => value; 
+      get => value;
       set {
-        if (value is JContainer)
-          this.value = ((JContainer)value).ToObject<object[]>();
-        else
-          this.value = value;
+        this.value = value;
         CheckConstraints();
-      } 
+      }
     }
-    public IEnumerable<object> Range { 
-      get => range; 
+    public IEnumerable<object> Range {
+      get => range;
       set {
         range = value;
         CheckConstraints();
-      } 
+      }
     }
     public string ActualName { get; set; }
 
@@ -83,13 +81,13 @@ namespace HeuristicLab.JsonInterface {
       if (Operators != null)
         UpdatePathHelper(Operators);
 
-      if(Reference != null)
+      if (Reference != null)
         UpdatePathHelper(Reference);
     }
     #endregion
 
     #region Helper
-    private void UpdatePathHelper(params JsonItem[] items) => 
+    private void UpdatePathHelper(params JsonItem[] items) =>
       UpdatePathHelper((IEnumerable<JsonItem>)items);
 
     private void UpdatePathHelper(IEnumerable<JsonItem> items) {
@@ -104,7 +102,7 @@ namespace HeuristicLab.JsonInterface {
         throw new ArgumentOutOfRangeException(nameof(Value), $"{nameof(Value)} is not in range.");
     }
 
-    private bool IsInRange() => IsInRangeList() || 
+    private bool IsInRange() => IsInRangeList() ||
       (Value.GetType().IsArray && ((object[])Value).All(x => IsInNumericRange(x))) ||
       (!Value.GetType().IsArray && IsInNumericRange(Value));
 
@@ -128,7 +126,68 @@ namespace HeuristicLab.JsonInterface {
             (((T)min).CompareTo(value) == -1 || ((T)min).CompareTo(value) == 0) &&
             (((T)max).CompareTo(value) == 1 || ((T)max).CompareTo(value) == 0);
     }
-      
+
+    #endregion
+
+    #region BuildJsonItemMethods
+    public static JsonItem BuildJsonItem(JObject obj, IDictionary<string, string> typeList) {
+      object val = obj[nameof(Value)]?.ToObject<object>();
+      if (val is JContainer)
+        val = ((JContainer)val).ToObject<object[]>();
+
+      return new JsonItem() {
+        Name = obj[nameof(Name)]?.ToString(),
+        Path = obj[nameof(Path)]?.ToString(),
+        Value = val,
+        Range = obj[nameof(Range)]?.ToObject<object[]>(),
+        Type = GetType(obj[nameof(Path)]?.ToObject<string>(), typeList),
+        ActualName = obj[nameof(ActualName)]?.ToString(),
+        Parameters = PopulateParameters(obj, typeList),
+        Operators = PopulateOperators(obj, typeList)
+      };
+  }
+
+    private static string GetType(string path, IDictionary<string, string> typeList) {
+      if (!string.IsNullOrEmpty(path))
+        if (typeList.TryGetValue(path, out string value))
+          return value;
+      return null;
+    }
+
+    private static IList<JsonItem> PopulateParameters(JObject obj, IDictionary<string, string> typeList) {
+      IList<JsonItem> list = new List<JsonItem>();
+
+      // add staticParameters
+      if (obj[Constants.StaticParameters] != null)
+        foreach (JObject param in obj[Constants.StaticParameters])
+          list.Add(BuildJsonItem(param, typeList));
+
+      // merge staticParameter with freeParameter
+      if (obj[Constants.FreeParameters] != null) {
+        foreach (JObject param in obj[Constants.FreeParameters]) {
+          JsonItem tmp = BuildJsonItem(param, typeList);
+
+          // search staticParameter from list
+          JsonItem comp = null;
+          foreach (var p in list)
+            if (p.Name == tmp.Name) comp = p;
+          if (comp == null)
+            throw new InvalidDataException($"Invalid {Constants.FreeParameters.Trim('s')}: '{tmp.Name}'!");
+
+          JsonItem.Merge(comp, tmp);
+        }
+      }
+      return list;
+    }
+
+    private static IList<JsonItem> PopulateOperators(JObject obj, IDictionary<string, string> typeList) {
+      IList<JsonItem> list = new List<JsonItem>();
+      JToken operators = obj[nameof(JsonItem.Operators)];
+      if (operators != null)
+        foreach (JObject sp in operators)
+          list.Add(BuildJsonItem(sp, typeList));
+      return list;
+    }
     #endregion
   }
 }
