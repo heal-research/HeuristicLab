@@ -21,6 +21,7 @@
 
 using System;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -29,7 +30,6 @@ using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Random;
 
@@ -281,7 +281,8 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
         Parameters.Add(new FixedValueParameter<BoolValue>("FillPopulationWithParents", "True if the population should be filled with parent individual or false if worse children should be used when the maximum selection pressure is exceeded.", new BoolValue(false)) { Hidden = true });
 
       var optionalMutatorParameter = MutatorParameter as OptionalConstrainedValueParameter<IManipulator>;
-      if (optionalMutatorParameter != null) {
+      var mutatorParameter = MutatorParameter as ConstrainedValueParameter<IManipulator>;
+      if (mutatorParameter == null && optionalMutatorParameter != null) {
         Parameters.Remove(optionalMutatorParameter);
         Parameters.Add(new ConstrainedValueParameter<IManipulator>("Mutator", "The operator used to mutate solutions."));
         foreach (var m in optionalMutatorParameter.ValidValues)
