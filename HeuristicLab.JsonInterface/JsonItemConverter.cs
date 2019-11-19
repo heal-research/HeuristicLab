@@ -7,6 +7,9 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 
 namespace HeuristicLab.JsonInterface {
+  /// <summary>
+  /// Static class for handling json converters.
+  /// </summary>
   public static class JsonItemConverter {
 
     private struct ConverterPriorityContainer {
@@ -14,19 +17,45 @@ namespace HeuristicLab.JsonInterface {
       public int Priority { get; set; }
     }
 
-    private static IDictionary<Type, ConverterPriorityContainer> transformers = new Dictionary<Type, ConverterPriorityContainer>();
+    private static IDictionary<Type, ConverterPriorityContainer> Converters { get; set; } 
+      = new Dictionary<Type, ConverterPriorityContainer>();
     
+    /// <summary>
+    /// Register a converter for a given type and priority.
+    /// </summary>
+    /// <param name="type">The type for which the converter will be selected.</param>
+    /// <param name="converter">The implemented converter.</param>
+    /// <param name="priority">The priority for the converter selection (when multiple converter match for a given type). Higher is better.</param>
     public static void Register(Type type, IJsonItemConverter converter, int priority) {
-      if (!transformers.ContainsKey(type))
-        transformers.Add(type, new ConverterPriorityContainer() { Converter = converter, Priority = priority });
+      if (!Converters.ContainsKey(type))
+        Converters.Add(type, new ConverterPriorityContainer() { Converter = converter, Priority = priority });
     }
 
-    public static void Register<T>(IJsonItemConverter converter, int priority) => Register(typeof(T), converter, priority);
+    public static void Register<T>(IJsonItemConverter converter, int priority) => 
+      Register(typeof(T), converter, priority);
 
+    /// <summary>
+    /// Deregister a converter (same object has to be already registered).
+    /// </summary>
+    /// <param name="converter">Converter to deregister.</param>
+    public static void Deregister(IJsonItemConverter converter) {
+      var types = 
+        Converters
+        .Where(x => x.Value.Converter.GetHashCode() == converter.GetHashCode())
+        .Select(x => x.Key);
+      foreach (var x in types)
+        Converters.Remove(x);
+    }
+
+    /// <summary>
+    /// Get a converter for a specific type.
+    /// </summary>
+    /// <param name="type">The type for which the converter will be selected.</param>
+    /// <returns>An IJsonItemConverter object.</returns>
     public static IJsonItemConverter Get(Type type) { 
       IList<ConverterPriorityContainer> possibleConverters = new List<ConverterPriorityContainer>();
-
-      foreach (var x in transformers)
+      
+      foreach (var x in Converters)
         if (type.IsEqualTo(x.Key))
           possibleConverters.Add(x.Value);
 
@@ -48,6 +77,9 @@ namespace HeuristicLab.JsonInterface {
       Get(item.GetType()).Extract(item);
 
 
+    /// <summary>
+    /// Static constructor for default converter configuration.
+    /// </summary>
     static JsonItemConverter() {
       Register<IntValue>(new ValueTypeValueConverter<IntValue, int>(), 1);
       Register<DoubleValue>(new ValueTypeValueConverter<DoubleValue, double>(), 1);
@@ -66,15 +98,20 @@ namespace HeuristicLab.JsonInterface {
       Register<PercentMatrix>(new ValueTypeMatrixConverter<PercentMatrix, double>(), 2);
       Register<BoolMatrix>(new ValueTypeMatrixConverter<BoolMatrix, bool>(), 1);
 
+      Register<DoubleRange>(new DoubleRangeConverter(), 1);
+      Register<IntRange>(new IntRangeConverter(), 1);
+
       Register(typeof(EnumValue<>), new EnumTypeConverter(), 1);
 
-      Register<IValueParameter>(new ValueParameterConverter(), 1);
-      Register<IParameterizedItem>(new ParameterizedItemConverter(), 1);
-      Register<ILookupParameter>(new LookupParameterConverter(), 2);
-      Register<IValueLookupParameter>(new ValueLookupParameterConverter(), 3);
+      Register<IParameter>(new ParameterConverter(), 1);
 
-      Register(typeof(IConstrainedValueParameter<>), new ConstrainedValueParameterConverter(), 2);
-      Register(typeof(ICheckedMultiOperator<>), new MultiCheckedOperatorConverter(), 2);
+      Register<IValueParameter>(new ValueParameterConverter(), 2);
+      Register<IParameterizedItem>(new ParameterizedItemConverter(), 2);
+      Register<ILookupParameter>(new LookupParameterConverter(), 3);
+      Register<IValueLookupParameter>(new ValueLookupParameterConverter(), 4);
+
+      Register(typeof(IConstrainedValueParameter<>), new ConstrainedValueParameterConverter(), 3);
+      Register(typeof(ICheckedMultiOperator<>), new MultiCheckedOperatorConverter(), 3);
     }
   }
 }

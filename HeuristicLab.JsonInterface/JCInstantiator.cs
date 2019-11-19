@@ -13,6 +13,9 @@ using HeuristicLab.SequentialEngine;
 using Newtonsoft.Json.Linq;
 
 namespace HeuristicLab.JsonInterface {
+  /// <summary>
+  /// Static class to instantiate an IAlgorithm object with a json interface template and config.
+  /// </summary>
   public static class JCInstantiator {
     private struct InstData {
       public JToken Template { get; set; }
@@ -22,6 +25,12 @@ namespace HeuristicLab.JsonInterface {
       public IDictionary<string, JsonItem> ConfigurableItems { get; set; }
     }
 
+    /// <summary>
+    /// Instantiate an IAlgorithm object with a template and config.
+    /// </summary>
+    /// <param name="templateFile">Template file (json), generated with JCGenerator.</param>
+    /// <param name="configFile">Config file (json) for the template.</param>
+    /// <returns>confugrated IAlgorithm object</returns>
     public static IAlgorithm Instantiate(string templateFile, string configFile = "") {
       InstData instData = new InstData() {
         TypeList = new Dictionary<string, string>(),

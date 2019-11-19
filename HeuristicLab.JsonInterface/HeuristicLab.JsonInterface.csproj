@@ -62,7 +62,10 @@
   <ItemGroup>
     <Compile Include="Attributes\ConvertableAttribute.cs" />
     <Compile Include="Constants.cs" />
+    <Compile Include="Converters\ParameterConverter.cs" />
+    <Compile Include="Converters\StorableConverter.cs" />
     <Compile Include="Converters\ValueLookupParameterConverter.cs" />
+    <Compile Include="Converters\ValueRangeConverter.cs" />
     <Compile Include="CustomJsonWriter.cs" />
     <Compile Include="Extensions\ObjectExtensions.cs" />
     <Compile Include="Extensions\TypeExtensions.cs" />

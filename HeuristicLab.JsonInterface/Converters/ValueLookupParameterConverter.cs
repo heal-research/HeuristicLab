@@ -10,7 +10,7 @@ namespace HeuristicLab.JsonInterface {
     public override JsonItem ExtractData(IParameter value) {
       IValueLookupParameter param = value.Cast<IValueLookupParameter>();
       object actualValue = null;
-      IList<object> actualRange = null;
+      IEnumerable<object> actualRange = null;
       if(param.Value != null) {
         JsonItem tmp = JsonItemConverter.Extract(param.Value);
         actualValue = tmp.Value;

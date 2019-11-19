@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
@@ -8,15 +9,16 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace HeuristicLab.JsonInterface {
+  /// <summary>
+  /// Static class to generate json interface templates.
+  /// </summary>
   public static class JCGenerator {
-
     private struct GenData {
       public JObject Template { get; set; }
       public IDictionary<string, string> TypeList { get; set; }
       public JArray JsonItems { get; set; }
     }
-
-
+    
     public static string GenerateTemplate(IAlgorithm algorithm) {
       // data container
       GenData genData = new GenData() {
@@ -29,8 +31,8 @@ namespace HeuristicLab.JsonInterface {
       // template and save it an JArray incl. all parameters of the JsonItem, 
       // which have parameters aswell
       AddInstantiableIItem(Constants.Algorithm, algorithm, genData);
-      IsConvertable(algorithm, true);
-      if (algorithm.Problem != null && IsConvertable(algorithm.Problem, true)) // 1.2. only when an problem exists
+      //IsConvertable(algorithm, true);
+      if (algorithm.Problem != null) // 1.2. only when an problem exists
         AddInstantiableIItem(Constants.Problem, algorithm.Problem, genData);
 
       // 2. save the JArray with JsonItems (= IParameterizedItems)
@@ -42,12 +44,13 @@ namespace HeuristicLab.JsonInterface {
     }
     
     #region Helper
-    private static bool IsConvertable(object obj, bool throwException) {
+    private static bool IsConvertable(object obj, bool throwException = false) {
       bool tmp = ConvertableAttribute.IsConvertable(obj);
       if (throwException && tmp)
-        throw new NotSupportedException($"Type {obj.GetType().Name} is not convertable!");
+        throw new NotSupportedException($"Type {obj.GetType().GetPrettyName(false)} is not convertable!");
       return tmp;
     }
+
     private static void AddInstantiableIItem(string metaDataTagName, IItem item, GenData genData) {
       JsonItem jsonItem = JsonItemConverter.Extract(item);
       genData.Template[Constants.Metadata][metaDataTagName] = item.ItemName;
@@ -77,7 +80,8 @@ namespace HeuristicLab.JsonInterface {
       obj.Property(nameof(JsonItem.Value))?.Remove();
       obj.Property(nameof(JsonItem.Type))?.Remove();
 
-      genData.TypeList.Add(item.Path, item.Type);
+      if(!genData.TypeList.ContainsKey(item.Path))
+        genData.TypeList.Add(item.Path, item.Type);
       return obj;
     }
 
@@ -86,14 +90,17 @@ namespace HeuristicLab.JsonInterface {
       IList<JObject> objToRemove = new List<JObject>();
       TransformNodes(x => {
         var p = x.ToObject<JsonItem>();
+        x.Property(nameof(JsonItem.Type))?.Remove();
+        x.Property(nameof(JsonItem.Parameters))?.Remove();
+        /*
         if ((p.Value == null || (p.Value != null && p.Value.GetType() == typeof(string) && p.Range == null) && p.ActualName == null)) {
           objToRemove.Add(x);
         } else {
           x.Property(nameof(JsonItem.Type))?.Remove();
           x.Property(nameof(JsonItem.Parameters))?.Remove();
-        }
+        }*/
       }, token[Constants.FreeParameters]);
-      foreach (var x in objToRemove) x.Remove();
+      //foreach (var x in objToRemove) x.Remove();
     }
 
     // deletes unnecessary properties for static parameters.
@@ -108,7 +115,7 @@ namespace HeuristicLab.JsonInterface {
         //TODO: maybe allow JsonItems with Value==null in static parameters too?
         if (p.Value == null) objToRemove.Add(x); 
       }, token[Constants.StaticParameters]);
-      foreach (var x in objToRemove) x.Remove();
+      //foreach (var x in objToRemove) x.Remove();
     }
 
     /// <summary>

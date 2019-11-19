@@ -5,6 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace HeuristicLab.JsonInterface {
+  /// <summary>
+  /// Constants for reading/writing templates.
+  /// </summary>
   internal class Constants {
 
     internal const string Metadata = "Metadata";

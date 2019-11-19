@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.JsonInterface {
@@ -13,6 +14,6 @@ namespace HeuristicLab.JsonInterface {
     }
 
     public override JsonItem ExtractData(IItem value) => 
-      new JsonItem() { Value = value.GetType().Name };
+      new JsonItem() { Value = value.GetType().GetPrettyName(false) };
   }
 }

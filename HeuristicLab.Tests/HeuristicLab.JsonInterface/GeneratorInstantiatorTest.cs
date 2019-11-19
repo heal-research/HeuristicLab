@@ -19,9 +19,8 @@ namespace HeuristicLab.JsonInterface.Tests {
     public void CreateTempFiles() {
       GeneticAlgorithm alg = new GeneticAlgorithm();
       alg.Problem = new TravelingSalesmanProblem();
-      JCGenerator gen = new JCGenerator();
       //File.WriteAllText(@"C:\Workspace\Template.json", gen.GenerateTemplate(alg, tsp));
-      File.WriteAllText(templateFilePath, gen.GenerateTemplate(alg));
+      File.WriteAllText(templateFilePath, JCGenerator.GenerateTemplate(alg));
       File.WriteAllText(configFilePath, "["+
         "{\"Name\": \"Seed\",\"Default\": 55555,\"Path\": \"Genetic Algorithm (GA).Seed\"},"+
         "{\"Name\": \"Crossover\", \"Path\": \"Genetic Algorithm (GA).Crossover\", \"Default\": \"MultiPermutationCrossover\"}," +
@@ -37,8 +36,7 @@ namespace HeuristicLab.JsonInterface.Tests {
 
     [TestMethod]
     public void TestInstantiator() {
-      JCInstantiator configurator = new JCInstantiator();
-      GeneticAlgorithm alg = (GeneticAlgorithm)configurator.Instantiate(templateFilePath, configFilePath);
+      GeneticAlgorithm alg = (GeneticAlgorithm)JCInstantiator.Instantiate(templateFilePath, configFilePath);
 
       Assert.AreEqual(55555, alg.Seed.Value);
       Assert.IsTrue(alg.Crossover is MultiPermutationCrossover);
@@ -49,8 +47,7 @@ namespace HeuristicLab.JsonInterface.Tests {
     [ExpectedException(typeof(ArgumentOutOfRangeException))]
     public void TestRangeChangeWithConfig() {
       File.WriteAllText(configFilePath, "[{\"Name\": \"MutationProbability\", \"Path\": \"Genetic Algorithm (GA).MutationProbability\", \"Default\": 2.0,\"Range\":[0.0,2.0]}]");
-      JCInstantiator configurator = new JCInstantiator();
-      GeneticAlgorithm alg = (GeneticAlgorithm)configurator.Instantiate(templateFilePath, configFilePath);
+      GeneticAlgorithm alg = (GeneticAlgorithm)JCInstantiator.Instantiate(templateFilePath, configFilePath);
     }
   }
 }
