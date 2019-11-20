@@ -115,21 +115,6 @@
       <Name>HeuristicLab.MainForm-3.3</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Optimization.Views\3.3\HeuristicLab.Optimization.Views-3.3.csproj">
-      <Project>{662B4B15-8F4D-4AE5-B3EB-D91C215F5AF2}</Project>
-      <Name>HeuristicLab.Optimization.Views-3.3</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Optimization\3.3\HeuristicLab.Optimization-3.3.csproj">
-      <Project>{14AB8D24-25BC-400C-A846-4627AA945192}</Project>
-      <Name>HeuristicLab.Optimization-3.3</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Parameters\3.3\HeuristicLab.Parameters-3.3.csproj">
-      <Project>{56F9106A-079F-4C61-92F6-86A84C2D84B7}</Project>
-      <Name>HeuristicLab.Parameters-3.3</Name>
-      <Private>False</Private>
-    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.PluginInfrastructure\3.3\HeuristicLab.PluginInfrastructure-3.3.csproj">
       <Project>{94186A6A-5176-4402-AE83-886557B53CCA}</Project>
       <Name>HeuristicLab.PluginInfrastructure-3.3</Name>
@@ -153,11 +138,6 @@
     <ProjectReference Include="..\..\HeuristicLab.Problems.TravelingSalesman\3.3\HeuristicLab.Problems.TravelingSalesman-3.3.csproj">
       <Project>{d767c38d-8014-46b0-9a32-03a3aecce34a}</Project>
       <Name>HeuristicLab.Problems.TravelingSalesman-3.3</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Random\3.3\HeuristicLab.Random-3.3.csproj">
-      <Project>{F4539FB6-4708-40C9-BE64-0A1390AEA197}</Project>
-      <Name>HeuristicLab.Random-3.3</Name>
       <Private>False</Private>
     </ProjectReference>
     <Reference Include="System" />

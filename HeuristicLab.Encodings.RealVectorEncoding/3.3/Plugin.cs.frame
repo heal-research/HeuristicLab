@@ -27,6 +27,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
   /// </summary>
   [Plugin("HeuristicLab.Encodings.RealVectorEncoding", "3.3.16.$WCREV$")]
   [PluginFile("HeuristicLab.Encodings.RealVectorEncoding-3.3.dll", PluginFileType.Assembly)]
+  [PluginDependency("HeuristicLab.Analysis", "3.3")]
   [PluginDependency("HeuristicLab.Collections", "3.3")]
   [PluginDependency("HeuristicLab.Common", "3.3")]
   [PluginDependency("HeuristicLab.Core", "3.3")]

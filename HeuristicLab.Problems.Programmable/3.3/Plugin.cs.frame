@@ -29,7 +29,6 @@ namespace HeuristicLab.Problems.Programmable {
   [PluginDependency("HeuristicLab.Common", "3.3")]
   [PluginDependency("HeuristicLab.Common.Resources", "3.3")]
   [PluginDependency("HeuristicLab.Core", "3.3")]
-  [PluginDependency("HeuristicLab.Data", "3.3")]
   [PluginDependency("HeuristicLab.Encodings.BinaryVectorEncoding", "3.3")]
   [PluginDependency("HeuristicLab.Encodings.IntegerVectorEncoding", "3.3")]
   [PluginDependency("HeuristicLab.Encodings.RealVectorEncoding", "3.3")]

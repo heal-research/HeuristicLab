@@ -127,18 +127,8 @@
     <None Include="Properties\AssemblyInfo.cs.frame" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\HeuristicLab.Analysis.Views\3.3\HeuristicLab.Analysis.Views-3.3.csproj">
-      <Project>{76945d76-ca61-4147-9dc2-0acdcddf87f9}</Project>
-      <Name>HeuristicLab.Analysis.Views-3.3</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Analysis\3.3\HeuristicLab.Analysis-3.3.csproj">
-      <Project>{887425B4-4348-49ED-A457-B7D2C26DDBF9}</Project>
-      <Name>HeuristicLab.Analysis-3.3</Name>
-      <Private>False</Private>
-    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Collections\3.3\HeuristicLab.Collections-3.3.csproj">
-      <Project>{958B43BC-CC5C-4FA2-8628-2B3B01D890B6}</Project>
+      <Project>{958b43bc-cc5c-4fa2-8628-2b3b01d890b6}</Project>
       <Name>HeuristicLab.Collections-3.3</Name>
       <Private>False</Private>
     </ProjectReference>
@@ -195,11 +185,6 @@
     <ProjectReference Include="..\..\HeuristicLab.Problems.Instances\3.3\HeuristicLab.Problems.Instances-3.3.csproj">
       <Project>{3540e29e-4793-49e7-8ee2-fea7f61c3994}</Project>
       <Name>HeuristicLab.Problems.Instances-3.3</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Problems.TestFunctions.MultiObjective\3.3\HeuristicLab.Problems.TestFunctions.MultiObjective-3.3.csproj">
-      <Project>{d53e8e48-cfaa-4f57-ac35-63bef4476159}</Project>
-      <Name>HeuristicLab.Problems.TestFunctions.MultiObjective-3.3</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Problems.TestFunctions\3.3\HeuristicLab.Problems.TestFunctions-3.3.csproj">

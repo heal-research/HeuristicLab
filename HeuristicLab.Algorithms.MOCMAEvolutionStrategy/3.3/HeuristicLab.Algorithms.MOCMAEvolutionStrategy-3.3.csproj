@@ -156,11 +156,6 @@
       <Name>HeuristicLab.Problems.Instances-3.3</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Problems.TestFunctions.MultiObjective\3.3\HeuristicLab.Problems.TestFunctions.MultiObjective-3.3.csproj">
-      <Project>{D53E8E48-CFAA-4F57-AC35-63BEF4476159}</Project>
-      <Name>HeuristicLab.Problems.TestFunctions.MultiObjective-3.3</Name>
-      <Private>False</Private>
-    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Random\3.3\HeuristicLab.Random-3.3.csproj">
       <Project>{F4539FB6-4708-40C9-BE64-0A1390AEA197}</Project>
       <Name>HeuristicLab.Random-3.3</Name>

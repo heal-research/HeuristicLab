@@ -25,7 +25,6 @@ using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
-using HeuristicLab.Problems.TestFunctions.MultiObjective;
 
 namespace HeuristicLab.Algorithms.MOCMAEvolutionStrategy {
   [Item("HypervolumeIndicator", "Selection of offspring based on contributing Hypervolume")]
