@@ -79,7 +79,7 @@ namespace HeuristicLab.Optimization {
     [StorableConstructor]
     public SingleObjectiveSolutionContext(StorableConstructorFlag _) : base(_) {    }
 
-    public SingleObjectiveSolutionContext(SolutionContext original, Cloner cloner) : base(original, cloner) { }
+    public SingleObjectiveSolutionContext(SingleObjectiveSolutionContext original, Cloner cloner) : base(original, cloner) { }
 
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -99,7 +99,7 @@ namespace HeuristicLab.Optimization {
     [StorableConstructor]
     public MultiObjectiveSolutionContext(StorableConstructorFlag _) : base(_) { }
 
-    public MultiObjectiveSolutionContext(SolutionContext original, Cloner cloner) : base(original, cloner) { }
+    public MultiObjectiveSolutionContext(MultiObjectiveSolutionContext original, Cloner cloner) : base(original, cloner) { }
 
 
     public override IDeepCloneable Clone(Cloner cloner) {
