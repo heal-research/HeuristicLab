@@ -54,7 +54,7 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
 
     [StorableConstructor]
     protected Schedule(StorableConstructorFlag _) : base(_) { }
-    private Schedule(Schedule original, Cloner cloner)
+    protected Schedule(Schedule original, Cloner cloner)
       : base(original, cloner) {
       this.resources = cloner.Clone(original.Resources);
       this.quality = original.Quality;
