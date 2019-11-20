@@ -39,6 +39,7 @@ namespace HeuristicLab.Tests {
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using System.Threading;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -62,7 +63,7 @@ namespace HeuristicLab.Problems.Programmable {
           adjacencyMatrix[i, j] = adjacencyMatrix[j, i] = random.Next(2) == 0;
     }
 
-    public override double Evaluate(LinearLinkage solution, IRandom random) {
+    public override double Evaluate(LinearLinkage solution, IRandom random, CancellationToken token) {
       var penalty = 0;
       var groups = solution.GetGroups().ToList();
       for (var i = 0; i < groups.Count; i++) {

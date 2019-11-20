@@ -45,8 +45,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Image; }
     }
 
-    [Storable]
-    private ITSPData tspData;
+    [Storable] private ITSPData tspData;
     public ITSPData TSPData {
       get { return tspData; }
       set {
@@ -56,8 +55,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
       }
     }
 
-    [Storable]
-    private Permutation tour;
+    [Storable] private Permutation tour;
     public Permutation Tour {
       get { return tour; }
       set {
@@ -66,8 +64,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
         OnPropertyChanged(nameof(Tour));
       }
     }
-    [Storable]
-    private DoubleValue tourLength;
+    [Storable] private DoubleValue tourLength;
     public DoubleValue TourLength {
       get { return tourLength; }
       set {

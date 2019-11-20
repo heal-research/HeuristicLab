@@ -143,10 +143,10 @@ namespace HeuristicLab.Problems.TravelingSalesman {
   [Item("Euclidean TSP Data", "TSP that is represented by coordinates in an Euclidean plane.")]
   [StorableType("4bf58348-cd98-46c5-a4c0-55f486ca88b4")]
   public sealed class EuclideanTSPData : CoordinatesTSPData {
+    [StorableType("be274140-e289-4125-ae3e-8c2f1d942f94")]
     public enum DistanceRounding { None, Midpoint, Ceiling }
 
-    [Storable]
-    public DistanceRounding Rounding { get; private set; }
+    [Storable] public DistanceRounding Rounding { get; private set; }
 
     [StorableConstructor]
     private EuclideanTSPData(StorableConstructorFlag _) : base(_) { }

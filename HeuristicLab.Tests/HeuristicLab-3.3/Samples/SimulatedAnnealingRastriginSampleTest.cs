@@ -77,16 +77,16 @@ namespace HeuristicLab.Tests {
       sa.EndTemperature.Value = 1E-6;
       sa.InnerIterations.Value = 50;
       sa.MaximumIterations.Value = 100;
-      var moveEvaluator = sa.MoveEvaluatorParameter.ValidValues
-        .OfType<AdditiveMoveEvaluator>()
-        .Single();
-      sa.MoveEvaluator = moveEvaluator;
-
       var moveGenerator = sa.MoveGeneratorParameter.ValidValues
         .OfType<StochasticNormalMultiMoveGenerator>()
         .Single();
       moveGenerator.SigmaParameter.Value = new DoubleValue(1);
       sa.MoveGenerator = moveGenerator;
+
+      var moveEvaluator = sa.MoveEvaluatorParameter.ValidValues
+        .OfType<AdditiveMoveEvaluator>()
+        .Single();
+      sa.MoveEvaluator = moveEvaluator;
 
       sa.MoveMaker = sa.MoveMakerParameter.ValidValues
         .OfType<AdditiveMoveMaker>()

@@ -38,8 +38,8 @@ namespace HeuristicLab.Optimization {
     where TEncoding : class, IEncoding<TEncodedSolution>
     where TEncodedSolution : class, IEncodedSolution {
 
-    [Storable] protected IValueParameter<DoubleValue> BestKnownQualityParameter { get; }
-    [Storable] protected IValueParameter<BoolValue> MaximizationParameter { get; }
+    [Storable] protected IValueParameter<DoubleValue> BestKnownQualityParameter { get; private set; }
+    [Storable] protected IValueParameter<BoolValue> MaximizationParameter { get; private set; }
 
     public double BestKnownQuality {
       get {

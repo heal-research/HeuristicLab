@@ -76,11 +76,11 @@ namespace HeuristicLab.Tests {
       ls.Description = "A local search algorithm that solves a randomly generated Knapsack problem";
       ls.Problem = problem;
       ls.MaximumIterations.Value = 1000;
-      ls.MoveEvaluator = ls.MoveEvaluatorParameter.ValidValues  
-        .OfType<KnapsackOneBitflipMoveEvaluator>()
-        .Single();
       ls.MoveGenerator = ls.MoveGeneratorParameter.ValidValues
         .OfType<ExhaustiveOneBitflipMoveGenerator>()
+        .Single();
+      ls.MoveEvaluator = ls.MoveEvaluatorParameter.ValidValues  
+        .OfType<KnapsackOneBitflipMoveEvaluator>()
         .Single();
       ls.MoveMaker = ls.MoveMakerParameter.ValidValues
         .OfType<OneBitflipMoveMaker>()
