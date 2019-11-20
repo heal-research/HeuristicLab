@@ -137,7 +137,7 @@ namespace HeuristicLab.Optimizer {
       //  };
       var standardProblems = new List<string> { "ALPSGA_TSP", "ES_Griewank", "OSES_Griewank", "GA_Grouping", "GA_TSP", "GA_VRP", "GE_ArtificialAnt",
                 "IslandGA_TSP", "PSO_Rastrigin",
-                "SGP_SantaFe", "GP_Multiplexer", "SGP_Robocode", "SS_VRP", "TS_TSP", "TS_VRP", "VNS_OP"
+                "SGP_SantaFe", "GP_Multiplexer", "SGP_Robocode", "SS_VRP", "TS_TSP", "TS_VRP", "VNS_OP", "VNS_TSP"
         };
       groupLookup[standardProblemsGroup] = standardProblems;
       var dataAnalysisProblems = new List<string> { "ALPSGP_SymReg", "SGP_SymbClass", "SGP_SymbReg", "OSGP_SymReg", "OSGP_TimeSeries", "GE_SymbReg", "GPR" };

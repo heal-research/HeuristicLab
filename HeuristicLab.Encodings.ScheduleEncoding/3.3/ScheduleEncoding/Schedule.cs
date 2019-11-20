@@ -23,9 +23,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.ScheduleEncoding {
   [Item("Schedule", "Represents the general solution for scheduling problems.")]
@@ -53,7 +53,7 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
     #endregion
 
     [StorableConstructor]
-    private Schedule(StorableConstructorFlag _) : base(_) { }
+    protected Schedule(StorableConstructorFlag _) : base(_) { }
     private Schedule(Schedule original, Cloner cloner)
       : base(original, cloner) {
       this.resources = cloner.Clone(original.Resources);

@@ -25,10 +25,10 @@ using System.Linq;
 using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
+using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.PluginInfrastructure;
-using HeuristicLab.Problems.TravelingSalesman;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace HeuristicLab.Tests {
@@ -47,12 +47,10 @@ namespace HeuristicLab.Tests {
         typeof (HeuristicLab.Problems.DataAnalysis.Dataset),
         typeof (HeuristicLab.Problems.DataAnalysis.ClassificationEnsembleSolution),
         typeof (HeuristicLab.Problems.DataAnalysis.RegressionEnsembleSolution),
-        typeof (HeuristicLab.Problems.Orienteering.DistanceMatrix)
+        typeof (HeuristicLab.Problems.Orienteering.DistanceMatrix),
+        typeof (HeuristicLab.Problems.TravelingSalesman.EuclideanTSPData),
       };
       excludedTypes.Add(typeof(SymbolicExpressionGrammar).Assembly.GetType("HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.EmptySymbolicExpressionTreeGrammar"));
-
-      foreach (var tspData in ApplicationManager.Manager.GetTypes(typeof(ITSPData)))
-        excludedTypes.Add(tspData);
 
       foreach (var symbolType in ApplicationManager.Manager.GetTypes(typeof(Symbol)))
         excludedTypes.Add(symbolType);
@@ -128,6 +126,12 @@ All IDeepCloneable items with a default constructor should be cloneable when usi
       bool headerWritten = false;
 
       foreach (object o in intersections) {
+        // check if the object is an immutable value, array, or matrix
+        if (o is IStringConvertibleMatrix m && m.ReadOnly
+          || o is IStringConvertibleValue v && v.ReadOnly
+          || o is IStringConvertibleArray a && a.ReadOnly) {
+          continue;
+        }
         string typeName = o.GetType().FullName;
         if (excludedTypes.Contains(o.GetType())) {
           //TestContext.WriteLine("Skipping excluded type " + typeName);
