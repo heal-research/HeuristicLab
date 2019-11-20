@@ -121,10 +121,13 @@
   <ItemGroup>
     <Compile Include="Algorithms\BasicAlgorithm.cs" />
     <Compile Include="BasicProblems\CombinedSolution.cs" />
+    <Compile Include="BasicProblems\EvaluationResult.cs" />
+    <Compile Include="BasicProblems\Interfaces\IEvaluationResult.cs" />
     <Compile Include="BasicProblems\Interfaces\IMultiEncodingOperator.cs" />
     <Compile Include="BasicProblems\Interfaces\IMultiObjectiveProblem.cs" />
     <Compile Include="BasicProblems\Interfaces\ISingleObjectiveProblem.cs" />
     <Compile Include="BasicProblems\CombinedEncoding.cs" />
+    <Compile Include="BasicProblems\Interfaces\ISolutionContext.cs" />
     <Compile Include="BasicProblems\Operators\MultiEncodingCreator.cs" />
     <Compile Include="BasicProblems\Operators\MultiEncodingCrossover.cs" />
     <Compile Include="BasicProblems\Operators\MultiEncodingManipulator.cs" />
@@ -154,6 +157,7 @@
     <Compile Include="BasicProblems\Operators\SingleObjectiveMoveGenerator.cs" />
     <Compile Include="BasicProblems\Operators\SingleObjectiveMoveMaker.cs" />
     <Compile Include="BasicProblems\SingleObjectiveProblem.cs" />
+    <Compile Include="BasicProblems\SolutionContext.cs" />
     <Compile Include="Interfaces\ICharacteristicCalculator.cs" />
     <Compile Include="Interfaces\ILocalImprovementAlgorithmOperator.cs" />
     <Compile Include="Interfaces\IMultiObjectiveOperator.cs" />

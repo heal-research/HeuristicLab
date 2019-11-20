@@ -23,6 +23,18 @@ using HEAL.Attic;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.Optimization {
-  [StorableType("c81bebf8-812c-4f8b-a1bc-d310fb844367")]
-  public interface IEncodedSolution : IItem { }
+  [StorableType("406EB24F-A59C-440C-8B83-49FC05F48855")]
+  public interface IEvaluationResult : IItem {
+    void SetAdditionalData(string identifier, object o);
+    object GetAdditionalData(string identifier);
+  }
+
+  public interface ISingleObjectiveEvaluationResult : IEvaluationResult {
+    double Quality { get; }
+  }
+
+  public interface IMultiObjectiveEvaluationResult : IEvaluationResult {
+    //TODO change to unmodifiable Type from double[]
+    double[] Quality { get; }
+  }
 }

@@ -23,6 +23,25 @@ using HEAL.Attic;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.Optimization {
-  [StorableType("c81bebf8-812c-4f8b-a1bc-d310fb844367")]
-  public interface IEncodedSolution : IItem { }
+  [StorableType("383A35EB-03C9-473D-A20B-EE34E00BC174")]
+  public interface ISolutionContext : IItem {
+
+    bool IsEvaluated { get; }
+    IEncodedSolution EncodedSolution { get; }
+
+    IEvaluationResult EvaluationResult { get; }
+
+    void SetAdditionalData(string identifier, object o);
+    object GetAdditionalData(string identifier);
+  }
+
+  public interface ISingleObjectiveSolutionContext : ISolutionContext {
+    //TODO discuss with abeham hiding of base property
+    new ISingleObjectiveEvaluationResult EvaluationResult { get; }
+  }
+
+  public interface IMultiObjectiveSolutionContext : ISolutionContext {
+    new IMultiObjectiveEvaluationResult EvaluationResult { get; }
+  }
+
 }
