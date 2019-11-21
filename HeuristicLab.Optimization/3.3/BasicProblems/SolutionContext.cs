@@ -29,31 +29,34 @@ using HeuristicLab.Core;
 
 namespace HeuristicLab.Optimization {
   [StorableType("72638F28-11DD-440D-B7A2-79E16E0EFB83")]
-  public abstract class SolutionContext : Item {
+  public abstract class SolutionContext<TEncodedSolution> : Item, ISolutionContext
+    where TEncodedSolution : class, IEncodedSolution {
 
     [Storable]
     private readonly Dictionary<string, object> data = new Dictionary<string, object>();
 
+    IEncodedSolution ISolutionContext.EncodedSolution { get { return EncodedSolution; } }
+
     [Storable]
-    public IEncodedSolution EncodedSolution { get; private set; }
+    public TEncodedSolution EncodedSolution { get; private set; }
 
     [Storable]
     public IEvaluationResult EvaluationResult { get; protected set; }
 
     public bool IsEvaluated => EvaluationResult != null;
 
-    protected SolutionContext(IEncodedSolution encodedSolution) : base() {
+    protected SolutionContext(TEncodedSolution encodedSolution) : base() {
       EncodedSolution = encodedSolution ?? throw new ArgumentNullException("encodedSolution");
     }
 
-    protected SolutionContext(IEncodedSolution encodedSolution, IEvaluationResult evaluationResult) : this(encodedSolution) {
+    protected SolutionContext(TEncodedSolution encodedSolution, IEvaluationResult evaluationResult) : this(encodedSolution) {
       EvaluationResult = evaluationResult ?? throw new ArgumentNullException("evaluationResult");
     }
 
     [StorableConstructor]
     protected SolutionContext(StorableConstructorFlag _) : base(_) { }
 
-    public SolutionContext(SolutionContext original, Cloner cloner) : base(original, cloner) {
+    public SolutionContext(SolutionContext<TEncodedSolution> original, Cloner cloner) : base(original, cloner) {
       //TODO clone data dictionary
       EncodedSolution = cloner.Clone(original.EncodedSolution);
       EvaluationResult = cloner.Clone(original.EvaluationResult);
@@ -68,42 +71,44 @@ namespace HeuristicLab.Optimization {
   }
 
   [StorableType("DF6DA9C9-7EF4-4DC3-9855-6C43BDEDD735")]
-  public class SingleObjectiveSolutionContext : SolutionContext, ISingleObjectiveSolutionContext {
+  public class SingleObjectiveSolutionContext<TEncodedSolution> : SolutionContext<TEncodedSolution>, ISingleObjectiveSolutionContext<TEncodedSolution>
+   where TEncodedSolution : class, IEncodedSolution {
     public new ISingleObjectiveEvaluationResult EvaluationResult { get; set; }
 
-    public SingleObjectiveSolutionContext(IEncodedSolution encodedSolution) : base(encodedSolution) { }
+    public SingleObjectiveSolutionContext(TEncodedSolution encodedSolution) : base(encodedSolution) { }
 
 
-    public SingleObjectiveSolutionContext(IEncodedSolution encodedSolution, IEvaluationResult evaluationResult) : base(encodedSolution, evaluationResult) { }
+    public SingleObjectiveSolutionContext(TEncodedSolution encodedSolution, IEvaluationResult evaluationResult) : base(encodedSolution, evaluationResult) { }
 
     [StorableConstructor]
-    public SingleObjectiveSolutionContext(StorableConstructorFlag _) : base(_) {    }
+    public SingleObjectiveSolutionContext(StorableConstructorFlag _) : base(_) { }
 
-    public SingleObjectiveSolutionContext(SingleObjectiveSolutionContext original, Cloner cloner) : base(original, cloner) { }
+    public SingleObjectiveSolutionContext(SingleObjectiveSolutionContext<TEncodedSolution> original, Cloner cloner) : base(original, cloner) { }
 
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new SingleObjectiveSolutionContext(this, cloner);
+      return new SingleObjectiveSolutionContext<TEncodedSolution>(this, cloner);
     }
   }
 
   [StorableType("929868B3-8994-4D75-B363-CCF9C51410F9")]
-  public class MultiObjectiveSolutionContext : SolutionContext, IMultiObjectiveSolutionContext {
+  public class MultiObjectiveSolutionContext<TEncodedSolution> : SolutionContext<TEncodedSolution>, IMultiObjectiveSolutionContext<TEncodedSolution>
+   where TEncodedSolution : class, IEncodedSolution {
     public new IMultiObjectiveEvaluationResult EvaluationResult { get; set; }
 
-    public MultiObjectiveSolutionContext(IEncodedSolution encodedSolution) : base(encodedSolution) { }
+    public MultiObjectiveSolutionContext(TEncodedSolution encodedSolution) : base(encodedSolution) { }
 
 
-    public MultiObjectiveSolutionContext(IEncodedSolution encodedSolution, IEvaluationResult evaluationResult) : base(encodedSolution, evaluationResult) { }
+    public MultiObjectiveSolutionContext(TEncodedSolution encodedSolution, IEvaluationResult evaluationResult) : base(encodedSolution, evaluationResult) { }
 
     [StorableConstructor]
     public MultiObjectiveSolutionContext(StorableConstructorFlag _) : base(_) { }
 
-    public MultiObjectiveSolutionContext(MultiObjectiveSolutionContext original, Cloner cloner) : base(original, cloner) { }
+    public MultiObjectiveSolutionContext(MultiObjectiveSolutionContext<TEncodedSolution> original, Cloner cloner) : base(original, cloner) { }
 
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new MultiObjectiveSolutionContext(this, cloner);
+      return new MultiObjectiveSolutionContext<TEncodedSolution>(this, cloner);
     }
   }
 }

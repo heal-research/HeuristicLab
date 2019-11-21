@@ -47,7 +47,7 @@ namespace HeuristicLab.Optimization {
       get { return (ILookupParameter<IEncoding<TEncodedSolution>>)Parameters["Encoding"]; }
     }
 
-    public Func<TEncodedSolution, IRandom, IEnumerable<TEncodedSolution>> GetNeighborsFunc { get; set; }
+    public Func<ISingleObjectiveSolutionContext<TEncodedSolution>, IRandom, IEnumerable<ISingleObjectiveSolutionContext<TEncodedSolution>>> GetNeighbors { get; set; }
 
     [StorableConstructor]
     private SingleObjectiveMoveGenerator(StorableConstructorFlag _) : base(_) { }
@@ -68,12 +68,13 @@ namespace HeuristicLab.Optimization {
       var sampleSize = SampleSizeParameter.ActualValue.Value;
       var encoding = EncodingParameter.ActualValue;
       var solution = ScopeUtil.GetEncodedSolution(ExecutionContext.Scope, encoding);
-      var nbhood = GetNeighborsFunc(solution, random).Take(sampleSize).ToList();
+      var solutionContext = new SingleObjectiveSolutionContextScope<TEncodedSolution>(ExecutionContext.Scope, solution);
 
+      var nbhood = GetNeighbors(solutionContext, random).Take(sampleSize).ToList();
       var moveScopes = new Scope[nbhood.Count];
       for (int i = 0; i < moveScopes.Length; i++) {
         moveScopes[i] = new Scope(i.ToString(CultureInfo.InvariantCulture.NumberFormat));
-        ScopeUtil.CopyEncodedSolutionToScope(moveScopes[i], encoding, nbhood[i]);
+        ScopeUtil.CopyEncodedSolutionToScope(moveScopes[i], encoding, nbhood[i].EncodedSolution);
       }
       ExecutionContext.Scope.SubScopes.AddRange(moveScopes);
 

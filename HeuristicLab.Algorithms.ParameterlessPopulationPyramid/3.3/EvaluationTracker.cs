@@ -22,6 +22,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using HEAL.Attic;
 using HeuristicLab.Common;
@@ -109,6 +110,14 @@ namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
       return fitness;
     }
 
+    public void Evaluate(ISingleObjectiveSolutionContext<BinaryVector> solutionContext, IRandom random) {
+      Evaluate(solutionContext, random, CancellationToken.None);
+    }
+    public void Evaluate(ISingleObjectiveSolutionContext<BinaryVector> solutionContext, IRandom random, CancellationToken cancellationToken) {
+      double quality = Evaluate(solutionContext.EncodedSolution, random, cancellationToken);
+      solutionContext.EvaluationResult = new SingleObjectiveEvaluationResult(quality);
+    }
+
     public bool Maximization {
       get {
         if (problem == null) return false;
@@ -124,8 +133,17 @@ namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
       problem.Analyze(individuals, qualities, results, random);
     }
 
+    public void Analyze(ISingleObjectiveSolutionContext<BinaryVector>[] solutionContexts, ResultCollection results, IRandom random) {
+      var solutions = solutionContexts.Select(c => c.EncodedSolution).ToArray();
+      var qualities = solutionContexts.Select(c => c.EvaluationResult.Quality).ToArray();
+      Analyze(solutions, qualities, results, random);
+    }
+
     public IEnumerable<BinaryVector> GetNeighbors(BinaryVector individual, IRandom random) {
       return problem.GetNeighbors(individual, random);
+    }
+    public IEnumerable<ISingleObjectiveSolutionContext<BinaryVector>> GetNeighbors(ISingleObjectiveSolutionContext<BinaryVector> solutionContext, IRandom random) {
+      return GetNeighbors(solutionContext.EncodedSolution, random).Select(n => new SingleObjectiveSolutionContext<BinaryVector>(n));
     }
   }
 }

@@ -38,8 +38,13 @@ namespace HeuristicLab.Optimization {
 
     double Evaluate(TEncodedSolution solution, IRandom random);
     double Evaluate(TEncodedSolution solution, IRandom random, CancellationToken cancellationToken);
+    void Evaluate(ISingleObjectiveSolutionContext<TEncodedSolution> solutionContext, IRandom random);
+    void Evaluate(ISingleObjectiveSolutionContext<TEncodedSolution> solutionContext, IRandom random, CancellationToken cancellationToken);
 
     void Analyze(TEncodedSolution[] solutions, double[] qualities, ResultCollection results, IRandom random);
+    void Analyze(ISingleObjectiveSolutionContext<TEncodedSolution>[] solutionContexts, ResultCollection results, IRandom random);
+
     IEnumerable<TEncodedSolution> GetNeighbors(TEncodedSolution solution, IRandom random);
+    IEnumerable<ISingleObjectiveSolutionContext<TEncodedSolution>> GetNeighbors(ISingleObjectiveSolutionContext<TEncodedSolution> solutionContext, IRandom random);
   }
 }

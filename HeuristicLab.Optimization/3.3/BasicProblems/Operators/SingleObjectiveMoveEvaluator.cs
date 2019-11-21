@@ -49,7 +49,7 @@ namespace HeuristicLab.Optimization {
       get { return (ILookupParameter<DoubleValue>)Parameters["MoveQuality"]; }
     }
 
-    public Func<TEncodedSolution, IRandom, double> EvaluateFunc { get; set; }
+    public Action<ISingleObjectiveSolutionContext<TEncodedSolution>, IRandom> Evaluate { get; set; }
 
     [StorableConstructor]
     private SingleObjectiveMoveEvaluator(StorableConstructorFlag _) : base(_) { }
@@ -68,8 +68,13 @@ namespace HeuristicLab.Optimization {
     public override IOperation Apply() {
       var random = RandomParameter.ActualValue;
       var encoding = EncodingParameter.ActualValue;
-      var individual = ScopeUtil.GetEncodedSolution(ExecutionContext.Scope, encoding);
-      MoveQualityParameter.ActualValue = new DoubleValue(EvaluateFunc(individual, random));
+      var solution = ScopeUtil.GetEncodedSolution(ExecutionContext.Scope, encoding);
+      var solutionContext = new SingleObjectiveSolutionContextScope<TEncodedSolution>(ExecutionContext.Scope, solution);
+
+      Evaluate(solutionContext, random);
+      var qualityValue = solutionContext.EvaluationResult.Quality;
+
+      MoveQualityParameter.ActualValue = new DoubleValue(qualityValue);
       return base.Apply();
     }
   }

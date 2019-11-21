@@ -107,12 +107,22 @@ namespace HeuristicLab.Problems.Programmable {
       Name = ProblemScript.Name;
     }
 
+    public override void Evaluate(ISingleObjectiveSolutionContext<TEncodedSolution> solutionContext, IRandom random, CancellationToken cancellationToken) {
+      ProblemDefinition.Evaluate(solutionContext, random, cancellationToken);
+    }
     public override double Evaluate(TEncodedSolution individual, IRandom random, CancellationToken cancellationToken) {
       return ProblemDefinition.Evaluate(individual, random, cancellationToken);
     }
 
+    public override void Analyze(ISingleObjectiveSolutionContext<TEncodedSolution>[] solutionContexts, ResultCollection results, IRandom random) {
+      ProblemDefinition.Analyze(solutionContexts, results, random);
+    }
     public override void Analyze(TEncodedSolution[] individuals, double[] qualities, ResultCollection results, IRandom random) {
       ProblemDefinition.Analyze(individuals, qualities, results, random);
+    }
+
+    public override IEnumerable<ISingleObjectiveSolutionContext<TEncodedSolution>> GetNeighbors(ISingleObjectiveSolutionContext<TEncodedSolution> solutionContext, IRandom random) {
+      return ProblemDefinition.GetNeighbors(solutionContext, random);
     }
     public override IEnumerable<TEncodedSolution> GetNeighbors(TEncodedSolution individual, IRandom random) {
       return ProblemDefinition.GetNeighbors(individual, random);

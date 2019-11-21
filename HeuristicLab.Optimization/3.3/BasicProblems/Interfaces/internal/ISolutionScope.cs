@@ -19,14 +19,18 @@
  */
 #endregion
 
-using System;
-using HEAL.Attic;
 using HeuristicLab.Core;
+using HEAL.Attic;
 
 namespace HeuristicLab.Optimization {
-  [StorableType("5a9cf334-4815-4f0e-a2f8-f3d4edfcc829")]
-  internal interface ISingleObjectiveEvaluationOperator<TEncodedSolution> : ISingleObjectiveEvaluator, IEncodingOperator<TEncodedSolution>
-  where TEncodedSolution : class, IEncodedSolution {
-    Action<ISingleObjectiveSolutionContext<TEncodedSolution>, IRandom> Evaluate { get; set; }
-  }
+  [StorableType("E019F914-0D0C-4668-970F-0EAE4A270038")]
+  interface ISolutionScope : IScope, ISolutionContext { }
+
+  [StorableType("E8A9C9B5-19E4-424B-8125-9732C76AA17C")]
+  interface ISingleObjectiveSolutionScope<TEncodedSolution> : ISolutionScope, ISingleObjectiveSolutionContext<TEncodedSolution>
+      where TEncodedSolution : class, IEncodedSolution { }
+
+  [StorableType("14F7D2BD-83CE-40FC-B389-68D23A8E544B")]
+  interface IMultiObjectiveSolutionScope<TEncodedSolution> : ISolutionScope, IMultiObjectiveSolutionContext<TEncodedSolution>
+      where TEncodedSolution : class, IEncodedSolution { }
 }

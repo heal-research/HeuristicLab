@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
@@ -63,8 +64,28 @@ namespace HeuristicLab.Problems.Programmable {
       return Evaluate(solution, random, CancellationToken.None);
     }
     public abstract double Evaluate(TEncodedSolution solution, IRandom random, CancellationToken cancellationToken);
-    public abstract void Analyze(TEncodedSolution[] individuals, double[] qualities, ResultCollection results, IRandom random);
-    public abstract IEnumerable<TEncodedSolution> GetNeighbors(TEncodedSolution individual, IRandom random);
+
+    public virtual void Evaluate(ISingleObjectiveSolutionContext<TEncodedSolution> solutionContext, IRandom random) {
+      Evaluate(solutionContext, random, CancellationToken.None);
+    }
+    public virtual void Evaluate(ISingleObjectiveSolutionContext<TEncodedSolution> solutionContext, IRandom random, CancellationToken cancellationToken) {
+      double quality = Evaluate(solutionContext.EncodedSolution, random, cancellationToken);
+      solutionContext.EvaluationResult = new SingleObjectiveEvaluationResult(quality);
+    }
+
+    public virtual void Analyze(TEncodedSolution[] solutions, double[] qualities, ResultCollection results, IRandom random) { }
+    public virtual void Analyze(ISingleObjectiveSolutionContext<TEncodedSolution>[] solutionContexts, ResultCollection results, IRandom random) {
+      var solutions = solutionContexts.Select(c => c.EncodedSolution).ToArray();
+      var qualities = solutionContexts.Select(c => c.EvaluationResult.Quality).ToArray();
+      Analyze(solutions, qualities, results, random);
+    }
+
+    public virtual IEnumerable<TEncodedSolution> GetNeighbors(TEncodedSolution solutions, IRandom random) {
+      return Enumerable.Empty<TEncodedSolution>();
+    }
+    public virtual IEnumerable<ISingleObjectiveSolutionContext<TEncodedSolution>> GetNeighbors(ISingleObjectiveSolutionContext<TEncodedSolution> solutionContext, IRandom random) {
+      return GetNeighbors(solutionContext.EncodedSolution, random).Select(n => new SingleObjectiveSolutionContext<TEncodedSolution>(n));
+    }
 
     public bool IsBetter(double quality, double bestQuality) {
       return Maximization ? quality > bestQuality : quality < bestQuality;

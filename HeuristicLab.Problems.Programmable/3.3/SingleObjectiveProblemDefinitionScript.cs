@@ -58,11 +58,27 @@ namespace HeuristicLab.Problems.Programmable {
       return CompiledProblemDefinition.Evaluate(solution, random, cancellationToken);
     }
 
+    void ISingleObjectiveProblemDefinition<TEncoding, TEncodedSolution>.Evaluate(ISingleObjectiveSolutionContext<TEncodedSolution> solutionContext, IRandom random) {
+      CompiledProblemDefinition.Evaluate(solutionContext, random, CancellationToken.None);
+    }
+    void ISingleObjectiveProblemDefinition<TEncoding, TEncodedSolution>.Evaluate(ISingleObjectiveSolutionContext<TEncodedSolution> solutionContext, IRandom random, CancellationToken cancellationToken) {
+      double quality = CompiledProblemDefinition.Evaluate(solutionContext.EncodedSolution, random, cancellationToken);
+      solutionContext.EvaluationResult = new SingleObjectiveEvaluationResult(quality);
+    }
+
     void ISingleObjectiveProblemDefinition<TEncoding, TEncodedSolution>.Analyze(TEncodedSolution[] individuals, double[] qualities, ResultCollection results, IRandom random) {
       CompiledProblemDefinition.Analyze(individuals, qualities, results, random);
     }
+    void ISingleObjectiveProblemDefinition<TEncoding, TEncodedSolution>.Analyze(ISingleObjectiveSolutionContext<TEncodedSolution>[] solutionContexts, ResultCollection results, IRandom random) {
+      CompiledProblemDefinition.Analyze(solutionContexts, results, random);
+    }
+
+
     IEnumerable<TEncodedSolution> ISingleObjectiveProblemDefinition<TEncoding, TEncodedSolution>.GetNeighbors(TEncodedSolution individual, IRandom random) {
       return CompiledProblemDefinition.GetNeighbors(individual, random);
+    }
+    IEnumerable<ISingleObjectiveSolutionContext<TEncodedSolution>> ISingleObjectiveProblemDefinition<TEncoding, TEncodedSolution>.GetNeighbors(ISingleObjectiveSolutionContext<TEncodedSolution> solutionContext, IRandom random) {
+      return CompiledProblemDefinition.GetNeighbors(solutionContext, random);
     }
 
     public bool IsBetter(double quality, double bestQuality) {

@@ -62,8 +62,8 @@ namespace HeuristicLab.Optimization {
       get { return (ILookupParameter<IntValue>)Parameters["LocalEvaluatedSolutions"]; }
     }
 
-    public Func<TEncodedSolution, IRandom, double> EvaluateFunc { get; set; }
-    public Func<TEncodedSolution, IRandom, IEnumerable<TEncodedSolution>> GetNeighborsFunc { get; set; }
+    public Action<ISingleObjectiveSolutionContext<TEncodedSolution>, IRandom> Evaluate { get; set; }
+    public Func<ISingleObjectiveSolutionContext<TEncodedSolution>, IRandom, IEnumerable<ISingleObjectiveSolutionContext<TEncodedSolution>>> GetNeighbors { get; set; }
 
     [StorableConstructor]
     private SingleObjectiveImprover(StorableConstructorFlag _) : base(_) { }
@@ -89,17 +89,25 @@ namespace HeuristicLab.Optimization {
       var maxAttempts = ImprovementAttemptsParameter.ActualValue.Value;
       var sampleSize = SampleSizeParameter.ActualValue.Value;
       var solution = ScopeUtil.GetEncodedSolution(ExecutionContext.Scope, encoding);
-      var quality = QualityParameter.ActualValue == null ? EvaluateFunc(solution, random) : QualityParameter.ActualValue.Value;
+      var solutionContext = new SingleObjectiveSolutionContextScope<TEncodedSolution>(ExecutionContext.Scope, solution);
+
+      double quality;
+      if (QualityParameter.ActualValue == null) {
+        if (!solutionContext.IsEvaluated) Evaluate(solutionContext, random);
+
+        quality = solutionContext.EvaluationResult.Quality;
+      } else quality = QualityParameter.ActualValue.Value;
 
       var count = 0;
       for (var i = 0; i < maxAttempts; i++) {
         TEncodedSolution best = default(TEncodedSolution);
         var bestQuality = quality;
-        foreach (var neighbor in GetNeighborsFunc(solution, random).Take(sampleSize)) {
-          var q = EvaluateFunc(neighbor, random);
+        foreach (var neighbor in GetNeighbors(solutionContext, random).Take(sampleSize)) {
+          Evaluate(neighbor, random);
+          var q = neighbor.EvaluationResult.Quality;
           count++;
           if (maximize && bestQuality > q || !maximize && bestQuality < q) continue;
-          best = neighbor;
+          best = neighbor.EncodedSolution;
           bestQuality = q;
         }
         if (best == null) break;

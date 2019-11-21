@@ -52,7 +52,7 @@ namespace HeuristicLab.Optimization {
       get { return (ILookupParameter<IRandom>)Parameters["Random"]; }
     }
 
-    public Action<TEncodedSolution[], double[], ResultCollection, IRandom> AnalyzeAction { get; set; }
+    public Action<ISingleObjectiveSolutionContext<TEncodedSolution>[], ResultCollection, IRandom> Analyze { get; set; }
 
     [StorableConstructor]
     private SingleObjectiveAnalyzer(StorableConstructorFlag _) : base(_) { }
@@ -77,8 +77,15 @@ namespace HeuristicLab.Optimization {
       for (var i = 0; i < QualityParameter.Depth; i++)
         scopes = scopes.Select(x => (IEnumerable<IScope>)x.SubScopes).Aggregate((a, b) => a.Concat(b));
 
-      var individuals = scopes.Select(s => ScopeUtil.GetEncodedSolution(s, encoding)).ToArray();
-      AnalyzeAction(individuals, QualityParameter.ActualValue.Select(x => x.Value).ToArray(), results, random);
+      var solutionContexts = scopes.Select(scope => {
+        var solution = ScopeUtil.GetEncodedSolution(scope, encoding);
+        var quality = ((DoubleValue)scope.Variables[QualityParameter.ActualName].Value).Value;
+        var solutionContext = new SingleObjectiveSolutionContextScope<TEncodedSolution>(scope, solution);
+        solutionContext.EvaluationResult = new SingleObjectiveEvaluationResult(quality);
+        return solutionContext;
+      }).ToArray();
+
+      Analyze(solutionContexts, results, random);
       return base.Apply();
     }
   }

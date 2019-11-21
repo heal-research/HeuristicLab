@@ -112,14 +112,13 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
     }
     public virtual QualityMessage Evaluate(SolutionMessage solutionMessage, CancellationToken cancellationToken) {
       return Cache == null
-        ? EvaluateOnNextAvailableClient(solutionMessage,cancellationToken)
+        ? EvaluateOnNextAvailableClient(solutionMessage, cancellationToken)
         : Cache.GetValue(solutionMessage, EvaluateOnNextAvailableClient, GetQualityMessageExtensions(), cancellationToken);
     }
 
     public override void Analyze(TEncodedSolution[] solutions, double[] qualities, ResultCollection results, IRandom random) {
       OptimizationSupport.Analyze(solutions, qualities, results, random);
     }
-
     public override IEnumerable<TEncodedSolution> GetNeighbors(TEncodedSolution solutions, IRandom random) {
       return OptimizationSupport.GetNeighbors(solutions, random);
     }

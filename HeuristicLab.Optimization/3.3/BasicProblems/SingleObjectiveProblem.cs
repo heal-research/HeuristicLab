@@ -116,10 +116,30 @@ namespace HeuristicLab.Optimization {
       return Evaluate(solution, random, CancellationToken.None);
     }
     public abstract double Evaluate(TEncodedSolution solution, IRandom random, CancellationToken cancellationToken);
+
+    public virtual void Evaluate(ISingleObjectiveSolutionContext<TEncodedSolution> solutionContext, IRandom random) {
+      Evaluate(solutionContext, random, CancellationToken.None);
+    }
+    public virtual void Evaluate(ISingleObjectiveSolutionContext<TEncodedSolution> solutionContext, IRandom random, CancellationToken cancellationToken) {
+      double quality = Evaluate(solutionContext.EncodedSolution, random, cancellationToken);
+      solutionContext.EvaluationResult = new SingleObjectiveEvaluationResult(quality);
+    }
+
     public virtual void Analyze(TEncodedSolution[] solutions, double[] qualities, ResultCollection results, IRandom random) { }
-    public virtual IEnumerable<TEncodedSolution> GetNeighbors(TEncodedSolution solution, IRandom random) {
+    public virtual void Analyze(ISingleObjectiveSolutionContext<TEncodedSolution>[] solutionContexts, ResultCollection results, IRandom random) {
+      var solutions = solutionContexts.Select(c => c.EncodedSolution).ToArray();
+      var qualities = solutionContexts.Select(c => c.EvaluationResult.Quality).ToArray();
+      Analyze(solutions, qualities, results, random);
+    }
+
+    public virtual IEnumerable<TEncodedSolution> GetNeighbors(TEncodedSolution solutions, IRandom random) {
       return Enumerable.Empty<TEncodedSolution>();
     }
+    public virtual IEnumerable<ISingleObjectiveSolutionContext<TEncodedSolution>> GetNeighbors(ISingleObjectiveSolutionContext<TEncodedSolution> solutionContext, IRandom random) {
+      return GetNeighbors(solutionContext.EncodedSolution, random).Select(n => new SingleObjectiveSolutionContext<TEncodedSolution>(n));
+    }
+
+
 
     public static bool IsBetter(bool maximization, double quality, double bestQuality) {
       return (maximization && quality > bestQuality || !maximization && quality < bestQuality);
@@ -129,6 +149,7 @@ namespace HeuristicLab.Optimization {
       return IsBetter(Maximization, quality, bestQuality);
     }
 
+    //TODO refactor to solution contexts
     protected Tuple<TEncodedSolution, double> GetBestSolution(TEncodedSolution[] solutions, double[] qualities) {
       return GetBestSolution(solutions, qualities, Maximization);
     }
@@ -169,11 +190,11 @@ namespace HeuristicLab.Optimization {
 
     private void ParameterizeOperators() {
       foreach (var op in Operators.OfType<ISingleObjectiveEvaluationOperator<TEncodedSolution>>())
-        op.EvaluateFunc = Evaluate;
+        op.Evaluate = Evaluate;
       foreach (var op in Operators.OfType<ISingleObjectiveAnalysisOperator<TEncodedSolution>>())
-        op.AnalyzeAction = Analyze;
+        op.Analyze = Analyze;
       foreach (var op in Operators.OfType<INeighborBasedOperator<TEncodedSolution>>())
-        op.GetNeighborsFunc = GetNeighbors;
+        op.GetNeighbors = GetNeighbors;
     }
 
     #region ISingleObjectiveHeuristicOptimizationProblem Members

@@ -45,7 +45,7 @@ namespace HeuristicLab.Optimization {
       get { return (ILookupParameter<DoubleValue>)Parameters["Quality"]; }
     }
 
-    public Func<TEncodedSolution, IRandom, double> EvaluateFunc { get; set; }
+    public Action<ISingleObjectiveSolutionContext<TEncodedSolution>, IRandom> Evaluate { get; set; }
 
     [StorableConstructor]
     private SingleObjectiveEvaluator(StorableConstructorFlag _) : base(_) { }
@@ -62,7 +62,12 @@ namespace HeuristicLab.Optimization {
       var random = RandomParameter.ActualValue;
       var encoding = EncodingParameter.ActualValue;
       var solution = ScopeUtil.GetEncodedSolution(ExecutionContext.Scope, encoding);
-      QualityParameter.ActualValue = new DoubleValue(EvaluateFunc(solution, random));
+      var solutionContext = new SingleObjectiveSolutionContextScope<TEncodedSolution>(ExecutionContext.Scope, solution);
+
+      Evaluate(solutionContext, random);
+      var qualityValue = solutionContext.EvaluationResult.Quality;
+
+      QualityParameter.ActualValue = new DoubleValue(qualityValue);
       return base.InstrumentedApply();
     }
   }
