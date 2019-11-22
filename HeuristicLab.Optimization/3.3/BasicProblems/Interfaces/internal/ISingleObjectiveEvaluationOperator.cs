@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using System.Threading;
 using HEAL.Attic;
 using HeuristicLab.Core;
 
@@ -27,6 +28,6 @@ namespace HeuristicLab.Optimization {
   [StorableType("5a9cf334-4815-4f0e-a2f8-f3d4edfcc829")]
   internal interface ISingleObjectiveEvaluationOperator<TEncodedSolution> : ISingleObjectiveEvaluator, IEncodingOperator<TEncodedSolution>
   where TEncodedSolution : class, IEncodedSolution {
-    Action<ISingleObjectiveSolutionContext<TEncodedSolution>, IRandom> Evaluate { get; set; }
+    Action<ISingleObjectiveSolutionContext<TEncodedSolution>, IRandom, CancellationToken> Evaluate { get; set; }
   }
 }

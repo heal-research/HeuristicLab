@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Collections.Generic;
+using System.Threading;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -27,7 +28,7 @@ namespace HeuristicLab.Problems.Programmable {
       //Encoding.Add(new LinearLinkageEncoding("lle") { Length = 30 });
     }
 
-    public override double Evaluate(CombinedSolution solution, IRandom random) {
+    public override double Evaluate(CombinedSolution solution, IRandom random, CancellationToken cancellationToken) {
       // Use vars.yourVariable to access variables in the variable store i.e. yourVariable
       var quality = 0.0;
       var b = solution.GetEncodedSolution<BinaryVector>("b");

@@ -112,12 +112,12 @@ namespace HeuristicLab.Optimization {
       ParameterizeOperators();
     }
 
-    public virtual double Evaluate(TEncodedSolution solution, IRandom random) {
+    public double Evaluate(TEncodedSolution solution, IRandom random) {
       return Evaluate(solution, random, CancellationToken.None);
     }
     public abstract double Evaluate(TEncodedSolution solution, IRandom random, CancellationToken cancellationToken);
 
-    public virtual void Evaluate(ISingleObjectiveSolutionContext<TEncodedSolution> solutionContext, IRandom random) {
+    public void Evaluate(ISingleObjectiveSolutionContext<TEncodedSolution> solutionContext, IRandom random) {
       Evaluate(solutionContext, random, CancellationToken.None);
     }
     public virtual void Evaluate(ISingleObjectiveSolutionContext<TEncodedSolution> solutionContext, IRandom random, CancellationToken cancellationToken) {

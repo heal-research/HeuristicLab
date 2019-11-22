@@ -62,8 +62,7 @@ namespace HeuristicLab.Problems.Programmable {
       CompiledProblemDefinition.Evaluate(solutionContext, random, CancellationToken.None);
     }
     void ISingleObjectiveProblemDefinition<TEncoding, TEncodedSolution>.Evaluate(ISingleObjectiveSolutionContext<TEncodedSolution> solutionContext, IRandom random, CancellationToken cancellationToken) {
-      double quality = CompiledProblemDefinition.Evaluate(solutionContext.EncodedSolution, random, cancellationToken);
-      solutionContext.EvaluationResult = new SingleObjectiveEvaluationResult(quality);
+      CompiledProblemDefinition.Evaluate(solutionContext, random, cancellationToken);
     }
 
     void ISingleObjectiveProblemDefinition<TEncoding, TEncodedSolution>.Analyze(TEncodedSolution[] individuals, double[] qualities, ResultCollection results, IRandom random) {

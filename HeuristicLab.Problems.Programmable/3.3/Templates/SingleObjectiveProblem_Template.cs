@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Collections.Generic;
+using System.Threading;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -19,7 +20,7 @@ namespace HeuristicLab.Problems.Programmable {
       // Add additional initialization code e.g. private variables that you need for evaluating
     }
 
-    public override double Evaluate(SOLUTION_CLASS solution, IRandom random) {
+    public override double Evaluate(SOLUTION_CLASS solution, IRandom random, CancellationToken cancellationToken) {
       // Use vars.yourVariable to access variables in the variable store i.e. yourVariable
       var quality = 0.0;
       return quality;

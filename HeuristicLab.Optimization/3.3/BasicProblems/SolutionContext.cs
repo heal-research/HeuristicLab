@@ -62,10 +62,10 @@ namespace HeuristicLab.Optimization {
       EvaluationResult = cloner.Clone(original.EvaluationResult);
     }
 
-    public void SetAdditionalData(string identifier, object o) {
+    public virtual void SetAdditionalData(string identifier, object o) {
       data[identifier] = o;
     }
-    public object GetAdditionalData(string identifier) {
+    public virtual object GetAdditionalData(string identifier) {
       return data[identifier];
     }
   }

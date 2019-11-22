@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -62,7 +63,7 @@ namespace HeuristicLab.Optimization {
       get { return (ILookupParameter<IntValue>)Parameters["LocalEvaluatedSolutions"]; }
     }
 
-    public Action<ISingleObjectiveSolutionContext<TEncodedSolution>, IRandom> Evaluate { get; set; }
+    public Action<ISingleObjectiveSolutionContext<TEncodedSolution>, IRandom, CancellationToken> Evaluate { get; set; }
     public Func<ISingleObjectiveSolutionContext<TEncodedSolution>, IRandom, IEnumerable<ISingleObjectiveSolutionContext<TEncodedSolution>>> GetNeighbors { get; set; }
 
     [StorableConstructor]
@@ -93,7 +94,7 @@ namespace HeuristicLab.Optimization {
 
       double quality;
       if (QualityParameter.ActualValue == null) {
-        if (!solutionContext.IsEvaluated) Evaluate(solutionContext, random);
+        if (!solutionContext.IsEvaluated) Evaluate(solutionContext, random, CancellationToken.None);
 
         quality = solutionContext.EvaluationResult.Quality;
       } else quality = QualityParameter.ActualValue.Value;
@@ -103,7 +104,7 @@ namespace HeuristicLab.Optimization {
         TEncodedSolution best = default(TEncodedSolution);
         var bestQuality = quality;
         foreach (var neighbor in GetNeighbors(solutionContext, random).Take(sampleSize)) {
-          Evaluate(neighbor, random);
+          Evaluate(neighbor, random, CancellationToken);
           var q = neighbor.EvaluationResult.Quality;
           count++;
           if (maximize && bestQuality > q || !maximize && bestQuality < q) continue;

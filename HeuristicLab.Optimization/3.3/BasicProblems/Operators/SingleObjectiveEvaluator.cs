@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using System.Threading;
 using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -45,7 +46,7 @@ namespace HeuristicLab.Optimization {
       get { return (ILookupParameter<DoubleValue>)Parameters["Quality"]; }
     }
 
-    public Action<ISingleObjectiveSolutionContext<TEncodedSolution>, IRandom> Evaluate { get; set; }
+    public Action<ISingleObjectiveSolutionContext<TEncodedSolution>, IRandom, CancellationToken> Evaluate { get; set; }
 
     [StorableConstructor]
     private SingleObjectiveEvaluator(StorableConstructorFlag _) : base(_) { }
@@ -64,7 +65,7 @@ namespace HeuristicLab.Optimization {
       var solution = ScopeUtil.GetEncodedSolution(ExecutionContext.Scope, encoding);
       var solutionContext = new SingleObjectiveSolutionContextScope<TEncodedSolution>(ExecutionContext.Scope, solution);
 
-      Evaluate(solutionContext, random);
+      Evaluate(solutionContext, random, CancellationToken.None);
       var qualityValue = solutionContext.EvaluationResult.Quality;
 
       QualityParameter.ActualValue = new DoubleValue(qualityValue);
