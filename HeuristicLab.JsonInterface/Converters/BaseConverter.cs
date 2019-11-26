@@ -85,6 +85,9 @@ namespace HeuristicLab.JsonInterface {
     }
 
     protected object GetDefaultValue(Type t) => t.IsValueType ? Activator.CreateInstance(t) : null;
+
+    
+
     #endregion
   }
 }
