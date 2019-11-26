@@ -5,6 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.PluginInfrastructure;
+using HEAL.Attic;
+using System.Collections;
 
 namespace HeuristicLab.JsonInterface {
   /// <summary>
@@ -29,6 +32,16 @@ namespace HeuristicLab.JsonInterface {
     public static void Register(Type type, IJsonItemConverter converter, int priority) {
       if (!Converters.ContainsKey(type))
         Converters.Add(type, new ConverterPriorityContainer() { Converter = converter, Priority = priority });
+    }
+
+
+    public static void Register(string atticGuid, IJsonItemConverter converter, int priority) =>
+      Register(new Guid(atticGuid), converter, priority);
+
+    public static void Register(Guid atticGuid, IJsonItemConverter converter, int priority) {
+      if (Mapper.StaticCache.TryGetType(atticGuid, out Type type)) {
+        Register(type, converter, priority);
+      }
     }
 
     public static void Register<T>(IJsonItemConverter converter, int priority) => 
@@ -67,6 +80,11 @@ namespace HeuristicLab.JsonInterface {
         }
         return best.Converter;
       }
+
+      Type t = Mapper.StaticCache.GetType(new Guid("25137f88-66b9-48d7-a2bd-60190082e044"));
+
+      
+
       return new DummyConverter();
     }
 
@@ -112,6 +130,57 @@ namespace HeuristicLab.JsonInterface {
 
       Register(typeof(IConstrainedValueParameter<>), new ConstrainedValueParameterConverter(), 3);
       Register(typeof(ICheckedMultiOperator<>), new MultiCheckedOperatorConverter(), 3);
+
+      //ApplicationManager.Manager
+      // "25137f88-66b9-48d7-a2bd-60190082e044"
+      //new Guid("25137f88-66b9-48d7-a2bd-60190082e044")
+      // ISymbol
+
+      Register("25137f88-66b9-48d7-a2bd-60190082e044", 
+        new ConfigurableConverter()
+        .Primitive("InitialFrequency", ElementType.Property, new object[] { 0.0, 1.0 })
+        .Primitive("Enabled", ElementType.Property, true)
+        .Primitive("MinimumArity", ElementType.Property, 0)
+        .Primitive("MaximumArity", ElementType.Property, 10),
+        5);
+
+      // Dataset
+      Register("49F4D145-50D7-4497-8D8A-D190CD556CC8",
+        new ConfigurableConverter() //TODO: set guid to enable inheritance?
+        /*.PrimitiveEnumerable("VariableNames", ElementType.Property)
+        .PrimitiveEnumerable("DoubleVariables", ElementType.Property)
+        .PrimitiveEnumerable("StringVariables", ElementType.Property)
+        .PrimitiveEnumerable("DateTimeVariables", ElementType.Property)*/
+        .PrimitiveEnumerable("storableData", ElementType.Field, new double[,] { }),
+        5);
+
+      // ICheckedItemList<>
+      Register("ba4a82ca-92eb-47a1-95a7-f41f6ef470f4",
+        new ConfigurableConverter()
+        .This((o,t) => {
+          dynamic itemList = o as dynamic;
+          IList<JsonItem> jsonItems = new List<JsonItem>();
+          int count = 0;
+          foreach(var obj in itemList) {
+            IItem item = obj as IItem;
+            JsonItem checkedStatus = new JsonItem() {
+              Name = "Checked",
+              Value = itemList.ItemChecked(obj),
+              Range = new object[] { false, true }
+            };
+            JsonItem value = Extract(item);
+
+            jsonItems.Add(new JsonItem() {
+              Name = item.ItemName + count++,
+              Parameters = new JsonItem[] {
+                checkedStatus, value
+              },
+              Type = item.GetType().AssemblyQualifiedName
+            });
+          }
+          return jsonItems;
+        }),
+        5);
     }
   }
 }

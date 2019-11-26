@@ -132,8 +132,15 @@ namespace HeuristicLab.JsonInterface {
     #region BuildJsonItemMethods
     public static JsonItem BuildJsonItem(JObject obj, IDictionary<string, string> typeList) {
       object val = obj[nameof(Value)]?.ToObject<object>();
-      if (val is JContainer)
-        val = ((JContainer)val).ToObject<object[]>();
+      if (val is JContainer) {
+        //try {
+          val = ((JContainer)val).ToObject<object[]>();
+        /*} catch (Exception) { }
+        try {
+          val = ((JContainer)val).ToObject<object[,]>();
+        } catch (Exception) { }*/
+      }
+        
 
       return new JsonItem() {
         Name = obj[nameof(Name)]?.ToString(),
