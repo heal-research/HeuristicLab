@@ -7,6 +7,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using HEAL.Attic;
 
 namespace HeuristicLab.JsonInterface {
   /// <summary>
@@ -26,6 +27,10 @@ namespace HeuristicLab.JsonInterface {
         TypeList = new Dictionary<string, string>(),
         JsonItems = new JArray()
       };
+
+      ProtoBufSerializer serializer = new ProtoBufSerializer();
+      serializer.Serialize(algorithm, @"C:\Workspace\template.hl");
+      
 
       // 1.1. extract JsonItem, save the name in the metadata section of the 
       // template and save it an JArray incl. all parameters of the JsonItem, 
@@ -60,24 +65,32 @@ namespace HeuristicLab.JsonInterface {
     // serializes ParameterizedItems and saves them in list "JsonItems".
     private static void PopulateJsonItems(JsonItem item, GenData genData) {
       if (item.Parameters != null) {
+        foreach (var p in item.Parameters) {
+          PopulateJsonItems(p, genData);
+        }
+      }else if (item.Value != null || item.Range != null /*|| item.ActualName != null*/) {
+        genData.JsonItems.Add(Serialize(item, genData));
+      }
+      /*
+      if (item.Parameters != null) {
         if (item.Range == null)
           genData.JsonItems.Add(Serialize(item, genData));
         foreach (var p in item.Parameters)
           if (p.IsParameterizedItem)
             PopulateJsonItems(p, genData);
-      }
+      }*/
     }
 
     private static JObject Serialize(JsonItem item, GenData genData) {
       JObject obj = JObject.FromObject(item, Settings());
-      obj[Constants.StaticParameters] = obj[nameof(JsonItem.Parameters)];
-      obj[Constants.FreeParameters] = obj[nameof(JsonItem.Parameters)];
+      //obj[Constants.StaticParameters] = obj[nameof(JsonItem.Parameters)];
+      //obj[Constants.FreeParameters] = obj[nameof(JsonItem.Parameters)];
 
-      obj.Property(nameof(JsonItem.Parameters))?.Remove();
-      RefactorFreeParameters(obj, genData);
-      RefactorStaticParameters(obj, genData);
+      //obj.Property(nameof(JsonItem.Parameters))?.Remove();
+      //RefactorFreeParameters(obj, genData);
+      //RefactorStaticParameters(obj, genData);
 
-      obj.Property(nameof(JsonItem.Value))?.Remove();
+      //obj.Property(nameof(JsonItem.Value))?.Remove();
       obj.Property(nameof(JsonItem.Type))?.Remove();
 
       if(!genData.TypeList.ContainsKey(item.Path))

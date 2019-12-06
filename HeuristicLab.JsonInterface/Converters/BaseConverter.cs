@@ -19,7 +19,8 @@ namespace HeuristicLab.JsonInterface {
 
     public JsonItem Extract(IItem value) {
       JsonItem data = ExtractData(value);
-      data.Name = String.IsNullOrEmpty(data.Name) ? value.ItemName : data.Name;
+      data.Name = string.IsNullOrEmpty(data.Name) ? value.ItemName : data.Name;
+      data.Type = string.IsNullOrEmpty(data.Type) ? value.GetType().AssemblyQualifiedName : data.Type;
       return data;
     }
     
@@ -85,8 +86,6 @@ namespace HeuristicLab.JsonInterface {
     }
 
     protected object GetDefaultValue(Type t) => t.IsValueType ? Activator.CreateInstance(t) : null;
-
-    
 
     #endregion
   }

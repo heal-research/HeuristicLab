@@ -19,16 +19,17 @@ namespace HeuristicLab.JsonInterface {
 
     public override JsonItem ExtractData(IItem value) {
       JsonItem item = new JsonItem();
-      item.Name = value.ItemName;
-      item.Type = value.GetType().AssemblyQualifiedName;
+      var parameterizedItem = value as IParameterizedItem;
 
-      foreach (var param in value.Cast<IParameterizedItem>().Parameters) {
-        JsonItem data = JsonItemConverter.Extract(param);
-        data.Name = param.Name;
-        
-        if (item.Parameters == null)
-          item.Parameters = new List<JsonItem>();
-        item.Parameters.Add(data);
+      foreach (var param in parameterizedItem.Parameters) {
+        if(!param.Hidden) {
+          JsonItem data = JsonItemConverter.Extract(param);
+          //data.Name = param.Name;
+
+          if (item.Parameters == null)
+            item.Parameters = new List<JsonItem>();
+          item.Parameters.Add(data);
+        }
       }
       return item;
     }

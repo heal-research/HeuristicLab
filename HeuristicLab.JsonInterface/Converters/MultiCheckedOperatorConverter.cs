@@ -11,15 +11,15 @@ namespace HeuristicLab.JsonInterface {
     public override JsonItem ExtractData(IItem value) {
       JsonItem data = base.ExtractData(value);
 
-      data.Value = value.GetType().GetPrettyName(false);
-      data.Operators = new List<JsonItem>();
+      if(data.Parameters == null)
+        data.Parameters = new List<JsonItem>();
       dynamic val = value.Cast<dynamic>();
       foreach (var op in val.Operators) {
-        data.Operators.Add(new JsonItem() {
+        data.Parameters.Add(new JsonItem() {
           Name = op.Name,
           Value = val.Operators.ItemChecked(op),
-          Range = new object[] { false, true },
-          Path = data.Path + "." + op.Name
+          Range = new object[] { false, true }/*,
+          Path = data.Path + "." + op.Name*/
         });
       }
       return data;

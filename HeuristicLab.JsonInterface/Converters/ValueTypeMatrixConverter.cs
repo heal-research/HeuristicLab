@@ -17,6 +17,7 @@ namespace HeuristicLab.JsonInterface {
 
     public override JsonItem ExtractData(IItem value) =>
       new JsonItem() {
+        Name = "[OverridableParamName]",
         Value = value.Cast<MatrixType>().CloneAsMatrix()
       };
 
@@ -26,7 +27,7 @@ namespace HeuristicLab.JsonInterface {
       rowInfo.SetValue(matrix, data.GetLength(0));
       var colInfo = matrix.GetType().GetProperty("Columns");
       colInfo.SetValue(matrix, data.GetLength(1));
-      //matrix.Cast<dynamic>().Columns = data.GetLength(1);
+
       for (int x = 0; x < data.GetLength(0); ++x) {
         for (int y = 0; y < data.GetLength(1); ++y) {
           matrix[x, y] = data[x, y];
