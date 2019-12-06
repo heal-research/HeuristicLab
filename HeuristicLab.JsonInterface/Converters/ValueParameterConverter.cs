@@ -15,12 +15,16 @@ namespace HeuristicLab.JsonInterface {
     }
 
     public override JsonItem ExtractData(IParameter value) {
-      JsonItem data = null;
-      if (value.ActualValue == null)
-        data = new JsonItem();
-      else
-        data = JsonItemConverter.Extract(value.ActualValue);
-      data.Name = value.Name;
+      JsonItem data = new JsonItem() { Name = value.Name };
+      if (value.ActualValue != null) {
+        JsonItem tmp = JsonItemConverter.Extract(value.ActualValue);
+        if(tmp.Name == "[OverridableParamName]") {
+          tmp.Name = value.Name;
+          data = tmp;
+        }
+        else
+          data.AddParameter(tmp);
+      }
       return data;
     }
   }

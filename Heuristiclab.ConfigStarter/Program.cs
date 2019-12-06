@@ -11,9 +11,33 @@ using HeuristicLab.JsonInterface;
 using System.IO;
 using HeuristicLab.Problems.DataAnalysis.Symbolic.Regression;
 using HeuristicLab.PluginInfrastructure.Manager;
+using HeuristicLab.SequentialEngine;
+using System.Threading;
 
 namespace Heuristiclab.ConfigStarter {
   public class Program {
+
+    private static string Reduce(string str) => 
+      str
+      .Replace(" ", "")
+      .Replace("-", "")
+      .Replace("`", "")
+      .Replace(".", "")
+      .Replace("<", "")
+      .Replace(">", "")
+      .Replace("(", "_")
+      .Replace(")", "_");
+
+    private static void Visualize(JsonItem item, StringBuilder sb) {
+      sb.Append($"  {item.GetHashCode()} [label=\"{item.Name}\"];\n");
+      foreach (var i in item.Parameters) {
+        sb.Append($"  {item.GetHashCode()} -> {i.GetHashCode()};\n");
+      }
+      foreach(var i in item.Parameters) {
+        Visualize(i, sb);
+      }
+    }
+
     public static void Main(string[] args) {
 
       try {
@@ -31,14 +55,32 @@ namespace Heuristiclab.ConfigStarter {
       HeuristicLabJsonInterfaceAppApplication app = new HeuristicLabJsonInterfaceAppApplication();
 
       GeneticAlgorithm alg = new GeneticAlgorithm();
+      alg.MaximumGenerations.Value = 10000;
       TravelingSalesmanProblem tsp = new TravelingSalesmanProblem();
       tsp.Coordinates[0, 0] = 123;
+
 
 
       SymbolicRegressionSingleObjectiveProblem prop = new SymbolicRegressionSingleObjectiveProblem();
       
       alg.Problem = prop;
 
+      alg.Engine = new SequentialEngine();
+      Task t = alg.StartAsync();
+      Thread.Sleep(1000);
+      alg.Stop();
+
+      StorableConverter storableConverter = new StorableConverter();
+      JsonItem item = storableConverter.Extract(alg);
+
+      StringBuilder sb = new StringBuilder();
+
+      //Visualize(item, sb);
+
+      //File.WriteAllText(@"C:\Workspace\item.gv", $"digraph G {{\n{sb.ToString()}}}");
+
+
+      //Console.WriteLine(alg);
       File.WriteAllText(@"C:\Workspace\Template.json", JCGenerator.GenerateTemplate(alg));
 
       /*

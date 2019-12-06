@@ -80,7 +80,10 @@ namespace HeuristicLab.JsonInterface {
       Add(elementName, elementType, null, null, (o,t) => {
         if (!t.IsEqualTo(typeof(IEnumerable)))
           throw new InvalidCastException($"Type {t.Name} is not an IEnumerable!");
-        return extract(o,t);
+        List<JsonItem> items = new List<JsonItem>();
+        foreach(var x in (o as IEnumerable)) 
+          items.AddRange(extract(x,x.GetType()));
+        return items;
       });
 
     public ConfigurableConverter PrimitiveEnumerable(string elementName, ElementType elementType, object defaultValue) =>

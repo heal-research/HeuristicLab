@@ -65,8 +65,8 @@
     <Compile Include="Converters\CheckedItemListConverter.cs" />
     <Compile Include="Converters\ConfigurableConverter.cs" />
     <Compile Include="Converters\ItemCollectionConverter.cs" />
-    <Compile Include="Converters\ParameterConverter.cs" />
     <Compile Include="Converters\PrimitiveConverter.cs" />
+    <Compile Include="Converters\RegressionProblemDataConverter.cs" />
     <Compile Include="Converters\StorableConverter.cs" />
     <Compile Include="Converters\ValueLookupParameterConverter.cs" />
     <Compile Include="Converters\ValueRangeConverter.cs" />
@@ -127,6 +127,14 @@
     <ProjectReference Include="..\HeuristicLab.PluginInfrastructure\3.3\HeuristicLab.PluginInfrastructure-3.3.csproj">
       <Project>{94186a6a-5176-4402-ae83-886557b53cca}</Project>
       <Name>HeuristicLab.PluginInfrastructure-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Problems.DataAnalysis\3.4\HeuristicLab.Problems.DataAnalysis-3.4.csproj">
+      <Project>{df87c13e-a889-46ff-8153-66dcaa8c5674}</Project>
+      <Name>HeuristicLab.Problems.DataAnalysis-3.4</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Problems.Instances.DataAnalysis\3.3\HeuristicLab.Problems.Instances.DataAnalysis-3.3.csproj">
+      <Project>{94c7714e-29d4-4d6d-b213-2c18d627ab75}</Project>
+      <Name>HeuristicLab.Problems.Instances.DataAnalysis-3.3</Name>
     </ProjectReference>
     <ProjectReference Include="..\HeuristicLab.SequentialEngine\3.3\HeuristicLab.SequentialEngine-3.3.csproj">
       <Project>{DC3D7072-7999-4719-B65D-3997744D5DC1}</Project>

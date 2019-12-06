@@ -23,6 +23,7 @@ namespace HeuristicLab.JsonInterface {
       Tuple<T,T> tuple = (Tuple<T,T>)field.GetValue(value);
 
       return new JsonItem() {
+        Name = "[OverridableParamName]",
         Value = new object[] { tuple.Item1.Value, tuple.Item2.Value },
         Range = new object[] { GetMinValue(tuple.Item1.Value.GetType()), 
                                GetMaxValue(tuple.Item2.Value.GetType()) }

@@ -112,6 +112,10 @@
       <Project>{D767C38D-8014-46B0-9A32-03A3AECCE34A}</Project>
       <Name>HeuristicLab.Problems.TravelingSalesman-3.3</Name>
     </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.SequentialEngine\3.3\HeuristicLab.SequentialEngine-3.3.csproj">
+      <Project>{dc3d7072-7999-4719-b65d-3997744d5dc1}</Project>
+      <Name>HeuristicLab.SequentialEngine-3.3</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLab.snk" />

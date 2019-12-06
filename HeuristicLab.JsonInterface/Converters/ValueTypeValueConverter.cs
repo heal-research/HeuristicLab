@@ -16,6 +16,7 @@ namespace HeuristicLab.JsonInterface {
 
     public override JsonItem ExtractData(IItem value) => 
       new JsonItem() {
+        Name = "[OverridableParamName]",
         Value = value.Cast<ValueType>().Value,
         Range = new object[] { GetMinValue(typeof(T)), GetMaxValue(typeof(T)) }
       };

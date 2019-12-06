@@ -10,13 +10,6 @@ namespace HeuristicLab.JsonInterface {
     public override JsonItem ExtractData(IItem value) {
       IParameter param = value.Cast<IParameter>();
       JsonItem comp = ExtractData(param);
-      //comp.Path = value.Cast<IParameter>().ActualValue?.ItemName;
-      /*comp.Path = value.Cast<IParameter>().Name + "." + comp.Path;
-      if(comp.ParameterizedItems != null) {
-        foreach (var item in comp.ParameterizedItems) {
-          item.Path = value.Cast<IParameter>().Name + "." + item.Path;
-        }
-      }*/
       return comp;
     }
     public abstract JsonItem ExtractData(IParameter value);
