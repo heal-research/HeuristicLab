@@ -185,7 +185,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       cancellationTokenSource.Cancel();
     }
 
-    private async void UpdateView() {
+    protected virtual async void UpdateView() {
       if (Content == null || Content.Model == null || Content.ProblemData == null) return;
       var tree = Content.Model.SymbolicExpressionTree;
       treeChart.Tree = tree.Root.SubtreeCount > 1 ? new SymbolicExpressionTree(tree.Root) : new SymbolicExpressionTree(tree.Root.GetSubtree(0).GetSubtree(0));

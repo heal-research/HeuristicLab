@@ -43,6 +43,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression.Views {
       Content.Model = model;
     }
 
+    protected override void UpdateView() {
+      base.UpdateView();
+      var tree = Content?.Model?.SymbolicExpressionTree;
+      btnOptimizeConstants.Enabled = tree != null && SymbolicRegressionConstantOptimizationEvaluator.CanOptimizeConstants(tree);
+    }
+
     protected override ISymbolicExpressionTree OptimizeConstants(ISymbolicExpressionTree tree, IProgress progress) {
       const int constOptIterations = 50;
       const int maxRepetitions = 1000;
