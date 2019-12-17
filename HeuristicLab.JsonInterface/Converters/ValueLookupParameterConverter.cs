@@ -15,7 +15,10 @@ namespace HeuristicLab.JsonInterface {
         JsonItem tmp = JsonItemConverter.Extract(param.Value);
         actualValue = tmp.Value;
         actualRange = tmp.Range;
+      } else {
+        actualRange = new object[] { GetMinValue(param.DataType), GetMaxValue(param.DataType) };
       }
+
       return new JsonItem() {
         Name = value.Name,
         ActualName = param.ActualName,

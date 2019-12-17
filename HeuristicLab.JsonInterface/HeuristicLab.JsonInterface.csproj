@@ -62,12 +62,7 @@
   <ItemGroup>
     <Compile Include="Attributes\ConvertableAttribute.cs" />
     <Compile Include="Constants.cs" />
-    <Compile Include="Converters\CheckedItemListConverter.cs" />
-    <Compile Include="Converters\ConfigurableConverter.cs" />
-    <Compile Include="Converters\ItemCollectionConverter.cs" />
-    <Compile Include="Converters\PrimitiveConverter.cs" />
     <Compile Include="Converters\RegressionProblemDataConverter.cs" />
-    <Compile Include="Converters\StorableConverter.cs" />
     <Compile Include="Converters\ValueLookupParameterConverter.cs" />
     <Compile Include="Converters\ValueRangeConverter.cs" />
     <Compile Include="CustomJsonWriter.cs" />

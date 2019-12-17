@@ -17,27 +17,6 @@ using System.Threading;
 namespace Heuristiclab.ConfigStarter {
   public class Program {
 
-    private static string Reduce(string str) => 
-      str
-      .Replace(" ", "")
-      .Replace("-", "")
-      .Replace("`", "")
-      .Replace(".", "")
-      .Replace("<", "")
-      .Replace(">", "")
-      .Replace("(", "_")
-      .Replace(")", "_");
-
-    private static void Visualize(JsonItem item, StringBuilder sb) {
-      sb.Append($"  {item.GetHashCode()} [label=\"{item.Name}\"];\n");
-      foreach (var i in item.Parameters) {
-        sb.Append($"  {item.GetHashCode()} -> {i.GetHashCode()};\n");
-      }
-      foreach(var i in item.Parameters) {
-        Visualize(i, sb);
-      }
-    }
-
     public static void Main(string[] args) {
 
       try {
@@ -63,26 +42,10 @@ namespace Heuristiclab.ConfigStarter {
 
       SymbolicRegressionSingleObjectiveProblem prop = new SymbolicRegressionSingleObjectiveProblem();
       
-      alg.Problem = prop;
+      alg.Problem = tsp;
 
-      alg.Engine = new SequentialEngine();
-      Task t = alg.StartAsync();
-      Thread.Sleep(1000);
-      alg.Stop();
-
-      StorableConverter storableConverter = new StorableConverter();
-      JsonItem item = storableConverter.Extract(alg);
-
-      StringBuilder sb = new StringBuilder();
-
-      //Visualize(item, sb);
-
-      //File.WriteAllText(@"C:\Workspace\item.gv", $"digraph G {{\n{sb.ToString()}}}");
-
-
-      //Console.WriteLine(alg);
       File.WriteAllText(@"C:\Workspace\Template.json", JCGenerator.GenerateTemplate(alg));
-
+      JCInstantiator.Instantiate(@"C:\Workspace\Template.json");
       /*
       List<ICommandLineArgument> arguments = new List<ICommandLineArgument>();
       arguments.Add(new StartArgument("JsonInterface"));

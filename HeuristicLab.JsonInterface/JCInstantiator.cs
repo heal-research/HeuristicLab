@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using HEAL.Attic;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
@@ -20,9 +21,8 @@ namespace HeuristicLab.JsonInterface {
     private struct InstData {
       public JToken Template { get; set; }
       public JArray Config { get; set; }
-      public Dictionary<string, string> TypeList { get; set; }
-      public IDictionary<string, JsonItem> ParameterizedItems { get; set; }
-      public IDictionary<string, JsonItem> ConfigurableItems { get; set; }
+      public IDictionary<string, JsonItem> Objects { get; set; }
+      public IDictionary<string, JsonItem> ResolvedItems { get; set; }
     }
 
     /// <summary>
@@ -33,116 +33,111 @@ namespace HeuristicLab.JsonInterface {
     /// <returns>confugrated IAlgorithm object</returns>
     public static IAlgorithm Instantiate(string templateFile, string configFile = "") {
       InstData instData = new InstData() {
-        TypeList = new Dictionary<string, string>(),
-        ParameterizedItems = new Dictionary<string, JsonItem>(),
-        ConfigurableItems = new Dictionary<string, JsonItem>()
+        Objects = new Dictionary<string, JsonItem>(),
+        ResolvedItems = new Dictionary<string, JsonItem>()
       };
 
-      //1. Parse Template and Config files
+      // parse template and config files
       instData.Template = JToken.Parse(File.ReadAllText(templateFile));
       if(!string.IsNullOrEmpty(configFile))
         instData.Config = JArray.Parse(File.ReadAllText(configFile));
-      instData.TypeList = instData.Template[Constants.Types].ToObject<Dictionary<string, string>>();
+
+      // extract metadata information
       string algorithmName = instData.Template[Constants.Metadata][Constants.Algorithm].ToString();
       string problemName = instData.Template[Constants.Metadata][Constants.Problem].ToString();
+      string hLFileLocation = instData.Template[Constants.Metadata][Constants.HLFileLocation].ToString();
 
-      //2. Collect all parameterizedItems from template
+      // deserialize hl file
+      ProtoBufSerializer serializer = new ProtoBufSerializer();
+      IAlgorithm algorithm = (IAlgorithm)serializer.Deserialize(hLFileLocation);
+
+      // collect all parameterizedItems from template
       CollectParameterizedItems(instData);
 
-      //3. select all ConfigurableItems
-      SelectConfigurableItems(instData);
+      // rebuild tree with paths
+      RebuildTree(instData);
 
-      //4. if config != null -> merge Template and Config 
+      // if config != null -> merge Template and Config 
       if (instData.Config != null)
         MergeTemplateWithConfig(instData);
 
-      //5. resolve the references between parameterizedItems
-      ResolveReferences(instData);
-
-      //6. get algorthm data and object
+      // get algorthm data and object
       JsonItem algorithmData = GetData(algorithmName, instData);
-      IAlgorithm algorithm = CreateObject<IAlgorithm>(algorithmData, instData);
 
-      //7. get problem data and object
+      // get problem data and object
       JsonItem problemData = GetData(problemName, instData);
-      IProblem problem = CreateObject<IProblem>(problemData, instData);
-      algorithm.Problem = problem;
 
-      //8. inject configuration
+      // inject configuration
       JsonItemConverter.Inject(algorithm, algorithmData);
-      JsonItemConverter.Inject(problem, problemData);
-
-      // TODO: let the engine be configurable
-      if (algorithm is EngineAlgorithm)
-        algorithm.Cast<EngineAlgorithm>().Engine = new SequentialEngine.SequentialEngine();
+      if(algorithm.Problem != null)
+        JsonItemConverter.Inject(algorithm.Problem, problemData);
 
       return algorithm;
     }
 
     #region Helper
     private static void CollectParameterizedItems(InstData instData) {
-      foreach (JObject item in instData.Template[Constants.Objects]) {
-        JsonItem data = JsonItem.BuildJsonItem(item, instData.TypeList);
-        instData.ParameterizedItems.Add(data.Path, data);
+      foreach (JObject item in instData.Template[Constants.Parameters]) {
+        JsonItem data = JsonItem.BuildJsonItem(item);
+        instData.Objects.Add(data.Path, data);
       }
     }
+    
+    private static JsonItem RebuildTreeHelper(IList<JsonItem> col, string name) {
+      JsonItem target = null;
+      foreach (var val in col) {
+        if (val.Name == name)
+          target = val;
+      }
+      if (target == null) {
+        target = new JsonItem() {
+          Name = name,
+          Path = name,
+          Children = new List<JsonItem>()
+        };
+        col.Add(target);
+      }
+      return target;
+    }
 
-    private static void SelectConfigurableItems(InstData instData) {
-      foreach (var item in instData.ParameterizedItems.Values) {
-        if (item.Parameters != null)
-          AddConfigurableItems(item.Parameters, instData);
+    // rebuilds item tree with splitting paths of each jsonitem
+    private static void RebuildTree(InstData instData) {
+      List<JsonItem> values = new List<JsonItem>();
+      foreach (var x in instData.Objects) {
+        string[] pathParts = x.Key.Split('.');
+        JsonItem target = RebuildTreeHelper(values, pathParts[0]);
 
-        if (item.Operators != null)
-          AddConfigurableItems(item.Operators, instData);
+        for (int i = 1; i < pathParts.Length; ++i) {
+          target = RebuildTreeHelper(target.Children, pathParts[i]);
+        }
+
+        JsonItem.Merge(target, x.Value);
+      }
+      foreach(var val in values) {
+        instData.ResolvedItems.Add(val.Name, val);
       }
     }
-
-    private static void AddConfigurableItems(IEnumerable<JsonItem> items, InstData instData) {
-      foreach (var item in items)
-        if (item.IsConfigurable)
-          instData.ConfigurableItems.Add(item.Path, item);
-    }
-
-    private static void ResolveReferences(InstData instData) {
-      foreach(var x in instData.ParameterizedItems.Values)
-        foreach (var p in x.Parameters)
-          if (p.Value is string) {
-            string key = p.Path;
-            if (p.Range != null)
-              key = $"{p.Path}.{p.Value.Cast<string>()}";
-
-            if (instData.ParameterizedItems.TryGetValue(key, out JsonItem value))
-              p.Reference = value;
-          }
-    }
-
+    
     private static void MergeTemplateWithConfig(InstData instData) {
       foreach (JObject obj in instData.Config) {
         // build item from config object
-        JsonItem item = JsonItem.BuildJsonItem(obj, instData.TypeList);
+        JsonItem item = JsonItem.BuildJsonItem(obj);
         // override default value
-        if (instData.ConfigurableItems.TryGetValue(item.Path, out JsonItem param)) {
+        if (instData.Objects.TryGetValue(item.Path, out JsonItem param)) {
           param.Value = item.Value;
           // override ActualName (for LookupParameters)
           if (param.ActualName != null)
             param.ActualName = item.ActualName;
-        } else throw new InvalidDataException($"No {Constants.FreeParameters.Trim('s')} with path='{item.Path}' defined!");
+        } else throw new InvalidDataException($"No parameter with path='{item.Path}' defined!");
       }
     }
 
     private static JsonItem GetData(string key, InstData instData)
     {
-      if (instData.ParameterizedItems.TryGetValue(key, out JsonItem value))
+      if (instData.ResolvedItems.TryGetValue(key, out JsonItem value))
         return value;
       else
         throw new InvalidDataException($"Type of item '{key}' is not defined!");
-    }
-
-    private static T CreateObject<T>(JsonItem data, InstData instData) {
-      if (instData.TypeList.TryGetValue(data.Name, out string typeName)) {
-        Type type = Type.GetType(typeName);
-        return (T)Activator.CreateInstance(type);
-      } else throw new TypeLoadException($"Cannot find AssemblyQualifiedName for {data.Name}.");
     }
     #endregion
   }

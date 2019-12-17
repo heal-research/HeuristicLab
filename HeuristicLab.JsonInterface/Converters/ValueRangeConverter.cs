@@ -18,8 +18,10 @@ namespace HeuristicLab.JsonInterface {
     where T : ValueTypeValue<TType>, IDeepCloneable, IStringConvertibleValue
     where TType : struct {
 
+    private const BindingFlags Flags = BindingFlags.NonPublic | BindingFlags.Instance;
+
     public override JsonItem ExtractData(IItem value) {
-      var field = value.GetType().GetField("values", BindingFlags.NonPublic | BindingFlags.Instance);
+      var field = value.GetType().GetField("values", Flags);
       Tuple<T,T> tuple = (Tuple<T,T>)field.GetValue(value);
 
       return new JsonItem() {
@@ -33,7 +35,7 @@ namespace HeuristicLab.JsonInterface {
     public override void InjectData(IItem item, JsonItem data) {
       object[] arr = (object[])data.Value;
       Tuple<T,T> tuple = new Tuple<T,T>(Instantiate<T>(arr[0]), Instantiate<T>(arr[1]));
-      var field = item.GetType().GetField("values", BindingFlags.NonPublic | BindingFlags.Instance);
+      var field = item.GetType().GetField("values", Flags);
       field.SetValue(tuple, item);
     }
   }

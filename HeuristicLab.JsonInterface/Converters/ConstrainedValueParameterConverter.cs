@@ -13,8 +13,12 @@ namespace HeuristicLab.JsonInterface {
         if(x.ToString() == CastValue<string>(data.Value))
           parameter.ActualValue = x;
 
-      if (parameter.ActualValue is IParameterizedItem && data.Reference != null)
-        JsonItemConverter.Inject(parameter.ActualValue, data.Reference);
+      if (parameter.ActualValue is IParameterizedItem && data.Children != null) {
+        foreach(var param in data.Children) {
+          if(param.Name == parameter.ActualValue.ItemName)
+            JsonItemConverter.Inject(parameter.ActualValue, param);
+        }
+      }
     }
 
     public override JsonItem ExtractData(IParameter value) =>
@@ -22,7 +26,7 @@ namespace HeuristicLab.JsonInterface {
         Name = value.Name,
         Value = value.ActualValue?.ToString(),
         Range = GetValidValues(value).Select(x => x.ToString()),
-        Parameters = GetParameterizedChilds(value)
+        Children = GetParameterizedChilds(value)
       };
 
     #region Helper

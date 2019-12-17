@@ -13,18 +13,16 @@ namespace HeuristicLab.JsonInterface {
     internal const string Metadata = "Metadata";
     internal const string Algorithm = "Algorithm";
     internal const string Problem = "Problem";
-    internal const string Objects = "Objects";
-    internal const string Types = "Types";
-    internal const string StaticParameters = "StaticParameters";
-    internal const string FreeParameters = "FreeParameters";
+    internal const string HLFileLocation = "HLFileLocation";
+    internal const string Parameters = "Parameters";
 
     internal const string Template = @"{
-      'Metadata': {
-        'Algorithm':'',
-        'Problem':''
+      '" + Metadata + @"': {
+        '" + Algorithm + @"':'',
+        '" + Problem + @"':'',
+        '" + HLFileLocation + @"':''
       },
-      'Objects': [],
-      'Types': {}
+      '" + Parameters + @"': []
     }";
   }
 }

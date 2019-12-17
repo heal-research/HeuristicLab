@@ -11,16 +11,12 @@ namespace HeuristicLab.JsonInterface {
   public abstract class BaseConverter : IJsonItemConverter
   {
     public void Inject(IItem item, JsonItem data) {
-      if (data.Reference != null) {
-        JsonItem.Merge(data, data.Reference);
-      }
       InjectData(item, data);
     }
 
     public JsonItem Extract(IItem value) {
       JsonItem data = ExtractData(value);
       data.Name = string.IsNullOrEmpty(data.Name) ? value.ItemName : data.Name;
-      data.Type = string.IsNullOrEmpty(data.Type) ? value.GetType().AssemblyQualifiedName : data.Type;
       return data;
     }
     
@@ -30,7 +26,7 @@ namespace HeuristicLab.JsonInterface {
     #region Helper
     protected ValueType CastValue<ValueType>(object obj) {
       if (obj is JToken)
-        return (obj.Cast<JToken>()).ToObject<ValueType>();
+        return obj.Cast<JToken>().ToObject<ValueType>();
       else if (obj is IConvertible)
         return Convert.ChangeType(obj, typeof(ValueType)).Cast<ValueType>();
       else return (ValueType)obj;
@@ -48,16 +44,16 @@ namespace HeuristicLab.JsonInterface {
         return 1.0d;
 
       switch (typeCode) {
-        case TypeCode.Int16: return Int16.MaxValue;
-        case TypeCode.Int32: return Int32.MaxValue;
-        case TypeCode.Int64: return Int64.MaxValue;
-        case TypeCode.UInt16: return UInt16.MaxValue;
-        case TypeCode.UInt32: return UInt32.MaxValue;
-        case TypeCode.UInt64: return UInt64.MaxValue;
-        case TypeCode.Single: return Single.MaxValue;
-        case TypeCode.Double: return Double.MaxValue;
-        case TypeCode.Decimal: return Decimal.MaxValue;
-        case TypeCode.Byte: return Byte.MaxValue;
+        case TypeCode.Int16: return short.MaxValue;
+        case TypeCode.Int32: return int.MaxValue;
+        case TypeCode.Int64: return long.MaxValue;
+        case TypeCode.UInt16: return ushort.MaxValue;
+        case TypeCode.UInt32: return uint.MaxValue;
+        case TypeCode.UInt64: return ulong.MaxValue;
+        case TypeCode.Single: return float.MaxValue;
+        case TypeCode.Double: return double.MaxValue;
+        case TypeCode.Decimal: return decimal.MaxValue;
+        case TypeCode.Byte: return byte.MaxValue;
         case TypeCode.Boolean: return true;
         default: return GetDefaultValue(t);
       }
@@ -70,23 +66,22 @@ namespace HeuristicLab.JsonInterface {
         return 0.0d;
 
       switch (typeCode) {
-        case TypeCode.Int16: return Int16.MinValue;
-        case TypeCode.Int32: return Int32.MinValue;
-        case TypeCode.Int64: return Int64.MinValue;
-        case TypeCode.UInt16: return UInt16.MinValue;
-        case TypeCode.UInt32: return UInt32.MinValue;
-        case TypeCode.UInt64: return UInt64.MinValue;
-        case TypeCode.Single: return Single.MinValue;
-        case TypeCode.Double: return Double.MinValue;
-        case TypeCode.Decimal: return Decimal.MinValue;
-        case TypeCode.Byte: return Byte.MinValue;
+        case TypeCode.Int16: return short.MinValue;
+        case TypeCode.Int32: return int.MinValue;
+        case TypeCode.Int64: return long.MinValue;
+        case TypeCode.UInt16: return ushort.MinValue;
+        case TypeCode.UInt32: return uint.MinValue;
+        case TypeCode.UInt64: return ulong.MinValue;
+        case TypeCode.Single: return float.MinValue;
+        case TypeCode.Double: return double.MinValue;
+        case TypeCode.Decimal: return decimal.MinValue;
+        case TypeCode.Byte: return byte.MinValue;
         case TypeCode.Boolean: return false;
         default: return GetDefaultValue(t);
       }
     }
 
     protected object GetDefaultValue(Type t) => t.IsValueType ? Activator.CreateInstance(t) : null;
-
     #endregion
   }
 }
