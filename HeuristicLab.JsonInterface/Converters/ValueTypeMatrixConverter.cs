@@ -13,7 +13,7 @@ namespace HeuristicLab.JsonInterface {
     where T : struct 
   {
     public override void InjectData(IItem item, JsonItem data) => 
-      CopyMatrixData(item.Cast<MatrixType>(), CastValue<T[,]>(data.Value));
+      CopyMatrixData(item.Cast<MatrixType>(), data.Value);
 
     public override JsonItem ExtractData(IItem value) =>
       new JsonItem() {
@@ -22,15 +22,21 @@ namespace HeuristicLab.JsonInterface {
       };
 
     #region Helper
-    private void CopyMatrixData(MatrixType matrix, T[,] data) {
-      var rowInfo = matrix.GetType().GetProperty("Rows");
-      rowInfo.SetValue(matrix, data.GetLength(0));
-      var colInfo = matrix.GetType().GetProperty("Columns");
-      colInfo.SetValue(matrix, data.GetLength(1));
+    private void CopyMatrixData(MatrixType matrix, object data) {
+      if (data is Array arr) {
+        var rows = arr.Length;
+        var cols = arr.Length > 0 && arr.GetValue(0) is JArray jarr ? jarr.Count : 0;
 
-      for (int x = 0; x < data.GetLength(0); ++x) {
-        for (int y = 0; y < data.GetLength(1); ++y) {
-          matrix[x, y] = data[x, y];
+        var rowInfo = matrix.GetType().GetProperty("Rows");
+        rowInfo.SetValue(matrix, rows);
+        var colInfo = matrix.GetType().GetProperty("Columns");
+        colInfo.SetValue(matrix, cols);
+
+        for (int x = 0; x < rows; ++x) {
+          jarr = (JArray)arr.GetValue(x);
+          for (int y = 0; y < cols; ++y) {
+            matrix[x, y] = jarr[y].ToObject<T>();
+          }
         }
       }
     }

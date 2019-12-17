@@ -16,7 +16,6 @@ namespace HeuristicLab.JsonInterface {
   public static class JCGenerator {
     private struct GenData {
       public JObject Template { get; set; }
-      public IDictionary<string, string> TypeList { get; set; }
       public JArray JsonItems { get; set; }
     }
     
@@ -24,27 +23,24 @@ namespace HeuristicLab.JsonInterface {
       // data container
       GenData genData = new GenData() {
         Template = JObject.Parse(Constants.Template),
-        TypeList = new Dictionary<string, string>(),
         JsonItems = new JArray()
       };
 
       ProtoBufSerializer serializer = new ProtoBufSerializer();
       serializer.Serialize(algorithm, @"C:\Workspace\template.hl");
-      
+      genData.Template[Constants.Metadata][Constants.HLFileLocation] = @"C:\Workspace\template.hl";
 
-      // 1.1. extract JsonItem, save the name in the metadata section of the 
+      // extract JsonItem, save the name in the metadata section of the 
       // template and save it an JArray incl. all parameters of the JsonItem, 
       // which have parameters aswell
       AddInstantiableIItem(Constants.Algorithm, algorithm, genData);
       //IsConvertable(algorithm, true);
-      if (algorithm.Problem != null) // 1.2. only when an problem exists
+      if (algorithm.Problem != null) // only when an problem exists
         AddInstantiableIItem(Constants.Problem, algorithm.Problem, genData);
 
-      // 2. save the JArray with JsonItems (= IParameterizedItems)
-      genData.Template[Constants.Objects] = genData.JsonItems;
-      // 3. save the types of the JsonItems (for instatiation)
-      genData.Template[Constants.Types] = JObject.FromObject(genData.TypeList);
-      // 4. serialize template and return string
+      // save the JArray with JsonItems (= IParameterizedItems)
+      genData.Template[Constants.Parameters] = genData.JsonItems;
+      // serialize template and return string
       return CustomJsonWriter.Serialize(genData.Template);
     }
     
@@ -64,72 +60,22 @@ namespace HeuristicLab.JsonInterface {
 
     // serializes ParameterizedItems and saves them in list "JsonItems".
     private static void PopulateJsonItems(JsonItem item, GenData genData) {
-      if (item.Parameters != null) {
-        foreach (var p in item.Parameters) {
+      IEnumerable<JsonItem> tmpParameter = item.Children;
+      item.Children = null;
+
+      if (item.Value != null || item.Range != null) {
+        genData.JsonItems.Add(Serialize(item));
+      }
+
+      if (tmpParameter != null) {
+        foreach (var p in tmpParameter) {
           PopulateJsonItems(p, genData);
         }
-      }else if (item.Value != null || item.Range != null /*|| item.ActualName != null*/) {
-        genData.JsonItems.Add(Serialize(item, genData));
       }
-      /*
-      if (item.Parameters != null) {
-        if (item.Range == null)
-          genData.JsonItems.Add(Serialize(item, genData));
-        foreach (var p in item.Parameters)
-          if (p.IsParameterizedItem)
-            PopulateJsonItems(p, genData);
-      }*/
     }
 
-    private static JObject Serialize(JsonItem item, GenData genData) {
-      JObject obj = JObject.FromObject(item, Settings());
-      //obj[Constants.StaticParameters] = obj[nameof(JsonItem.Parameters)];
-      //obj[Constants.FreeParameters] = obj[nameof(JsonItem.Parameters)];
-
-      //obj.Property(nameof(JsonItem.Parameters))?.Remove();
-      //RefactorFreeParameters(obj, genData);
-      //RefactorStaticParameters(obj, genData);
-
-      //obj.Property(nameof(JsonItem.Value))?.Remove();
-      obj.Property(nameof(JsonItem.Type))?.Remove();
-
-      if(!genData.TypeList.ContainsKey(item.Path))
-        genData.TypeList.Add(item.Path, item.Type);
-      return obj;
-    }
-
-    // deletes unnecessary properties for free parameters.
-    private static void RefactorFreeParameters(JToken token, GenData genData) {
-      IList<JObject> objToRemove = new List<JObject>();
-      TransformNodes(x => {
-        var p = JsonItem.BuildJsonItem(x, genData.TypeList);
-        x.Property(nameof(JsonItem.Type))?.Remove();
-        x.Property(nameof(JsonItem.Parameters))?.Remove();
-        /*
-        if ((p.Value == null || (p.Value != null && p.Value.GetType() == typeof(string) && p.Range == null) && p.ActualName == null)) {
-          objToRemove.Add(x);
-        } else {
-          x.Property(nameof(JsonItem.Type))?.Remove();
-          x.Property(nameof(JsonItem.Parameters))?.Remove();
-        }*/
-      }, token[Constants.FreeParameters]);
-      //foreach (var x in objToRemove) x.Remove();
-    }
-
-    // deletes unnecessary properties for static parameters.
-    private static void RefactorStaticParameters(JToken token, GenData genData) {
-      IList<JObject> objToRemove = new List<JObject>();
-      TransformNodes(x => {
-        var p = JsonItem.BuildJsonItem(x, genData.TypeList);
-        x.Property(nameof(JsonItem.Range))?.Remove();
-        x.Property(nameof(JsonItem.Operators))?.Remove();
-        x.Property(nameof(JsonItem.Parameters))?.Remove();
-        x.Property(nameof(JsonItem.Type))?.Remove();
-        //TODO: maybe allow JsonItems with Value==null in static parameters too?
-        if (p.Value == null) objToRemove.Add(x); 
-      }, token[Constants.StaticParameters]);
-      //foreach (var x in objToRemove) x.Remove();
-    }
+    private static JObject Serialize(JsonItem item) => 
+      JObject.FromObject(item, Settings());
 
     /// <summary>
     /// Settings for the json serialization.
@@ -140,11 +86,6 @@ namespace HeuristicLab.JsonInterface {
       NullValueHandling = NullValueHandling.Ignore,
       ReferenceLoopHandling = ReferenceLoopHandling.Serialize
     };
-
-    private static void TransformNodes(Action<JObject> action, params JToken[] tokens) {
-      foreach(JObject obj in tokens.SelectMany(x => x.Children<JObject>()))
-        action(obj);
-    }
     #endregion
   }
 }

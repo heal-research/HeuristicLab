@@ -10,8 +10,8 @@ namespace HeuristicLab.JsonInterface {
     public override void InjectData(IItem item, JsonItem data) {
       IParameterizedItem pItem = item.Cast<IParameterizedItem>();
 
-      if(data.Parameters != null) {
-        foreach (var sp in data.Parameters)
+      if(data.Children != null) {
+        foreach (var sp in data.Children)
           if (pItem.Parameters.TryGetValue(sp.Name, out IParameter param))
             JsonItemConverter.Inject(param, sp);
       }
@@ -26,9 +26,9 @@ namespace HeuristicLab.JsonInterface {
           JsonItem data = JsonItemConverter.Extract(param);
           //data.Name = param.Name;
 
-          if (item.Parameters == null)
-            item.Parameters = new List<JsonItem>();
-          item.Parameters.Add(data);
+          if (item.Children == null)
+            item.Children = new List<JsonItem>();
+          item.Children.Add(data);
         }
       }
       return item;

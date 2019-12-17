@@ -27,12 +27,10 @@ namespace HeuristicLab.JsonInterface {
         if(Name != value) {
           string oldName = Name;
           name = value;
+          // replace name in path if path != null
           if (Path != null) {
             var parts = Path.Split('.');
-            for (int i = 0; i < parts.Length; ++i)
-              if (parts[i] == oldName)
-                parts[i] = Name;
-
+            parts[Array.IndexOf(parts, oldName)] = name;
             Path = string.Join(".", parts);
           } else
             Path = Name;
@@ -41,10 +39,8 @@ namespace HeuristicLab.JsonInterface {
         }
       }
     }
-    public string Type { get; set; }
     public string Path { get; set; }
-    public IList<JsonItem> Parameters { get; set; } // -> für flachen aufbau -> childs?
-    public IList<JsonItem> Operators { get; set; }
+    public IList<JsonItem> Children { get; set; }
     public object Value {
       get => value;
       set {
@@ -61,56 +57,38 @@ namespace HeuristicLab.JsonInterface {
     }
     public string ActualName { get; set; }
 
-    #region JsonIgnore Properties
-    [JsonIgnore]
-    public JsonItem Reference { get; set; }
-
-    [JsonIgnore]
-    public bool IsConfigurable => (Value != null && Range != null);
-
-    [JsonIgnore]
-    public bool IsParameterizedItem => Parameters != null;
-    #endregion
-
     #region Public Static Methods
     public static void Merge(JsonItem target, JsonItem from) {
       target.Name = from.Name ?? target.Name;
-      target.Type = from.Type ?? target.Type;
       target.Range = from.Range ?? target.Range;
       target.Path = from.Path ?? target.Path;
       target.Value = from.Value ?? target.Value;
-      target.Reference = from.Reference ?? target.Reference;
       target.ActualName = from.ActualName ?? target.ActualName;
-      target.Parameters = from.Parameters ?? target.Parameters;
-      target.Operators = from.Operators ?? target.Operators;
+      if(target.Children != null) {
+        if (from.Children != null)
+          ((List<JsonItem>)from.Children).AddRange(target.Children); 
+      } else {
+        target.Children = from.Children;
+      }
     }
     #endregion
 
     #region Public Methods
     public void AddParameter(JsonItem item) {
-      if (Parameters == null)
-        Parameters = new List<JsonItem>();
-      Parameters.Add(item);
+      if (Children == null)
+        Children = new List<JsonItem>();
+      Children.Add(item);
       item.Path = $"{Path}.{item.Name}";
       item.UpdatePath();
     }
 
     public void UpdatePath() {
-      if (Parameters != null)
-        UpdatePathHelper(Parameters);
-
-      if (Operators != null)
-        UpdatePathHelper(Operators);
-
-      if (Reference != null)
-        UpdatePathHelper(Reference);
+      if (Children != null)
+        UpdatePathHelper(Children);
     }
     #endregion
 
     #region Helper
-    private void UpdatePathHelper(params JsonItem[] items) =>
-      UpdatePathHelper((IEnumerable<JsonItem>)items);
-
     private void UpdatePathHelper(IEnumerable<JsonItem> items) {
       foreach (var item in items) {
         item.Path = $"{Path}.{item.Name}";
@@ -135,7 +113,6 @@ namespace HeuristicLab.JsonInterface {
         b1 = IsInRangeList(Value); 
         b2 = IsInNumericRange(Value);
       } 
-
       return b1 || b2;
     }
 
@@ -165,74 +142,21 @@ namespace HeuristicLab.JsonInterface {
         (((T)min).CompareTo(value) == -1 || ((T)min).CompareTo(value) == 0) &&
         (((T)max).CompareTo(value) == 1 || ((T)max).CompareTo(value) == 0);
     }
-
     #endregion
 
     #region BuildJsonItemMethods
-    public static JsonItem BuildJsonItem(JObject obj, IDictionary<string, string> typeList) {
+    public static JsonItem BuildJsonItem(JObject obj) {
       object val = obj[nameof(Value)]?.ToObject<object>();
-      if (val is JContainer) {
-        //try {
-          val = ((JContainer)val).ToObject<object[]>();
-        /*} catch (Exception) { }
-        try {
-          val = ((JContainer)val).ToObject<object[,]>();
-        } catch (Exception) { }*/
-      }
+      if (val is JContainer jContainer) // for resolving array values
+        val = jContainer.ToObject<object[]>();
         
-
       return new JsonItem() {
         Name = obj[nameof(Name)]?.ToString(),
         Path = obj[nameof(Path)]?.ToString(),
         Value = val,
         Range = obj[nameof(Range)]?.ToObject<object[]>(),
-        Type = GetType(obj[nameof(Path)]?.ToObject<string>(), typeList),
-        ActualName = obj[nameof(ActualName)]?.ToString(),
-        Parameters = PopulateParameters(obj, typeList),
-        Operators = PopulateOperators(obj, typeList)
+        ActualName = obj[nameof(ActualName)]?.ToString()
       };
-  }
-
-    private static string GetType(string path, IDictionary<string, string> typeList) {
-      if (!string.IsNullOrEmpty(path))
-        if (typeList.TryGetValue(path, out string value))
-          return value;
-      return null;
-    }
-
-    private static IList<JsonItem> PopulateParameters(JObject obj, IDictionary<string, string> typeList) {
-      IList<JsonItem> list = new List<JsonItem>();
-
-      // add staticParameters
-      if (obj[Constants.StaticParameters] != null)
-        foreach (JObject param in obj[Constants.StaticParameters])
-          list.Add(BuildJsonItem(param, typeList));
-
-      // merge staticParameter with freeParameter
-      if (obj[Constants.FreeParameters] != null) {
-        foreach (JObject param in obj[Constants.FreeParameters]) {
-          JsonItem tmp = BuildJsonItem(param, typeList);
-
-          // search staticParameter from list
-          JsonItem comp = null;
-          foreach (var p in list)
-            if (p.Name == tmp.Name) comp = p;
-          if (comp == null)
-            throw new InvalidDataException($"Invalid {Constants.FreeParameters.Trim('s')}: '{tmp.Name}'!");
-
-          JsonItem.Merge(comp, tmp);
-        }
-      }
-      return list;
-    }
-
-    private static IList<JsonItem> PopulateOperators(JObject obj, IDictionary<string, string> typeList) {
-      IList<JsonItem> list = new List<JsonItem>();
-      JToken operators = obj[nameof(JsonItem.Operators)];
-      if (operators != null)
-        foreach (JObject sp in operators)
-          list.Add(BuildJsonItem(sp, typeList));
-      return list;
     }
     #endregion
   }
