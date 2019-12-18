@@ -65,13 +65,9 @@ namespace HeuristicLab.Problems.Programmable {
       CompiledProblemDefinition.Evaluate(solutionContext, random, cancellationToken);
     }
 
-    void ISingleObjectiveProblemDefinition<TEncoding, TEncodedSolution>.Analyze(TEncodedSolution[] individuals, double[] qualities, ResultCollection results, IRandom random) {
-      CompiledProblemDefinition.Analyze(individuals, qualities, results, random);
-    }
     void ISingleObjectiveProblemDefinition<TEncoding, TEncodedSolution>.Analyze(ISingleObjectiveSolutionContext<TEncodedSolution>[] solutionContexts, ResultCollection results, IRandom random) {
       CompiledProblemDefinition.Analyze(solutionContexts, results, random);
     }
-
 
     IEnumerable<TEncodedSolution> ISingleObjectiveProblemDefinition<TEncoding, TEncodedSolution>.GetNeighbors(TEncodedSolution individual, IRandom random) {
       return CompiledProblemDefinition.GetNeighbors(individual, random);

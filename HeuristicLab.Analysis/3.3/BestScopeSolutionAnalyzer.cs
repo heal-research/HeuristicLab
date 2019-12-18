@@ -22,13 +22,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 
 namespace HeuristicLab.Analysis {
   /// <summary>
@@ -85,7 +85,7 @@ namespace HeuristicLab.Analysis {
       : base() {
       Parameters.Add(new LookupParameter<BoolValue>("Maximization", "True if the problem is a maximization problem."));
       Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>("Quality", "The qualities of the solutions."));
-      Parameters.Add(new FixedValueParameter<StringValue>("BestSolution ResultName", "The name of the result for storing the best solution.", new StringValue("Best Solution")));
+      Parameters.Add(new FixedValueParameter<StringValue>("BestSolution ResultName", "The name of the result for storing the best solution.", new StringValue("Best Solution Scope")));
       Parameters.Add(new LookupParameter<DoubleValue>("BestKnownQuality", "The quality of the best known solution."));
       Parameters.Add(new ValueLookupParameter<ResultCollection>("Results", "The result collection where the solution should be stored."));
     }

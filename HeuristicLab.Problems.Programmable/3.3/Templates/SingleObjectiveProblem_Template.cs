@@ -30,24 +30,16 @@ namespace HeuristicLab.Problems.Programmable {
     }
 
     public override void Analyze(ISingleObjectiveSolutionContext<SOLUTION_CLASS>[] solutionContexts, ResultCollection results, IRandom random) {
-      var solutions = solutionContexts.Select(c => c.EncodedSolution).ToArray();
-      var qualities = solutionContexts.Select(c => c.EvaluationResult.Quality).ToArray();
-      Analyze(solutions, qualities, results, random);
-    }
-
-    public override void Analyze(SOLUTION_CLASS[] solutions, double[] qualities, ResultCollection results, IRandom random) {
       // Use vars.yourVariable to access variables in the variable store i.e. yourVariable
       // Write or update results given the range of vectors and resulting qualities
       // Uncomment the following lines if you want to retrieve the best solution
 
-      //var orderedSolutions = solutions.Zip(qualities, (i, q) => new { Solution = i, Quality = q }).OrderBy(z => z.Quality);
-      //var best = Maximization ? orderedSolutions.Last().Solution : orderedSolutions.First().Solution;
-
-      //if (!results.ContainsKey("Best Solution")) {
-      //  results.Add(new Result("Best Solution", typeof(SOLUTION_CLASS)));
-      //}
-      //results["Best Solution"].Value = (IItem)best.Clone();
+      //var orderedSolutions = solutionContexts.OrderBy(s => s.EvaluationResult.Quality);
+      //var best = Maximization ? orderedSolutions.Last() : orderedSolutions.First();
+      //results.AddOrUpdateResult("Best Solution",(IItem) best.EncodedSolution.Clone());
     }
+
+
 
     public override IEnumerable<SOLUTION_CLASS> GetNeighbors(SOLUTION_CLASS solution, IRandom random) {
       // Use vars.yourVariable to access variables in the variable store i.e. yourVariable
