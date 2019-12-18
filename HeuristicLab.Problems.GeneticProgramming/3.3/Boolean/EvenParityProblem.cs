@@ -28,6 +28,7 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
+using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 
 
@@ -103,13 +104,15 @@ namespace HeuristicLab.Problems.GeneticProgramming.Boolean {
     }
 
 
-    public override double Evaluate(ISymbolicExpressionTree tree, IRandom random, CancellationToken cancellationToken) {
+    public override ISingleObjectiveEvaluationResult Evaluate(ISymbolicExpressionTree tree, IRandom random, CancellationToken cancellationToken) {
       if (NumberOfBits <= 0) throw new NotSupportedException("Number of bits must be larger than zero.");
       if (NumberOfBits > 10) throw new NotSupportedException("Even parity does not support problems with number of bits > 10.");
       var bs = Enumerable.Range(0, (int)Math.Pow(2, NumberOfBits));
       var targets = bs.Select(b => CalcTarget(b, NumberOfBits));
       var pred = Interpret(tree, bs);
-      return targets.Zip(pred, (t, p) => t == p ? 1 : 0).Sum(); // count number of correct predictions
+      var quality = targets.Zip(pred, (t, p) => t == p ? 1 : 0).Sum(); // count number of correct predictions
+
+      return new SingleObjectiveEvaluationResult(quality);
     }
 
     private static bool CalcTarget(int b, int numBits) {

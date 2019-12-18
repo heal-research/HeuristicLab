@@ -98,8 +98,9 @@ namespace HeuristicLab.Problems.GeneticProgramming.Robocode {
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() { RegisterEventHandlers(); }
 
-    public override double Evaluate(ISymbolicExpressionTree tree, IRandom random, CancellationToken cancellationToken) {
-      return Interpreter.EvaluateTankProgram(tree, RobocodePath, Enemies, null, false, NrOfRounds);
+    public override ISingleObjectiveEvaluationResult Evaluate(ISymbolicExpressionTree tree, IRandom random, CancellationToken cancellationToken) {
+      var quality = Interpreter.EvaluateTankProgram(tree, RobocodePath, Enemies, null, false, NrOfRounds);
+      return new SingleObjectiveEvaluationResult(quality);
     }
 
     public override void Analyze(ISymbolicExpressionTree[] trees, double[] qualities, ResultCollection results, IRandom random) {

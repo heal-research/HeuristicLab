@@ -104,11 +104,13 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
     }
 
     #region Single Objective Problem Overrides
-    public override double Evaluate(TEncodedSolution solution, IRandom random, CancellationToken cancellationToken) {
+    public override ISingleObjectiveEvaluationResult Evaluate(TEncodedSolution solution, IRandom random, CancellationToken cancellationToken) {
       var qualityMessage = Evaluate(BuildSolutionMessage(solution), cancellationToken);
       if (!qualityMessage.HasExtension(SingleObjectiveQualityMessage.QualityMessage_))
         throw new InvalidOperationException("The received message is not a SingleObjectiveQualityMessage.");
-      return qualityMessage.GetExtension(SingleObjectiveQualityMessage.QualityMessage_).Quality;
+      var quality = qualityMessage.GetExtension(SingleObjectiveQualityMessage.QualityMessage_).Quality;
+      return new SingleObjectiveEvaluationResult(quality);
+
     }
     public virtual QualityMessage Evaluate(SolutionMessage solutionMessage, CancellationToken cancellationToken) {
       return Cache == null

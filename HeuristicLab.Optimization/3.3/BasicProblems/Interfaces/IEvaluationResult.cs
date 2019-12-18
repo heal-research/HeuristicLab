@@ -25,6 +25,8 @@ using HeuristicLab.Core;
 namespace HeuristicLab.Optimization {
   [StorableType("406EB24F-A59C-440C-8B83-49FC05F48855")]
   public interface IEvaluationResult : IItem {
+
+    //TODO: make methods generic for get/set additional data
     void SetAdditionalData(string identifier, object o);
     object GetAdditionalData(string identifier);
   }

@@ -94,28 +94,30 @@ namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
       BestFoundOnEvaluation = 0;
     }
 
-    public double Evaluate(BinaryVector vector, IRandom random) {
+    public ISingleObjectiveEvaluationResult Evaluate(BinaryVector vector, IRandom random) {
       return Evaluate(vector, random, CancellationToken.None);
     }
 
-    public double Evaluate(BinaryVector vector, IRandom random, CancellationToken cancellationToken) {
+    public ISingleObjectiveEvaluationResult Evaluate(BinaryVector vector, IRandom random, CancellationToken cancellationToken) {
       if (Evaluations >= maxEvaluations) throw new OperationCanceledException("Maximum Evaluation Limit Reached");
       Evaluations++;
-      double fitness = problem.Evaluate(vector, random);
+
+      var evaluationResult = problem.Evaluate(vector, random);
+      double fitness = evaluationResult.Quality;
       if (double.IsNaN(BestQuality) || problem.IsBetter(fitness, BestQuality)) {
         BestQuality = fitness;
         BestSolution = (BinaryVector)vector.Clone();
         BestFoundOnEvaluation = Evaluations;
       }
-      return fitness;
+      return evaluationResult;
     }
 
     public void Evaluate(ISingleObjectiveSolutionContext<BinaryVector> solutionContext, IRandom random) {
       Evaluate(solutionContext, random, CancellationToken.None);
     }
     public void Evaluate(ISingleObjectiveSolutionContext<BinaryVector> solutionContext, IRandom random, CancellationToken cancellationToken) {
-      double quality = Evaluate(solutionContext.EncodedSolution, random, cancellationToken);
-      solutionContext.EvaluationResult = new SingleObjectiveEvaluationResult(quality);
+      var evaluationResult = Evaluate(solutionContext.EncodedSolution, random, cancellationToken);
+      solutionContext.EvaluationResult = evaluationResult;
     }
 
     public bool Maximization {

@@ -134,10 +134,11 @@ namespace HeuristicLab.Problems.GeneticProgramming.ArtificialAnt {
     }
 
 
-    public override double Evaluate(ISymbolicExpressionTree tree, IRandom random, CancellationToken cancellationToken) {
+    public override ISingleObjectiveEvaluationResult Evaluate(ISymbolicExpressionTree tree, IRandom random, CancellationToken cancellationToken) {
       var interpreter = new Interpreter(tree, World, MaxTimeSteps);
       interpreter.Run();
-      return interpreter.FoodEaten;
+      var quality = interpreter.FoodEaten;
+      return new SingleObjectiveEvaluationResult(quality);
     }
 
     public override void Analyze(ISymbolicExpressionTree[] trees, double[] qualities, ResultCollection results, IRandom random) {

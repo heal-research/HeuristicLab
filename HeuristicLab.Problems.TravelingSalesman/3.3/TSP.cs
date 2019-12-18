@@ -82,8 +82,9 @@ namespace HeuristicLab.Problems.TravelingSalesman {
       return new TSP(this, cloner);
     }
 
-    public override double Evaluate(Permutation tour, IRandom random, CancellationToken cancellationToken) {
-      return Evaluate(tour);
+    public override ISingleObjectiveEvaluationResult Evaluate(Permutation tour, IRandom random, CancellationToken cancellationToken) {
+      var quality = Evaluate(tour);
+      return new SingleObjectiveEvaluationResult(quality);
     }
 
     public double Evaluate(Permutation tour) {

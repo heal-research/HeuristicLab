@@ -28,6 +28,7 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.BinaryVectorEncoding;
+using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 
 namespace HeuristicLab.Problems.Binary {
@@ -80,14 +81,15 @@ namespace HeuristicLab.Problems.Binary {
       return result;
     }
 
-    public override double Evaluate(BinaryVector individual, IRandom random, CancellationToken cancellationToken) {
+    public override ISingleObjectiveEvaluationResult Evaluate(BinaryVector individual, IRandom random, CancellationToken cancellationToken) {
       if (individual.Length != Length) throw new ArgumentException("The individual has not the correct length.");
       int total = 0;
       var trapSize = TrapSize;
       for (int i = 0; i < individual.Length; i += trapSize) {
         total += Score(individual, i, trapSize);
       }
-      return (double)(total * trapSize) / (TrapMaximum * individual.Length);
+      var quality =  (double)(total * trapSize) / (TrapMaximum * individual.Length);
+      return new SingleObjectiveEvaluationResult(quality);
     }
   }
 }

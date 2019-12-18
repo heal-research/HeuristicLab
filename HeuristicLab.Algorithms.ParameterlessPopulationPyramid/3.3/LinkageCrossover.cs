@@ -58,7 +58,7 @@ namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
       }
       changed = flipped.Count > 0;
       if (changed) {
-        double newFitness = problem.Evaluate(solution, rand);
+        double newFitness = problem.Evaluate(solution, rand).Quality;
         // if the original is strictly better, revert the change
         if (problem.IsBetter(fitness, newFitness)) {
           foreach (var index in flipped) {

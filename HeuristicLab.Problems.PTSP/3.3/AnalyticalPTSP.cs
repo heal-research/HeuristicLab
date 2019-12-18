@@ -24,6 +24,7 @@ using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.PermutationEncoding;
+using HeuristicLab.Optimization;
 
 namespace HeuristicLab.Problems.PTSP {
   [Item("Analytical Probabilistic TSP (pTSP)", "Represents a probabilistic traveling salesman problem where the expected tour length is calculated exactly.")]
@@ -59,8 +60,9 @@ namespace HeuristicLab.Problems.PTSP {
       Encoding.ConfigureOperators(Operators);
     }
 
-    public override double Evaluate(Permutation tour, IRandom random, CancellationToken cancellationToken) {
-      return Evaluate(tour, ProbabilisticTSPData, cancellationToken);
+    public override ISingleObjectiveEvaluationResult Evaluate(Permutation tour, IRandom random, CancellationToken cancellationToken) {
+      var quality = Evaluate(tour, ProbabilisticTSPData, cancellationToken);
+      return new SingleObjectiveEvaluationResult(quality);
     }
 
     public static double Evaluate(Permutation tour, IProbabilisticTSPData data, CancellationToken cancellationToken) {

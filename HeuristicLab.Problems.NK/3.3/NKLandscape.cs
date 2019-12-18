@@ -28,6 +28,7 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.BinaryVectorEncoding;
+using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Random;
@@ -334,10 +335,10 @@ namespace HeuristicLab.Problems.NK {
       return F(x, g, w, (long)seed, ref f_i, q, p);
     }
 
-    public override double Evaluate(BinaryVector vector, IRandom random, CancellationToken cancellationToken) {
+    public override ISingleObjectiveEvaluationResult Evaluate(BinaryVector vector, IRandom random, CancellationToken cancellationToken) {
       double[] f_i; //useful for debugging
       double quality = Evaluate(vector, GeneInteractions, Weights, InteractionSeed.Value, out f_i, Q, P);
-      return quality;
+      return new SingleObjectiveEvaluationResult(quality);
     }
     #endregion
   }

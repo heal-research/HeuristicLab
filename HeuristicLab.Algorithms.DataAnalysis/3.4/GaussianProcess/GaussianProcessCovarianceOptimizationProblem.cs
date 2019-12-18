@@ -197,7 +197,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     private readonly object syncRoot = new object();
     // Does not produce the same result for the same seed when using parallel engine (see below)!
-    public override double Evaluate(ISymbolicExpressionTree tree, IRandom random, CancellationToken cancellationToken) {
+    public override ISingleObjectiveEvaluationResult Evaluate(ISymbolicExpressionTree tree, IRandom random, CancellationToken cancellationToken) {
       var meanFunction = new MeanConst();
       var problemData = ProblemData;
       var ds = problemData.Dataset;
@@ -259,7 +259,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
       UpdateBestSoFar(bestObjValue[0], bestHyperParameters, meanFunction, covarianceFunction);
 
-      return bestObjValue[0];
+      var quality = bestObjValue[0];
+      return new SingleObjectiveEvaluationResult(quality);
     }
 
     // updates the overall best quality and overall best model for Analyze()

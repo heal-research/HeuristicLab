@@ -108,8 +108,9 @@ namespace HeuristicLab.Problems.TestFunctions {
       BoundsParameter.ValueChanged += BoundsParameterOnValueChanged;
     }
 
-    public override double Evaluate(RealVector individual, IRandom random, CancellationToken cancellationToken) {
-      return TestFunction.Evaluate(individual);
+    public override ISingleObjectiveEvaluationResult Evaluate(RealVector individual, IRandom random, CancellationToken cancellationToken) {
+      var quality = TestFunction.Evaluate(individual);
+      return new SingleObjectiveEvaluationResult(quality);
     }
 
     public override void Analyze(RealVector[] realVectors, double[] qualities, ResultCollection results, IRandom random) {

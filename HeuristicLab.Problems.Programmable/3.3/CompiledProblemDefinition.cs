@@ -60,17 +60,17 @@ namespace HeuristicLab.Problems.Programmable {
     #region ISingleObjectiveProblemDefinition<TEncoding,TEncodedSolution> Members
     public abstract bool Maximization { get; }
 
-    public virtual double Evaluate(TEncodedSolution solution, IRandom random) {
+    public virtual ISingleObjectiveEvaluationResult Evaluate(TEncodedSolution solution, IRandom random) {
       return Evaluate(solution, random, CancellationToken.None);
     }
-    public abstract double Evaluate(TEncodedSolution solution, IRandom random, CancellationToken cancellationToken);
+    public abstract ISingleObjectiveEvaluationResult Evaluate(TEncodedSolution solution, IRandom random, CancellationToken cancellationToken);
 
     public virtual void Evaluate(ISingleObjectiveSolutionContext<TEncodedSolution> solutionContext, IRandom random) {
       Evaluate(solutionContext, random, CancellationToken.None);
     }
     public virtual void Evaluate(ISingleObjectiveSolutionContext<TEncodedSolution> solutionContext, IRandom random, CancellationToken cancellationToken) {
-      double quality = Evaluate(solutionContext.EncodedSolution, random, cancellationToken);
-      solutionContext.EvaluationResult = new SingleObjectiveEvaluationResult(quality);
+      var evaluationResult = Evaluate(solutionContext.EncodedSolution, random, cancellationToken);
+      solutionContext.EvaluationResult = evaluationResult;
     }
 
     public virtual void Analyze(TEncodedSolution[] solutions, double[] qualities, ResultCollection results, IRandom random) { }

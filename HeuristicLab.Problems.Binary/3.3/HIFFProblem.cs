@@ -27,6 +27,7 @@ using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.BinaryVectorEncoding;
+using HeuristicLab.Optimization;
 
 namespace HeuristicLab.Problems.Binary {
   [Item("Hierararchical If and only If problem (HIFF)", "Genome evaluated in nested subsets to see if each subset contains either all 0s or all 1s.")]
@@ -47,7 +48,7 @@ namespace HeuristicLab.Problems.Binary {
       Encoding.Length = 64;
     }
     // In the GECCO paper, Section 4.1
-    public override double Evaluate(BinaryVector individual, IRandom random, CancellationToken cancellationToken) {
+    public override ISingleObjectiveEvaluationResult Evaluate(BinaryVector individual, IRandom random, CancellationToken cancellationToken) {
       int[] level = new int[individual.Length];
       int levelLength = individual.Length;
 
@@ -82,7 +83,8 @@ namespace HeuristicLab.Problems.Binary {
       }
 
       // Convert to percentage of total
-      return (double)total / maximum;
+      var quality = (double)total / maximum;
+      return new SingleObjectiveEvaluationResult(quality);
     }
   }
 }

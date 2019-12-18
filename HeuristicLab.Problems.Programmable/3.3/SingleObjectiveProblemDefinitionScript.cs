@@ -50,11 +50,11 @@ namespace HeuristicLab.Problems.Programmable {
 
     public bool Maximization => CompiledProblemDefinition.Maximization;
 
-    double ISingleObjectiveProblemDefinition<TEncoding, TEncodedSolution>.Evaluate(TEncodedSolution solution, IRandom random) {
+    ISingleObjectiveEvaluationResult ISingleObjectiveProblemDefinition<TEncoding, TEncodedSolution>.Evaluate(TEncodedSolution solution, IRandom random) {
       return CompiledProblemDefinition.Evaluate(solution, random);
     }
 
-    double ISingleObjectiveProblemDefinition<TEncoding, TEncodedSolution>.Evaluate(TEncodedSolution solution, IRandom random, CancellationToken cancellationToken) {
+    ISingleObjectiveEvaluationResult ISingleObjectiveProblemDefinition<TEncoding, TEncodedSolution>.Evaluate(TEncodedSolution solution, IRandom random, CancellationToken cancellationToken) {
       return CompiledProblemDefinition.Evaluate(solution, random, cancellationToken);
     }
 

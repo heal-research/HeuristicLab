@@ -24,13 +24,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.BinaryVectorEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 using HeuristicLab.Random;
 
 
@@ -109,7 +109,8 @@ namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
           solution[i] = random.Next(2) == 1;
         }
 
-        var fitness = Problem.Evaluate(solution, random);
+        var evaluationResult = Problem.Evaluate(solution, random);
+        var fitness = evaluationResult.Quality;
 
         fitness = ImproveToLocalOptimum(Problem, solution, fitness, random);
         if (double.IsNaN(ResultsBestQuality) || Problem.IsBetter(fitness, ResultsBestQuality)) {
@@ -127,7 +128,8 @@ namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
         foreach (var option in options) {
           if (tried.Contains(option)) continue;
           solution[option] = !solution[option];
-          double newFitness = problem.Evaluate(solution, rand);
+          var newEvaluationResult = problem.Evaluate(solution, rand);
+          double newFitness = newEvaluationResult.Quality;
           if (problem.IsBetter(newFitness, fitness)) {
             fitness = newFitness;
             tried.Clear();

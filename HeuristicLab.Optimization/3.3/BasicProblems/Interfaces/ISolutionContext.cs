@@ -32,6 +32,8 @@ namespace HeuristicLab.Optimization {
 
     IEvaluationResult EvaluationResult { get; }
 
+
+    //TODO: make methods generic for get/set additional data
     void SetAdditionalData(string identifier, object o);
     object GetAdditionalData(string identifier);
   }

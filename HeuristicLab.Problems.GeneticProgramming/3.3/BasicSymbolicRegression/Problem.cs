@@ -27,6 +27,7 @@ using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
+using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Problems.DataAnalysis;
 using HeuristicLab.Problems.Instances;
@@ -89,7 +90,7 @@ namespace HeuristicLab.Problems.GeneticProgramming.BasicSymbolicRegression {
     }
 
 
-    public override double Evaluate(ISymbolicExpressionTree tree, IRandom random, CancellationToken cancellationToken) {
+    public override ISingleObjectiveEvaluationResult Evaluate(ISymbolicExpressionTree tree, IRandom random, CancellationToken cancellationToken) {
       // Doesn't use classes from HeuristicLab.Problems.DataAnalysis.Symbolic to make sure that the implementation can be fully understood easily.
       // HeuristicLab.Problems.DataAnalysis.Symbolic would already provide all the necessary functionality (esp. interpreter) but at a much higher complexity.
       // Another argument is that we don't need a reference to HeuristicLab.Problems.DataAnalysis.Symbolic
@@ -102,7 +103,9 @@ namespace HeuristicLab.Problems.GeneticProgramming.BasicSymbolicRegression {
       OnlineCalculatorError errorState;
       var r = OnlinePearsonsRCalculator.Calculate(target, predicted, out errorState);
       if (errorState != OnlineCalculatorError.None) r = 0;
-      return r * r;
+      var quality = r * r;
+
+      return new SingleObjectiveEvaluationResult(quality);
     }
 
     private IEnumerable<double> Interpret(ISymbolicExpressionTree tree, IDataset dataset, IEnumerable<int> rows) {

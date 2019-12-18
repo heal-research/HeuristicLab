@@ -96,7 +96,7 @@ namespace HeuristicLab.Problems.Knapsack {
       RegisterEventHandlers();
     }
 
-    public override double Evaluate(BinaryVector solution, IRandom random, CancellationToken cancellationToken) {
+    public override ISingleObjectiveEvaluationResult Evaluate(BinaryVector solution, IRandom random, CancellationToken cancellationToken) {
       var totalWeight = 0.0;
       var totalValue = 0.0;
       for (var i = 0; i < solution.Length; i++) {
@@ -104,7 +104,8 @@ namespace HeuristicLab.Problems.Knapsack {
         totalWeight += Weights[i];
         totalValue += Values[i];
       }
-      return totalWeight > KnapsackCapacity ? KnapsackCapacity - totalWeight : totalValue;
+      var quality = totalWeight > KnapsackCapacity ? KnapsackCapacity - totalWeight : totalValue;
+      return new SingleObjectiveEvaluationResult(quality);
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {

@@ -123,7 +123,7 @@ namespace HeuristicLab.Problems.PTSP {
       if (data.BestKnownTour != null) {
         try {
           var tour = new Permutation(PermutationTypes.RelativeUndirected, data.BestKnownTour);
-          var tourLength = Evaluate(tour, new MersenneTwister(1));
+          var tourLength = Evaluate(tour, new MersenneTwister(1)).Quality;
           BestKnownSolution = ProbabilisticTSPData.GetSolution(tour, tourLength);
           BestKnownQuality = tourLength;
         } catch (InvalidOperationException) {

@@ -95,7 +95,7 @@ namespace HeuristicLab.Problems.GrammaticalEvolution {
     }
 
     private readonly object syncRoot = new object();
-    public override double Evaluate(IntegerVector solution, IRandom random, CancellationToken cancellationToken) {
+    public override ISingleObjectiveEvaluationResult Evaluate(IntegerVector solution, IRandom random, CancellationToken cancellationToken) {
       var bounds = Encoding.Bounds;
       var len = Encoding.Length;
       var grammar = wrappedAntProblem.Encoding.Grammar;
@@ -112,7 +112,8 @@ namespace HeuristicLab.Problems.GrammaticalEvolution {
       Interpreter interpreter = new Interpreter(tree, World, MaxTimeSteps);
       interpreter.Run();
 
-      return interpreter.FoodEaten;
+      var quality = interpreter.FoodEaten;
+      return new SingleObjectiveEvaluationResult(quality);
     }
 
     public override void Analyze(IntegerVector[] solutions, double[] qualities, ResultCollection results, IRandom random) {

@@ -135,8 +135,9 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
       RegisterEventHandlers();
     }
 
-    public override double Evaluate(Permutation assignment, IRandom random, CancellationToken cancellationToken) {
-      return Evaluate(assignment, cancellationToken);
+    public override ISingleObjectiveEvaluationResult Evaluate(Permutation assignment, IRandom random, CancellationToken cancellationToken) {
+      var quality = Evaluate(assignment, cancellationToken);
+      return new SingleObjectiveEvaluationResult(quality);
     }
 
     public double Evaluate(Permutation assignment, CancellationToken cancellationToken) {

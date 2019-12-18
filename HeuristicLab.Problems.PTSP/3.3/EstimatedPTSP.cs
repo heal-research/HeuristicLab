@@ -28,6 +28,7 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
+using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Problems.Instances;
 using HeuristicLab.Random;
@@ -55,7 +56,7 @@ namespace HeuristicLab.Problems.PTSP {
       get { return RealizationsParameter.Value.Value; }
       set { RealizationsParameter.Value.Value = value; }
     }
-    
+
     private ReadOnlyItemList<BoolArray> RealizationData {
       get { return RealizationDataParameter.Value; }
       set { RealizationDataParameter.Value = value; }
@@ -101,8 +102,9 @@ namespace HeuristicLab.Problems.PTSP {
       return new EstimatedPTSP(this, cloner);
     }
 
-    public override double Evaluate(Permutation tour, IRandom random, CancellationToken cancellationToken) {
-      return Evaluate(tour, ProbabilisticTSPData, RealizationData, cancellationToken);
+    public override ISingleObjectiveEvaluationResult Evaluate(Permutation tour, IRandom random, CancellationToken cancellationToken) {
+      var quality = Evaluate(tour, ProbabilisticTSPData, RealizationData, cancellationToken);
+      return new SingleObjectiveEvaluationResult(quality);
     }
 
     [StorableHook(HookType.AfterDeserialization)]

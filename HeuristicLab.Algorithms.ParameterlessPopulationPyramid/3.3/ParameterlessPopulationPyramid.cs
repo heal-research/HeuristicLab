@@ -213,7 +213,7 @@ namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
       for (int i = 0; i < solution.Length; i++) {
         solution[i] = random.Next(2) == 1;
       }
-      double fitness = tracker.Evaluate(solution, random);
+      double fitness = tracker.Evaluate(solution, random).Quality;
       fitness = HillClimber.ImproveToLocalOptimum(tracker, solution, fitness, random);
       AddIfUnique(solution, 0);
 
@@ -270,8 +270,7 @@ namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
           fitness = iterate();
           ResultsIterations++;
           cancellationToken.ThrowIfCancellationRequested();
-        }
-        finally {
+        } finally {
           ResultsEvaluations = tracker.Evaluations;
           ResultsBestSolution = new BinaryVector(tracker.BestSolution);
           ResultsBestQuality = tracker.BestQuality;

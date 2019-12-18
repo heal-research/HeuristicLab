@@ -36,8 +36,9 @@ namespace HeuristicLab.Optimization {
     where TEncoding : class, IEncoding<TEncodedSolution>
     where TEncodedSolution : class, IEncodedSolution {
 
-    double Evaluate(TEncodedSolution solution, IRandom random);
-    double Evaluate(TEncodedSolution solution, IRandom random, CancellationToken cancellationToken);
+    ISingleObjectiveEvaluationResult Evaluate(TEncodedSolution solution, IRandom random);
+    ISingleObjectiveEvaluationResult Evaluate(TEncodedSolution solution, IRandom random, CancellationToken cancellationToken);
+
     void Evaluate(ISingleObjectiveSolutionContext<TEncodedSolution> solutionContext, IRandom random);
     void Evaluate(ISingleObjectiveSolutionContext<TEncodedSolution> solutionContext, IRandom random, CancellationToken cancellationToken);
 

@@ -26,6 +26,7 @@ using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.BinaryVectorEncoding;
+using HeuristicLab.Optimization;
 
 namespace HeuristicLab.Problems.Binary {
   [Item("One Max Problem", "Represents a problem whose objective is to maximize the number of true values.")]
@@ -47,8 +48,9 @@ namespace HeuristicLab.Problems.Binary {
       return new OneMaxProblem(this, cloner);
     }
 
-    public override double Evaluate(BinaryVector vector, IRandom random, CancellationToken cancellationToken) {
-      return vector.Count(b => b);
+    public override ISingleObjectiveEvaluationResult Evaluate(BinaryVector vector, IRandom random, CancellationToken cancellationToken) {
+      var quality = vector.Count(b => b);
+      return new SingleObjectiveEvaluationResult(quality);
     }
 
     protected override void LengthParameter_ValueChanged(object sender, EventArgs e) {

@@ -92,7 +92,7 @@ namespace HeuristicLab.Problems.GeneticProgramming.LawnMower {
       }
     }
 
-    public override double Evaluate(ISymbolicExpressionTree tree, IRandom random, CancellationToken cancellationToken) {
+    public override ISingleObjectiveEvaluationResult Evaluate(ISymbolicExpressionTree tree, IRandom random, CancellationToken cancellationToken) {
       var length = LawnLengthParameter.Value.Value;
       var width = LawnWidthParameter.Value.Value;
 
@@ -104,7 +104,8 @@ namespace HeuristicLab.Problems.GeneticProgramming.LawnMower {
           if (lawn[i, j]) {
             numberOfMowedCells++;
           }
-      return numberOfMowedCells;
+      var quality = numberOfMowedCells;
+      return new SingleObjectiveEvaluationResult(quality);
     }
   }
 }

@@ -110,7 +110,7 @@ namespace HeuristicLab.Problems.Programmable {
     public override void Evaluate(ISingleObjectiveSolutionContext<TEncodedSolution> solutionContext, IRandom random, CancellationToken cancellationToken) {
       ProblemDefinition.Evaluate(solutionContext, random, cancellationToken);
     }
-    public override double Evaluate(TEncodedSolution individual, IRandom random, CancellationToken cancellationToken) {
+    public override ISingleObjectiveEvaluationResult Evaluate(TEncodedSolution individual, IRandom random, CancellationToken cancellationToken) {
       return ProblemDefinition.Evaluate(individual, random, cancellationToken);
     }
 

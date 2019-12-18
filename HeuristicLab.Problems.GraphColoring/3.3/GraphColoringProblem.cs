@@ -128,9 +128,11 @@ namespace HeuristicLab.Problems.GraphColoring {
       OnReset();
     }
 
-    public override double Evaluate(LinearLinkage lle, IRandom random, CancellationToken cancellationToken) {
+    public override ISingleObjectiveEvaluationResult Evaluate(LinearLinkage lle, IRandom random, CancellationToken cancellationToken) {
       var adjList = adjacencyListParameter.Value;
       var llee = lle.ToEndLinks(); // LLE-e encoding uses the highest indexed member as group number
+
+      double quality = double.NaN;
 
       switch (FitnessFunction) {
         case FitnessFunction.Prioritized: {
@@ -141,7 +143,8 @@ namespace HeuristicLab.Problems.GraphColoring {
             // the number of fractional digits is defined by the maximum number of possible colors (each node its own color)
             var mag = Math.Pow(10, -(int)Math.Ceiling(Math.Log10(llee.Length)));
             // the value is e.g. 4.03 for 4 conflicts with 3 colors (and less than 100 nodes)
-            return conflicts + colors * mag;
+            quality = conflicts + colors * mag;
+            break;
           }
         case FitnessFunction.Penalized: {
             // Fitness function from
@@ -156,10 +159,13 @@ namespace HeuristicLab.Problems.GraphColoring {
               var color2 = llee[adjList[r, 1]];
               if (color1 == color2) colors[color1].ConflictCount++;
             }
-            return 2 * colors.Sum(x => x.Value.ColorCount * x.Value.ConflictCount) - colors.Sum(x => x.Value.ColorCount * x.Value.ColorCount);
+            quality = 2 * colors.Sum(x => x.Value.ColorCount * x.Value.ConflictCount) - colors.Sum(x => x.Value.ColorCount * x.Value.ColorCount);
+            break;
           }
         default: throw new InvalidOperationException(string.Format("Unknown fitness function {0}.", FitnessFunction));
       }
+
+      return new SingleObjectiveEvaluationResult(quality);
     }
 
     private class EvaluationHelper {
