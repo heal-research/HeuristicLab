@@ -20,10 +20,24 @@ namespace HeuristicLab.Problems.Programmable {
       // Add additional initialization code e.g. private variables that you need for evaluating
     }
 
+    //TODO add other methods
+
+    public override void Evaluate(ISingleObjectiveSolutionContext<SOLUTION_CLASS> solutionContext, IRandom random, CancellationToken cancellationToken) {
+      var quality = Evaluate(solutionContext.EncodedSolution, random, cancellationToken);
+      var evaluationResult = new SingleObjectiveEvaluationResult(quality);
+      solutionContext.EvaluationResult = evaluationResult;
+    }
+
     public override double Evaluate(SOLUTION_CLASS solution, IRandom random, CancellationToken cancellationToken) {
       // Use vars.yourVariable to access variables in the variable store i.e. yourVariable
       var quality = 0.0;
       return quality;
+    }
+
+    public override void Analyze(ISingleObjectiveSolutionContext<TEncodedSolution>[] solutionContexts, ResultCollection results, IRandom random) {
+      var solutions = solutionContexts.Select(c => c.EncodedSolution).ToArray();
+      var qualities = solutionContexts.Select(c => c.EvaluationResult.Quality).ToArray();
+      Analyze(solutions, qualities, results, random);
     }
 
     public override void Analyze(SOLUTION_CLASS[] solutions, double[] qualities, ResultCollection results, IRandom random) {

@@ -101,7 +101,7 @@ namespace HeuristicLab.Problems.Programmable {
     protected CompiledMultiObjectiveProblemDefinition(TEncoding encoding)
       : base(encoding) { }
 
-    #region ISingleObjectiveProblemDefinition<TEncoding,TEncodedSolution> Members
+    #region IMultiObjectiveProblemDefinition<TEncoding,TEncodedSolution> Members
     public int Objectives => Maximization.Length;
     public abstract bool[] Maximization { get; }
     public abstract IReadOnlyList<double[]> BestKnownFront { get; }

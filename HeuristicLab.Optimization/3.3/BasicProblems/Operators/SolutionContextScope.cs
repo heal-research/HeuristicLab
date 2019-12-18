@@ -26,12 +26,14 @@ using HeuristicLab.Core;
 
 //TODO: don't derive from NamedItem, this has been done to have a fast working prototype
 namespace HeuristicLab.Optimization {
-  internal class SolutionContextScope<TEncodedSolution> : SolutionContext<TEncodedSolution>, ISolutionScope
+  internal abstract class SolutionContextScope<TEncodedSolution> : SolutionContext<TEncodedSolution>, ISolutionScope
    where TEncodedSolution : class, IEncodedSolution {
-    private readonly IScope scope;
+    protected static string EVALUATION_RESULT_VARIABLE_NAME = "Evaluation Result";
+
+    protected IScope Scope { get; }
 
     public SolutionContextScope(IScope scope, TEncodedSolution solution) : base(solution) {
-      this.scope = scope;
+      Scope = scope;
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -39,22 +41,20 @@ namespace HeuristicLab.Optimization {
     }
 
     IScope IScope.Parent {
-      get { return scope.Parent; }
+      get { return Scope.Parent; }
       set { throw new NotSupportedException(); }
     }
 
-    VariableCollection IScope.Variables => scope.Variables;
-    ScopeList IScope.SubScopes => scope.SubScopes;
+    VariableCollection IScope.Variables => Scope.Variables;
+    ScopeList IScope.SubScopes => Scope.SubScopes;
 
     void IScope.Clear() { throw new NotImplementedException(); }
 
-
-
     #region INamedItem members
-    string INamedItem.Name { get { return scope.Name; } set => throw new NotImplementedException(); }
+    string INamedItem.Name { get { return Scope.Name; } set => throw new NotImplementedException(); }
     bool INamedItem.CanChangeName => false;
 
-    string INamedItem.Description { get { return scope.Description; } set => throw new NotImplementedException(); }
+    string INamedItem.Description { get { return Scope.Description; } set => throw new NotImplementedException(); }
     bool INamedItem.CanChangeDescription => false;
 
     event EventHandler<CancelEventArgs<string>> INamedItem.NameChanging {
@@ -77,7 +77,16 @@ namespace HeuristicLab.Optimization {
   internal class SingleObjectiveSolutionContextScope<TEncodedSolution> : SolutionContextScope<TEncodedSolution>, ISingleObjectiveSolutionScope<TEncodedSolution>
     where TEncodedSolution : class, IEncodedSolution {
 
-    public new ISingleObjectiveEvaluationResult EvaluationResult { get; set; }
+    public new ISingleObjectiveEvaluationResult EvaluationResult {
+      get {
+        return (ISingleObjectiveEvaluationResult)Scope.Variables[EVALUATION_RESULT_VARIABLE_NAME].Value;
+      }
+      set {
+        Scope.Variables.Remove(EVALUATION_RESULT_VARIABLE_NAME);
+        Scope.Variables.Add(new Variable(EVALUATION_RESULT_VARIABLE_NAME, value));
+      }
+    }
+
     public SingleObjectiveSolutionContextScope(IScope scope, TEncodedSolution solution) : base(scope, solution) {
     }
   }
@@ -85,7 +94,15 @@ namespace HeuristicLab.Optimization {
   internal class MultiObjectiveSolutionContextScope<TEncodedSolution> : SolutionContextScope<TEncodedSolution>, IMultiObjectiveSolutionScope<TEncodedSolution>
   where TEncodedSolution : class, IEncodedSolution {
 
-    public new IMultiObjectiveEvaluationResult EvaluationResult { get; set; }
+    public new IMultiObjectiveEvaluationResult EvaluationResult {
+      get {
+        return (IMultiObjectiveEvaluationResult)Scope.Variables[EVALUATION_RESULT_VARIABLE_NAME].Value;
+      }
+      set {
+        Scope.Variables.Remove(EVALUATION_RESULT_VARIABLE_NAME);
+        Scope.Variables.Add(new Variable(EVALUATION_RESULT_VARIABLE_NAME, value));
+      }
+    }
     public MultiObjectiveSolutionContextScope(IScope scope, TEncodedSolution solution) : base(scope, solution) {
     }
   }

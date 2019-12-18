@@ -22,7 +22,7 @@
 
 using System;
 using System.Collections.Generic;
-
+using System.Linq;
 using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -57,9 +57,12 @@ namespace HeuristicLab.Optimization {
     protected SolutionContext(StorableConstructorFlag _) : base(_) { }
 
     public SolutionContext(SolutionContext<TEncodedSolution> original, Cloner cloner) : base(original, cloner) {
-      //TODO clone data dictionary
       EncodedSolution = cloner.Clone(original.EncodedSolution);
       EvaluationResult = cloner.Clone(original.EvaluationResult);
+
+
+      data = original.data.ToDictionary(entry => entry.Key,
+                                        entry => entry.Value is DeepCloneable ? cloner.Clone((DeepCloneable)entry.Value) : entry.Value);
     }
 
     public virtual void SetAdditionalData(string identifier, object o) {

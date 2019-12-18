@@ -81,7 +81,6 @@ namespace HeuristicLab.Optimization {
         var solution = ScopeUtil.GetEncodedSolution(scope, encoding);
         var quality = ((DoubleValue)scope.Variables[QualityParameter.ActualName].Value).Value;
         var solutionContext = new SingleObjectiveSolutionContextScope<TEncodedSolution>(scope, solution);
-        solutionContext.EvaluationResult = new SingleObjectiveEvaluationResult(quality);
         return solutionContext;
       }).ToArray();
 
