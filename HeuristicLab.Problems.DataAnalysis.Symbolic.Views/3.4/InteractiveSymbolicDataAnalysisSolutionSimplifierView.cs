@@ -167,6 +167,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
 
     private void Content_Changed(object sender, EventArgs e) {
       UpdateView();
+      SetEnabledStateOfControls();
     }
 
     protected override void OnContentChanged() {
@@ -185,7 +186,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       cancellationTokenSource.Cancel();
     }
 
-    protected virtual async void UpdateView() {
+    private async void UpdateView() {
       if (Content == null || Content.Model == null || Content.ProblemData == null) return;
       var tree = Content.Model.SymbolicExpressionTree;
       treeChart.Tree = tree.Root.SubtreeCount > 1 ? new SymbolicExpressionTree(tree.Root) : new SymbolicExpressionTree(tree.Root.GetSubtree(0).GetSubtree(0));
@@ -316,10 +317,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
         var tree = (ISymbolicExpressionTree)Content.Model.SymbolicExpressionTree.Clone();
         var newTree = await Task.Run(() => OptimizeConstants(tree, progress));
         await Task.Delay(500); // wait for progressbar to finish animation
-        UpdateModel(newTree); // UpdateModel calls Progress.Finish (via Content_Changed)
-      } catch (Exception) {
+        UpdateModel(newTree);
+      } finally {
         progress.Finish();
-        throw;
       }
     }
   }
