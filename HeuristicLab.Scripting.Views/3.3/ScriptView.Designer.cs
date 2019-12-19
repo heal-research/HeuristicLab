@@ -46,7 +46,6 @@ namespace HeuristicLab.Scripting.Views {
     /// </summary>
     private void InitializeComponent() {
       this.components = new System.ComponentModel.Container();
-      System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ScriptView));
       this.infoTextLabel = new System.Windows.Forms.Label();
       this.imageList = new System.Windows.Forms.ImageList(this.components);
       this.compileButton = new System.Windows.Forms.Button();
