@@ -46,6 +46,7 @@ namespace HeuristicLab.Scripting.Views {
     /// </summary>
     private void InitializeComponent() {
       this.components = new System.ComponentModel.Container();
+      System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ScriptView));
       this.infoTextLabel = new System.Windows.Forms.Label();
       this.imageList = new System.Windows.Forms.ImageList(this.components);
       this.compileButton = new System.Windows.Forms.Button();
@@ -183,6 +184,7 @@ namespace HeuristicLab.Scripting.Views {
       this.errorListView.TabIndex = 0;
       this.errorListView.UseCompatibleStateImageBehavior = false;
       this.errorListView.View = System.Windows.Forms.View.Details;
+      this.errorListView.MouseClick += new System.Windows.Forms.MouseEventHandler(this.errorListView_MouseClick);
       this.errorListView.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.errorListView_MouseDoubleClick);
       // 
       // iconColumnHeader
