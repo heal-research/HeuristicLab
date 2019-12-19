@@ -281,7 +281,7 @@ namespace HeuristicLab.CodeEditor {
 
     public override void ScrollToPosition(int line, int column) {
       var segment = GetSegmentAtLocation(line, column);
-      TextEditor.CaretOffset = segment.Offset + segment.Length;
+      TextEditor.CaretOffset = segment.Offset;
       TextEditor.ScrollToLine(line);
     }
 
