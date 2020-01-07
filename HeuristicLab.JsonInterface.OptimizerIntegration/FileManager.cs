@@ -62,7 +62,7 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
 
       if (openFileDialog.ShowDialog() == DialogResult.OK) {
         try {
-          var content = JCInstantiator.Instantiate(openFileDialog.FileName);
+          var content = JsonTemplateInstantiator.Instantiate(openFileDialog.FileName);
           IView view = MainFormManager.MainForm.ShowContent(content);
           if (view == null)
             ErrorHandling.ShowErrorDialog("There is no view for the loaded item. It cannot be displayed.", new InvalidOperationException("No View Available"));

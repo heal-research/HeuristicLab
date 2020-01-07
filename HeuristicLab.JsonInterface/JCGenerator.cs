@@ -34,26 +34,20 @@ namespace HeuristicLab.JsonInterface {
       // template and save it an JArray incl. all parameters of the JsonItem, 
       // which have parameters aswell
       AddInstantiableIItem(Constants.Algorithm, algorithm, genData);
-      //IsConvertable(algorithm, true);
       if (algorithm.Problem != null) // only when an problem exists
         AddInstantiableIItem(Constants.Problem, algorithm.Problem, genData);
 
       // save the JArray with JsonItems (= IParameterizedItems)
       genData.Template[Constants.Parameters] = genData.JsonItems;
       // serialize template and return string
-      return CustomJsonWriter.Serialize(genData.Template);
+      return SingleLineArrayJsonWriter.Serialize(genData.Template);
     }
     
     #region Helper
-    private static bool IsConvertable(object obj, bool throwException = false) {
-      bool tmp = ConvertableAttribute.IsConvertable(obj);
-      if (throwException && tmp)
-        throw new NotSupportedException($"Type {obj.GetType().GetPrettyName(false)} is not convertable!");
-      return tmp;
-    }
 
     private static void AddInstantiableIItem(string metaDataTagName, IItem item, GenData genData) {
       JsonItem jsonItem = JsonItemConverter.Extract(item);
+      
       genData.Template[Constants.Metadata][metaDataTagName] = item.ItemName;
       PopulateJsonItems(jsonItem, genData);
     }
@@ -61,7 +55,6 @@ namespace HeuristicLab.JsonInterface {
     // serializes ParameterizedItems and saves them in list "JsonItems".
     private static void PopulateJsonItems(JsonItem item, GenData genData) {
       IEnumerable<JsonItem> tmpParameter = item.Children;
-      item.Children = null;
 
       if (item.Value != null || item.Range != null) {
         genData.JsonItems.Add(Serialize(item));

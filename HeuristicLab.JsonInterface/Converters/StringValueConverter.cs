@@ -8,12 +8,13 @@ using HeuristicLab.Data;
 
 namespace HeuristicLab.JsonInterface {
   public class StringValueConverter : BaseConverter {
-    public override void InjectData(IItem item, JsonItem data) =>
-      item.Cast<StringValue>().Value = CastValue<string>(data.Value);
+    public override int Priority => 1;
+    public override Type ConvertableType => typeof(StringValue);
 
-    public override JsonItem ExtractData(IItem value) => 
-      new JsonItem() {
-        Value = value.Cast<StringValue>().Value
-      };
+    public override void InjectData(IItem item, JsonItem data, IJsonItemConverter root) =>
+      ((StringValue)item).Value = CastValue<string>(data.Value);
+
+    public override void Populate(IItem value, JsonItem item, IJsonItemConverter root) =>
+      item.Value = ((StringValue)value).Value;
   }
 }

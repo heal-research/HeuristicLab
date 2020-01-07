@@ -7,7 +7,7 @@ namespace HeuristicLab.JsonInterface {
   /// Custom json writer for own formatting for templates.
   /// It collapses arrays into a single line.
   /// </summary>
-  internal class CustomJsonWriter : JsonTextWriter {
+  internal class SingleLineArrayJsonWriter : JsonTextWriter {
     private bool isRangeArray = false;
     public override void WriteStartArray() {
       
@@ -31,12 +31,12 @@ namespace HeuristicLab.JsonInterface {
       base.WriteEndObject();
     }
 
-    public CustomJsonWriter(TextWriter writer) : base(writer) { }
+    public SingleLineArrayJsonWriter(TextWriter writer) : base(writer) { }
 
     public static string Serialize(JToken token) {
       JsonSerializer serializer = new JsonSerializer();
       StringWriter sw = new StringWriter();
-      CustomJsonWriter writer = new CustomJsonWriter(sw);
+      SingleLineArrayJsonWriter writer = new SingleLineArrayJsonWriter(sw);
       writer.Formatting = Formatting.Indented;
       serializer.Serialize(writer, token);
       return sw.ToString();

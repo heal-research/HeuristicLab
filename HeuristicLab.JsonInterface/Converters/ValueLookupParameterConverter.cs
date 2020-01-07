@@ -7,31 +7,34 @@ using HeuristicLab.Core;
 
 namespace HeuristicLab.JsonInterface {
   public class ValueLookupParameterConverter : ParameterBaseConverter {
-    public override JsonItem ExtractData(IParameter value) {
-      IValueLookupParameter param = value.Cast<IValueLookupParameter>();
+    public override int Priority => 4;
+    public override Type ConvertableType => typeof(IValueLookupParameter);
+
+    public override void Populate(IParameter value, JsonItem item, IJsonItemConverter root) {
+      IValueLookupParameter param = value as IValueLookupParameter;
+      
+      item.Name = value.Name;
+      item.ActualName = param.ActualName;
+
       object actualValue = null;
       IEnumerable<object> actualRange = null;
       if(param.Value != null) {
-        JsonItem tmp = JsonItemConverter.Extract(param.Value);
+        JsonItem tmp = root.Extract(param.Value, root);
+        tmp.Parent = item;
         actualValue = tmp.Value;
         actualRange = tmp.Range;
       } else {
         actualRange = new object[] { GetMinValue(param.DataType), GetMaxValue(param.DataType) };
       }
-
-      return new JsonItem() {
-        Name = value.Name,
-        ActualName = param.ActualName,
-        Value = actualValue,
-        Range = actualRange
-      };
+      item.Value = actualValue;
+      item.Range = actualRange;
     }
 
-    public override void InjectData(IParameter parameter, JsonItem data) {
-      IValueLookupParameter param = parameter.Cast<IValueLookupParameter>();
+    public override void InjectData(IParameter parameter, JsonItem data, IJsonItemConverter root) {
+      IValueLookupParameter param = parameter as IValueLookupParameter;
       param.ActualName = CastValue<string>(data.ActualName);
       if (param.Value != null)
-        JsonItemConverter.Inject(param.Value, data);
+        root.Inject(param.Value, data, root);
     }
   }
 }

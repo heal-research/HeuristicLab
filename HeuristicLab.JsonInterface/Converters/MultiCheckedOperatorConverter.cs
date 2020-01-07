@@ -8,33 +8,33 @@ using HeuristicLab.Core;
 
 namespace HeuristicLab.JsonInterface {
   public class MultiCheckedOperatorConverter : ParameterizedItemConverter {
-    public override JsonItem ExtractData(IItem value) {
-      JsonItem data = base.ExtractData(value);
+    public override int Priority => 3;
+    public override Type ConvertableType => typeof(ICheckedMultiOperator<>);
 
-      if(data.Children == null)
-        data.Children = new List<JsonItem>();
-      dynamic val = value.Cast<dynamic>();
+    public override void Populate(IItem value, JsonItem item, IJsonItemConverter root) {
+      base.Populate(value, item, root);
+
+      dynamic val = value as dynamic;
       foreach (var op in val.Operators) {
-        data.Children.Add(new JsonItem() {
+        item.AddChilds(new JsonItem() {
           Name = op.Name,
           Value = val.Operators.ItemChecked(op),
           Range = new object[] { false, true }
         });
       }
-      return data;
     }
 
-    public override void InjectData(IItem item, JsonItem data) {
-      base.InjectData(item, data);
+    public override void InjectData(IItem item, JsonItem data, IJsonItemConverter root) {
+      base.InjectData(item, data, root);
 
-      dynamic val = item.Cast<dynamic>();
+      dynamic val = item as dynamic;
       foreach (var op in val.Operators)
         val.Operators.SetItemCheckedState(op, GetOperatorState(op.Name, data));
     }
 
     private bool GetOperatorState(string name, JsonItem data) {
       foreach(var op in data.Children) {
-        if (op.Name == name && op.Value is bool) return op.Value.Cast<bool>();
+        if (op.Name == name && op.Value is bool) return (bool)op.Value;
       }
       return false;
     }

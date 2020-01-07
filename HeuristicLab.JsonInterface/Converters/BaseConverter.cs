@@ -10,25 +10,29 @@ using Newtonsoft.Json.Linq;
 namespace HeuristicLab.JsonInterface {
   public abstract class BaseConverter : IJsonItemConverter
   {
-    public void Inject(IItem item, JsonItem data) {
-      InjectData(item, data);
+    public abstract int Priority { get; }
+    public abstract Type ConvertableType { get; }
+
+    public void Inject(IItem item, JsonItem data, IJsonItemConverter root) {
+
+      InjectData(item, data, root);
     }
 
-    public JsonItem Extract(IItem value) {
-      JsonItem data = ExtractData(value);
-      data.Name = string.IsNullOrEmpty(data.Name) ? value.ItemName : data.Name;
+    public JsonItem Extract(IItem value, IJsonItemConverter root) {
+      JsonItem data = new JsonItem() { Name = value.ItemName };
+      Populate(value, data, root);
       return data;
     }
     
-    public abstract void InjectData(IItem item, JsonItem data);
-    public abstract JsonItem ExtractData(IItem value);
+    public abstract void InjectData(IItem item, JsonItem data, IJsonItemConverter root);
+    public abstract void Populate(IItem value, JsonItem item, IJsonItemConverter root);
 
     #region Helper
     protected ValueType CastValue<ValueType>(object obj) {
       if (obj is JToken)
-        return obj.Cast<JToken>().ToObject<ValueType>();
+        return ((JToken)obj).ToObject<ValueType>();
       else if (obj is IConvertible)
-        return Convert.ChangeType(obj, typeof(ValueType)).Cast<ValueType>();
+        return (ValueType)Convert.ChangeType(obj, typeof(ValueType));
       else return (ValueType)obj;
     }
 

@@ -7,13 +7,15 @@ using HeuristicLab.Core;
 
 namespace HeuristicLab.JsonInterface {
   public class LookupParameterConverter : ParameterBaseConverter {
-    public override JsonItem ExtractData(IParameter value) => 
-      new JsonItem() { 
-        Name = value.Name,
-        ActualName = value.Cast<ILookupParameter>().ActualName
-      };
+    public override int Priority => 3;
+    public override Type ConvertableType => typeof(ILookupParameter);
 
-    public override void InjectData(IParameter parameter, JsonItem data) =>
-      parameter.Cast<ILookupParameter>().ActualName = data.ActualName.Cast<string>();
+    public override void Populate(IParameter value, JsonItem item, IJsonItemConverter root) {
+      item.Name = value.Name;
+      item.ActualName = ((ILookupParameter)value).ActualName;
+    } 
+
+    public override void InjectData(IParameter parameter, JsonItem data, IJsonItemConverter root) =>
+      ((ILookupParameter)parameter).ActualName = data.ActualName as string;
   }
 }
