@@ -28,8 +28,8 @@ namespace HeuristicLab.JsonInterface {
     /// </summary>
     /// <param name="templateFile">Template file (json), generated with JCGenerator.</param>
     /// <param name="configFile">Config file (json) for the template.</param>
-    /// <returns>confugrated IAlgorithm object</returns>
-    public static IAlgorithm Instantiate(string templateFile, string configFile = "") {
+    /// <returns>confugrated IOptimizer object</returns>
+    public static IOptimizer Instantiate(string templateFile, string configFile = "") {
       InstData instData = new InstData() {
         Objects = new Dictionary<string, JsonItem>()
       };
@@ -40,13 +40,12 @@ namespace HeuristicLab.JsonInterface {
         instData.Config = JArray.Parse(File.ReadAllText(configFile));
 
       // extract metadata information
-      string algorithmName = instData.Template[Constants.Metadata][Constants.Algorithm].ToString();
-      string problemName = instData.Template[Constants.Metadata][Constants.Problem].ToString();
+      string optimizerName = instData.Template[Constants.Metadata][Constants.Optimizer].ToString();
       string hLFileLocation = instData.Template[Constants.Metadata][Constants.HLFileLocation].ToString();
 
       // deserialize hl file
       ProtoBufSerializer serializer = new ProtoBufSerializer();
-      IAlgorithm algorithm = (IAlgorithm)serializer.Deserialize(hLFileLocation);
+      IOptimizer optimizer = (IOptimizer)serializer.Deserialize(hLFileLocation);
 
       // collect all parameterizedItems from template
       CollectParameterizedItems(instData);
@@ -56,17 +55,12 @@ namespace HeuristicLab.JsonInterface {
         MergeTemplateWithConfig(instData);
 
       // get algorthm data and object
-      JsonItem algorithmData = GetData(algorithmName, instData);
-
-      // get problem data and object
-      JsonItem problemData = GetData(problemName, instData);
+      JsonItem optimizerData = instData.Objects[optimizerName];
 
       // inject configuration
-      JsonItemConverter.Inject(algorithm, algorithmData);
-      if(algorithm.Problem != null)
-        JsonItemConverter.Inject(algorithm.Problem, problemData);
+      JsonItemConverter.Inject(optimizer, optimizerData);
 
-      return algorithm;
+      return optimizer;
     }
 
     #region Helper
