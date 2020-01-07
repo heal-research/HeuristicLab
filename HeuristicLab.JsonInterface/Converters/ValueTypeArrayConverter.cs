@@ -8,18 +8,38 @@ using HeuristicLab.Data;
 using Newtonsoft.Json.Linq;
 
 namespace HeuristicLab.JsonInterface {
-  public class ValueTypeArrayConverter<ArrayType, T> : BaseConverter
+
+  public class IntArrayConverter : ValueTypeArrayConverter<IntArray, int> {
+    public override int Priority => 1;
+    public override Type ConvertableType => typeof(IntArray);
+  }
+
+  public class DoubleArrayConverter : ValueTypeArrayConverter<DoubleArray, double> {
+    public override int Priority => 1;
+    public override Type ConvertableType => typeof(DoubleArray);
+  }
+
+  public class PercentArrayConverter : ValueTypeArrayConverter<PercentArray, double> {
+    public override int Priority => 2;
+    public override Type ConvertableType => typeof(PercentArray);
+  }
+
+  public class BoolArrayConverter : ValueTypeArrayConverter<BoolArray, bool> {
+    public override int Priority => 1;
+    public override Type ConvertableType => typeof(BoolArray);
+  }
+
+  public abstract class ValueTypeArrayConverter<ArrayType, T> : BaseConverter
     where ArrayType : ValueTypeArray<T>
     where T : struct 
   {
-    public override void InjectData(IItem item, JsonItem data) => 
-      CopyArrayData(item.Cast<ArrayType>(), CastValue<T[]>(data.Value));
+    public override void InjectData(IItem item, JsonItem data, IJsonItemConverter root) => 
+      CopyArrayData(((ArrayType)item), CastValue<T[]>(data.Value));
 
-    public override JsonItem ExtractData(IItem value) => 
-      new JsonItem() {
-        Name = "[OverridableParamName]",
-        Value = value.Cast<ArrayType>().CloneAsArray()
-      };
+    public override void Populate(IItem value, JsonItem item, IJsonItemConverter root) {
+      item.Name = "[OverridableParamName]";
+      item.Value = ((ArrayType)value).CloneAsArray();
+    }
 
     #region Helper
     private void CopyArrayData(ArrayType array, T[] data) {

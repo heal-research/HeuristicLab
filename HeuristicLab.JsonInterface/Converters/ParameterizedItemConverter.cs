@@ -7,31 +7,26 @@ using HeuristicLab.Core;
 
 namespace HeuristicLab.JsonInterface {
   public class ParameterizedItemConverter : BaseConverter {
-    public override void InjectData(IItem item, JsonItem data) {
-      IParameterizedItem pItem = item.Cast<IParameterizedItem>();
+    public override int Priority => 2;
+    public override Type ConvertableType => typeof(IParameterizedItem);
+
+    public override void InjectData(IItem item, JsonItem data, IJsonItemConverter root) {
+      IParameterizedItem pItem = item as IParameterizedItem;
 
       if(data.Children != null) {
         foreach (var sp in data.Children)
           if (pItem.Parameters.TryGetValue(sp.Name, out IParameter param))
-            JsonItemConverter.Inject(param, sp);
+            root.Inject(param, sp, root);
       }
     }
 
-    public override JsonItem ExtractData(IItem value) {
-      JsonItem item = new JsonItem();
+    public override void Populate(IItem value, JsonItem item, IJsonItemConverter root) {
       var parameterizedItem = value as IParameterizedItem;
 
       foreach (var param in parameterizedItem.Parameters) {
-        if(!param.Hidden) {
-          JsonItem data = JsonItemConverter.Extract(param);
-          //data.Name = param.Name;
-
-          if (item.Children == null)
-            item.Children = new List<JsonItem>();
-          item.Children.Add(data);
-        }
+        if(!param.Hidden)
+          item.AddChilds(root.Extract(param, root));
       }
-      return item;
     }
   }
 }

@@ -60,22 +60,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Attributes\ConvertableAttribute.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="Converters\RegressionProblemDataConverter.cs" />
     <Compile Include="Converters\ValueLookupParameterConverter.cs" />
     <Compile Include="Converters\ValueRangeConverter.cs" />
-    <Compile Include="CustomJsonWriter.cs" />
-    <Compile Include="Extensions\ObjectExtensions.cs" />
+    <Compile Include="SingleLineArrayJsonWriter.cs" />
     <Compile Include="Extensions\TypeExtensions.cs" />
     <Compile Include="JCGenerator.cs" />
-    <Compile Include="JCInstantiator.cs" />
+    <Compile Include="JsonTemplateInstantiator.cs" />
     <Compile Include="Converters\ConstrainedValueParameterConverter.cs" />
     <Compile Include="Converters\ParameterBaseConverter.cs" />
     <Compile Include="Converters\ParameterizedItemConverter.cs" />
     <Compile Include="Converters\ValueParameterConverter.cs" />
     <Compile Include="Converters\EnumTypeConverter.cs" />
-    <Compile Include="Converters\DummyConverter.cs" />
     <Compile Include="Converters\LookupParameterConverter.cs" />
     <Compile Include="Converters\MultiCheckedOperatorConverter.cs" />
     <Compile Include="Converters\StringValueConverter.cs" />
@@ -83,11 +80,13 @@
     <Compile Include="Converters\BaseConverter.cs" />
     <Compile Include="Converters\ValueTypeMatrixConverter.cs" />
     <Compile Include="Converters\ValueTypeValueConverter.cs" />
+    <Compile Include="JsonItemConverterFactory.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="JsonItem.cs" />
     <Compile Include="Interfaces\IJsonItemConverter.cs" />
     <Compile Include="JsonItemConverter.cs" />
+    <Compile Include="UnsupportedJsonItem.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLab.snk" />

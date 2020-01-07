@@ -45,7 +45,7 @@ namespace Heuristiclab.ConfigStarter {
       alg.Problem = tsp;
 
       File.WriteAllText(@"C:\Workspace\Template.json", JCGenerator.GenerateTemplate(alg));
-      JCInstantiator.Instantiate(@"C:\Workspace\Template.json");
+      JsonTemplateInstantiator.Instantiate(@"C:\Workspace\Template.json");
       /*
       List<ICommandLineArgument> arguments = new List<ICommandLineArgument>();
       arguments.Add(new StartArgument("JsonInterface"));

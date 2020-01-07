@@ -11,119 +11,80 @@ using System.Collections;
 
 namespace HeuristicLab.JsonInterface {
   /// <summary>
-  /// Static class for handling json converters.
+  /// Class for handling json converters.
   /// </summary>
-  public static class JsonItemConverter {
-
-    private struct ConverterPriorityContainer {
-      public IJsonItemConverter Converter { get; set; }
-      public int Priority { get; set; }
-    }
-
-    private static IDictionary<Type, ConverterPriorityContainer> Converters { get; set; } 
-      = new Dictionary<Type, ConverterPriorityContainer>();
+  public class JsonItemConverter : IJsonItemConverter {
     
-    /// <summary>
-    /// Register a converter for a given type and priority.
-    /// </summary>
-    /// <param name="type">The type for which the converter will be selected.</param>
-    /// <param name="converter">The implemented converter.</param>
-    /// <param name="priority">The priority for the converter selection (when multiple converter match for a given type). Higher is better.</param>
-    public static void Register(Type type, IJsonItemConverter converter, int priority) {
-      if (!Converters.ContainsKey(type))
-        Converters.Add(type, new ConverterPriorityContainer() { Converter = converter, Priority = priority });
-    }
+    #region Properties
+    private IDictionary<Type, IJsonItemConverter> Converters { get; set; } 
+      = new Dictionary<Type, IJsonItemConverter>();
 
-    public static void Register(string atticGuid, IJsonItemConverter converter, int priority) =>
-      Register(new Guid(atticGuid), converter, priority);
+    private IDictionary<int, JsonItem> Cache { get; set; }
+      = new Dictionary<int, JsonItem>();
 
-    public static void Register(Guid atticGuid, IJsonItemConverter converter, int priority) {
-      if (Mapper.StaticCache.TryGetType(atticGuid, out Type type)) {
-        Register(type, converter, priority);
-      }
-    }
+    public int Priority => throw new NotImplementedException();
 
-    public static void Register<T>(IJsonItemConverter converter, int priority) => 
-      Register(typeof(T), converter, priority);
+    public Type ConvertableType => throw new NotImplementedException();
+    #endregion
 
     /// <summary>
-    /// Deregister a converter (same object has to be already registered).
-    /// </summary>
-    /// <param name="converter">Converter to deregister.</param>
-    public static void Deregister(IJsonItemConverter converter) {
-      var types = 
-        Converters
-        .Where(x => x.Value.Converter.GetHashCode() == converter.GetHashCode())
-        .Select(x => x.Key);
-      foreach (var x in types)
-        Converters.Remove(x);
-    }
-
-    /// <summary>
-    /// Get a converter for a specific type.
+    /// GetConverter a converter for a specific type.
     /// </summary>
     /// <param name="type">The type for which the converter will be selected.</param>
     /// <returns>An IJsonItemConverter object.</returns>
-    public static IJsonItemConverter Get(Type type) { 
-      IList<ConverterPriorityContainer> possibleConverters = new List<ConverterPriorityContainer>();
+    public IJsonItemConverter GetConverter(Type type) { 
+      IList<IJsonItemConverter> possibleConverters = new List<IJsonItemConverter>();
       
       foreach (var x in Converters)
         if (type.IsEqualTo(x.Key))
           possibleConverters.Add(x.Value);
 
       if(possibleConverters.Count > 0) {
-        ConverterPriorityContainer best = possibleConverters.First();
+        IJsonItemConverter best = possibleConverters.First();
         foreach (var x in possibleConverters) {
           if (x.Priority > best.Priority)
             best = x;
         }
-        return best.Converter;
+        return best;
       }
-      return new DummyConverter();
+      return null;
+    }
+    
+    public void Inject(IItem item, JsonItem data, IJsonItemConverter root) {
+      if(!Cache.ContainsKey(item.GetHashCode())) {
+        IJsonItemConverter converter = GetConverter(item.GetType());
+        if(converter != null) converter.Inject(item, data, root);
+      }
     }
 
-    internal static void Inject(IItem item, JsonItem data) =>
-      Get(item.GetType()).Inject(item, data);
+    public JsonItem Extract(IItem item, IJsonItemConverter root) {
+      int hash = item.GetHashCode();
+      if (Cache.TryGetValue(hash, out JsonItem val))
+        return val;
+      else {
+        IJsonItemConverter converter = GetConverter(item.GetType());
+        if (converter == null) return new UnsupportedJsonItem();
+        JsonItem tmp = GetConverter(item.GetType()).Extract(item, root);
+        Cache.Add(hash, tmp);
+        return tmp;
+      }
+    }
+    
+    public static void Inject(IItem item, JsonItem data) {
+      IJsonItemConverter c = JsonItemConverterFactory.Create();
+      c.Inject(item, data, c);
+    }
 
-    internal static JsonItem Extract(IItem item) => 
-      Get(item.GetType()).Extract(item);
-
+    public static JsonItem Extract(IItem item) {
+      IJsonItemConverter c = JsonItemConverterFactory.Create();
+      return c.Extract(item, c);
+    }
 
     /// <summary>
     /// Static constructor for default converter configuration.
     /// </summary>
-    static JsonItemConverter() {
-      Register<IntValue>(new ValueTypeValueConverter<IntValue, int>(), 1);
-      Register<DoubleValue>(new ValueTypeValueConverter<DoubleValue, double>(), 1);
-      Register<PercentValue>(new ValueTypeValueConverter<PercentValue, double>(), 2);
-      Register<BoolValue>(new ValueTypeValueConverter<BoolValue, bool>(), 1);
-      Register<DateTimeValue>(new ValueTypeValueConverter<DateTimeValue, DateTime>(), 1);
-      Register<StringValue>(new StringValueConverter(), 1);
-
-      Register<IntArray>(new ValueTypeArrayConverter<IntArray, int>(), 1);
-      Register<DoubleArray>(new ValueTypeArrayConverter<DoubleArray, double>(), 1);
-      Register<PercentArray>(new ValueTypeArrayConverter<PercentArray, double>(), 2);
-      Register<BoolArray>(new ValueTypeArrayConverter<BoolArray, bool>(), 1);
-
-      Register<IntMatrix>(new ValueTypeMatrixConverter<IntMatrix, int>(), 1);
-      Register<DoubleMatrix>(new ValueTypeMatrixConverter<DoubleMatrix, double>(), 1);
-      Register<PercentMatrix>(new ValueTypeMatrixConverter<PercentMatrix, double>(), 2);
-      Register<BoolMatrix>(new ValueTypeMatrixConverter<BoolMatrix, bool>(), 1);
-
-      Register<DoubleRange>(new DoubleRangeConverter(), 1);
-      Register<IntRange>(new IntRangeConverter(), 1);
-
-      Register(typeof(EnumValue<>), new EnumTypeConverter(), 1);
-      
-      Register<IValueParameter>(new ValueParameterConverter(), 2);
-      Register<IParameterizedItem>(new ParameterizedItemConverter(), 2);
-      Register<ILookupParameter>(new LookupParameterConverter(), 3);
-      Register<IValueLookupParameter>(new ValueLookupParameterConverter(), 4);
-
-      Register(typeof(IConstrainedValueParameter<>), new ConstrainedValueParameterConverter(), 3);
-      Register(typeof(ICheckedMultiOperator<>), new MultiCheckedOperatorConverter(), 3);
-      
-      Register("EE612297-B1AF-42D2-BF21-AF9A2D42791C", new RegressionProblemDataConverter(), 20);
+    internal JsonItemConverter(IDictionary<Type, IJsonItemConverter> converters) {
+      Converters = converters;
     }
   }
 }

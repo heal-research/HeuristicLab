@@ -10,19 +10,17 @@ using HEAL.Attic;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
-using HeuristicLab.SequentialEngine;
 using Newtonsoft.Json.Linq;
 
 namespace HeuristicLab.JsonInterface {
   /// <summary>
   /// Static class to instantiate an IAlgorithm object with a json interface template and config.
   /// </summary>
-  public static class JCInstantiator {
+  public static class JsonTemplateInstantiator {
     private struct InstData {
       public JToken Template { get; set; }
       public JArray Config { get; set; }
       public IDictionary<string, JsonItem> Objects { get; set; }
-      public IDictionary<string, JsonItem> ResolvedItems { get; set; }
     }
 
     /// <summary>
@@ -33,8 +31,7 @@ namespace HeuristicLab.JsonInterface {
     /// <returns>confugrated IAlgorithm object</returns>
     public static IAlgorithm Instantiate(string templateFile, string configFile = "") {
       InstData instData = new InstData() {
-        Objects = new Dictionary<string, JsonItem>(),
-        ResolvedItems = new Dictionary<string, JsonItem>()
+        Objects = new Dictionary<string, JsonItem>()
       };
 
       // parse template and config files
@@ -53,10 +50,7 @@ namespace HeuristicLab.JsonInterface {
 
       // collect all parameterizedItems from template
       CollectParameterizedItems(instData);
-
-      // rebuild tree with paths
-      RebuildTree(instData);
-
+      
       // if config != null -> merge Template and Config 
       if (instData.Config != null)
         MergeTemplateWithConfig(instData);
@@ -78,43 +72,28 @@ namespace HeuristicLab.JsonInterface {
     #region Helper
     private static void CollectParameterizedItems(InstData instData) {
       foreach (JObject item in instData.Template[Constants.Parameters]) {
-        JsonItem data = JsonItem.BuildJsonItem(item);
-        instData.Objects.Add(data.Path, data);
-      }
-    }
-    
-    private static JsonItem RebuildTreeHelper(IList<JsonItem> col, string name) {
-      JsonItem target = null;
-      foreach (var val in col) {
-        if (val.Name == name)
-          target = val;
-      }
-      if (target == null) {
-        target = new JsonItem() {
-          Name = name,
-          Path = name,
-          Children = new List<JsonItem>()
-        };
-        col.Add(target);
-      }
-      return target;
-    }
-
-    // rebuilds item tree with splitting paths of each jsonitem
-    private static void RebuildTree(InstData instData) {
-      List<JsonItem> values = new List<JsonItem>();
-      foreach (var x in instData.Objects) {
-        string[] pathParts = x.Key.Split('.');
-        JsonItem target = RebuildTreeHelper(values, pathParts[0]);
-
-        for (int i = 1; i < pathParts.Length; ++i) {
-          target = RebuildTreeHelper(target.Children, pathParts[i]);
+        string[] pathParts = item.Property("Path").Value.ToString().Split('.');
+        
+        // rebuilds object tree
+        JsonItem parent = null;
+        StringBuilder partialPath = new StringBuilder();
+        for(int i = 0; i < pathParts.Length-1; ++i) {
+          partialPath.Append(pathParts[i]);
+          JsonItem tmp = null;
+          if (instData.Objects.TryGetValue(partialPath.ToString(), out JsonItem value)) {
+            tmp = value;
+          } else {
+            tmp = new JsonItem() { Name = pathParts[i] };
+            if (parent != null) parent.AddChilds(tmp);
+            instData.Objects.Add(partialPath.ToString(), tmp);
+          }
+          partialPath.Append(".");
+          parent = tmp;
         }
 
-        JsonItem.Merge(target, x.Value);
-      }
-      foreach(var val in values) {
-        instData.ResolvedItems.Add(val.Name, val);
+        JsonItem data = JsonItem.BuildJsonItem(item);
+        parent.AddChilds(data);
+        instData.Objects.Add(data.Path, data);
       }
     }
     
@@ -134,7 +113,7 @@ namespace HeuristicLab.JsonInterface {
 
     private static JsonItem GetData(string key, InstData instData)
     {
-      if (instData.ResolvedItems.TryGetValue(key, out JsonItem value))
+      if (instData.Objects.TryGetValue(key, out JsonItem value))
         return value;
       else
         throw new InvalidDataException($"Type of item '{key}' is not defined!");

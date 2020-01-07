@@ -10,45 +10,36 @@ using HeuristicLab.Data;
 namespace HeuristicLab.JsonInterface {
   public class RegressionProblemDataConverter : BaseConverter {
     private const BindingFlags flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
-    public override JsonItem ExtractData(IItem value) {
-      JsonItem item = new JsonItem() {
-        Path = value.ItemName,
-        Children = new List<JsonItem>()
-      };
-      
+    public override int Priority => 20;
+    public override Type ConvertableType => HEAL.Attic.Mapper.StaticCache.GetType(new Guid("EE612297-B1AF-42D2-BF21-AF9A2D42791C"));
+
+    public override void Populate(IItem value, JsonItem item, IJsonItemConverter root) {      
       dynamic val = (dynamic)value;
       object dataset = (object)val.Dataset;
       dynamic targetVariable = val.TargetVariable;
       FieldInfo dataInfo = dataset.GetType().GetField("storableData", flags);
       // TODO: aufteilen in trainings und test daten abschnitte
-      item.Children.Add(new JsonItem() {
+      item.AddChilds(new JsonItem() {
         Name = "Dataset",
-        Value = dataInfo.GetValue(dataset),
-        Path = "Dataset"
+        Value = dataInfo.GetValue(dataset)
       });
 
       IEnumerable<StringValue> variables = (IEnumerable<StringValue>)val.InputVariables;
-      item.Children.Add(new JsonItem() {
+      item.AddChilds(new JsonItem() {
         Name = "TargetVariable",
         Value = (object)targetVariable,
-        Range = variables.Select(x => x.Value),
-        Path = "TargetVariable"
+        Range = variables.Select(x => x.Value)
       });
 
 
-      item.Children.Add(new JsonItem() {
+      item.AddChilds(new JsonItem() {
         Name = "AllowedInputVariables",
         Value = (object)val.AllowedInputVariables,
-        Range = variables.Select(x => x.Value),
-        Path = "AllowedInputVariables"
+        Range = variables.Select(x => x.Value)
       });
-
-      item.UpdatePath();
-
-      return item;
     }
 
-    public override void InjectData(IItem item, JsonItem data) {
+    public override void InjectData(IItem item, JsonItem data, IJsonItemConverter root) {
       // TODO: inject data
       throw new NotImplementedException();
     }
