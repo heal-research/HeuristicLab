@@ -25,7 +25,7 @@ namespace HeuristicLab.JsonInterface {
     }
     
     public abstract void InjectData(IItem item, JsonItem data, IJsonItemConverter root);
-    public abstract void Populate(IItem value, JsonItem item, IJsonItemConverter root);
+    public abstract void Populate(IItem value, JsonItem item, IJsonItemConverter root); // TODO: populate?
 
     #region Helper
     protected ValueType CastValue<ValueType>(object obj) {

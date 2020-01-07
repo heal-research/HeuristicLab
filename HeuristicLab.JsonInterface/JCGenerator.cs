@@ -19,7 +19,7 @@ namespace HeuristicLab.JsonInterface {
       public JArray JsonItems { get; set; }
     }
     
-    public static string GenerateTemplate(IAlgorithm algorithm) {
+    public static string GenerateTemplate(IOptimizer optimizer) {
       // data container
       GenData genData = new GenData() {
         Template = JObject.Parse(Constants.Template),
@@ -27,15 +27,13 @@ namespace HeuristicLab.JsonInterface {
       };
 
       ProtoBufSerializer serializer = new ProtoBufSerializer();
-      serializer.Serialize(algorithm, @"C:\Workspace\template.hl");
+      serializer.Serialize(optimizer, @"C:\Workspace\template.hl");
       genData.Template[Constants.Metadata][Constants.HLFileLocation] = @"C:\Workspace\template.hl";
 
       // extract JsonItem, save the name in the metadata section of the 
       // template and save it an JArray incl. all parameters of the JsonItem, 
       // which have parameters aswell
-      AddInstantiableIItem(Constants.Algorithm, algorithm, genData);
-      if (algorithm.Problem != null) // only when an problem exists
-        AddInstantiableIItem(Constants.Problem, algorithm.Problem, genData);
+      AddInstantiableIItem(Constants.Optimizer, optimizer, genData);
 
       // save the JArray with JsonItems (= IParameterizedItems)
       genData.Template[Constants.Parameters] = genData.JsonItems;

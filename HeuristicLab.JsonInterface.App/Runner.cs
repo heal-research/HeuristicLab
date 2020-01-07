@@ -10,27 +10,27 @@ using HeuristicLab.Optimization;
 namespace HeuristicLab.JsonInterface.App {
   internal static class Runner {
     internal static void Run(string template, string config, string outputFile = @"C:\Workspace\test.txt") {
-      IAlgorithm alg = JsonTemplateInstantiator.Instantiate(template, config);
+      IOptimizer optimizer = JsonTemplateInstantiator.Instantiate(template, config);
   
-      Task task = alg.StartAsync();
+      Task task = optimizer.StartAsync();
       while(!task.IsCompleted) {
-        WriteResultsToFile(outputFile, alg);
+        WriteResultsToFile(outputFile, optimizer);
         Thread.Sleep(100);
       }
-      WriteResultsToFile(outputFile, alg);
+      WriteResultsToFile(outputFile, optimizer);
     }
 
-    private static void WriteResultsToFile(string file, IAlgorithm optimizer) =>
+    private static void WriteResultsToFile(string file, IOptimizer optimizer) =>
       File.WriteAllText(file, FetchResults(optimizer));
 
-    private static string FetchResults(IAlgorithm optimizer) {
+    private static string FetchResults(IOptimizer optimizer) {
       StringBuilder sb = new StringBuilder();
-      //foreach (var run in optimizer.Runs) {
-        //sb.AppendLine($"--- {run.ToString()} ---");
-        foreach (var res in optimizer.Results) {
-          sb.AppendLine($"{res.Name}: {res.Value}");
+      foreach (var run in optimizer.Runs) {
+        sb.AppendLine($"--- {run.ToString()} ---");
+        foreach (var res in run.Results) {
+          sb.AppendLine($"{res.Key}: {res.Value}");
         }
-      //}
+      }
       return sb.ToString();
     }
   }
