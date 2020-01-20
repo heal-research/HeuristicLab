@@ -44,7 +44,7 @@ namespace HeuristicLab.JsonInterface {
     protected object GetMaxValue(Type t) {
       TypeCode typeCode = Type.GetTypeCode(t);
 
-      if (typeof(ValueType).IsEqualTo(typeof(PercentValue)))
+      if (t.IsEqualTo(typeof(PercentValue)))
         return 1.0d;
 
       switch (typeCode) {
@@ -66,7 +66,7 @@ namespace HeuristicLab.JsonInterface {
     protected object GetMinValue(Type t) {
       TypeCode typeCode = Type.GetTypeCode(t);
 
-      if (typeof(ValueType).IsEqualTo(typeof(PercentValue)))
+      if (t.IsEqualTo(typeof(PercentValue)))
         return 0.0d;
 
       switch (typeCode) {

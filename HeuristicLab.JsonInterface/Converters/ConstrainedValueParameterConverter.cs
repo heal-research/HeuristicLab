@@ -45,7 +45,8 @@ namespace HeuristicLab.JsonInterface {
       foreach(var x in values) {
         if (x is IParameterizedItem) {
           JsonItem tmp = JsonItemConverter.Extract(x);
-          list.Add(tmp);
+          if(!(tmp is UnsupportedJsonItem))
+            list.Add(tmp);
         }
       }
       return list.Count == 0 ? null : list;

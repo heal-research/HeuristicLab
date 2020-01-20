@@ -24,8 +24,12 @@ namespace HeuristicLab.JsonInterface {
       var parameterizedItem = value as IParameterizedItem;
 
       foreach (var param in parameterizedItem.Parameters) {
-        if(!param.Hidden)
-          item.AddChilds(root.Extract(param, root));
+        if (!param.Hidden) {
+          JsonItem tmp = root.Extract(param, root);
+          if(!(tmp is UnsupportedJsonItem))
+            item.AddChilds(tmp);
+        }
+          
       }
     }
   }

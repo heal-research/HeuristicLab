@@ -109,8 +109,6 @@ namespace HeuristicLab.JsonInterface {
     #endregion
 
     #region Helper
-
-
     protected bool IsInRange() {
       bool b1 = true, b2 = true;
       if (Value is IEnumerable && !(Value is string)) {

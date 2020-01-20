@@ -37,8 +37,33 @@
     <AssemblyOriginatorKeyFile>HeuristicLab.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="HeuristicLab.Analysis-3.3, Version=3.3.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\bin\HeuristicLab.Analysis-3.3.dll</HintPath>
+    </Reference>
+    <Reference Include="HeuristicLab.Analysis.Views-3.3, Version=3.3.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\bin\HeuristicLab.Analysis.Views-3.3.dll</HintPath>
+    </Reference>
+    <Reference Include="HeuristicLab.Collections-3.3, Version=3.3.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\bin\HeuristicLab.Collections-3.3.dll</HintPath>
+    </Reference>
+    <Reference Include="HeuristicLab.Core.Views-3.3, Version=3.3.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\bin\HeuristicLab.Core.Views-3.3.dll</HintPath>
+    </Reference>
+    <Reference Include="HeuristicLab.Data-3.3, Version=3.3.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\bin\HeuristicLab.Data-3.3.dll</HintPath>
+    </Reference>
+    <Reference Include="HeuristicLab.Optimization.Views-3.3, Version=3.3.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\bin\HeuristicLab.Optimization.Views-3.3.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -48,7 +73,49 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Shared\JsonItemBaseControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Shared\JsonItemBaseControl.Designer.cs">
+      <DependentUpon>JsonItemBaseControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ExportJsonDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\ExportJsonDialog.Designer.cs">
+      <DependentUpon>ExportJsonDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="FileManager.cs" />
+    <Compile Include="Views\JsonItemBoolControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\JsonItemBoolControl.Designer.cs">
+      <DependentUpon>JsonItemBoolControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\JsonItemRangeControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\JsonItemRangeControl.Designer.cs">
+      <DependentUpon>JsonItemRangeControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\JsonItemValueControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\JsonItemValueControl.Designer.cs">
+      <DependentUpon>JsonItemValueControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\JsonItemValidValuesControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\JsonItemValidValuesControl.Designer.cs">
+      <DependentUpon>JsonItemValidValuesControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ViewModels\JsonItemVM.cs" />
     <Compile Include="MenuItems\ImportJsonTemplateMenuItem.cs" />
     <Compile Include="MenuItems\ExportJsonTemplateMenuItem.cs" />
     <Compile Include="Plugin.cs" />
@@ -92,6 +159,31 @@
       <Name>HeuristicLab.PluginInfrastructure-3.3</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Shared\JsonItemBaseControl.resx">
+      <DependentUpon>JsonItemBaseControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\ExportJsonDialog.resx">
+      <DependentUpon>ExportJsonDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\JsonItemBoolControl.resx">
+      <DependentUpon>JsonItemBoolControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\JsonItemRangeControl.resx">
+      <DependentUpon>JsonItemRangeControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\JsonItemValueControl.resx">
+      <DependentUpon>JsonItemValueControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\JsonItemValidValuesControl.resx">
+      <DependentUpon>JsonItemValidValuesControl.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>set Path=%25Path%25;$(ProjectDir);$(SolutionDir)

@@ -20,12 +20,13 @@ namespace HeuristicLab.JsonInterface {
       item.Name = value.Name;
       if (value.ActualValue != null) {
         JsonItem tmp = root.Extract(value.ActualValue, root);
-        if(tmp.Name == "[OverridableParamName]") {
-          tmp.Name = value.Name;
-          JsonItem.Merge(item, tmp);
+        if(!(tmp is UnsupportedJsonItem)) {
+          if (tmp.Name == "[OverridableParamName]") {
+            tmp.Name = value.Name;
+            JsonItem.Merge(item, tmp);
+          } else
+            item.AddChilds(tmp);
         }
-        else
-          item.AddChilds(tmp);
       }
     }
   }
