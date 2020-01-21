@@ -28,13 +28,8 @@
       this.textBoxValueFrom = new System.Windows.Forms.TextBox();
       this.label4 = new System.Windows.Forms.Label();
       this.label2 = new System.Windows.Forms.Label();
-      this.textBoxRangeTo = new System.Windows.Forms.TextBox();
-      this.textBoxRangeFrom = new System.Windows.Forms.TextBox();
-      this.label5 = new System.Windows.Forms.Label();
-      this.label6 = new System.Windows.Forms.Label();
-      this.groupBox2 = new System.Windows.Forms.GroupBox();
+      this.numericRangeControl1 = new HeuristicLab.JsonInterface.OptimizerIntegration.Shared.NumericRangeControl();
       this.groupBox1.SuspendLayout();
-      this.groupBox2.SuspendLayout();
       this.SuspendLayout();
       // 
       // groupBox1
@@ -45,7 +40,7 @@
       this.groupBox1.Controls.Add(this.textBoxValueFrom);
       this.groupBox1.Controls.Add(this.label4);
       this.groupBox1.Controls.Add(this.label2);
-      this.groupBox1.Location = new System.Drawing.Point(9, 81);
+      this.groupBox1.Location = new System.Drawing.Point(9, 75);
       this.groupBox1.Name = "groupBox1";
       this.groupBox1.Size = new System.Drawing.Size(487, 64);
       this.groupBox1.TabIndex = 17;
@@ -92,75 +87,26 @@
       this.label2.TabIndex = 0;
       this.label2.Text = "From";
       // 
-      // textBoxRangeTo
+      // numericRangeControl1
       // 
-      this.textBoxRangeTo.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-      this.textBoxRangeTo.Location = new System.Drawing.Point(249, 36);
-      this.textBoxRangeTo.Name = "textBoxRangeTo";
-      this.textBoxRangeTo.Size = new System.Drawing.Size(230, 20);
-      this.textBoxRangeTo.TabIndex = 3;
-      this.textBoxRangeTo.Leave += new System.EventHandler(this.textBoxRangeTo_Leave);
-      // 
-      // textBoxRangeFrom
-      // 
-      this.textBoxRangeFrom.Location = new System.Drawing.Point(10, 36);
-      this.textBoxRangeFrom.Name = "textBoxRangeFrom";
-      this.textBoxRangeFrom.Size = new System.Drawing.Size(230, 20);
-      this.textBoxRangeFrom.TabIndex = 2;
-      this.textBoxRangeFrom.Leave += new System.EventHandler(this.textBoxRangeFrom_Leave);
-      // 
-      // label5
-      // 
-      this.label5.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-      this.label5.AutoSize = true;
-      this.label5.Location = new System.Drawing.Point(246, 20);
-      this.label5.Name = "label5";
-      this.label5.Size = new System.Drawing.Size(20, 13);
-      this.label5.TabIndex = 1;
-      this.label5.Text = "To";
-      // 
-      // label6
-      // 
-      this.label6.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-      this.label6.AutoSize = true;
-      this.label6.Location = new System.Drawing.Point(7, 20);
-      this.label6.Name = "label6";
-      this.label6.Size = new System.Drawing.Size(30, 13);
-      this.label6.TabIndex = 0;
-      this.label6.Text = "From";
-      // 
-      // groupBox2
-      // 
-      this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-      this.groupBox2.Controls.Add(this.textBoxRangeTo);
-      this.groupBox2.Controls.Add(this.textBoxRangeFrom);
-      this.groupBox2.Controls.Add(this.label5);
-      this.groupBox2.Controls.Add(this.label6);
-      this.groupBox2.Location = new System.Drawing.Point(9, 151);
-      this.groupBox2.Name = "groupBox2";
-      this.groupBox2.Size = new System.Drawing.Size(487, 64);
-      this.groupBox2.TabIndex = 18;
-      this.groupBox2.TabStop = false;
-      this.groupBox2.Text = "Range";
+      this.numericRangeControl1.Location = new System.Drawing.Point(9, 145);
+      this.numericRangeControl1.Name = "numericRangeControl1";
+      this.numericRangeControl1.Size = new System.Drawing.Size(487, 112);
+      this.numericRangeControl1.TabIndex = 18;
+      this.numericRangeControl1.Load += new System.EventHandler(this.numericRangeControl1_Load);
       // 
       // JsonItemRangeControl
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.Controls.Add(this.groupBox2);
+      this.Controls.Add(this.numericRangeControl1);
       this.Controls.Add(this.groupBox1);
       this.Name = "JsonItemRangeControl";
-      this.Size = new System.Drawing.Size(500, 220);
+      this.Size = new System.Drawing.Size(500, 262);
       this.Controls.SetChildIndex(this.groupBox1, 0);
-      this.Controls.SetChildIndex(this.groupBox2, 0);
+      this.Controls.SetChildIndex(this.numericRangeControl1, 0);
       this.groupBox1.ResumeLayout(false);
       this.groupBox1.PerformLayout();
-      this.groupBox2.ResumeLayout(false);
-      this.groupBox2.PerformLayout();
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -173,10 +119,6 @@
     private System.Windows.Forms.TextBox textBoxValueFrom;
     private System.Windows.Forms.Label label4;
     private System.Windows.Forms.Label label2;
-    private System.Windows.Forms.TextBox textBoxRangeTo;
-    private System.Windows.Forms.TextBox textBoxRangeFrom;
-    private System.Windows.Forms.Label label5;
-    private System.Windows.Forms.Label label6;
-    private System.Windows.Forms.GroupBox groupBox2;
+    private Shared.NumericRangeControl numericRangeControl1;
   }
 }

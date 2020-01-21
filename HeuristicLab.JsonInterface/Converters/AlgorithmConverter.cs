@@ -23,6 +23,13 @@ namespace HeuristicLab.JsonInterface.Converters {
     public override void Populate(IItem value, JsonItem item, IJsonItemConverter root) {
       base.Populate(value, item, root);
       IAlgorithm algorithm = value as IAlgorithm;
+      foreach(var res in algorithm.Results) {
+        item.AddChilds(new ResultItem() { 
+          Name = res.Name, 
+          Value = true, 
+          Range = new object[] { true, false } 
+        });
+      }
       item.AddChilds(root.Extract(algorithm.Problem, root));
     }
   }

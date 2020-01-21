@@ -34,31 +34,18 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
     }
 
     private void SetValue() {
-      if (!string.IsNullOrWhiteSpace(textBoxRangeFrom.Text))
+      if (!string.IsNullOrWhiteSpace(textBoxValueFrom.Text))
         value[0] = Parse(textBoxValueFrom.Text);
       else
         value[0] = ((Array)VM.Item.Value).GetValue(0);
 
-      if (!string.IsNullOrWhiteSpace(textBoxRangeTo.Text))
+      if (!string.IsNullOrWhiteSpace(textBoxValueTo.Text))
         value[1] = Parse(textBoxValueTo.Text);
       else
         value[1] = ((Array)VM.Item.Value).GetValue(1);
       VM.Item.Value = value;
     }
-
-    private void SetRange() {
-      if (!string.IsNullOrWhiteSpace(textBoxRangeFrom.Text))
-        range[0] = Parse(textBoxRangeFrom.Text);
-      else
-        range[0] = VM.Item.Range.First();
-
-      if (!string.IsNullOrWhiteSpace(textBoxRangeTo.Text))
-        range[1] = Parse(textBoxRangeTo.Text);
-      else
-        range[1] = VM.Item.Range.Last();
-      VM.Item.Range = range;
-    }
-
+    
     private void textBoxValueFrom_Leave(object sender, EventArgs e) {
       SetValue();
     }
@@ -67,12 +54,9 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
       SetValue();
     }
 
-    private void textBoxRangeFrom_Leave(object sender, EventArgs e) {
-      SetRange();
-    }
-
-    private void textBoxRangeTo_Leave(object sender, EventArgs e) {
-      SetRange();
+    private void numericRangeControl1_Load(object sender, EventArgs e) {
+      numericRangeControl1.IsDouble = isDouble;
+      numericRangeControl1.VM = VM;
     }
   }
 }

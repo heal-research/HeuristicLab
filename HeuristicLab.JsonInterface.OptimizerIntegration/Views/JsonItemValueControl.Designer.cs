@@ -24,91 +24,51 @@
     /// </summary>
     private void InitializeComponent() {
       this.textBoxValue = new System.Windows.Forms.TextBox();
-      this.groupBox1 = new System.Windows.Forms.GroupBox();
-      this.textBoxTo = new System.Windows.Forms.TextBox();
-      this.textBoxFrom = new System.Windows.Forms.TextBox();
-      this.label4 = new System.Windows.Forms.Label();
       this.label2 = new System.Windows.Forms.Label();
-      this.groupBox1.SuspendLayout();
+      this.numericRangeControl1 = new HeuristicLab.JsonInterface.OptimizerIntegration.Shared.NumericRangeControl();
       this.SuspendLayout();
       // 
       // textBoxValue
       // 
       this.textBoxValue.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.textBoxValue.Location = new System.Drawing.Point(92, 81);
+      this.textBoxValue.Location = new System.Drawing.Point(92, 75);
       this.textBoxValue.Name = "textBoxValue";
-      this.textBoxValue.Size = new System.Drawing.Size(402, 20);
+      this.textBoxValue.Size = new System.Drawing.Size(404, 20);
       this.textBoxValue.TabIndex = 14;
       this.textBoxValue.Leave += new System.EventHandler(this.textBoxValue_Leave);
       // 
-      // groupBox1
-      // 
-      this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-      this.groupBox1.Controls.Add(this.textBoxTo);
-      this.groupBox1.Controls.Add(this.textBoxFrom);
-      this.groupBox1.Controls.Add(this.label4);
-      this.groupBox1.Controls.Add(this.label2);
-      this.groupBox1.Location = new System.Drawing.Point(9, 107);
-      this.groupBox1.Name = "groupBox1";
-      this.groupBox1.Size = new System.Drawing.Size(487, 64);
-      this.groupBox1.TabIndex = 15;
-      this.groupBox1.TabStop = false;
-      this.groupBox1.Text = "Range";
-      // 
-      // textBoxTo
-      // 
-      this.textBoxTo.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-      this.textBoxTo.Location = new System.Drawing.Point(249, 36);
-      this.textBoxTo.Name = "textBoxTo";
-      this.textBoxTo.Size = new System.Drawing.Size(230, 20);
-      this.textBoxTo.TabIndex = 3;
-      this.textBoxTo.Leave += new System.EventHandler(this.textBoxTo_Leave);
-      // 
-      // textBoxFrom
-      // 
-      this.textBoxFrom.Location = new System.Drawing.Point(10, 36);
-      this.textBoxFrom.Name = "textBoxFrom";
-      this.textBoxFrom.Size = new System.Drawing.Size(230, 20);
-      this.textBoxFrom.TabIndex = 2;
-      this.textBoxFrom.Leave += new System.EventHandler(this.textBoxFrom_Leave);
-      // 
-      // label4
-      // 
-      this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-      this.label4.AutoSize = true;
-      this.label4.Location = new System.Drawing.Point(246, 20);
-      this.label4.Name = "label4";
-      this.label4.Size = new System.Drawing.Size(20, 13);
-      this.label4.TabIndex = 1;
-      this.label4.Text = "To";
-      // 
       // label2
       // 
-      this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
       this.label2.AutoSize = true;
-      this.label2.Location = new System.Drawing.Point(7, 20);
+      this.label2.Location = new System.Drawing.Point(6, 78);
       this.label2.Name = "label2";
-      this.label2.Size = new System.Drawing.Size(30, 13);
-      this.label2.TabIndex = 0;
-      this.label2.Text = "From";
+      this.label2.Size = new System.Drawing.Size(34, 13);
+      this.label2.TabIndex = 15;
+      this.label2.Text = "Value";
+      // 
+      // numericRangeControl1
+      // 
+      this.numericRangeControl1.IsDouble = false;
+      this.numericRangeControl1.Location = new System.Drawing.Point(9, 101);
+      this.numericRangeControl1.Name = "numericRangeControl1";
+      this.numericRangeControl1.Size = new System.Drawing.Size(487, 112);
+      this.numericRangeControl1.TabIndex = 16;
+      this.numericRangeControl1.VM = null;
+      this.numericRangeControl1.Load += new System.EventHandler(this.numericRangeControl1_Load);
       // 
       // JsonItemValueControl
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.Controls.Add(this.groupBox1);
+      this.Controls.Add(this.numericRangeControl1);
+      this.Controls.Add(this.label2);
       this.Controls.Add(this.textBoxValue);
       this.Name = "JsonItemValueControl";
-      this.Size = new System.Drawing.Size(500, 177);
+      this.Size = new System.Drawing.Size(500, 220);
       this.Controls.SetChildIndex(this.textBoxValue, 0);
-      this.Controls.SetChildIndex(this.groupBox1, 0);
-      this.groupBox1.ResumeLayout(false);
-      this.groupBox1.PerformLayout();
+      this.Controls.SetChildIndex(this.label2, 0);
+      this.Controls.SetChildIndex(this.numericRangeControl1, 0);
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -117,10 +77,7 @@
     #endregion
 
     private System.Windows.Forms.TextBox textBoxValue;
-    private System.Windows.Forms.GroupBox groupBox1;
-    private System.Windows.Forms.TextBox textBoxTo;
-    private System.Windows.Forms.TextBox textBoxFrom;
-    private System.Windows.Forms.Label label4;
     private System.Windows.Forms.Label label2;
+    private Shared.NumericRangeControl numericRangeControl1;
   }
 }

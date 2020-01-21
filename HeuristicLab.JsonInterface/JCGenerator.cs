@@ -19,6 +19,7 @@ namespace HeuristicLab.JsonInterface {
     private IList<JsonItem> JsonItems { get; set; }
     private IOptimizer Optimizer { get; set; }
 
+    
     public string GenerateTemplate(IOptimizer optimizer) {
       // data container
       JArrayItems = new JArray();
@@ -32,7 +33,6 @@ namespace HeuristicLab.JsonInterface {
       // template and save it an JArray incl. all parameters of the JsonItem, 
       // which have parameters aswell
       AddIItem(optimizer);
-
       // save the JArray with JsonItems (= IParameterizedItems)
       Template[Constants.Parameters] = JArrayItems;
       // serialize template and return string
@@ -44,11 +44,48 @@ namespace HeuristicLab.JsonInterface {
       serializer.Serialize(Optimizer, @"C:\Workspace\template.hl");
       Template[Constants.Metadata][Constants.HLFileLocation] = @"C:\Workspace\template.hl";
 
+      JArray ResultItems = new JArray();
+
       JArrayItems = new JArray();
       foreach (var item in items) {
-        JArrayItems.Add(Serialize(item));
+        if (item is ResultItem)
+          ResultItems.Add(Serialize(item));
+        else
+          JArrayItems.Add(Serialize(item));
       }
       Template[Constants.Parameters] = JArrayItems;
+      Template[Constants.ActivatedResults] = ResultItems;
+
+      // serialize template and return string
+      return SingleLineArrayJsonWriter.Serialize(Template);
+    }
+
+    public string GenerateTemplate(JsonItem rootItem, IOptimizer optimizer) {
+      // data container
+      Template = JObject.Parse(Constants.Template);
+      JsonItems = new List<JsonItem>();
+
+      // extract JsonItem, save the name in the metadata section of the 
+      // template and save it an JArray incl. all parameters of the JsonItem, 
+      // which have parameters aswell
+      Template[Constants.Metadata][Constants.Optimizer] = optimizer.Name;
+      PopulateJsonItems(rootItem);
+
+      ProtoBufSerializer serializer = new ProtoBufSerializer();
+      serializer.Serialize(Optimizer, @"C:\Workspace\template.hl");
+      Template[Constants.Metadata][Constants.HLFileLocation] = @"C:\Workspace\template.hl";
+
+      JArray ResultItems = new JArray();
+
+      JArrayItems = new JArray();
+      foreach (var item in JsonItems) {
+        if (item is ResultItem)
+          ResultItems.Add(Serialize(item));
+        else
+          JArrayItems.Add(Serialize(item));
+      }
+      Template[Constants.Parameters] = JArrayItems;
+      Template[Constants.ActivatedResults] = ResultItems;
 
       // serialize template and return string
       return SingleLineArrayJsonWriter.Serialize(Template);
@@ -80,8 +117,8 @@ namespace HeuristicLab.JsonInterface {
     // serializes ParameterizedItems and saves them in list "JsonItems".
     private void PopulateJsonItems(JsonItem item) {
       IEnumerable<JsonItem> tmpParameter = item.Children;
-
-      if (item.Value != null || item.Range != null) {
+      
+      if (item.Value != null || item.Range != null || item is ResultItem || item.ActualName != null) {
         JsonItems.Add(item);
       }
 
