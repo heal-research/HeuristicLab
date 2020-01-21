@@ -19,7 +19,6 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
     public JsonItemBaseControl(JsonItemVM vm) {
       InitializeComponent();
       VM = vm;
-      labelPath.Text = VM.Item.Path;
       checkBoxActive.Checked = VM.Selected;
       textBoxName.Text = VM.Item.Name;
       if (string.IsNullOrWhiteSpace(VM.Item.ActualName))
