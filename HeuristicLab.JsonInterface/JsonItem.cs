@@ -13,20 +13,21 @@ namespace HeuristicLab.JsonInterface {
   /// <summary>
   /// Main data class for json interface.
   /// </summary>
-  public class JsonItem {
-    public class JsonItemValidator {
+  public class JsonItem : IJsonItem {
+
+    public class JsonItemValidator : IJsonItemValidator {
       private IDictionary<int, bool> Cache = new Dictionary<int, bool>();
       private JsonItem Root { get; set; }
       public JsonItemValidator(JsonItem root) {
         Root = root;
       }
 
-      public bool Validate(ref IList<JsonItem> faultyItems) {
-        faultyItems = new List<JsonItem>();
+      public bool Validate(ref IList<IJsonItem> faultyItems) {
+        faultyItems = new List<IJsonItem>();
         return ValidateHelper(Root, ref faultyItems);
       }
 
-      private bool ValidateHelper(JsonItem item, ref IList<JsonItem> faultyItems) {
+      private bool ValidateHelper(JsonItem item, ref IList<IJsonItem> faultyItems) {
         int hash = item.GetHashCode();
         if (Cache.TryGetValue(hash, out bool r))
           return r;
@@ -37,7 +38,7 @@ namespace HeuristicLab.JsonInterface {
         if (!res) faultyItems.Add(item);
         Cache.Add(hash, res);
         foreach (var child in item.Children)
-          res = res && ValidateHelper(child, ref faultyItems);
+          res = res && ValidateHelper(child as JsonItem, ref faultyItems);
         return res;
       }
     }
@@ -46,7 +47,7 @@ namespace HeuristicLab.JsonInterface {
 
     public virtual string Path {
       get {
-        JsonItem tmp = Parent;
+        IJsonItem tmp = Parent;
         StringBuilder builder = new StringBuilder(this.Name);
         while(tmp != null) {
           builder.Insert(0, tmp.Name + ".");
@@ -57,10 +58,10 @@ namespace HeuristicLab.JsonInterface {
     }
 
     [JsonIgnore]
-    public virtual IList<JsonItem> Children { get; protected set; }
+    public virtual IList<IJsonItem> Children { get; protected set; }
 
     [JsonIgnore]
-    public virtual JsonItem Parent { get; set; }
+    public virtual IJsonItem Parent { get; set; }
 
     public virtual object Value { get; set; }
 
@@ -71,11 +72,10 @@ namespace HeuristicLab.JsonInterface {
     #region Constructors
     public JsonItem() { }
 
-    public JsonItem(IEnumerable<JsonItem> childs) {
+    public JsonItem(IEnumerable<IJsonItem> childs) {
       AddChilds(childs);
     }
     #endregion
-
 
     #region Public Static Methods
     public static void Merge(JsonItem target, JsonItem from) {
@@ -85,7 +85,7 @@ namespace HeuristicLab.JsonInterface {
       target.ActualName = from.ActualName ?? target.ActualName;
       if(target.Children != null) {
         if (from.Children != null)
-          ((List<JsonItem>)from.Children).AddRange(target.Children); 
+          ((List<IJsonItem>)from.Children).AddRange(target.Children); 
       } else {
         target.Children = from.Children;
       }
@@ -93,19 +93,19 @@ namespace HeuristicLab.JsonInterface {
     #endregion
 
     #region Public Methods
-    public void AddChilds(params JsonItem[] childs) => 
-      AddChilds(childs as IEnumerable<JsonItem>);
+    public void AddChilds(params IJsonItem[] childs) => 
+      AddChilds(childs as IEnumerable<IJsonItem>);
 
-    public void AddChilds(IEnumerable<JsonItem> childs) {
+    public void AddChilds(IEnumerable<IJsonItem> childs) {
       if (Children == null)
-        Children = new List<JsonItem>();
+        Children = new List<IJsonItem>();
       foreach (var child in childs) {
         Children.Add(child);
         child.Parent = this;
       }
     }
 
-    public virtual JsonItemValidator GetValidator() => new JsonItemValidator(this);
+    public virtual IJsonItemValidator GetValidator() => new JsonItemValidator(this);
     #endregion
 
     #region Helper
@@ -153,7 +153,7 @@ namespace HeuristicLab.JsonInterface {
     #endregion
 
     #region BuildJsonItemMethods
-    public static JsonItem BuildJsonItem(JObject obj) {
+    public static IJsonItem BuildJsonItem(JObject obj) {
       object val = obj[nameof(Value)]?.ToObject<object>();
       if (val is JContainer jContainer) // for resolving array values
         val = jContainer.ToObject<object[]>();

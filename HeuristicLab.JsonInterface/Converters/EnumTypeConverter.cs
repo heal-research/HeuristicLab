@@ -11,12 +11,12 @@ namespace HeuristicLab.JsonInterface {
     public override int Priority => 1;
     public override Type ConvertableType => typeof(EnumValue<>);
 
-    public override void InjectData(IItem item, JsonItem data, IJsonItemConverter root) =>
+    public override void InjectData(IItem item, IJsonItem data, IJsonItemConverter root) =>
       ((dynamic)item).Value = Enum.Parse(
         item.GetType().GenericTypeArguments.First(), 
         CastValue<string>(data.Value));
 
-    public override void Populate(IItem value, JsonItem item, IJsonItemConverter root) {
+    public override void Populate(IItem value, IJsonItem item, IJsonItemConverter root) {
       object val = ((dynamic)value).Value;
       Type enumType = val.GetType();
       item.Value = Enum.GetName(enumType, val);

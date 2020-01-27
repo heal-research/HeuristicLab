@@ -87,7 +87,7 @@
       // 
       // jsonItemBindingSource
       // 
-      this.jsonItemBindingSource.DataSource = typeof(HeuristicLab.JsonInterface.JsonItem);
+      this.jsonItemBindingSource.DataSource = typeof(HeuristicLab.JsonInterface.IJsonItem);
       // 
       // ExportJsonDialog
       // 

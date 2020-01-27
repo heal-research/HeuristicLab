@@ -19,8 +19,8 @@ namespace HeuristicLab.JsonInterface {
     private IDictionary<Type, IJsonItemConverter> Converters { get; set; } 
       = new Dictionary<Type, IJsonItemConverter>();
 
-    private IDictionary<int, JsonItem> Cache { get; set; }
-      = new Dictionary<int, JsonItem>();
+    private IDictionary<int, IJsonItem> Cache { get; set; }
+      = new Dictionary<int, IJsonItem>();
 
     public int Priority => throw new NotImplementedException();
 
@@ -50,32 +50,32 @@ namespace HeuristicLab.JsonInterface {
       return null;
     }
     
-    public void Inject(IItem item, JsonItem data, IJsonItemConverter root) {
+    public void Inject(IItem item, IJsonItem data, IJsonItemConverter root) {
       if(!Cache.ContainsKey(item.GetHashCode())) {
         IJsonItemConverter converter = GetConverter(item.GetType());
         if(converter != null) converter.Inject(item, data, root);
       }
     }
 
-    public JsonItem Extract(IItem item, IJsonItemConverter root) {
+    public IJsonItem Extract(IItem item, IJsonItemConverter root) {
       int hash = item.GetHashCode();
-      if (Cache.TryGetValue(hash, out JsonItem val))
+      if (Cache.TryGetValue(hash, out IJsonItem val))
         return val;
       else {
         IJsonItemConverter converter = GetConverter(item.GetType());
         if (converter == null) return new UnsupportedJsonItem();
-        JsonItem tmp = GetConverter(item.GetType()).Extract(item, root);
+        IJsonItem tmp = GetConverter(item.GetType()).Extract(item, root);
         Cache.Add(hash, tmp);
         return tmp;
       }
     }
     
-    public static void Inject(IItem item, JsonItem data) {
+    public static void Inject(IItem item, IJsonItem data) {
       IJsonItemConverter c = JsonItemConverterFactory.Create();
       c.Inject(item, data, c);
     }
 
-    public static JsonItem Extract(IItem item) {
+    public static IJsonItem Extract(IItem item) {
       IJsonItemConverter c = JsonItemConverterFactory.Create();
       return c.Extract(item, c);
     }

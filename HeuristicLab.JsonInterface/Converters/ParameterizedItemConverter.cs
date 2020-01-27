@@ -10,7 +10,7 @@ namespace HeuristicLab.JsonInterface {
     public override int Priority => 2;
     public override Type ConvertableType => typeof(IParameterizedItem);
 
-    public override void InjectData(IItem item, JsonItem data, IJsonItemConverter root) {
+    public override void InjectData(IItem item, IJsonItem data, IJsonItemConverter root) {
       IParameterizedItem pItem = item as IParameterizedItem;
 
       if(data.Children != null) {
@@ -20,12 +20,12 @@ namespace HeuristicLab.JsonInterface {
       }
     }
 
-    public override void Populate(IItem value, JsonItem item, IJsonItemConverter root) {
+    public override void Populate(IItem value, IJsonItem item, IJsonItemConverter root) {
       var parameterizedItem = value as IParameterizedItem;
 
       foreach (var param in parameterizedItem.Parameters) {
         if (!param.Hidden) {
-          JsonItem tmp = root.Extract(param, root);
+          IJsonItem tmp = root.Extract(param, root);
           if(!(tmp is UnsupportedJsonItem))
             item.AddChilds(tmp);
         }

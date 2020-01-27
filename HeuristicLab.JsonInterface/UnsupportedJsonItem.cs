@@ -17,13 +17,13 @@ namespace HeuristicLab.JsonInterface {
     }
 
     [JsonIgnore]
-    public override IList<JsonItem> Children {
+    public override IList<IJsonItem> Children {
       get => throw new NotSupportedException();
       protected set => throw new NotSupportedException();
     }
 
     [JsonIgnore]
-    public override JsonItem Parent {
+    public override IJsonItem Parent {
       get => throw new NotSupportedException();
       set => throw new NotSupportedException();
     }

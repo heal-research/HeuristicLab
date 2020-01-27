@@ -20,7 +20,7 @@ namespace HeuristicLab.JsonInterface {
     private struct InstData {
       public JToken Template { get; set; }
       public JArray Config { get; set; }
-      public IDictionary<string, JsonItem> Objects { get; set; }
+      public IDictionary<string, IJsonItem> Objects { get; set; }
     }
 
     /// <summary>
@@ -31,7 +31,7 @@ namespace HeuristicLab.JsonInterface {
     /// <returns>confugrated IOptimizer object</returns>
     public static IOptimizer Instantiate(string templateFile, string configFile = "") {
       InstData instData = new InstData() {
-        Objects = new Dictionary<string, JsonItem>()
+        Objects = new Dictionary<string, IJsonItem>()
       };
 
       // parse template and config files
@@ -55,7 +55,7 @@ namespace HeuristicLab.JsonInterface {
         MergeTemplateWithConfig(instData);
 
       // get algorthm data and object
-      JsonItem optimizerData = instData.Objects[optimizerName];
+      IJsonItem optimizerData = instData.Objects[optimizerName];
 
       // inject configuration
       JsonItemConverter.Inject(optimizer, optimizerData);
@@ -69,12 +69,12 @@ namespace HeuristicLab.JsonInterface {
         string[] pathParts = item.Property("Path").Value.ToString().Split('.');
         
         // rebuilds object tree
-        JsonItem parent = null;
+        IJsonItem parent = null;
         StringBuilder partialPath = new StringBuilder();
         for(int i = 0; i < pathParts.Length-1; ++i) {
           partialPath.Append(pathParts[i]);
-          JsonItem tmp = null;
-          if (instData.Objects.TryGetValue(partialPath.ToString(), out JsonItem value)) {
+          IJsonItem tmp = null;
+          if (instData.Objects.TryGetValue(partialPath.ToString(), out IJsonItem value)) {
             tmp = value;
           } else {
             tmp = new JsonItem() { Name = pathParts[i] };
@@ -85,7 +85,7 @@ namespace HeuristicLab.JsonInterface {
           parent = tmp;
         }
 
-        JsonItem data = JsonItem.BuildJsonItem(item);
+        IJsonItem data = JsonItem.BuildJsonItem(item);
         parent.AddChilds(data);
         instData.Objects.Add(data.Path, data);
       }
@@ -94,9 +94,9 @@ namespace HeuristicLab.JsonInterface {
     private static void MergeTemplateWithConfig(InstData instData) {
       foreach (JObject obj in instData.Config) {
         // build item from config object
-        JsonItem item = JsonItem.BuildJsonItem(obj);
+        IJsonItem item = JsonItem.BuildJsonItem(obj);
         // override default value
-        if (instData.Objects.TryGetValue(item.Path, out JsonItem param)) {
+        if (instData.Objects.TryGetValue(item.Path, out IJsonItem param)) {
           param.Value = item.Value;
           // override ActualName (for LookupParameters)
           if (param.ActualName != null)
@@ -105,9 +105,9 @@ namespace HeuristicLab.JsonInterface {
       }
     }
 
-    private static JsonItem GetData(string key, InstData instData)
+    private static IJsonItem GetData(string key, InstData instData)
     {
-      if (instData.Objects.TryGetValue(key, out JsonItem value))
+      if (instData.Objects.TryGetValue(key, out IJsonItem value))
         return value;
       else
         throw new InvalidDataException($"Type of item '{key}' is not defined!");

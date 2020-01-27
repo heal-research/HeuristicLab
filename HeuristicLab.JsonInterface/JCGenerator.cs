@@ -16,14 +16,14 @@ namespace HeuristicLab.JsonInterface {
   public class JCGenerator {
     private JObject Template { get; set; }
     private JArray JArrayItems { get; set; }
-    private IList<JsonItem> JsonItems { get; set; }
+    private IList<IJsonItem> JsonItems { get; set; }
     private IOptimizer Optimizer { get; set; }
 
     
     public string GenerateTemplate(IOptimizer optimizer) {
       // data container
       JArrayItems = new JArray();
-      JsonItems = new List<JsonItem>();
+      JsonItems = new List<IJsonItem>();
 
       ProtoBufSerializer serializer = new ProtoBufSerializer();
       serializer.Serialize(optimizer, @"C:\Workspace\template.hl");
@@ -39,7 +39,7 @@ namespace HeuristicLab.JsonInterface {
       return SingleLineArrayJsonWriter.Serialize(Template);
     }
 
-    public string GenerateTemplate(IEnumerable<JsonItem> items) {
+    public string GenerateTemplate(IEnumerable<IJsonItem> items) {
       ProtoBufSerializer serializer = new ProtoBufSerializer();
       serializer.Serialize(Optimizer, @"C:\Workspace\template.hl");
       Template[Constants.Metadata][Constants.HLFileLocation] = @"C:\Workspace\template.hl";
@@ -60,10 +60,10 @@ namespace HeuristicLab.JsonInterface {
       return SingleLineArrayJsonWriter.Serialize(Template);
     }
 
-    public string GenerateTemplate(JsonItem rootItem, IOptimizer optimizer) {
+    public string GenerateTemplate(IJsonItem rootItem, IOptimizer optimizer) {
       // data container
       Template = JObject.Parse(Constants.Template);
-      JsonItems = new List<JsonItem>();
+      JsonItems = new List<IJsonItem>();
 
       // extract JsonItem, save the name in the metadata section of the 
       // template and save it an JArray incl. all parameters of the JsonItem, 
@@ -91,10 +91,10 @@ namespace HeuristicLab.JsonInterface {
       return SingleLineArrayJsonWriter.Serialize(Template);
     }
 
-    public IEnumerable<JsonItem> FetchJsonItems(IOptimizer optimizer) {
+    public IEnumerable<IJsonItem> FetchJsonItems(IOptimizer optimizer) {
       // data container
       Template = JObject.Parse(Constants.Template);
-      JsonItems = new List<JsonItem>();
+      JsonItems = new List<IJsonItem>();
       Optimizer = optimizer;
 
       // extract JsonItem, save the name in the metadata section of the 
@@ -109,14 +109,14 @@ namespace HeuristicLab.JsonInterface {
     #region Helper
 
     private void AddIItem(IItem item) {
-      JsonItem jsonItem = JsonItemConverter.Extract(item);
+      IJsonItem jsonItem = JsonItemConverter.Extract(item);
       Template[Constants.Metadata][Constants.Optimizer] = item.ItemName;
       PopulateJsonItems(jsonItem);
     }
 
     // serializes ParameterizedItems and saves them in list "JsonItems".
-    private void PopulateJsonItems(JsonItem item) {
-      IEnumerable<JsonItem> tmpParameter = item.Children;
+    private void PopulateJsonItems(IJsonItem item) {
+      IEnumerable<IJsonItem> tmpParameter = item.Children;
       
       if (item.Value != null || item.Range != null || item is ResultItem || item.ActualName != null) {
         JsonItems.Add(item);
@@ -129,7 +129,7 @@ namespace HeuristicLab.JsonInterface {
       }
     }
 
-    private static JObject Serialize(JsonItem item) => 
+    private static JObject Serialize(IJsonItem item) => 
       JObject.FromObject(item, Settings());
 
     /// <summary>

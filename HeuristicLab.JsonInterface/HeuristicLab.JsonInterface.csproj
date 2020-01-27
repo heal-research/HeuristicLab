@@ -65,6 +65,8 @@
     <Compile Include="Converters\RegressionProblemDataConverter.cs" />
     <Compile Include="Converters\ValueLookupParameterConverter.cs" />
     <Compile Include="Converters\ValueRangeConverter.cs" />
+    <Compile Include="Interfaces\IJsonItem.cs" />
+    <Compile Include="Interfaces\IJsonItemValidator.cs" />
     <Compile Include="ResultItem.cs" />
     <Compile Include="SingleLineArrayJsonWriter.cs" />
     <Compile Include="Extensions\TypeExtensions.cs" />

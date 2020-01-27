@@ -11,7 +11,7 @@ namespace HeuristicLab.JsonInterface {
     public override int Priority => 3;
     public override Type ConvertableType => typeof(ICheckedMultiOperator<>);
 
-    public override void Populate(IItem value, JsonItem item, IJsonItemConverter root) {
+    public override void Populate(IItem value, IJsonItem item, IJsonItemConverter root) {
       base.Populate(value, item, root);
 
       dynamic val = value as dynamic;
@@ -24,7 +24,7 @@ namespace HeuristicLab.JsonInterface {
       }
     }
 
-    public override void InjectData(IItem item, JsonItem data, IJsonItemConverter root) {
+    public override void InjectData(IItem item, IJsonItem data, IJsonItemConverter root) {
       base.InjectData(item, data, root);
 
       dynamic val = item as dynamic;
@@ -32,7 +32,7 @@ namespace HeuristicLab.JsonInterface {
         val.Operators.SetItemCheckedState(op, GetOperatorState(op.Name, data));
     }
 
-    private bool GetOperatorState(string name, JsonItem data) {
+    private bool GetOperatorState(string name, IJsonItem data) {
       foreach(var op in data.Children) {
         if (op.Name == name && op.Value is bool) return (bool)op.Value;
       }
