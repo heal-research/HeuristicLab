@@ -33,10 +33,10 @@ namespace HeuristicLab.JsonInterface {
     where ArrayType : ValueTypeArray<T>
     where T : struct 
   {
-    public override void InjectData(IItem item, JsonItem data, IJsonItemConverter root) => 
+    public override void InjectData(IItem item, IJsonItem data, IJsonItemConverter root) => 
       CopyArrayData(((ArrayType)item), CastValue<T[]>(data.Value));
 
-    public override void Populate(IItem value, JsonItem item, IJsonItemConverter root) {
+    public override void Populate(IItem value, IJsonItem item, IJsonItemConverter root) {
       item.Name = "[OverridableParamName]";
       item.Value = ((ArrayType)value).CloneAsArray();
     }

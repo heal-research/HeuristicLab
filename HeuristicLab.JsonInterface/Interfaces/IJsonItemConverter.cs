@@ -14,7 +14,7 @@ namespace HeuristicLab.JsonInterface {
     /// </summary>
     /// <param name="item">The IItem which get the data injected.</param>
     /// <param name="data">The JsonItem with the saved values.</param>
-    void Inject(IItem item, JsonItem data, IJsonItemConverter root);
+    void Inject(IItem item, IJsonItem data, IJsonItemConverter root);
 
     /// <summary>
     /// Extracts all infos out of an IItem to create a JsonItem. 
@@ -22,7 +22,7 @@ namespace HeuristicLab.JsonInterface {
     /// </summary>
     /// <param name="value">The IItem to extract infos.</param>
     /// <returns>JsonItem with infos to reinitialise the IItem.</returns>
-    JsonItem Extract(IItem value, IJsonItemConverter root);
+    IJsonItem Extract(IItem value, IJsonItemConverter root);
 
     Type ConvertableType { get; }
     int Priority { get; }

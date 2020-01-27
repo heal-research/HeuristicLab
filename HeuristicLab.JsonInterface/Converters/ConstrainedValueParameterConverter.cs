@@ -11,7 +11,7 @@ namespace HeuristicLab.JsonInterface {
     public override int Priority => 3;
     public override Type ConvertableType => typeof(IConstrainedValueParameter<>);
 
-    public override void InjectData(IParameter parameter, JsonItem data, IJsonItemConverter root) {
+    public override void InjectData(IParameter parameter, IJsonItem data, IJsonItemConverter root) {
       foreach(var x in GetValidValues(parameter))
         if(x.ToString() == CastValue<string>(data.Value))
           parameter.ActualValue = x;
@@ -24,7 +24,7 @@ namespace HeuristicLab.JsonInterface {
       }
     }
 
-    public override void Populate(IParameter value, JsonItem item, IJsonItemConverter root) {
+    public override void Populate(IParameter value, IJsonItem item, IJsonItemConverter root) {
       item.AddChilds(GetParameterizedChilds(value));
       item.Name = value.Name;
       item.Value = value.ActualValue?.ToString();
@@ -39,12 +39,12 @@ namespace HeuristicLab.JsonInterface {
       return list.ToArray();
     }
 
-    private IList<JsonItem> GetParameterizedChilds(IParameter value) {
-      List<JsonItem> list = new List<JsonItem>();
+    private IList<IJsonItem> GetParameterizedChilds(IParameter value) {
+      List<IJsonItem> list = new List<IJsonItem>();
       var values = ((dynamic)value).ValidValues;
       foreach(var x in values) {
         if (x is IParameterizedItem) {
-          JsonItem tmp = JsonItemConverter.Extract(x);
+          IJsonItem tmp = JsonItemConverter.Extract(x);
           if(!(tmp is UnsupportedJsonItem))
             list.Add(tmp);
         }

@@ -18,7 +18,7 @@ namespace HeuristicLab.JsonInterface {
     public override void WritePropertyName(string name) {
       base.Formatting = Formatting.Indented;
       base.WritePropertyName(name);
-      isRangeArray = name == nameof(JsonItem.Range) || name == nameof(JsonItem.Value);
+      isRangeArray = name == nameof(IJsonItem.Range) || name == nameof(IJsonItem.Value);
     }
 
     public override void WriteStartObject() {

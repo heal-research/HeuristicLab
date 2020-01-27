@@ -12,15 +12,15 @@ namespace HeuristicLab.JsonInterface.Converters {
 
     public override Type ConvertableType => typeof(IAlgorithm);
 
-    public override void InjectData(IItem item, JsonItem data, IJsonItemConverter root) {
+    public override void InjectData(IItem item, IJsonItem data, IJsonItemConverter root) {
       base.InjectData(item, data, root);
       IAlgorithm algorithm = item as IAlgorithm;
-      JsonItem problemData = data.Children.Where(x => x.Name == algorithm.Problem.Name).First();
+      IJsonItem problemData = data.Children.Where(x => x.Name == algorithm.Problem.Name).First();
       root.Inject(algorithm.Problem, problemData, root);
 
     }
 
-    public override void Populate(IItem value, JsonItem item, IJsonItemConverter root) {
+    public override void Populate(IItem value, IJsonItem item, IJsonItemConverter root) {
       base.Populate(value, item, root);
       IAlgorithm algorithm = value as IAlgorithm;
       foreach(var res in algorithm.Results) {

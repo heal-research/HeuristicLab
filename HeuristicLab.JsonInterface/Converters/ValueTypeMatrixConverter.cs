@@ -32,10 +32,10 @@ namespace HeuristicLab.JsonInterface {
     where MatrixType : ValueTypeMatrix<T> 
     where T : struct 
   {
-    public override void InjectData(IItem item, JsonItem data, IJsonItemConverter root) => 
+    public override void InjectData(IItem item, IJsonItem data, IJsonItemConverter root) => 
       CopyMatrixData(item as MatrixType, data.Value);
 
-    public override void Populate(IItem value, JsonItem item, IJsonItemConverter root) {
+    public override void Populate(IItem value, IJsonItem item, IJsonItemConverter root) {
       item.Name = "[OverridableParamName]";
       item.Value = ((MatrixType)value).CloneAsMatrix();
     }

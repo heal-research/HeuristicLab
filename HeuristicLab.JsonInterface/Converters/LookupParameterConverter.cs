@@ -10,12 +10,12 @@ namespace HeuristicLab.JsonInterface {
     public override int Priority => 3;
     public override Type ConvertableType => typeof(ILookupParameter);
 
-    public override void Populate(IParameter value, JsonItem item, IJsonItemConverter root) {
+    public override void Populate(IParameter value, IJsonItem item, IJsonItemConverter root) {
       item.Name = value.Name;
       item.ActualName = ((ILookupParameter)value).ActualName;
     } 
 
-    public override void InjectData(IParameter parameter, JsonItem data, IJsonItemConverter root) =>
+    public override void InjectData(IParameter parameter, IJsonItem data, IJsonItemConverter root) =>
       ((ILookupParameter)parameter).ActualName = data.ActualName as string;
   }
 }

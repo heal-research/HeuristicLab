@@ -10,7 +10,7 @@ namespace HeuristicLab.JsonInterface {
     public override int Priority => 4;
     public override Type ConvertableType => typeof(IValueLookupParameter);
 
-    public override void Populate(IParameter value, JsonItem item, IJsonItemConverter root) {
+    public override void Populate(IParameter value, IJsonItem item, IJsonItemConverter root) {
       IValueLookupParameter param = value as IValueLookupParameter;
       
       item.Name = value.Name;
@@ -19,7 +19,7 @@ namespace HeuristicLab.JsonInterface {
       object actualValue = null;
       IEnumerable<object> actualRange = null;
       if(param.Value != null) {
-        JsonItem tmp = root.Extract(param.Value, root);
+        IJsonItem tmp = root.Extract(param.Value, root);
         tmp.Parent = item;
         actualValue = tmp.Value;
         actualRange = tmp.Range;
@@ -30,7 +30,7 @@ namespace HeuristicLab.JsonInterface {
       item.Range = actualRange;
     }
 
-    public override void InjectData(IParameter parameter, JsonItem data, IJsonItemConverter root) {
+    public override void InjectData(IParameter parameter, IJsonItem data, IJsonItemConverter root) {
       IValueLookupParameter param = parameter as IValueLookupParameter;
       param.ActualName = CastValue<string>(data.ActualName);
       if (param.Value != null)

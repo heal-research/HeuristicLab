@@ -17,7 +17,7 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
     private IContent content;
     private static SaveFileDialog saveFileDialog;
     private IDictionary<int, UserControl> ctrlCollection = new Dictionary<int, UserControl>();
-    private JsonItem root;
+    private IJsonItem root;
     private IOptimizer optimizer;
     private IList<JsonItemVM> vms;
     private JCGenerator generator = new JCGenerator();
@@ -66,7 +66,7 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
       this.Close();
     }
 
-    private JsonItemVM BuildTreeNode(TreeNode node, JsonItem item) {
+    private JsonItemVM BuildTreeNode(TreeNode node, IJsonItem item) {
       JsonItemVM vm = new JsonItemVM(item);
 
       vms.Add(vm);
@@ -88,7 +88,7 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
       return vm;
     }
 
-    private bool IsDrawableItem(JsonItem item) {
+    private bool IsDrawableItem(IJsonItem item) {
       bool b = false;
       if (item.Children != null) {
         foreach (var c in item.Children) {
@@ -110,7 +110,7 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
     }
 
     private UserControl GenerateControl(JsonItemVM vm) {
-      JsonItem item = vm.Item;
+      IJsonItem item = vm.Item;
       UserControl control = null;
       if (!(item is UnsupportedJsonItem)) {
         if (item.Value is string && item.Range != null) {

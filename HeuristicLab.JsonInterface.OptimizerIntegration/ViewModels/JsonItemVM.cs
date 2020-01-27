@@ -10,7 +10,7 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
   public delegate void OnChildAddedHandler(JsonItemVM sender, JsonItemVM child);
 
   public class JsonItemVM {
-    public JsonItem Item { get; set; }
+    public IJsonItem Item { get; set; }
 
     private IList<JsonItemVM> children = new List<JsonItemVM>();
     public IEnumerable<JsonItemVM> Children { 
@@ -31,7 +31,7 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
     public event OnSelectionChangeHandler OnSelectionChange;
     public event OnChildAddedHandler OnChildAdded;
 
-    public JsonItemVM(JsonItem item) {
+    public JsonItemVM(IJsonItem item) {
       this.Item = item;
     }
 
