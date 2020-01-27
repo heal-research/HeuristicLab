@@ -37,13 +37,14 @@ namespace HeuristicLab.JsonInterface {
     where ValueType : ValueTypeValue<T>
     where T : struct {
 
-    public override void InjectData(IItem item, IJsonItem data, IJsonItemConverter root) =>
+    public override void Inject(IItem item, IJsonItem data, IJsonItemConverter root) =>
       ((ValueType)item).Value = CastValue<T>(data.Value);
 
-    public override void Populate(IItem value, IJsonItem item, IJsonItemConverter root) {
-      item.Name = "[OverridableParamName]";
-      item.Value = ((ValueType)value).Value;
-      item.Range = new object[] { GetMinValue(typeof(T)), GetMaxValue(typeof(T)) };
-    }
+    public override IJsonItem Extract(IItem value, IJsonItemConverter root) =>
+      new JsonItem() {
+        Name = "[OverridableParamName]",
+        Value = ((ValueType)value).Value,
+        Range = new object[] { GetMinValue(typeof(T)), GetMaxValue(typeof(T)) }
+      };
   }
 }

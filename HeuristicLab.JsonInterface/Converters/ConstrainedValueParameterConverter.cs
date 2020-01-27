@@ -7,12 +7,13 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.JsonInterface {
-  public class ConstrainedValueParameterConverter : ParameterBaseConverter {
+  public class ConstrainedValueParameterConverter : BaseConverter {
     public override int Priority => 3;
     public override Type ConvertableType => typeof(IConstrainedValueParameter<>);
 
-    public override void InjectData(IParameter parameter, IJsonItem data, IJsonItemConverter root) {
-      foreach(var x in GetValidValues(parameter))
+    public override void Inject(IItem item, IJsonItem data, IJsonItemConverter root) {
+      IParameter parameter = item as IParameter;
+      foreach (var x in GetValidValues(parameter))
         if(x.ToString() == CastValue<string>(data.Value))
           parameter.ActualValue = x;
 
@@ -23,13 +24,19 @@ namespace HeuristicLab.JsonInterface {
         }
       }
     }
+    
+    public override IJsonItem Extract(IItem value, IJsonItemConverter root) {
+      IParameter parameter = value as IParameter;
 
-    public override void Populate(IParameter value, IJsonItem item, IJsonItemConverter root) {
-      item.AddChilds(GetParameterizedChilds(value));
-      item.Name = value.Name;
-      item.Value = value.ActualValue?.ToString();
-      item.Range = GetValidValues(value).Select(x => x.ToString());
-    }      
+      IJsonItem item = new JsonItem() {
+        Name = parameter.Name,
+        Value = parameter.ActualValue?.ToString(),
+        Range = GetValidValues(parameter).Select(x => x.ToString())
+      };
+      item.AddChilds(GetParameterizedChilds(parameter));
+
+      return item;
+    }
 
     #region Helper
     private IItem[] GetValidValues(IParameter value) {

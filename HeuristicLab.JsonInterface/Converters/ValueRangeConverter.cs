@@ -26,19 +26,22 @@ namespace HeuristicLab.JsonInterface {
 
     private const BindingFlags Flags = BindingFlags.NonPublic | BindingFlags.Instance;
 
-    public override void Populate(IItem value, IJsonItem item, IJsonItemConverter root) {
-      var field = value.GetType().GetField("values", Flags);
-      Tuple<T,T> tuple = (Tuple<T,T>)field.GetValue(value);
-      item.Name = "[OverridableParamName]";
-      item.Value = new object[] { tuple.Item1.Value, tuple.Item2.Value };
-      item.Range = new object[] { GetMinValue(tuple.Item1.Value.GetType()), GetMaxValue(tuple.Item2.Value.GetType()) };
-    }
-
-    public override void InjectData(IItem item, IJsonItem data, IJsonItemConverter root) {
+    public override void Inject(IItem item, IJsonItem data, IJsonItemConverter root) {
       object[] arr = (object[])data.Value;
       Tuple<T,T> tuple = new Tuple<T,T>(Instantiate<T>(arr[0]), Instantiate<T>(arr[1]));
       var field = item.GetType().GetField("values", Flags);
       field.SetValue(tuple, item);
     }
+
+    public override IJsonItem Extract(IItem value, IJsonItemConverter root) {
+      var field = value.GetType().GetField("values", Flags);
+      Tuple<T, T> tuple = (Tuple<T, T>)field.GetValue(value);
+      return new JsonItem() {
+        Name = "[OverridableParamName]",
+        Value = new object[] { tuple.Item1.Value, tuple.Item2.Value },
+        Range = new object[] { GetMinValue(typeof(TType)), GetMaxValue(typeof(TType)) }
+      };
+    }
+      
   }
 }

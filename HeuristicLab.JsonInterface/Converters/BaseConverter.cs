@@ -13,19 +13,8 @@ namespace HeuristicLab.JsonInterface {
     public abstract int Priority { get; }
     public abstract Type ConvertableType { get; }
 
-    public void Inject(IItem item, IJsonItem data, IJsonItemConverter root) {
-
-      InjectData(item, data, root);
-    }
-
-    public IJsonItem Extract(IItem value, IJsonItemConverter root) {
-      IJsonItem data = new JsonItem() { Name = value.ItemName };
-      Populate(value, data, root);
-      return data;
-    }
-    
-    public abstract void InjectData(IItem item, IJsonItem data, IJsonItemConverter root);
-    public abstract void Populate(IItem value, IJsonItem item, IJsonItemConverter root); // TODO: populate?
+    public abstract void Inject(IItem item, IJsonItem data, IJsonItemConverter root);
+    public abstract IJsonItem Extract(IItem value, IJsonItemConverter root);
 
     #region Helper
     protected ValueType CastValue<ValueType>(object obj) {
