@@ -73,7 +73,6 @@
     <Compile Include="JCGenerator.cs" />
     <Compile Include="JsonTemplateInstantiator.cs" />
     <Compile Include="Converters\ConstrainedValueParameterConverter.cs" />
-    <Compile Include="Converters\ParameterBaseConverter.cs" />
     <Compile Include="Converters\ParameterizedItemConverter.cs" />
     <Compile Include="Converters\ValueParameterConverter.cs" />
     <Compile Include="Converters\EnumTypeConverter.cs" />

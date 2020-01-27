@@ -13,7 +13,14 @@ namespace HeuristicLab.JsonInterface {
     public override int Priority => 20;
     public override Type ConvertableType => HEAL.Attic.Mapper.StaticCache.GetType(new Guid("EE612297-B1AF-42D2-BF21-AF9A2D42791C"));
 
-    public override void Populate(IItem value, IJsonItem item, IJsonItemConverter root) {      
+    public override void Inject(IItem item, IJsonItem data, IJsonItemConverter root) {
+      // TODO: inject data
+      throw new NotImplementedException();
+    }
+
+    public override IJsonItem Extract(IItem value, IJsonItemConverter root) {
+      IJsonItem item = new JsonItem() { Name = value.ItemName };
+
       dynamic val = (dynamic)value;
       object dataset = (object)val.Dataset;
       dynamic targetVariable = val.TargetVariable;
@@ -37,11 +44,7 @@ namespace HeuristicLab.JsonInterface {
         Value = (object)val.AllowedInputVariables,
         Range = variables.Select(x => x.Value)
       });
-    }
-
-    public override void InjectData(IItem item, IJsonItem data, IJsonItemConverter root) {
-      // TODO: inject data
-      throw new NotImplementedException();
+      return item;
     }
   }
 }

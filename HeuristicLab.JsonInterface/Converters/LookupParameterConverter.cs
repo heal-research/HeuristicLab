@@ -6,16 +6,21 @@ using System.Threading.Tasks;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.JsonInterface {
-  public class LookupParameterConverter : ParameterBaseConverter {
+  public class LookupParameterConverter : BaseConverter {
     public override int Priority => 3;
     public override Type ConvertableType => typeof(ILookupParameter);
+    
+    public override void Inject(IItem item, IJsonItem data, IJsonItemConverter root) =>
+      ((ILookupParameter)item).ActualName = data.ActualName as string;
 
-    public override void Populate(IParameter value, IJsonItem item, IJsonItemConverter root) {
-      item.Name = value.Name;
-      item.ActualName = ((ILookupParameter)value).ActualName;
-    } 
+    public override IJsonItem Extract(IItem value, IJsonItemConverter root) {
+      IParameter parameter = value as IParameter;
 
-    public override void InjectData(IParameter parameter, IJsonItem data, IJsonItemConverter root) =>
-      ((ILookupParameter)parameter).ActualName = data.ActualName as string;
+      IJsonItem item = new JsonItem() {
+        Name = parameter.Name,
+        ActualName = ((ILookupParameter)parameter).ActualName
+      };
+      return item;
+    }
   }
 }
