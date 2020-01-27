@@ -67,7 +67,9 @@
     <Compile Include="Converters\ValueRangeConverter.cs" />
     <Compile Include="Interfaces\IJsonItem.cs" />
     <Compile Include="Interfaces\IJsonItemValidator.cs" />
-    <Compile Include="ResultItem.cs" />
+    <Compile Include="Models\JsonItem.cs" />
+    <Compile Include="Models\ResultItem.cs" />
+    <Compile Include="Models\UnsupportedJsonItem.cs" />
     <Compile Include="SingleLineArrayJsonWriter.cs" />
     <Compile Include="Extensions\TypeExtensions.cs" />
     <Compile Include="JCGenerator.cs" />
@@ -86,10 +88,8 @@
     <Compile Include="JsonItemConverterFactory.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="JsonItem.cs" />
     <Compile Include="Interfaces\IJsonItemConverter.cs" />
     <Compile Include="JsonItemConverter.cs" />
-    <Compile Include="UnsupportedJsonItem.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLab.snk" />
