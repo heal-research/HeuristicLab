@@ -1,4 +1,4 @@
-﻿namespace HeuristicLab.JsonInterface.OptimizerIntegration.Shared {
+﻿namespace HeuristicLab.JsonInterface.OptimizerIntegration {
   partial class NumericRangeControl {
     /// <summary> 
     /// Required designer variable.

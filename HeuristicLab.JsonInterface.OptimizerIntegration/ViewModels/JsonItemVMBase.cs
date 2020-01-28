@@ -1,19 +1,26 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace HeuristicLab.JsonInterface.OptimizerIntegration {
+  public abstract class JsonItemVMBase : INotifyPropertyChanged {
+    public event PropertyChangedEventHandler PropertyChanged;
+    public IJsonItem Item { get; set; }
 
-  //TODO: controls/views only initcomponents and delegate events to this, this has parsers and other actions?
-  // maybe different VMs?
-  public class JsonItemVM : JsonItemVMBase {
+    protected void OnPropertyChange(object sender, string propertyName) {
+      // Make a temporary copy of the event to avoid possibility of
+      // a race condition if the last subscriber unsubscribes
+      // immediately after the null check and before the event is raised.
+      // https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/events/how-to-raise-base-class-events-in-derived-classes
+      
+      PropertyChangedEventHandler tmp = PropertyChanged;
+      tmp?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
 
-    public override Type JsonItemType => typeof(JsonItem);
+    public virtual Type JsonItemType => typeof(JsonItem);
 
     //protected IJsonItemValueParser Parser { get; set; }
     //child tree
@@ -47,32 +54,9 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
         OnPropertyChange(this, nameof(ActualName));
       }
     }
-    public override JsonItemBaseControl GetControl() {
+    public virtual JsonItemBaseControl GetControl() {
       return new JsonItemBaseControl(this);
     }
 
-
-    /*
-    public abstract UserControl Control { get; }
-
-    public void OnSelectChange(object sender, EventArgs e) {
-      CheckBox checkBox = sender as CheckBox;
-      Selected = checkBox.Checked;
-    }
-
-    public void OnNameChange(object sender, EventArgs e) {
-      TextBox textBox = sender as TextBox;
-      Item.Name = textBox.Text;
-    }
-
-    public void OnActualNameChange(object sender, EventArgs e) {
-      TextBox textBox = sender as TextBox;
-      Item.ActualName = textBox.Text;
-    }
-
-    public abstract void OnValueChange(object sender, EventArgs e);
-
-    public abstract void OnRangeChange(object sender, EventArgs e);
-    */
   }
 }

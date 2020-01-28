@@ -10,38 +10,45 @@ using HeuristicLab.Data;
 
 namespace HeuristicLab.JsonInterface {
 
-  public class IntRangeConverter : ValueRangeConverter<IntRange, IntValue, int> {
+  public class IntRangeConverter : BaseConverter {
     public override int Priority => 1;
     public override Type ConvertableType => typeof(IntRange);
-  }
-  public class DoubleRangeConverter : ValueRangeConverter<DoubleRange, DoubleValue, double> {
-    public override int Priority => 1;
-    public override Type ConvertableType => typeof(DoubleRange);
-  }
-
-  public abstract class ValueRangeConverter<RangeType, T, TType> : BaseConverter 
-    where RangeType : StringConvertibleValueTuple<T, T>
-    where T : ValueTypeValue<TType>, IDeepCloneable, IStringConvertibleValue
-    where TType : struct {
-
-    private const BindingFlags Flags = BindingFlags.NonPublic | BindingFlags.Instance;
 
     public override void Inject(IItem item, IJsonItem data, IJsonItemConverter root) {
-      object[] arr = (object[])data.Value;
-      Tuple<T,T> tuple = new Tuple<T,T>(Instantiate<T>(arr[0]), Instantiate<T>(arr[1]));
-      var field = item.GetType().GetField("values", Flags);
-      field.SetValue(tuple, item);
+      IntRange range = item as IntRange;
+      IntArrayJsonItem cdata = data as IntArrayJsonItem;
+      range.Start = cdata.Value[0];
+      range.End = cdata.Value[1];
     }
 
     public override IJsonItem Extract(IItem value, IJsonItemConverter root) {
-      var field = value.GetType().GetField("values", Flags);
-      Tuple<T, T> tuple = (Tuple<T, T>)field.GetValue(value);
-      return new JsonItem() {
+      IntRange range = value as IntRange;
+      return new IntArrayJsonItem() {
         Name = "[OverridableParamName]",
-        Value = new object[] { tuple.Item1.Value, tuple.Item2.Value },
-        Range = new object[] { GetMinValue(typeof(TType)), GetMaxValue(typeof(TType)) }
+        Value = new int[] { range.Start, range.End },
+        Range = new int[] { int.MinValue, int.MaxValue }
       };
     }
-      
+  }
+
+  public class DoubleRangeConverter : BaseConverter {
+    public override int Priority => 1;
+    public override Type ConvertableType => typeof(DoubleRange);
+
+    public override void Inject(IItem item, IJsonItem data, IJsonItemConverter root) {
+      DoubleRange range = item as DoubleRange;
+      DoubleArrayJsonItem cdata = data as DoubleArrayJsonItem;
+      range.Start = cdata.Value[0];
+      range.End = cdata.Value[1];
+    }
+
+    public override IJsonItem Extract(IItem value, IJsonItemConverter root) {
+      DoubleRange range = value as DoubleRange;
+      return new DoubleArrayJsonItem() {
+        Name = "[OverridableParamName]",
+        Value = new double[] { range.Start, range.End },
+        Range = new double[] { double.MinValue, double.MaxValue }
+      };
+    }
   }
 }

@@ -28,7 +28,7 @@
       this.textBoxValueFrom = new System.Windows.Forms.TextBox();
       this.label4 = new System.Windows.Forms.Label();
       this.label2 = new System.Windows.Forms.Label();
-      this.numericRangeControl1 = new HeuristicLab.JsonInterface.OptimizerIntegration.Shared.NumericRangeControl();
+      this.numericRangeControl1 = new HeuristicLab.JsonInterface.OptimizerIntegration.NumericRangeControl();
       this.groupBox1.SuspendLayout();
       this.SuspendLayout();
       // 
@@ -55,7 +55,6 @@
       this.textBoxValueTo.Name = "textBoxValueTo";
       this.textBoxValueTo.Size = new System.Drawing.Size(230, 20);
       this.textBoxValueTo.TabIndex = 3;
-      this.textBoxValueTo.Leave += new System.EventHandler(this.textBoxValueTo_Leave);
       // 
       // textBoxValueFrom
       // 
@@ -63,7 +62,6 @@
       this.textBoxValueFrom.Name = "textBoxValueFrom";
       this.textBoxValueFrom.Size = new System.Drawing.Size(230, 20);
       this.textBoxValueFrom.TabIndex = 2;
-      this.textBoxValueFrom.Leave += new System.EventHandler(this.textBoxValueFrom_Leave);
       // 
       // label4
       // 
@@ -93,7 +91,6 @@
       this.numericRangeControl1.Name = "numericRangeControl1";
       this.numericRangeControl1.Size = new System.Drawing.Size(487, 112);
       this.numericRangeControl1.TabIndex = 18;
-      this.numericRangeControl1.Load += new System.EventHandler(this.numericRangeControl1_Load);
       // 
       // JsonItemRangeControl
       // 
@@ -119,6 +116,6 @@
     private System.Windows.Forms.TextBox textBoxValueFrom;
     private System.Windows.Forms.Label label4;
     private System.Windows.Forms.Label label2;
-    private Shared.NumericRangeControl numericRangeControl1;
+    private NumericRangeControl numericRangeControl1;
   }
 }

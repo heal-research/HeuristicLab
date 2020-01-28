@@ -11,27 +11,19 @@ using System.Globalization;
 
 namespace HeuristicLab.JsonInterface.OptimizerIntegration {
   public partial class JsonItemRangeControl : JsonItemBaseControl {
-    bool isDouble = false;
-    object[] range = new object[2];
-    object[] value = new object[2];
 
-    public JsonItemRangeControl(JsonItemVM vm, bool isDouble) : base(vm) {
+    public JsonItemRangeControl(DoubleRangeVM vm) : base(vm) {
       InitializeComponent();
+      /*
       this.isDouble = isDouble;
       textBoxValueFrom.Text = ((Array)VM.Item.Value).GetValue(0).ToString();
       textBoxValueTo.Text = ((Array)VM.Item.Value).GetValue(1).ToString();
       textBoxValueFrom.Text = VM.Item.Range.First().ToString();
       textBoxValueTo.Text = VM.Item.Range.Last().ToString();
+      */
     }
-
-    private object Parse(string s) {
-      if (isDouble) {
-        if (s == "-1,79769313486232E+308") return double.MinValue;
-        if (s == "1,79769313486232E+308") return double.MaxValue;
-        return double.Parse(s.Replace(",", "."), NumberStyles.Any, CultureInfo.InvariantCulture);
-      }
-      return int.Parse(s);
-    }
+    /*
+    protected abstract object Parse(string s);
 
     private void SetValue() {
       if (!string.IsNullOrWhiteSpace(textBoxValueFrom.Text))
@@ -58,5 +50,6 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
       numericRangeControl1.IsDouble = isDouble;
       numericRangeControl1.VM = VM;
     }
+    */
   }
 }

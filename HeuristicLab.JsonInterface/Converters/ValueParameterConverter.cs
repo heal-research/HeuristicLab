@@ -30,7 +30,8 @@ namespace HeuristicLab.JsonInterface {
         if (!(tmp is UnsupportedJsonItem)) {
           if (tmp.Name == "[OverridableParamName]") {
             tmp.Name = parameter.Name;
-            JsonItem.Merge(item as JsonItem, tmp as JsonItem);
+            item = tmp;
+            //JsonItem.Merge(item as JsonItem, tmp as JsonItem);
           } else
             item.AddChilds(tmp);
         }

@@ -67,7 +67,9 @@
     <Compile Include="Converters\ValueRangeConverter.cs" />
     <Compile Include="Interfaces\IJsonItem.cs" />
     <Compile Include="Interfaces\IJsonItemValidator.cs" />
+    <Compile Include="Models\GenericJsonItem.cs" />
     <Compile Include="Models\JsonItem.cs" />
+    <Compile Include="Models\JsonItems.cs" />
     <Compile Include="Models\ResultItem.cs" />
     <Compile Include="Models\UnsupportedJsonItem.cs" />
     <Compile Include="SingleLineArrayJsonWriter.cs" />

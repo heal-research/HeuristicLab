@@ -21,6 +21,7 @@ namespace HeuristicLab.JsonInterface {
       public JToken Template { get; set; }
       public JArray Config { get; set; }
       public IDictionary<string, IJsonItem> Objects { get; set; }
+      public IOptimizer Optimizer { get; set; }
     }
 
     /// <summary>
@@ -46,6 +47,7 @@ namespace HeuristicLab.JsonInterface {
       // deserialize hl file
       ProtoBufSerializer serializer = new ProtoBufSerializer();
       IOptimizer optimizer = (IOptimizer)serializer.Deserialize(hLFileLocation);
+      instData.Optimizer = optimizer;
 
       // collect all parameterizedItems from template
       CollectParameterizedItems(instData);
@@ -64,7 +66,42 @@ namespace HeuristicLab.JsonInterface {
     }
 
     #region Helper
+
+    private static object GetValueFromJObject(JObject obj) {
+      object val = obj[nameof(IJsonItem.Value)]?.ToObject<object>();
+      if (val is JContainer jContainer) // for resolving array values
+        val = jContainer.ToObject<object[]>();
+
+      return val;
+    }
+
     private static void CollectParameterizedItems(InstData instData) {
+      //JCGenerator generator = new JCGenerator();
+      //IEnumerable<IJsonItem> items = generator.FetchJsonItems(instData.Optimizer);
+      IJsonItem root = JsonItemConverter.Extract(instData.Optimizer);
+      instData.Objects.Add(root.Path, root);
+
+      foreach (JObject obj in instData.Template[Constants.Parameters]) {
+        string[] pathParts = obj.Property("Path").Value.ToString().Split('.');
+        IJsonItem tmp = root;
+        IJsonItem old = null;
+        for(int i = 1; i < pathParts.Length; ++i) {
+          foreach(var c in tmp.Children) {
+            if (c.Name == pathParts[i])
+              tmp = c;
+          }
+          if (old == tmp)
+            throw new Exception($"Invalid path '{string.Join(".", pathParts)}'");
+          else old = tmp;
+        }
+        tmp.Value = GetValueFromJObject(obj);
+        tmp.Range = obj[nameof(IJsonItem.Range)]?.ToObject<object[]>();
+        tmp.ActualName = obj[nameof(IJsonItem.ActualName)]?.ToString();
+        instData.Objects.Add(tmp.Path, tmp);
+      }
+
+
+      /*
       foreach (JObject item in instData.Template[Constants.Parameters]) {
         string[] pathParts = item.Property("Path").Value.ToString().Split('.');
         
@@ -88,20 +125,21 @@ namespace HeuristicLab.JsonInterface {
         IJsonItem data = JsonItem.BuildJsonItem(item);
         parent.AddChilds(data);
         instData.Objects.Add(data.Path, data);
-      }
+      }*/
     }
     
     private static void MergeTemplateWithConfig(InstData instData) {
       foreach (JObject obj in instData.Config) {
         // build item from config object
-        IJsonItem item = JsonItem.BuildJsonItem(obj);
+        //IJsonItem item = JsonItem.BuildJsonItem(obj);
+        string path = obj.Property("Path").Value.ToString();
         // override default value
-        if (instData.Objects.TryGetValue(item.Path, out IJsonItem param)) {
-          param.Value = item.Value;
+        if (instData.Objects.TryGetValue(path, out IJsonItem param)) {
+          param.Value = GetValueFromJObject(obj);
           // override ActualName (for LookupParameters)
           if (param.ActualName != null)
-            param.ActualName = item.ActualName;
-        } else throw new InvalidDataException($"No parameter with path='{item.Path}' defined!");
+            param.ActualName = obj[nameof(IJsonItem.ActualName)]?.ToString();
+        } else throw new InvalidDataException($"No parameter with path='{path}' defined!");
       }
     }
 

@@ -151,20 +151,5 @@ namespace HeuristicLab.JsonInterface {
         (((T)max).CompareTo(value) == 1 || ((T)max).CompareTo(value) == 0);
     }
     #endregion
-
-    #region BuildJsonItemMethods
-    public static IJsonItem BuildJsonItem(JObject obj) {
-      object val = obj[nameof(Value)]?.ToObject<object>();
-      if (val is JContainer jContainer) // for resolving array values
-        val = jContainer.ToObject<object[]>();
-        
-      return new JsonItem() {
-        Name = obj[nameof(Name)]?.ToString(),
-        Value = val,
-        Range = obj[nameof(Range)]?.ToObject<object[]>(),
-        ActualName = obj[nameof(ActualName)]?.ToString()
-      };
-    }
-    #endregion
   }
 }

@@ -12,10 +12,10 @@ namespace HeuristicLab.JsonInterface {
     public override Type ConvertableType => typeof(StringValue);
 
     public override void Inject(IItem item, IJsonItem data, IJsonItemConverter root) =>
-      ((StringValue)item).Value = CastValue<string>(data.Value);
+      ((StringValue)item).Value = ((StringJsonItem)data).Value;
 
     public override IJsonItem Extract(IItem value, IJsonItemConverter root) =>
-      new JsonItem() {
+      new StringJsonItem() {
         Name = value.ItemName,
         Value = ((StringValue)value).Value
       };

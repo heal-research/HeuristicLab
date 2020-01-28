@@ -25,7 +25,7 @@
     private void InitializeComponent() {
       this.textBoxValue = new System.Windows.Forms.TextBox();
       this.label2 = new System.Windows.Forms.Label();
-      this.numericRangeControl1 = new HeuristicLab.JsonInterface.OptimizerIntegration.Shared.NumericRangeControl();
+      this.numericRangeControl1 = new HeuristicLab.JsonInterface.OptimizerIntegration.NumericRangeControl();
       this.SuspendLayout();
       // 
       // textBoxValue
@@ -36,7 +36,6 @@
       this.textBoxValue.Name = "textBoxValue";
       this.textBoxValue.Size = new System.Drawing.Size(404, 20);
       this.textBoxValue.TabIndex = 14;
-      this.textBoxValue.Leave += new System.EventHandler(this.textBoxValue_Leave);
       // 
       // label2
       // 
@@ -55,7 +54,6 @@
       this.numericRangeControl1.Size = new System.Drawing.Size(487, 112);
       this.numericRangeControl1.TabIndex = 16;
       this.numericRangeControl1.VM = null;
-      this.numericRangeControl1.Load += new System.EventHandler(this.numericRangeControl1_Load);
       // 
       // JsonItemValueControl
       // 
@@ -78,6 +76,6 @@
 
     private System.Windows.Forms.TextBox textBoxValue;
     private System.Windows.Forms.Label label2;
-    private Shared.NumericRangeControl numericRangeControl1;
+    private NumericRangeControl numericRangeControl1;
   }
 }

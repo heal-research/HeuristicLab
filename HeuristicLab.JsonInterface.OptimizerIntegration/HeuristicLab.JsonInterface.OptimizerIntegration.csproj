@@ -77,6 +77,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Interfaces\IJsonItemValueParser.cs" />
+    <Compile Include="Parser\JsonItemDoubleValueParser.cs" />
+    <Compile Include="Parser\JsonItemIntValueParser.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -94,6 +97,10 @@
     <Compile Include="Shared\NumericRangeControl.Designer.cs">
       <DependentUpon>NumericRangeControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="ViewModels\JsonItemVMBase.cs" />
+    <Compile Include="ViewModels\RangeVM.cs" />
+    <Compile Include="ViewModels\SingleValueVM.cs" />
+    <Compile Include="ViewModels\StringValueVM.cs" />
     <Compile Include="Views\ExportJsonDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -101,23 +108,11 @@
       <DependentUpon>ExportJsonDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="FileManager.cs" />
-    <Compile Include="Views\JsonItemArrayControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Views\JsonItemArrayControl.Designer.cs">
-      <DependentUpon>JsonItemArrayControl.cs</DependentUpon>
-    </Compile>
     <Compile Include="Views\JsonItemBoolControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Views\JsonItemBoolControl.Designer.cs">
       <DependentUpon>JsonItemBoolControl.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Views\JsonItemDefaultControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Views\JsonItemDefaultControl.Designer.cs">
-      <DependentUpon>JsonItemDefaultControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Views\JsonItemRangeControl.cs">
       <SubType>UserControl</SubType>
@@ -198,9 +193,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Views\ExportJsonDialog.resx">
       <DependentUpon>ExportJsonDialog.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Views\JsonItemArrayControl.resx">
-      <DependentUpon>JsonItemArrayControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\JsonItemBoolControl.resx">
       <DependentUpon>JsonItemBoolControl.cs</DependentUpon>
