@@ -8,43 +8,78 @@ using HeuristicLab.Data;
 
 namespace HeuristicLab.JsonInterface {
 
-  public class IntValueConverter : ValueTypeValueConverter<IntValue, int> {
+  public class IntValueConverter : BaseConverter {
     public override int Priority => 1;
     public override Type ConvertableType => typeof(IntValue);
-  }
-
-  public class DoubleValueConverter : ValueTypeValueConverter<DoubleValue, double> {
-    public override int Priority => 1;
-    public override Type ConvertableType => typeof(DoubleValue);
-  }
-
-  public class PercentValueConverter : ValueTypeValueConverter<PercentValue, double> {
-    public override int Priority => 2;
-    public override Type ConvertableType => typeof(PercentValue);
-  }
-
-  public class BoolValueConverter : ValueTypeValueConverter<BoolValue, bool> {
-    public override int Priority => 1;
-    public override Type ConvertableType => typeof(BoolValue);
-  }
-
-  public class DateTimeValueConverter : ValueTypeValueConverter<DateTimeValue, DateTime> {
-    public override int Priority => 1;
-    public override Type ConvertableType => typeof(DateTimeValue);
-  }
-
-  public abstract class ValueTypeValueConverter<ValueType, T> : BaseConverter
-    where ValueType : ValueTypeValue<T>
-    where T : struct {
 
     public override void Inject(IItem item, IJsonItem data, IJsonItemConverter root) =>
-      ((ValueType)item).Value = CastValue<T>(data.Value);
+      ((IntValue)item).Value = ((IntJsonItem)data).Value;
 
     public override IJsonItem Extract(IItem value, IJsonItemConverter root) =>
-      new JsonItem() {
+      new IntJsonItem() {
         Name = "[OverridableParamName]",
-        Value = ((ValueType)value).Value,
-        Range = new object[] { GetMinValue(typeof(T)), GetMaxValue(typeof(T)) }
+        Value = ((IntValue)value).Value,
+        Range = new int[] { int.MinValue, int.MaxValue }
+      };
+  }
+
+  public class DoubleValueConverter : BaseConverter {
+    public override int Priority => 1;
+    public override Type ConvertableType => typeof(DoubleValue);
+
+    public override void Inject(IItem item, IJsonItem data, IJsonItemConverter root) =>
+      ((DoubleValue)item).Value = ((DoubleJsonItem)data).Value;
+
+    public override IJsonItem Extract(IItem value, IJsonItemConverter root) =>
+      new DoubleJsonItem() {
+        Name = "[OverridableParamName]",
+        Value = ((DoubleValue)value).Value,
+        Range = new double[] { double.MinValue, double.MaxValue }
+      };
+  }
+
+  public class PercentValueConverter : BaseConverter {
+    public override int Priority => 2;
+    public override Type ConvertableType => typeof(PercentValue);
+
+    public override void Inject(IItem item, IJsonItem data, IJsonItemConverter root) =>
+      ((PercentValue)item).Value = ((DoubleJsonItem)data).Value;
+
+    public override IJsonItem Extract(IItem value, IJsonItemConverter root) =>
+      new DoubleJsonItem() {
+        Name = "[OverridableParamName]",
+        Value = ((PercentValue)value).Value,
+        Range = new double[] { double.MinValue, double.MaxValue }
+      };
+  }
+
+  public class BoolValueConverter : BaseConverter {
+    public override int Priority => 1;
+    public override Type ConvertableType => typeof(BoolValue);
+
+    public override void Inject(IItem item, IJsonItem data, IJsonItemConverter root) =>
+      ((BoolValue)item).Value = ((BoolJsonItem)data).Value;
+
+    public override IJsonItem Extract(IItem value, IJsonItemConverter root) =>
+      new BoolJsonItem() {
+        Name = "[OverridableParamName]",
+        Value = ((BoolValue)value).Value,
+        Range = new bool[] { false, true }
+      };
+  }
+
+  public class DateTimeValueConverter : BaseConverter {
+    public override int Priority => 1;
+    public override Type ConvertableType => typeof(DateTimeValue);
+
+    public override void Inject(IItem item, IJsonItem data, IJsonItemConverter root) =>
+      ((DateTimeValue)item).Value = ((DateTimeJsonItem)data).Value;
+
+    public override IJsonItem Extract(IItem value, IJsonItemConverter root) =>
+      new DateTimeJsonItem() {
+        Name = "[OverridableParamName]",
+        Value = ((DateTimeValue)value).Value,
+        Range = new DateTime[] { DateTime.MinValue, DateTime.MaxValue }
       };
   }
 }

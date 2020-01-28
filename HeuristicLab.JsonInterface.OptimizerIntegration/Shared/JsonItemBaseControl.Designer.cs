@@ -50,7 +50,6 @@
       this.checkBoxActive.Size = new System.Drawing.Size(15, 14);
       this.checkBoxActive.TabIndex = 2;
       this.checkBoxActive.UseVisualStyleBackColor = true;
-      this.checkBoxActive.CheckedChanged += new System.EventHandler(this.checkBoxActive_CheckedChanged);
       // 
       // textBoxActualName
       // 
@@ -60,7 +59,6 @@
       this.textBoxActualName.Name = "textBoxActualName";
       this.textBoxActualName.Size = new System.Drawing.Size(404, 20);
       this.textBoxActualName.TabIndex = 12;
-      this.textBoxActualName.TextChanged += new System.EventHandler(this.textBoxActualName_TextChanged);
       // 
       // labelActualName
       // 
@@ -81,7 +79,6 @@
       this.textBoxName.ReadOnly = true;
       this.textBoxName.Size = new System.Drawing.Size(404, 20);
       this.textBoxName.TabIndex = 10;
-      this.textBoxName.TextChanged += new System.EventHandler(this.textBoxName_TextChanged);
       // 
       // label1
       // 

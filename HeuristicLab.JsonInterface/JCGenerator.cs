@@ -14,7 +14,7 @@ namespace HeuristicLab.JsonInterface {
   /// Class to generate json interface templates.
   /// </summary>
   public class JCGenerator {
-    private JObject Template { get; set; }
+    private JObject Template { get; set; } = JObject.Parse(Constants.Template);
     private JArray JArrayItems { get; set; }
     private IList<IJsonItem> JsonItems { get; set; }
     private IOptimizer Optimizer { get; set; }
@@ -23,6 +23,7 @@ namespace HeuristicLab.JsonInterface {
     public string GenerateTemplate(IOptimizer optimizer) {
       // data container
       JArrayItems = new JArray();
+      JArray ResultItems = new JArray();
       JsonItems = new List<IJsonItem>();
 
       ProtoBufSerializer serializer = new ProtoBufSerializer();
@@ -34,7 +35,16 @@ namespace HeuristicLab.JsonInterface {
       // which have parameters aswell
       AddIItem(optimizer);
       // save the JArray with JsonItems (= IParameterizedItems)
+
+      JArrayItems = new JArray();
+      foreach (var item in JsonItems) {
+        if (item is ResultItem)
+          ResultItems.Add(Serialize(item));
+        else
+          JArrayItems.Add(Serialize(item));
+      }
       Template[Constants.Parameters] = JArrayItems;
+      Template[Constants.ActivatedResults] = ResultItems;
       // serialize template and return string
       return SingleLineArrayJsonWriter.Serialize(Template);
     }

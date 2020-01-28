@@ -91,7 +91,6 @@
       this.ForeColor = System.Drawing.Color.Black;
       this.Name = "JsonItemValidValuesControl";
       this.Size = new System.Drawing.Size(500, 290);
-      this.Load += new System.EventHandler(this.JsonItemValidValuesControl_Load);
       this.Controls.SetChildIndex(this.groupBoxRange, 0);
       this.Controls.SetChildIndex(this.comboBoxValues, 0);
       this.Controls.SetChildIndex(this.label2, 0);

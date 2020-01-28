@@ -10,19 +10,18 @@ using System.Windows.Forms;
 
 namespace HeuristicLab.JsonInterface.OptimizerIntegration {
   public partial class JsonItemValidValuesControl : JsonItemBaseControl {
-   
 
-    public JsonItemValidValuesControl(JsonItemVM vm) : base(vm) {
+    public JsonItemValidValuesControl(StringValueVM vm) : base(vm) {
       InitializeComponent();
+      /*
       foreach (var i in VM.Item.Range) {
         AddOption((string)i);
         if(i == VM.Item.Value) {
           comboBoxValues.SelectedItem = (string)i;
         }
-      }
-
+      }*/
     }
-
+    /*
     private void AddOption(string opt) {
       AddComboOption(opt);
       TextBox tb = new TextBox();
@@ -71,5 +70,6 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
     private void JsonItemValidValuesControl_Load(object sender, EventArgs e) {
 
     }
+    */
   }
 }

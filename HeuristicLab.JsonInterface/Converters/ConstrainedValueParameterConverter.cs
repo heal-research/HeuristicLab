@@ -12,13 +12,14 @@ namespace HeuristicLab.JsonInterface {
     public override Type ConvertableType => typeof(IConstrainedValueParameter<>);
 
     public override void Inject(IItem item, IJsonItem data, IJsonItemConverter root) {
+      StringJsonItem cdata = data as StringJsonItem;
       IParameter parameter = item as IParameter;
       foreach (var x in GetValidValues(parameter))
-        if(x.ToString() == CastValue<string>(data.Value))
+        if(x.ToString() == CastValue<string>(cdata.Value))
           parameter.ActualValue = x;
 
-      if (parameter.ActualValue is IParameterizedItem && data.Children != null) {
-        foreach(var param in data.Children) {
+      if (parameter.ActualValue is IParameterizedItem && cdata.Children != null) {
+        foreach(var param in cdata.Children) {
           if(param.Name == parameter.ActualValue.ItemName)
             root.Inject(parameter.ActualValue, param, root);
         }
@@ -28,7 +29,7 @@ namespace HeuristicLab.JsonInterface {
     public override IJsonItem Extract(IItem value, IJsonItemConverter root) {
       IParameter parameter = value as IParameter;
 
-      IJsonItem item = new JsonItem() {
+      IJsonItem item = new StringJsonItem() {
         Name = parameter.Name,
         Value = parameter.ActualValue?.ToString(),
         Range = GetValidValues(parameter).Select(x => x.ToString())

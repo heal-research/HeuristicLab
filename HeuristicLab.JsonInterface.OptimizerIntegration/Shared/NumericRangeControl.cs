@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Globalization;
 
-namespace HeuristicLab.JsonInterface.OptimizerIntegration.Shared {
+namespace HeuristicLab.JsonInterface.OptimizerIntegration {
   public partial class NumericRangeControl : UserControl {
 
     private JsonItemVM vm;
@@ -21,8 +21,6 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration.Shared {
       } 
     }
     public bool IsDouble { get; set; }
-
-
 
     public NumericRangeControl() {
       InitializeComponent();

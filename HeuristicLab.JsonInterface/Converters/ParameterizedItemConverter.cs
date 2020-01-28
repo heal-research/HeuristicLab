@@ -15,7 +15,7 @@ namespace HeuristicLab.JsonInterface {
 
       if(data.Children != null) {
         foreach (var sp in data.Children)
-          if (pItem.Parameters.TryGetValue(sp.Name, out IParameter param))
+          if (pItem.Parameters.TryGetValue(sp.Name, out IParameter param) && param != null)
             root.Inject(param, sp, root);
       }
     }

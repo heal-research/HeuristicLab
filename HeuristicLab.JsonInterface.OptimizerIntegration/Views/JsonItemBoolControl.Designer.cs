@@ -37,7 +37,6 @@
       this.checkBoxValue.Size = new System.Drawing.Size(15, 14);
       this.checkBoxValue.TabIndex = 19;
       this.checkBoxValue.UseVisualStyleBackColor = true;
-      this.checkBoxValue.CheckStateChanged += new System.EventHandler(this.checkBoxValue_CheckStateChanged);
       // 
       // label2
       // 

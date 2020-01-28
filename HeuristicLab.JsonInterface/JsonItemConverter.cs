@@ -51,7 +51,7 @@ namespace HeuristicLab.JsonInterface {
     }
     
     public void Inject(IItem item, IJsonItem data, IJsonItemConverter root) {
-      if(!Cache.ContainsKey(item.GetHashCode())) {
+      if(item != null && !Cache.ContainsKey(item.GetHashCode())) {
         IJsonItemConverter converter = GetConverter(item.GetType());
         if(converter != null) converter.Inject(item, data, root);
       }

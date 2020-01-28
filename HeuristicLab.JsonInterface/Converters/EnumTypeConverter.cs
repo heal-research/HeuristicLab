@@ -14,12 +14,12 @@ namespace HeuristicLab.JsonInterface {
     public override void Inject(IItem item, IJsonItem data, IJsonItemConverter root) =>
       ((dynamic)item).Value = Enum.Parse(
         item.GetType().GenericTypeArguments.First(), 
-        CastValue<string>(data.Value));
+        ((StringJsonItem)data).Value);
     
     public override IJsonItem Extract(IItem value, IJsonItemConverter root) {
       object val = ((dynamic)value).Value;
       Type enumType = val.GetType();
-      return new JsonItem() { 
+      return new StringJsonItem() { 
         Name = value.ItemName,
         Value = Enum.GetName(enumType, val),
         Range = Enum.GetNames(enumType)

@@ -33,8 +33,13 @@ namespace HeuristicLab.JsonInterface {
     protected object GetMaxValue(Type t) {
       TypeCode typeCode = Type.GetTypeCode(t);
 
+
       if (t.IsEqualTo(typeof(PercentValue)))
         return 1.0d;
+
+      if(t == typeof(IntValue)) {
+        return int.MaxValue;
+      }
 
       switch (typeCode) {
         case TypeCode.Int16: return short.MaxValue;
@@ -57,6 +62,10 @@ namespace HeuristicLab.JsonInterface {
 
       if (t.IsEqualTo(typeof(PercentValue)))
         return 0.0d;
+
+      if (t == typeof(IntValue)) {
+        return int.MinValue;
+      }
 
       switch (typeCode) {
         case TypeCode.Int16: return short.MinValue;

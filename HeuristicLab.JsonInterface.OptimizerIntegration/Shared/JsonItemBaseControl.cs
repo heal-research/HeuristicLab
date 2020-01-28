@@ -10,33 +10,26 @@ using System.Windows.Forms;
 
 namespace HeuristicLab.JsonInterface.OptimizerIntegration {
   public partial class JsonItemBaseControl : UserControl {
-    public JsonItemVM VM { get; set; }
+    private JsonItemVMBase VM { get; set; }
 
     private JsonItemBaseControl() {
       InitializeComponent();
     }
 
-    public JsonItemBaseControl(JsonItemVM vm) {
+    public JsonItemBaseControl(JsonItemVMBase vm) {
       InitializeComponent();
       VM = vm;
-      checkBoxActive.Checked = VM.Selected;
-      textBoxName.Text = VM.Item.Name;
+
+      checkBoxActive.DataBindings.Add("Checked", VM, nameof(JsonItemVMBase.Selected));
+      textBoxName.DataBindings.Add("Text", VM, nameof(JsonItemVMBase.Name));
+      textBoxActualName.DataBindings.Add("Text", VM, nameof(JsonItemVMBase.ActualName));
+
+      //checkBoxActive.Checked = VM.Selected;
+      //textBoxName.Text = VM.Item.Name;
       if (string.IsNullOrWhiteSpace(VM.Item.ActualName))
         textBoxActualName.ReadOnly = true;
       else
         textBoxActualName.Text = VM.Item.ActualName;
-    }
-
-    private void checkBoxActive_CheckedChanged(object sender, EventArgs e) {
-      VM.Selected = checkBoxActive.Checked;
-    }
-
-    private void textBoxName_TextChanged(object sender, EventArgs e) {
-      VM.Item.Name = textBoxName.Text;
-    }
-
-    private void textBoxActualName_TextChanged(object sender, EventArgs e) {
-      VM.Item.ActualName = textBoxActualName.Text;
     }
   }
 }
