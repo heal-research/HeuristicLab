@@ -48,12 +48,10 @@
       // 
       // numericRangeControl1
       // 
-      this.numericRangeControl1.IsDouble = false;
       this.numericRangeControl1.Location = new System.Drawing.Point(9, 101);
       this.numericRangeControl1.Name = "numericRangeControl1";
       this.numericRangeControl1.Size = new System.Drawing.Size(487, 112);
       this.numericRangeControl1.TabIndex = 16;
-      this.numericRangeControl1.VM = null;
       // 
       // JsonItemValueControl
       // 

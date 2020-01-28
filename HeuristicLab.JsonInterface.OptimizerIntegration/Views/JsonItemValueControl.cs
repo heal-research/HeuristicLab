@@ -12,24 +12,72 @@ using System.Globalization;
 namespace HeuristicLab.JsonInterface.OptimizerIntegration {
 
   public class JsonItemIntValueControl : JsonItemValueControl {
+    private readonly IntValueVM vm;
 
-    public JsonItemIntValueControl(SingleValueVM<int> vm) : base(vm) { }
+    #region Overriden Properties
+    protected override object VM => vm;
+    protected override string ValuePropertyId => nameof(IntValueVM.Value);
+    protected override string MinRangePropertyId => nameof(IntValueVM.MinRange);
+    protected override string MaxRangePropertyId => nameof(IntValueVM.MaxRange);
+    protected override string EnableMinRangePropertyId => nameof(IntValueVM.EnableMinRange);
+    protected override string EnableMaxRangePropertyId => nameof(IntValueVM.EnableMaxRange);
+    #endregion
+
+    public JsonItemIntValueControl(IntValueVM vm) : base(vm) {
+      this.vm = vm;
+      Init();
+    }
 
   }
 
   public class JsonItemDoubleValueControl : JsonItemValueControl {
-    private SingleValueVM<double> VM { get; set; }
+    private readonly DoubleValueVM vm;
 
-    public JsonItemDoubleValueControl(SingleValueVM<double> vm) : base(vm) {
-      VM = vm;
+    #region Overriden Properties
+    protected override object VM => vm;
+    protected override string ValuePropertyId => nameof(DoubleValueVM.Value);
+    protected override string MinRangePropertyId => nameof(DoubleValueVM.MinRange);
+    protected override string MaxRangePropertyId => nameof(DoubleValueVM.MaxRange);
+    protected override string EnableMinRangePropertyId => nameof(DoubleValueVM.EnableMinRange);
+    protected override string EnableMaxRangePropertyId => nameof(DoubleValueVM.EnableMaxRange);
+    #endregion
+
+    public JsonItemDoubleValueControl(DoubleValueVM vm) : base(vm) {
+      this.vm = vm;
+      Init();
     }
 
   }
 
   public abstract partial class JsonItemValueControl : JsonItemBaseControl {
+    #region Protected Properties
+    protected TextBox TBValue { get; set; }
+    protected NumericRangeControl NumericRangeControl { get; set; }
+    #endregion
+
+    #region Abstract Properties
+    protected abstract object VM { get; }
+    protected abstract string ValuePropertyId { get; }
+    protected abstract string MinRangePropertyId { get; }
+    protected abstract string MaxRangePropertyId { get; }
+    protected abstract string EnableMinRangePropertyId { get; }
+    protected abstract string EnableMaxRangePropertyId { get; }
+    #endregion
 
     public JsonItemValueControl(JsonItemVMBase vm) : base(vm) {
       InitializeComponent();
+      TBValue = textBoxValue;
+      NumericRangeControl = numericRangeControl1;
+    }
+
+    protected void Init() {
+      TBValue.DataBindings.Add("Text", VM, ValuePropertyId);
+      NumericRangeControl.TBMinRange.DataBindings.Add("Text", VM, MinRangePropertyId);
+      NumericRangeControl.TBMaxRange.DataBindings.Add("Text", VM, MaxRangePropertyId);
+      NumericRangeControl.EnableMinRange.DataBindings.Add("Checked", VM, EnableMinRangePropertyId,
+        false, DataSourceUpdateMode.OnPropertyChanged);
+      NumericRangeControl.EnableMaxRange.DataBindings.Add("Checked", VM, EnableMaxRangePropertyId,
+        false, DataSourceUpdateMode.OnPropertyChanged);
     }
 
   }

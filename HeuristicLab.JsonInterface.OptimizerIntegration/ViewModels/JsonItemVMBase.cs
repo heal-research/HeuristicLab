@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace HeuristicLab.JsonInterface.OptimizerIntegration {
-  public abstract class JsonItemVMBase : INotifyPropertyChanged {
+  public class JsonItemVMBase : INotifyPropertyChanged {
     public event PropertyChangedEventHandler PropertyChanged;
     public IJsonItem Item { get; set; }
 
