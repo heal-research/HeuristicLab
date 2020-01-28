@@ -22,14 +22,6 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
 
     public virtual Type JsonItemType => typeof(JsonItem);
 
-    //protected IJsonItemValueParser Parser { get; set; }
-    //child tree
-    //private IList<JsonItemVM> nodes = new List<JsonItemVM>();
-
-    //public IEnumerable<JsonItemVM> Nodes { get => nodes; }
-    //public JsonItemVM Parent { get; private set; }
-
-
     private bool selected = true;
     public bool Selected {
       get => selected;
@@ -54,6 +46,7 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
         OnPropertyChange(this, nameof(ActualName));
       }
     }
+
     public virtual JsonItemBaseControl GetControl() {
       return new JsonItemBaseControl(this);
     }

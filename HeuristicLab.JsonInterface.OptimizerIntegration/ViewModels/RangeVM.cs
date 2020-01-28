@@ -20,33 +20,33 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
   public abstract class RangeVM<T> : JsonItemVMBase {
 
     public T MinValue {
-      get => Cast(((Array)base.Item.Value).GetValue(0));
+      get => Cast(((Array)Item.Value).GetValue(0));
       set {
-        SetValue(value, ((Array)base.Item.Value).GetValue(1));
+        SetValue(value, ((Array)Item.Value).GetValue(1));
         OnPropertyChange(this, nameof(MinValue));
       }
     }
 
     public T MaxValue {
-      get => Cast(((Array)base.Item.Value).GetValue(1));
+      get => Cast(((Array)Item.Value).GetValue(1));
       set {
-        SetValue(((Array)base.Item.Value).GetValue(0), value);
+        SetValue(((Array)Item.Value).GetValue(0), value);
         OnPropertyChange(this, nameof(MaxValue));
       }
     }
 
     public T MinRange {
-      get => Cast(base.Item.Range.First());
+      get => Cast(Item.Range.First());
       set {
-        SetRange(value, base.Item.Range.Last());
+        SetRange(value, Item.Range.Last());
         OnPropertyChange(this, nameof(MinRange));
       }
     }
 
     public T MaxRange {
-      get => Cast(base.Item.Range.Last());
+      get => Cast(Item.Range.Last());
       set {
-        SetRange(base.Item.Range.First(), value);
+        SetRange(Item.Range.First(), value);
         OnPropertyChange(this, nameof(MaxRange));
       }
     }
@@ -54,9 +54,9 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
     private T Cast(object obj) => (T)Convert.ChangeType(obj, typeof(T));
 
     private void SetValue(object min, object max) =>
-      base.Item.Value = new object[] { min, max };
+      Item.Value = new object[] { min, max };
 
     private void SetRange(object min, object max) =>
-      base.Item.Range = new object[] { min, max };
+      Item.Range = new object[] { min, max };
   }
 }
