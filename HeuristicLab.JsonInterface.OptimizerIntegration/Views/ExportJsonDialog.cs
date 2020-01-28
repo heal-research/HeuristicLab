@@ -77,7 +77,7 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
         File.WriteAllText(SaveFileDialog.FileName, Generator.GenerateTemplate(Root, Optimizer));
       }
 
-      this.Close();
+      Close();
     }
 
     private void BuildTreeNode(TreeNode node, IJsonItem item) {

@@ -11,9 +11,9 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
        new JsonItemValidValuesControl(this);
 
     public string Value {
-      get => base.Item.Value.ToString();
+      get => Item.Value.ToString();
       set {
-        base.Item.Value = value;
+        Item.Value = value;
         OnPropertyChange(this, nameof(Value));
       }
     }

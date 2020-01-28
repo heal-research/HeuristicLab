@@ -40,25 +40,25 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
   public abstract class SingleValueVM<T> : JsonItemVMBase {
     
     public T Value { 
-      get => Cast(base.Item.Value);
+      get => Cast(Item.Value);
       set {
-        base.Item.Value = value;
+        Item.Value = value;
         OnPropertyChange(this, nameof(Value));
       }
     }
 
     public T MinRange {
-      get => Cast(base.Item.Range.First());
+      get => Cast(Item.Range.First());
       set {
-        SetRange(value, base.Item.Range.Last());
+        SetRange(value, Item.Range.Last());
         OnPropertyChange(this, nameof(MinRange));
       }
     }
 
     public T MaxRange {
-      get => Cast(base.Item.Range.Last());
+      get => Cast(Item.Range.Last());
       set {
-        SetRange(base.Item.Range.First(), value);
+        SetRange(Item.Range.First(), value);
         OnPropertyChange(this, nameof(MaxRange));
       }
     }
@@ -89,7 +89,7 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
 
     private void SetRange(object min, object max) {
       object[] range = new object[] { min, max };
-      base.Item.Range = range;
+      Item.Range = range;
     }
 
     protected abstract T MinTypeValue { get; }

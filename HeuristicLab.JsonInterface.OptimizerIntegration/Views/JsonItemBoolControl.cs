@@ -16,12 +16,6 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
       InitializeComponent();
       VM = vm;
       checkBoxValue.DataBindings.Add("Checked", VM, nameof(BoolValueVM.Value));
-      //checkBoxValue.Checked = (bool)vm.Item.Value;
     }
-    /*
-    private void checkBoxValue_CheckStateChanged(object sender, EventArgs e) {
-      VM.Item.Value = checkBoxValue.Checked;
-    }
-    */
   }
 }
