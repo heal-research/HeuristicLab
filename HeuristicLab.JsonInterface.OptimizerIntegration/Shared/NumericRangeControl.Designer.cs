@@ -42,7 +42,6 @@
       this.textBoxFrom.ReadOnly = true;
       this.textBoxFrom.Size = new System.Drawing.Size(164, 20);
       this.textBoxFrom.TabIndex = 2;
-      this.textBoxFrom.Leave += new System.EventHandler(this.textBoxFrom_Leave);
       // 
       // label6
       // 
@@ -80,7 +79,6 @@
       this.checkBoxFrom.Size = new System.Drawing.Size(15, 14);
       this.checkBoxFrom.TabIndex = 4;
       this.checkBoxFrom.UseVisualStyleBackColor = true;
-      this.checkBoxFrom.CheckStateChanged += new System.EventHandler(this.checkBoxFrom_CheckStateChanged);
       // 
       // checkBoxTo
       // 
@@ -90,7 +88,6 @@
       this.checkBoxTo.Size = new System.Drawing.Size(15, 14);
       this.checkBoxTo.TabIndex = 7;
       this.checkBoxTo.UseVisualStyleBackColor = true;
-      this.checkBoxTo.CheckStateChanged += new System.EventHandler(this.checkBoxTo_CheckStateChanged);
       // 
       // textBoxTo
       // 
@@ -101,7 +98,6 @@
       this.textBoxTo.ReadOnly = true;
       this.textBoxTo.Size = new System.Drawing.Size(164, 20);
       this.textBoxTo.TabIndex = 6;
-      this.textBoxTo.Leave += new System.EventHandler(this.textBoxTo_Leave);
       // 
       // label1
       // 

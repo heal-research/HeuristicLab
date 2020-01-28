@@ -17,7 +17,7 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
       new JsonItemRangeControl(this);
   }
 
-  public abstract class RangeVM<T> : JsonItemVM {
+  public abstract class RangeVM<T> : JsonItemVMBase {
 
     public T MinValue {
       get => Cast(((Array)base.Item.Value).GetValue(0));

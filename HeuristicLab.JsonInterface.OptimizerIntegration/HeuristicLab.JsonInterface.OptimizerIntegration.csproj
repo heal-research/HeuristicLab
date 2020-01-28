@@ -132,7 +132,6 @@
     <Compile Include="Views\JsonItemValidValuesControl.Designer.cs">
       <DependentUpon>JsonItemValidValuesControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="ViewModels\JsonItemVM.cs" />
     <Compile Include="MenuItems\ImportJsonTemplateMenuItem.cs" />
     <Compile Include="MenuItems\ExportJsonTemplateMenuItem.cs" />
     <Compile Include="Plugin.cs" />
