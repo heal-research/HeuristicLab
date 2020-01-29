@@ -20,16 +20,16 @@
 #endregion
 
 using System.Collections.Generic;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HEAL.Attic;
-using HeuristicLab.Problems.DataAnalysis.Symbolic;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
+using HeuristicLab.Problems.DataAnalysis.Symbolic;
 
 namespace HeuristicLab.Problems.ExternalEvaluation.GP {
   [StorableType("747A7784-EF15-4CEF-A621-79A9071A69F5")]
   [Item("ExternalEvaluationExpressionGrammar", "Represents a grammar for functional expressions using all available functions.")]
-  public class ExternalEvaluationExpressionGrammar : SymbolicExpressionGrammar, ISymbolicDataAnalysisGrammar {
+  public class ExternalEvaluationExpressionGrammar : DataAnalysisGrammar {
     [Storable]
     private HeuristicLab.Problems.DataAnalysis.Symbolic.Variable variableSymbol;
     [StorableConstructor]
@@ -44,7 +44,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation.GP {
       Initialize();
     }
 
-    private void Initialize() {      
+    private void Initialize() {
       var add = new Addition();
       var sub = new Subtraction();
       var mul = new Multiplication();
