@@ -23,7 +23,7 @@ namespace HeuristicLab.JsonInterface {
       IJsonItem item = base.Extract(value, root);
       dynamic val = value as dynamic;
       foreach (var op in val.Operators) {
-        item.AddChilds(new BoolJsonItem() {
+        item.AddChildren(new BoolJsonItem() {
           Name = op.Name,
           Value = val.Operators.ItemChecked(op),
           Range = new bool[] { false, true }

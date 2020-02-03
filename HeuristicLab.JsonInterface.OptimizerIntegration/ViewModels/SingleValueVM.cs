@@ -37,7 +37,7 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
        new JsonItemBoolControl(this);
   }
 
-  public abstract class SingleValueVM<T> : JsonItemVMBase {
+  public abstract class SingleValueVM<T> : RangedValueBaseVM<T> {
     
     public T Value { 
       get => Cast(Item.Value);
@@ -46,53 +46,5 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
         OnPropertyChange(this, nameof(Value));
       }
     }
-
-    public T MinRange {
-      get => Cast(Item.Range.First());
-      set {
-        SetRange(value, Item.Range.Last());
-        OnPropertyChange(this, nameof(MinRange));
-      }
-    }
-
-    public T MaxRange {
-      get => Cast(Item.Range.Last());
-      set {
-        SetRange(Item.Range.First(), value);
-        OnPropertyChange(this, nameof(MaxRange));
-      }
-    }
-
-    private bool enableMinRange = false;
-    public bool EnableMinRange {
-      get => enableMinRange;
-      set {
-        enableMinRange = value;
-        if (!enableMinRange)
-          MinRange = MinTypeValue;
-        OnPropertyChange(this, nameof(EnableMinRange));
-      }
-    }
-
-    private bool enableMaxRange = false;
-    public bool EnableMaxRange {
-      get => enableMaxRange;
-      set {
-        enableMaxRange = value;
-        if (!enableMaxRange)
-          MaxRange = MaxTypeValue;
-        OnPropertyChange(this, nameof(EnableMaxRange));
-      }
-    }
-
-    private T Cast(object obj) => (T)Convert.ChangeType(obj, typeof(T));
-
-    private void SetRange(object min, object max) {
-      object[] range = new object[] { min, max };
-      Item.Range = range;
-    }
-
-    protected abstract T MinTypeValue { get; }
-    protected abstract T MaxTypeValue { get; }
   }
 }

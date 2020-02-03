@@ -33,7 +33,7 @@ namespace HeuristicLab.JsonInterface {
             item = tmp;
             //JsonItem.Merge(item as JsonItem, tmp as JsonItem);
           } else
-            item.AddChilds(tmp);
+            item.AddChildren(tmp);
         }
       }
       return item;

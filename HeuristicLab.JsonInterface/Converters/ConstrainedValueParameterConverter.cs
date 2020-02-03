@@ -34,7 +34,7 @@ namespace HeuristicLab.JsonInterface {
         Value = parameter.ActualValue?.ToString(),
         Range = GetValidValues(parameter).Select(x => x.ToString())
       };
-      item.AddChilds(GetParameterizedChilds(parameter));
+      item.AddChildren(GetParameterizedChilds(parameter));
 
       return item;
     }

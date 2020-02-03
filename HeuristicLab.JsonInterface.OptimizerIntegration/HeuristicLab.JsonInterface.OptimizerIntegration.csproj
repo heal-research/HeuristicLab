@@ -96,6 +96,7 @@
     </Compile>
     <Compile Include="ViewModels\ArrayValueVM.cs" />
     <Compile Include="ViewModels\JsonItemVMBase.cs" />
+    <Compile Include="ViewModels\RangedValueBaseVM.cs" />
     <Compile Include="ViewModels\RangeVM.cs" />
     <Compile Include="ViewModels\SingleValueVM.cs" />
     <Compile Include="ViewModels\StringValueVM.cs" />
@@ -196,6 +197,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Views\ExportJsonDialog.resx">
       <DependentUpon>ExportJsonDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\JsonItemArrayValueControl.resx">
+      <DependentUpon>JsonItemArrayValueControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\JsonItemBoolControl.resx">
       <DependentUpon>JsonItemBoolControl.cs</DependentUpon>

@@ -20,23 +20,20 @@ namespace HeuristicLab.JsonInterface {
     public override IJsonItem Extract(IItem value, IJsonItemConverter root) {
       IValueLookupParameter param = value as IValueLookupParameter;
 
-      IJsonItem item = new JsonItem() {
-        Name = param.Name,
-        ActualName = param.ActualName
-      };
+      IJsonItem item = new JsonItem() {};
 
-      object actualValue = null;
-      IEnumerable<object> actualRange = null;
       if (param.Value != null) {
         IJsonItem tmp = root.Extract(param.Value, root);
-        tmp.Parent = item;
+        /*tmp.Parent = item;
         actualValue = tmp.Value;
         actualRange = tmp.Range;
+        */
+        item = tmp;
       } else {
-        actualRange = new object[] { GetMinValue(param.DataType), GetMaxValue(param.DataType) };
+        item.Range = new object[] { GetMinValue(param.DataType), GetMaxValue(param.DataType) };
       }
-      item.Value = actualValue;
-      item.Range = actualRange;
+      item.Name = param.Name;
+      item.ActualName = param.ActualName;
       return item;
     }
   }

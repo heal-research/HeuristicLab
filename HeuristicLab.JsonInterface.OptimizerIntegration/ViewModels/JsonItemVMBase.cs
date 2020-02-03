@@ -8,7 +8,16 @@ using System.Threading.Tasks;
 namespace HeuristicLab.JsonInterface.OptimizerIntegration {
   public class JsonItemVMBase : INotifyPropertyChanged {
     public event PropertyChangedEventHandler PropertyChanged;
-    public IJsonItem Item { get; set; }
+    public event Action ItemChanged;
+
+    private IJsonItem item;
+    public IJsonItem Item {
+      get => item;
+      set {
+        item = value;
+        ItemChanged?.Invoke();
+      }
+    }
 
     protected void OnPropertyChange(object sender, string propertyName) {
       // Make a temporary copy of the event to avoid possibility of
