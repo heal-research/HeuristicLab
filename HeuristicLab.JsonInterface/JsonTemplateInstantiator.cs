@@ -67,13 +67,8 @@ namespace HeuristicLab.JsonInterface {
 
     #region Helper
 
-    private static object GetValueFromJObject(JObject obj) {
-      object val = obj[nameof(IJsonItem.Value)]?.ToObject<object>();
-      if (val is JContainer jContainer) // for resolving array values
-        val = jContainer.ToObject<object[]>();
-
-      return val;
-    }
+    private static object GetValueFromJObject(JObject obj) =>
+      obj[nameof(IJsonItem.Value)]?.ToObject<object>();
 
     private static void CollectParameterizedItems(InstData instData) {
       //JCGenerator generator = new JCGenerator();

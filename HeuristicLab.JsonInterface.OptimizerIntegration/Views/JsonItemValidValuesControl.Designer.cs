@@ -43,7 +43,7 @@
       this.tableOptions.Name = "tableOptions";
       this.tableOptions.RowCount = 1;
       this.tableOptions.RowStyles.Add(new System.Windows.Forms.RowStyle());
-      this.tableOptions.Size = new System.Drawing.Size(478, 151);
+      this.tableOptions.Size = new System.Drawing.Size(478, 137);
       this.tableOptions.TabIndex = 12;
       // 
       // groupBoxRange
@@ -55,7 +55,7 @@
       this.groupBoxRange.Controls.Add(this.tableOptions);
       this.groupBoxRange.Location = new System.Drawing.Point(6, 108);
       this.groupBoxRange.Name = "groupBoxRange";
-      this.groupBoxRange.Size = new System.Drawing.Size(490, 176);
+      this.groupBoxRange.Size = new System.Drawing.Size(490, 162);
       this.groupBoxRange.TabIndex = 14;
       this.groupBoxRange.TabStop = false;
       this.groupBoxRange.Text = "Range";
@@ -90,7 +90,7 @@
       this.Controls.Add(this.groupBoxRange);
       this.ForeColor = System.Drawing.Color.Black;
       this.Name = "JsonItemValidValuesControl";
-      this.Size = new System.Drawing.Size(500, 290);
+      this.Size = new System.Drawing.Size(500, 276);
       this.Controls.SetChildIndex(this.groupBoxRange, 0);
       this.Controls.SetChildIndex(this.comboBoxValues, 0);
       this.Controls.SetChildIndex(this.label2, 0);

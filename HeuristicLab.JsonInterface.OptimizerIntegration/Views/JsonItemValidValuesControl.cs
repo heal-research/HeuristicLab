@@ -13,16 +13,13 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
 
     public JsonItemValidValuesControl(StringValueVM vm) : base(vm) {
       InitializeComponent();
-      /*
-      foreach (var i in VM.Item.Range) {
-        AddOption((string)i);
-        if(i == VM.Item.Value) {
-          comboBoxValues.SelectedItem = (string)i;
-        }
-      }*/
+      foreach (var i in VM.Item.Range)
+        SetupOption((string)i);
+
+      comboBoxValues.DataBindings.Add("SelectedItem", VM, nameof(StringValueVM.Value));
     }
-    /*
-    private void AddOption(string opt) {
+    
+    private void SetupOption(string opt) {
       AddComboOption(opt);
       TextBox tb = new TextBox();
       tb.Text = opt;
@@ -49,7 +46,8 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
       foreach (var i in comboBoxValues.Items) {
         items.Add((string)i);
       }
-      VM.Item.Range = items;
+      ((StringValueVM)VM).Range = items;
+      comboBoxValues.Enabled = true;
       tableOptions.Refresh();
     }
 
@@ -59,17 +57,12 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
       foreach (var i in comboBoxValues.Items) {
         items.Add((string)i);
       }
-      VM.Item.Range = items;
+      ((StringValueVM)VM).Range = items;
+      if (((StringValueVM)VM).Range.Count() <= 0) {
+        comboBoxValues.Enabled = false;
+        comboBoxValues.SelectedIndex = -1;
+      }
       tableOptions.Refresh();
     }
-    
-    private void comboBoxValues_SelectedValueChanged(object sender, EventArgs e) {
-      VM.Item.Value = (string)comboBoxValues.SelectedItem;
-    }
-
-    private void JsonItemValidValuesControl_Load(object sender, EventArgs e) {
-
-    }
-    */
   }
 }

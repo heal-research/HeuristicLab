@@ -11,55 +11,100 @@ namespace HeuristicLab.JsonInterface {
   public class IntMatrixConverter : ValueTypeMatrixConverter<IntMatrix, int> {
     public override int Priority => 1;
     public override Type ConvertableType => typeof(IntMatrix);
+    public override void Inject(IItem item, IJsonItem data, IJsonItemConverter root) {
+      IntMatrix mat = item as IntMatrix;
+      IntMatrixJsonItem d = data as IntMatrixJsonItem;
+      CopyMatrixData(mat, d.Value);
+    }
+
+    public override IJsonItem Extract(IItem value, IJsonItemConverter root) =>
+      new IntMatrixJsonItem() {
+        Name = "[OverridableParamName]",
+        Value = Transform((IntMatrix)value)
+      };
   }
 
   public class DoubleMatrixConverter : ValueTypeMatrixConverter<DoubleMatrix, double> {
     public override int Priority => 1;
     public override Type ConvertableType => typeof(DoubleMatrix);
+
+    public override void Inject(IItem item, IJsonItem data, IJsonItemConverter root) {
+      DoubleMatrix mat = item as DoubleMatrix;
+      DoubleMatrixJsonItem d = data as DoubleMatrixJsonItem;
+      CopyMatrixData(mat, d.Value);
+    }
+
+    public override IJsonItem Extract(IItem value, IJsonItemConverter root) =>
+      new DoubleMatrixJsonItem() {
+        Name = "[OverridableParamName]",
+        Value = Transform((DoubleMatrix)value)
+      };
   }
 
   public class PercentMatrixConverter : ValueTypeMatrixConverter<PercentMatrix, double> {
     public override int Priority => 2;
     public override Type ConvertableType => typeof(PercentMatrix);
+
+    public override void Inject(IItem item, IJsonItem data, IJsonItemConverter root) {
+      PercentMatrix mat = item as PercentMatrix;
+      DoubleMatrixJsonItem d = data as DoubleMatrixJsonItem;
+      CopyMatrixData(mat, d.Value);
+    }
+
+    public override IJsonItem Extract(IItem value, IJsonItemConverter root) =>
+      new DoubleMatrixJsonItem() {
+        Name = "[OverridableParamName]",
+        Value = Transform((PercentMatrix)value)
+      };
   }
 
   public class BoolMatrixConverter : ValueTypeMatrixConverter<BoolMatrix, bool> {
     public override int Priority => 1;
     public override Type ConvertableType => typeof(BoolMatrix);
+
+    public override void Inject(IItem item, IJsonItem data, IJsonItemConverter root) {
+      BoolMatrix mat = item as BoolMatrix;
+      BoolMatrixJsonItem d = data as BoolMatrixJsonItem;
+      CopyMatrixData(mat, d.Value);
+    }
+
+    public override IJsonItem Extract(IItem value, IJsonItemConverter root) =>
+      new BoolMatrixJsonItem() {
+        Name = "[OverridableParamName]",
+        Value = Transform((BoolMatrix)value)
+      };
   }
 
   public abstract class ValueTypeMatrixConverter<MatrixType, T> : BaseConverter
     where MatrixType : ValueTypeMatrix<T> 
     where T : struct 
   {
-    public override void Inject(IItem item, IJsonItem data, IJsonItemConverter root) => 
-      CopyMatrixData(item as MatrixType, data.Value);
-
-    public override IJsonItem Extract(IItem value, IJsonItemConverter root) =>
-      new JsonItem() {
-        Name = "[OverridableParamName]",
-        Value = ((MatrixType)value).CloneAsMatrix()
-
-      };
-
     #region Helper
-    private void CopyMatrixData(MatrixType matrix, object data) {
-      if (data is Array arr) {
-        var rows = arr.Length;
-        var cols = arr.Length > 0 && arr.GetValue(0) is JArray jarr ? jarr.Count : 0;
+    protected void CopyMatrixData(MatrixType matrix, T[][] data) {
+      var rows = data.Length;
+      var cols = data.Length > 0 ? data[0].Length : 0;
 
-        var rowInfo = matrix.GetType().GetProperty("Rows");
-        rowInfo.SetValue(matrix, rows);
-        var colInfo = matrix.GetType().GetProperty("Columns");
-        colInfo.SetValue(matrix, cols);
+      var rowInfo = matrix.GetType().GetProperty("Rows");
+      rowInfo.SetValue(matrix, rows);
+      var colInfo = matrix.GetType().GetProperty("Columns");
+      colInfo.SetValue(matrix, cols);
 
-        for (int x = 0; x < rows; ++x) {
-          jarr = (JArray)arr.GetValue(x);
-          for (int y = 0; y < cols; ++y) {
-            matrix[x, y] = jarr[y].ToObject<T>();
-          }
+      for (int x = 0; x < rows; ++x) {
+        for (int y = 0; y < cols; ++y) {
+          matrix[x, y] = data[x][y];
         }
       }
+    }
+
+    protected T[][] Transform(MatrixType matrix) {
+      T[][] m = new T[matrix.Rows][];
+      for (int r = 0; r < matrix.Rows; ++r) {
+        m[r] = new T[matrix.Columns];
+        for (int c = 0; c < matrix.Columns; ++c) {
+          m[r][c] = matrix[r, c];
+        }
+      }
+      return m;
     }
     #endregion
   }

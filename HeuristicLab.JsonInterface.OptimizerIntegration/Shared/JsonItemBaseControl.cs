@@ -10,7 +10,7 @@ using System.Windows.Forms;
 
 namespace HeuristicLab.JsonInterface.OptimizerIntegration {
   public partial class JsonItemBaseControl : UserControl {
-    private JsonItemVMBase VM { get; set; }
+    protected JsonItemVMBase VM { get; set; }
 
     private JsonItemBaseControl() {
       InitializeComponent();
