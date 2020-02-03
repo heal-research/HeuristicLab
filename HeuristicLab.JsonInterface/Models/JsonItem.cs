@@ -1,13 +1,9 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using HeuristicLab.Core;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace HeuristicLab.JsonInterface {
   /// <summary>
@@ -73,7 +69,7 @@ namespace HeuristicLab.JsonInterface {
     public JsonItem() { }
 
     public JsonItem(IEnumerable<IJsonItem> childs) {
-      AddChilds(childs);
+      AddChildren(childs);
     }
     #endregion
 
@@ -93,10 +89,10 @@ namespace HeuristicLab.JsonInterface {
     #endregion
 
     #region Public Methods
-    public void AddChilds(params IJsonItem[] childs) => 
-      AddChilds(childs as IEnumerable<IJsonItem>);
+    public void AddChildren(params IJsonItem[] childs) => 
+      AddChildren(childs as IEnumerable<IJsonItem>);
 
-    public void AddChilds(IEnumerable<IJsonItem> childs) {
+    public void AddChildren(IEnumerable<IJsonItem> childs) {
       if (Children == null)
         Children = new List<IJsonItem>();
       foreach (var child in childs) {

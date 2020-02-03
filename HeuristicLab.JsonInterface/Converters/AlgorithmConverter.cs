@@ -24,13 +24,13 @@ namespace HeuristicLab.JsonInterface.Converters {
       IJsonItem item = base.Extract(value, root);
       IAlgorithm algorithm = value as IAlgorithm;
       foreach (var res in algorithm.Results) {
-        item.AddChilds(new ResultItem() {
+        item.AddChildren(new ResultItem() {
           Name = res.Name,
           Value = true,
           Range = new object[] { true, false }
         });
       }
-      item.AddChilds(root.Extract(algorithm.Problem, root));
+      item.AddChildren(root.Extract(algorithm.Problem, root));
       return item;
     }
   }

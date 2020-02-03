@@ -22,6 +22,16 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
       textBoxValueTo.Text = VM.Item.Range.Last().ToString();
       */
     }
+    public JsonItemRangeControl(IntRangeVM vm) : base(vm) {
+      InitializeComponent();
+      /*
+      this.isDouble = isDouble;
+      textBoxValueFrom.Text = ((Array)VM.Item.Value).GetValue(0).ToString();
+      textBoxValueTo.Text = ((Array)VM.Item.Value).GetValue(1).ToString();
+      textBoxValueFrom.Text = VM.Item.Range.First().ToString();
+      textBoxValueTo.Text = VM.Item.Range.Last().ToString();
+      */
+    }
     /*
     protected abstract object Parse(string s);
 

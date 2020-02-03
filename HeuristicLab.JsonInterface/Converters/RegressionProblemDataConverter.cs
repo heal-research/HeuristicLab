@@ -26,20 +26,20 @@ namespace HeuristicLab.JsonInterface {
       dynamic targetVariable = val.TargetVariable;
       FieldInfo dataInfo = dataset.GetType().GetField("storableData", flags);
       // TODO: aufteilen in trainings und test daten abschnitte
-      item.AddChilds(new JsonItem() {
+      item.AddChildren(new JsonItem() {
         Name = "Dataset",
         Value = dataInfo.GetValue(dataset)
       });
 
       IEnumerable<StringValue> variables = (IEnumerable<StringValue>)val.InputVariables;
-      item.AddChilds(new JsonItem() {
+      item.AddChildren(new JsonItem() {
         Name = "TargetVariable",
         Value = (object)targetVariable,
         Range = variables.Select(x => x.Value)
       });
 
 
-      item.AddChilds(new JsonItem() {
+      item.AddChildren(new JsonItem() {
         Name = "AllowedInputVariables",
         Value = (object)val.AllowedInputVariables,
         Range = variables.Select(x => x.Value)

@@ -28,7 +28,7 @@ namespace HeuristicLab.JsonInterface {
         if (!param.Hidden) {
           IJsonItem tmp = root.Extract(param, root);
           if (!(tmp is UnsupportedJsonItem))
-            item.AddChilds(tmp);
+            item.AddChildren(tmp);
         }
       }
 

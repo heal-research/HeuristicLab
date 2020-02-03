@@ -14,7 +14,7 @@ namespace HeuristicLab.JsonInterface {
     }
 
     [JsonIgnore]
-    IList<IJsonItem> Children { get; }
+    IList<IJsonItem> Children { get; } //TODO: IEnumerable
 
     [JsonIgnore]
     IJsonItem Parent { get; set; }
@@ -27,8 +27,8 @@ namespace HeuristicLab.JsonInterface {
 
     IJsonItemValidator GetValidator();
 
-    void AddChilds(params IJsonItem[] childs);
+    void AddChildren(params IJsonItem[] childs);
 
-    void AddChilds(IEnumerable<IJsonItem> childs);
+    void AddChildren(IEnumerable<IJsonItem> childs);
   }
 }
