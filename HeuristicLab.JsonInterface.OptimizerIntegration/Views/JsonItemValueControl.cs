@@ -12,10 +12,8 @@ using System.Globalization;
 namespace HeuristicLab.JsonInterface.OptimizerIntegration {
 
   public class JsonItemIntValueControl : JsonItemValueControl {
-    private readonly IntValueVM vm;
 
     #region Overriden Properties
-    protected override object VM => vm;
     protected override string ValuePropertyId => nameof(IntValueVM.Value);
     protected override string MinRangePropertyId => nameof(IntValueVM.MinRange);
     protected override string MaxRangePropertyId => nameof(IntValueVM.MaxRange);
@@ -24,17 +22,14 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
     #endregion
 
     public JsonItemIntValueControl(IntValueVM vm) : base(vm) {
-      this.vm = vm;
       Init();
     }
 
   }
 
   public class JsonItemDoubleValueControl : JsonItemValueControl {
-    private readonly DoubleValueVM vm;
 
     #region Overriden Properties
-    protected override object VM => vm;
     protected override string ValuePropertyId => nameof(DoubleValueVM.Value);
     protected override string MinRangePropertyId => nameof(DoubleValueVM.MinRange);
     protected override string MaxRangePropertyId => nameof(DoubleValueVM.MaxRange);
@@ -43,7 +38,6 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
     #endregion
 
     public JsonItemDoubleValueControl(DoubleValueVM vm) : base(vm) {
-      this.vm = vm;
       Init();
     }
 
@@ -56,7 +50,6 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
     #endregion
 
     #region Abstract Properties
-    protected abstract object VM { get; }
     protected abstract string ValuePropertyId { get; }
     protected abstract string MinRangePropertyId { get; }
     protected abstract string MaxRangePropertyId { get; }
@@ -71,7 +64,7 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
     }
 
     protected void Init() {
-      TBValue.DataBindings.Add("Text", VM, ValuePropertyId);
+      TBValue.DataBindings.Add("Text", base.VM, ValuePropertyId);
       NumericRangeControl.TBMinRange.DataBindings.Add("Text", VM, MinRangePropertyId);
       NumericRangeControl.TBMaxRange.DataBindings.Add("Text", VM, MaxRangePropertyId);
       NumericRangeControl.EnableMinRange.DataBindings.Add("Checked", VM, EnableMinRangePropertyId,

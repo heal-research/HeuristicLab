@@ -42,7 +42,6 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
 
     private IDictionary<Type, Type> JI2VM { get; set; }
 
-
     private void InitCache() {
       JI2VM = new Dictionary<Type, Type>();
       foreach (var vmType in ApplicationManager.Manager.GetTypes(typeof(JsonItemVMBase))) {
