@@ -25,11 +25,11 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.Problems.DataAnalysis {
@@ -172,9 +172,9 @@ namespace HeuristicLab.Problems.DataAnalysis {
       }
 
       IList originalValues = null;
-      IList replacementValues = GetReplacementValues(modifiableDataset, variableName, model, rows, targetValues, out originalValues, replacementMethod, factorReplacementMethod);
+      IList replacementValues = GetReplacementValues(modifiableDataset, variableName, model, problemData.AllowedInputVariables, rows, targetValues, out originalValues, replacementMethod, factorReplacementMethod);
 
-      double newValue = CalculateQualityForReplacement(model, modifiableDataset, variableName, originalValues, rows, replacementValues, targetValues);
+      double newValue = CalculateQualityForReplacement(model, modifiableDataset, problemData.AllowedInputVariables, variableName, originalValues, rows, replacementValues, targetValues);
       double impact = quality - newValue;
 
       return impact;
@@ -183,6 +183,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     private static IList GetReplacementValues(ModifiableDataset modifiableDataset,
       string variableName,
       IClassificationModel model,
+      IEnumerable<string> allowedInputVariables,
       IEnumerable<int> rows,
       IEnumerable<double> targetValues,
       out IList originalValues,
@@ -195,7 +196,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
         replacementValues = GetReplacementValuesForDouble(modifiableDataset, rows, (List<double>)originalValues, replacementMethod);
       } else if (modifiableDataset.VariableHasType<string>(variableName)) {
         originalValues = modifiableDataset.GetReadOnlyStringValues(variableName).ToList();
-        replacementValues = GetReplacementValuesForString(model, modifiableDataset, variableName, rows, (List<string>)originalValues, targetValues, factorReplacementMethod);
+        replacementValues = GetReplacementValuesForString(model, modifiableDataset, allowedInputVariables, variableName, rows, (List<string>)originalValues, targetValues, factorReplacementMethod);
       } else {
         throw new NotSupportedException("Variable not supported");
       }
@@ -253,6 +254,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     private static IList GetReplacementValuesForString(IClassificationModel model,
       ModifiableDataset modifiableDataset,
+      IEnumerable<string> allowedInputVariables,
       string variableName,
       IEnumerable<int> rows,
       List<string> originalValues,
@@ -269,7 +271,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
           foreach (var repl in modifiableDataset.GetStringValues(variableName, rows).Distinct()) {
             List<string> curReplacementValues = Enumerable.Repeat(repl, modifiableDataset.Rows).ToList();
             //fholzing: this result could be used later on (theoretically), but is neglected for better readability/method consistency 
-            var newValue = CalculateQualityForReplacement(model, modifiableDataset, variableName, originalValues, rows, curReplacementValues, targetValues);
+            var newValue = CalculateQualityForReplacement(model, modifiableDataset, allowedInputVariables, variableName, originalValues, rows, curReplacementValues, targetValues);
             var curQuality = newValue;
 
             if (curQuality > bestQuality) {
@@ -307,6 +309,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     private static double CalculateQualityForReplacement(
       IClassificationModel model,
       ModifiableDataset modifiableDataset,
+      IEnumerable<string> allowedInputVariables,
       string variableName,
       IList originalValues,
       IEnumerable<int> rows,
@@ -316,7 +319,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       modifiableDataset.ReplaceVariable(variableName, replacementValues);
       var discModel = model as IDiscriminantFunctionClassificationModel;
       if (discModel != null) {
-        var problemData = new ClassificationProblemData(modifiableDataset, modifiableDataset.VariableNames, model.TargetVariable);
+        var problemData = new ClassificationProblemData(modifiableDataset, allowedInputVariables, model.TargetVariable);
         discModel.RecalculateModelParameters(problemData, rows);
       }
 
