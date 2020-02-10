@@ -56,6 +56,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       this.btnOptimizeConstants = new System.Windows.Forms.Button();
       this.grpViewHost = new System.Windows.Forms.GroupBox();
       this.treeChart = new HeuristicLab.Problems.DataAnalysis.Symbolic.Views.InteractiveSymbolicExpressionTreeChart();
+      this.toolTip = new System.Windows.Forms.ToolTip(this.components);
       ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
       this.splitContainer.Panel1.SuspendLayout();
       this.splitContainer.Panel2.SuspendLayout();
@@ -147,6 +148,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       this.btnSimplify.TabIndex = 1;
       this.btnSimplify.Text = "Simplify";
       this.btnSimplify.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+      this.toolTip.SetToolTip(this.btnSimplify, "Simplifies the model structure based on mathematical simplification rules.");
       this.btnSimplify.UseVisualStyleBackColor = true;
       this.btnSimplify.Click += new System.EventHandler(this.btnSimplify_Click);
       // 
@@ -161,6 +163,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       this.btnOptimizeConstants.TabIndex = 2;
       this.btnOptimizeConstants.Text = "Optimize";
       this.btnOptimizeConstants.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+      this.toolTip.SetToolTip(this.btnOptimizeConstants, "Optimizes the numerical constants of the model. \r\nIf the algorithm converges, opt" +
+        "imization is stopped.");
       this.btnOptimizeConstants.UseVisualStyleBackColor = true;
       this.btnOptimizeConstants.Click += new System.EventHandler(this.btnOptimizeConstants_Click);
       // 
@@ -225,5 +229,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
     private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel;
     protected System.Windows.Forms.Button btnOptimizeConstants;
     private System.Windows.Forms.Label treeStatusValue;
+    private System.Windows.Forms.ToolTip toolTip;
   }
 }
