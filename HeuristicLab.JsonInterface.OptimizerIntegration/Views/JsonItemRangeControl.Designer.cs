@@ -40,7 +40,7 @@
       this.groupBox1.Controls.Add(this.textBoxValueFrom);
       this.groupBox1.Controls.Add(this.label4);
       this.groupBox1.Controls.Add(this.label2);
-      this.groupBox1.Location = new System.Drawing.Point(9, 75);
+      this.groupBox1.Location = new System.Drawing.Point(9, 101);
       this.groupBox1.Name = "groupBox1";
       this.groupBox1.Size = new System.Drawing.Size(487, 64);
       this.groupBox1.TabIndex = 17;
@@ -89,7 +89,7 @@
       // 
       this.numericRangeControl1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.numericRangeControl1.Location = new System.Drawing.Point(9, 145);
+      this.numericRangeControl1.Location = new System.Drawing.Point(9, 171);
       this.numericRangeControl1.Name = "numericRangeControl1";
       this.numericRangeControl1.Size = new System.Drawing.Size(487, 112);
       this.numericRangeControl1.TabIndex = 18;
@@ -101,7 +101,7 @@
       this.Controls.Add(this.numericRangeControl1);
       this.Controls.Add(this.groupBox1);
       this.Name = "JsonItemRangeControl";
-      this.Size = new System.Drawing.Size(500, 262);
+      this.Size = new System.Drawing.Size(500, 301);
       this.Controls.SetChildIndex(this.groupBox1, 0);
       this.Controls.SetChildIndex(this.numericRangeControl1, 0);
       this.groupBox1.ResumeLayout(false);

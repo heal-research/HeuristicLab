@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace HeuristicLab.JsonInterface.OptimizerIntegration {
-
+  
   public class JsonItemDoubleMatrixValueControl : JsonItemMultiValueControl<double> {
 
     public JsonItemDoubleMatrixValueControl(DoubleMatrixValueVM vm) : base(vm, vm.Value) { }
@@ -80,14 +80,6 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
 
     protected abstract void SaveCellData(object data, int col, int row);
 
-    /*
-public JsonItemMultiValueControl(JsonItemVMBase vm, object dataSource) : base(vm) {
- InitializeComponent();
- dataGridView.DataSource = dataSource;
-
- InitRangeBinding();
-}
-*/
     private void InitRangeBinding() {
       NumericRangeControl = numericRangeControl1;
       NumericRangeControl.TBMinRange.DataBindings.Add("Text", VM, nameof(RangedValueBaseVM.MinRange));

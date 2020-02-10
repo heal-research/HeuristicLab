@@ -29,6 +29,8 @@
       this.labelActualName = new System.Windows.Forms.Label();
       this.textBoxName = new System.Windows.Forms.TextBox();
       this.label1 = new System.Windows.Forms.Label();
+      this.labelDescription = new System.Windows.Forms.Label();
+      this.textBoxDescription = new System.Windows.Forms.TextBox();
       this.SuspendLayout();
       // 
       // labelEnable
@@ -55,7 +57,7 @@
       // 
       this.textBoxActualName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.textBoxActualName.Location = new System.Drawing.Point(92, 49);
+      this.textBoxActualName.Location = new System.Drawing.Point(92, 75);
       this.textBoxActualName.Name = "textBoxActualName";
       this.textBoxActualName.Size = new System.Drawing.Size(404, 20);
       this.textBoxActualName.TabIndex = 12;
@@ -63,7 +65,7 @@
       // labelActualName
       // 
       this.labelActualName.AutoSize = true;
-      this.labelActualName.Location = new System.Drawing.Point(6, 52);
+      this.labelActualName.Location = new System.Drawing.Point(6, 78);
       this.labelActualName.Name = "labelActualName";
       this.labelActualName.Size = new System.Drawing.Size(65, 13);
       this.labelActualName.TabIndex = 11;
@@ -90,10 +92,30 @@
       this.label1.Text = "Name";
       this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
       // 
+      // labelDescription
+      // 
+      this.labelDescription.AutoSize = true;
+      this.labelDescription.Location = new System.Drawing.Point(6, 52);
+      this.labelDescription.Name = "labelDescription";
+      this.labelDescription.Size = new System.Drawing.Size(60, 13);
+      this.labelDescription.TabIndex = 13;
+      this.labelDescription.Text = "Description";
+      // 
+      // textBoxDescription
+      // 
+      this.textBoxDescription.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.textBoxDescription.Location = new System.Drawing.Point(92, 49);
+      this.textBoxDescription.Name = "textBoxDescription";
+      this.textBoxDescription.Size = new System.Drawing.Size(404, 20);
+      this.textBoxDescription.TabIndex = 14;
+      // 
       // JsonItemBaseControl
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.Controls.Add(this.textBoxDescription);
+      this.Controls.Add(this.labelDescription);
       this.Controls.Add(this.labelEnable);
       this.Controls.Add(this.checkBoxActive);
       this.Controls.Add(this.textBoxActualName);
@@ -116,5 +138,7 @@
     private System.Windows.Forms.Label labelActualName;
     private System.Windows.Forms.TextBox textBoxName;
     private System.Windows.Forms.Label label1;
+    private System.Windows.Forms.Label labelDescription;
+    private System.Windows.Forms.TextBox textBoxDescription;
   }
 }

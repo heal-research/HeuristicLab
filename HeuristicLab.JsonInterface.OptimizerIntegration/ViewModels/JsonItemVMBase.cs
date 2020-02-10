@@ -57,6 +57,14 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
       }
     }
 
+    public string Description {
+      get => Item.Description;
+      set {
+        Item.Description = value;
+        OnPropertyChange(this, nameof(Description));
+      }
+    }
+
     public string ActualName {
       get => Item.ActualName;
       set {

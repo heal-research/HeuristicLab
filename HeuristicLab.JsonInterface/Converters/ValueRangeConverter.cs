@@ -25,6 +25,7 @@ namespace HeuristicLab.JsonInterface {
       IntRange range = value as IntRange;
       return new IntRangeJsonItem() {
         Name = "[OverridableParamName]",
+        Description = value.ItemDescription,
         Value = new int[] { range.Start, range.End },
         Range = new int[] { int.MinValue, int.MaxValue }
       };
@@ -46,6 +47,7 @@ namespace HeuristicLab.JsonInterface {
       DoubleRange range = value as DoubleRange;
       return new DoubleRangeJsonItem() {
         Name = "[OverridableParamName]",
+        Description = value.ItemDescription,
         Value = new double[] { range.Start, range.End },
         Range = new double[] { double.MinValue, double.MaxValue }
       };

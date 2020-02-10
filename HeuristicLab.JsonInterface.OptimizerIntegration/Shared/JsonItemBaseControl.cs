@@ -23,10 +23,9 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
       checkBoxActive.DataBindings.Add("Checked", VM, nameof(JsonItemVMBase.Selected),
         false, DataSourceUpdateMode.OnPropertyChanged);
       textBoxName.DataBindings.Add("Text", VM, nameof(JsonItemVMBase.Name));
+      textBoxDescription.DataBindings.Add("Text", VM, nameof(JsonItemVMBase.Description));
       textBoxActualName.DataBindings.Add("Text", VM, nameof(JsonItemVMBase.ActualName));
 
-      //checkBoxActive.Checked = VM.Selected;
-      //textBoxName.Text = VM.Item.Name;
       if (string.IsNullOrWhiteSpace(VM.Item.ActualName))
         textBoxActualName.ReadOnly = true;
       else

@@ -14,7 +14,8 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
 
     protected override double MaxTypeValue => double.MaxValue;
 
-    public override JsonItemBaseControl GetControl() => new JsonItemDoubleArrayValueControl(this);
+    public override JsonItemBaseControl GetControl() => 
+      new JsonItemDoubleArrayValueControl(this);
     
     public override double[] Value {
       get => ((DoubleArrayJsonItem)Item).Value;
@@ -32,7 +33,8 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
 
     protected override int MaxTypeValue => int.MaxValue;
 
-    public override JsonItemBaseControl GetControl() => new JsonItemIntArrayValueControl(this);
+    public override JsonItemBaseControl GetControl() => 
+      new JsonItemIntArrayValueControl(this);
     
     public override int[] Value {
       get => ((IntArrayJsonItem)Item).Value;
@@ -45,9 +47,7 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
 
   public abstract class ArrayValueVM<T> : RangedValueBaseVM<T> {
     
-    public ArrayValueVM() {
-      //base.ItemChanged += OnItemChanged;
-    }
+    public ArrayValueVM() { }
 
     public void SetIndexValue(object obj, int index) {
       T[] tmp = Value;

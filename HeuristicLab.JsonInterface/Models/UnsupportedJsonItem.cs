@@ -12,6 +12,11 @@ namespace HeuristicLab.JsonInterface {
       set => throw new NotSupportedException();
     }
 
+    public override string Description {
+      get => throw new NotSupportedException();
+      set => throw new NotSupportedException();
+    }
+
     public override string Path {
       get => throw new NotSupportedException();
     }

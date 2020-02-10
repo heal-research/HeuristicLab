@@ -24,15 +24,12 @@ namespace HeuristicLab.JsonInterface {
 
       if (param.Value != null) {
         IJsonItem tmp = root.Extract(param.Value, root);
-        /*tmp.Parent = item;
-        actualValue = tmp.Value;
-        actualRange = tmp.Range;
-        */
         item = tmp;
       } else {
         item.Range = new object[] { GetMinValue(param.DataType), GetMaxValue(param.DataType) };
       }
       item.Name = param.Name;
+      item.Description = param.Description;
       item.ActualName = param.ActualName;
       return item;
     }
