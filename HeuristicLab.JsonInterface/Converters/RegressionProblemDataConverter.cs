@@ -19,7 +19,10 @@ namespace HeuristicLab.JsonInterface {
     }
 
     public override IJsonItem Extract(IItem value, IJsonItemConverter root) {
-      IJsonItem item = new JsonItem() { Name = value.ItemName };
+      IJsonItem item = new JsonItem() { 
+        Name = value.ItemName,
+        Description = value.ItemDescription
+      };
 
       dynamic val = (dynamic)value;
       object dataset = (object)val.Dataset;

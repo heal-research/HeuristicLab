@@ -21,6 +21,7 @@ namespace HeuristicLab.JsonInterface {
       Type enumType = val.GetType();
       return new StringJsonItem() { 
         Name = value.ItemName,
+        Description = value.ItemDescription,
         Value = Enum.GetName(enumType, val),
         Range = Enum.GetNames(enumType)
     };

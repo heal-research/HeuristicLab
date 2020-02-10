@@ -9,6 +9,8 @@ namespace HeuristicLab.JsonInterface {
   public interface IJsonItem {
     string Name { get; set; }
 
+    string Description { get; set; }
+
     string Path {
       get;
     }

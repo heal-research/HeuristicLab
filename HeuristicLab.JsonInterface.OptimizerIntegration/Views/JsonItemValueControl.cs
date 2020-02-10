@@ -10,7 +10,7 @@ using System.Windows.Forms;
 using System.Globalization;
 
 namespace HeuristicLab.JsonInterface.OptimizerIntegration {
-
+  
   public class JsonItemIntValueControl : JsonItemValueControl {
 
     #region Overriden Properties
@@ -20,7 +20,6 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
     public JsonItemIntValueControl(IntValueVM vm) : base(vm) {
       Init();
     }
-
   }
 
   public class JsonItemDoubleValueControl : JsonItemValueControl {
@@ -32,9 +31,8 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
     public JsonItemDoubleValueControl(DoubleValueVM vm) : base(vm) {
       Init();
     }
-
   }
-
+  
   public abstract partial class JsonItemValueControl : JsonItemBaseControl {
     #region Protected Properties
     protected TextBox TBValue { get; set; }

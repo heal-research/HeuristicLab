@@ -31,6 +31,7 @@ namespace HeuristicLab.JsonInterface {
 
       IJsonItem item = new StringJsonItem() {
         Name = parameter.Name,
+        Description = value.ItemDescription,
         Value = parameter.ActualValue?.ToString(),
         Range = GetValidValues(parameter).Select(x => x.ToString())
       };

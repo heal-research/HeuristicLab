@@ -26,6 +26,7 @@ namespace HeuristicLab.JsonInterface.Converters {
       foreach (var res in algorithm.Results) {
         item.AddChildren(new ResultItem() {
           Name = res.Name,
+          Description = value.ItemDescription,
           Value = true,
           Range = new object[] { true, false }
         });

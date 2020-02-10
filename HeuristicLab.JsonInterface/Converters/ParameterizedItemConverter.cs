@@ -21,9 +21,13 @@ namespace HeuristicLab.JsonInterface {
     }
 
     public override IJsonItem Extract(IItem value, IJsonItemConverter root) {
-      IJsonItem item = new JsonItem() { Name = value.ItemName };
-
       var parameterizedItem = value as IParameterizedItem;
+
+      IJsonItem item = new JsonItem() { 
+        Name = value.ItemName,
+        Description = value.ItemDescription
+      };
+
       foreach (var param in parameterizedItem.Parameters) {
         if (!param.Hidden) {
           IJsonItem tmp = root.Extract(param, root);

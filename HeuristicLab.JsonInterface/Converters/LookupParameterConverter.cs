@@ -18,6 +18,7 @@ namespace HeuristicLab.JsonInterface {
 
       IJsonItem item = new JsonItem() {
         Name = parameter.Name,
+        Description = parameter.Description,
         ActualName = ((ILookupParameter)parameter).ActualName
       };
       return item;

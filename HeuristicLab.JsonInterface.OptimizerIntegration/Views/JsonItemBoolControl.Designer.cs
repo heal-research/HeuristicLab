@@ -32,7 +32,7 @@
       this.checkBoxValue.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this.checkBoxValue.AutoSize = true;
-      this.checkBoxValue.Location = new System.Drawing.Point(92, 75);
+      this.checkBoxValue.Location = new System.Drawing.Point(92, 101);
       this.checkBoxValue.Name = "checkBoxValue";
       this.checkBoxValue.Size = new System.Drawing.Size(15, 14);
       this.checkBoxValue.TabIndex = 19;
@@ -41,7 +41,7 @@
       // label2
       // 
       this.label2.AutoSize = true;
-      this.label2.Location = new System.Drawing.Point(6, 75);
+      this.label2.Location = new System.Drawing.Point(6, 101);
       this.label2.Name = "label2";
       this.label2.Size = new System.Drawing.Size(34, 13);
       this.label2.TabIndex = 20;
@@ -55,7 +55,7 @@
       this.Controls.Add(this.label2);
       this.Controls.Add(this.checkBoxValue);
       this.Name = "JsonItemBoolControl";
-      this.Size = new System.Drawing.Size(500, 105);
+      this.Size = new System.Drawing.Size(500, 140);
       this.Controls.SetChildIndex(this.checkBoxValue, 0);
       this.Controls.SetChildIndex(this.label2, 0);
       this.ResumeLayout(false);

@@ -41,6 +41,8 @@ namespace HeuristicLab.JsonInterface {
 
     public virtual string Name { get; set; }
 
+    public virtual string Description { get; set; }
+
     public virtual string Path {
       get {
         IJsonItem tmp = Parent;

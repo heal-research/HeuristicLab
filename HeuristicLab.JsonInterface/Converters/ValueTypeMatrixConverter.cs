@@ -20,6 +20,7 @@ namespace HeuristicLab.JsonInterface {
     public override IJsonItem Extract(IItem value, IJsonItemConverter root) =>
       new IntMatrixJsonItem() {
         Name = "[OverridableParamName]",
+        Description = value.ItemDescription,
         Value = Transform((IntMatrix)value),
         Range = new int[] { int.MinValue, int.MaxValue }
       };
@@ -38,6 +39,7 @@ namespace HeuristicLab.JsonInterface {
     public override IJsonItem Extract(IItem value, IJsonItemConverter root) =>
       new DoubleMatrixJsonItem() {
         Name = "[OverridableParamName]",
+        Description = value.ItemDescription,
         Value = Transform((DoubleMatrix)value),
         Range = new double[] { double.MinValue, double.MaxValue }
       };
@@ -56,6 +58,7 @@ namespace HeuristicLab.JsonInterface {
     public override IJsonItem Extract(IItem value, IJsonItemConverter root) =>
       new DoubleMatrixJsonItem() {
         Name = "[OverridableParamName]",
+        Description = value.ItemDescription,
         Value = Transform((PercentMatrix)value),
         Range = new double[] { 0.0d, 1.0d }
       };
@@ -74,6 +77,7 @@ namespace HeuristicLab.JsonInterface {
     public override IJsonItem Extract(IItem value, IJsonItemConverter root) =>
       new BoolMatrixJsonItem() {
         Name = "[OverridableParamName]",
+        Description = value.ItemDescription,
         Value = Transform((BoolMatrix)value),
         Range = new bool[] { false, true }
       };

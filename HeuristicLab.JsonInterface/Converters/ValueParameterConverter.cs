@@ -22,7 +22,8 @@ namespace HeuristicLab.JsonInterface {
       IParameter parameter = value as IParameter;
 
       IJsonItem item = new JsonItem() {
-        Name = parameter.Name
+        Name = parameter.Name,
+        Description = parameter.Description
       };
 
       if (parameter.ActualValue != null) {
@@ -30,6 +31,7 @@ namespace HeuristicLab.JsonInterface {
         if (!(tmp is UnsupportedJsonItem)) {
           if (tmp.Name == "[OverridableParamName]") {
             tmp.Name = parameter.Name;
+            tmp.Description = parameter.Description;
             item = tmp;
             //JsonItem.Merge(item as JsonItem, tmp as JsonItem);
           } else

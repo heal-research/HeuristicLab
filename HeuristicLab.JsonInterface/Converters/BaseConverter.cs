@@ -28,11 +28,9 @@ namespace HeuristicLab.JsonInterface {
     protected IItem Instantiate(Type type, params object[] args) =>
       (IItem)Activator.CreateInstance(type,args);
 
-    protected T Instantiate<T>(params object[] args) => (T)Instantiate(typeof(T), args);
-
+    
     protected object GetMaxValue(Type t) {
       TypeCode typeCode = Type.GetTypeCode(t);
-
 
       if (t.IsEqualTo(typeof(PercentValue)))
         return 1.0d;

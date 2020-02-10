@@ -25,6 +25,7 @@ namespace HeuristicLab.JsonInterface {
       foreach (var op in val.Operators) {
         item.AddChildren(new BoolJsonItem() {
           Name = op.Name,
+          Description = op.Description,
           Value = val.Operators.ItemChecked(op),
           Range = new bool[] { false, true }
         });
