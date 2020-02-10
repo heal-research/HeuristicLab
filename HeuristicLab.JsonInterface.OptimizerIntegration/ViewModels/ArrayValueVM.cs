@@ -15,14 +15,13 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
     protected override double MaxTypeValue => double.MaxValue;
 
     public override JsonItemBaseControl GetControl() => new JsonItemDoubleArrayValueControl(this);
-
-    protected override void OnItemChanged() {
-      IList<IndexedArrayValueVM> list = new List<IndexedArrayValueVM>();
-      var arr = ((DoubleArrayJsonItem)Item).Value;
-      for(int i = 0; i < arr.Length; ++i) {
-        list.Add(new IndexedArrayValueVM(arr, i));
+    
+    public override double[] Value {
+      get => ((DoubleArrayJsonItem)Item).Value;
+      set {
+        ((DoubleArrayJsonItem)Item).Value = value;
+        OnPropertyChange(this, nameof(Value));
       }
-      Value = list.ToArray();
     }
   }
 
@@ -34,52 +33,33 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
     protected override int MaxTypeValue => int.MaxValue;
 
     public override JsonItemBaseControl GetControl() => new JsonItemIntArrayValueControl(this);
-
-    protected override void OnItemChanged() {
-      IList<IndexedArrayValueVM> list = new List<IndexedArrayValueVM>();
-      var arr = ((IntArrayJsonItem)Item).Value;
-      for (int i = 0; i < arr.Length; ++i) {
-        list.Add(new IndexedArrayValueVM(arr, i));
+    
+    public override int[] Value {
+      get => ((IntArrayJsonItem)Item).Value;
+      set {
+        ((IntArrayJsonItem)Item).Value = value;
+        OnPropertyChange(this, nameof(Value));
       }
-      Value = list.ToArray();
     }
   }
 
   public abstract class ArrayValueVM<T> : RangedValueBaseVM<T> {
-
-    public class IndexedArrayValueVM : INotifyPropertyChanged {
-      private T[] arr;
-      private int index;
-
-      public IndexedArrayValueVM(T[] arr, int index) {
-        this.arr = arr;
-        this.index = index;
-      }
-
-      public T Value {
-        get => arr[index];
-        set {
-          arr[index] = value;
-          PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Value)));
-        }
-      }
-
-      public event PropertyChangedEventHandler PropertyChanged;
-    }
-
+    
     public ArrayValueVM() {
-      base.ItemChanged += OnItemChanged;
+      //base.ItemChanged += OnItemChanged;
     }
 
-    protected abstract void OnItemChanged();
-
-    IndexedArrayValueVM[] vms;
-    public IndexedArrayValueVM[] Value {
-      get => vms; 
-      set {
-        vms = value;
-        OnPropertyChange(this, nameof(Value));
-      } 
+    public void SetIndexValue(object obj, int index) {
+      T[] tmp = Value;
+      if(index >= tmp.Length) { // increasing array
+        T[] newArr = new T[index+1];
+        Array.Copy(tmp, 0, newArr, 0, tmp.Length);
+        tmp = newArr;
+      }
+      tmp[index] = (T)Convert.ChangeType(obj, typeof(T));
+      Value = tmp;
     }
+
+    public abstract T[] Value { get; set; }
   }
 }

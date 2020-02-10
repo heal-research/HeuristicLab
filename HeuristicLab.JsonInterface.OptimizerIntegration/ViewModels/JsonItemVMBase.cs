@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace HeuristicLab.JsonInterface.OptimizerIntegration {
   public class JsonItemVMBase : INotifyPropertyChanged {
@@ -18,6 +20,9 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
         ItemChanged?.Invoke();
       }
     }
+
+    public TreeNode TreeNode { get; set; }
+    public TreeView TreeView { get; set; }
 
     protected void OnPropertyChange(object sender, string propertyName) {
       // Make a temporary copy of the event to avoid possibility of
@@ -36,6 +41,10 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
       get => selected;
       set {
         selected = value;
+        if(TreeNode != null)
+          TreeNode.ForeColor = (selected ? Color.Black : Color.Red);
+        if (TreeView != null)
+          TreeView.Refresh();
         OnPropertyChange(this, nameof(Selected));
       }
     }

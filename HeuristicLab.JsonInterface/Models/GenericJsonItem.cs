@@ -12,21 +12,23 @@ namespace HeuristicLab.JsonInterface {
 
   public class JsonItem<V,R> : JsonItem {
     public new V Value {
-      get {
-        if(base.Value is IConvertible)
-          return (V)Convert.ChangeType(base.Value, typeof(V));
-
-        if(base.Value is JToken token)
-          return token.ToObject<V>();
-
-        return (V)base.Value;
-      }
+      get => ConvertObject(base.Value);
       set => base.Value = value;
     }
-
+    
     public new IEnumerable<R> Range {
       get => base.Range?.Cast<R>();
       set => base.Range = value.Cast<object>();
+    }
+
+    private V ConvertObject(object obj) {
+      if (obj is IConvertible)
+        return (V)Convert.ChangeType(obj, typeof(V));
+
+      if (obj is JToken token)
+        return token.ToObject<V>();
+
+      return (V)obj;
     }
   }
 }
