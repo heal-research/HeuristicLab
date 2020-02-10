@@ -84,6 +84,8 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
         JsonItemVMBase vm = (JsonItemVMBase)Activator.CreateInstance(vmType);
         VMs.Add(vm);
         vm.Item = item;
+        vm.TreeNode = node;
+        vm.TreeView = treeView;
         UserControl control = vm.GetControl();
         if (control != null) {
           control.Dock = DockStyle.Fill;

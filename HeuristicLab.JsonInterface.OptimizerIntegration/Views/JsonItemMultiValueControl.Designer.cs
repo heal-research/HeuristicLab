@@ -1,5 +1,5 @@
 ﻿namespace HeuristicLab.JsonInterface.OptimizerIntegration {
-  partial class JsonItemArrayValueControl {
+  partial class JsonItemMultiValueControl<T> {
     /// <summary> 
     /// Required designer variable.
     /// </summary>

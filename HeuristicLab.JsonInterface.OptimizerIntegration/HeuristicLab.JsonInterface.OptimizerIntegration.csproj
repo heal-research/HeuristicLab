@@ -96,6 +96,7 @@
     </Compile>
     <Compile Include="ViewModels\ArrayValueVM.cs" />
     <Compile Include="ViewModels\JsonItemVMBase.cs" />
+    <Compile Include="ViewModels\MatrixValueVM.cs" />
     <Compile Include="ViewModels\RangedValueBaseVM.cs" />
     <Compile Include="ViewModels\RangeVM.cs" />
     <Compile Include="ViewModels\SingleValueVM.cs" />
@@ -107,11 +108,11 @@
       <DependentUpon>ExportJsonDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="FileManager.cs" />
-    <Compile Include="Views\JsonItemArrayValueControl.cs">
+    <Compile Include="Views\JsonItemMultiValueControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Views\JsonItemArrayValueControl.Designer.cs">
-      <DependentUpon>JsonItemArrayValueControl.cs</DependentUpon>
+    <Compile Include="Views\JsonItemMultiValueControl.Designer.cs">
+      <DependentUpon>JsonItemMultiValueControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Views\JsonItemBoolControl.cs">
       <SubType>UserControl</SubType>
@@ -198,8 +199,8 @@
     <EmbeddedResource Include="Views\ExportJsonDialog.resx">
       <DependentUpon>ExportJsonDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Views\JsonItemArrayValueControl.resx">
-      <DependentUpon>JsonItemArrayValueControl.cs</DependentUpon>
+    <EmbeddedResource Include="Views\JsonItemMultiValueControl.resx">
+      <DependentUpon>JsonItemMultiValueControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\JsonItemBoolControl.resx">
       <DependentUpon>JsonItemBoolControl.cs</DependentUpon>
