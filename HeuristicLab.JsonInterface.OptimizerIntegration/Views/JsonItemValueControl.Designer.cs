@@ -49,6 +49,7 @@
       // numericRangeControl1
       // 
       this.numericRangeControl1.Location = new System.Drawing.Point(9, 101);
+      this.numericRangeControl1.Anchor = System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
       this.numericRangeControl1.Name = "numericRangeControl1";
       this.numericRangeControl1.Size = new System.Drawing.Size(487, 112);
       this.numericRangeControl1.TabIndex = 16;
