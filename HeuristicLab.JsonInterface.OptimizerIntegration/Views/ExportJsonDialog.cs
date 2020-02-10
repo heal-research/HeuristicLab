@@ -37,6 +37,8 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
       
         BuildTreeNode(parent, Root);
         treeView.Nodes.Add(parent);
+        treeView.ExpandAll();
+        
       } 
     }
 
@@ -87,10 +89,6 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
         vm.TreeNode = node;
         vm.TreeView = treeView;
         UserControl control = vm.GetControl();
-        if (control != null) {
-          control.Dock = DockStyle.Fill;
-          control.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-        }
         Hash2Control.Add(node.GetHashCode(), control);
         if (item.Children != null) {
           foreach (var c in item.Children) {
@@ -120,10 +118,13 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
     }
     
     private void treeView_AfterSelect(object sender, TreeViewEventArgs e) {
-      if(Hash2Control.TryGetValue(treeView.SelectedNode.GetHashCode(), out UserControl ctrl)) {
+      if(Hash2Control.TryGetValue(treeView.SelectedNode.GetHashCode(), out UserControl control)) {
         panel.Controls.Clear();
-        if (ctrl != null) {
-          panel.Controls.Add(ctrl);
+        if (control != null) {
+          panel.Controls.Add(control);
+          control.Width = panel.Width;
+          control.Dock = DockStyle.Fill;
+          control.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
         }
         panel.Refresh();
       }
