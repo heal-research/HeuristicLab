@@ -78,7 +78,6 @@
             | System.Windows.Forms.AnchorStyles.Right)));
       this.textBoxName.Location = new System.Drawing.Point(92, 23);
       this.textBoxName.Name = "textBoxName";
-      this.textBoxName.ReadOnly = true;
       this.textBoxName.Size = new System.Drawing.Size(404, 20);
       this.textBoxName.TabIndex = 10;
       // 

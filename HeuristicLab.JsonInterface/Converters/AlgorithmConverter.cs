@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
 
-namespace HeuristicLab.JsonInterface.Converters {
+namespace HeuristicLab.JsonInterface {
   public class AlgorithmConverter : ParameterizedItemConverter {
     public override int Priority => 30;
 
@@ -26,7 +26,7 @@ namespace HeuristicLab.JsonInterface.Converters {
       foreach (var res in algorithm.Results) {
         item.AddChildren(new ResultItem() {
           Name = res.Name,
-          Description = value.ItemDescription,
+          Description = res.Description,
           Value = true,
           Range = new object[] { true, false }
         });

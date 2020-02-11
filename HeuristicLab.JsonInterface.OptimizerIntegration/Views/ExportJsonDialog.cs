@@ -21,6 +21,7 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
     private IOptimizer Optimizer { get; set; }
     private IList<JsonItemVMBase> VMs { get; set; }
     private JCGenerator Generator { get; set; } = new JCGenerator();
+    private IDictionary<string, IJsonItem> ResultItems = new Dictionary<string, IJsonItem>();
 
     private IContent content;
     public IContent Content {
@@ -30,11 +31,12 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
 
         VMs = new List<JsonItemVMBase>();
         treeView.Nodes.Clear();
+        ResultItems.Clear();
         
         Optimizer = content as IOptimizer;
         Root = JsonItemConverter.Extract(Optimizer);
         TreeNode parent = new TreeNode(Root.Name);
-      
+
         BuildTreeNode(parent, Root);
         treeView.Nodes.Add(parent);
         treeView.ExpandAll();
@@ -62,6 +64,21 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
         if (!x.Selected) {
           x.Item.Parent.Children.Remove(x.Item);
         }
+      }
+
+      foreach(var x in ResultItems.Values) {
+        x.Parent.Children.Remove(x);
+      }
+
+      foreach(var x in resultItems.CheckedItems) {
+        if(ResultItems.TryGetValue((string)x, out IJsonItem item)) {
+          Root.AddChildren(item);
+        }
+      }
+
+      IList<IJsonItem> faultyItems = new List<IJsonItem>();
+      if(!Root.GetValidator().Validate(ref faultyItems)) {
+        //print faultyItems
       }
 
       if (SaveFileDialog == null) {
@@ -94,7 +111,8 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
           foreach (var c in item.Children) {
             if (IsDrawableItem(c)) {
               if (c is ResultItem) {
-
+                resultItems.Items.Add(c.Name, true);
+                ResultItems.Add(c.Name, c);
               } else {
                 TreeNode childNode = new TreeNode(c.Name);
                 node.Nodes.Add(childNode);
