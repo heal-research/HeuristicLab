@@ -33,8 +33,9 @@ namespace HeuristicLab.JsonInterface {
           res = item.IsInRange();
         if (!res) faultyItems.Add(item);
         Cache.Add(hash, res);
-        foreach (var child in item.Children)
-          res = res && ValidateHelper(child as JsonItem, ref faultyItems);
+        if(item.Children != null)
+          foreach (var child in item.Children)
+            res = res && ValidateHelper(child as JsonItem, ref faultyItems);
         return res;
       }
     }

@@ -8,133 +8,66 @@ using HeuristicLab.Optimization;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using HEAL.Attic;
+using System.IO;
 
 namespace HeuristicLab.JsonInterface {
   /// <summary>
   /// Class to generate json interface templates.
   /// </summary>
   public class JCGenerator {
-    private JObject Template { get; set; } = JObject.Parse(Constants.Template);
-    private JArray JArrayItems { get; set; }
-    private IList<IJsonItem> JsonItems { get; set; }
-    private IOptimizer Optimizer { get; set; }
 
-    
-    public string GenerateTemplate(IOptimizer optimizer) {
-      // data container
-      JArrayItems = new JArray();
-      JArray ResultItems = new JArray();
-      JsonItems = new List<IJsonItem>();
+    public void GenerateTemplate(string path, IOptimizer optimizer) =>
+      GenerateTemplate(path, optimizer.Name, optimizer);
 
+    public void GenerateTemplate(string path, string templateName, IOptimizer optimizer) =>
+      GenerateTemplate(path, templateName, optimizer, JsonItemConverter.Extract(optimizer));
+
+    public void GenerateTemplate(string path, string templateName, IOptimizer optimizer, IJsonItem rootItem) {
+      // init
+      JObject template = JObject.Parse(Constants.Template);
+      JArray parameterItems = new JArray();
+      JArray resultItems = new JArray();
+      IList<IJsonItem> jsonItems = new List<IJsonItem>();
+      string fullPath = Path.GetDirectoryName(Path.GetFullPath(path));
+      
+      // recursively filter items with values/ranges/actualNames
+      PopulateJsonItems(rootItem, jsonItems);
+
+      // serialize hl file
       ProtoBufSerializer serializer = new ProtoBufSerializer();
-      serializer.Serialize(optimizer, @"C:\Workspace\template.hl");
-      Template[Constants.Metadata][Constants.HLFileLocation] = @"C:\Workspace\template.hl";
+      string hlFilePath = fullPath + @"\" + templateName + ".hl";
+      serializer.Serialize(optimizer, hlFilePath);
 
-      // extract JsonItem, save the name in the metadata section of the 
-      // template and save it an JArray incl. all parameters of the JsonItem, 
-      // which have parameters aswell
-      AddIItem(optimizer);
-      // save the JArray with JsonItems (= IParameterizedItems)
-
-      JArrayItems = new JArray();
-      foreach (var item in JsonItems) {
+      // filter result items
+      foreach (var item in jsonItems) {
         if (item is ResultItem)
-          ResultItems.Add(Serialize(item));
+          resultItems.Add(Serialize(item));
         else
-          JArrayItems.Add(Serialize(item));
+          parameterItems.Add(Serialize(item));
       }
-      Template[Constants.Parameters] = JArrayItems;
-      Template[Constants.ActivatedResults] = ResultItems;
-      // serialize template and return string
-      return SingleLineArrayJsonWriter.Serialize(Template);
+      
+      // set template data
+      template[Constants.Metadata][Constants.TemplateName] = templateName;
+      template[Constants.Metadata][Constants.HLFileLocation] = hlFilePath;
+      template[Constants.Parameters] = parameterItems;
+      template[Constants.ActivatedResults] = resultItems;
+
+      // serialize template and write file
+      File.WriteAllText(fullPath + @"\" + templateName + ".json", SingleLineArrayJsonWriter.Serialize(template));
     }
 
-    public string GenerateTemplate(IEnumerable<IJsonItem> items) {
-      ProtoBufSerializer serializer = new ProtoBufSerializer();
-      serializer.Serialize(Optimizer, @"C:\Workspace\template.hl");
-      Template[Constants.Metadata][Constants.HLFileLocation] = @"C:\Workspace\template.hl";
-
-      JArray ResultItems = new JArray();
-
-      JArrayItems = new JArray();
-      foreach (var item in items) {
-        if (item is ResultItem)
-          ResultItems.Add(Serialize(item));
-        else
-          JArrayItems.Add(Serialize(item));
-      }
-      Template[Constants.Parameters] = JArrayItems;
-      Template[Constants.ActivatedResults] = ResultItems;
-
-      // serialize template and return string
-      return SingleLineArrayJsonWriter.Serialize(Template);
-    }
-
-    public string GenerateTemplate(IJsonItem rootItem, IOptimizer optimizer) {
-      // data container
-      Template = JObject.Parse(Constants.Template);
-      JsonItems = new List<IJsonItem>();
-
-      // extract JsonItem, save the name in the metadata section of the 
-      // template and save it an JArray incl. all parameters of the JsonItem, 
-      // which have parameters aswell
-      Template[Constants.Metadata][Constants.Optimizer] = optimizer.Name;
-      PopulateJsonItems(rootItem);
-
-      ProtoBufSerializer serializer = new ProtoBufSerializer();
-      serializer.Serialize(Optimizer, @"C:\Workspace\template.hl");
-      Template[Constants.Metadata][Constants.HLFileLocation] = @"C:\Workspace\template.hl";
-
-      JArray ResultItems = new JArray();
-
-      JArrayItems = new JArray();
-      foreach (var item in JsonItems) {
-        if (item is ResultItem)
-          ResultItems.Add(Serialize(item));
-        else
-          JArrayItems.Add(Serialize(item));
-      }
-      Template[Constants.Parameters] = JArrayItems;
-      Template[Constants.ActivatedResults] = ResultItems;
-
-      // serialize template and return string
-      return SingleLineArrayJsonWriter.Serialize(Template);
-    }
-
-    public IEnumerable<IJsonItem> FetchJsonItems(IOptimizer optimizer) {
-      // data container
-      Template = JObject.Parse(Constants.Template);
-      JsonItems = new List<IJsonItem>();
-      Optimizer = optimizer;
-
-      // extract JsonItem, save the name in the metadata section of the 
-      // template and save it an JArray incl. all parameters of the JsonItem, 
-      // which have parameters aswell
-      AddIItem(optimizer);
-
-      // serialize template and return string
-      return JsonItems;
-    }
-    
-    #region Helper
-
-    private void AddIItem(IItem item) {
-      IJsonItem jsonItem = JsonItemConverter.Extract(item);
-      Template[Constants.Metadata][Constants.Optimizer] = item.ItemName;
-      PopulateJsonItems(jsonItem);
-    }
-
+    #region Helper    
     // serializes ParameterizedItems and saves them in list "JsonItems".
-    private void PopulateJsonItems(IJsonItem item) {
+    private void PopulateJsonItems(IJsonItem item, IList<IJsonItem> jsonItems) {
       IEnumerable<IJsonItem> tmpParameter = item.Children;
       
       if (item.Value != null || item.Range != null || item is ResultItem || item.ActualName != null) {
-        JsonItems.Add(item);
+        jsonItems.Add(item);
       }
 
       if (tmpParameter != null) {
         foreach (var p in tmpParameter) {
-          PopulateJsonItems(p);
+          PopulateJsonItems(p, jsonItems);
         }
       }
     }
