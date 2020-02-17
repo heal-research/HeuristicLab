@@ -14,7 +14,7 @@ namespace HeuristicLab.JsonInterface {
     internal const string TemplateName = "TemplateName";
     internal const string HLFileLocation = "HLFileLocation";
     internal const string Parameters = "Parameters";
-    internal const string ActivatedResults = "ActivatedResults";
+    internal const string Results = "Results";
 
     internal const string Template = @"{
       '" + Metadata + @"': {
@@ -22,7 +22,7 @@ namespace HeuristicLab.JsonInterface {
         '" + HLFileLocation + @"':''
       },
       '" + Parameters + @"': [],
-      '" + ActivatedResults + @"': []
+      '" + Results + @"': []
     }";
   }
 }

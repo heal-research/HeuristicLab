@@ -57,8 +57,8 @@ namespace HeuristicLab.JsonInterface {
         MergeTemplateWithConfig(instData);
 
       // get algorthm data and object
-      IJsonItem optimizerData = instData.Objects[optimizerName];
-
+      IJsonItem optimizerData = instData.Objects.First().Value;
+      
       // inject configuration
       JsonItemConverter.Inject(optimizer, optimizerData);
 

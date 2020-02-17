@@ -28,7 +28,7 @@ namespace HeuristicLab.JsonInterface {
       JArray parameterItems = new JArray();
       JArray resultItems = new JArray();
       IList<IJsonItem> jsonItems = new List<IJsonItem>();
-      string fullPath = Path.GetDirectoryName(Path.GetFullPath(path));
+      string fullPath = Path.GetFullPath(path);
       
       // recursively filter items with values/ranges/actualNames
       PopulateJsonItems(rootItem, jsonItems);
@@ -50,7 +50,7 @@ namespace HeuristicLab.JsonInterface {
       template[Constants.Metadata][Constants.TemplateName] = templateName;
       template[Constants.Metadata][Constants.HLFileLocation] = hlFilePath;
       template[Constants.Parameters] = parameterItems;
-      template[Constants.ActivatedResults] = resultItems;
+      template[Constants.Results] = resultItems;
 
       // serialize template and write file
       File.WriteAllText(fullPath + @"\" + templateName + ".json", SingleLineArrayJsonWriter.Serialize(template));

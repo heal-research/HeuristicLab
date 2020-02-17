@@ -6,12 +6,15 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using HeuristicLab.Optimization;
+using HeuristicLab.SequentialEngine;
 
 namespace HeuristicLab.JsonInterface.App {
   internal static class Runner {
     internal static void Run(string template, string config, string outputFile = @"C:\Workspace\test.txt") {
       IOptimizer optimizer = JsonTemplateInstantiator.Instantiate(template, config);
-  
+      if(optimizer is EngineAlgorithm e)
+        e.Engine = new SequentialEngine.SequentialEngine();
+      
       Task task = optimizer.StartAsync();
       while(!task.IsCompleted) {
         WriteResultsToFile(outputFile, optimizer);

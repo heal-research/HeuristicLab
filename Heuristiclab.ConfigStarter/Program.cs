@@ -45,16 +45,16 @@ namespace Heuristiclab.ConfigStarter {
       alg.Problem = tsp;
 
       JCGenerator generator = new JCGenerator();
-      generator.GenerateTemplate(@"C:\Workspace\Template.json", alg);
-      JsonTemplateInstantiator.Instantiate(@"C:\Workspace\Template.json");
-      /*
+      generator.GenerateTemplate(@"C:\Workspace", "Template", alg);
+      //JsonTemplateInstantiator.Instantiate(@"C:\Workspace\Template.json");
+      
       List<ICommandLineArgument> arguments = new List<ICommandLineArgument>();
       arguments.Add(new StartArgument("JsonInterface"));
       arguments.Add(new OpenArgument(@"C:\Workspace\Template.json"));
       arguments.Add(new OpenArgument(@"C:\Workspace\ConfigProto1.json"));
 
       app.Run(arguments.ToArray());
-      */
+      
     }
   }
 }

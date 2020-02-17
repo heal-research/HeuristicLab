@@ -63,6 +63,7 @@
     <Compile Include="Constants.cs" />
     <Compile Include="Converters\AlgorithmConverter.cs" />
     <Compile Include="Converters\RegressionProblemDataConverter.cs" />
+    <Compile Include="Converters\ResultParameterConverter.cs" />
     <Compile Include="Converters\ValueLookupParameterConverter.cs" />
     <Compile Include="Converters\ValueRangeConverter.cs" />
     <Compile Include="Interfaces\IJsonItem.cs" />

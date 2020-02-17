@@ -82,6 +82,10 @@
       <Project>{3540E29E-4793-49E7-8EE2-FEA7F61C3994}</Project>
       <Name>HeuristicLab.Problems.Instances-3.3</Name>
     </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.SequentialEngine\3.3\HeuristicLab.SequentialEngine-3.3.csproj">
+      <Project>{DC3D7072-7999-4719-B65D-3997744D5DC1}</Project>
+      <Name>HeuristicLab.SequentialEngine-3.3</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
