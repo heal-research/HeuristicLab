@@ -21,7 +21,7 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
     private IOptimizer Optimizer { get; set; }
     private IList<JsonItemVMBase> VMs { get; set; }
     private JCGenerator Generator { get; set; } = new JCGenerator();
-    private IDictionary<string, IJsonItem> ResultItems = new Dictionary<string, IJsonItem>();
+    private IDictionary<string, IJsonItem> ResultItems { get; set; } = new Dictionary<string, IJsonItem>();
 
     private IContent content;
     public IContent Content {
@@ -32,7 +32,8 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
         VMs = new List<JsonItemVMBase>();
         treeView.Nodes.Clear();
         ResultItems.Clear();
-        
+        resultItems.Items.Clear();
+
         Optimizer = content as IOptimizer;
         Root = JsonItemConverter.Extract(Optimizer);
         TreeNode parent = new TreeNode(Root.Name);
@@ -92,7 +93,7 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
       SaveFileDialog.FileName = "template";
 
       if (SaveFileDialog.ShowDialog() == DialogResult.OK) {
-        File.WriteAllText(SaveFileDialog.FileName, Generator.GenerateTemplate(Root, Optimizer));
+        Generator.GenerateTemplate(@"C:\Users\p41997\Desktop", "template", Optimizer, Root);
       }
 
       Close();

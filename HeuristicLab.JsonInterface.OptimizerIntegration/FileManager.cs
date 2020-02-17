@@ -13,7 +13,6 @@ using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.JsonInterface.OptimizerIntegration {
   internal static class FileManager {
-    private static SaveFileDialog saveFileDialog;
     private static OpenFileDialog openFileDialog;
     private static ExportJsonDialog exportDialog = new ExportJsonDialog();
 
@@ -25,35 +24,10 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
     }
     public static void ExportJsonTemplate(IContentView view) {
       // TODO: view to select free params, warning if no results are generated
-      
-
-
       IStorableContent content = view.Content as IStorableContent;
       if (!view.Locked && content != null) {
         exportDialog.Content = content;
         exportDialog.ShowDialog();
-        /*
-        if (saveFileDialog == null) {
-          saveFileDialog = new SaveFileDialog();
-          saveFileDialog.Title = "Export .json-Template";
-          saveFileDialog.DefaultExt = "json";
-          saveFileDialog.Filter = ".json-Template|*.json|All Files|*.*";
-          saveFileDialog.FilterIndex = 1;
-        }
-
-        INamedItem namedItem = content as INamedItem;
-        string suggestedFileName = string.Empty;
-        if (!string.IsNullOrEmpty(content.Filename)) suggestedFileName = content.Filename;
-        else if (namedItem != null) suggestedFileName = namedItem.Name;
-        else suggestedFileName = "Item";
-
-        saveFileDialog.FileName = suggestedFileName + " " + namedItem.GetType().Name;
-
-        if (saveFileDialog.ShowDialog() == DialogResult.OK) {
-          IAlgorithm alg = namedItem as IAlgorithm;
-          File.WriteAllText(saveFileDialog.FileName, JCGenerator.GenerateTemplate(alg));
-        }
-        */
       }
     }
 

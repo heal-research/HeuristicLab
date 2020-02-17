@@ -45,8 +45,7 @@ namespace Heuristiclab.ConfigStarter {
       alg.Problem = tsp;
 
       JCGenerator generator = new JCGenerator();
-
-      File.WriteAllText(@"C:\Workspace\Template.json", generator.GenerateTemplate(alg));
+      generator.GenerateTemplate(@"C:\Workspace\Template.json", alg);
       JsonTemplateInstantiator.Instantiate(@"C:\Workspace\Template.json");
       /*
       List<ICommandLineArgument> arguments = new List<ICommandLineArgument>();
