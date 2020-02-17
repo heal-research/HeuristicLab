@@ -75,138 +75,93 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       return CreateExpressionTree(random, grammar, targetLength, maxDepth, irregularityBias);
     }
 
-    private class SymbolCacheEntry {
-      public int MinSubtreeCount;
-      public int MaxSubtreeCount;
-      public int[] MaxChildArity;
-    }
-
-    private class SymbolCache {
-      public SymbolCache(ISymbolicExpressionGrammarBase grammar) {
-        Grammar = grammar;
-      }
-
-      public ISymbolicExpressionTreeNode SampleNode(IRandom random, ISymbol parent, int childIndex, int minArity, int maxArity) {
-        var symbols = new List<ISymbol>();
-        var weights = new List<double>();
-        foreach (var child in AllowedSymbols.Where(x => !(x is StartSymbol || x is Defun))) {
-          var t = Tuple.Create(parent, child);
-          if (!allowedCache.TryGetValue(t, out bool[] allowed)) { continue; }
-          if (!allowed[childIndex]) { continue; }
-
-          if (symbolCache.TryGetValue(child, out SymbolCacheEntry cacheItem)) {
-            if (cacheItem.MinSubtreeCount < minArity) { continue; }
-            if (cacheItem.MaxSubtreeCount > maxArity) { continue; }
-          }
-
-          symbols.Add(child);
-          weights.Add(child.InitialFrequency);
-        }
-        if (symbols.Count == 0) {
-          throw new ArgumentException("SampleNode: parent symbol " + parent.Name
-            + " does not have any allowed child symbols with min arity " + minArity
-            + " and max arity " + maxArity + ". Please ensure the grammar is properly configured.");
-        }
-        var symbol = symbols.SampleProportional(random, 1, weights).First();
-        var node = symbol.CreateTreeNode();
-        if (node.HasLocalParameters) {
-          node.ResetLocalParameters(random);
-        }
-        return node;
-      }
-
-      public ISymbolicExpressionGrammarBase Grammar {
-        get { return grammar; }
-        set {
-          grammar = value;
-          RebuildCache();
-        }
-      }
-
-      public IList<ISymbol> AllowedSymbols { get; private set; }
-
-      public SymbolCacheEntry this[ISymbol symbol] {
-        get { return symbolCache[symbol]; }
-      }
-
-      public bool[] this[ISymbol parent, ISymbol child] {
-        get { return allowedCache[Tuple.Create(parent, child)]; }
-      }
-
-      public bool HasUnarySymbols { get; private set; }
-
-      private void RebuildCache() {
-        AllowedSymbols = Grammar.AllowedSymbols.Where(x => x.InitialFrequency > 0 && !(x is ProgramRootSymbol)).ToList();
-
-        allowedCache = new Dictionary<Tuple<ISymbol, ISymbol>, bool[]>();
-        symbolCache = new Dictionary<ISymbol, SymbolCacheEntry>();
-
-        SymbolCacheEntry TryAddItem(ISymbol symbol) {
-          if (!symbolCache.TryGetValue(symbol, out SymbolCacheEntry cacheItem)) {
-            cacheItem = new SymbolCacheEntry {
-              MinSubtreeCount = Grammar.GetMinimumSubtreeCount(symbol),
-              MaxSubtreeCount = Grammar.GetMaximumSubtreeCount(symbol)
-            };
-            symbolCache[symbol] = cacheItem;
-          }
-          return cacheItem;
-        }
-
-        foreach (var parent in AllowedSymbols) {
-          var parentCacheEntry = TryAddItem(parent);
-          var maxChildArity = new int[parentCacheEntry.MaxSubtreeCount];
-
-          if (!(parent is StartSymbol || parent is Defun)) {
-            HasUnarySymbols |= parentCacheEntry.MaxSubtreeCount == 1;
-          }
-
-          foreach (var child in AllowedSymbols) {
-            var childCacheEntry = TryAddItem(child);
-            var allowed = new bool[parentCacheEntry.MaxSubtreeCount];
-
-            for (int childIndex = 0; childIndex < parentCacheEntry.MaxSubtreeCount; ++childIndex) {
-              allowed[childIndex] = Grammar.IsAllowedChildSymbol(parent, child, childIndex);
-              maxChildArity[childIndex] = Math.Max(maxChildArity[childIndex], allowed[childIndex] ? childCacheEntry.MaxSubtreeCount : 0);
-            }
-            allowedCache[Tuple.Create(parent, child)] = allowed;
-          }
-          parentCacheEntry.MaxChildArity = maxChildArity;
-        }
-      }
-
-      private ISymbolicExpressionGrammarBase grammar;
-      private Dictionary<Tuple<ISymbol, ISymbol>, bool[]> allowedCache;
-      private Dictionary<ISymbol, SymbolCacheEntry> symbolCache;
-    }
-
     public static ISymbolicExpressionTree CreateExpressionTree(IRandom random, ISymbolicExpressionGrammar grammar, int targetLength, int maxDepth, double irregularityBias = 1) {
       // even lengths cannot be achieved without symbols of odd arity
       // therefore we randomly pick a neighbouring odd length value
       var tree = MakeStump(random, grammar); // create a stump consisting of just a ProgramRootSymbol and a StartSymbol
-      CreateExpression(random, tree.Root.GetSubtree(0), targetLength - 2, maxDepth - 2, irregularityBias); // -2 because the stump has length 2 and depth 2
+      CreateExpression(random, tree.Root.GetSubtree(0), targetLength - tree.Length, maxDepth - 2, irregularityBias); // -2 because the stump has length 2 and depth 2
       return tree;
+    }
+
+    private static ISymbolicExpressionTreeNode SampleNode(IRandom random, ISymbolicExpressionTreeGrammar grammar, IEnumerable<ISymbol> allowedSymbols, int minChildArity, int maxChildArity) {
+      var candidates = new List<ISymbol>();
+      var weights = new List<double>();
+
+      foreach (var s in allowedSymbols) {
+        var minSubtreeCount = grammar.GetMinimumSubtreeCount(s);
+        var maxSubtreeCount = grammar.GetMaximumSubtreeCount(s);
+
+        if (maxChildArity < minSubtreeCount || minChildArity > maxSubtreeCount) { continue; }
+
+        candidates.Add(s);
+        weights.Add(s.InitialFrequency);
+      }
+      var symbol = candidates.SampleProportional(random, 1, weights).First();
+      var node = symbol.CreateTreeNode();
+      if (node.HasLocalParameters) {
+        node.ResetLocalParameters(random);
+      }
+      return node;
     }
 
     public static void CreateExpression(IRandom random, ISymbolicExpressionTreeNode root, int targetLength, int maxDepth, double irregularityBias = 1) {
       var grammar = root.Grammar;
-      var symbolCache = new SymbolCache(grammar);
-      var entry = symbolCache[root.Symbol];
-      var arity = random.Next(entry.MinSubtreeCount, entry.MaxSubtreeCount + 1);
-      var tuples = new List<NodeInfo>(targetLength) { new NodeInfo { Node = root, Depth = 0, Arity = arity } };
+      var minSubtreeCount = grammar.GetMinimumSubtreeCount(root.Symbol);
+      var maxSubtreeCount = grammar.GetMinimumSubtreeCount(root.Symbol);
+      var arity = random.Next(minSubtreeCount, maxSubtreeCount + 1);
       int openSlots = arity;
 
+      var allowedSymbols = grammar.AllowedSymbols.Where(x => !(x is ProgramRootSymbol || x is GroupSymbol || x is Defun || x is StartSymbol)).ToList();
+      bool hasUnarySymbols = allowedSymbols.Any(x => grammar.GetMinimumSubtreeCount(x) <= 1 && grammar.GetMaximumSubtreeCount(x) >= 1);
+
+      if (!hasUnarySymbols && targetLength % 2 == 0) {
+        // without functions of arity 1 some target lengths cannot be reached
+        targetLength = random.NextDouble() < 0.5 ? targetLength - 1 : targetLength + 1;
+      }
+
+      var tuples = new List<NodeInfo>(targetLength) { new NodeInfo { Node = root, Depth = 0, Arity = arity } };
+
+      // we use tuples.Count instead of targetLength in the if condition 
+      // because depth limits may prevent reaching the target length 
       for (int i = 0; i < tuples.Count; ++i) {
         var t = tuples[i];
         var node = t.Node;
-        var parentEntry = symbolCache[node.Symbol];
 
         for (int childIndex = 0; childIndex < t.Arity; ++childIndex) {
           // min and max arity here refer to the required arity limits for the child node
-          int maxChildArity = t.Depth == maxDepth - 1 ? 0 : Math.Min(parentEntry.MaxChildArity[childIndex], targetLength - openSlots);
-          int minChildArity = Math.Min((openSlots - tuples.Count > 1 && random.NextDouble() < irregularityBias) ? 0 : 1, maxChildArity);
-          var child = symbolCache.SampleNode(random, node.Symbol, childIndex, minChildArity, maxChildArity);
-          var childEntry = symbolCache[child.Symbol];
-          var childArity = random.Next(childEntry.MinSubtreeCount, childEntry.MaxSubtreeCount + 1);
+          int minChildArity = 0;
+          int maxChildArity = 0;
+
+          var allowedChildSymbols = allowedSymbols.Where(x => grammar.IsAllowedChildSymbol(node.Symbol, x, childIndex)).ToList();
+
+          // if we are reaching max depth we have to fill the slot with a leaf node (max arity will be zero)
+          // otherwise, find the maximum value from the grammar which does not exceed the length limit 
+          if (t.Depth < maxDepth - 1 && openSlots < targetLength) {
+
+            // we don't want to allow sampling a leaf symbol if it prevents us from reaching the target length
+            // this should be allowed only when we have enough open expansion points (more than one)
+            // the random check against the irregularity bias helps to increase shape variability when the conditions are met
+            int minAllowedArity = allowedChildSymbols.Min(x => grammar.GetMaximumSubtreeCount(x));
+            if (minAllowedArity == 0 && (openSlots - tuples.Count <= 1 || random.NextDouble() > irregularityBias)) {
+              minAllowedArity = 1;
+            }
+
+            // finally adjust min and max arity according to the expansion limits
+            int maxAllowedArity = allowedChildSymbols.Max(x => grammar.GetMaximumSubtreeCount(x));
+            maxChildArity = Math.Min(maxAllowedArity, targetLength - openSlots);
+            minChildArity = Math.Min(minAllowedArity, maxChildArity);
+          }
+         
+          // sample a random child with the arity limits
+          var child = SampleNode(random, grammar, allowedChildSymbols, minChildArity, maxChildArity);
+
+          // get actual child arity limits
+          minChildArity = Math.Max(minChildArity, grammar.GetMinimumSubtreeCount(child.Symbol));
+          maxChildArity = Math.Min(maxChildArity, grammar.GetMaximumSubtreeCount(child.Symbol));
+          minChildArity = Math.Min(minChildArity, maxChildArity);
+
+          // pick a random arity for the new child node
+          var childArity = random.Next(minChildArity, maxChildArity + 1);
           var childDepth = t.Depth + 1;
           node.AddSubtree(child);
           tuples.Add(new NodeInfo { Node = child, Depth = childDepth, Arity = childArity });
@@ -242,6 +197,10 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       rootNode.AddSubtree(startNode);
       tree.Root = rootNode;
       return tree;
+    }
+
+    public override void CreateExpression(IRandom random, ISymbolicExpressionTreeNode seedNode, int maxTreeLength, int maxTreeDepth) {
+      CreateExpression(random, seedNode, maxTreeLength, maxTreeDepth, IrregularityBias);
     }
     #endregion
   }
