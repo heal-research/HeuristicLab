@@ -199,7 +199,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       return tree;
     }
 
-    public override void CreateExpression(IRandom random, ISymbolicExpressionTreeNode seedNode, int maxTreeLength, int maxTreeDepth) {
+    public void CreateExpression(IRandom random, ISymbolicExpressionTreeNode seedNode, int maxTreeLength, int maxTreeDepth) {
       CreateExpression(random, seedNode, maxTreeLength, maxTreeDepth, IrregularityBias);
     }
     #endregion
