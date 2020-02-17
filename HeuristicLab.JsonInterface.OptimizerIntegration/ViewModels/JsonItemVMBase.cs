@@ -41,8 +41,10 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
       get => selected;
       set {
         selected = value;
-        if(TreeNode != null)
+        if(TreeNode != null) {
           TreeNode.ForeColor = (selected ? Color.Black : Color.Red);
+          TreeNode.Checked = value;
+        }
         if (TreeView != null)
           TreeView.Refresh();
         OnPropertyChange(this, nameof(Selected));

@@ -15,20 +15,31 @@ namespace HeuristicLab.JsonInterface {
       base.Inject(item, data, root);
 
       dynamic val = item as dynamic;
-      foreach (var op in val.Operators)
-        val.Operators.SetItemCheckedState(op, GetOperatorState(op.Name, data));
+      foreach (var op in val.Operators) {
+        IJsonItem childItem = GetChildItem(op.Name, data);
+        if(childItem != null) {
+          if(childItem.Value is bool b) {
+            val.Operators.SetItemCheckedState(op, b);
+          }
+          root.Inject((IItem)op, childItem, root);
+        }
+      }
     }
 
     public override IJsonItem Extract(IItem value, IJsonItemConverter root) {
       IJsonItem item = base.Extract(value, root);
       dynamic val = value as dynamic;
       foreach (var op in val.Operators) {
-        item.AddChildren(new BoolJsonItem() {
+        IJsonItem operatorItem = new BoolJsonItem() {
           Name = op.Name,
           Description = op.Description,
           Value = val.Operators.ItemChecked(op),
           Range = new bool[] { false, true }
-        });
+        };
+        IJsonItem c = root.Extract((IItem)op, root);
+        if(c != null && c.Children != null)
+          operatorItem.AddChildren(c.Children);
+        item.AddChildren(operatorItem);
       }
       return item;
     }
@@ -40,6 +51,13 @@ namespace HeuristicLab.JsonInterface {
         if (op.Name == name && op.Value is bool) return (bool)op.Value;
       }
       return false;
+    }
+
+    private IJsonItem GetChildItem(string name, IJsonItem parent) {
+      foreach(var c in parent.Children) {
+        if (c.Name == name) return c;
+      }
+      return null;
     }
     #endregion
   }

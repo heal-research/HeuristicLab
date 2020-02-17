@@ -15,7 +15,14 @@ namespace HeuristicLab.JsonInterface {
 
       if (parameter.ActualValue == null && data.Value != null)
         parameter.ActualValue = Instantiate(parameter.DataType);
-      root.Inject(parameter.ActualValue, data, root);
+
+      if(parameter.ActualValue != null) {
+          if (data.Children == null || data.Children.Count == 0)
+            root.Inject(parameter.ActualValue, data, root);
+          else
+            root.Inject(parameter.ActualValue, data.Children?.First(), root);
+         
+      }
     }
 
     public override IJsonItem Extract(IItem value, IJsonItemConverter root) {

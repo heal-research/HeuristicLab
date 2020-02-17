@@ -17,6 +17,7 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
   public partial class ExportJsonDialog : Form {
     private static SaveFileDialog SaveFileDialog { get; set; }
     private IDictionary<int, UserControl> Hash2Control { get; set; } = new Dictionary<int, UserControl>();
+    private IDictionary<TreeNode, JsonItemVMBase> Node2VM { get; set; } = new Dictionary<TreeNode, JsonItemVMBase>();
     private IJsonItem Root { get; set; }
     private IOptimizer Optimizer { get; set; }
     private IList<JsonItemVMBase> VMs { get; set; }
@@ -37,12 +38,20 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
         Optimizer = content as IOptimizer;
         Root = JsonItemConverter.Extract(Optimizer);
         TreeNode parent = new TreeNode(Root.Name);
-
+        treeView.AfterCheck += TreeView_AfterCheck;
         BuildTreeNode(parent, Root);
         treeView.Nodes.Add(parent);
         treeView.ExpandAll();
         
       } 
+    }
+
+    private void TreeView_AfterCheck(object sender, TreeViewEventArgs e) {
+      if (e.Action != TreeViewAction.Unknown) {
+        if (Node2VM.TryGetValue(e.Node, out JsonItemVMBase vm)) {
+          vm.Selected = e.Node.Checked;
+        }
+      }
     }
 
     private IDictionary<Type, Type> JI2VM { get; set; }
@@ -106,6 +115,8 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
         vm.Item = item;
         vm.TreeNode = node;
         vm.TreeView = treeView;
+        Node2VM.Add(node, vm);
+        node.Checked = vm.Selected;
         UserControl control = vm.GetControl();
         Hash2Control.Add(node.GetHashCode(), control);
         if (item.Children != null) {
