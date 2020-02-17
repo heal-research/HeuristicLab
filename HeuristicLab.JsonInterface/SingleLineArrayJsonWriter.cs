@@ -7,7 +7,7 @@ namespace HeuristicLab.JsonInterface {
   /// Custom json writer for own formatting for templates.
   /// It collapses arrays into a single line.
   /// </summary>
-  internal class SingleLineArrayJsonWriter : JsonTextWriter {
+  public class SingleLineArrayJsonWriter : JsonTextWriter {
     private bool isRangeArray = false;
     public override void WriteStartArray() {
       

@@ -52,6 +52,7 @@ namespace Heuristiclab.ConfigStarter {
       arguments.Add(new StartArgument("JsonInterface"));
       arguments.Add(new OpenArgument(@"C:\Workspace\Template.json"));
       arguments.Add(new OpenArgument(@"C:\Workspace\ConfigProto1.json"));
+      arguments.Add(new StringArgument(@"C:\Workspace\Output.json"));
 
       app.Run(arguments.ToArray());
       

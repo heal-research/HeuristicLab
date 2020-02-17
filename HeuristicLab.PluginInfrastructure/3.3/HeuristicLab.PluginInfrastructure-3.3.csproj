@@ -222,6 +222,7 @@
     <Compile Include="CommandLineArgumentHandling\Arguments\OpenArgument.cs" />
     <Compile Include="CommandLineArgumentHandling\Arguments\HideStarterArgument.cs" />
     <Compile Include="CommandLineArgumentHandling\Arguments\StartArgument.cs" />
+    <Compile Include="CommandLineArgumentHandling\Arguments\StringArgument.cs" />
     <Compile Include="CommandLineArgumentHandling\CommandLineArgument.cs" />
     <Compile Include="CommandLineArgumentHandling\CommandLineArgumentHandling.cs" />
     <Compile Include="CommandLineArgumentHandling\ICommandLineArgument.cs" />

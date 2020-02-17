@@ -53,7 +53,7 @@ namespace HeuristicLab.PluginInfrastructure {
         switch (key) {
           case StartArgument.TOKEN: return new StartArgument(value);
           case HideStarterArgument.TOKEN: return new HideStarterArgument(value);
-          default: return null;
+          default: return new StringArgument(value);
         }
       } else return new OpenArgument(entry);
     }

@@ -37,8 +37,8 @@ namespace HeuristicLab.JsonInterface.App
   [Application("JsonInterface", "HeuristicLab JsonInterface 3.3.16.17184")]
   public class HeuristicLabJsonInterfaceAppApplication : ApplicationBase {
     public override void Run(ICommandLineArgument[] args) {
-      if(args.Length == 3 && args[1] is OpenArgument && args[2] is OpenArgument) {
-        Runner.Run(args[1].Value.ToString(), args[2].Value.ToString());
+      if(args.Length == 4 && args[1] is OpenArgument && args[2] is OpenArgument && (args[3] is StringArgument || args[3] is OpenArgument)) {
+        Runner.Run(args[1].Value.ToString(), args[2].Value.ToString(), args[3].Value.ToString());
       }
     }
   }
