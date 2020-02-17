@@ -24,13 +24,22 @@ namespace HeuristicLab.JsonInterface {
       public IOptimizer Optimizer { get; set; }
     }
 
+    public static IOptimizer Instantiate(string templateFile) =>
+      Instantiate(templateFile, null, out IEnumerable<string> allowedResultNames);
+
+
+    public static IOptimizer Instantiate(string templateFile, out IEnumerable<string> allowedResultNames) =>
+      Instantiate(templateFile, null, out allowedResultNames);
+
+   
+
     /// <summary>
     /// Instantiate an IAlgorithm object with a template and config.
     /// </summary>
     /// <param name="templateFile">Template file (json), generated with JCGenerator.</param>
     /// <param name="configFile">Config file (json) for the template.</param>
     /// <returns>confugrated IOptimizer object</returns>
-    public static IOptimizer Instantiate(string templateFile, string configFile = "") {
+    public static IOptimizer Instantiate(string templateFile, string configFile, out IEnumerable<string> allowedResultNames) {
       InstData instData = new InstData() {
         Objects = new Dictionary<string, IJsonItem>()
       };
@@ -62,6 +71,8 @@ namespace HeuristicLab.JsonInterface {
       // inject configuration
       JsonItemConverter.Inject(optimizer, optimizerData);
 
+      allowedResultNames = CollectResults(instData);
+
       return optimizer;
     }
 
@@ -69,6 +80,14 @@ namespace HeuristicLab.JsonInterface {
 
     private static object GetValueFromJObject(JObject obj) =>
       obj[nameof(IJsonItem.Value)]?.ToObject<object>();
+
+    private static IEnumerable<string> CollectResults(InstData instData) {
+      IList<string> res = new List<string>();
+      foreach(JObject obj in instData.Template[Constants.Results]) {
+        res.Add(obj.Property("Name").Value.ToString());
+      }
+      return res;
+    }
 
     private static void CollectParameterizedItems(InstData instData) {
       IJsonItem root = JsonItemConverter.Extract(instData.Optimizer);

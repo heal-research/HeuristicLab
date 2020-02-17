@@ -7,34 +7,39 @@ using System.Threading;
 using System.Threading.Tasks;
 using HeuristicLab.Optimization;
 using HeuristicLab.SequentialEngine;
+using Newtonsoft.Json.Linq;
 
 namespace HeuristicLab.JsonInterface.App {
   internal static class Runner {
-    internal static void Run(string template, string config, string outputFile = @"C:\Workspace\test.txt") {
-      IOptimizer optimizer = JsonTemplateInstantiator.Instantiate(template, config);
+    internal static void Run(string template, string config, string outputFile) {
+      IOptimizer optimizer = JsonTemplateInstantiator.Instantiate(template, config, out IEnumerable<string> allowedResultNames);
       if(optimizer is EngineAlgorithm e)
         e.Engine = new SequentialEngine.SequentialEngine();
       
       Task task = optimizer.StartAsync();
       while(!task.IsCompleted) {
-        WriteResultsToFile(outputFile, optimizer);
+        WriteResultsToFile(outputFile, optimizer, allowedResultNames);
         Thread.Sleep(100);
       }
-      WriteResultsToFile(outputFile, optimizer);
+      WriteResultsToFile(outputFile, optimizer, allowedResultNames);
     }
 
-    private static void WriteResultsToFile(string file, IOptimizer optimizer) =>
-      File.WriteAllText(file, FetchResults(optimizer));
+    private static void WriteResultsToFile(string file, IOptimizer optimizer, IEnumerable<string> allowedResultNames) =>
+      File.WriteAllText(file, FetchResults(optimizer, allowedResultNames));
 
-    private static string FetchResults(IOptimizer optimizer) {
-      StringBuilder sb = new StringBuilder();
+    private static string FetchResults(IOptimizer optimizer, IEnumerable<string> allowedResultNames) {
+      JArray arr = new JArray();
+      
       foreach (var run in optimizer.Runs) {
-        sb.AppendLine($"--- {run.ToString()} ---");
+        JObject obj = new JObject();
+        arr.Add(obj);
+        obj.Add("Run", JToken.FromObject(run.ToString()));
         foreach (var res in run.Results) {
-          sb.AppendLine($"{res.Key}: {res.Value}");
+          if (allowedResultNames.Contains(res.Key))
+            obj.Add(res.Key, JToken.FromObject(res.Value.ToString()));
         }
       }
-      return sb.ToString();
+      return SingleLineArrayJsonWriter.Serialize(arr);
     }
   }
 }
