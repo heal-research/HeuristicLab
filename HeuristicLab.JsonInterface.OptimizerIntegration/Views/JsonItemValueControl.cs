@@ -49,7 +49,7 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
       NumericRangeControl = numericRangeControl1;
     }
     
-    protected void Init() {
+    protected void Init() { 
       TBValue.DataBindings.Add("Text", base.VM, ValuePropertyId);
       NumericRangeControl.TBMinRange.DataBindings.Add("Text", VM, nameof(RangedValueBaseVM.MinRange));
       NumericRangeControl.TBMaxRange.DataBindings.Add("Text", VM, nameof(RangedValueBaseVM.MaxRange));
@@ -59,5 +59,13 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
         false, DataSourceUpdateMode.OnPropertyChanged);
     }
 
+    private void textBoxValue_Validating(object sender, CancelEventArgs e) {
+      if (string.IsNullOrWhiteSpace(textBoxValue.Text)) {
+        errorProvider.SetError(textBoxValue, "Value must not be empty.");
+        e.Cancel = true;
+      } else {
+        errorProvider.SetError(textBoxValue, null);
+      }
+    }
   }
 }

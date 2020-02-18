@@ -32,5 +32,23 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
     private void ToggleFromInput(object sender, EventArgs e) {
       textBoxFrom.ReadOnly = !checkBoxFrom.Checked;
     }
+
+    private void textBoxFrom_Validating(object sender, CancelEventArgs e) {
+      if (string.IsNullOrWhiteSpace(textBoxFrom.Text)) {
+        errorProvider.SetError(textBoxFrom, "'From' must not be empty.");
+        e.Cancel = true;
+      } else {
+        errorProvider.SetError(textBoxFrom, null);
+      }
+    }
+
+    private void textBoxTo_Validating(object sender, CancelEventArgs e) {
+      if (string.IsNullOrWhiteSpace(textBoxTo.Text)) {
+        errorProvider.SetError(textBoxTo, "'To' must not be empty.");
+        e.Cancel = true;
+      } else {
+        errorProvider.SetError(textBoxTo, null);
+      }
+    }
   }
 }

@@ -15,9 +15,11 @@ namespace HeuristicLab.JsonInterface {
     public override void Inject(IItem item, IJsonItem data, IJsonItemConverter root) {
       base.Inject(item, data, root);
       IAlgorithm algorithm = item as IAlgorithm;
-      IJsonItem problemData = data.Children.Where(x => x.Name == algorithm.Problem.ItemName).First();
-      root.Inject(algorithm.Problem, problemData, root);
-
+      var collection = data.Children.Where(x => x.Name == algorithm.Problem.ItemName);
+      if(collection.Count() > 0) {
+        IJsonItem problemData = collection.First();
+        root.Inject(algorithm.Problem, problemData, root);
+      }
     }
     
     public override IJsonItem Extract(IItem value, IJsonItemConverter root) {
@@ -26,9 +28,7 @@ namespace HeuristicLab.JsonInterface {
       foreach (var res in algorithm.Results) {
         item.AddChildren(new ResultItem() {
           Name = res.Name,
-          Description = res.Description,
-          Value = true,
-          Range = new object[] { true, false }
+          Description = res.Description
         });
       }
       item.AddChildren(root.Extract(algorithm.Problem, root));
