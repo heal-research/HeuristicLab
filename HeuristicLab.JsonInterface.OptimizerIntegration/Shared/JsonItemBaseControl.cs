@@ -30,7 +30,16 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
         textBoxActualName.ReadOnly = true;
       else
         textBoxActualName.Text = VM.Item.ActualName;
-        
+
+    }
+
+    private void textBoxName_Validating(object sender, CancelEventArgs e) {
+      if(string.IsNullOrWhiteSpace(textBoxName.Text)) {
+        errorProvider.SetError(textBoxName, "Name must not be empty.");
+        e.Cancel = true;
+      } else {
+        errorProvider.SetError(textBoxName, null);
+      }
     }
   }
 }

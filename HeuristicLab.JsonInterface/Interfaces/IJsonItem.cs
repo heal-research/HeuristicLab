@@ -32,5 +32,17 @@ namespace HeuristicLab.JsonInterface {
     void AddChildren(params IJsonItem[] childs);
 
     void AddChildren(IEnumerable<IJsonItem> childs);
+
+    /// <summary>
+    /// This method fixates the path. 
+    /// After calling, the path cannot be changed by changing the name or parent.
+    /// </summary>
+    void FixatePath();
+
+    /// <summary>
+    /// This method looses the path again after a call of FixatePath.
+    /// After calling, the path is calculated by the position in item tree again.
+    /// </summary>
+    void LoosenPath();
   }
 }

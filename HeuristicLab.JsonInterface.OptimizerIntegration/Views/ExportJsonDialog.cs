@@ -15,7 +15,7 @@ using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.JsonInterface.OptimizerIntegration {
   public partial class ExportJsonDialog : Form {
-    private static SaveFileDialog SaveFileDialog { get; set; }
+    private static FolderBrowserDialog FolderBrowserDialog { get; set; }
     private IDictionary<int, UserControl> Hash2Control { get; set; } = new Dictionary<int, UserControl>();
     private IDictionary<TreeNode, JsonItemVMBase> Node2VM { get; set; } = new Dictionary<TreeNode, JsonItemVMBase>();
     private IJsonItem Root { get; set; }
@@ -70,42 +70,43 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
     }
 
     private void exportButton_Click(object sender, EventArgs e) {
-      foreach(var x in VMs) {
+      foreach (var x in VMs) {
         if (!x.Selected) {
           x.Item.Parent.Children.Remove(x.Item);
         }
       }
 
-      foreach(var x in ResultItems.Values) {
+      foreach (var x in ResultItems.Values) {
         x.Parent.Children.Remove(x);
       }
 
-      foreach(var x in resultItems.CheckedItems) {
-        if(ResultItems.TryGetValue((string)x, out IJsonItem item)) {
+      foreach (var x in resultItems.CheckedItems) {
+        if (ResultItems.TryGetValue((string)x, out IJsonItem item)) {
           Root.AddChildren(item);
         }
       }
 
       IList<IJsonItem> faultyItems = new List<IJsonItem>();
-      if(!Root.GetValidator().Validate(ref faultyItems)) {
-        //print faultyItems
-      }
-
-      if (SaveFileDialog == null) {
-        SaveFileDialog = new SaveFileDialog();
-        SaveFileDialog.Title = "Export .json-Template";
-        SaveFileDialog.DefaultExt = "json";
-        SaveFileDialog.Filter = ".json-Template|*.json|All Files|*.*";
-        SaveFileDialog.FilterIndex = 1;
-      }
       
-      SaveFileDialog.FileName = "template";
+      if (!Root.GetValidator().Validate(ref faultyItems)) {
+        IList<Exception> list = new List<Exception>();
+        //print faultyItems
+        foreach (var x in faultyItems) {
+          list.Add(new Exception($"Combination of value and range is not valid for {x.Name}"));
+        }
+        ErrorHandling.ShowErrorDialog(this, new AggregateException(list));
+      } else {
+        if (FolderBrowserDialog == null) {
+          FolderBrowserDialog = new FolderBrowserDialog();
+          FolderBrowserDialog.Description = "Select .json-Template Dictionary";
+        }
 
-      if (SaveFileDialog.ShowDialog() == DialogResult.OK) {
-        Generator.GenerateTemplate(@"C:\Users\p41997\Desktop", "template", Optimizer, Root);
+        if (FolderBrowserDialog.ShowDialog() == DialogResult.OK) {
+          Generator.GenerateTemplate(FolderBrowserDialog.SelectedPath, textBoxTemplateName.Text, Optimizer, Root);
+        }
+
+        Close();
       }
-
-      Close();
     }
 
     private void BuildTreeNode(TreeNode node, IJsonItem item) {
@@ -159,6 +160,15 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
           control.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
         }
         panel.Refresh();
+      }
+    }
+
+    private void textBoxTemplateName_Validating(object sender, CancelEventArgs e) {
+      if (string.IsNullOrWhiteSpace(textBoxTemplateName.Text)) {
+        errorProvider.SetError(textBoxTemplateName, "Template name must not be empty.");
+        e.Cancel = true;
+      } else {
+        errorProvider.SetError(textBoxTemplateName, null);
       }
     }
   }

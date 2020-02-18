@@ -44,8 +44,12 @@ namespace HeuristicLab.JsonInterface {
 
     public virtual string Description { get; set; }
 
+    private string fixedPath = "";
     public virtual string Path {
       get {
+        if (!string.IsNullOrWhiteSpace(fixedPath))
+          return fixedPath;
+
         IJsonItem tmp = Parent;
         StringBuilder builder = new StringBuilder(this.Name);
         while(tmp != null) {
@@ -56,17 +60,17 @@ namespace HeuristicLab.JsonInterface {
       }
     }
 
-    [JsonIgnore]
-    public virtual IList<IJsonItem> Children { get; protected set; }
-
-    [JsonIgnore]
-    public virtual IJsonItem Parent { get; set; }
-
     public virtual object Value { get; set; }
 
     public virtual IEnumerable<object> Range { get; set; }
     
     public virtual string ActualName { get; set; }
+
+    [JsonIgnore]
+    public virtual IList<IJsonItem> Children { get; protected set; }
+
+    [JsonIgnore]
+    public virtual IJsonItem Parent { get; set; }
 
     #region Constructors
     public JsonItem() { }
@@ -96,6 +100,7 @@ namespace HeuristicLab.JsonInterface {
       AddChildren(childs as IEnumerable<IJsonItem>);
 
     public void AddChildren(IEnumerable<IJsonItem> childs) {
+      if (childs == null) return;
       if (Children == null)
         Children = new List<IJsonItem>();
       foreach (var child in childs) {
@@ -105,10 +110,13 @@ namespace HeuristicLab.JsonInterface {
     }
 
     public virtual IJsonItemValidator GetValidator() => new JsonItemValidator(this);
+
+    public void FixatePath() => fixedPath = Path;
+    public void LoosenPath() => fixedPath = "";
     #endregion
 
     #region Helper
-    protected bool IsInRange() {
+    protected virtual bool IsInRange() {
       bool b1 = true, b2 = true;
       if (Value is IEnumerable && !(Value is string)) {
         foreach (var x in (IEnumerable)Value) {
