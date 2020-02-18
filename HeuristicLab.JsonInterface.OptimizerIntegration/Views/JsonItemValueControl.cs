@@ -12,18 +12,18 @@ using System.Globalization;
 namespace HeuristicLab.JsonInterface.OptimizerIntegration {
   
   public class JsonItemIntValueControl : JsonItemValueControl {
-
+    
     #region Overriden Properties
     protected override string ValuePropertyId => nameof(IntValueVM.Value);
     #endregion
-
+    
     public JsonItemIntValueControl(IntValueVM vm) : base(vm) {
       Init();
     }
   }
 
   public class JsonItemDoubleValueControl : JsonItemValueControl {
-
+    
     #region Overriden Properties
     protected override string ValuePropertyId => nameof(DoubleValueVM.Value);
     #endregion
@@ -48,7 +48,7 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
       TBValue = textBoxValue;
       NumericRangeControl = numericRangeControl1;
     }
-
+    
     protected void Init() {
       TBValue.DataBindings.Add("Text", base.VM, ValuePropertyId);
       NumericRangeControl.TBMinRange.DataBindings.Add("Text", VM, nameof(RangedValueBaseVM.MinRange));

@@ -15,7 +15,7 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
     private JsonItemBaseControl() {
       InitializeComponent();
     }
-
+    
     public JsonItemBaseControl(JsonItemVMBase vm) {
       InitializeComponent();
       VM = vm;
@@ -30,6 +30,7 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
         textBoxActualName.ReadOnly = true;
       else
         textBoxActualName.Text = VM.Item.ActualName;
+        
     }
   }
 }

@@ -34,7 +34,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
       this.textBoxValue.Location = new System.Drawing.Point(92, 101);
       this.textBoxValue.Name = "textBoxValue";
-      this.textBoxValue.Size = new System.Drawing.Size(404, 20);
+      this.textBoxValue.Size = new System.Drawing.Size(402, 20);
       this.textBoxValue.TabIndex = 14;
       // 
       // label2
@@ -52,7 +52,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
       this.numericRangeControl1.Location = new System.Drawing.Point(9, 127);
       this.numericRangeControl1.Name = "numericRangeControl1";
-      this.numericRangeControl1.Size = new System.Drawing.Size(487, 112);
+      this.numericRangeControl1.Size = new System.Drawing.Size(485, 112);
       this.numericRangeControl1.TabIndex = 16;
       // 
       // JsonItemValueControl

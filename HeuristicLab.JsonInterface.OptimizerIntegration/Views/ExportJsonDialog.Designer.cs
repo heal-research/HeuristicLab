@@ -37,6 +37,7 @@
       this.tabPage1 = new System.Windows.Forms.TabPage();
       this.tabPage2 = new System.Windows.Forms.TabPage();
       this.jsonItemBindingSource = new System.Windows.Forms.BindingSource(this.components);
+      this.treeViewResults = new System.Windows.Forms.TreeView();
       this.groupBoxDetails.SuspendLayout();
       this.groupBox2.SuspendLayout();
       this.groupBox3.SuspendLayout();
@@ -110,9 +111,9 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this.resultItems.FormattingEnabled = true;
-      this.resultItems.Location = new System.Drawing.Point(6, 19);
+      this.resultItems.Location = new System.Drawing.Point(6, 364);
       this.resultItems.Name = "resultItems";
-      this.resultItems.Size = new System.Drawing.Size(777, 499);
+      this.resultItems.Size = new System.Drawing.Size(777, 154);
       this.resultItems.TabIndex = 5;
       // 
       // groupBox2
@@ -133,6 +134,7 @@
       this.groupBox3.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+      this.groupBox3.Controls.Add(this.treeViewResults);
       this.groupBox3.Controls.Add(this.resultItems);
       this.groupBox3.Location = new System.Drawing.Point(6, 6);
       this.groupBox3.Name = "groupBox3";
@@ -199,6 +201,14 @@
       // 
       this.jsonItemBindingSource.DataSource = typeof(HeuristicLab.JsonInterface.IJsonItem);
       // 
+      // treeViewResults
+      // 
+      this.treeViewResults.CheckBoxes = true;
+      this.treeViewResults.Location = new System.Drawing.Point(6, 19);
+      this.treeViewResults.Name = "treeViewResults";
+      this.treeViewResults.Size = new System.Drawing.Size(777, 339);
+      this.treeViewResults.TabIndex = 6;
+      // 
       // ExportJsonDialog
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -241,5 +251,6 @@
     private System.Windows.Forms.TabControl tabControl1;
     private System.Windows.Forms.TabPage tabPage1;
     private System.Windows.Forms.TabPage tabPage2;
+    private System.Windows.Forms.TreeView treeViewResults;
   }
 }

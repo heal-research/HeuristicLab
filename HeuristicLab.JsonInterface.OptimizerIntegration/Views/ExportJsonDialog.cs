@@ -124,6 +124,7 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
             if (IsDrawableItem(c)) {
               if (c is ResultItem) {
                 resultItems.Items.Add(c.Name, true);
+                
                 ResultItems.Add(c.Name, c);
               } else {
                 TreeNode childNode = new TreeNode(c.Name);
@@ -153,6 +154,7 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
         if (control != null) {
           panel.Controls.Add(control);
           control.Width = panel.Width;
+          control.Height = panel.Height;
           control.Dock = DockStyle.Fill;
           control.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
         }
