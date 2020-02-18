@@ -59,7 +59,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
       this.textBoxActualName.Location = new System.Drawing.Point(92, 75);
       this.textBoxActualName.Name = "textBoxActualName";
-      this.textBoxActualName.Size = new System.Drawing.Size(404, 20);
+      this.textBoxActualName.Size = new System.Drawing.Size(402, 20);
       this.textBoxActualName.TabIndex = 12;
       // 
       // labelActualName
@@ -78,7 +78,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
       this.textBoxName.Location = new System.Drawing.Point(92, 23);
       this.textBoxName.Name = "textBoxName";
-      this.textBoxName.Size = new System.Drawing.Size(404, 20);
+      this.textBoxName.Size = new System.Drawing.Size(402, 20);
       this.textBoxName.TabIndex = 10;
       // 
       // label1
@@ -106,7 +106,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
       this.textBoxDescription.Location = new System.Drawing.Point(92, 49);
       this.textBoxDescription.Name = "textBoxDescription";
-      this.textBoxDescription.Size = new System.Drawing.Size(404, 20);
+      this.textBoxDescription.Size = new System.Drawing.Size(402, 20);
       this.textBoxDescription.TabIndex = 14;
       // 
       // JsonItemBaseControl
@@ -123,7 +123,7 @@
       this.Controls.Add(this.label1);
       this.Name = "JsonItemBaseControl";
       this.Padding = new System.Windows.Forms.Padding(3);
-      this.Size = new System.Drawing.Size(502, 154);
+      this.Size = new System.Drawing.Size(500, 154);
       this.ResumeLayout(false);
       this.PerformLayout();
 

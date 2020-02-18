@@ -19,7 +19,7 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
     }
 
     public IEnumerable<string> Range {
-      get => Item.Range.Cast<string>();
+      get => Item.Range?.Cast<string>();
       set {
         Item.Range = value;
         //check if value is still in range

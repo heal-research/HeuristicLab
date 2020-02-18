@@ -101,7 +101,7 @@
       this.Controls.Add(this.numericRangeControl1);
       this.Controls.Add(this.groupBox1);
       this.Name = "JsonItemRangeControl";
-      this.Size = new System.Drawing.Size(500, 301);
+      this.Size = new System.Drawing.Size(500, 290);
       this.Controls.SetChildIndex(this.groupBox1, 0);
       this.Controls.SetChildIndex(this.numericRangeControl1, 0);
       this.groupBox1.ResumeLayout(false);

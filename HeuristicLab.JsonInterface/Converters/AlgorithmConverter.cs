@@ -15,7 +15,7 @@ namespace HeuristicLab.JsonInterface {
     public override void Inject(IItem item, IJsonItem data, IJsonItemConverter root) {
       base.Inject(item, data, root);
       IAlgorithm algorithm = item as IAlgorithm;
-      IJsonItem problemData = data.Children.Where(x => x.Name == algorithm.Problem.Name).First();
+      IJsonItem problemData = data.Children.Where(x => x.Name == algorithm.Problem.ItemName).First();
       root.Inject(algorithm.Problem, problemData, root);
 
     }

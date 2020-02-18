@@ -13,18 +13,31 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
 
     public JsonItemValidValuesControl(StringValueVM vm) : base(vm) {
       InitializeComponent();
-      foreach (var i in VM.Item.Range)
-        SetupOption((string)i);
-
-      comboBoxValues.DataBindings.Add("SelectedItem", VM, nameof(StringValueVM.Value));
+      if (VM.Item.Range != null) {
+        foreach (var i in VM.Item.Range)
+          SetupOption((string)i);
+        comboBoxValues.DataBindings.Add("SelectedItem", VM, nameof(StringValueVM.Value));
+      } else {
+        comboBoxValues.Hide();
+        groupBoxRange.Hide();
+        TextBox tb = new TextBox();
+        this.Controls.Add(tb);
+        tb.Location = comboBoxValues.Location;
+        tb.Size = comboBoxValues.Size;
+        tb.Anchor = comboBoxValues.Anchor;
+        tb.Dock = comboBoxValues.Dock;
+        tb.DataBindings.Add("Text", VM, nameof(StringValueVM.Value));
+        tb.Show();
+      }
     }
     
     private void SetupOption(string opt) {
       AddComboOption(opt);
       TextBox tb = new TextBox();
       tb.Text = opt;
+      //tb.Size = new Size()
       tb.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-      tb.Size = new Size(420, 20);
+      //tb.Dock = DockStyle.Right | DockStyle.Left;
       tb.ReadOnly = true;
 
       CheckBox checkBox = new CheckBox();
