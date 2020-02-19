@@ -79,8 +79,12 @@ namespace HeuristicLab.Clients.Hive {
     public override void Prepare() { }
 
     public override async void Start() {
-      Item.Prepare(initialOperation);
-      await Item.StartAsync();
+      try {
+        Item.Prepare(initialOperation);
+        await Item.StartAsync();
+      } catch (Exception e) {
+        engine_ExceptionOccurred(Item, new EventArgs<Exception>(e));
+      }
     }
 
     public override void Pause() {

@@ -100,7 +100,11 @@ namespace HeuristicLab.Clients.Hive.Jobs {
           (Item is BatchRun && OptimizerAsBatchRun.Optimizer == null)) { // batchrun would not fire OnStopped if algorithm == null
         OnTaskStopped();
       } else {
-        await Item.StartAsync();
+        try {
+          await Item.StartAsync();
+        } catch (Exception e) {
+          optimizer_ExceptionOccurred(Item, new EventArgs<Exception>(e));
+        }
       }
     }
 
