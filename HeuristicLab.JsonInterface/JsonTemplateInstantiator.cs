@@ -50,7 +50,6 @@ namespace HeuristicLab.JsonInterface {
         instData.Config = JArray.Parse(File.ReadAllText(configFile));
 
       // extract metadata information
-      string optimizerName = instData.Template[Constants.Metadata][Constants.TemplateName].ToString();
       string hLFileLocation = Path.GetFullPath(instData.Template[Constants.Metadata][Constants.HLFileLocation].ToString());
 
       // deserialize hl file
@@ -77,10 +76,6 @@ namespace HeuristicLab.JsonInterface {
     }
 
     #region Helper
-
-    private static object GetValueFromJObject(JObject obj) =>
-      obj[nameof(IJsonItem.Value)]?.ToObject<object>();
-
     private static IEnumerable<string> CollectResults(InstData instData) {
       IList<string> res = new List<string>();
       foreach(JObject obj in instData.Template[Constants.Results]) {
@@ -106,9 +101,7 @@ namespace HeuristicLab.JsonInterface {
             throw new Exception($"Invalid path '{string.Join(".", pathParts)}'");
           else old = tmp;
         }
-        tmp.Value = GetValueFromJObject(obj);
-        tmp.Range = obj[nameof(IJsonItem.Range)]?.ToObject<object[]>();
-        tmp.ActualName = obj[nameof(IJsonItem.ActualName)]?.ToString();
+        tmp.SetFromJObject(obj);
         instData.Objects.Add(tmp.Path, tmp);
       }
     }
@@ -119,10 +112,11 @@ namespace HeuristicLab.JsonInterface {
         string path = obj.Property("Path").Value.ToString();
         // override default value
         if (instData.Objects.TryGetValue(path, out IJsonItem param)) {
-          param.Value = GetValueFromJObject(obj);
-          // override ActualName (for LookupParameters)
-          if (param.ActualName != null)
-            param.ActualName = obj[nameof(IJsonItem.ActualName)]?.ToString();
+          // save range from template
+          IEnumerable<object> tmpRange = param.Range;
+          param.SetFromJObject(obj);
+          // set range from template
+          param.Range = tmpRange; 
         } else throw new InvalidDataException($"No parameter with path='{path}' defined!");
       }
     }

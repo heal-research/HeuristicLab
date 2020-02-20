@@ -34,7 +34,6 @@
       // 
       this.tableOptions.AutoScroll = true;
       this.tableOptions.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-      this.tableOptions.BackColor = System.Drawing.SystemColors.Control;
       this.tableOptions.ColumnCount = 2;
       this.tableOptions.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
       this.tableOptions.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());

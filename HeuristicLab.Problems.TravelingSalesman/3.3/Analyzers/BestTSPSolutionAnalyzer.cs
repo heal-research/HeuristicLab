@@ -55,14 +55,28 @@ namespace HeuristicLab.Problems.TravelingSalesman {
     public LookupParameter<PathTSPTour> BestSolutionParameter {
       get { return (LookupParameter<PathTSPTour>)Parameters["BestSolution"]; }
     }
-    public ValueLookupParameter<ResultCollection> ResultsParameter {
-      get { return (ValueLookupParameter<ResultCollection>)Parameters["Results"]; }
-    }
+    //public ValueLookupParameter<ResultCollection> ResultsParameter {
+    //  get { return (ValueLookupParameter<ResultCollection>)Parameters["Results"]; }
+    //}
     public LookupParameter<DoubleValue> BestKnownQualityParameter {
       get { return (LookupParameter<DoubleValue>)Parameters["BestKnownQuality"]; }
     }
     public LookupParameter<Permutation> BestKnownSolutionParameter {
       get { return (LookupParameter<Permutation>)Parameters["BestKnownSolution"]; }
+    }
+    public IResultParameter<PathTSPTour> BestSolutionResultParameter {
+      get { return (IResultParameter<PathTSPTour>)Parameters["Best TSP Solution"]; }
+    }
+
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      // BackwardsCompatibility3.3
+      #region Backwards compatible code, remove with 3.4
+      if (!Parameters.ContainsKey("Best TSP Solution")) {
+        Parameters.Add(new ResultParameter<PathTSPTour>("Best TSP Solution", "The best TSP solution found so far."));
+      }
+      #endregion
     }
 
     [StorableConstructor]
@@ -78,16 +92,17 @@ namespace HeuristicLab.Problems.TravelingSalesman {
       Parameters.Add(new ScopeTreeLookupParameter<Permutation>("Permutation", "The TSP solutions given in path representation from which the best solution should be analyzed."));
       Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>("Quality", "The qualities of the TSP solutions which should be analyzed."));
       Parameters.Add(new LookupParameter<PathTSPTour>("BestSolution", "The best TSP solution."));
-      Parameters.Add(new ValueLookupParameter<ResultCollection>("Results", "The result collection where the best TSP solution should be stored."));
+      //Parameters.Add(new ValueLookupParameter<ResultCollection>("Results", "The result collection where the best TSP solution should be stored."));
       Parameters.Add(new LookupParameter<DoubleValue>("BestKnownQuality", "The quality of the best known solution of this TSP instance."));
       Parameters.Add(new LookupParameter<Permutation>("BestKnownSolution", "The best known solution of this TSP instance."));
+      Parameters.Add(new ResultParameter<PathTSPTour>("Best TSP Solution", "The best TSP solution found so far."));
 
       MaximizationParameter.Hidden = true;
       CoordinatesParameter.Hidden = true;
       PermutationParameter.Hidden = true;
       QualityParameter.Hidden = true;
       BestSolutionParameter.Hidden = true;
-      ResultsParameter.Hidden = true;
+      //ResultsParameter.Hidden = true;
       BestKnownQualityParameter.Hidden = true;
       BestKnownSolutionParameter.Hidden = true;
     }
@@ -96,7 +111,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
       DoubleMatrix coordinates = CoordinatesParameter.ActualValue;
       ItemArray<Permutation> permutations = PermutationParameter.ActualValue;
       ItemArray<DoubleValue> qualities = QualityParameter.ActualValue;
-      ResultCollection results = ResultsParameter.ActualValue;
+      //ResultCollection results = ResultsParameter.ActualValue;
       bool max = MaximizationParameter.ActualValue.Value;
       DoubleValue bestKnownQuality = BestKnownQualityParameter.ActualValue;
 
@@ -116,7 +131,8 @@ namespace HeuristicLab.Problems.TravelingSalesman {
       if (tour == null) {
         tour = new PathTSPTour(coordinates, (Permutation)permutations[i].Clone(), new DoubleValue(qualities[i].Value));
         BestSolutionParameter.ActualValue = tour;
-        results.Add(new Result("Best TSP Solution", tour));
+        BestSolutionResultParameter.ActualValue = tour;
+        //results.Add(new Result("Best TSP Solution", tour));
       } else {
         if (max && tour.Quality.Value < qualities[i].Value ||
           !max && tour.Quality.Value > qualities[i].Value) {

@@ -25,6 +25,7 @@
     private void InitializeComponent() {
       this.checkBoxValue = new System.Windows.Forms.CheckBox();
       this.label2 = new System.Windows.Forms.Label();
+      ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
       this.SuspendLayout();
       // 
       // checkBoxValue
@@ -41,7 +42,7 @@
       // label2
       // 
       this.label2.AutoSize = true;
-      this.label2.Location = new System.Drawing.Point(6, 101);
+      this.label2.Location = new System.Drawing.Point(6, 102);
       this.label2.Name = "label2";
       this.label2.Size = new System.Drawing.Size(34, 13);
       this.label2.TabIndex = 20;
@@ -53,10 +54,12 @@
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.Controls.Add(this.label2);
       this.Controls.Add(this.checkBoxValue);
+      this.errorProvider.SetIconAlignment(this, System.Windows.Forms.ErrorIconAlignment.MiddleLeft);
       this.Name = "JsonItemBoolControl";
-      this.Size = new System.Drawing.Size(500, 140);
+      this.Size = new System.Drawing.Size(500, 121);
       this.Controls.SetChildIndex(this.checkBoxValue, 0);
       this.Controls.SetChildIndex(this.label2, 0);
+      ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
       this.ResumeLayout(false);
       this.PerformLayout();
 

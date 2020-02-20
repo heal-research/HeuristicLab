@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace HeuristicLab.JsonInterface.OptimizerIntegration {
 
-  public class DoubleMatrixValueVM : MatrixValueVM<double> {
+  public class DoubleMatrixValueVM : MatrixValueVM<double, DoubleMatrixJsonItem> {
     public override Type JsonItemType => typeof(DoubleMatrixJsonItem);
-    public override JsonItemBaseControl GetControl() => 
+    public override JsonItemBaseControl Control =>
       new JsonItemDoubleMatrixValueControl(this);
 
     public override double[][] Value {
@@ -25,18 +25,38 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
     protected override double MaxTypeValue => double.MaxValue;
   }
 
-  public abstract class MatrixValueVM<T> : RangedValueBaseVM<T> {
+  public abstract class MatrixValueVM<T, JsonItemType> : RangedValueBaseVM<T>, IMatrixJsonItemVM
+    where JsonItemType : IMatrixJsonItem {
+    public abstract T[][] Value { get; set; }
+    public bool RowsResizable {
+      get => ((IMatrixJsonItem)Item).RowsResizable; 
+      set {
+        ((IMatrixJsonItem)Item).RowsResizable = value;
+        OnPropertyChange(this, nameof(RowsResizable));
+      }
+    }
 
-    public MatrixValueVM() {}
-    public void SetCellValue(object obj, int col, int row) {
+    public bool ColumnsResizable {
+      get => ((IMatrixJsonItem)Item).ColumnsResizable;
+      set {
+        ((IMatrixJsonItem)Item).ColumnsResizable = value;
+        OnPropertyChange(this, nameof(ColumnsResizable));
+      }
+    }
+
+    public void SetCellValue(T data, int row, int col) {
+      
       T[][] tmp = Value;
       
+      // increase y
       if (row >= tmp.Length) { // increasing array
         T[][] newArr = new T[row + 1][];
         Array.Copy(tmp, 0, newArr, 0, tmp.Length);
         newArr[row] = new T[0];
         tmp = newArr;
       }
+
+      // increase x
       for(int i = 0; i < tmp.Length; ++i) {
         if(col >= tmp[i].Length) {
           T[] newArr = new T[col + 1];
@@ -44,13 +64,9 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
           tmp[i] = newArr;
         }
       }
-      tmp[row][col] = (T)Convert.ChangeType(obj.ToString().Replace(",","."), 
-                                            typeof(T), 
-                                            System.Globalization.CultureInfo.InvariantCulture);
+
+      tmp[row][col] = data;
       Value = tmp;
     }
-
-    public abstract T[][] Value { get; set; }
-
   }
 }

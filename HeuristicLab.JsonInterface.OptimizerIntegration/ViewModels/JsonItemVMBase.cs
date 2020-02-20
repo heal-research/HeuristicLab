@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace HeuristicLab.JsonInterface.OptimizerIntegration {
-  public class JsonItemVMBase : INotifyPropertyChanged, IDisposable {
+  public class JsonItemVMBase : IJsonItemVM {
     public event PropertyChangedEventHandler PropertyChanged;
     public event Action ItemChanged;
 
@@ -77,10 +77,8 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
       }
     }
 
-    public virtual JsonItemBaseControl GetControl() {
-      return new JsonItemBaseControl(this);
-    }
-
+    public virtual JsonItemBaseControl Control => new JsonItemBaseControl(this);
+    
     #region IDisposable Support
     private bool disposedValue = false; // To detect redundant calls
 
