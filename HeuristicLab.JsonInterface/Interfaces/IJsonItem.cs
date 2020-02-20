@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace HeuristicLab.JsonInterface {
   public interface IJsonItem {
@@ -44,5 +45,7 @@ namespace HeuristicLab.JsonInterface {
     /// After calling, the path is calculated by the position in item tree again.
     /// </summary>
     void LoosenPath();
+
+    void SetFromJObject(JObject jObject);
   }
 }

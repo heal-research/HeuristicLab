@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace HeuristicLab.JsonInterface {
   /// <summary>
@@ -113,6 +114,12 @@ namespace HeuristicLab.JsonInterface {
 
     public void FixatePath() => fixedPath = Path;
     public void LoosenPath() => fixedPath = "";
+
+    public virtual void SetFromJObject(JObject jObject) {
+      Value = jObject[nameof(IJsonItem.Value)]?.ToObject<object>();
+      Range = jObject[nameof(IJsonItem.Range)]?.ToObject<object[]>();
+      ActualName = jObject[nameof(IJsonItem.ActualName)]?.ToString();
+    }
     #endregion
 
     #region Helper

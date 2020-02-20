@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace HeuristicLab.JsonInterface.OptimizerIntegration {
   public class StringValueVM : JsonItemVMBase {
     public override Type JsonItemType => typeof(StringJsonItem);
-    public override JsonItemBaseControl GetControl() =>
+    public override JsonItemBaseControl Control =>
        new JsonItemValidValuesControl(this);
 
     public string Value {
