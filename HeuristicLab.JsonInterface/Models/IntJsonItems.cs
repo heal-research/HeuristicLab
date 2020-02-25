@@ -5,7 +5,12 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace HeuristicLab.JsonInterface {
-  public class IntJsonItem : JsonItem<int> { }
+  public class IntJsonItem : JsonItem<int> {
+    /*I
+    public int MinValue { get; set; } 
+    public int MaxValue { get; set; }
+    */
+  }
   public class IntArrayJsonItem : ArrayJsonItemBase<int> { }
   public class IntRangeJsonItem : ArrayJsonItemBase<int> {
     public override bool Resizable { get => false; set { } }

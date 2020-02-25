@@ -22,4 +22,16 @@ namespace HeuristicLab.JsonInterface {
       return true;
     }
   }
+
+  public class DoubleNamedMatrixJsonItem : NamedMatrixJsonItemBase<double> {
+    protected override bool IsInRange() {
+      for (int c = 0; c < Value.Length; ++c) {
+        for (int r = 0; r < Value[c].Length; ++r) {
+          if (Value[c][r] < Range.First() && Range.Last() < Value[c][r])
+            return false;
+        }
+      }
+      return true;
+    }
+  }
 }

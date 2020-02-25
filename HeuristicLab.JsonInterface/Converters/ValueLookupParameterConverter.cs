@@ -26,7 +26,12 @@ namespace HeuristicLab.JsonInterface {
         IJsonItem tmp = root.Extract(param.Value, root);
         item = tmp;
       } else {
-        item.Range = new object[] { GetMinValue(param.DataType), GetMaxValue(param.DataType) };
+        var min = GetMinValue(param.DataType);
+        var max = GetMaxValue(param.DataType);
+        if (min != null && max != null)
+          item.Range = new object[] { min, max };
+        else
+          item.Range = null;
       }
       item.Name = param.Name;
       item.Description = param.Description;

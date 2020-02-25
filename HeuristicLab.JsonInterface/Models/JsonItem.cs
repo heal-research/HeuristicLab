@@ -65,13 +65,19 @@ namespace HeuristicLab.JsonInterface {
 
     public virtual IEnumerable<object> Range { get; set; }
     
+    // TODO eigene items für LookUp?
     public virtual string ActualName { get; set; }
+
+    // TODO jsonIgnore dataType?
 
     [JsonIgnore]
     public virtual IList<IJsonItem> Children { get; protected set; }
 
     [JsonIgnore]
     public virtual IJsonItem Parent { get; set; }
+
+    [JsonIgnore]
+    public virtual bool Active { get; set; }
 
     #region Constructors
     public JsonItem() { }
@@ -80,22 +86,7 @@ namespace HeuristicLab.JsonInterface {
       AddChildren(childs);
     }
     #endregion
-
-    #region Public Static Methods
-    public static void Merge(JsonItem target, JsonItem from) {
-      target.Name = from.Name ?? target.Name;
-      target.Range = from.Range ?? target.Range;
-      target.Value = from.Value ?? target.Value;
-      target.ActualName = from.ActualName ?? target.ActualName;
-      if(target.Children != null) {
-        if (from.Children != null)
-          ((List<IJsonItem>)from.Children).AddRange(target.Children); 
-      } else {
-        target.Children = from.Children;
-      }
-    }
-    #endregion
-
+    
     #region Public Methods
     public void AddChildren(params IJsonItem[] childs) => 
       AddChildren(childs as IEnumerable<IJsonItem>);
@@ -123,6 +114,10 @@ namespace HeuristicLab.JsonInterface {
     #endregion
 
     #region Helper
+    /*
+     * TODO protected abstract bool Validate();
+     */
+
     protected virtual bool IsInRange() {
       bool b1 = true, b2 = true;
       if (Value is IEnumerable && !(Value is string)) {

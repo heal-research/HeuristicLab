@@ -26,7 +26,7 @@ namespace HeuristicLab.JsonInterface {
       IJsonItem item = base.Extract(value, root);
       IAlgorithm algorithm = value as IAlgorithm;
       foreach (var res in algorithm.Results) {
-        item.AddChildren(new ResultItem() {
+        item.AddChildren(new ResultJsonItem() {
           Name = res.Name,
           Description = res.Description
         });

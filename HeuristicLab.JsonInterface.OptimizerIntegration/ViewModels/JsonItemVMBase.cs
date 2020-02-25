@@ -38,13 +38,13 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
 
     public virtual Type JsonItemType => typeof(JsonItem);
 
-    private bool selected = true;
+    
     public bool Selected {
-      get => selected;
+      get => Item.Active;
       set {
-        selected = value;
+        Item.Active = value;
         if(TreeNode != null) {
-          TreeNode.ForeColor = (selected ? Color.Black : Color.Red);
+          TreeNode.ForeColor = (Selected ? Color.Black : Color.Red);
           TreeNode.Checked = value;
         }
         if (TreeView != null)

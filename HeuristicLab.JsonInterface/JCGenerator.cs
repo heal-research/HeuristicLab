@@ -40,7 +40,7 @@ namespace HeuristicLab.JsonInterface {
 
       // filter result items
       foreach (var item in jsonItems) {
-        if (item is ResultItem)
+        if (item is ResultJsonItem)
           resultItems.Add(Serialize(item));
         else
           parameterItems.Add(Serialize(item));
@@ -59,14 +59,14 @@ namespace HeuristicLab.JsonInterface {
     #region Helper    
     // serializes ParameterizedItems and saves them in list "JsonItems".
     private void PopulateJsonItems(IJsonItem item, IList<IJsonItem> jsonItems) {
-      IEnumerable<IJsonItem> tmpParameter = item.Children;
+      IEnumerable<IJsonItem> children = item.Children;
       
-      if (item.Value != null || item.Range != null || item is ResultItem || item.ActualName != null) {
+      if (item.Active && (item.Value != null || item.Range != null || item is ResultJsonItem || item.ActualName != null)) {
         jsonItems.Add(item);
       }
 
-      if (tmpParameter != null) {
-        foreach (var p in tmpParameter) {
+      if (children != null) {
+        foreach (var p in children) {
           PopulateJsonItems(p, jsonItems);
         }
       }

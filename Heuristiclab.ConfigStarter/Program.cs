@@ -42,10 +42,16 @@ namespace Heuristiclab.ConfigStarter {
 
       SymbolicRegressionSingleObjectiveProblem prop = new SymbolicRegressionSingleObjectiveProblem();
       
-      alg.Problem = tsp;
+      alg.Problem = prop;
+
+      IJsonItem root = JsonItemConverter.Extract(alg);
+      var x = root.Children[0];
+      root.Children.Remove(x);
+      x.Parent = null;
+
 
       JCGenerator generator = new JCGenerator();
-      generator.GenerateTemplate(@"C:\Workspace", "Template", alg);
+      generator.GenerateTemplate(@"C:\Workspace", "Template", alg, root);
       //JsonTemplateInstantiator.Instantiate(@"C:\Workspace\Template.json");
       
       List<ICommandLineArgument> arguments = new List<ICommandLineArgument>();
