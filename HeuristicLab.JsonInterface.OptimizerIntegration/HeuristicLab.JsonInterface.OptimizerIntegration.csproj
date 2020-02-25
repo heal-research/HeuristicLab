@@ -80,6 +80,7 @@
     <Compile Include="Interfaces\IArrayJsonItemVM.cs" />
     <Compile Include="Interfaces\IJsonItemVM.cs" />
     <Compile Include="Interfaces\IMatrixJsonItemVM.cs" />
+    <Compile Include="Interfaces\INamedMatrixJsonItemVM.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -100,6 +101,7 @@
     <Compile Include="ViewModels\ArrayValueVM.cs" />
     <Compile Include="ViewModels\JsonItemVMBase.cs" />
     <Compile Include="ViewModels\MatrixValueVM.cs" />
+    <Compile Include="ViewModels\NamedMatrixValueVM.cs" />
     <Compile Include="ViewModels\RangedValueBaseVM.cs" />
     <Compile Include="ViewModels\RangeVM.cs" />
     <Compile Include="ViewModels\ResultItemVM.cs" />

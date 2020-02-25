@@ -32,16 +32,18 @@ namespace HeuristicLab.JsonInterface {
 
     public override void Inject(IItem item, IJsonItem data, IJsonItemConverter root) {
       DoubleMatrix mat = item as DoubleMatrix;
-      DoubleMatrixJsonItem d = data as DoubleMatrixJsonItem;
+      DoubleNamedMatrixJsonItem d = data as DoubleNamedMatrixJsonItem;
       CopyMatrixData(mat, d.Value);
     }
 
     public override IJsonItem Extract(IItem value, IJsonItemConverter root) =>
-      new DoubleMatrixJsonItem() {
+      new DoubleNamedMatrixJsonItem() {
         Name = "[OverridableParamName]",
         Description = value.ItemDescription,
         Value = Transform((DoubleMatrix)value),
-        Range = new double[] { double.MinValue, double.MaxValue }
+        Range = new double[] { double.MinValue, double.MaxValue },
+        RowNames = ((DoubleMatrix)value).RowNames,
+        ColumnNames = ((DoubleMatrix)value).ColumnNames
       };
   }
 
@@ -89,8 +91,8 @@ namespace HeuristicLab.JsonInterface {
   {
     #region Helper
     protected void CopyMatrixData(MatrixType matrix, T[][] data) {
-      var rows = data.Length;
-      var cols = data.Length > 0 ? data[0].Length : 0;
+      var cols = data.Length;
+      var rows = data.Length > 0 ? data[0].Length : 0;
 
       var rowInfo = matrix.GetType().GetProperty("Rows");
       rowInfo.SetValue(matrix, rows);
@@ -99,17 +101,17 @@ namespace HeuristicLab.JsonInterface {
 
       for (int x = 0; x < rows; ++x) {
         for (int y = 0; y < cols; ++y) {
-          matrix[x, y] = data[x][y];
+          matrix[x, y] = data[y][x];
         }
       }
     }
 
     protected T[][] Transform(MatrixType matrix) {
-      T[][] m = new T[matrix.Rows][];
-      for (int r = 0; r < matrix.Rows; ++r) {
-        m[r] = new T[matrix.Columns];
-        for (int c = 0; c < matrix.Columns; ++c) {
-          m[r][c] = matrix[r, c];
+      T[][] m = new T[matrix.Columns][];
+      for (int column = 0; column < matrix.Columns; ++column) {
+        m[column] = new T[matrix.Rows];
+        for (int row = 0; row < matrix.Rows; ++row) {
+          m[column][row] = matrix[row, column];
         }
       }
       return m;

@@ -16,13 +16,13 @@ using HeuristicLab.PluginInfrastructure;
 namespace HeuristicLab.JsonInterface.OptimizerIntegration {
   public partial class ExportJsonDialog : Form {
     private static FolderBrowserDialog FolderBrowserDialog { get; set; }
-    private IDictionary<int, UserControl> Hash2Control { get; set; } = new Dictionary<int, UserControl>();
+    private IDictionary<TreeNode, UserControl> Node2Control { get; set; } = new Dictionary<TreeNode, UserControl>();
     private IDictionary<TreeNode, IJsonItemVM> Node2VM { get; set; } = new Dictionary<TreeNode, IJsonItemVM>();
+    private IDictionary<Type, Type> JI2VM { get; set; }
     private IJsonItem Root { get; set; }
     private IOptimizer Optimizer { get; set; }
     private IList<IJsonItemVM> VMs { get; set; }
     private JCGenerator Generator { get; set; } = new JCGenerator();
-    private IDictionary<string, IJsonItem> ResultItems { get; set; } = new Dictionary<string, IJsonItem>();
 
     private IContent content;
     public IContent Content {
@@ -32,8 +32,7 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
 
         VMs = new List<IJsonItemVM>();
         treeView.Nodes.Clear();
-        ResultItems.Clear();
-        resultItems.Items.Clear();
+        treeViewResults.Nodes.Clear();
 
         Optimizer = content as IOptimizer;
         Root = JsonItemConverter.Extract(Optimizer);
@@ -46,15 +45,8 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
       } 
     }
 
-    private void TreeView_AfterCheck(object sender, TreeViewEventArgs e) {
-      if (e.Action != TreeViewAction.Unknown) {
-        if (Node2VM.TryGetValue(e.Node, out IJsonItemVM vm)) {
-          vm.Selected = e.Node.Checked;
-        }
-      }
-    }
+    
 
-    private IDictionary<Type, Type> JI2VM { get; set; }
 
     private void InitCache() {
       JI2VM = new Dictionary<Type, Type>();
@@ -70,22 +62,19 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
     }
 
     private void exportButton_Click(object sender, EventArgs e) {
+      // to set default value for disabled items
+      JsonItemConverter.Inject(Optimizer, Root);
+      /*
       foreach (var x in VMs) {
-        if (!(x is ResultItemVM) && !x.Selected) {
-          x.Item.Parent.Children.Remove(x.Item);
+        if (!x.Selected) {
+          x.Item.Parent?.Children?.Remove(x.Item);
+        } else if(x is ResultItemVM) {
+          x.Item.Parent?.Children?.Remove(x.Item);
+          Root.AddChildren(x.Item);
         }
       }
-
-      foreach (var x in ResultItems.Values) {
-        x.Parent.Children.Remove(x);
-      }
-
-      foreach (var x in resultItems.CheckedItems) {
-        if (ResultItems.TryGetValue((string)x, out IJsonItem item)) {
-          Root.AddChildren(item);
-        }
-      }
-
+      */
+      
       IList<IJsonItem> faultyItems = new List<IJsonItem>();
       
       if (!Root.GetValidator().Validate(ref faultyItems)) {
@@ -109,17 +98,16 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
     }
 
     private void BuildTreeNode(TreeNode node, IJsonItem item) {
-      RegisterItem(node, item);
+      RegisterItem(node, item, treeView);
       if (item.Children != null) {
         foreach (var c in item.Children) {
           if (IsDrawableItem(c)) {
-            if (c is ResultItem) {
-              resultItems.Items.Add(c.Name, true);
-              ResultItems.Add(c.Name, c);
+            if (c is ResultJsonItem) {
               TreeNode childNode = new TreeNode(c.Name);
               treeViewResults.Nodes.Add(childNode);
-              RegisterItem(childNode, c);
-              //Hash2Control.Add(c.GetHashCode(), new JsonItemBaseControl(new JsonItemVMBase() { Item = c }));
+              RegisterItem(childNode, c, treeViewResults);
+              if(Node2VM.TryGetValue(childNode, out IJsonItemVM vm))
+                vm.Selected = true;
             } else {
               TreeNode childNode = new TreeNode(c.Name);
               node.Nodes.Add(childNode);
@@ -130,19 +118,19 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
       }
     }
 
-    private void RegisterItem(TreeNode node, IJsonItem item) {
+    private void RegisterItem(TreeNode node, IJsonItem item, TreeView tv) {
       if (JI2VM.TryGetValue(item.GetType(), out Type vmType)) {
         IJsonItemVM vm = (IJsonItemVM)Activator.CreateInstance(vmType);
 
         vm.Item = item;
         vm.TreeNode = node;
-        vm.TreeView = treeView;
-        node.Checked = vm.Selected;
+        vm.TreeView = tv;
+        vm.Selected = false;
 
         VMs.Add(vm);
         Node2VM.Add(node, vm);
         UserControl control = vm.Control;
-        Hash2Control.Add(node.GetHashCode(), control);
+        Node2Control.Add(node, control);
       }
     }
 
@@ -154,12 +142,18 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
         }
       }
       
-      return b || (item.Value != null || item.Range != null || item.ActualName != null);
+      return b || (item.Value != null || item.Range != null || item.ActualName != null || item is ResultJsonItem);
     }
     
     private void treeView_AfterSelect(object sender, TreeViewEventArgs e) {
-      if(Hash2Control.TryGetValue(treeView.SelectedNode.GetHashCode(), out UserControl control)) {
+      if(Node2Control.TryGetValue(treeView.SelectedNode, out UserControl control)) {
         SetControlOnPanel(control, panelParameterDetails);
+      }
+    }
+
+    private void treeViewResults_AfterSelect(object sender, TreeViewEventArgs e) {
+      if (Node2Control.TryGetValue(treeViewResults.SelectedNode, out UserControl control)) {
+        SetControlOnPanel(control, panelResultDetails);
       }
     }
 
@@ -169,13 +163,6 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
         e.Cancel = true;
       } else {
         errorProvider.SetError(textBoxTemplateName, null);
-      }
-    }
-
-    private void resultItems_SelectedValueChanged(object sender, EventArgs e) {
-      if(ResultItems.TryGetValue(resultItems.SelectedItem.ToString(), out IJsonItem item) &&
-        Hash2Control.TryGetValue(item.GetHashCode(), out UserControl control)) {
-        SetControlOnPanel(control, panelResultDetails);
       }
     }
 
@@ -189,6 +176,22 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
         control.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
       }
       panel.Refresh();
+    }
+
+    private void TreeView_AfterCheck(object sender, TreeViewEventArgs e) {
+      if (e.Action != TreeViewAction.Unknown) {
+        if (Node2VM.TryGetValue(e.Node, out IJsonItemVM vm)) {
+          vm.Selected = e.Node.Checked;
+        }
+      }
+    }
+
+    private void treeViewResults_AfterCheck(object sender, TreeViewEventArgs e) {
+      if (e.Action != TreeViewAction.Unknown) {
+        if (Node2VM.TryGetValue(e.Node, out IJsonItemVM vm)) {
+          vm.Selected = e.Node.Checked;
+        }
+      }
     }
   }
 }

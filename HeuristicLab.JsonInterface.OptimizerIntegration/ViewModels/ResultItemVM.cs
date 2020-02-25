@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace HeuristicLab.JsonInterface.OptimizerIntegration {
   public class ResultItemVM : JsonItemVMBase {
-    public override Type JsonItemType => typeof(ResultItem);
+    public override Type JsonItemType => typeof(ResultJsonItem);
     public override JsonItemBaseControl Control =>
       new JsonItemBaseControl(this);
 

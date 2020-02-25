@@ -9,10 +9,31 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace HeuristicLab.JsonInterface.OptimizerIntegration {
-  
+
+  public class JsonItemDoubleNamedMatrixValueControl : JsonItemMultiValueControl<double> {
+    protected override IEnumerable<string> RowNames { 
+      get => ((DoubleNamedMatrixValueVM)VM).RowNames;
+      set => ((DoubleNamedMatrixValueVM)VM).RowNames = value;
+    }
+    protected override IEnumerable<string> ColumnNames {
+      get => ((DoubleNamedMatrixValueVM)VM).ColumnNames;
+      set => ((DoubleNamedMatrixValueVM)VM).ColumnNames = value;
+    }
+
+    public JsonItemDoubleNamedMatrixValueControl(DoubleNamedMatrixValueVM vm) : base(vm, vm.Value) { }
+
+    protected override void SaveCellData(double data, int row, int col) {
+      DoubleNamedMatrixValueVM vm = VM as DoubleNamedMatrixValueVM;
+      vm.SetCellValue(data, row, col);
+    }
+  }
+
   public class JsonItemDoubleMatrixValueControl : JsonItemMultiValueControl<double> {
+    protected override IEnumerable<string> RowNames { get => null; set { } }
+    protected override IEnumerable<string> ColumnNames { get => null; set { } }
 
     public JsonItemDoubleMatrixValueControl(DoubleMatrixValueVM vm) : base(vm, vm.Value) { }
+
     protected override void SaveCellData(double data, int row, int col) {
       DoubleMatrixValueVM vm = VM as DoubleMatrixValueVM;
       vm.SetCellValue(data, row, col);
@@ -20,6 +41,9 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
   }
 
   public class JsonItemIntArrayValueControl : JsonItemMultiValueControl<int> {
+    protected override IEnumerable<string> RowNames { get => null; set { } }
+    protected override IEnumerable<string> ColumnNames { get => null; set { } }
+
     public JsonItemIntArrayValueControl(IntArrayValueVM vm) : base(vm, vm.Value) { }
 
     protected override void SaveCellData(int data, int row, int col) {
@@ -29,6 +53,9 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
   }
 
   public class JsonItemDoubleArrayValueControl : JsonItemMultiValueControl<double> {
+    protected override IEnumerable<string> RowNames { get => null; set { } }
+    protected override IEnumerable<string> ColumnNames { get => null; set { } }
+
     public JsonItemDoubleArrayValueControl(DoubleArrayValueVM vm) : base(vm, vm.Value) { }
 
     protected override void SaveCellData(double data, int row, int col) {
@@ -59,14 +86,17 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
 
     private T[][] Matrix { get; set; }
 
+    protected abstract IEnumerable<string> RowNames { get; set; }
+    protected abstract IEnumerable<string> ColumnNames { get; set; }
+
     public JsonItemMultiValueControl(IMatrixJsonItemVM vm, T[][] matrix) : base(vm) {
       InitializeComponent();
 
       checkBoxRows.DataBindings.Add("Checked", vm, nameof(IMatrixJsonItemVM.RowsResizable));
       checkBoxColumns.DataBindings.Add("Checked", vm, nameof(IMatrixJsonItemVM.ColumnsResizable));
 
-      int rows = matrix.Length;
-      int cols = matrix.Max(x => x.Length);
+      int cols = matrix.Length;
+      int rows = matrix.Max(x => x.Length);
 
       Matrix = matrix;
       _cols = cols;
@@ -84,12 +114,14 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
 
       int length = array.Length;
 
-      Matrix = new T[array.Length][];
+      Matrix = new T[1][];
+      Matrix[0] = array;
+      /*
       for (int r = 0; r < length; ++r) {
         Matrix[r] = new T[1];
         Matrix[r][0] = array[r];
       }
-
+      */
       _cols = 1;
       _rows = length;
       RefreshMatrix();
@@ -124,18 +156,24 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
       dataGridView.Columns.Clear();
 
       T[][] tmp = Matrix;
-      Matrix = new T[Rows][];
+      Matrix = new T[Columns][];
 
       // columns must added first
-      for(int c = 0; c < Columns; ++c) {
-        dataGridView.Columns.Add($"Column {c}", $"Column {c}");
+      if(RowNames != null && RowNames.Count() == Columns) {
+        foreach(var name in RowNames) {
+          dataGridView.Columns.Add(name, name);
+        }
+      } else {
+        for(int c = 0; c < Columns; ++c) {
+          dataGridView.Columns.Add($"Column {c}", $"Column {c}");
+        }
       }
 
-      for (int r = 0; r < Rows; ++r) {
-        T[] newCol = new T[Columns];
-        if(r < tmp.Length)
-          Array.Copy(tmp[r], 0, newCol, 0, Math.Min(tmp[r].Length, Columns));
-        Matrix[r] = newCol;
+      for (int c = 0; c < Columns; ++c) {
+        T[] newCol = new T[Rows];
+        if(c < tmp.Length)
+          Array.Copy(tmp[c], 0, newCol, 0, Math.Min(tmp[c].Length, Rows));
+        Matrix[c] = newCol;
       }
 
       if(Rows > 0 && Columns > 0) {
@@ -143,8 +181,11 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
         for (int c = 0; c < Columns; ++c) {
           for (int r = 0; r < Rows; ++r) {
             //col and row is switched for dataGridView
-            dataGridView[c, r].Value = Matrix[r][c];
-            dataGridView.Rows[r].HeaderCell.Value = $"Row {r}";
+            dataGridView[c, r].Value = Matrix[c][r];
+            if (ColumnNames != null && r < ColumnNames.Count())
+              dataGridView.Rows[r].HeaderCell.Value = ColumnNames.ElementAt(r);
+            else
+              dataGridView.Rows[r].HeaderCell.Value = $"Row {r}";
           }
         }
       }
@@ -213,10 +254,10 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
 
     private void DataGridView_CellEndEdit(object sender, DataGridViewCellEventArgs e) {
       object val = dataGridView[e.ColumnIndex, e.RowIndex].Value;
-      Matrix[e.RowIndex][e.ColumnIndex] = (T)Convert.ChangeType(val.ToString().Replace(",", "."),
+      Matrix[e.ColumnIndex][e.RowIndex] = (T)Convert.ChangeType(val.ToString().Replace(",", "."),
                                             typeof(T),
                                             System.Globalization.CultureInfo.InvariantCulture);
-      SaveCellData(Matrix[e.RowIndex][e.ColumnIndex], e.RowIndex, e.ColumnIndex);
+      SaveCellData(Matrix[e.ColumnIndex][e.RowIndex], e.ColumnIndex, e.RowIndex);
     }
   }
 }

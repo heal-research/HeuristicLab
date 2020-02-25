@@ -8,6 +8,7 @@ using Newtonsoft.Json.Linq;
 
 namespace HeuristicLab.JsonInterface {
   public interface IJsonItem {
+    bool Active { get; set; }
     string Name { get; set; }
 
     string Description { get; set; }

@@ -70,6 +70,7 @@
     <Compile Include="Interfaces\IJsonItem.cs" />
     <Compile Include="Interfaces\IJsonItemValidator.cs" />
     <Compile Include="Interfaces\IMatrixJsonItem.cs" />
+    <Compile Include="Interfaces\INamedMatrixJsonItem.cs" />
     <Compile Include="Models\ArrayJsonItemBase.cs" />
     <Compile Include="Models\BoolJsonItems.cs" />
     <Compile Include="Models\DateTimeJsonItem.cs" />
@@ -78,7 +79,8 @@
     <Compile Include="Models\IntJsonItems.cs" />
     <Compile Include="Models\JsonItem.cs" />
     <Compile Include="Models\MatrixJsonItemBase.cs" />
-    <Compile Include="Models\ResultItem.cs" />
+    <Compile Include="Models\NamedMatrixJsonItemBase.cs" />
+    <Compile Include="Models\ResultJsonItem.cs" />
     <Compile Include="Models\StringJsonItem.cs" />
     <Compile Include="Models\UnsupportedJsonItem.cs" />
     <Compile Include="SingleLineArrayJsonWriter.cs" />

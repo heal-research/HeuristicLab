@@ -16,7 +16,7 @@ namespace HeuristicLab.JsonInterface {
 
     public override void Inject(IItem item, IJsonItem data, IJsonItemConverter root) {
       IntRange range = item as IntRange;
-      IntArrayJsonItem cdata = data as IntArrayJsonItem;
+      IntRangeJsonItem cdata = data as IntRangeJsonItem;
       range.Start = cdata.Value[0];
       range.End = cdata.Value[1];
     }
@@ -38,7 +38,7 @@ namespace HeuristicLab.JsonInterface {
 
     public override void Inject(IItem item, IJsonItem data, IJsonItemConverter root) {
       DoubleRange range = item as DoubleRange;
-      DoubleArrayJsonItem cdata = data as DoubleArrayJsonItem;
+      DoubleRangeJsonItem cdata = data as DoubleRangeJsonItem;
       range.Start = cdata.Value[0];
       range.End = cdata.Value[1];
     }

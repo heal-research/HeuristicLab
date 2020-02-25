@@ -39,12 +39,14 @@ namespace HeuristicLab.JsonInterface {
 
     public override void Inject(IItem item, IJsonItem data, IJsonItemConverter root) {
       DoubleArray arr = item as DoubleArray;
-      double[] d = CastValue<double[]>(data);
+      DoubleArrayJsonItem doubleItem = data as DoubleArrayJsonItem;
+      //double[] d = CastValue<double[]>(data);
       bool resizeTmp = arr.Resizable;
       arr.Resizable = true;
-      arr.Length = d.Length;
-      for (int i = 0; i < d.Length; ++i)
-        arr[i] = d[i];
+      //arr.Length = d.Length;
+      arr.Length = doubleItem.Value.Length;
+      for (int i = 0; i < doubleItem.Value.Length; ++i)
+        arr[i] = doubleItem.Value[i];
       arr.Resizable = resizeTmp;
     }
 

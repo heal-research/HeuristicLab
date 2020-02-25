@@ -14,7 +14,7 @@ namespace HeuristicLab.JsonInterface {
 
     public override IJsonItem Extract(IItem value, IJsonItemConverter root) {
       IResultParameter res = value as IResultParameter;
-      return new ResultItem() {
+      return new ResultJsonItem() {
         Name = res.ActualName,
         ActualName = res.ActualName,
         Value = res.ActualName,

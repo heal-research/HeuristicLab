@@ -29,9 +29,10 @@
       this.treeView = new System.Windows.Forms.TreeView();
       this.groupBoxDetails = new System.Windows.Forms.GroupBox();
       this.panelParameterDetails = new System.Windows.Forms.Panel();
-      this.resultItems = new System.Windows.Forms.CheckedListBox();
-      this.groupBox3 = new System.Windows.Forms.GroupBox();
+      this.splitContainer1 = new System.Windows.Forms.SplitContainer();
       this.treeViewResults = new System.Windows.Forms.TreeView();
+      this.groupBox = new System.Windows.Forms.GroupBox();
+      this.panelResultDetails = new System.Windows.Forms.Panel();
       this.splitContainer2 = new System.Windows.Forms.SplitContainer();
       this.tabControl1 = new System.Windows.Forms.TabControl();
       this.tabPage1 = new System.Windows.Forms.TabPage();
@@ -39,12 +40,13 @@
       this.label1 = new System.Windows.Forms.Label();
       this.textBoxTemplateName = new System.Windows.Forms.TextBox();
       this.errorProvider = new System.Windows.Forms.ErrorProvider(this.components);
-      this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-      this.groupBox = new System.Windows.Forms.GroupBox();
-      this.panelResultDetails = new System.Windows.Forms.Panel();
       this.jsonItemBindingSource = new System.Windows.Forms.BindingSource(this.components);
       this.groupBoxDetails.SuspendLayout();
-      this.groupBox3.SuspendLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
+      this.splitContainer1.Panel1.SuspendLayout();
+      this.splitContainer1.Panel2.SuspendLayout();
+      this.splitContainer1.SuspendLayout();
+      this.groupBox.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
       this.splitContainer2.Panel1.SuspendLayout();
       this.splitContainer2.Panel2.SuspendLayout();
@@ -53,11 +55,6 @@
       this.tabPage1.SuspendLayout();
       this.tabPage2.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
-      ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
-      this.splitContainer1.Panel1.SuspendLayout();
-      this.splitContainer1.Panel2.SuspendLayout();
-      this.splitContainer1.SuspendLayout();
-      this.groupBox.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.jsonItemBindingSource)).BeginInit();
       this.SuspendLayout();
       // 
@@ -84,7 +81,7 @@
       this.treeView.Dock = System.Windows.Forms.DockStyle.Fill;
       this.treeView.Location = new System.Drawing.Point(0, 6);
       this.treeView.Name = "treeView";
-      this.treeView.Size = new System.Drawing.Size(370, 493);
+      this.treeView.Size = new System.Drawing.Size(380, 492);
       this.treeView.TabIndex = 3;
       this.treeView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView_AfterSelect);
       // 
@@ -94,7 +91,7 @@
       this.groupBoxDetails.Dock = System.Windows.Forms.DockStyle.Fill;
       this.groupBoxDetails.Location = new System.Drawing.Point(0, 0);
       this.groupBoxDetails.Name = "groupBoxDetails";
-      this.groupBoxDetails.Size = new System.Drawing.Size(422, 499);
+      this.groupBoxDetails.Size = new System.Drawing.Size(412, 499);
       this.groupBoxDetails.TabIndex = 4;
       this.groupBoxDetails.TabStop = false;
       this.groupBoxDetails.Text = "Details";
@@ -105,40 +102,57 @@
       this.panelParameterDetails.Dock = System.Windows.Forms.DockStyle.Fill;
       this.panelParameterDetails.Location = new System.Drawing.Point(3, 16);
       this.panelParameterDetails.Name = "panelParameterDetails";
-      this.panelParameterDetails.Size = new System.Drawing.Size(416, 480);
+      this.panelParameterDetails.Size = new System.Drawing.Size(406, 480);
       this.panelParameterDetails.TabIndex = 0;
       // 
-      // resultItems
+      // splitContainer1
       // 
-      this.resultItems.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.resultItems.FormattingEnabled = true;
-      this.resultItems.Location = new System.Drawing.Point(0, 6);
-      this.resultItems.Name = "resultItems";
-      this.resultItems.Size = new System.Drawing.Size(373, 393);
-      this.resultItems.TabIndex = 5;
-      this.resultItems.SelectedValueChanged += new System.EventHandler(this.resultItems_SelectedValueChanged);
+      this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.splitContainer1.Location = new System.Drawing.Point(3, 3);
+      this.splitContainer1.Name = "splitContainer1";
       // 
-      // groupBox3
+      // splitContainer1.Panel1
       // 
-      this.groupBox3.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-      this.groupBox3.Controls.Add(this.splitContainer1);
-      this.groupBox3.Controls.Add(this.treeViewResults);
-      this.groupBox3.Location = new System.Drawing.Point(6, 6);
-      this.groupBox3.Name = "groupBox3";
-      this.groupBox3.Size = new System.Drawing.Size(790, 493);
-      this.groupBox3.TabIndex = 7;
-      this.groupBox3.TabStop = false;
-      this.groupBox3.Text = "Result Elements";
+      this.splitContainer1.Panel1.Controls.Add(this.treeViewResults);
+      this.splitContainer1.Panel1.Padding = new System.Windows.Forms.Padding(0, 6, 0, 1);
+      // 
+      // splitContainer1.Panel2
+      // 
+      this.splitContainer1.Panel2.Controls.Add(this.groupBox);
+      this.splitContainer1.Size = new System.Drawing.Size(796, 499);
+      this.splitContainer1.SplitterDistance = 380;
+      this.splitContainer1.TabIndex = 7;
       // 
       // treeViewResults
       // 
       this.treeViewResults.CheckBoxes = true;
-      this.treeViewResults.Location = new System.Drawing.Point(6, 19);
+      this.treeViewResults.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.treeViewResults.Location = new System.Drawing.Point(0, 6);
       this.treeViewResults.Name = "treeViewResults";
-      this.treeViewResults.Size = new System.Drawing.Size(777, 63);
+      this.treeViewResults.Size = new System.Drawing.Size(380, 492);
       this.treeViewResults.TabIndex = 6;
+      this.treeViewResults.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.treeViewResults_AfterCheck);
+      this.treeViewResults.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeViewResults_AfterSelect);
+      // 
+      // groupBox
+      // 
+      this.groupBox.Controls.Add(this.panelResultDetails);
+      this.groupBox.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.groupBox.Location = new System.Drawing.Point(0, 0);
+      this.groupBox.Name = "groupBox";
+      this.groupBox.Size = new System.Drawing.Size(412, 499);
+      this.groupBox.TabIndex = 5;
+      this.groupBox.TabStop = false;
+      this.groupBox.Text = "Details";
+      // 
+      // panelResultDetails
+      // 
+      this.panelResultDetails.AutoScroll = true;
+      this.panelResultDetails.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.panelResultDetails.Location = new System.Drawing.Point(3, 16);
+      this.panelResultDetails.Name = "panelResultDetails";
+      this.panelResultDetails.Size = new System.Drawing.Size(406, 480);
+      this.panelResultDetails.TabIndex = 0;
       // 
       // splitContainer2
       // 
@@ -149,13 +163,13 @@
       // splitContainer2.Panel1
       // 
       this.splitContainer2.Panel1.Controls.Add(this.treeView);
-      this.splitContainer2.Panel1.Padding = new System.Windows.Forms.Padding(0, 6, 0, 0);
+      this.splitContainer2.Panel1.Padding = new System.Windows.Forms.Padding(0, 6, 0, 1);
       // 
       // splitContainer2.Panel2
       // 
       this.splitContainer2.Panel2.Controls.Add(this.groupBoxDetails);
       this.splitContainer2.Size = new System.Drawing.Size(796, 499);
-      this.splitContainer2.SplitterDistance = 370;
+      this.splitContainer2.SplitterDistance = 380;
       this.splitContainer2.TabIndex = 9;
       // 
       // tabControl1
@@ -184,7 +198,7 @@
       // 
       // tabPage2
       // 
-      this.tabPage2.Controls.Add(this.groupBox3);
+      this.tabPage2.Controls.Add(this.splitContainer1);
       this.tabPage2.Location = new System.Drawing.Point(4, 22);
       this.tabPage2.Name = "tabPage2";
       this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
@@ -219,46 +233,6 @@
       this.errorProvider.BlinkStyle = System.Windows.Forms.ErrorBlinkStyle.NeverBlink;
       this.errorProvider.ContainerControl = this;
       // 
-      // splitContainer1
-      // 
-      this.splitContainer1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-      this.splitContainer1.Location = new System.Drawing.Point(6, 88);
-      this.splitContainer1.Name = "splitContainer1";
-      // 
-      // splitContainer1.Panel1
-      // 
-      this.splitContainer1.Panel1.Controls.Add(this.resultItems);
-      this.splitContainer1.Panel1.Padding = new System.Windows.Forms.Padding(0, 6, 0, 0);
-      // 
-      // splitContainer1.Panel2
-      // 
-      this.splitContainer1.Panel2.Controls.Add(this.groupBox);
-      this.splitContainer1.Size = new System.Drawing.Size(778, 399);
-      this.splitContainer1.SplitterDistance = 373;
-      this.splitContainer1.TabIndex = 7;
-      // 
-      // groupBox
-      // 
-      this.groupBox.Controls.Add(this.panelResultDetails);
-      this.groupBox.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.groupBox.Location = new System.Drawing.Point(0, 0);
-      this.groupBox.Name = "groupBox";
-      this.groupBox.Size = new System.Drawing.Size(401, 399);
-      this.groupBox.TabIndex = 5;
-      this.groupBox.TabStop = false;
-      this.groupBox.Text = "Details";
-      // 
-      // panelResultDetails
-      // 
-      this.panelResultDetails.AutoScroll = true;
-      this.panelResultDetails.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.panelResultDetails.Location = new System.Drawing.Point(3, 16);
-      this.panelResultDetails.Name = "panelResultDetails";
-      this.panelResultDetails.Size = new System.Drawing.Size(395, 380);
-      this.panelResultDetails.TabIndex = 0;
-      // 
       // jsonItemBindingSource
       // 
       this.jsonItemBindingSource.DataSource = typeof(HeuristicLab.JsonInterface.IJsonItem);
@@ -277,7 +251,11 @@
       this.ShowIcon = false;
       this.Text = "Export Json";
       this.groupBoxDetails.ResumeLayout(false);
-      this.groupBox3.ResumeLayout(false);
+      this.splitContainer1.Panel1.ResumeLayout(false);
+      this.splitContainer1.Panel2.ResumeLayout(false);
+      ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
+      this.splitContainer1.ResumeLayout(false);
+      this.groupBox.ResumeLayout(false);
       this.splitContainer2.Panel1.ResumeLayout(false);
       this.splitContainer2.Panel2.ResumeLayout(false);
       ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
@@ -286,11 +264,6 @@
       this.tabPage1.ResumeLayout(false);
       this.tabPage2.ResumeLayout(false);
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
-      this.splitContainer1.Panel1.ResumeLayout(false);
-      this.splitContainer1.Panel2.ResumeLayout(false);
-      ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
-      this.splitContainer1.ResumeLayout(false);
-      this.groupBox.ResumeLayout(false);
       ((System.ComponentModel.ISupportInitialize)(this.jsonItemBindingSource)).EndInit();
       this.ResumeLayout(false);
       this.PerformLayout();
@@ -306,8 +279,6 @@
     private System.Windows.Forms.TreeView treeView;
     private System.Windows.Forms.GroupBox groupBoxDetails;
     private System.Windows.Forms.Panel panelParameterDetails;
-    private System.Windows.Forms.CheckedListBox resultItems;
-    private System.Windows.Forms.GroupBox groupBox3;
     private System.Windows.Forms.SplitContainer splitContainer2;
     private System.Windows.Forms.TabControl tabControl1;
     private System.Windows.Forms.TabPage tabPage1;

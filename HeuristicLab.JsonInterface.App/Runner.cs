@@ -21,6 +21,7 @@ namespace HeuristicLab.JsonInterface.App {
         WriteResultsToFile(outputFile, optimizer, allowedResultNames);
         Thread.Sleep(100);
       }
+     
       WriteResultsToFile(outputFile, optimizer, allowedResultNames);
     }
 
