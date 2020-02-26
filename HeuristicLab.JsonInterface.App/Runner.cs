@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using HeuristicLab.Optimization;
+using HeuristicLab.ParallelEngine;
 using HeuristicLab.SequentialEngine;
 using Newtonsoft.Json.Linq;
 
@@ -13,8 +14,9 @@ namespace HeuristicLab.JsonInterface.App {
   internal static class Runner {
     internal static void Run(string template, string config, string outputFile) {
       IOptimizer optimizer = JsonTemplateInstantiator.Instantiate(template, config, out IEnumerable<string> allowedResultNames);
+      optimizer.Runs.Clear();
       if(optimizer is EngineAlgorithm e)
-        e.Engine = new SequentialEngine.SequentialEngine();
+        e.Engine = new ParallelEngine.ParallelEngine();
       
       Task task = optimizer.StartAsync();
       while(!task.IsCompleted) {
