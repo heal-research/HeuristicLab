@@ -34,7 +34,7 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
     public T MinValue {
       get => Cast(((Array)Item.Value).GetValue(0));
       set {
-        SetValue(value, ((Array)Item.Value).GetValue(1));
+        SetValue(value, (T)((Array)Item.Value).GetValue(1));
         OnPropertyChange(this, nameof(MinValue));
       }
     }
@@ -42,12 +42,12 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
     public T MaxValue {
       get => Cast(((Array)Item.Value).GetValue(1));
       set {
-        SetValue(((Array)Item.Value).GetValue(0), value);
+        SetValue((T)((Array)Item.Value).GetValue(0), value);
         OnPropertyChange(this, nameof(MaxValue));
       }
     }
 
-    private void SetValue(object min, object max) =>
-      Item.Value = new object[] { min, max };
+    private void SetValue(T min, T max) =>
+      Item.Value = new T[] { min, max };
   }
 }

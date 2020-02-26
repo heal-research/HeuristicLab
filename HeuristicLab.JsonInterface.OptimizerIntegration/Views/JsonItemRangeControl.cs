@@ -14,24 +14,27 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
 
     public JsonItemRangeControl(DoubleRangeVM vm) : base(vm) {
       InitializeComponent();
-      /*
-      this.isDouble = isDouble;
-      textBoxValueFrom.Text = ((Array)VM.Item.Value).GetValue(0).ToString();
-      textBoxValueTo.Text = ((Array)VM.Item.Value).GetValue(1).ToString();
-      textBoxValueFrom.Text = VM.Item.Range.First().ToString();
-      textBoxValueTo.Text = VM.Item.Range.Last().ToString();
-      */
+      textBoxValueFrom.DataBindings.Add("Text", vm, nameof(vm.MinValue));
+      textBoxValueTo.DataBindings.Add("Text", vm, nameof(vm.MaxValue));
+      InitNumbericRangeControl();
+
     }
     public JsonItemRangeControl(IntRangeVM vm) : base(vm) {
       InitializeComponent();
-      /*
-      this.isDouble = isDouble;
-      textBoxValueFrom.Text = ((Array)VM.Item.Value).GetValue(0).ToString();
-      textBoxValueTo.Text = ((Array)VM.Item.Value).GetValue(1).ToString();
-      textBoxValueFrom.Text = VM.Item.Range.First().ToString();
-      textBoxValueTo.Text = VM.Item.Range.Last().ToString();
-      */
+      textBoxValueFrom.DataBindings.Add("Text", vm, nameof(vm.MinValue));
+      textBoxValueTo.DataBindings.Add("Text", vm, nameof(vm.MaxValue));
+      InitNumbericRangeControl();
     }
+
+    private void InitNumbericRangeControl() {
+      numericRangeControl.TBMinRange.DataBindings.Add("Text", VM, nameof(RangedValueBaseVM.MinRange));
+      numericRangeControl.TBMaxRange.DataBindings.Add("Text", VM, nameof(RangedValueBaseVM.MaxRange));
+      numericRangeControl.EnableMinRange.DataBindings.Add("Checked", VM, nameof(RangedValueBaseVM.EnableMinRange),
+        false, DataSourceUpdateMode.OnPropertyChanged);
+      numericRangeControl.EnableMaxRange.DataBindings.Add("Checked", VM, nameof(RangedValueBaseVM.EnableMaxRange),
+        false, DataSourceUpdateMode.OnPropertyChanged);
+    }
+
     /*
     protected abstract object Parse(string s);
 
