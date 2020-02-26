@@ -88,6 +88,10 @@
       <Project>{14AB8D24-25BC-400C-A846-4627AA945192}</Project>
       <Name>HeuristicLab.Optimization-3.3</Name>
     </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.ParallelEngine\3.3\HeuristicLab.ParallelEngine-3.3.csproj">
+      <Project>{00814351-4AB8-4088-9B99-F62787B89E93}</Project>
+      <Name>HeuristicLab.ParallelEngine-3.3</Name>
+    </ProjectReference>
     <ProjectReference Include="..\HeuristicLab.PluginInfrastructure\3.3\HeuristicLab.PluginInfrastructure-3.3.csproj">
       <Project>{94186a6a-5176-4402-ae83-886557b53cca}</Project>
       <Name>HeuristicLab.PluginInfrastructure-3.3</Name>

@@ -64,16 +64,9 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
     private void exportButton_Click(object sender, EventArgs e) {
       // to set default value for disabled items
       JsonItemConverter.Inject(Optimizer, Root);
-      /*
-      foreach (var x in VMs) {
-        if (!x.Selected) {
-          x.Item.Parent?.Children?.Remove(x.Item);
-        } else if(x is ResultItemVM) {
-          x.Item.Parent?.Children?.Remove(x.Item);
-          Root.AddChildren(x.Item);
-        }
-      }
-      */
+
+      // clear all runs
+      Optimizer.Runs.Clear();
       
       IList<IJsonItem> faultyItems = new List<IJsonItem>();
       

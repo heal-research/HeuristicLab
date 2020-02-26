@@ -303,7 +303,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
         BestTSPSolutionAnalyzer.QualityParameter.ActualName = Evaluator.QualityParameter.ActualName;
         BestTSPSolutionAnalyzer.CoordinatesParameter.ActualName = CoordinatesParameter.Name;
         BestTSPSolutionAnalyzer.PermutationParameter.ActualName = SolutionCreator.PermutationParameter.ActualName;
-        BestTSPSolutionAnalyzer.ResultsParameter.ActualName = "Results";
+        //BestTSPSolutionAnalyzer.ResultsParameter.ActualName = "Results";
         BestTSPSolutionAnalyzer.BestKnownQualityParameter.ActualName = BestKnownQualityParameter.Name;
         BestTSPSolutionAnalyzer.BestKnownSolutionParameter.ActualName = BestKnownSolutionParameter.Name;
         BestTSPSolutionAnalyzer.MaximizationParameter.ActualName = MaximizationParameter.Name;
