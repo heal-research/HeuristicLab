@@ -43,15 +43,16 @@ namespace HeuristicLab.Optimization {
     new TEncodedSolution EncodedSolution { get; }
   }
 
-
+  [StorableType("3A5CA150-1122-4D13-B65D-55D7EC86198F")]
   public interface ISingleObjectiveSolutionContext<TEncodedSolution> : ISolutionContext<TEncodedSolution>
-    where TEncodedSolution : class, IEncodedSolution {
+      where TEncodedSolution : class, IEncodedSolution {
     //TODO discuss with abeham hiding of base property
     new ISingleObjectiveEvaluationResult EvaluationResult { get; set; }
   }
 
+  [StorableType("3110C8C1-11FE-4A24-9B4E-E2EB3B97CBE9")]
   public interface IMultiObjectiveSolutionContext<TEncodedSolution> : ISolutionContext<TEncodedSolution>
-    where TEncodedSolution : class, IEncodedSolution {
+      where TEncodedSolution : class, IEncodedSolution {
     new IMultiObjectiveEvaluationResult EvaluationResult { get; set; }
   }
 

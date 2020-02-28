@@ -31,10 +31,12 @@ namespace HeuristicLab.Optimization {
     object GetAdditionalData(string identifier);
   }
 
+  [StorableType("D4781EC1-9F48-4CB7-A8CA-8F009B4D10C6")]
   public interface ISingleObjectiveEvaluationResult : IEvaluationResult {
     double Quality { get; }
   }
 
+  [StorableType("150F7253-09AA-474C-BA4E-788B290BC61B")]
   public interface IMultiObjectiveEvaluationResult : IEvaluationResult {
     //TODO change to unmodifiable Type from double[]
     double[] Quality { get; }
