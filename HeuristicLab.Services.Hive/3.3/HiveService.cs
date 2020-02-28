@@ -664,9 +664,11 @@ namespace HeuristicLab.Services.Hive {
           } else {
             bool oldIsAllowedToCalculate = slave.IsAllowedToCalculate;
             Guid? oldParentResourceId = slave.ParentResourceId;
+            bool? oldIsDisposable = slave.IsDisposable;
             slaveInfo.CopyToEntity(slave);
             slave.IsAllowedToCalculate = oldIsAllowedToCalculate;
             slave.ParentResourceId = oldParentResourceId;
+            slave.IsDisposable = oldIsDisposable;
             slave.LastHeartbeat = DateTime.Now;
             slave.SlaveState = DA.SlaveState.Idle;
           }

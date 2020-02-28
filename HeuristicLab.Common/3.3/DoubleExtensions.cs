@@ -22,12 +22,30 @@
 using System;
 namespace HeuristicLab.Common {
   public static class DoubleExtensions {
+    /// <summary>
+    /// Compares the similarity of value x and value y with a precision of 1.0E-12.
+    /// </summary>
+    /// <param name="x">First double value to be checked</param>
+    /// <param name="y">Second double value to compare with</param>
+    /// <returns>true if the difference is <= 1.0E-12</returns>
     public static bool IsAlmost(this double x, double y) {
+      var epsilon = 1.0E-12;
+      return IsAlmost(x, y, epsilon);
+    }
+
+    /// <summary> 
+    /// Compares the similarity of value x and value y with a given precision (epsilon).
+    /// </summary>
+    /// <param name="x">First double value to be checked</param>
+    /// <param name="y">Second double value to compare with</param>
+    /// <param name="epsilon">Error term to specify the precision</param>
+    /// <returns>true if the difference is <= epsilon</returns>
+    public static bool IsAlmost(this double x, double y, double epsilon) {
       if (double.IsInfinity(x)) {
         if (x > 0) return double.IsPositiveInfinity(y);
         else return double.IsNegativeInfinity(y);
       } else {
-        return Math.Abs(x - y) < 1.0E-12;
+        return Math.Abs(x - y) < epsilon;
       }
     }
   }

@@ -21,15 +21,15 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableType("44B0829C-1CB5-4BE9-9514-BBA54FAB2912")]
   [Item("FullFunctionalExpressionGrammar", "Represents a grammar for functional expressions using all available functions.")]
-  public class FullFunctionalExpressionGrammar : SymbolicExpressionGrammar, ISymbolicDataAnalysisGrammar {
+  public class FullFunctionalExpressionGrammar : DataAnalysisGrammar, ISymbolicDataAnalysisGrammar {
     [StorableConstructor]
     protected FullFunctionalExpressionGrammar(StorableConstructorFlag _) : base(_) { }
     protected FullFunctionalExpressionGrammar(FullFunctionalExpressionGrammar original, Cloner cloner) : base(original, cloner) { }

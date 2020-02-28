@@ -21,6 +21,7 @@
 #endregion
 
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Algorithms.GradientDescent;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -28,7 +29,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
+using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
@@ -56,11 +57,11 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     #region parameter properties
-    public IValueParameter<IMeanFunction> MeanFunctionParameter {
-      get { return (IValueParameter<IMeanFunction>)Parameters[MeanFunctionParameterName]; }
+    public IConstrainedValueParameter<IMeanFunction> MeanFunctionParameter {
+      get { return (IConstrainedValueParameter<IMeanFunction>)Parameters[MeanFunctionParameterName]; }
     }
-    public IValueParameter<ICovarianceFunction> CovarianceFunctionParameter {
-      get { return (IValueParameter<ICovarianceFunction>)Parameters[CovarianceFunctionParameterName]; }
+    public IConstrainedValueParameter<ICovarianceFunction> CovarianceFunctionParameter {
+      get { return (IConstrainedValueParameter<ICovarianceFunction>)Parameters[CovarianceFunctionParameterName]; }
     }
     public IValueParameter<IntValue> MinimizationIterationsParameter {
       get { return (IValueParameter<IntValue>)Parameters[MinimizationIterationsParameterName]; }
@@ -105,8 +106,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     protected GaussianProcessBase(IDataAnalysisProblem problem)
       : base() {
       Problem = problem;
-      Parameters.Add(new ValueParameter<IMeanFunction>(MeanFunctionParameterName, "The mean function to use.", new MeanConst()));
-      Parameters.Add(new ValueParameter<ICovarianceFunction>(CovarianceFunctionParameterName, "The covariance function to use.", new CovarianceSquaredExponentialIso()));
+      Parameters.Add(new ConstrainedValueParameter<IMeanFunction>(MeanFunctionParameterName, "The mean function to use."));
+      Parameters.Add(new ConstrainedValueParameter<ICovarianceFunction>(CovarianceFunctionParameterName, "The covariance function to use."));
       Parameters.Add(new ValueParameter<IntValue>(MinimizationIterationsParameterName, "The number of iterations for likelihood optimization with LM-BFGS.", new IntValue(20)));
       Parameters.Add(new ValueParameter<IntValue>(SeedParameterName, "The random seed used to initialize the new pseudo random number generator.", new IntValue(0)));
       Parameters.Add(new ValueParameter<BoolValue>(SetSeedRandomlyParameterName, "True if the random seed should be set to a random value, otherwise false.", new BoolValue(true)));
@@ -192,6 +193,22 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       finalAnalyzer.Successor = solutionCreator;
 
       solutionCreator.OperatorParameter.ActualName = SolutionCreatorParameterName;
+
+      foreach (var meanfunction in ApplicationManager.Manager.GetInstances<IMeanFunction>().OrderBy(s => s.ItemName))
+        MeanFunctionParameter.ValidValues.Add(meanfunction);
+
+      var defaultMeanFunction = MeanFunctionParameter.ValidValues.OfType<MeanConst>().FirstOrDefault();
+      if (defaultMeanFunction != null) {
+        MeanFunctionParameter.Value = defaultMeanFunction;
+      }
+
+      foreach (var covarianceFunction in ApplicationManager.Manager.GetInstances<ICovarianceFunction>().OrderBy(s => s.ItemName))
+        CovarianceFunctionParameter.ValidValues.Add(covarianceFunction);
+
+      var defaultCovarianceFunctionParameter = CovarianceFunctionParameter.ValidValues.OfType<CovarianceSquaredExponentialIso>().FirstOrDefault();
+      if (defaultCovarianceFunctionParameter != null) {
+        CovarianceFunctionParameter.Value = defaultCovarianceFunctionParameter;
+      }
     }
 
     [StorableHook(HookType.AfterDeserialization)]

@@ -24,25 +24,18 @@ using System.Windows.Forms;
 
 namespace HeuristicLab.MainForm.WindowsForms {
   internal sealed partial class ProgressView : UserControl {
-    private readonly Control control;
-    public Control Control {
-      get { return control; }
-    }
+    public Control TargetControl { get; }
+    public IProgress Content { get; }
 
-    private readonly IProgress content;
-    public IProgress Content {
-      get { return content; }
-    }
-
-    public ProgressView(Control control, IProgress content)
+    public ProgressView(Control targetControl, IProgress content)
       : base() {
-      if (control == null) throw new ArgumentNullException("control");
-      if (control.Parent == null) throw new InvalidOperationException("A Progress can only be shown on controls that have a Parent-control. Therefore, Dialogs and Forms cannot have an associated ProgressView.");
-      if (content == null) throw new ArgumentNullException("content");
+      if (targetControl == null) throw new ArgumentNullException(nameof(targetControl));
+      if (targetControl.Parent == null) throw new InvalidOperationException("A Progress can only be shown on controls that have a Parent-control. Therefore, Dialogs and Forms cannot have an associated ProgressView.");
+      if (content == null) throw new ArgumentNullException(nameof(content));
       InitializeComponent();
 
-      this.control = control;
-      this.content = content;
+      this.TargetControl = targetControl;
+      this.Content = content;
 
       if (content.ProgressState != ProgressState.Finished)
         ShowProgress();
@@ -51,9 +44,11 @@ namespace HeuristicLab.MainForm.WindowsForms {
 
     protected override void Dispose(bool disposing) {
       DeregisterContentEvents();
-      HideProgress();
 
-      if (disposing && (components != null)) {
+      if (!TargetControl.IsDisposed)
+        HideProgress();
+
+      if (disposing && components != null) {
         components.Dispose();
       }
       base.Dispose(disposing);
@@ -100,45 +95,70 @@ namespace HeuristicLab.MainForm.WindowsForms {
     }
 
     private void ShowProgress() {
-      if (Control.InvokeRequired) {
-        Control.Invoke((Action)ShowProgress);
+      if (TargetControl.InvokeRequired) {
+        TargetControl.Invoke((Action)ShowProgress);
         return;
       }
       if (Parent != null) return;
 
-      Left = (Control.ClientRectangle.Width / 2) - (Width / 2);
-      Top = (Control.ClientRectangle.Height / 2) - (Height / 2);
+      Left = (TargetControl.ClientRectangle.Width / 2) - (Width / 2);
+      Top = (TargetControl.ClientRectangle.Height / 2) - (Height / 2);
       Anchor = AnchorStyles.None;
 
       UpdateProgressMessage();
       UpdateProgressValue();
       UpdateButtonsState();
 
-      Control.SuspendRepaint();
-      Control.Enabled = false;
-      Parent = Control.Parent;
+      TargetControl.SuspendRepaint();
+      TargetControl.Enabled = false;
+      RegisterTargetControlEvents();
+      Parent = TargetControl.Parent;
       BringToFront();
-      Control.ResumeRepaint(true);
+      TargetControl.ResumeRepaint(true);
       Visible = true;
     }
 
     private void HideProgress() {
-      if (Control.InvokeRequired) {
-        Control.Invoke((Action)HideProgress);
+      if (TargetControl.InvokeRequired) {
+        TargetControl.Invoke((Action)HideProgress);
         return;
       }
       if (Parent == null) return;
 
       Visible = false;
-      Control.SuspendRepaint();
-      Control.Enabled = true;
-      Control.ResumeRepaint(true);
+      TargetControl.SuspendRepaint();
+      TargetControl.Enabled = true;
+      DeregisterTargetControlEvents();
       Parent = null;
+      TargetControl.ResumeRepaint(TargetControl.Visible);
+    }
+
+
+    private void RegisterTargetControlEvents() {
+      TargetControl.Disposed += TargetControl_Disposed;
+      TargetControl.VisibleChanged += TargetControl_VisibleChanged;
+      TargetControl.ParentChanged += TargetControl_ParentChanged;
+    }
+
+    private void DeregisterTargetControlEvents() {
+      TargetControl.Disposed -= TargetControl_Disposed;
+      TargetControl.VisibleChanged -= TargetControl_VisibleChanged;
+      TargetControl.ParentChanged -= TargetControl_ParentChanged;
+    }
+
+    private void TargetControl_Disposed(object sender, EventArgs e) {
+      Dispose();
+    }
+    private void TargetControl_VisibleChanged(object sender, EventArgs e) {
+      Visible = TargetControl.Visible;
+    }
+    private void TargetControl_ParentChanged(object sender, EventArgs e) {
+      Parent = TargetControl.Parent;
     }
 
     private void UpdateProgressState() {
-      if (Control.InvokeRequired) {
-        Control.Invoke((Action)UpdateProgressState);
+      if (TargetControl.InvokeRequired) {
+        TargetControl.Invoke((Action)UpdateProgressState);
         return;
       }
 
@@ -149,12 +169,12 @@ namespace HeuristicLab.MainForm.WindowsForms {
     }
 
     private void UpdateProgressMessage() {
-      if (Control.InvokeRequired) {
-        Control.Invoke((Action)UpdateProgressMessage);
+      if (TargetControl.InvokeRequired) {
+        TargetControl.Invoke((Action)UpdateProgressMessage);
         return;
       }
 
-      messageLabel.Text = content.Message;
+      messageLabel.Text = Content.Message;
     }
 
     private void UpdateProgressValue() {
@@ -166,28 +186,28 @@ namespace HeuristicLab.MainForm.WindowsForms {
       switch (Content.ProgressMode) {
         case ProgressMode.Determinate:
           progressBar.Style = ProgressBarStyle.Continuous;
-          progressBar.Value = (int)Math.Round(progressBar.Minimum + content.ProgressValue * (progressBar.Maximum - progressBar.Minimum));
+          progressBar.Value = (int)Math.Round(progressBar.Minimum + Content.ProgressValue * (progressBar.Maximum - progressBar.Minimum));
           break;
         case ProgressMode.Indeterminate:
           progressBar.Style = ProgressBarStyle.Marquee;
           progressBar.Value = 0;
           break;
         default:
-          throw new NotImplementedException($"Invalid Progress Mode: {content.ProgressMode}");
+          throw new NotImplementedException($"Invalid Progress Mode: {Content.ProgressMode}");
       }
     }
 
     private void UpdateButtonsState() {
-      if (Control.InvokeRequired) {
-        Control.Invoke((Action)UpdateButtonsState);
+      if (TargetControl.InvokeRequired) {
+        TargetControl.Invoke((Action)UpdateButtonsState);
         return;
       }
 
       stopButton.Visible = Content.CanBeStopped;
-      stopButton.Enabled = Content.CanBeStopped && content.ProgressState == ProgressState.Started;
+      stopButton.Enabled = Content.CanBeStopped && Content.ProgressState == ProgressState.Started;
 
       cancelButton.Visible = Content.CanBeCanceled;
-      cancelButton.Enabled = Content.CanBeCanceled && content.ProgressState == ProgressState.Started;
+      cancelButton.Enabled = Content.CanBeCanceled && Content.ProgressState == ProgressState.Started;
     }
 
     private void stopButton_Click(object sender, EventArgs e) {

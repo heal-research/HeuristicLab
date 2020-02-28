@@ -1,4 +1,4 @@
-﻿#region License Information
+#region License Information
 /* HeuristicLab
  * Copyright (C) Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
@@ -20,11 +20,19 @@
 #endregion
 
 using HEAL.Attic;
+using HeuristicLab.Common;
+using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
-  [StorableType("5b0720d7-b1f0-4c2f-893e-cd2549e20e9e")]
-  public interface ISymbolicDataAnalysisGrammar : ISymbolicExpressionGrammar {
-    void ConfigureVariableSymbols(IDataAnalysisProblemData problemData);
+  [Item("BalancedTreeCreator", "An operator that creates new symbolic expression trees using the 'Balanced' method")]
+  [StorableType("E268BE19-BBEB-46EF-9632-1799A43D01F9")]
+  public class SymbolicDataAnalysisExpressionBalancedTreeCreator : BalancedTreeCreator, ISymbolicDataAnalysisSolutionCreator {
+    [StorableConstructor]
+    protected SymbolicDataAnalysisExpressionBalancedTreeCreator(StorableConstructorFlag _) : base(_) { }
+    protected SymbolicDataAnalysisExpressionBalancedTreeCreator(SymbolicDataAnalysisExpressionBalancedTreeCreator original, Cloner cloner) : base(original, cloner) { }
+    public override IDeepCloneable Clone(Cloner cloner) { return new SymbolicDataAnalysisExpressionBalancedTreeCreator(this, cloner); }
+
+    public SymbolicDataAnalysisExpressionBalancedTreeCreator() : base() { }
   }
 }

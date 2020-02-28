@@ -13,7 +13,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
     [TestMethod]
     [TestCategory("Problems.DataAnalysis")]
     [TestProperty("Time", "short")]
-    public void TestIntervalAddOperation() {
+    public void AddIntervalTest() {
       //add        [x1,x2] + [y1,y2] = [x1 + y1,x2 + y2]
 
       // [-1,1] + [-2,2] = [-3,3]
@@ -27,7 +27,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
     [TestMethod]
     [TestCategory("Problems.DataAnalysis")]
     [TestProperty("Time", "short")]
-    public void TestIntervalSubOperation() {
+    public void SubtractIntervalTest() {
       //subtract   [x1,x2] − [y1,y2] = [x1 − y2,x2 − y1]
 
       //[-1, 1] - [-2, 2] = [-3, 3]
@@ -41,7 +41,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
     [TestMethod]
     [TestCategory("Problems.DataAnalysis")]
     [TestProperty("Time", "short")]
-    public void TestIntervalMutlipyOperation() {
+    public void MultiplyIntervalTest() {
       //multiply   [x1,x2] * [y1,y2] = [min(x1*y1,x1*y2,x2*y1,x2*y2),max(x1*y1,x1*y2,x2*y1,x2*y2)]
 
       //[-1, 1] * [-2, 2] = [-2, 2]
@@ -58,7 +58,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
     [TestMethod]
     [TestCategory("Problems.DataAnalysis")]
     [TestProperty("Time", "short")]
-    public void TestIntervalDivideOperation() {
+    public void DivideIntervalTest() {
       //divide  [x1, x2] / [y1, y2] = [x1, x2] * (1/[y1, y2]), where 1 / [y1,y2] = [1 / y2,1 / y1] if 0 not in [y_1, y_2].
 
       //[4, 6] / [1, 3] = [4/3, 6]
@@ -79,7 +79,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
     [TestMethod]
     [TestCategory("Problems.DataAnalysis")]
     [TestProperty("Time", "short")]
-    public void TestIntervalSineOperator() {
+    public void SineIntervalTest() {
       //sine depends on interval
       //sin([0, 2*pi]) = [-1, 1]
       Assert.AreEqual<Interval>(Interval.Sine(new Interval(0, 2 * Math.PI)), new Interval(-1, 1));
@@ -97,7 +97,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
     [TestMethod]
     [TestCategory("Problems.DataAnalysis")]
     [TestProperty("Time", "short")]
-    public void TestIntervalCosineOperator() {
+    public void CosineIntervalTest() {
       //Cosine uses sine Interval.Sine(Interval.Subtract(a, new Interval(Math.PI / 2, Math.PI / 2)));
       Assert.AreEqual<Interval>(Interval.Cosine(new Interval(0, 2 * Math.PI)), new Interval(-1, 1));
       Assert.AreEqual<Interval>(new Interval(-1, 1), Interval.Cosine(new Interval(Math.PI, 4 * Math.PI / 2)));
@@ -106,7 +106,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
     [TestMethod]
     [TestCategory("Problems.DataAnalysis")]
     [TestProperty("Time", "short")]
-    public void TestIntervalLogOperator() {
+    public void LogIntervalTest() {
       //Log([3, 5]) = [log(3), log(5)]
       Assert.AreEqual<Interval>(new Interval(Math.Log(3), Math.Log(5)), Interval.Logarithm(new Interval(3, 5)));
       //Log([0.5, 1]) = [log(0.5), log(1)]
@@ -121,7 +121,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
     [TestMethod]
     [TestCategory("Problems.DataAnalysis")]
     [TestProperty("Time", "short")]
-    public void TestIntervalExpOperator() {
+    public void ExponentialIntervalTest() {
       //Exp([0, 1]) = [exp(0), exp(1)]
       Assert.AreEqual<Interval>(new Interval(1, Math.Exp(1)), Interval.Exponential(new Interval(0, 1)));
     }
@@ -130,7 +130,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
     [TestMethod]
     [TestCategory("Problems.DataAnalysis")]
     [TestProperty("Time", "short")]
-    public void TestIntervalSqrOperator() {
+    public void SquareIntervalTest() {
       Assert.AreEqual<Interval>(new Interval(1, 4), Interval.Square(new Interval(1, 2)));
       Assert.AreEqual<Interval>(new Interval(1, 4), Interval.Square(new Interval(-2, -1)));
       Assert.AreEqual<Interval>(new Interval(0, 4), Interval.Square(new Interval(-2, 2)));
@@ -139,7 +139,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
     [TestMethod]
     [TestCategory("Problems.DataAnalysis")]
     [TestProperty("Time", "short")]
-    public void TestIntervalSqrtOperator() {
+    public void SquarerootIntervalTest() {
       Assert.AreEqual<Interval>(new Interval(1, 2), Interval.SquareRoot(new Interval(1, 4)));
       Assert.AreEqual<Interval>(new Interval(double.NaN, double.NaN), Interval.SquareRoot(new Interval(-4, -1)));
     }
@@ -147,7 +147,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
     [TestMethod]
     [TestCategory("Problems.DataAnalysis")]
     [TestProperty("Time", "short")]
-    public void TestIntervalCubeOperator() {
+    public void CubeIntervalTest() {
       Assert.AreEqual<Interval>(new Interval(1, 8), Interval.Cube(new Interval(1, 2)));
       Assert.AreEqual<Interval>(new Interval(-8, -1), Interval.Cube(new Interval(-2, -1)));
       Assert.AreEqual<Interval>(new Interval(-8, 8), Interval.Cube(new Interval(-2, 2)));
@@ -156,7 +156,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
     [TestMethod]
     [TestCategory("Problems.DataAnalysis")]
     [TestProperty("Time", "short")]
-    public void TestIntervalCbrtOperator() {
+    public void CubeRootIntervalTest() {
       Assert.AreEqual<Interval>(new Interval(1, 2), Interval.CubicRoot(new Interval(1, 8)));
       Assert.AreEqual<Interval>(new Interval(-2, -2), Interval.CubicRoot(new Interval(-8, -8)));
       Assert.AreEqual<Interval>(new Interval(-2, 2), Interval.CubicRoot(new Interval(-8, 8)));
@@ -169,17 +169,84 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
     [TestMethod]
     [TestCategory("Problems.DataAnalysis")]
     [TestProperty("Time", "short")]
-    public void TestIntervalAbsoluteOperator() {
-      Assert.AreEqual(new Interval(2, 2), Interval.Absolute(new Interval(-2, -2)));
-      Assert.AreEqual(new Interval(5, 5), Interval.Absolute(new Interval(5, 5)));
-      Assert.AreEqual(new Interval(2, 8), Interval.Absolute(new Interval(2, 8)));
-      Assert.AreEqual(new Interval(5, 14), Interval.Absolute(new Interval(-14, -5)));
-      Assert.AreEqual(new Interval(2, 7), Interval.Absolute(new Interval(-2, 7)));
-      Assert.AreEqual(new Interval(2, 22), Interval.Absolute(new Interval(-22, -2)));
-      Assert.AreEqual(new Interval(6, 22), Interval.Absolute(new Interval(-22, 6)));
-      Assert.AreEqual(new Interval(0, 0), Interval.Absolute(new Interval(0, 0)));
-      Assert.AreEqual(new Interval(0, 2), Interval.Absolute(new Interval(-2, 0)));
-      Assert.AreEqual(new Interval(0, 2), Interval.Absolute(new Interval(0, 2)));
+    public void AbsoluteIntervalTest() {
+      Assert.AreEqual(new Interval(2, 5), Interval.Absolute(new Interval(-5, -2)));
+      Assert.AreEqual(new Interval(2, 5), Interval.Absolute(new Interval(2, 5)));
+      Assert.AreEqual(new Interval(0, 3), Interval.Absolute(new Interval(-3, 0)));
+      Assert.AreEqual(new Interval(0, 5), Interval.Absolute(new Interval(0, 5)));
+      Assert.AreEqual(new Interval(0, 5), Interval.Absolute(new Interval(-2, 5)));
+    }
+
+    [TestMethod]
+    [TestCategory("Problems.DataAnalysis")]
+    [TestProperty("Time", "short")]
+    public void AnalyticalQuotientIntervalTest() {
+      //Analytical Quotient ==> a / sqrt(b^2 + 1)
+      var aPos = new Interval(3, 5);
+      var aZero = new Interval(-3, 5);
+      var aNeg = new Interval(-5, -3);
+
+      var bPos = new Interval(2, 4);
+      var bZero = new Interval(-2, 4);
+      var bNeg = new Interval(-4, -2);
+
+      //Second interval goes over zero
+      Assert.AreEqual(new Interval(aPos.LowerBound/Math.Sqrt(17), aPos.UpperBound), Interval.AnalyticalQuotient(aPos, bZero));
+      Assert.AreEqual(new Interval(aZero.LowerBound, aZero.UpperBound), Interval.AnalyticalQuotient(aZero, bZero));
+      Assert.AreEqual(new Interval(aNeg.LowerBound, aNeg.UpperBound/Math.Sqrt(17)), Interval.AnalyticalQuotient(aNeg, bZero));
+      //Second interval is positive
+      Assert.AreEqual(new Interval(aPos.LowerBound/Math.Sqrt(17), aPos.UpperBound/Math.Sqrt(5)), Interval.AnalyticalQuotient(aPos, bPos));
+      Assert.AreEqual(new Interval(aZero.LowerBound/Math.Sqrt(5), aZero.UpperBound/Math.Sqrt(5)), Interval.AnalyticalQuotient(aZero, bPos));
+      Assert.AreEqual(new Interval(aNeg.LowerBound/Math.Sqrt(5), aNeg.UpperBound/Math.Sqrt(17)), Interval.AnalyticalQuotient(aNeg, bPos));
+      //Second interval is negative
+      Assert.AreEqual(new Interval(aPos.LowerBound/Math.Sqrt(17), aPos.UpperBound/Math.Sqrt(5)), Interval.AnalyticalQuotient(aPos, bNeg));
+      Assert.AreEqual(new Interval(aZero.LowerBound/Math.Sqrt(5), aZero.UpperBound/Math.Sqrt(5)), Interval.AnalyticalQuotient(aZero, bNeg));
+      Assert.AreEqual(new Interval(aNeg.LowerBound/Math.Sqrt(5), aNeg.UpperBound/Math.Sqrt(17)), Interval.AnalyticalQuotient(aNeg, bNeg));
+    }
+
+    [TestMethod]
+    [TestCategory("Problems.DataAnalysis")]
+    [TestProperty("Time", "short")]
+    public void IsNegativeIntervalTest() {
+      Assert.IsTrue(new Interval(-2, -1).IsNegative);
+      Assert.IsFalse(new Interval(-2, 0).IsNegative);
+      Assert.IsFalse(new Interval(-2, 2).IsNegative);
+      Assert.IsFalse(new Interval(2, 4).IsNegative);
+    }
+
+    [TestMethod]
+    [TestCategory("Problems.DataAnalysis")]
+    [TestProperty("Time", "short")]
+    public void IsPositiveIntervalTest() {
+      Assert.IsTrue(new Interval(3, 5).IsPositive);
+      Assert.IsFalse(new Interval(0, 5).IsPositive);
+      Assert.IsFalse(new Interval(-1, 5).IsPositive);
+      Assert.IsFalse(new Interval(-5, -2).IsPositive);
+    }
+
+    [TestMethod]
+    [TestCategory("Problems.DataAnalysis")]
+    [TestProperty("Time", "short")]
+    public void IsAlmostIntervalTest() {
+      var negativeLowerBound = -2E-13;
+      var negativeUpperBound = -1E-13;
+      var positiveLowerBound = 3E-13;
+      var positiveUpperBound = 5E-13;
+
+      var negativeInterval = new Interval(negativeLowerBound, negativeUpperBound);
+      var positiveInterval = new Interval(positiveLowerBound, positiveUpperBound);
+      var zeroInterval = new Interval(negativeUpperBound, positiveLowerBound);
+
+      //Check for right-shift of negative interval
+      Assert.AreEqual(negativeUpperBound, negativeInterval.LowerBound);
+      Assert.AreEqual(negativeUpperBound, negativeInterval.UpperBound);
+      //Check for left-shift of positive interval
+      Assert.AreEqual(positiveLowerBound, positiveInterval.LowerBound);
+      Assert.AreEqual(positiveLowerBound, positiveInterval.UpperBound);
+      //Check for setting interval to zero
+      Assert.AreEqual(0, zeroInterval.LowerBound);
+      Assert.AreEqual(0, zeroInterval.UpperBound);
+
     }
   }
 }

@@ -98,7 +98,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     private static Dictionary<string, GCHandle> cachedData;
 
     [ThreadStatic]
-    private IDataset dataset;
+    private static IDataset cachedDataset;
 
     private static readonly HashSet<byte> supportedOpCodes = new HashSet<byte>() {
       (byte)OpCode.Constant,
@@ -126,7 +126,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     public IEnumerable<double> GetSymbolicExpressionTreeValues(ISymbolicExpressionTree tree, IDataset dataset, IEnumerable<int> rows) {
       if (!rows.Any()) return Enumerable.Empty<double>();
 
-      if (cachedData == null || this.dataset != dataset) {
+      if (cachedData == null || cachedDataset != dataset) {
         InitCache(dataset);
       }
 
@@ -151,7 +151,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     private void InitCache(IDataset dataset) {
-      this.dataset = dataset;
+      cachedDataset = dataset;
 
       // free handles to old data
       if (cachedData != null) {
@@ -177,7 +177,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         }
         cachedData = null;
       }
-      dataset = null;
+      cachedDataset = null;
       EvaluatedSolutions = 0;
     }
   }

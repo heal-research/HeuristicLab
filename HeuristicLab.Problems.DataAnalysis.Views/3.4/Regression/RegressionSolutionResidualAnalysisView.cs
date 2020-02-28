@@ -92,27 +92,28 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       var stringVars = ds.StringVariables.Where(vn => ds.GetStringValues(vn).Distinct().Skip(1).Any()).ToArray();
       var dateTimeVars = ds.DateTimeVariables.Where(vn => ds.GetDateTimeValues(vn).Distinct().Skip(1).Any()).ToArray();
 
-      // produce training and test values separately as they might overlap (e.g. for ensembles)
-      var predictedValuesTrain = Content.EstimatedTrainingValues.ToArray();
-      int j = 0; // idx for predictedValues array
-      foreach (var i in problemData.TrainingIndices) {
+      var predictedValues = Content.EstimatedValues.ToArray();
+      foreach (var i in problemData.AllIndices) {
         var run = CreateRunForIdx(i, problemData, doubleVars, stringVars, dateTimeVars);
         var targetValue = ds.GetDoubleValue(problemData.TargetVariable, i);
-        AddErrors(run, predictedValuesTrain[j++], targetValue);
-        run.Results.Add(PartitionLabel, new StringValue("Training"));
-        run.Color = Color.Gold;
+        AddErrors(run, predictedValues[i], targetValue);
+
+        if (problemData.IsTrainingSample(i) && problemData.IsTestSample(i)) {
+          run.Results.Add(PartitionLabel, new StringValue("Training + Test"));
+          run.Color = Color.Orange;
+        } else if (problemData.IsTrainingSample(i)) {
+          run.Results.Add(PartitionLabel, new StringValue("Training"));
+          run.Color = Color.Gold;
+        } else if (problemData.IsTestSample(i)) {
+          run.Results.Add(PartitionLabel, new StringValue("Test"));
+          run.Color = Color.Red;
+        } else {
+          run.Results.Add(PartitionLabel, new StringValue("Additional Data"));
+          run.Color = Color.Black;
+        }
         runs.Add(run);
       }
-      var predictedValuesTest = Content.EstimatedTestValues.ToArray();
-      j = 0;
-      foreach (var i in problemData.TestIndices) {
-        var run = CreateRunForIdx(i, problemData, doubleVars, stringVars, dateTimeVars);
-        var targetValue = ds.GetDoubleValue(problemData.TargetVariable, i);
-        AddErrors(run, predictedValuesTest[j++], targetValue);
-        run.Results.Add(PartitionLabel, new StringValue("Test"));
-        run.Color = Color.Red;
-        runs.Add(run);
-      }
+
       if (string.IsNullOrEmpty(selectedXAxis))
         selectedXAxis = "Index";
       if (string.IsNullOrEmpty(selectedYAxis))

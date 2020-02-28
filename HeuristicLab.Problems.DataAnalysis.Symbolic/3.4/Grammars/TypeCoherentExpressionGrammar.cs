@@ -21,14 +21,14 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HEAL.Attic;
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableType("36A22322-0627-4E25-A468-F2A788AF6D46")]
   [Item("TypeCoherentExpressionGrammar", "Represents a grammar for functional expressions in which special syntactic constraints are enforced so that boolean and real-valued expressions are not mixed.")]
-  public class TypeCoherentExpressionGrammar : SymbolicExpressionGrammar, ISymbolicDataAnalysisGrammar {
+  public class TypeCoherentExpressionGrammar : DataAnalysisGrammar, ISymbolicDataAnalysisGrammar {
     private const string ArithmeticFunctionsName = "Arithmetic Functions";
     private const string TrigonometricFunctionsName = "Trigonometric Functions";
     private const string ExponentialFunctionsName = "Exponential and Logarithmic Functions";
@@ -116,8 +116,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
       #region group symbol declaration
       var arithmeticSymbols = new GroupSymbol(ArithmeticFunctionsName, new List<ISymbol>() { add, sub, mul, div, mean });
-      var trigonometricSymbols = new GroupSymbol(TrigonometricFunctionsName, new List<ISymbol>() { sin, cos, tan, tanh});
-      var exponentialAndLogarithmicSymbols = new GroupSymbol(ExponentialFunctionsName, new List<ISymbol> { exp, log});
+      var trigonometricSymbols = new GroupSymbol(TrigonometricFunctionsName, new List<ISymbol>() { sin, cos, tan, tanh });
+      var exponentialAndLogarithmicSymbols = new GroupSymbol(ExponentialFunctionsName, new List<ISymbol> { exp, log });
       var specialFunctions = new GroupSymbol(SpecialFunctionsName, new List<ISymbol> { abs, airyA, airyB, bessel, cosineIntegral, dawson, erf, expIntegralEi,
         fresnelCosineIntegral,fresnelSineIntegral,gamma,hypCosineIntegral,hypSineIntegral,norm, psi, sineIntegral, analyticalQuotient});
       var terminalSymbols = new GroupSymbol(TerminalsName, new List<ISymbol> { constant, variableSymbol, binFactorVariable, factorVariable });
@@ -148,7 +148,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       SetSubtreeCount(sqrt, 1, 1);
       SetSubtreeCount(cubeRoot, 1, 1);
       SetSubtreeCount(exponentialAndLogarithmicSymbols, 1, 1);
-      foreach(var sy in specialFunctions.Symbols.Except(new[] { analyticalQuotient})) {
+      foreach (var sy in specialFunctions.Symbols.Except(new[] { analyticalQuotient })) {
         SetSubtreeCount(sy, 1, 1);
       }
       SetSubtreeCount(analyticalQuotient, 2, 2);

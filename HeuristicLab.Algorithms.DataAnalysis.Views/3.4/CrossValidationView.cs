@@ -222,7 +222,11 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
     }
 
     private async void startButton_Click(object sender, EventArgs e) {
-      await Content.StartAsync();
+      try {
+        await Content.StartAsync();
+      } catch (Exception ex) {
+        ErrorHandling.ShowErrorDialog(this, ex);
+      }
     }
     private void pauseButton_Click(object sender, EventArgs e) {
       Content.Pause();

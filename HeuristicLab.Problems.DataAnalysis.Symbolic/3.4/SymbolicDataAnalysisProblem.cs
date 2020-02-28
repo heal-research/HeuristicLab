@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Common.Resources;
 using HeuristicLab.Core;
@@ -30,7 +31,6 @@ using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Problems.Instances;
 
@@ -209,35 +209,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
     protected virtual void UpdateGrammar() {
       var problemData = ProblemData;
-      var ds = problemData.Dataset;
       var grammar = SymbolicExpressionTreeGrammar;
+
       grammar.MaximumFunctionArguments = MaximumFunctionArguments.Value;
       grammar.MaximumFunctionDefinitions = MaximumFunctionDefinitions.Value;
-      foreach (var varSymbol in grammar.Symbols.OfType<HeuristicLab.Problems.DataAnalysis.Symbolic.VariableBase>()) {
-        if (!varSymbol.Fixed) {
-          varSymbol.AllVariableNames = problemData.InputVariables.Select(x => x.Value).Where(x => ds.VariableHasType<double>(x));
-          varSymbol.VariableNames = problemData.AllowedInputVariables.Where(x => ds.VariableHasType<double>(x));
-        }
-      }
-      foreach (var factorSymbol in grammar.Symbols.OfType<BinaryFactorVariable>()) {
-        if (!factorSymbol.Fixed) {
-          factorSymbol.AllVariableNames = problemData.InputVariables.Select(x => x.Value).Where(x => ds.VariableHasType<string>(x));
-          factorSymbol.VariableNames = problemData.AllowedInputVariables.Where(x => ds.VariableHasType<string>(x));
-          factorSymbol.VariableValues = factorSymbol.VariableNames
-            .ToDictionary(varName => varName, varName => ds.GetStringValues(varName).Distinct().ToList());
-        }
-      }
-      foreach (var factorSymbol in grammar.Symbols.OfType<FactorVariable>()) {
-        if (!factorSymbol.Fixed) {
-          factorSymbol.AllVariableNames = problemData.InputVariables.Select(x => x.Value).Where(x => ds.VariableHasType<string>(x));
-          factorSymbol.VariableNames = problemData.AllowedInputVariables.Where(x => ds.VariableHasType<string>(x));
-          factorSymbol.VariableValues = factorSymbol.VariableNames
-            .ToDictionary(varName => varName,
-            varName => ds.GetStringValues(varName).Distinct()
-            .Select((n, i) => Tuple.Create(n, i))
-            .ToDictionary(tup => tup.Item1, tup => tup.Item2));
-        }
-      }
+
+      grammar.ConfigureVariableSymbols(problemData);
     }
 
     private void InitializeOperators() {

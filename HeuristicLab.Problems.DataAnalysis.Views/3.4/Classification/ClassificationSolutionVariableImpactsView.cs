@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using HeuristicLab.Common;
 using HeuristicLab.Data;
 using HeuristicLab.MainForm;
@@ -39,7 +40,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     }
     private CancellationTokenSource cancellationToken = new CancellationTokenSource();
     private List<Tuple<string, double>> rawVariableImpacts = new List<Tuple<string, double>>();
-    private bool attachedToProgress = false;
 
     public new IClassificationSolution Content {
       get { return (IClassificationSolution)base.Content; }
@@ -86,14 +86,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         UpdateVariableImpact();
       }
     }
-    protected override void OnHidden(EventArgs e) {
-      base.OnHidden(e);
-      cancellationToken.Cancel();
-
-      if (attachedToProgress) {
-        Progress.Hide(this);
-        attachedToProgress = false;
+    protected override void OnVisibleChanged(EventArgs e) {
+      base.OnVisibleChanged(e);
+      if (!this.Visible) {
+        cancellationToken.Cancel();
       }
+    }
+
+    protected override void OnClosed(FormClosedEventArgs e) {
+      base.OnClosed(e);
+      cancellationToken.Cancel();
     }
 
     private void dataPartitionComboBox_SelectedIndexChanged(object sender, EventArgs e) {
@@ -132,7 +134,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
 
       variableImpactsArrayView.Caption = Content.Name + " Variable Impacts";
       progress = Progress.Show(this, "Calculating variable impacts for " + Content.Name);
-      attachedToProgress = true;
       cancellationToken = new CancellationTokenSource();
 
       try {
@@ -144,17 +145,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
           .Where(v => problemData.Dataset.VariableHasType<double>(v) || problemData.Dataset.VariableHasType<string>(v))
           .ToList();
 
-        List<Tuple<string, double>> impacts = null;
-        await Task.Run(() => { impacts = CalculateVariableImpacts(originalVariableOrdering, Content.Model, problemData, Content.EstimatedClassValues, dataPartition, replMethod, factorReplMethod, cancellationToken.Token, progress); });
-        if (impacts == null) { return; }
+        var impacts = await Task.Run(() => CalculateVariableImpacts(originalVariableOrdering, Content.Model, problemData, Content.EstimatedClassValues, dataPartition, replMethod, factorReplMethod, cancellationToken.Token, progress));
 
         rawVariableImpacts.AddRange(impacts);
         UpdateOrdering();
+      } catch (OperationCanceledException) {
       } finally {
-        if (attachedToProgress) {
-          Progress.Hide(this);
-          attachedToProgress = false;
-        }
+        Progress.Hide(this);
       }
     }
     private List<Tuple<string, double>> CalculateVariableImpacts(List<string> originalVariableOrdering,
@@ -179,7 +176,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       var originalCalculatorValue = ClassificationSolutionVariableImpactsCalculator.CalculateQuality(targetValuesPartition, estimatedClassValuesPartition);
       var clonedModel = (IClassificationModel)model.Clone();
       foreach (var variableName in originalVariableOrdering) {
-        if (cancellationToken.Token.IsCancellationRequested) { return null; }
+        token.ThrowIfCancellationRequested();
         progress.ProgressValue = (double)++i / count;
         progress.Message = string.Format("Calculating impact for variable {0} ({1} of {2})", variableName, i, count);
 
