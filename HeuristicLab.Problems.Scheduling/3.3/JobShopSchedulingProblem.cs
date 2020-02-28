@@ -142,8 +142,8 @@ namespace HeuristicLab.Problems.Scheduling {
       Encoding.JobsParameter = JobsParameter;
       Encoding.JobDataParameter = JobDataParameter;
 
-      Load(DefaultInstance);
       RegisterEventHandlers();
+      Load(DefaultInstance);
     }
 
     public override ISingleObjectiveEvaluationResult Evaluate(IScheduleSolution solution, IRandom random, CancellationToken cancellationToken) {
