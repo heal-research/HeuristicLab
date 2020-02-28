@@ -38,13 +38,13 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
       return new PRVSinglePointCrossover(this, cloner);
     }
 
-    public static PRVEncoding Apply(IRandom random, PRVEncoding parent1, PRVEncoding parent2) {
+    public static PRV Apply(IRandom random, PRV parent1, PRV parent2) {
       var randomSeed = random.Next();
       var integerVector = SinglePointCrossover.Apply(random, parent1.PriorityRulesVector, parent2.PriorityRulesVector);
-      return new PRVEncoding(integerVector, randomSeed);
+      return new PRV(integerVector, randomSeed);
     }
 
-    public override PRVEncoding Cross(IRandom random, PRVEncoding parent1, PRVEncoding parent2) {
+    public override PRV Cross(IRandom random, PRV parent1, PRV parent2) {
       return Apply(random, parent1, parent2);
     }
   }

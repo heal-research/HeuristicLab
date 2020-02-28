@@ -26,7 +26,7 @@ using HEAL.Attic;
 namespace HeuristicLab.Encodings.ScheduleEncoding {
   [StorableType("809a6136-3a7a-4389-9119-2bb48f6d650a")]
   public interface IScheduleCrossover : ICrossover, IScheduleOperator {
-    ILookupParameter<ISchedule> ChildParameter { get; }
-    IScopeTreeLookupParameter<ISchedule> ParentsParameter { get; }
+    ILookupParameter<IScheduleSolution> ChildParameter { get; }
+    IScopeTreeLookupParameter<IScheduleSolution> ParentsParameter { get; }
   }
 }

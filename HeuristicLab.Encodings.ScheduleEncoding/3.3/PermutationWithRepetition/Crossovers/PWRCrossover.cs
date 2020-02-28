@@ -37,13 +37,13 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
       ChildParameter.ActualName = "PermutationWithRepetition";
     }
 
-    public abstract PWREncoding Cross(IRandom random, PWREncoding parent1, PWREncoding parent2);
+    public abstract PWR Cross(IRandom random, PWR parent1, PWR parent2);
 
     public override IOperation InstrumentedApply() {
       var parents = ParentsParameter.ActualValue;
 
       ChildParameter.ActualValue =
-        Cross(RandomParameter.ActualValue, parents[0] as PWREncoding, parents[1] as PWREncoding);
+        Cross(RandomParameter.ActualValue, parents[0] as PWR, parents[1] as PWR);
 
       return base.InstrumentedApply();
     }

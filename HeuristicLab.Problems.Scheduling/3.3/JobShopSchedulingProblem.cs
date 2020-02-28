@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -20,30 +20,29 @@
 #endregion
 
 using System;
+using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
+using System.Threading;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Encodings.ScheduleEncoding;
-using HeuristicLab.Encodings.ScheduleEncoding.JobSequenceMatrix;
-using HeuristicLab.Encodings.ScheduleEncoding.PermutationWithRepetition;
-using HeuristicLab.Encodings.ScheduleEncoding.PriorityRulesVector;
+using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
-using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Problems.Instances;
 
 namespace HeuristicLab.Problems.Scheduling {
+  public enum JSSPObjective { Makespan, Tardiness }
+
   [Item("Job Shop Scheduling Problem (JSSP)", "Represents a standard Job Shop Scheduling Problem")]
   [Creatable(CreatableAttribute.Categories.CombinatorialProblems, Priority = 120)]
-  [StorableType("BB12CCEC-A109-4A26-A1C7-5A0703AB7687")]
-  public sealed class JobShopSchedulingProblem : SchedulingProblem, IProblemInstanceConsumer<JSSPData>, IProblemInstanceExporter<JSSPData>, IStorableContent {
+  [StorableType("d6c72bd1-c6cc-4efb-9cc5-b73bb3845799")]
+  public sealed class JobShopSchedulingProblem : SingleObjectiveProblem<IScheduleEncoding, IScheduleSolution>, IProblemInstanceConsumer<JSSPData>, IProblemInstanceExporter<JSSPData>, IStorableContent {
     #region Default Instance
     private static readonly JSSPData DefaultInstance = new JSSPData() {
-      Name = "Job Shop Scheduling Problem (JSSP)",
-      Description = "The default instance of the JSSP problem in HeuristicLab",
       Jobs = 10,
       Resources = 10,
       BestKnownQuality = 930,
@@ -74,31 +73,16 @@ namespace HeuristicLab.Problems.Scheduling {
     };
     #endregion
 
-    public string Filename { get; set; }
     public override Image ItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Type; }
     }
-
+    
     #region Parameter Properties
-    public IValueParameter<ItemList<Job>> JobDataParameter {
-      get { return (IValueParameter<ItemList<Job>>)Parameters["JobData"]; }
-    }
-    public OptionalValueParameter<Schedule> BestKnownSolutionParameter {
-      get { return (OptionalValueParameter<Schedule>)Parameters["BestKnownSolution"]; }
-    }
-
-    public IFixedValueParameter<IntValue> JobsParameter {
-      get { return (IFixedValueParameter<IntValue>)Parameters["Jobs"]; }
-    }
-    public IFixedValueParameter<IntValue> ResourcesParameter {
-      get { return (IFixedValueParameter<IntValue>)Parameters["Resources"]; }
-    }
-    public IValueParameter<IScheduleEvaluator> ScheduleEvaluatorParameter {
-      get { return (IValueParameter<IScheduleEvaluator>)Parameters["ScheduleEvaluator"]; }
-    }
-    public OptionalValueParameter<IScheduleDecoder> ScheduleDecoderParameter {
-      get { return (OptionalValueParameter<IScheduleDecoder>)Parameters["ScheduleDecoder"]; }
-    }
+    [Storable] public IValueParameter<ItemList<Job>> JobDataParameter { get; private set; }
+    [Storable] public OptionalValueParameter<Schedule> BestKnownSolutionParameter { get; private set; }
+    [Storable] public IFixedValueParameter<IntValue> JobsParameter { get; private set; }
+    [Storable] public IFixedValueParameter<IntValue> ResourcesParameter { get; private set; }
+    [Storable] public IFixedValueParameter<EnumValue<JSSPObjective>> ObjectiveParameter { get; private set; }
     #endregion
 
     #region Properties
@@ -118,87 +102,110 @@ namespace HeuristicLab.Problems.Scheduling {
       get { return ResourcesParameter.Value.Value; }
       set { ResourcesParameter.Value.Value = value; }
     }
-    public IScheduleEvaluator ScheduleEvaluator {
-      get { return ScheduleEvaluatorParameter.Value; }
-      set { ScheduleEvaluatorParameter.Value = value; }
-    }
-    public IScheduleDecoder ScheduleDecoder {
-      get { return ScheduleDecoderParameter.Value; }
-      set { ScheduleDecoderParameter.Value = value; }
+    public JSSPObjective Objective {
+      get { return ObjectiveParameter.Value.Value; }
+      set { ObjectiveParameter.Value.Value = value; }
     }
     #endregion
 
     [StorableConstructor]
     private JobShopSchedulingProblem(StorableConstructorFlag _) : base(_) { }
-    private JobShopSchedulingProblem(JobShopSchedulingProblem original, Cloner cloner)
-      : base(original, cloner) {
-      RegisterEventHandlers();
-    }
-    public JobShopSchedulingProblem()
-      : base(new SchedulingEvaluator(), new JSMRandomCreator()) {
-      Parameters.Add(new ValueParameter<ItemList<Job>>("JobData", "Jobdata defining the precedence relationships and the duration of the tasks in this JSSP-Instance.", new ItemList<Job>()));
-      Parameters.Add(new OptionalValueParameter<Schedule>("BestKnownSolution", "The best known solution of this JSSP instance."));
-
-      Parameters.Add(new FixedValueParameter<IntValue>("Jobs", "The number of jobs used in this JSSP instance.", new IntValue()));
-      Parameters.Add(new FixedValueParameter<IntValue>("Resources", "The number of resources used in this JSSP instance.", new IntValue()));
-      Parameters.Add(new ValueParameter<IScheduleEvaluator>("ScheduleEvaluator", "The evaluator used to determine the quality of a solution.", new MakespanEvaluator()));
-      Parameters.Add(new OptionalValueParameter<IScheduleDecoder>("ScheduleDecoder", "The operator that decodes the representation and creates a schedule.", new JSMDecoder()));
-
-      EvaluatorParameter.GetsCollected = false;
-      EvaluatorParameter.Hidden = true;
-      ScheduleDecoderParameter.Hidden = true;
-
-      InitializeOperators();
-      Load(DefaultInstance);
-      RegisterEventHandlers();
-    }
-
-    public override IDeepCloneable Clone(Cloner cloner) {
-      return new JobShopSchedulingProblem(this, cloner);
-    }
-
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
       RegisterEventHandlers();
     }
 
+    private JobShopSchedulingProblem(JobShopSchedulingProblem original, Cloner cloner)
+      : base(original, cloner) {
+      JobDataParameter = cloner.Clone(original.JobDataParameter);
+      BestKnownSolutionParameter = cloner.Clone(original.BestKnownSolutionParameter);
+      JobsParameter = cloner.Clone(original.JobsParameter);
+      ResourcesParameter = cloner.Clone(original.ResourcesParameter);
+      ObjectiveParameter = cloner.Clone(original.ObjectiveParameter);
+
+      RegisterEventHandlers();
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new JobShopSchedulingProblem(this, cloner);
+    }
+
+    public JobShopSchedulingProblem()
+      : base(new JobSequenceMatrixEncoding()) {
+      Parameters.Add(JobDataParameter = new ValueParameter<ItemList<Job>>("JobData", "Jobdata defining the precedence relationships and the duration of the tasks in this JSSP-Instance.", new ItemList<Job>()));
+      Parameters.Add(BestKnownSolutionParameter = new OptionalValueParameter<Schedule>("BestKnownSolution", "The best known solution of this JSSP instance."));
+      Parameters.Add(JobsParameter = new FixedValueParameter<IntValue>("Jobs", "The number of jobs used in this JSSP instance.", new IntValue()));
+      Parameters.Add(ResourcesParameter = new FixedValueParameter<IntValue>("Resources", "The number of resources used in this JSSP instance.", new IntValue()));
+      Parameters.Add(ObjectiveParameter = new FixedValueParameter<EnumValue<JSSPObjective>>("Objective", "The objective to use in the evaluation of a schedule.", new EnumValue<JSSPObjective>(JSSPObjective.Makespan)));
+      EncodingParameter.Hidden = false;
+
+      Encoding.ResourcesParameter = ResourcesParameter;
+      Encoding.JobsParameter = JobsParameter;
+      Encoding.JobDataParameter = JobDataParameter;
+
+      Load(DefaultInstance);
+      RegisterEventHandlers();
+    }
+
+    public override ISingleObjectiveEvaluationResult Evaluate(IScheduleSolution solution, IRandom random, CancellationToken cancellationToken) {
+      var schedule = Encoding.Decode(solution, JobData);
+      switch (Objective) {
+        case JSSPObjective.Makespan:
+          return new SingleObjectiveEvaluationResult(Makespan.Calculate(schedule));
+        case JSSPObjective.Tardiness:
+          return new SingleObjectiveEvaluationResult(MeanTardiness.Calculate(schedule, JobData));
+        default:
+          throw new InvalidOperationException("Objective " + Objective + " unknown");
+      }
+    }
+
+    public override void Analyze(IScheduleSolution[] solutions, double[] qualities, ResultCollection results, IRandom random) {
+      base.Analyze(solutions, qualities, results, random);
+
+      bool max = Maximization;
+
+      int i = -1;
+      if (!max)
+        i = qualities.Select((x, index) => new { index, x }).OrderBy(x => x.x).First().index;
+      else i = qualities.Select((x, index) => new { index, x }).OrderByDescending(x => x.x).First().index;
+
+      if (double.IsNaN(BestKnownQuality) ||
+          max && qualities[i] > BestKnownQuality ||
+          !max && qualities[i] < BestKnownQuality) {
+        BestKnownQuality = qualities[i];
+        BestKnownSolution = Encoding.Decode(solutions[i], JobData);
+      }
+      Schedule bestSolution;
+      if (results.TryGetValue("Best Scheduling Solution", out var result)) {
+        bestSolution = result.Value as Schedule;
+      } else bestSolution = null;
+
+      if (bestSolution == null || IsBetter(bestSolution.Quality, qualities[i]))
+        results.AddOrUpdateResult("Best Scheduling Solution", Encoding.Decode(solutions[i], JobData));
+    }
+
+    protected override void OnEncodingChanged() {
+      base.OnEncodingChanged();
+      Encoding.ResourcesParameter = ResourcesParameter;
+      Encoding.JobsParameter = JobsParameter;
+      Encoding.JobDataParameter = JobDataParameter;
+    }
+
+
     private void RegisterEventHandlers() {
-      ScheduleEvaluatorParameter.ValueChanged += ScheduleEvaluatorParameter_ValueChanged;
-      ScheduleEvaluator.QualityParameter.ActualNameChanged += ScheduleEvaluator_QualityParameter_ActualNameChanged;
-      SolutionCreator.ScheduleEncodingParameter.ActualNameChanged += SolutionCreator_SchedulingEncodingParameter_ActualNameChanged;
-      ScheduleDecoderParameter.ValueChanged += ScheduleDecoderParameter_ValueChanged;
-      if (ScheduleDecoder != null) ScheduleDecoder.ScheduleParameter.ActualNameChanged += ScheduleDecoder_ScheduleParameter_ActualNameChanged;
+      JobDataParameter.ValueChanged += JobDataParameterOnValueChanged;
+      JobData.PropertyChanged += JobDataOnPropertyChanged;
     }
 
-    #region Events
-    protected override void OnSolutionCreatorChanged() {
-      base.OnSolutionCreatorChanged();
-      SolutionCreator.ScheduleEncodingParameter.ActualNameChanged += SolutionCreator_SchedulingEncodingParameter_ActualNameChanged;
-      InitializeOperators();
-    }
-    protected override void OnEvaluatorChanged() {
-      base.OnEvaluatorChanged();
-      ParameterizeOperators();
-    }
-    private void ScheduleEvaluatorParameter_ValueChanged(object sender, EventArgs eventArgs) {
-      ScheduleEvaluator.QualityParameter.ActualNameChanged += ScheduleEvaluator_QualityParameter_ActualNameChanged;
-      ParameterizeOperators();
-    }
-    private void ScheduleEvaluator_QualityParameter_ActualNameChanged(object sender, EventArgs eventArgs) {
-      ParameterizeOperators();
+    private void JobDataParameterOnValueChanged(object sender, EventArgs e) {
+      JobData.PropertyChanged += JobDataOnPropertyChanged;
+      Jobs = JobData.Count;
     }
 
-    private void SolutionCreator_SchedulingEncodingParameter_ActualNameChanged(object sender, EventArgs eventArgs) {
-      ParameterizeOperators();
+    private void JobDataOnPropertyChanged(object sender, PropertyChangedEventArgs e) {
+      if (e.PropertyName == nameof(JobData.Count)) {
+        Jobs = JobData.Count;
+      }
     }
-    private void ScheduleDecoderParameter_ValueChanged(object sender, EventArgs eventArgs) {
-      if (ScheduleDecoder != null) ScheduleDecoder.ScheduleParameter.ActualNameChanged += ScheduleDecoder_ScheduleParameter_ActualNameChanged;
-      ParameterizeOperators();
-    }
-    private void ScheduleDecoder_ScheduleParameter_ActualNameChanged(object sender, EventArgs eventArgs) {
-      ParameterizeOperators();
-    }
-    #endregion
 
     #region Problem Instance Handling
     public void Load(JSSPData data) {
@@ -211,26 +218,27 @@ namespace HeuristicLab.Problems.Scheduling {
         jobData.Add(job);
       }
 
-      BestKnownQuality = data.BestKnownQuality.HasValue ? new DoubleValue(data.BestKnownQuality.Value) : null;
+      BestKnownQuality = data.BestKnownQuality ?? double.NaN;
       if (data.BestKnownSchedule != null) {
-        var enc = new JSMEncoding();
-        enc.JobSequenceMatrix = new ItemList<Permutation>(data.Resources);
+        var enc = new JSM(0);
         for (int i = 0; i < data.Resources; i++) {
-          enc.JobSequenceMatrix[i] = new Permutation(PermutationTypes.Absolute, new int[data.Jobs]);
+          enc.JobSequenceMatrix.Add(new Permutation(PermutationTypes.Absolute, new int[data.Jobs]));
           for (int j = 0; j < data.Jobs; j++) {
             enc.JobSequenceMatrix[i][j] = data.BestKnownSchedule[i, j];
           }
         }
-        BestKnownSolution = new JSMDecoder().CreateScheduleFromEncoding(enc, jobData);
-        if (ScheduleEvaluator is MeanTardinessEvaluator)
-          BestKnownQuality = new DoubleValue(MeanTardinessEvaluator.GetMeanTardiness(BestKnownSolution, jobData));
-        else if (ScheduleEvaluator is MakespanEvaluator)
-          BestKnownQuality = new DoubleValue(MakespanEvaluator.GetMakespan(BestKnownSolution));
+        BestKnownSolution = JSMDecoder.Decode(enc, jobData, JSMDecodingErrorPolicy.RandomPolicy, JSMForcingStrategy.SwapForcing);
+        switch (Objective) {
+          case JSSPObjective.Makespan:
+            BestKnownQuality = Makespan.Calculate(BestKnownSolution);
+            break;
+          case JSSPObjective.Tardiness:
+            BestKnownQuality = MeanTardiness.Calculate(BestKnownSolution, jobData);
+            break;
+        }
       }
-      Name = data.Name;
-      Description = data.Description;
+
       JobData = jobData;
-      Jobs = data.Jobs;
       Resources = data.Resources;
     }
 
@@ -255,81 +263,6 @@ namespace HeuristicLab.Problems.Scheduling {
         }
       }
       return result;
-    }
-    #endregion
-
-    #region Helpers
-    private void InitializeOperators() {
-      Operators.Clear();
-      ApplyEncoding();
-      Operators.Add(new BestSchedulingSolutionAnalyzer());
-      ParameterizeOperators();
-    }
-
-    private void ApplyEncoding() {
-      if (SolutionCreator.GetType() == typeof(JSMRandomCreator)) {
-        Operators.AddRange(ApplicationManager.Manager.GetInstances<IJSMOperator>());
-        ScheduleDecoder = new JSMDecoder();
-      } else if (SolutionCreator.GetType() == typeof(PRVRandomCreator)) {
-        Operators.AddRange(ApplicationManager.Manager.GetInstances<IPRVOperator>());
-        ScheduleDecoder = new PRVDecoder();
-      } else if (SolutionCreator.GetType() == typeof(PWRRandomCreator)) {
-        Operators.AddRange(ApplicationManager.Manager.GetInstances<IPWROperator>());
-        ScheduleDecoder = new PWRDecoder();
-      } else if (SolutionCreator.GetType() == typeof(DirectScheduleRandomCreator)) {
-        Operators.AddRange(ApplicationManager.Manager.GetInstances<IDirectScheduleOperator>());
-        ScheduleDecoder = null;
-      }
-    }
-
-    private void ParameterizeOperators() {
-      Evaluator.ScheduleDecoderParameter.ActualName = ScheduleDecoderParameter.Name;
-      Evaluator.ScheduleDecoderParameter.Hidden = true;
-      Evaluator.ScheduleEvaluatorParameter.ActualName = ScheduleEvaluatorParameter.Name;
-      Evaluator.ScheduleEvaluatorParameter.Hidden = true;
-      Evaluator.QualityParameter.ActualName = ScheduleEvaluator.QualityParameter.ActualName;
-      Evaluator.QualityParameter.Hidden = true;
-
-      if (ScheduleDecoder != null)
-        ScheduleDecoder.ScheduleEncodingParameter.ActualName = SolutionCreator.ScheduleEncodingParameter.ActualName;
-
-      if (ScheduleDecoder != null) {
-        ScheduleEvaluator.ScheduleParameter.ActualName = ScheduleDecoder.ScheduleParameter.ActualName;
-        ScheduleEvaluator.ScheduleParameter.Hidden = true;
-      } else if (SolutionCreator is DirectScheduleRandomCreator) {
-        var directEvaluator = (DirectScheduleRandomCreator)SolutionCreator;
-        ScheduleEvaluator.ScheduleParameter.ActualName = directEvaluator.ScheduleEncodingParameter.ActualName;
-        ScheduleEvaluator.ScheduleParameter.Hidden = true;
-      } else {
-        ScheduleEvaluator.ScheduleParameter.ActualName = ScheduleEvaluator.ScheduleParameter.Name;
-        ScheduleEvaluator.ScheduleParameter.Hidden = false;
-      }
-
-      foreach (var op in Operators.OfType<IScheduleManipulator>()) {
-        op.ScheduleEncodingParameter.ActualName = SolutionCreator.ScheduleEncodingParameter.ActualName;
-        op.ScheduleEncodingParameter.Hidden = true;
-      }
-
-      foreach (var op in Operators.OfType<IScheduleCrossover>()) {
-        op.ChildParameter.ActualName = SolutionCreator.ScheduleEncodingParameter.ActualName;
-        op.ChildParameter.Hidden = true;
-        op.ParentsParameter.ActualName = SolutionCreator.ScheduleEncodingParameter.ActualName;
-        op.ParentsParameter.Hidden = true;
-      }
-
-      foreach (var op in Operators.OfType<BestSchedulingSolutionAnalyzer>()) {
-        op.QualityParameter.ActualName = ScheduleEvaluator.QualityParameter.ActualName;
-        if (ScheduleDecoder != null) {
-          op.ScheduleParameter.ActualName = ScheduleDecoder.ScheduleParameter.ActualName;
-          op.ScheduleParameter.Hidden = true;
-        } else if (SolutionCreator is DirectScheduleRandomCreator) {
-          op.ScheduleParameter.ActualName = ((DirectScheduleRandomCreator)SolutionCreator).ScheduleEncodingParameter.ActualName;
-          op.ScheduleParameter.Hidden = true;
-        } else {
-          op.ScheduleParameter.ActualName = op.ScheduleParameter.Name;
-          op.ScheduleParameter.Hidden = false;
-        }
-      }
     }
     #endregion
 

@@ -33,12 +33,12 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
     protected PRVCrossover(PRVCrossover original, Cloner cloner) : base(original, cloner) { }
     public PRVCrossover() : base() { }
 
-    public abstract PRVEncoding Cross(IRandom random, PRVEncoding parent1, PRVEncoding parent2);
+    public abstract PRV Cross(IRandom random, PRV parent1, PRV parent2);
 
     public override IOperation InstrumentedApply() {
       var parents = ParentsParameter.ActualValue;
       ChildParameter.ActualValue =
-        Cross(RandomParameter.ActualValue, parents[0] as PRVEncoding, parents[1] as PRVEncoding);
+        Cross(RandomParameter.ActualValue, parents[0] as PRV, parents[1] as PRV);
       return base.InstrumentedApply();
     }
   }

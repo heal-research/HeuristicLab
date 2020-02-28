@@ -25,15 +25,15 @@ using HEAL.Attic;
 namespace HeuristicLab.Encodings.ScheduleEncoding {
   [StorableType("010C752F-0F5E-4B93-8695-8DD74903DBE7")]
   public interface IScheduleDecoder : IScheduleOperator {
-    ILookupParameter<ISchedule> ScheduleEncodingParameter { get; }
+    ILookupParameter<IScheduleSolution> ScheduleEncodingParameter { get; }
     ILookupParameter<Schedule> ScheduleParameter { get; }
     ILookupParameter<ItemList<Job>> JobDataParameter { get; }
 
-    Schedule DecodeSchedule(ISchedule solution, ItemList<Job> jobData);
+    Schedule DecodeSchedule(IScheduleSolution solution, ItemList<Job> jobData);
   }
 
   public interface IScheduleDecoder<TSchedule> : IScheduleDecoder
-    where TSchedule : class, ISchedule {
+    where TSchedule : class, IScheduleSolution {
     Schedule DecodeSchedule(TSchedule solution, ItemList<Job> jobData);
   }
 }

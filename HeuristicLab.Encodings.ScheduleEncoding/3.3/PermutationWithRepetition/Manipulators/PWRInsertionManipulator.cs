@@ -39,7 +39,7 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
       return new PWRInsertionManipulator(this, cloner);
     }
 
-    public static void Apply(IRandom random, PWREncoding individual) {
+    public static void Apply(IRandom random, PWR individual) {
       int cutIndex = random.Next(individual.PermutationWithRepetition.Length);
       int insertIndex = random.Next(individual.PermutationWithRepetition.Length);
       List<int> perm = ((IntegerVector)(individual.PermutationWithRepetition.Clone())).ToList();
@@ -54,7 +54,7 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
       individual.PermutationWithRepetition = new IntegerVector(perm.ToArray());
     }
 
-    protected override void Manipulate(IRandom random, PWREncoding individual) {
+    protected override void Manipulate(IRandom random, PWR individual) {
       Apply(random, individual);
     }
 

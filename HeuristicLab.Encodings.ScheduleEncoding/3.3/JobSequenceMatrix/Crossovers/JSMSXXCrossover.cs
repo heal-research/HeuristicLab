@@ -38,8 +38,8 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
       return new JSMSXXCrossover(this, cloner);
     }
 
-    public static JSMEncoding Apply(IRandom random, JSMEncoding parent1, JSMEncoding parent2) {
-      var result = new JSMEncoding(random.Next());
+    public static JSM Apply(IRandom random, JSM parent1, JSM parent2) {
+      var result = new JSM(random.Next());
       int subSequenceLength = random.Next(parent1.JobSequenceMatrix[0].Length);
       for (int i = 0; i < parent1.JobSequenceMatrix.Count; i++) {
         var p1 = (Permutation)parent1.JobSequenceMatrix[i].Clone();
@@ -90,7 +90,7 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
       return result;
     }
 
-    public override JSMEncoding Cross(IRandom random, JSMEncoding parent1, JSMEncoding parent2) {
+    public override JSM Cross(IRandom random, JSM parent1, JSM parent2) {
       return Apply(random, parent1, parent2);
     }
   }

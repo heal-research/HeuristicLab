@@ -28,7 +28,7 @@ using HEAL.Attic;
 namespace HeuristicLab.Encodings.ScheduleEncoding {
   [Item("PriorityRulesRandomCreator", "Creator class used to create PRV encoding objects for scheduling problems.")]
   [StorableType("5FF2A11E-86F9-4A8B-8E1C-713D6801506C")]
-  public class PRVRandomCreator : ScheduleCreator<PRVEncoding>, IStochasticOperator {
+  public class PRVRandomCreator : ScheduleCreator<PRV>, IStochasticOperator {
 
     [Storable]
     public int NrOfRules { get; set; }
@@ -53,11 +53,11 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
       Parameters.Add(new LookupParameter<IRandom>("Random", "The pseudo random number generator."));
     }
 
-    public static PRVEncoding Apply(int jobs, int resources, IRandom random, int nrOfRules) {
-      return new PRVEncoding(jobs * resources, random, 0, nrOfRules);
+    public static PRV Apply(int jobs, int resources, IRandom random, int nrOfRules) {
+      return new PRV(jobs * resources, random, 0, nrOfRules);
     }
 
-    protected override PRVEncoding CreateSolution() {
+    protected override PRV CreateSolution() {
       return Apply(JobsParameter.ActualValue.Value, ResourcesParameter.ActualValue.Value, RandomParameter.ActualValue, NrOfRules);
     }
   }

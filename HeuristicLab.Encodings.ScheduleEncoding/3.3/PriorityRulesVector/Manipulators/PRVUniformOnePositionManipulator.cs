@@ -39,11 +39,11 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
       return new PRVUniformOnePositionManipulator(this, cloner);
     }
 
-    public static void Apply(IRandom random, PRVEncoding individual, int numberOfRules) {
+    public static void Apply(IRandom random, PRV individual, int numberOfRules) {
       UniformOnePositionManipulator.Apply(random, individual.PriorityRulesVector, new IntMatrix(new int[,] { { 0, numberOfRules } }));
     }
 
-    protected override void Manipulate(IRandom random, PRVEncoding individual, int numberOfRules) {
+    protected override void Manipulate(IRandom random, PRV individual, int numberOfRules) {
       Apply(random, individual, numberOfRules);
     }
   }

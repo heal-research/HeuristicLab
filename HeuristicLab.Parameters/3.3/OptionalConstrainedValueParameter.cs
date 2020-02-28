@@ -20,7 +20,9 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using HEAL.Attic;
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
@@ -166,6 +168,11 @@ namespace HeuristicLab.Parameters {
       Initialize();
     }
     #endregion
+
+    public void Populate(IEnumerable<IItem> items) {
+      ValidValues.Clear();
+      ValidValues.UnionWith(items.OfType<T>());
+    }
 
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {

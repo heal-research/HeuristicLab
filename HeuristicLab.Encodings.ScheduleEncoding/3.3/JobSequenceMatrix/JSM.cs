@@ -20,15 +20,15 @@
 #endregion
 
 using System.Text;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.PermutationEncoding;
-using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.ScheduleEncoding {
-  [Item("JobSequenceMatrixEncoding", "Represents an encoding for a scheduling Problem using a list of job sequences to deliver scheduleinformation.")]
+  [Item("Job Sequence Matrix", "Represents the job sequence matrix solution.")]
   [StorableType("8F19A51A-45F1-4C1D-BCD4-A9F57E40DDC5")]
-  public class JSMEncoding : Item, ISchedule {
+  public class JSM : Item, IScheduleSolution {
 
     [Storable]
     public ItemList<Permutation> JobSequenceMatrix { get; private set; }
@@ -36,16 +36,16 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
     public int RandomSeed { get; private set; }
 
     [StorableConstructor]
-    protected JSMEncoding(StorableConstructorFlag _) : base(_) { }
-    protected JSMEncoding(JSMEncoding original, Cloner cloner)
+    protected JSM(StorableConstructorFlag _) : base(_) { }
+    protected JSM(JSM original, Cloner cloner)
       : base(original, cloner) {
       this.JobSequenceMatrix = cloner.Clone(original.JobSequenceMatrix);
       this.RandomSeed = original.RandomSeed;
     }
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new JSMEncoding(this, cloner);
+      return new JSM(this, cloner);
     }
-    public JSMEncoding(int randomSeed)
+    public JSM(int randomSeed)
       : base() {
       RandomSeed = randomSeed;
       JobSequenceMatrix = new ItemList<Permutation>();

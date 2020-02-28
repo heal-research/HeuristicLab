@@ -39,8 +39,8 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
       return new JSMJOXCrossover(this, cloner);
     }
 
-    public static JSMEncoding Apply(IRandom random, JSMEncoding p1, JSMEncoding p2) {
-      var result = new JSMEncoding(random.Next());
+    public static JSM Apply(IRandom random, JSM p1, JSM p2) {
+      var result = new JSM(random.Next());
 
       int nrOfResources = p1.JobSequenceMatrix.Count;
       int nrOfJobs = p1.JobSequenceMatrix[0].Length;
@@ -52,8 +52,8 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
       }
 
       bool dominantParent = random.Next(2) == 1;
-      JSMEncoding parent1 = dominantParent ? p1 : p2;
-      JSMEncoding parent2 = dominantParent ? p2 : p1;
+      JSM parent1 = dominantParent ? p1 : p2;
+      JSM parent2 = dominantParent ? p2 : p1;
 
       //Fill childmatrix with values
       for (int resIndex = 0; resIndex < nrOfResources; resIndex++) {
@@ -74,7 +74,7 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
       return result;
     }
 
-    public override JSMEncoding Cross(IRandom random, JSMEncoding parent1, JSMEncoding parent2) {
+    public override JSM Cross(IRandom random, JSM parent1, JSM parent2) {
       return Apply(random, parent1, parent2);
     }
   }

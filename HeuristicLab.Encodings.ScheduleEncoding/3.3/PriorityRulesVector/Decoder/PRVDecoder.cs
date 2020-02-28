@@ -28,7 +28,7 @@ using HeuristicLab.Random;
 namespace HeuristicLab.Encodings.ScheduleEncoding {
   [Item("JobSequencingMatrixDecoder", "Applies the GifflerThompson algorithm to create an active schedule from a JobSequencing Matrix.")]
   [StorableType("2D059957-AC7C-4B33-BADE-96706AEBAF29")]
-  public class PRVDecoder : ScheduleDecoder<PRVEncoding> {
+  public class PRVDecoder : ScheduleDecoder<PRV>, IPRVOperator {
     #region Priority Rules
     //smallest number of remaining tasks
     private static Task FILORule(ItemList<Task> tasks) {
@@ -186,11 +186,11 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
       }
     }
 
-    public override Schedule DecodeSchedule(PRVEncoding encoding, ItemList<Job> jobData) {
+    public override Schedule DecodeSchedule(PRV encoding, ItemList<Job> jobData) {
       return Decode(encoding, jobData);
     }
 
-    public static Schedule Decode(PRVEncoding solution, ItemList<Job> jobData) {
+    public static Schedule Decode(PRV solution, ItemList<Job> jobData) {
       var random = new FastRandom(solution.RandomSeed);
       var jobs = (ItemList<Job>)jobData.Clone();
       var resultingSchedule = new Schedule(jobs[0].Tasks.Count);

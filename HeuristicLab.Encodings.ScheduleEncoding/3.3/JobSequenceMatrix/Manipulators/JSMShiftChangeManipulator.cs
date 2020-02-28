@@ -41,7 +41,7 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
       return new JSMShiftChangeManipulator(this, cloner);
     }
 
-    public static void Apply(IRandom random, JSMEncoding individual) {
+    public static void Apply(IRandom random, JSM individual) {
       int nrOfJobs = individual.JobSequenceMatrix[0].Length;
       int jobIndex = random.Next(nrOfJobs);
       int signedFactor = random.Next(2);
@@ -62,8 +62,8 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
       }
     }
 
-    protected override void Manipulate(IRandom random, ISchedule encoding) {
-      var solution = encoding as JSMEncoding;
+    protected override void Manipulate(IRandom random, IScheduleSolution encoding) {
+      var solution = encoding as JSM;
       if (solution == null) throw new InvalidOperationException("Encoding is not of type JSMEncoding");
       Apply(random, solution);
     }

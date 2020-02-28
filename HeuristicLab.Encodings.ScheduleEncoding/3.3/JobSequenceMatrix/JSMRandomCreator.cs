@@ -29,7 +29,7 @@ using HEAL.Attic;
 namespace HeuristicLab.Encodings.ScheduleEncoding {
   [Item("JobSequenceMatrixCreator", "Creator class used to create Job Sequence Matrix solutions for standard JobShop scheduling problems.")]
   [StorableType("F8053C69-31C2-4E05-8FA0-5AED15FAF804")]
-  public class JSMRandomCreator : ScheduleCreator<JSMEncoding>, IStochasticOperator {
+  public class JSMRandomCreator : ScheduleCreator<JSM>, IStochasticOperator {
 
     public ILookupParameter<IRandom> RandomParameter {
       get { return (LookupParameter<IRandom>)Parameters["Random"]; }
@@ -47,15 +47,15 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
       return new JSMRandomCreator(this, cloner);
     }
 
-    public static JSMEncoding Apply(int jobs, int resources, IRandom random) {
-      var solution = new JSMEncoding(random.Next());
+    public static JSM Apply(int jobs, int resources, IRandom random) {
+      var solution = new JSM(random.Next());
       for (int i = 0; i < resources; i++) {
         solution.JobSequenceMatrix.Add(new Permutation(PermutationTypes.Absolute, jobs, random));
       }
       return solution;
     }
 
-    protected override JSMEncoding CreateSolution() {
+    protected override JSM CreateSolution() {
       return Apply(JobsParameter.ActualValue.Value, ResourcesParameter.ActualValue.Value, RandomParameter.ActualValue);
     }
   }

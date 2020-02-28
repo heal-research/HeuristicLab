@@ -32,11 +32,11 @@ using HeuristicLab.Parameters;
 namespace HeuristicLab.Encodings.ScheduleEncoding {
   [StorableType("D2FB1AF9-EF13-4ED2-B3E9-D5BE4E5772EA")]
   public abstract class ScheduleEncoding<TSchedule> : Encoding<TSchedule>, IScheduleEncoding
-  where TSchedule : class, ISchedule {
+  where TSchedule : class, IScheduleSolution {
     #region Encoding Parameters
     [Storable]
-    private IFixedValueParameter<ItemList<Job>> jobDataParameter;
-    public IFixedValueParameter<ItemList<Job>> JobDataParameter {
+    private IValueParameter<ItemList<Job>> jobDataParameter;
+    public IValueParameter<ItemList<Job>> JobDataParameter {
       get { return jobDataParameter; }
       set {
         if (value == null) throw new ArgumentNullException("JobData parameter must not be null.");
@@ -125,14 +125,13 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
       decoderParameter = cloner.Clone(original.DecoderParameter);
     }
 
-    protected ScheduleEncoding() : this("Schedule") { }
     protected ScheduleEncoding(string name) : this(name, Enumerable.Empty<Job>()) { }
     protected ScheduleEncoding(string name, IEnumerable<Job> jobData)
       : base(name) {
       int jobs = jobData.Count();
       int resources = jobData.SelectMany(j => j.Tasks).Select(t => t.ResourceNr).Distinct().Count();
 
-      jobDataParameter = new FixedValueParameter<ItemList<Job>>(Name + ".JobData", new ItemList<Job>(jobData));
+      jobDataParameter = new ValueParameter<ItemList<Job>>(Name + ".JobData", new ItemList<Job>(jobData));
       jobsParameter = new FixedValueParameter<IntValue>(Name + ".Jobs", new IntValue(jobs));
       resourcesParameter = new FixedValueParameter<IntValue>(Name + ".Resources", new IntValue(resources));
       decoderParameter = new ValueParameter<IScheduleDecoder<TSchedule>>(Name + ".Decoder");
@@ -143,7 +142,7 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
       Parameters.Add(decoderParameter);
     }
 
-    public Schedule Decode(ISchedule schedule, ItemList<Job> jobData) {
+    public Schedule Decode(IScheduleSolution schedule, ItemList<Job> jobData) {
       return Decoder.DecodeSchedule(schedule, jobData);
     }
 

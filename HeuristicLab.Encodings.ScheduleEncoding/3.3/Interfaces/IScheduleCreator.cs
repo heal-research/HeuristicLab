@@ -27,7 +27,7 @@ using HEAL.Attic;
 namespace HeuristicLab.Encodings.ScheduleEncoding {
   [StorableType("d6738639-c5fc-46af-8997-7527ea718759")]
   public interface IScheduleCreator<TSchedule> : ISolutionCreator<TSchedule>, IScheduleOperator
-  where TSchedule : class,ISchedule {
+  where TSchedule : class, IScheduleSolution {
     ILookupParameter<TSchedule> ScheduleParameter { get; }
     IValueLookupParameter<IntValue> JobsParameter { get; }
     IValueLookupParameter<IntValue> ResourcesParameter { get; }

@@ -26,7 +26,7 @@ using HeuristicLab.Core;
 namespace HeuristicLab.Encodings.ScheduleEncoding {
   [Item("PWRDecoder", "An item used to convert a PWR-individual into a generalized schedule.")]
   [StorableType("60D171BE-9704-40E1-9C63-0E56D95403CD")]
-  public class PWRDecoder : ScheduleDecoder<PWREncoding> {
+  public class PWRDecoder : ScheduleDecoder<PWR>, IPWROperator {
     [StorableConstructor]
     protected PWRDecoder(StorableConstructorFlag _) : base(_) { }
     protected PWRDecoder(PWRDecoder original, Cloner cloner) : base(original, cloner) { }
@@ -36,11 +36,11 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
       return new PWRDecoder(this, cloner);
     }
 
-    public override Schedule DecodeSchedule(PWREncoding solution, ItemList<Job> jobData) {
+    public override Schedule DecodeSchedule(PWR solution, ItemList<Job> jobData) {
       return Decode(solution, jobData);
     }
 
-    public static Schedule Decode(PWREncoding solution, ItemList<Job> jobData) {
+    public static Schedule Decode(PWR solution, ItemList<Job> jobData) {
       var jobs = (ItemList<Job>)jobData.Clone();
       var resultingSchedule = new Schedule(jobs[0].Tasks.Count);
       foreach (int jobNr in solution.PermutationWithRepetition) {

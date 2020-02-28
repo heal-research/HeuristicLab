@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using HEAL.Attic;
 #region License Information
 /* HeuristicLab
@@ -25,5 +26,7 @@ namespace HeuristicLab.Core {
   [StorableType("10644c62-bd66-440d-8204-d0c724c9f109")]
   public interface IConstrainedValueParameter<T> : IValueParameter<T> where T : class, IItem {
     IItemSet<T> ValidValues { get; }
+
+    void Populate(IEnumerable<IItem> items);
   }
 }

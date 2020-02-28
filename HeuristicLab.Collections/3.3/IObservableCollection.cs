@@ -25,5 +25,6 @@ using HEAL.Attic;
 
 namespace HeuristicLab.Collections {
   [StorableType("289d81e9-a167-416c-aaa8-c40aa1ea96f9")]
-  public interface IObservableCollection<T> : ICollection<T>, INotifyObservableCollectionItemsChanged<T>, INotifyPropertyChanged { }
+  public interface IObservableCollection<T> : ICollection<T>, INotifyObservableCollectionItemsChanged<T>, INotifyPropertyChanged {
+  }
 }

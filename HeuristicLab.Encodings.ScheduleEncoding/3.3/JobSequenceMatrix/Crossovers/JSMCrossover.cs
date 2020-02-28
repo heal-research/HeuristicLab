@@ -34,13 +34,13 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
 
     public JSMCrossover() : base() { }
 
-    public abstract JSMEncoding Cross(IRandom random, JSMEncoding parent1, JSMEncoding parent2);
+    public abstract JSM Cross(IRandom random, JSM parent1, JSM parent2);
 
     public override IOperation InstrumentedApply() {
       var parents = ParentsParameter.ActualValue;
 
       ChildParameter.ActualValue =
-        Cross(RandomParameter.ActualValue, parents[0] as JSMEncoding, parents[1] as JSMEncoding);
+        Cross(RandomParameter.ActualValue, parents[0] as JSM, parents[1] as JSM);
 
       return base.InstrumentedApply();
     }

@@ -45,10 +45,10 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
       Parameters.Add(new LookupParameter<IntValue>("NumberOfRulesParameter"));
     }
 
-    protected abstract void Manipulate(IRandom random, PRVEncoding individual, int numberOfRules);
+    protected abstract void Manipulate(IRandom random, PRV individual, int numberOfRules);
 
     public override IOperation InstrumentedApply() {
-      var solution = ScheduleParameter.ActualValue as PRVEncoding;
+      var solution = ScheduleParameter.ActualValue as PRV;
       if (solution == null) throw new InvalidOperationException("ScheduleEncoding was not found or is not of type PRVEncoding.");
       Manipulate(RandomParameter.ActualValue, solution, NumberOfRulesParameter.ActualValue.Value);
       return base.InstrumentedApply();

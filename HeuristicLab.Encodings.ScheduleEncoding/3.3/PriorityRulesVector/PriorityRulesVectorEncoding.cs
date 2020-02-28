@@ -33,7 +33,7 @@ using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Encodings.ScheduleEncoding {
   [StorableType("9C419EE5-F3A8-4F06-8263-7D37D3AE1C72")]
-  public sealed class PriorityRulesVectorEncoding : ScheduleEncoding<PRVEncoding> {
+  public sealed class PriorityRulesVectorEncoding : ScheduleEncoding<PRV> {
 
     private IFixedValueParameter<IntValue> numberOfRulesParameter;
     public IFixedValueParameter<IntValue> NumberOfRulesParameter {
@@ -59,7 +59,7 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
     }
 
     public PriorityRulesVectorEncoding()
-      : base() {
+      : base("PRV") {
       //TODO change to meaningful value
       numberOfRulesParameter = new FixedValueParameter<IntValue>(Name + ".NumberOfRules", new IntValue(10));
       Parameters.Add(numberOfRulesParameter);

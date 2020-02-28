@@ -30,6 +30,7 @@ using HeuristicLab.Core;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Encodings.ScheduleEncoding {
+  [Item("Direct Schedule Encoding", "Encodes a solution by directly assigning start and end types to the tasks.")]
   [StorableType("BB1BD851-3E77-4357-942C-EAF5BE6760B4")]
   public sealed class DirectScheduleEncoding : ScheduleEncoding<Schedule> {
     [StorableConstructor]
@@ -40,7 +41,7 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
     }
 
     public DirectScheduleEncoding()
-      : base() {
+      : base("Schedule") {
       SolutionCreator = new DirectScheduleRandomCreator();
       Decoder = new DirectScheduleDecoder();
       DiscoverOperators();

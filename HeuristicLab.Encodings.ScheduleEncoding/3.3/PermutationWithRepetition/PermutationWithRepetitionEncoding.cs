@@ -31,7 +31,7 @@ using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Encodings.ScheduleEncoding {
   [StorableType("468EF506-0749-469B-B9B9-36655AA0178D")]
-  public sealed class PermutationWithRepetitionEncoding : ScheduleEncoding<PWREncoding> {
+  public sealed class PermutationWithRepetitionEncoding : ScheduleEncoding<PWR> {
     [StorableConstructor]
     private PermutationWithRepetitionEncoding(StorableConstructorFlag _) : base(_) { }
     private PermutationWithRepetitionEncoding(PermutationWithRepetitionEncoding original, Cloner cloner) : base(original, cloner) { }
@@ -40,7 +40,7 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
     }
 
     public PermutationWithRepetitionEncoding()
-      : base() {
+      : base("PWR") {
       SolutionCreator = new PWRRandomCreator();
       Decoder = new PWRDecoder();
       DiscoverOperators();

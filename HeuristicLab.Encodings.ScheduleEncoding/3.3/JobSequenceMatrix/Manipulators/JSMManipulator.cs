@@ -33,10 +33,10 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
     protected JSMManipulator(JSMManipulator original, Cloner cloner) : base(original, cloner) { }
     public JSMManipulator() : base() { }
 
-    protected abstract void Manipulate(IRandom random, ISchedule individual);
+    protected abstract void Manipulate(IRandom random, IScheduleSolution individual);
 
     public override IOperation InstrumentedApply() {
-      var solution = ScheduleParameter.ActualValue as JSMEncoding;
+      var solution = ScheduleParameter.ActualValue as JSM;
       if (solution == null) throw new InvalidOperationException("ScheduleEncoding was not found or is not of type JSMEncoding.");
       Manipulate(RandomParameter.ActualValue, solution);
       return base.InstrumentedApply();

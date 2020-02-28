@@ -19,106 +19,106 @@
  */
 #endregion
 
-//using System;
-//using System.Windows.Forms;
-//using HeuristicLab.Collections;
-//using HeuristicLab.Encodings.ScheduleEncoding;
-//using HeuristicLab.MainForm;
-//using HeuristicLab.Optimization.Views;
+using System;
+using System.Windows.Forms;
+using HeuristicLab.Collections;
+using HeuristicLab.Encodings.ScheduleEncoding;
+using HeuristicLab.MainForm;
+using HeuristicLab.Optimization.Views;
 
-//namespace HeuristicLab.Problems.Scheduling.Views {
-//  [View("JobShop Scheduling Problem View")]
-//  [Content(typeof(JobShopSchedulingProblem), true)]
-//  public partial class JobShopSchedulingProblemView : ProblemView {
+namespace HeuristicLab.Problems.Scheduling.Views {
+  [View("JobShop Scheduling Problem View")]
+  [Content(typeof(JobShopSchedulingProblem), true)]
+  public partial class JobShopSchedulingProblemView : ProblemView {
 
-//    public new JobShopSchedulingProblem Content {
-//      get { return (JobShopSchedulingProblem)base.Content; }
-//      set { base.Content = value; }
-//    }
+    public new JobShopSchedulingProblem Content {
+      get { return (JobShopSchedulingProblem)base.Content; }
+      set { base.Content = value; }
+    }
 
-//    public JobShopSchedulingProblemView() {
-//      InitializeComponent();
-//      Controls.Remove(parameterCollectionView);
-//      parameterCollectionView.Dock = DockStyle.Fill;
-//      problemTabPage.Controls.Add(parameterCollectionView);
-//    }
+    public JobShopSchedulingProblemView() {
+      InitializeComponent();
+      Controls.Remove(parameterCollectionView);
+      parameterCollectionView.Dock = DockStyle.Fill;
+      problemTabPage.Controls.Add(parameterCollectionView);
+    }
 
-//    protected override void OnContentChanged() {
-//      base.OnContentChanged();
-//      FillGanttChart();
-//    }
+    protected override void OnContentChanged() {
+      base.OnContentChanged();
+      FillGanttChart();
+    }
 
-//    protected override void DeregisterContentEvents() {
-//      Content.JobDataParameter.ValueChanged -= JobDataParameterOnValueChanged;
-//      Content.JobData.ItemsAdded -= JobsOnChanged;
-//      Content.JobData.ItemsRemoved -= JobsOnRemoved;
-//      Content.JobData.ItemsReplaced -= JobsOnChanged;
-//      Content.JobData.CollectionReset -= JobsOnChanged;
-//      foreach (var job in Content.JobData) {
-//        job.TasksChanged -= JobOnTasksChanged;
-//      }
-//      base.DeregisterContentEvents();
-//    }
-//    protected override void RegisterContentEvents() {
-//      base.RegisterContentEvents();
-//      Content.JobDataParameter.ValueChanged += JobDataParameterOnValueChanged;
-//      Content.JobData.ItemsAdded += JobsOnChanged;
-//      Content.JobData.ItemsRemoved += JobsOnRemoved;
-//      Content.JobData.ItemsReplaced += JobsOnChanged;
-//      Content.JobData.CollectionReset += JobsOnChanged;
-//      foreach (var job in Content.JobData) {
-//        job.TasksChanged += JobOnTasksChanged;
-//      }
-//    }
+    protected override void DeregisterContentEvents() {
+      Content.JobDataParameter.ValueChanged -= JobDataParameterOnValueChanged;
+      Content.JobData.ItemsAdded -= JobsOnChanged;
+      Content.JobData.ItemsRemoved -= JobsOnRemoved;
+      Content.JobData.ItemsReplaced -= JobsOnChanged;
+      Content.JobData.CollectionReset -= JobsOnChanged;
+      foreach (var job in Content.JobData) {
+        job.TasksChanged -= JobOnTasksChanged;
+      }
+      base.DeregisterContentEvents();
+    }
+    protected override void RegisterContentEvents() {
+      base.RegisterContentEvents();
+      Content.JobDataParameter.ValueChanged += JobDataParameterOnValueChanged;
+      Content.JobData.ItemsAdded += JobsOnChanged;
+      Content.JobData.ItemsRemoved += JobsOnRemoved;
+      Content.JobData.ItemsReplaced += JobsOnChanged;
+      Content.JobData.CollectionReset += JobsOnChanged;
+      foreach (var job in Content.JobData) {
+        job.TasksChanged += JobOnTasksChanged;
+      }
+    }
 
-//    private void JobsOnChanged(object sender, CollectionItemsChangedEventArgs<IndexedItem<Job>> e) {
-//      foreach (var job in e.OldItems)
-//        job.Value.TasksChanged -= JobOnTasksChanged;
-//      foreach (var job in e.Items)
-//        job.Value.TasksChanged += JobOnTasksChanged;
-//      FillGanttChart();
-//    }
+    private void JobsOnChanged(object sender, CollectionItemsChangedEventArgs<IndexedItem<Job>> e) {
+      foreach (var job in e.OldItems)
+        job.Value.TasksChanged -= JobOnTasksChanged;
+      foreach (var job in e.Items)
+        job.Value.TasksChanged += JobOnTasksChanged;
+      FillGanttChart();
+    }
 
-//    private void JobsOnRemoved(object sender, CollectionItemsChangedEventArgs<IndexedItem<Job>> e) {
-//      foreach (var job in e.Items)
-//        job.Value.TasksChanged -= JobOnTasksChanged;
-//      FillGanttChart();
-//    }
+    private void JobsOnRemoved(object sender, CollectionItemsChangedEventArgs<IndexedItem<Job>> e) {
+      foreach (var job in e.Items)
+        job.Value.TasksChanged -= JobOnTasksChanged;
+      FillGanttChart();
+    }
 
-//    private void JobDataParameterOnValueChanged(object sender, EventArgs e) {
-//      Content.JobData.ItemsAdded += JobsOnChanged;
-//      Content.JobData.ItemsRemoved += JobsOnRemoved;
-//      Content.JobData.ItemsReplaced += JobsOnChanged;
-//      Content.JobData.CollectionReset += JobsOnChanged;
-//      foreach (var job in Content.JobData) {
-//        job.TasksChanged += JobOnTasksChanged;
-//      }
-//      FillGanttChart();
-//    }
+    private void JobDataParameterOnValueChanged(object sender, EventArgs e) {
+      Content.JobData.ItemsAdded += JobsOnChanged;
+      Content.JobData.ItemsRemoved += JobsOnRemoved;
+      Content.JobData.ItemsReplaced += JobsOnChanged;
+      Content.JobData.CollectionReset += JobsOnChanged;
+      foreach (var job in Content.JobData) {
+        job.TasksChanged += JobOnTasksChanged;
+      }
+      FillGanttChart();
+    }
 
-//    private void JobOnTasksChanged(object sender, EventArgs e) {
-//      FillGanttChart();
-//    }
+    private void JobOnTasksChanged(object sender, EventArgs e) {
+      FillGanttChart();
+    }
 
-//    private void FillGanttChart() {
-//      ganttChart.Reset();
-//      if (Content == null) return;
-//      int jobCount = 0;
-//      foreach (var j in Content.JobData) {
-//        double lastEndTime = 0;
-//        foreach (var t in Content.JobData[jobCount].Tasks) {
-//          int categoryNr = t.JobNr;
-//          string categoryName = "Job" + categoryNr;
-//          ganttChart.AddData(categoryName,
-//            categoryNr,
-//            t.TaskNr,
-//            lastEndTime + 1,
-//            lastEndTime + t.Duration,
-//            "Job" + t.JobNr + " - " + "Task#" + t.TaskNr);
-//          lastEndTime += t.Duration;
-//        }
-//        jobCount++;
-//      }
-//    }
-//  }
-//}
+    private void FillGanttChart() {
+      ganttChart.Reset();
+      if (Content == null) return;
+      int jobCount = 0;
+      foreach (var j in Content.JobData) {
+        double lastEndTime = 0;
+        foreach (var t in Content.JobData[jobCount].Tasks) {
+          int categoryNr = t.JobNr;
+          string categoryName = "Job" + categoryNr;
+          ganttChart.AddData(categoryName,
+            categoryNr,
+            t.TaskNr,
+            lastEndTime + 1,
+            lastEndTime + t.Duration,
+            "Job" + t.JobNr + " - " + "Task#" + t.TaskNr);
+          lastEndTime += t.Duration;
+        }
+        jobCount++;
+      }
+    }
+  }
+}

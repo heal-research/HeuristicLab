@@ -34,10 +34,10 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
     protected PWRManipulator(PWRManipulator original, Cloner cloner) : base(original, cloner) { }
     public PWRManipulator() : base() { }
 
-    protected abstract void Manipulate(IRandom random, PWREncoding individual);
+    protected abstract void Manipulate(IRandom random, PWR individual);
 
     public override IOperation InstrumentedApply() {
-      var solution = ScheduleParameter.ActualValue as PWREncoding;
+      var solution = ScheduleParameter.ActualValue as PWR;
       if (solution == null) throw new InvalidOperationException("ScheduleEncoding was not found or is not of type PWREncoding.");
       Manipulate(RandomParameter.ActualValue, solution);
       return base.InstrumentedApply();

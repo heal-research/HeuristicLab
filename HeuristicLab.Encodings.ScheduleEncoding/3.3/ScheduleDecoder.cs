@@ -30,10 +30,10 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
   [Item("ScheduleDecoder", "A schedule decoder translates a respresentation into an actual schedule.")]
   [StorableType("57A68F4B-4B35-4DB4-9B5E-D5154DD46E45")]
   public abstract class ScheduleDecoder<TSchedule> : SingleSuccessorOperator, IScheduleDecoder<TSchedule>
-  where TSchedule : class, ISchedule {
+  where TSchedule : class, IScheduleSolution {
 
-    public ILookupParameter<ISchedule> ScheduleEncodingParameter {
-      get { return (ILookupParameter<ISchedule>)Parameters["EncodedSchedule"]; }
+    public ILookupParameter<IScheduleSolution> ScheduleEncodingParameter {
+      get { return (ILookupParameter<IScheduleSolution>)Parameters["EncodedSchedule"]; }
     }
     public ILookupParameter<Schedule> ScheduleParameter {
       get { return (ILookupParameter<Schedule>)Parameters["Schedule"]; }
@@ -47,12 +47,12 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
     protected ScheduleDecoder(ScheduleDecoder<TSchedule> original, Cloner cloner) : base(original, cloner) { }
     public ScheduleDecoder()
       : base() {
-      Parameters.Add(new LookupParameter<ISchedule>("EncodedSchedule", "The new scheduling solution represented as encoding."));
+      Parameters.Add(new LookupParameter<IScheduleSolution>("EncodedSchedule", "The new scheduling solution represented as encoding."));
       Parameters.Add(new LookupParameter<Schedule>("Schedule", "The decoded scheduling solution represented as generalized schedule."));
       Parameters.Add(new LookupParameter<ItemList<Job>>("JobData", "Job data taken from the JSSP - Instance."));
     }
 
-    public Schedule DecodeSchedule(ISchedule schedule, ItemList<Job> jobData) {
+    public Schedule DecodeSchedule(IScheduleSolution schedule, ItemList<Job> jobData) {
       TSchedule solution = schedule as TSchedule;
       if (solution == null) throw new InvalidOperationException("Encoding is not of type " + typeof(TSchedule).GetPrettyName());
       return DecodeSchedule(solution, jobData);

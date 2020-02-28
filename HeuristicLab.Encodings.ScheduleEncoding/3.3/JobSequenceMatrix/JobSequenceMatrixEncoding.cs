@@ -30,8 +30,9 @@ using HeuristicLab.Core;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Encodings.ScheduleEncoding {
+  [Item("Job Sequence Matrix Encoding", "Represents an encoding of schedules in form of a job sequence per resource.")]
   [StorableType("9C090369-0214-42E6-8C3E-369751F5A9E1")]
-  public sealed class JobSequenceMatrixEncoding : ScheduleEncoding<JSMEncoding> {
+  public sealed class JobSequenceMatrixEncoding : ScheduleEncoding<JSM> {
     [StorableConstructor]
     private JobSequenceMatrixEncoding(StorableConstructorFlag _) : base(_) { }
     private JobSequenceMatrixEncoding(JobSequenceMatrixEncoding original, Cloner cloner) : base(original, cloner) { }
@@ -40,7 +41,7 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
     }
 
     public JobSequenceMatrixEncoding()
-      : base() {
+      : base("JSM") {
       SolutionCreator = new JSMRandomCreator();
       Decoder = new JSMDecoder();
       DiscoverOperators();

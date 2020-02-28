@@ -26,7 +26,7 @@ using HeuristicLab.Core;
 namespace HeuristicLab.Encodings.ScheduleEncoding {
   [Item("DirectScheduleDecoder", "An item used to convert a direct schedule into a generalized schedule.")]
   [StorableType("151C772B-6E6C-40D9-B171-F5626C676A5F")]
-  public class DirectScheduleDecoder : ScheduleDecoder<Schedule> {
+  public class DirectScheduleDecoder : ScheduleDecoder<Schedule>, IDirectScheduleOperator {
     [StorableConstructor]
     protected DirectScheduleDecoder(StorableConstructorFlag _) : base(_) { }
     protected DirectScheduleDecoder(DirectScheduleDecoder original, Cloner cloner) : base(original, cloner) { }

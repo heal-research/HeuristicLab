@@ -54,8 +54,8 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
       return result;
     }
 
-    public static PWREncoding Apply(IRandom random, PWREncoding parent1, PWREncoding parent2) {
-      var result = new PWREncoding();
+    public static PWR Apply(IRandom random, PWR parent1, PWR parent2) {
+      var result = new PWR();
 
       var p1 = ((IntegerVector)(parent1.PermutationWithRepetition.Clone())).ToList();
       var p2 = ((IntegerVector)(parent2.PermutationWithRepetition.Clone())).ToList();
@@ -86,7 +86,7 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
       return result;
     }
 
-    public override PWREncoding Cross(IRandom random, PWREncoding parent1, PWREncoding parent2) {
+    public override PWR Cross(IRandom random, PWR parent1, PWR parent2) {
       return Apply(random, parent1, parent2);
     }
 

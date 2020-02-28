@@ -21,15 +21,15 @@
 
 #endregion
 
+using HEAL.Attic;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
-using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.ScheduleEncoding {
   [StorableType("09b9d24c-2576-495a-b06c-338d095cba0d")]
-  public interface IScheduleEncoding : IEncoding<ISchedule> {
-    IFixedValueParameter<ItemList<Job>> JobDataParameter { get; set; }
+  public interface IScheduleEncoding : IEncoding<IScheduleSolution> {
+    IValueParameter<ItemList<Job>> JobDataParameter { get; set; }
     IFixedValueParameter<IntValue> JobsParameter { get; set; }
     IFixedValueParameter<IntValue> ResourcesParameter { get; set; }
 
@@ -38,11 +38,11 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
     int Resources { get; set; }
 
 
-    Schedule Decode(ISchedule schedule, ItemList<Job> jobData);
+    Schedule Decode(IScheduleSolution schedule, ItemList<Job> jobData);
   }
 
   public interface IScheduleEncoding<TSchedule> : IEncoding<TSchedule>
-    where TSchedule : class, ISchedule {
+    where TSchedule : class, IScheduleSolution {
 
   }
 }

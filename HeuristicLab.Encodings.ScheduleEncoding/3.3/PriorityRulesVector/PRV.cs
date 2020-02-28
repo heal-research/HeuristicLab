@@ -20,58 +20,52 @@
 #endregion
 
 using System.Text;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.IntegerVectorEncoding;
-using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.ScheduleEncoding {
-  [Item("PermutationWithRepetitionEncoding", "Represents a encoding for a standard JobShop Scheduling Problem.")]
-  [StorableType("31A66AC4-897D-4986-A6FC-DC301DC06278")]
-  public class PWREncoding : Item, ISchedule {
-
+  [Item("Priority Rules Vector", "Represents an encoding for a Scheduling Problem.")]
+  [StorableType("D42AC200-1F87-451E-A953-803EF33BE953")]
+  public class PRV : Item, IScheduleSolution {
     [Storable]
-    public IntegerVector PermutationWithRepetition { get; set; }
+    public IntegerVector PriorityRulesVector { get; private set; }
+    [Storable]
+    public int RandomSeed { get; private set; }
 
     [StorableConstructor]
-    protected PWREncoding(StorableConstructorFlag _) : base(_) { }
-    protected PWREncoding(PWREncoding original, Cloner cloner)
+    protected PRV(StorableConstructorFlag _) : base(_) { }
+    protected PRV(PRV original, Cloner cloner)
       : base(original, cloner) {
-      this.PermutationWithRepetition = cloner.Clone(original.PermutationWithRepetition);
+      this.PriorityRulesVector = cloner.Clone(original.PriorityRulesVector);
+      this.RandomSeed = original.RandomSeed;
     }
-    public PWREncoding()
+
+    public PRV(IntegerVector iv, int randomSeed)
       : base() {
-      PermutationWithRepetition = new IntegerVector();
+      this.RandomSeed = randomSeed;
+      this.PriorityRulesVector = (IntegerVector)iv.Clone();
+    }
+    public PRV(int length, IRandom random, int min, int max)
+      : base() {
+      this.RandomSeed = random.Next();
+      this.PriorityRulesVector = new IntegerVector(length, random, min, max);
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new PWREncoding(this, cloner);
-    }
-
-    public PWREncoding(int nrOfJobs, int nrOfResources, IRandom random)
-      : base() {
-      PermutationWithRepetition = new IntegerVector(nrOfJobs * nrOfResources);
-      int[] lookUpTable = new int[nrOfJobs];
-
-      for (int i = 0; i < PermutationWithRepetition.Length; i++) {
-        int newValue = random.Next(nrOfJobs);
-        while (lookUpTable[newValue] >= nrOfResources)
-          newValue = random.Next(nrOfJobs);
-
-        PermutationWithRepetition[i] = newValue;
-
-        lookUpTable[newValue]++;
-      }
+      return new PRV(this, cloner);
     }
 
     public override string ToString() {
       StringBuilder sb = new StringBuilder();
       sb.Append("[ ");
-      foreach (int i in PermutationWithRepetition) {
+
+      foreach (int i in PriorityRulesVector) {
         sb.Append(i + " ");
       }
-      sb.Append("]");
 
+      sb.Append("]");
       return sb.ToString();
     }
   }

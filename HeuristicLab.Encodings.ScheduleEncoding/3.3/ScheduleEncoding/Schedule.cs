@@ -30,7 +30,7 @@ using HeuristicLab.Core;
 namespace HeuristicLab.Encodings.ScheduleEncoding {
   [Item("Schedule", "Represents the general solution for scheduling problems.")]
   [StorableType("EA6D14A3-7FA6-4B4B-B7F6-40B42657D398")]
-  public class Schedule : NamedItem, ISchedule {
+  public class Schedule : NamedItem, IScheduleSolution {
 
     #region Properties
     [Storable]

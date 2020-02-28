@@ -53,7 +53,7 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
     }
 
 
-    public static Schedule Apply(PWREncoding pwr, ItemList<Job> jobData) {
+    public static Schedule Apply(PWR pwr, ItemList<Job> jobData) {
       var resultingSchedule = new Schedule(jobData[0].Tasks.Count);
       foreach (int jobNr in pwr.PermutationWithRepetition) {
         int i = 0;
@@ -69,7 +69,7 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
 
     protected override Schedule CreateSolution() {
       var jobData = (ItemList<Job>)JobDataParameter.ActualValue.Clone();
-      var pwrEncoding = new PWREncoding(JobsParameter.ActualValue.Value, ResourcesParameter.ActualValue.Value,
+      var pwrEncoding = new PWR(JobsParameter.ActualValue.Value, ResourcesParameter.ActualValue.Value,
         RandomParameter.ActualValue);
       return Apply(pwrEncoding, jobData);
     }

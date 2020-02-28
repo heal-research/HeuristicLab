@@ -28,7 +28,7 @@ using HEAL.Attic;
 namespace HeuristicLab.Encodings.ScheduleEncoding {
   [Item("PermutationWithRepetitionRandomCreator", "Creates PWR-individuals at random.")]
   [StorableType("6E753916-C0FD-4585-B6A6-47FD66ED098F")]
-  public class PWRRandomCreator : ScheduleCreator<PWREncoding>, IStochasticOperator {
+  public class PWRRandomCreator : ScheduleCreator<PWR>, IStochasticOperator {
 
     public ILookupParameter<IRandom> RandomParameter {
       get { return (LookupParameter<IRandom>)Parameters["Random"]; }
@@ -46,11 +46,11 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
       return new PWRRandomCreator(this, cloner);
     }
 
-    public static PWREncoding Apply(int jobs, int resources, IRandom random) {
-      return new PWREncoding(jobs, resources, random);
+    public static PWR Apply(int jobs, int resources, IRandom random) {
+      return new PWR(jobs, resources, random);
     }
 
-    protected override PWREncoding CreateSolution() {
+    protected override PWR CreateSolution() {
       return Apply(JobsParameter.ActualValue.Value, ResourcesParameter.ActualValue.Value, RandomParameter.ActualValue);
     }
   }

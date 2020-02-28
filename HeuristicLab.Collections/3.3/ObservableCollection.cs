@@ -19,12 +19,12 @@
  */
 #endregion
 
-using HEAL.Attic;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using HEAL.Attic;
 
 namespace HeuristicLab.Collections {
   [StorableType("98A1FFF8-88D8-4A1A-BDAA-BDC3F4663C1F")]
@@ -96,13 +96,14 @@ namespace HeuristicLab.Collections {
     }
     public void AddRange(IEnumerable<T> collection) {
       int capacity = list.Capacity;
-      ICollection<T> items = collection as ICollection<T> ?? collection.ToList();
+      var items = collection as ICollection<T> ?? collection.ToList();
       list.AddRange(items);
       if (items.Count > 0) {
+        OnItemsAdded(items);
         if (list.Capacity != capacity)
           OnPropertyChanged("Capacity");
+        OnPropertyChanged("Item[]");
         OnPropertyChanged("Count");
-        OnItemsAdded(items);
       }
     }
 

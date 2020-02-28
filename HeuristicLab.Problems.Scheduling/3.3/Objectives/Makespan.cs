@@ -19,13 +19,13 @@
  */
 #endregion
 
-using HeuristicLab.Core;
+using System.Linq;
 using HeuristicLab.Encodings.ScheduleEncoding;
-using HEAL.Attic;
 
 namespace HeuristicLab.Problems.Scheduling {
-  [StorableType("E4140EFF-9E57-4457-A495-3F00A9612E9B")]
-  public interface IJSSPOperator : IOperator {
-    ILookupParameter<ItemList<Job>> JobDataParameter { get; }
+  public static class Makespan {
+    public static double Calculate(Schedule schedule) {
+      return schedule.Resources.Select(r => r.TotalDuration).Max();
+    }
   }
 }
