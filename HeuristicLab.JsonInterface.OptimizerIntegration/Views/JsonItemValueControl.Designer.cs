@@ -23,25 +23,29 @@
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
+      this.components = new System.ComponentModel.Container();
       this.textBoxValue = new System.Windows.Forms.TextBox();
       this.label2 = new System.Windows.Forms.Label();
       this.numericRangeControl1 = new HeuristicLab.JsonInterface.OptimizerIntegration.NumericRangeControl();
+      this.errorProvider = new System.Windows.Forms.ErrorProvider(this.components);
+      ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
       this.SuspendLayout();
       // 
       // textBoxValue
       // 
       this.textBoxValue.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.textBoxValue.Location = new System.Drawing.Point(92, 101);
+      this.textBoxValue.Location = new System.Drawing.Point(89, 1);
+      this.textBoxValue.Margin = new System.Windows.Forms.Padding(0);
       this.textBoxValue.Name = "textBoxValue";
-      this.textBoxValue.Size = new System.Drawing.Size(402, 20);
+      this.textBoxValue.Size = new System.Drawing.Size(408, 20);
       this.textBoxValue.TabIndex = 14;
       this.textBoxValue.Validating += new System.ComponentModel.CancelEventHandler(this.textBoxValue_Validating);
       // 
       // label2
       // 
       this.label2.AutoSize = true;
-      this.label2.Location = new System.Drawing.Point(6, 104);
+      this.label2.Location = new System.Drawing.Point(3, 1);
       this.label2.Name = "label2";
       this.label2.Size = new System.Drawing.Size(34, 13);
       this.label2.TabIndex = 15;
@@ -51,10 +55,15 @@
       // 
       this.numericRangeControl1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.numericRangeControl1.Location = new System.Drawing.Point(9, 125);
+      this.numericRangeControl1.Location = new System.Drawing.Point(0, 24);
+      this.numericRangeControl1.Margin = new System.Windows.Forms.Padding(0, 3, 0, 0);
       this.numericRangeControl1.Name = "numericRangeControl1";
-      this.numericRangeControl1.Size = new System.Drawing.Size(485, 72);
+      this.numericRangeControl1.Size = new System.Drawing.Size(497, 72);
       this.numericRangeControl1.TabIndex = 16;
+      // 
+      // errorProvider
+      // 
+      this.errorProvider.ContainerControl = this;
       // 
       // JsonItemValueControl
       // 
@@ -63,11 +72,10 @@
       this.Controls.Add(this.numericRangeControl1);
       this.Controls.Add(this.label2);
       this.Controls.Add(this.textBoxValue);
+      this.errorProvider.SetIconAlignment(this, System.Windows.Forms.ErrorIconAlignment.MiddleLeft);
       this.Name = "JsonItemValueControl";
-      this.Size = new System.Drawing.Size(500, 199);
-      this.Controls.SetChildIndex(this.textBoxValue, 0);
-      this.Controls.SetChildIndex(this.label2, 0);
-      this.Controls.SetChildIndex(this.numericRangeControl1, 0);
+      this.Size = new System.Drawing.Size(500, 97);
+      ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -78,5 +86,6 @@
     private System.Windows.Forms.TextBox textBoxValue;
     private System.Windows.Forms.Label label2;
     private NumericRangeControl numericRangeControl1;
+    private System.Windows.Forms.ErrorProvider errorProvider;
   }
 }

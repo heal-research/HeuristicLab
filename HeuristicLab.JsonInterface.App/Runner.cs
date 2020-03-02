@@ -7,6 +7,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using HeuristicLab.Optimization;
 using HeuristicLab.ParallelEngine;
+using HeuristicLab.Problems.DataAnalysis.Symbolic;
+using HeuristicLab.Problems.DataAnalysis.Symbolic.Regression;
 using HeuristicLab.SequentialEngine;
 using Newtonsoft.Json.Linq;
 
@@ -38,8 +40,14 @@ namespace HeuristicLab.JsonInterface.App {
         arr.Add(obj);
         obj.Add("Run", JToken.FromObject(run.ToString()));
         foreach (var res in run.Results) {
-          if (allowedResultNames.Contains(res.Key))
-            obj.Add(res.Key, JToken.FromObject(res.Value.ToString()));
+          if (allowedResultNames.Contains(res.Key)) {
+            if (res.Value is ISymbolicRegressionSolution solution) {
+              var formatter = new SymbolicDataAnalysisExpressionMATLABFormatter();
+              var x = formatter.Format(solution.Model.SymbolicExpressionTree);
+              obj.Add(res.Key, JToken.FromObject(x));
+            } else
+              obj.Add(res.Key, JToken.FromObject(res.Value.ToString()));
+          }
         }
       }
       return SingleLineArrayJsonWriter.Serialize(arr);

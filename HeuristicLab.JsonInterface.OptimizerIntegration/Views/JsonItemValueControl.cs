@@ -33,8 +33,9 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
     }
   }
   
-  public abstract partial class JsonItemValueControl : JsonItemBaseControl {
+  public abstract partial class JsonItemValueControl : UserControl {
     #region Protected Properties
+    protected IJsonItemVM VM { get; set; }
     protected TextBox TBValue { get; set; }
     protected NumericRangeControl NumericRangeControl { get; set; }
     #endregion
@@ -43,14 +44,15 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
     protected abstract string ValuePropertyId { get; }
     #endregion
 
-    public JsonItemValueControl(JsonItemVMBase vm) : base(vm) {
+    public JsonItemValueControl(JsonItemVMBase vm) {
       InitializeComponent();
+      VM = vm;
       TBValue = textBoxValue;
       NumericRangeControl = numericRangeControl1;
     }
     
     protected void Init() { 
-      TBValue.DataBindings.Add("Text", base.VM, ValuePropertyId);
+      TBValue.DataBindings.Add("Text", VM, ValuePropertyId);
       NumericRangeControl.TBMinRange.DataBindings.Add("Text", VM, nameof(RangedValueBaseVM.MinRange));
       NumericRangeControl.TBMaxRange.DataBindings.Add("Text", VM, nameof(RangedValueBaseVM.MaxRange));
       NumericRangeControl.EnableMinRange.DataBindings.Add("Checked", VM, nameof(RangedValueBaseVM.EnableMinRange),

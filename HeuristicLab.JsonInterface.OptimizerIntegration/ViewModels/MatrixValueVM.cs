@@ -9,8 +9,8 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
 
   public class DoubleMatrixValueVM : MatrixValueVM<double, DoubleMatrixJsonItem> {
     public override Type JsonItemType => typeof(DoubleMatrixJsonItem);
-    public override JsonItemBaseControl Control =>
-      new JsonItemDoubleMatrixValueControl(this);
+    public override JsonItemBaseControl Control => null;
+      //new JsonItemDoubleMatrixValueControl(this);
 
     public override double[][] Value {
       get => ((DoubleMatrixJsonItem)Item).Value;

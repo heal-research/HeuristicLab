@@ -10,17 +10,21 @@ using System.Windows.Forms;
 using System.Globalization;
 
 namespace HeuristicLab.JsonInterface.OptimizerIntegration {
-  public partial class JsonItemRangeControl : JsonItemBaseControl {
+  public partial class JsonItemRangeControl : UserControl {
+    IJsonItemVM VM { get; set; }
 
-    public JsonItemRangeControl(DoubleRangeVM vm) : base(vm) {
+
+    public JsonItemRangeControl(DoubleRangeVM vm) {
       InitializeComponent();
+      VM = vm;
       textBoxValueFrom.DataBindings.Add("Text", vm, nameof(vm.MinValue));
       textBoxValueTo.DataBindings.Add("Text", vm, nameof(vm.MaxValue));
       InitNumbericRangeControl();
 
     }
-    public JsonItemRangeControl(IntRangeVM vm) : base(vm) {
+    public JsonItemRangeControl(IntRangeVM vm) {
       InitializeComponent();
+      VM = vm;
       textBoxValueFrom.DataBindings.Add("Text", vm, nameof(vm.MinValue));
       textBoxValueTo.DataBindings.Add("Text", vm, nameof(vm.MaxValue));
       InitNumbericRangeControl();

@@ -39,10 +39,10 @@
       this.textBoxFrom.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this.errorProvider.SetIconAlignment(this.textBoxFrom, System.Windows.Forms.ErrorIconAlignment.MiddleLeft);
-      this.textBoxFrom.Location = new System.Drawing.Point(67, 17);
+      this.textBoxFrom.Location = new System.Drawing.Point(87, 16);
       this.textBoxFrom.Name = "textBoxFrom";
       this.textBoxFrom.ReadOnly = true;
-      this.textBoxFrom.Size = new System.Drawing.Size(253, 20);
+      this.textBoxFrom.Size = new System.Drawing.Size(407, 20);
       this.textBoxFrom.TabIndex = 2;
       this.textBoxFrom.Validating += new System.ComponentModel.CancelEventHandler(this.textBoxFrom_Validating);
       // 
@@ -55,7 +55,7 @@
       this.groupBox2.Dock = System.Windows.Forms.DockStyle.Fill;
       this.groupBox2.Location = new System.Drawing.Point(0, 0);
       this.groupBox2.Name = "groupBox2";
-      this.groupBox2.Size = new System.Drawing.Size(326, 75);
+      this.groupBox2.Size = new System.Drawing.Size(500, 75);
       this.groupBox2.TabIndex = 19;
       this.groupBox2.TabStop = false;
       this.groupBox2.Text = "Range";
@@ -75,10 +75,10 @@
       this.textBoxTo.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this.errorProvider.SetIconAlignment(this.textBoxTo, System.Windows.Forms.ErrorIconAlignment.TopLeft);
-      this.textBoxTo.Location = new System.Drawing.Point(67, 43);
+      this.textBoxTo.Location = new System.Drawing.Point(87, 42);
       this.textBoxTo.Name = "textBoxTo";
       this.textBoxTo.ReadOnly = true;
-      this.textBoxTo.Size = new System.Drawing.Size(253, 20);
+      this.textBoxTo.Size = new System.Drawing.Size(407, 20);
       this.textBoxTo.TabIndex = 6;
       this.textBoxTo.Validating += new System.ComponentModel.CancelEventHandler(this.textBoxTo_Validating);
       // 
@@ -103,7 +103,7 @@
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.Controls.Add(this.groupBox2);
       this.Name = "NumericRangeControl";
-      this.Size = new System.Drawing.Size(326, 75);
+      this.Size = new System.Drawing.Size(500, 75);
       this.groupBox2.ResumeLayout(false);
       this.groupBox2.PerformLayout();
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();

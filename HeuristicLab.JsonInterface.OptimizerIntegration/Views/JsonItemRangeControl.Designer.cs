@@ -23,14 +23,16 @@
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
+      this.components = new System.ComponentModel.Container();
       this.groupBox1 = new System.Windows.Forms.GroupBox();
       this.textBoxValueTo = new System.Windows.Forms.TextBox();
       this.textBoxValueFrom = new System.Windows.Forms.TextBox();
       this.label4 = new System.Windows.Forms.Label();
       this.label2 = new System.Windows.Forms.Label();
       this.numericRangeControl = new HeuristicLab.JsonInterface.OptimizerIntegration.NumericRangeControl();
-      ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
+      this.errorProvider = new System.Windows.Forms.ErrorProvider(this.components);
       this.groupBox1.SuspendLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
       this.SuspendLayout();
       // 
       // groupBox1
@@ -41,9 +43,10 @@
       this.groupBox1.Controls.Add(this.textBoxValueFrom);
       this.groupBox1.Controls.Add(this.label4);
       this.groupBox1.Controls.Add(this.label2);
-      this.groupBox1.Location = new System.Drawing.Point(7, 101);
+      this.groupBox1.Location = new System.Drawing.Point(0, 0);
+      this.groupBox1.Margin = new System.Windows.Forms.Padding(0);
       this.groupBox1.Name = "groupBox1";
-      this.groupBox1.Size = new System.Drawing.Size(487, 65);
+      this.groupBox1.Size = new System.Drawing.Size(500, 68);
       this.groupBox1.TabIndex = 17;
       this.groupBox1.TabStop = false;
       this.groupBox1.Text = "Value";
@@ -52,16 +55,18 @@
       // 
       this.textBoxValueTo.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.textBoxValueTo.Location = new System.Drawing.Point(83, 39);
+      this.textBoxValueTo.Location = new System.Drawing.Point(85, 39);
       this.textBoxValueTo.Name = "textBoxValueTo";
-      this.textBoxValueTo.Size = new System.Drawing.Size(398, 20);
+      this.textBoxValueTo.Size = new System.Drawing.Size(409, 20);
       this.textBoxValueTo.TabIndex = 3;
       // 
       // textBoxValueFrom
       // 
-      this.textBoxValueFrom.Location = new System.Drawing.Point(83, 13);
+      this.textBoxValueFrom.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.textBoxValueFrom.Location = new System.Drawing.Point(85, 13);
       this.textBoxValueFrom.Name = "textBoxValueFrom";
-      this.textBoxValueFrom.Size = new System.Drawing.Size(398, 20);
+      this.textBoxValueFrom.Size = new System.Drawing.Size(409, 20);
       this.textBoxValueFrom.TabIndex = 2;
       // 
       // label4
@@ -90,10 +95,14 @@
       // 
       this.numericRangeControl.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.numericRangeControl.Location = new System.Drawing.Point(7, 172);
+      this.numericRangeControl.Location = new System.Drawing.Point(0, 71);
       this.numericRangeControl.Name = "numericRangeControl";
-      this.numericRangeControl.Size = new System.Drawing.Size(487, 74);
+      this.numericRangeControl.Size = new System.Drawing.Size(500, 74);
       this.numericRangeControl.TabIndex = 18;
+      // 
+      // errorProvider
+      // 
+      this.errorProvider.ContainerControl = this;
       // 
       // JsonItemRangeControl
       // 
@@ -103,14 +112,11 @@
       this.Controls.Add(this.groupBox1);
       this.errorProvider.SetIconAlignment(this, System.Windows.Forms.ErrorIconAlignment.MiddleLeft);
       this.Name = "JsonItemRangeControl";
-      this.Size = new System.Drawing.Size(500, 252);
-      this.Controls.SetChildIndex(this.groupBox1, 0);
-      this.Controls.SetChildIndex(this.numericRangeControl, 0);
-      ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
+      this.Size = new System.Drawing.Size(500, 146);
       this.groupBox1.ResumeLayout(false);
       this.groupBox1.PerformLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
       this.ResumeLayout(false);
-      this.PerformLayout();
 
     }
 
@@ -122,5 +128,6 @@
     private System.Windows.Forms.Label label4;
     private System.Windows.Forms.Label label2;
     private NumericRangeControl numericRangeControl;
+    private System.Windows.Forms.ErrorProvider errorProvider;
   }
 }
