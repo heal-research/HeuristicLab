@@ -8,7 +8,7 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
   public class StringValueVM : JsonItemVMBase {
     public override Type JsonItemType => typeof(StringJsonItem);
     public override JsonItemBaseControl Control =>
-       new JsonItemValidValuesControl(this);
+       new JsonItemBaseControl(this, new JsonItemValidValuesControl(this));
 
     public string Value {
       get => Item.Value?.ToString();

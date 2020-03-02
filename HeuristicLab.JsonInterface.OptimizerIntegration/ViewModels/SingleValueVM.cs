@@ -14,7 +14,7 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
     protected override int MaxTypeValue => int.MaxValue;
 
     public override JsonItemBaseControl Control =>
-      new JsonItemIntValueControl(this);
+      new JsonItemBaseControl(this, new JsonItemIntValueControl(this));
   }
 
   public class DoubleValueVM : SingleValueVM<double> {
@@ -24,7 +24,7 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
     protected override double MaxTypeValue => double.MaxValue;
 
     public override JsonItemBaseControl Control =>
-       new JsonItemDoubleValueControl(this);
+       new JsonItemBaseControl(this, new JsonItemDoubleValueControl(this));
   }
 
   public class BoolValueVM : SingleValueVM<bool> {
@@ -34,7 +34,7 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
     protected override bool MaxTypeValue => true;
 
     public override JsonItemBaseControl Control =>
-       new JsonItemBoolControl(this);
+       new JsonItemBaseControl(this, new JsonItemBoolControl(this));
   }
 
   public abstract class SingleValueVM<T> : RangedValueBaseVM<T> {

@@ -9,10 +9,13 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace HeuristicLab.JsonInterface.OptimizerIntegration {
-  public partial class JsonItemValidValuesControl : JsonItemBaseControl {
+  public partial class JsonItemValidValuesControl : UserControl {
 
-    public JsonItemValidValuesControl(StringValueVM vm) : base(vm) {
+    IJsonItemVM VM { get; set; }
+
+    public JsonItemValidValuesControl(StringValueVM vm) {
       InitializeComponent();
+      VM = vm;
       if (VM.Item.Range != null) {
         foreach (var i in VM.Item.Range)
           SetupOption((string)i);

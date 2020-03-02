@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace HeuristicLab.JsonInterface.OptimizerIntegration {
-
+  
   public class JsonItemDoubleNamedMatrixValueControl : JsonItemMultiValueControl<double> {
     protected override IEnumerable<string> RowNames { 
       get => ((DoubleNamedMatrixValueVM)VM).RowNames;
@@ -64,7 +64,8 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
     }
   }
   
-  public abstract partial class JsonItemMultiValueControl<T> : JsonItemBaseControl {
+  public abstract partial class JsonItemMultiValueControl<T> : UserControl {
+    protected IJsonItemVM VM { get; set; }
     protected NumericRangeControl NumericRangeControl { get; set; }
     private int _rows;
     private int Rows {
@@ -89,9 +90,9 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
     protected abstract IEnumerable<string> RowNames { get; set; }
     protected abstract IEnumerable<string> ColumnNames { get; set; }
 
-    public JsonItemMultiValueControl(IMatrixJsonItemVM vm, T[][] matrix) : base(vm) {
+    public JsonItemMultiValueControl(IMatrixJsonItemVM vm, T[][] matrix) /*: base(vm)*/ {
       InitializeComponent();
-
+      VM = vm;
       checkBoxRows.DataBindings.Add("Checked", vm, nameof(IMatrixJsonItemVM.RowsResizable));
       checkBoxColumns.DataBindings.Add("Checked", vm, nameof(IMatrixJsonItemVM.ColumnsResizable));
 
@@ -107,21 +108,15 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
       InitRangeBinding();
     }
     
-    public JsonItemMultiValueControl(IArrayJsonItemVM vm, T[] array) : base(vm) {
+    public JsonItemMultiValueControl(IArrayJsonItemVM vm, T[] array) /*: base(vm)*/ {
       InitializeComponent();
-
+      VM = vm;
       checkBoxRows.DataBindings.Add("Checked", vm, nameof(IArrayJsonItemVM.Resizable));
 
       int length = array.Length;
 
       Matrix = new T[1][];
       Matrix[0] = array;
-      /*
-      for (int r = 0; r < length; ++r) {
-        Matrix[r] = new T[1];
-        Matrix[r][0] = array[r];
-      }
-      */
       _cols = 1;
       _rows = length;
       RefreshMatrix();
@@ -157,7 +152,7 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
 
       T[][] tmp = Matrix;
       Matrix = new T[Columns][];
-
+      
       // columns must added first
       if(RowNames != null && RowNames.Count() == Columns) {
         foreach(var name in RowNames) {
@@ -190,6 +185,7 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
         }
       }
       dataGridView.RowHeadersWidth = 100;
+      
     }
 
     private void InitRangeBinding() {

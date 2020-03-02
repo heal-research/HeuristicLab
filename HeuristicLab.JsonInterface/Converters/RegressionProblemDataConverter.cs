@@ -16,19 +16,7 @@ namespace HeuristicLab.JsonInterface {
     public override Type ConvertableType => HEAL.Attic.Mapper.StaticCache.GetType(new Guid("EE612297-B1AF-42D2-BF21-AF9A2D42791C"));
 
     public override void Inject(IItem item, IJsonItem data, IJsonItemConverter root) {
-      //Dictionary<string, IList<double>> dict = null;
       var dictTmp = new Dictionary<string, IList>();
-      /*if (data.Children[0].Value is JObject jObj) {
-        dict = jObj.ToObject<Dictionary<string, IList<double>>>();
-        foreach (var x in dict) {
-          dictTmp.Add(x.Key, (IList)x.Value);
-        }
-      } else if(data.Children[0].Value is Dictionary<string, IList<double>> d) {
-        dict = d;
-      } else {
-        dictTmp = (Dictionary<string, IList>)data.Children[0].Value;
-      }
-      */
       DoubleNamedMatrixJsonItem matrix = data.Children[0] as DoubleNamedMatrixJsonItem;
       if(matrix != null) {
         int c = 0;
@@ -73,6 +61,7 @@ namespace HeuristicLab.JsonInterface {
           mat[c] = new double[rows];
           int r = 0;
           foreach(var rowValue in x.Value) {
+            // TODO: for integers and bools aswell
             mat[c][r] = (double)rowValue; 
             ++r;
           }
