@@ -45,6 +45,7 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
     public int MemoryNeeded { get; set; }
     public bool IsStopping { get; set; }
     public bool IsPausing { get; set; }
+    public bool HasFailed { get; set; }
 
     public Exception CurrentException;
     public String CurrentExceptionStr {
@@ -83,7 +84,7 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
         RegisterJobEvents();
 
         task.Start();
-        if (!startTaskSem.WaitOne(Settings.Default.ExecutorSemTimeouts)) {
+        if (!startTaskSem.WaitOne(Settings.Default.ExecutorSemTimeouts) && !HasFailed) {
           throw new TimeoutException("Timeout when starting the task. TaskStarted event was not fired.");
         }
       }
@@ -158,10 +159,12 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
 
     #region Task Events
     private void Task_TaskFailed(object sender, EventArgs e) {
+      HasFailed = true;
       IsStopping = true;
       EventArgs<Exception> ex = (EventArgs<Exception>)e;
       CurrentException = ex.Value;
       executorQueue.AddMessage(ExecutorMessageType.TaskFailed);
+      startTaskSem.Set(); // cancel waiting for startup
     }
 
     private void Task_TaskStopped(object sender, EventArgs e) {
