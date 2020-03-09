@@ -2,13 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace HeuristicLab.JsonInterface.OptimizerIntegration {
   public class StringValueVM : JsonItemVMBase {
     public override Type JsonItemType => typeof(StringJsonItem);
-    public override JsonItemBaseControl Control =>
-       new JsonItemBaseControl(this, new JsonItemValidValuesControl(this));
+    public override UserControl Control =>
+       new JsonItemValidValuesControl(this);
 
     public string Value {
       get => Item.Value?.ToString();

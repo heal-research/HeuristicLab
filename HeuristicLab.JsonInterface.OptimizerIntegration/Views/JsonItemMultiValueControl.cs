@@ -10,87 +10,68 @@ using System.Windows.Forms;
 
 namespace HeuristicLab.JsonInterface.OptimizerIntegration {
   
-  public class JsonItemDoubleNamedMatrixValueControl : JsonItemMultiValueControl<double> {
-    protected override IEnumerable<string> RowNames { 
-      get => ((DoubleNamedMatrixValueVM)VM).RowNames;
-      set => ((DoubleNamedMatrixValueVM)VM).RowNames = value;
-    }
-    protected override IEnumerable<string> ColumnNames {
-      get => ((DoubleNamedMatrixValueVM)VM).ColumnNames;
-      set => ((DoubleNamedMatrixValueVM)VM).ColumnNames = value;
-    }
-
-    public JsonItemDoubleNamedMatrixValueControl(DoubleNamedMatrixValueVM vm) : base(vm, vm.Value) { }
-
-    protected override void SaveCellData(double data, int row, int col) {
-      DoubleNamedMatrixValueVM vm = VM as DoubleNamedMatrixValueVM;
-      vm.SetCellValue(data, row, col);
-    }
-  }
-
   public class JsonItemDoubleMatrixValueControl : JsonItemMultiValueControl<double> {
-    protected override IEnumerable<string> RowNames { get => null; set { } }
-    protected override IEnumerable<string> ColumnNames { get => null; set { } }
-
     public JsonItemDoubleMatrixValueControl(DoubleMatrixValueVM vm) : base(vm, vm.Value) { }
-
+    
     protected override void SaveCellData(double data, int row, int col) {
       DoubleMatrixValueVM vm = VM as DoubleMatrixValueVM;
       vm.SetCellValue(data, row, col);
     }
+    
   }
 
   public class JsonItemIntArrayValueControl : JsonItemMultiValueControl<int> {
-    protected override IEnumerable<string> RowNames { get => null; set { } }
-    protected override IEnumerable<string> ColumnNames { get => null; set { } }
-
     public JsonItemIntArrayValueControl(IntArrayValueVM vm) : base(vm, vm.Value) { }
-
+    
     protected override void SaveCellData(int data, int row, int col) {
       IntArrayValueVM vm = VM as IntArrayValueVM;
       vm.SetIndexValue(data, row);
     }
+    
   }
 
   public class JsonItemDoubleArrayValueControl : JsonItemMultiValueControl<double> {
-    protected override IEnumerable<string> RowNames { get => null; set { } }
-    protected override IEnumerable<string> ColumnNames { get => null; set { } }
-
     public JsonItemDoubleArrayValueControl(DoubleArrayValueVM vm) : base(vm, vm.Value) { }
-
+    
     protected override void SaveCellData(double data, int row, int col) {
       DoubleArrayValueVM vm = VM as DoubleArrayValueVM;
       vm.SetIndexValue(data, row);
     }
+    
   }
   
   public abstract partial class JsonItemMultiValueControl<T> : UserControl {
     protected IJsonItemVM VM { get; set; }
     protected NumericRangeControl NumericRangeControl { get; set; }
-    private int _rows;
-    private int Rows {
-      get => _rows;
-      set {
-        _rows = value;
-        RefreshMatrix();
-      }
-    }
-
-    private int _cols;
-    private int Columns {
-      get => _cols; 
-      set {
-        _cols = value;
-        RefreshMatrix();
-      } 
-    }
+    private int Rows { get; set; }
+    private int Columns { get; set; }
 
     private T[][] Matrix { get; set; }
-
-    protected abstract IEnumerable<string> RowNames { get; set; }
-    protected abstract IEnumerable<string> ColumnNames { get; set; }
-
-    public JsonItemMultiValueControl(IMatrixJsonItemVM vm, T[][] matrix) /*: base(vm)*/ {
+    
+    protected IEnumerable<string> RowNames {
+      get {
+        if(VM is IMatrixJsonItemVM mVM)
+          return mVM.RowNames;
+        return null;
+      }
+      set {
+        if (VM is IMatrixJsonItemVM mVM)
+          mVM.RowNames = value;
+      }
+    }
+    protected IEnumerable<string> ColumnNames {
+      get {
+        if (VM is IMatrixJsonItemVM mVM)
+          return mVM.ColumnNames;
+        return null;
+      }
+      set {
+        if (VM is IMatrixJsonItemVM mVM)
+          mVM.ColumnNames = value;
+      }
+    }
+    
+    public JsonItemMultiValueControl(IMatrixJsonItemVM vm, T[][] matrix) {
       InitializeComponent();
       VM = vm;
       checkBoxRows.DataBindings.Add("Checked", vm, nameof(IMatrixJsonItemVM.RowsResizable));
@@ -100,15 +81,15 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
       int rows = matrix.Max(x => x.Length);
 
       Matrix = matrix;
-      _cols = cols;
-      _rows = rows;
+      Columns = cols;
+      Rows = rows;
       RefreshMatrix();
       InitSizeConfiguration(rows, cols);
       dataGridView.CellEndEdit += DataGridView_CellEndEdit;
       InitRangeBinding();
     }
     
-    public JsonItemMultiValueControl(IArrayJsonItemVM vm, T[] array) /*: base(vm)*/ {
+    public JsonItemMultiValueControl(IArrayJsonItemVM vm, T[] array) {
       InitializeComponent();
       VM = vm;
       checkBoxRows.DataBindings.Add("Checked", vm, nameof(IArrayJsonItemVM.Resizable));
@@ -117,8 +98,8 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
 
       Matrix = new T[1][];
       Matrix[0] = array;
-      _cols = 1;
-      _rows = length;
+      Columns = 1;
+      Rows = length;
       RefreshMatrix();
 
       InitSizeConfiguration(length, null);
@@ -153,15 +134,11 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
       T[][] tmp = Matrix;
       Matrix = new T[Columns][];
       
-      // columns must added first
-      if(RowNames != null && RowNames.Count() == Columns) {
-        foreach(var name in RowNames) {
-          dataGridView.Columns.Add(name, name);
-        }
-      } else {
-        for(int c = 0; c < Columns; ++c) {
-          dataGridView.Columns.Add($"Column {c}", $"Column {c}");
-        }
+      for (int c = 0; c < Columns; ++c) {
+        string name = $"Column {c}";
+        if (RowNames != null && c < RowNames.Count())
+          name = RowNames.ElementAt(c);
+        dataGridView.Columns.Add(name, name);
       }
 
       for (int c = 0; c < Columns; ++c) {
@@ -177,15 +154,14 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
           for (int r = 0; r < Rows; ++r) {
             //col and row is switched for dataGridView
             dataGridView[c, r].Value = Matrix[c][r];
+            string name = $"Row {r}";
             if (ColumnNames != null && r < ColumnNames.Count())
-              dataGridView.Rows[r].HeaderCell.Value = ColumnNames.ElementAt(r);
-            else
-              dataGridView.Rows[r].HeaderCell.Value = $"Row {r}";
+              name = ColumnNames.ElementAt(r);
+            dataGridView.Rows[r].HeaderCell.Value = name;
           }
         }
       }
       dataGridView.RowHeadersWidth = 100;
-      
     }
 
     private void InitRangeBinding() {
@@ -229,14 +205,16 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
     }
     
     private void textBoxRows_TextChanged(object sender, EventArgs e) {
-      if(int.TryParse(textBoxRows.Text, out int r)) {
+      if(!textBoxRows.ReadOnly && int.TryParse(textBoxRows.Text, out int r) && Rows != r) {
         Rows = r;
+        RefreshMatrix();
       }
     }
 
     private void textBoxColumns_TextChanged(object sender, EventArgs e) {
-      if (int.TryParse(textBoxColumns.Text, out int c)) {
+      if (!textBoxColumns.ReadOnly && int.TryParse(textBoxColumns.Text, out int c) && Columns != c) {
         Columns = c;
+        RefreshMatrix();
       }
     }
 

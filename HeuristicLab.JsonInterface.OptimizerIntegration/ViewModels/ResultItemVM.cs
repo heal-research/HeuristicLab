@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace HeuristicLab.JsonInterface.OptimizerIntegration {
   public class ResultItemVM : JsonItemVMBase {
     public override Type JsonItemType => typeof(ResultJsonItem);
-    public override JsonItemBaseControl Control =>
+    public override UserControl Control =>
       new JsonItemBaseControl(this);
-
 
   }
 }

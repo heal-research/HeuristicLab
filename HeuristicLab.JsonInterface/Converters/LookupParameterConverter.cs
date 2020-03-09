@@ -11,12 +11,12 @@ namespace HeuristicLab.JsonInterface {
     public override Type ConvertableType => typeof(ILookupParameter);
     
     public override void Inject(IItem item, IJsonItem data, IJsonItemConverter root) =>
-      ((ILookupParameter)item).ActualName = data.ActualName as string;
+      ((ILookupParameter)item).ActualName = ((ILookupJsonItem)data).ActualName as string;
 
     public override IJsonItem Extract(IItem value, IJsonItemConverter root) {
       IParameter parameter = value as IParameter;
 
-      IJsonItem item = new JsonItem() {
+      IJsonItem item = new LookupJsonItem() {
         Name = parameter.Name,
         Description = parameter.Description,
         ActualName = ((ILookupParameter)parameter).ActualName

@@ -65,9 +65,6 @@ namespace HeuristicLab.JsonInterface {
 
     public virtual IEnumerable<object> Range { get; set; }
     
-    // TODO eigene items für LookUp?
-    public virtual string ActualName { get; set; }
-
     // TODO jsonIgnore dataType?
 
     [JsonIgnore]
@@ -109,7 +106,6 @@ namespace HeuristicLab.JsonInterface {
     public virtual void SetFromJObject(JObject jObject) {
       Value = jObject[nameof(IJsonItem.Value)]?.ToObject<object>();
       Range = jObject[nameof(IJsonItem.Range)]?.ToObject<object[]>();
-      ActualName = jObject[nameof(IJsonItem.ActualName)]?.ToString();
     }
     #endregion
 
@@ -117,7 +113,7 @@ namespace HeuristicLab.JsonInterface {
     /*
      * TODO protected abstract bool Validate();
      */
-
+     
     protected virtual bool IsInRange() {
       bool b1 = true, b2 = true;
       if (Value is IEnumerable && !(Value is string)) {

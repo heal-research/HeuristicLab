@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace HeuristicLab.JsonInterface {
   public class IntJsonItem : JsonItem<int> {
+    //public new IEnumerable<int> Range { get; }
     /*
     public int MinValue { get; set; } 
     public int MaxValue { get; set; }

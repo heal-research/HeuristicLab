@@ -12,7 +12,7 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
 
     Type JsonItemType { get; }
 
-    JsonItemBaseControl Control { get; }
+    UserControl Control { get; }
 
     IJsonItem Item { get; set; }
 
@@ -21,9 +21,7 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
     string Name { get; set; }
 
     string Description { get; set; }
-
-    string ActualName { get; set; }
-
+    
     TreeNode TreeNode { get; set; }
 
     TreeView TreeView { get; set; }

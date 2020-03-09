@@ -26,23 +26,22 @@
       this.components = new System.ComponentModel.Container();
       this.groupBox1 = new System.Windows.Forms.GroupBox();
       this.textBoxValueTo = new System.Windows.Forms.TextBox();
-      this.textBoxValueFrom = new System.Windows.Forms.TextBox();
       this.label4 = new System.Windows.Forms.Label();
       this.label2 = new System.Windows.Forms.Label();
-      this.numericRangeControl = new HeuristicLab.JsonInterface.OptimizerIntegration.NumericRangeControl();
       this.errorProvider = new System.Windows.Forms.ErrorProvider(this.components);
+      this.textBoxValueFrom = new System.Windows.Forms.TextBox();
+      this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+      this.numericRangeControl = new HeuristicLab.JsonInterface.OptimizerIntegration.NumericRangeControl();
       this.groupBox1.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
+      this.tableLayoutPanel1.SuspendLayout();
       this.SuspendLayout();
       // 
       // groupBox1
       // 
       this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.groupBox1.Controls.Add(this.textBoxValueTo);
-      this.groupBox1.Controls.Add(this.textBoxValueFrom);
-      this.groupBox1.Controls.Add(this.label4);
-      this.groupBox1.Controls.Add(this.label2);
+      this.groupBox1.Controls.Add(this.tableLayoutPanel1);
       this.groupBox1.Location = new System.Drawing.Point(0, 0);
       this.groupBox1.Margin = new System.Windows.Forms.Padding(0);
       this.groupBox1.Name = "groupBox1";
@@ -53,56 +52,78 @@
       // 
       // textBoxValueTo
       // 
-      this.textBoxValueTo.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-      this.textBoxValueTo.Location = new System.Drawing.Point(85, 39);
+      this.textBoxValueTo.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.textBoxValueTo.Location = new System.Drawing.Point(100, 24);
+      this.textBoxValueTo.Margin = new System.Windows.Forms.Padding(0);
       this.textBoxValueTo.Name = "textBoxValueTo";
-      this.textBoxValueTo.Size = new System.Drawing.Size(409, 20);
+      this.textBoxValueTo.Size = new System.Drawing.Size(394, 20);
       this.textBoxValueTo.TabIndex = 3;
-      // 
-      // textBoxValueFrom
-      // 
-      this.textBoxValueFrom.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-      this.textBoxValueFrom.Location = new System.Drawing.Point(85, 13);
-      this.textBoxValueFrom.Name = "textBoxValueFrom";
-      this.textBoxValueFrom.Size = new System.Drawing.Size(409, 20);
-      this.textBoxValueFrom.TabIndex = 2;
       // 
       // label4
       // 
-      this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
       this.label4.AutoSize = true;
-      this.label4.Location = new System.Drawing.Point(6, 42);
+      this.label4.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.label4.Location = new System.Drawing.Point(0, 24);
+      this.label4.Margin = new System.Windows.Forms.Padding(0);
       this.label4.Name = "label4";
-      this.label4.Size = new System.Drawing.Size(23, 13);
+      this.label4.Size = new System.Drawing.Size(100, 25);
       this.label4.TabIndex = 1;
       this.label4.Text = "To:";
+      this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
       // 
       // label2
       // 
-      this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
       this.label2.AutoSize = true;
-      this.label2.Location = new System.Drawing.Point(6, 16);
+      this.label2.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.label2.Location = new System.Drawing.Point(0, 0);
+      this.label2.Margin = new System.Windows.Forms.Padding(0);
       this.label2.Name = "label2";
-      this.label2.Size = new System.Drawing.Size(33, 13);
+      this.label2.Size = new System.Drawing.Size(100, 24);
       this.label2.TabIndex = 0;
       this.label2.Text = "From:";
+      this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+      // 
+      // errorProvider
+      // 
+      this.errorProvider.ContainerControl = this;
+      // 
+      // textBoxValueFrom
+      // 
+      this.textBoxValueFrom.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.textBoxValueFrom.Location = new System.Drawing.Point(100, 0);
+      this.textBoxValueFrom.Margin = new System.Windows.Forms.Padding(0);
+      this.textBoxValueFrom.Name = "textBoxValueFrom";
+      this.textBoxValueFrom.Size = new System.Drawing.Size(394, 20);
+      this.textBoxValueFrom.TabIndex = 2;
+      // 
+      // tableLayoutPanel1
+      // 
+      this.tableLayoutPanel1.ColumnCount = 2;
+      this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 100F));
+      this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+      this.tableLayoutPanel1.Controls.Add(this.label2, 0, 0);
+      this.tableLayoutPanel1.Controls.Add(this.textBoxValueTo, 1, 1);
+      this.tableLayoutPanel1.Controls.Add(this.textBoxValueFrom, 1, 0);
+      this.tableLayoutPanel1.Controls.Add(this.label4, 0, 1);
+      this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.tableLayoutPanel1.Location = new System.Drawing.Point(3, 16);
+      this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(0);
+      this.tableLayoutPanel1.Name = "tableLayoutPanel1";
+      this.tableLayoutPanel1.RowCount = 2;
+      this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+      this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+      this.tableLayoutPanel1.Size = new System.Drawing.Size(494, 49);
+      this.tableLayoutPanel1.TabIndex = 19;
       // 
       // numericRangeControl
       // 
       this.numericRangeControl.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this.numericRangeControl.Location = new System.Drawing.Point(0, 71);
+      this.numericRangeControl.Margin = new System.Windows.Forms.Padding(0);
       this.numericRangeControl.Name = "numericRangeControl";
       this.numericRangeControl.Size = new System.Drawing.Size(500, 74);
       this.numericRangeControl.TabIndex = 18;
-      // 
-      // errorProvider
-      // 
-      this.errorProvider.ContainerControl = this;
       // 
       // JsonItemRangeControl
       // 
@@ -111,11 +132,13 @@
       this.Controls.Add(this.numericRangeControl);
       this.Controls.Add(this.groupBox1);
       this.errorProvider.SetIconAlignment(this, System.Windows.Forms.ErrorIconAlignment.MiddleLeft);
+      this.Margin = new System.Windows.Forms.Padding(0);
       this.Name = "JsonItemRangeControl";
-      this.Size = new System.Drawing.Size(500, 146);
+      this.Size = new System.Drawing.Size(500, 147);
       this.groupBox1.ResumeLayout(false);
-      this.groupBox1.PerformLayout();
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
+      this.tableLayoutPanel1.ResumeLayout(false);
+      this.tableLayoutPanel1.PerformLayout();
       this.ResumeLayout(false);
 
     }
@@ -124,10 +147,11 @@
 
     private System.Windows.Forms.GroupBox groupBox1;
     private System.Windows.Forms.TextBox textBoxValueTo;
-    private System.Windows.Forms.TextBox textBoxValueFrom;
     private System.Windows.Forms.Label label4;
     private System.Windows.Forms.Label label2;
     private NumericRangeControl numericRangeControl;
     private System.Windows.Forms.ErrorProvider errorProvider;
+    private System.Windows.Forms.TextBox textBoxValueFrom;
+    private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
   }
 }

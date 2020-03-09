@@ -8,10 +8,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace HeuristicLab.JsonInterface.OptimizerIntegration {
-  public class JsonItemVMBase : IJsonItemVM {
-    public event PropertyChangedEventHandler PropertyChanged;
-    public event Action ItemChanged;
-
+  public abstract class JsonItemVMBase : IJsonItemVM {
     private IJsonItem item;
     public IJsonItem Item {
       get => item;
@@ -22,23 +19,8 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
         ItemChanged?.Invoke();
       }
     }
-
     public TreeNode TreeNode { get; set; }
     public TreeView TreeView { get; set; }
-
-    protected void OnPropertyChange(object sender, string propertyName) {
-      // Make a temporary copy of the event to avoid possibility of
-      // a race condition if the last subscriber unsubscribes
-      // immediately after the null check and before the event is raised.
-      // https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/events/how-to-raise-base-class-events-in-derived-classes
-      
-      PropertyChangedEventHandler tmp = PropertyChanged;
-      tmp?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-    }
-
-    public virtual Type JsonItemType => typeof(JsonItem);
-
-    
     public bool Selected {
       get => Item.Active;
       set {
@@ -52,7 +34,6 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
         OnPropertyChange(this, nameof(Selected));
       }
     }
-
     public string Name {
       get => Item.Name;
       set {
@@ -60,7 +41,6 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
         OnPropertyChange(this, nameof(Name));
       }
     }
-
     public string Description {
       get => Item.Description;
       set {
@@ -69,15 +49,22 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
       }
     }
 
-    public string ActualName {
-      get => Item.ActualName;
-      set {
-        Item.ActualName = value;
-        OnPropertyChange(this, nameof(ActualName));
-      }
-    }
+    public abstract Type JsonItemType { get; }
+    public abstract UserControl Control { get; }
 
-    public virtual JsonItemBaseControl Control => new JsonItemBaseControl(this);
+    public event PropertyChangedEventHandler PropertyChanged;
+    public event Action ItemChanged;
+
+
+    protected void OnPropertyChange(object sender, string propertyName) {
+      // Make a temporary copy of the event to avoid possibility of
+      // a race condition if the last subscriber unsubscribes
+      // immediately after the null check and before the event is raised.
+      // https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/events/how-to-raise-base-class-events-in-derived-classes
+      
+      PropertyChangedEventHandler tmp = PropertyChanged;
+      tmp?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
     
     #region IDisposable Support
     private bool disposedValue = false; // To detect redundant calls

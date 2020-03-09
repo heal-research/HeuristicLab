@@ -4,13 +4,14 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace HeuristicLab.JsonInterface.OptimizerIntegration {
 
   public class DoubleMatrixValueVM : MatrixValueVM<double, DoubleMatrixJsonItem> {
     public override Type JsonItemType => typeof(DoubleMatrixJsonItem);
-    public override JsonItemBaseControl Control => null;
-      //new JsonItemDoubleMatrixValueControl(this);
+    public override UserControl Control =>
+      new JsonItemDoubleMatrixValueControl(this);
 
     public override double[][] Value {
       get => ((DoubleMatrixJsonItem)Item).Value;
@@ -41,6 +42,21 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
       set {
         ((IMatrixJsonItem)Item).ColumnsResizable = value;
         OnPropertyChange(this, nameof(ColumnsResizable));
+      }
+    }
+
+    public IEnumerable<string> RowNames {
+      get => ((JsonItemType)Item).RowNames;
+      set {
+        ((JsonItemType)Item).RowNames = value;
+        OnPropertyChange(this, nameof(RowNames));
+      }
+    }
+    public IEnumerable<string> ColumnNames {
+      get => ((JsonItemType)Item).ColumnNames;
+      set {
+        ((JsonItemType)Item).ColumnNames = value;
+        OnPropertyChange(this, nameof(ColumnNames));
       }
     }
 

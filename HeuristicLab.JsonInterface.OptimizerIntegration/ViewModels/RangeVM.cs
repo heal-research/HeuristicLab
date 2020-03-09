@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace HeuristicLab.JsonInterface.OptimizerIntegration {
 
@@ -14,8 +15,8 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
 
     protected override int MaxTypeValue => int.MaxValue;
 
-    public override JsonItemBaseControl Control =>
-      new JsonItemBaseControl(this, new JsonItemRangeControl(this));
+    public override UserControl Control =>
+      new JsonItemRangeControl(this);
   }
 
   public class DoubleRangeVM : RangeVM<double> {
@@ -25,8 +26,8 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
 
     protected override double MaxTypeValue => double.MaxValue;
 
-    public override JsonItemBaseControl Control =>
-      new JsonItemBaseControl(this, new JsonItemRangeControl(this));
+    public override UserControl Control =>
+      new JsonItemRangeControl(this);
   }
 
   public abstract class RangeVM<T> : RangedValueBaseVM<T> {

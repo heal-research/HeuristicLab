@@ -42,10 +42,5 @@ namespace HeuristicLab.JsonInterface {
       get => throw new NotSupportedException();
       set => throw new NotSupportedException();
     }
-
-    public override string ActualName {
-      get => throw new NotSupportedException();
-      set => throw new NotSupportedException();
-    }
   }
 }

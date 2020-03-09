@@ -5,8 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace HeuristicLab.JsonInterface.OptimizerIntegration {
-  public interface INamedMatrixJsonItemVM : IMatrixJsonItemVM {
-    IEnumerable<string> RowNames { get; set; }
-    IEnumerable<string> ColumnNames { get; set; }
+  public class ValueLookupJsonItemVM : LookupJsonItemVM, IValueLookupJsonItemVM {
+    public IJsonItem JsonItemReference => ((IValueLookupJsonItem)Item).JsonItemReference;
   }
 }

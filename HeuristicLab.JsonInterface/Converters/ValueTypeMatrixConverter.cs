@@ -32,12 +32,12 @@ namespace HeuristicLab.JsonInterface {
 
     public override void Inject(IItem item, IJsonItem data, IJsonItemConverter root) {
       DoubleMatrix mat = item as DoubleMatrix;
-      DoubleNamedMatrixJsonItem d = data as DoubleNamedMatrixJsonItem;
+      DoubleMatrixJsonItem d = data as DoubleMatrixJsonItem;
       CopyMatrixData(mat, d.Value);
     }
 
     public override IJsonItem Extract(IItem value, IJsonItemConverter root) =>
-      new DoubleNamedMatrixJsonItem() {
+      new DoubleMatrixJsonItem() {
         Name = "[OverridableParamName]",
         Description = value.ItemDescription,
         Value = Transform((DoubleMatrix)value),
