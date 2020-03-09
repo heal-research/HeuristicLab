@@ -50,8 +50,8 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
 
     private void InitCache() {
       JI2VM = new Dictionary<Type, Type>();
-      foreach (var vmType in ApplicationManager.Manager.GetTypes(typeof(JsonItemVMBase))) {
-        JsonItemVMBase vm = (JsonItemVMBase)Activator.CreateInstance(vmType);
+      foreach (var vmType in ApplicationManager.Manager.GetTypes(typeof(IJsonItemVM))) {
+        IJsonItemVM vm = (IJsonItemVM)Activator.CreateInstance(vmType);
         JI2VM.Add(vm.JsonItemType, vmType);
       }
     }
@@ -95,7 +95,7 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
       if (item.Children != null) {
         foreach (var c in item.Children) {
           if (IsDrawableItem(c)) {
-            if (c is ResultJsonItem) {
+            if (c is IResultJsonItem) {
               TreeNode childNode = new TreeNode(c.Name);
               treeViewResults.Nodes.Add(childNode);
               RegisterItem(childNode, c, treeViewResults);
@@ -112,7 +112,7 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
     }
 
     private void RegisterItem(TreeNode node, IJsonItem item, TreeView tv) {
-      if (JI2VM.TryGetValue(item.GetType(), out Type vmType)) {
+      if (JI2VM.TryGetValue(item.GetType(), out Type vmType)) { // TODO: enhance for interfaces?
         IJsonItemVM vm = (IJsonItemVM)Activator.CreateInstance(vmType);
 
         vm.Item = item;
@@ -122,8 +122,10 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
 
         VMs.Add(vm);
         Node2VM.Add(node, vm);
-        UserControl control = vm.Control;
+        UserControl control = new JsonItemBaseControl(vm, vm.Control);
         Node2Control.Add(node, control);
+      } else {
+        //node.
       }
     }
 
@@ -135,7 +137,7 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
         }
       }
       
-      return b || (item.Value != null || item.Range != null || item.ActualName != null || item is ResultJsonItem);
+      return b || (item.Value != null || item.Range != null || item is ILookupJsonItem || item is IResultJsonItem);
     }
     
     private void treeView_AfterSelect(object sender, TreeViewEventArgs e) {

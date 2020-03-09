@@ -17,7 +17,7 @@ namespace HeuristicLab.JsonInterface {
 
     public override void Inject(IItem item, IJsonItem data, IJsonItemConverter root) {
       var dictTmp = new Dictionary<string, IList>();
-      DoubleNamedMatrixJsonItem matrix = data.Children[0] as DoubleNamedMatrixJsonItem;
+      DoubleMatrixJsonItem matrix = data.Children[0] as DoubleMatrixJsonItem;
       if(matrix != null) {
         int c = 0;
         foreach(var col in matrix.RowNames) {
@@ -67,7 +67,7 @@ namespace HeuristicLab.JsonInterface {
           }
           ++c;
         }
-        item.AddChildren(new DoubleNamedMatrixJsonItem() {
+        item.AddChildren(new DoubleMatrixJsonItem() {
           Name = "Dataset",
           Value = mat,
           RowNames = rowNames

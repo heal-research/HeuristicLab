@@ -86,8 +86,9 @@
   <ItemGroup>
     <Compile Include="Interfaces\IArrayJsonItemVM.cs" />
     <Compile Include="Interfaces\IJsonItemVM.cs" />
+    <Compile Include="Interfaces\ILookupJsonItemVM.cs" />
     <Compile Include="Interfaces\IMatrixJsonItemVM.cs" />
-    <Compile Include="Interfaces\INamedMatrixJsonItemVM.cs" />
+    <Compile Include="Interfaces\IValueLookupJsonItemVM.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -107,13 +108,14 @@
     </Compile>
     <Compile Include="ViewModels\ArrayValueVM.cs" />
     <Compile Include="ViewModels\JsonItemVMBase.cs" />
+    <Compile Include="ViewModels\LookupJsonItemVM.cs" />
     <Compile Include="ViewModels\MatrixValueVM.cs" />
-    <Compile Include="ViewModels\NamedMatrixValueVM.cs" />
     <Compile Include="ViewModels\RangedValueBaseVM.cs" />
     <Compile Include="ViewModels\RangeVM.cs" />
     <Compile Include="ViewModels\ResultItemVM.cs" />
     <Compile Include="ViewModels\SingleValueVM.cs" />
     <Compile Include="ViewModels\StringValueVM.cs" />
+    <Compile Include="ViewModels\ValueLookupJsonItemVM.cs" />
     <Compile Include="Views\ExportJsonDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -155,6 +157,18 @@
     <Compile Include="MenuItems\ExportJsonTemplateMenuItem.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Views\LookupJsonItemControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\LookupJsonItemControl.Designer.cs">
+      <DependentUpon>LookupJsonItemControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ValueLookupJsonItemControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\ValueLookupJsonItemControl.Designer.cs">
+      <DependentUpon>ValueLookupJsonItemControl.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLab.snk" />
@@ -226,6 +240,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Views\JsonItemValidValuesControl.resx">
       <DependentUpon>JsonItemValidValuesControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\LookupJsonItemControl.resx">
+      <DependentUpon>LookupJsonItemControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\ValueLookupJsonItemControl.resx">
+      <DependentUpon>ValueLookupJsonItemControl.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />

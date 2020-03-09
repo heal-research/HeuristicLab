@@ -5,8 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace HeuristicLab.JsonInterface {
-  public interface INamedMatrixJsonItem : IMatrixJsonItem {
-    IEnumerable<string> RowNames { get; set; }
-    IEnumerable<string> ColumnNames { get; set; }
+  public interface ILookupJsonItem : IJsonItem {
+    string ActualName { get; set; }
   }
 }

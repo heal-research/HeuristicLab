@@ -69,8 +69,10 @@
     <Compile Include="Interfaces\IArrayJsonItem.cs" />
     <Compile Include="Interfaces\IJsonItem.cs" />
     <Compile Include="Interfaces\IJsonItemValidator.cs" />
+    <Compile Include="Interfaces\ILookupJsonItem.cs" />
     <Compile Include="Interfaces\IMatrixJsonItem.cs" />
-    <Compile Include="Interfaces\INamedMatrixJsonItem.cs" />
+    <Compile Include="Interfaces\IResultJsonItem.cs" />
+    <Compile Include="Interfaces\IValueLookupJsonItem.cs" />
     <Compile Include="Models\ArrayJsonItemBase.cs" />
     <Compile Include="Models\BoolJsonItems.cs" />
     <Compile Include="Models\DateTimeJsonItem.cs" />
@@ -78,11 +80,12 @@
     <Compile Include="Models\GenericJsonItem.cs" />
     <Compile Include="Models\IntJsonItems.cs" />
     <Compile Include="Models\JsonItem.cs" />
+    <Compile Include="Models\LookupJsonItem.cs" />
     <Compile Include="Models\MatrixJsonItemBase.cs" />
-    <Compile Include="Models\NamedMatrixJsonItemBase.cs" />
     <Compile Include="Models\ResultJsonItem.cs" />
     <Compile Include="Models\StringJsonItem.cs" />
     <Compile Include="Models\UnsupportedJsonItem.cs" />
+    <Compile Include="Models\ValueLookupJsonItem.cs" />
     <Compile Include="SingleLineArrayJsonWriter.cs" />
     <Compile Include="Extensions\TypeExtensions.cs" />
     <Compile Include="JCGenerator.cs" />

@@ -16,7 +16,6 @@ namespace HeuristicLab.JsonInterface {
       IResultParameter res = value as IResultParameter;
       return new ResultJsonItem() {
         Name = res.ActualName,
-        ActualName = res.ActualName,
         Value = res.ActualName,
         Description = res.Description
       };

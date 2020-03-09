@@ -8,5 +8,7 @@ namespace HeuristicLab.JsonInterface {
   public interface IMatrixJsonItem : IJsonItem {
     bool RowsResizable { get; set; }
     bool ColumnsResizable { get; set; }
+    IEnumerable<string> RowNames { get; set; }
+    IEnumerable<string> ColumnNames { get; set; }
   }
 }

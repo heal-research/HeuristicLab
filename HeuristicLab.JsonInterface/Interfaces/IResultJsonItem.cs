@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace HeuristicLab.JsonInterface {
-  public class ResultJsonItem : JsonItem, IResultJsonItem {
-
+  public interface IResultJsonItem : IJsonItem {
   }
 }

@@ -12,7 +12,7 @@ namespace HeuristicLab.JsonInterface {
 
     public override void Inject(IItem item, IJsonItem data, IJsonItemConverter root) {
       IValueLookupParameter param = item as IValueLookupParameter;
-      param.ActualName = CastValue<string>(data.ActualName);
+      param.ActualName = CastValue<string>(((IValueLookupJsonItem)data).ActualName);
       if (param.Value != null)
         root.Inject(param.Value, data, root);
     }
@@ -20,11 +20,17 @@ namespace HeuristicLab.JsonInterface {
     public override IJsonItem Extract(IItem value, IJsonItemConverter root) {
       IValueLookupParameter param = value as IValueLookupParameter;
 
-      IJsonItem item = new JsonItem() {};
+      IValueLookupJsonItem item = new ValueLookupJsonItem() {};
 
       if (param.Value != null) {
         IJsonItem tmp = root.Extract(param.Value, root);
-        item = tmp;
+        item.Value = tmp.Value;
+        item.Range = tmp.Range;
+        item.Name = tmp.Name;
+        item.Description = tmp.Description;
+        item.AddChildren(tmp.Children);
+        item.Active = tmp.Active;
+        item.JsonItemReference = tmp;
       } else {
         var min = GetMinValue(param.DataType);
         var max = GetMaxValue(param.DataType);

@@ -27,7 +27,7 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
     #region Overriden Properties
     protected override string ValuePropertyId => nameof(DoubleValueVM.Value);
     #endregion
-
+    
     public JsonItemDoubleValueControl(DoubleValueVM vm) : base(vm) {
       Init();
     }
@@ -44,7 +44,11 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
     protected abstract string ValuePropertyId { get; }
     #endregion
 
-    public JsonItemValueControl(JsonItemVMBase vm) {
+    public JsonItemValueControl() {
+      InitializeComponent();
+    }
+
+    public JsonItemValueControl(IJsonItemVM vm) {
       InitializeComponent();
       VM = vm;
       TBValue = textBoxValue;
