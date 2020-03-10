@@ -9,7 +9,7 @@ using System.Windows.Forms;
 namespace HeuristicLab.JsonInterface.OptimizerIntegration {
 
   public class DoubleArrayValueVM : ArrayValueVM<double, DoubleArrayJsonItem> {
-    public override Type JsonItemType => typeof(DoubleArrayJsonItem);
+    public override Type TargetedJsonItemType => typeof(DoubleArrayJsonItem);
 
     protected override double MinTypeValue => double.MinValue;
 
@@ -28,7 +28,7 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
   }
 
   public class IntArrayValueVM : ArrayValueVM<int, IntArrayJsonItem> {
-    public override Type JsonItemType => typeof(IntArrayJsonItem);
+    public override Type TargetedJsonItemType => typeof(IntArrayJsonItem);
 
     protected override int MinTypeValue => int.MinValue;
 
@@ -46,8 +46,9 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
     }
   }
 
-  public abstract class ArrayValueVM<T, JsonItemType> : RangedValueBaseVM<T>, IArrayJsonItemVM
-    where JsonItemType : IArrayJsonItem {
+  public abstract class ArrayValueVM<T, JsonItemType> : RangedValueBaseVM<T, JsonItemType>, IArrayJsonItemVM
+    where T : IComparable
+    where JsonItemType : class, IArrayJsonItem, IIntervalRestrictedJsonItem<T> {
     
     public ArrayValueVM() { }
 

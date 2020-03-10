@@ -16,14 +16,13 @@ namespace HeuristicLab.JsonInterface {
       IResultParameter res = value as IResultParameter;
       return new ResultJsonItem() {
         Name = res.ActualName,
-        Value = res.ActualName,
         Description = res.Description
       };
     }
 
     public override void Inject(IItem item, IJsonItem data, IJsonItemConverter root) {
       IResultParameter res = item as IResultParameter;
-      res.ActualName = (string)data.Value;
+      res.ActualName = data.Name;
     }
   }
 }

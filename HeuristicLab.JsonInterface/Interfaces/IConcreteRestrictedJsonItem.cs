@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace HeuristicLab.JsonInterface {
-  public class ResultJsonItem : JsonItem, IResultJsonItem {
-    protected override bool Validate() => true;
+  public interface IConcreteRestrictedJsonItem<T> : IJsonItem {
+    IEnumerable<T> ConcreteRestrictedItems { get; set; }
   }
 }

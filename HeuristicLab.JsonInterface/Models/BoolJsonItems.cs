@@ -5,9 +5,15 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace HeuristicLab.JsonInterface {
-  public class BoolJsonItem : JsonItem<bool> { }
+  public class BoolJsonItem : ValueJsonItem<bool> {
+    protected override bool Validate() => true;
+  }
 
-  public class BoolArrayJsonItem : ArrayJsonItemBase<bool> { }
+  public class BoolArrayJsonItem : ArrayJsonItem<bool> {
+    protected override bool Validate() => true;
+  }
 
-  public class BoolMatrixJsonItem : MatrixJsonItemBase<bool> { }
+  public class BoolMatrixJsonItem : MatrixJsonItem<bool> {
+    protected override bool Validate() => true;
+  }
 }

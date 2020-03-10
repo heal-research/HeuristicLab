@@ -8,8 +8,8 @@ using System.Windows.Forms;
 
 namespace HeuristicLab.JsonInterface.OptimizerIntegration {
 
-  public class IntRangeVM : RangeVM<int> {
-    public override Type JsonItemType => typeof(IntRangeJsonItem);
+  public class IntRangeVM : RangeVM<int, IntRangeJsonItem> {
+    public override Type TargetedJsonItemType => typeof(IntRangeJsonItem);
 
     protected override int MinTypeValue => int.MinValue;
 
@@ -19,8 +19,8 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
       new JsonItemRangeControl(this);
   }
 
-  public class DoubleRangeVM : RangeVM<double> {
-    public override Type JsonItemType => typeof(DoubleRangeJsonItem);
+  public class DoubleRangeVM : RangeVM<double, DoubleRangeJsonItem> {
+    public override Type TargetedJsonItemType => typeof(DoubleRangeJsonItem);
 
     protected override double MinTypeValue => double.MinValue;
 
@@ -30,25 +30,25 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
       new JsonItemRangeControl(this);
   }
 
-  public abstract class RangeVM<T> : RangedValueBaseVM<T> {
+  public abstract class RangeVM<T, JsonItemType> : RangedValueBaseVM<T, JsonItemType>
+    where T : IComparable 
+    where JsonItemType : class, IRangedJsonItem<T>
+  {
 
     public T MinValue {
-      get => Cast(((Array)Item.Value).GetValue(0));
+      get => Item.MinValue;
       set {
-        SetValue(value, (T)((Array)Item.Value).GetValue(1));
+        Item.MinValue = value;
         OnPropertyChange(this, nameof(MinValue));
       }
     }
 
     public T MaxValue {
-      get => Cast(((Array)Item.Value).GetValue(1));
+      get => Item.MaxValue;
       set {
-        SetValue((T)((Array)Item.Value).GetValue(0), value);
+        Item.MaxValue = value;
         OnPropertyChange(this, nameof(MaxValue));
       }
     }
-
-    private void SetValue(T min, T max) =>
-      Item.Value = new T[] { min, max };
   }
 }

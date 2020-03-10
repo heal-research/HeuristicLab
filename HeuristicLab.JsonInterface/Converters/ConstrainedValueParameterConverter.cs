@@ -18,7 +18,7 @@ namespace HeuristicLab.JsonInterface {
         if(x.ToString() == CastValue<string>(cdata.Value))
           parameter.ActualValue = x;
 
-      if (parameter.ActualValue is IParameterizedItem && cdata.Children != null) {
+      if (parameter.ActualValue != null && /*parameter.ActualValue is IParameterizedItem &&*/ cdata.Children != null) {
         foreach(var param in cdata.Children) {
           if(param.Name == parameter.ActualValue.ItemName)
             root.Inject(parameter.ActualValue, param, root);
@@ -33,7 +33,7 @@ namespace HeuristicLab.JsonInterface {
         Name = parameter.Name,
         Description = value.ItemDescription,
         Value = parameter.ActualValue?.ToString(),
-        Range = GetValidValues(parameter).Select(x => x.ToString())
+        ConcreteRestrictedItems = GetValidValues(parameter).Select(x => x.ToString())
       };
       item.AddChildren(GetParameterizedChilds(parameter));
 

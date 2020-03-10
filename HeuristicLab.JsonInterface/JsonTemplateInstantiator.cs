@@ -104,6 +104,8 @@ namespace HeuristicLab.JsonInterface {
         tmp.SetFromJObject(obj);
         instData.Objects.Add(tmp.Path, tmp);
       }
+      //IList<IJsonItem> faultyItems = new List<IJsonItem>();
+      //root.GetValidator().Validate(ref faultyItems);
     }
     
     private static void MergeTemplateWithConfig(InstData instData) {
@@ -112,11 +114,12 @@ namespace HeuristicLab.JsonInterface {
         string path = obj.Property("Path").Value.ToString();
         // override default value
         if (instData.Objects.TryGetValue(path, out IJsonItem param)) {
-          // save range from template
-          IEnumerable<object> tmpRange = param.Range;
+          // remove fixed template parameter => dont allow to copy them from concrete config
+          obj.Property(nameof(IIntervalRestrictedJsonItem<int>.Minimum))?.Remove();
+          obj.Property(nameof(IIntervalRestrictedJsonItem<int>.Maximum))?.Remove();
+          obj.Property(nameof(IConcreteRestrictedJsonItem<string>.ConcreteRestrictedItems))?.Remove();
+          // merge
           param.SetFromJObject(obj);
-          // set range from template
-          param.Range = tmpRange; 
         } else throw new InvalidDataException($"No parameter with path='{path}' defined!");
       }
     }

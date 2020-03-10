@@ -7,15 +7,13 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace HeuristicLab.JsonInterface.OptimizerIntegration {
-  public interface IJsonItemVM : INotifyPropertyChanged, IDisposable {
+  public interface IJsonItemVM : INotifyPropertyChanged, IDisposable 
+  {
     event Action ItemChanged;
 
-    Type JsonItemType { get; }
+    Type TargetedJsonItemType { get; }
 
     UserControl Control { get; }
-
-    IJsonItem Item { get; set; }
-
     bool Selected { get; set; }
 
     string Name { get; set; }
@@ -25,5 +23,13 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
     TreeNode TreeNode { get; set; }
 
     TreeView TreeView { get; set; }
+    IJsonItem Item { get; set; }
+
+  }
+
+  public interface IJsonItemVM<JsonItemType> : IJsonItemVM
+    where JsonItemType : IJsonItem
+  {
+    new JsonItemType Item { get; set; }
   }
 }

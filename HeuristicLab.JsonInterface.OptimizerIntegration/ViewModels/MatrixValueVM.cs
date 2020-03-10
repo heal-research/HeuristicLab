@@ -9,7 +9,7 @@ using System.Windows.Forms;
 namespace HeuristicLab.JsonInterface.OptimizerIntegration {
 
   public class DoubleMatrixValueVM : MatrixValueVM<double, DoubleMatrixJsonItem> {
-    public override Type JsonItemType => typeof(DoubleMatrixJsonItem);
+    public override Type TargetedJsonItemType => typeof(DoubleMatrixJsonItem);
     public override UserControl Control =>
       new JsonItemDoubleMatrixValueControl(this);
 
@@ -26,8 +26,9 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
     protected override double MaxTypeValue => double.MaxValue;
   }
 
-  public abstract class MatrixValueVM<T, JsonItemType> : RangedValueBaseVM<T>, IMatrixJsonItemVM
-    where JsonItemType : IMatrixJsonItem {
+  public abstract class MatrixValueVM<T, JsonItemType> : RangedValueBaseVM<T, JsonItemType>, IMatrixJsonItemVM
+    where T : IComparable
+    where JsonItemType : class, IMatrixJsonItem, IIntervalRestrictedJsonItem<T> {
     public abstract T[][] Value { get; set; }
     public bool RowsResizable {
       get => ((IMatrixJsonItem)Item).RowsResizable; 

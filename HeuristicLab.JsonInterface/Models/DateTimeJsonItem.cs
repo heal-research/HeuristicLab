@@ -5,5 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace HeuristicLab.JsonInterface {
-  public class DateTimeJsonItem : JsonItem<DateTime> { }
+  public class DateTimeJsonItem : IntervalRestrictedValueJsonItem<DateTime> {
+    protected override bool Validate() => Minimum.CompareTo(Value) >= 0 && Maximum.CompareTo(Value) <= 0;
+  }
 }

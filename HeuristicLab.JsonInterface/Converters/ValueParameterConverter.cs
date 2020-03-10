@@ -13,14 +13,14 @@ namespace HeuristicLab.JsonInterface {
     public override void Inject(IItem value, IJsonItem data, IJsonItemConverter root) {
       IParameter parameter = value as IParameter;
 
-      if (parameter.ActualValue == null && data.Value != null)
+      if (parameter.ActualValue == null)
         parameter.ActualValue = Instantiate(parameter.DataType);
 
       if(parameter.ActualValue != null) {
           if (data.Children == null || data.Children.Count == 0)
             root.Inject(parameter.ActualValue, data, root);
           else
-            root.Inject(parameter.ActualValue, data.Children?.First(), root);
+            root.Inject(parameter.ActualValue, /*data.Children?.First()*/ data, root);
          
       }
     }
@@ -28,7 +28,7 @@ namespace HeuristicLab.JsonInterface {
     public override IJsonItem Extract(IItem value, IJsonItemConverter root) {
       IParameter parameter = value as IParameter;
 
-      IJsonItem item = new JsonItem() {
+      IJsonItem item = new EmptyJsonItem() {
         Name = parameter.Name,
         Description = parameter.Description
       };
@@ -36,6 +36,10 @@ namespace HeuristicLab.JsonInterface {
       if (parameter.ActualValue != null) {
         IJsonItem tmp = root.Extract(parameter.ActualValue, root);
         if (!(tmp is UnsupportedJsonItem)) {
+          tmp.Name = parameter.Name;
+          tmp.Description = parameter.Description;
+          item = tmp;
+          /*
           if (tmp.Name == "[OverridableParamName]") {
             tmp.Name = parameter.Name;
             tmp.Description = parameter.Description;
@@ -43,6 +47,7 @@ namespace HeuristicLab.JsonInterface {
             //JsonItem.Merge(item as JsonItem, tmp as JsonItem);
           } else
             item.AddChildren(tmp);
+            */
         }
       }
       return item;

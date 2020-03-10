@@ -45,9 +45,10 @@ namespace Heuristiclab.ConfigStarter {
       alg.Problem = prop;
 
       IJsonItem root = JsonItemConverter.Extract(alg);
-      var x = root.Children[0];
-      root.Children.Remove(x);
-      x.Parent = null;
+      ActivateJsonItems(root);
+      //var x = root.Children[0];
+      //root.Children.Remove(x);
+      //x.Parent = null;
 
 
       JCGenerator generator = new JCGenerator();
@@ -62,6 +63,14 @@ namespace Heuristiclab.ConfigStarter {
 
       app.Run(arguments.ToArray());
       
+    }
+
+    private static void ActivateJsonItems(IJsonItem item) {
+      item.Active = true;
+      if(item.Children != null) {
+        foreach (var x in item.Children)
+          ActivateJsonItems(x);
+      }
     }
   }
 }

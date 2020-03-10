@@ -5,13 +5,12 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace HeuristicLab.JsonInterface {
-  public class DoubleJsonItem : JsonItem<double> { }
-  public class DoubleArrayJsonItem : ArrayJsonItemBase<double> { }
-  public class DoubleRangeJsonItem : ArrayJsonItemBase<double> {
-    public override bool Resizable { get => false; set { } }
-  }
+  public class DoubleJsonItem : IntervalRestrictedValueJsonItem<double> { }
+  public class DoubleArrayJsonItem : IntervalRestrictedArrayJsonItem<double> { }
+  public class DoubleRangeJsonItem : RangedJsonItem<double> { }
 
-  public class DoubleMatrixJsonItem : MatrixJsonItemBase<double> {
+  public class DoubleMatrixJsonItem : IntervalRestrictedMatrixJsonItem<double> {
+    /*
     protected override bool IsInRange() {
       for (int c = 0; c < Value.Length; ++c) {
         for (int r = 0; r < Value[c].Length; ++r) {
@@ -21,5 +20,6 @@ namespace HeuristicLab.JsonInterface {
       }
       return true;
     }
+    */
   }
 }

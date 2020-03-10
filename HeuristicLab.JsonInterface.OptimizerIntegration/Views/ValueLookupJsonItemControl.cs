@@ -9,29 +9,31 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using HeuristicLab.PluginInfrastructure;
 
-namespace HeuristicLab.JsonInterface.OptimizerIntegration.Views {
+namespace HeuristicLab.JsonInterface.OptimizerIntegration {
   public partial class ValueLookupJsonItemControl : LookupJsonItemControl {
-    private IDictionary<Type, Type> JI2VM { get; set; }
+    private static IDictionary<Type, Type> JI2VM { get; set; }
 
-    public ValueLookupJsonItemControl() {
-      InitializeComponent();
-    }
     public ValueLookupJsonItemControl(IValueLookupJsonItemVM vm) : base(vm) {
       InitializeComponent();
       InitCache();
-      if (JI2VM.TryGetValue(vm.JsonItemReference.GetType(), out Type vmType)) {
+      if (vm.JsonItemReference != null && JI2VM.TryGetValue(vm.JsonItemReference.GetType(), out Type vmType)) {
         IJsonItemVM tmp = (IJsonItemVM)Activator.CreateInstance(vmType);
-        content.Controls.Add(tmp.Control);
-      } else {
-        //node.
+        tmp.Item = vm.JsonItemReference;
+        content.Controls.Clear();
+        UserControl control = tmp.Control;
+        content.Controls.Add(control);
+        control.Dock = DockStyle.Fill;
+        
       }
     }
 
     private void InitCache() {
-      JI2VM = new Dictionary<Type, Type>();
-      foreach (var vmType in ApplicationManager.Manager.GetTypes(typeof(IJsonItemVM))) {
-        IJsonItemVM vm = (IJsonItemVM)Activator.CreateInstance(vmType);
-        JI2VM.Add(vm.JsonItemType, vmType);
+      if(JI2VM == null) {
+        JI2VM = new Dictionary<Type, Type>();
+        foreach (var vmType in ApplicationManager.Manager.GetTypes(typeof(IJsonItemVM))) {
+          IJsonItemVM vm = (IJsonItemVM)Activator.CreateInstance(vmType);
+          JI2VM.Add(vm.TargetedJsonItemType, vmType);
+        }
       }
     }
   }

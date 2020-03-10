@@ -52,7 +52,7 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
       JI2VM = new Dictionary<Type, Type>();
       foreach (var vmType in ApplicationManager.Manager.GetTypes(typeof(IJsonItemVM))) {
         IJsonItemVM vm = (IJsonItemVM)Activator.CreateInstance(vmType);
-        JI2VM.Add(vm.JsonItemType, vmType);
+        JI2VM.Add(vm.TargetedJsonItemType, vmType);
       }
     }
 
@@ -101,6 +101,7 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
               RegisterItem(childNode, c, treeViewResults);
               if(Node2VM.TryGetValue(childNode, out IJsonItemVM vm))
                 vm.Selected = true;
+              
             } else {
               TreeNode childNode = new TreeNode(c.Name);
               node.Nodes.Add(childNode);
@@ -125,7 +126,8 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
         UserControl control = new JsonItemBaseControl(vm, vm.Control);
         Node2Control.Add(node, control);
       } else {
-        //node.
+        node.ForeColor = Color.LightGray;
+        node.NodeFont = new Font(SystemFonts.DialogFont, FontStyle.Italic);
       }
     }
 
@@ -137,7 +139,7 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
         }
       }
       
-      return b || (item.Value != null || item.Range != null || item is ILookupJsonItem || item is IResultJsonItem);
+      return b || !(item is EmptyJsonItem);
     }
     
     private void treeView_AfterSelect(object sender, TreeViewEventArgs e) {

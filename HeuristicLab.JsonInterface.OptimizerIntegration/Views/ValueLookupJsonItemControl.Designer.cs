@@ -1,4 +1,4 @@
-﻿namespace HeuristicLab.JsonInterface.OptimizerIntegration.Views {
+﻿namespace HeuristicLab.JsonInterface.OptimizerIntegration {
   partial class ValueLookupJsonItemControl {
     /// <summary> 
     /// Required designer variable.
@@ -28,13 +28,12 @@
       // 
       // content
       // 
-      this.content.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-      this.content.Location = new System.Drawing.Point(0, 20);
+      this.content.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.content.Location = new System.Drawing.Point(0, 22);
       this.content.Margin = new System.Windows.Forms.Padding(0);
       this.content.Name = "content";
-      this.content.Size = new System.Drawing.Size(651, 350);
+      this.content.Padding = new System.Windows.Forms.Padding(0, 3, 0, 0);
+      this.content.Size = new System.Drawing.Size(500, 523);
       this.content.TabIndex = 14;
       // 
       // ValueLookupJsonItemControl
@@ -43,7 +42,7 @@
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.Controls.Add(this.content);
       this.Name = "ValueLookupJsonItemControl";
-      this.Size = new System.Drawing.Size(651, 370);
+      this.Size = new System.Drawing.Size(500, 545);
       this.Controls.SetChildIndex(this.content, 0);
       this.ResumeLayout(false);
 

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 
 namespace HeuristicLab.JsonInterface {
-  public class MatrixJsonItemBase<T> : JsonItem<T[][], T>, IMatrixJsonItem {
+  public abstract class MatrixJsonItem<T> : ValueJsonItem<T[][]>, IMatrixJsonItem {
     public virtual bool RowsResizable { get; set; }
     public virtual bool ColumnsResizable { get; set; }
 

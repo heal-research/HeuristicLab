@@ -11,14 +11,14 @@ using System.Windows.Forms;
 namespace HeuristicLab.JsonInterface.OptimizerIntegration {
   public partial class JsonItemValidValuesControl : UserControl {
 
-    IJsonItemVM VM { get; set; }
+    StringValueVM VM { get; set; }
 
     public JsonItemValidValuesControl(StringValueVM vm) {
       InitializeComponent();
       VM = vm;
-      if (VM.Item.Range != null) {
-        foreach (var i in VM.Item.Range)
-          SetupOption((string)i);
+      if (VM.Item.ConcreteRestrictedItems != null) {
+        foreach (var i in VM.Item.ConcreteRestrictedItems)
+          SetupOption(i);
         comboBoxValues.DataBindings.Add("SelectedItem", VM, nameof(StringValueVM.Value));
       } else {
         comboBoxValues.Hide();

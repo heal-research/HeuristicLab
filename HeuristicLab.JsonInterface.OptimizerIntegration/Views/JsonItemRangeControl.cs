@@ -31,11 +31,11 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
     }
 
     private void InitNumbericRangeControl() {
-      numericRangeControl.TBMinRange.DataBindings.Add("Text", VM, nameof(RangedValueBaseVM.MinRange));
-      numericRangeControl.TBMaxRange.DataBindings.Add("Text", VM, nameof(RangedValueBaseVM.MaxRange));
-      numericRangeControl.EnableMinRange.DataBindings.Add("Checked", VM, nameof(RangedValueBaseVM.EnableMinRange),
+      numericRangeControl.TBMinRange.DataBindings.Add("Text", VM, nameof(RangedValueBaseVM<int, IntJsonItem>.MinRange));
+      numericRangeControl.TBMaxRange.DataBindings.Add("Text", VM, nameof(RangedValueBaseVM<int, IntJsonItem>.MaxRange));
+      numericRangeControl.EnableMinRange.DataBindings.Add("Checked", VM, nameof(RangedValueBaseVM<int, IntJsonItem>.EnableMinRange),
         false, DataSourceUpdateMode.OnPropertyChanged);
-      numericRangeControl.EnableMaxRange.DataBindings.Add("Checked", VM, nameof(RangedValueBaseVM.EnableMaxRange),
+      numericRangeControl.EnableMaxRange.DataBindings.Add("Checked", VM, nameof(RangedValueBaseVM<int, IntJsonItem>.EnableMaxRange),
         false, DataSourceUpdateMode.OnPropertyChanged);
     }
 
