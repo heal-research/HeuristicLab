@@ -23,9 +23,9 @@ namespace HeuristicLab.JsonInterface {
     [JsonIgnore]
     IJsonItem Parent { get; set; }
 
-    object Value { get; set; }
+    //object Value { get; set; }
 
-    IEnumerable<object> Range { get; set; }
+    //IEnumerable<object> Range { get; set; }
     
     IJsonItemValidator GetValidator();
 

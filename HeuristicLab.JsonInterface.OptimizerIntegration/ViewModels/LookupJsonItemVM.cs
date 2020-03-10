@@ -6,15 +6,15 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace HeuristicLab.JsonInterface.OptimizerIntegration {
-  public class LookupJsonItemVM : JsonItemVMBase, ILookupJsonItemVM {
-    public override Type JsonItemType => typeof(LookupJsonItem);
+  public class LookupJsonItemVM : JsonItemVMBase<LookupJsonItem>, ILookupJsonItemVM {
+    public override Type TargetedJsonItemType => typeof(LookupJsonItem);
 
     public override UserControl Control => new LookupJsonItemControl(this);
 
     public string ActualName {
-      get => ((ILookupJsonItem)Item).ActualName;
+      get => Item.ActualName;
       set {
-        ((ILookupJsonItem)Item).ActualName = value;
+        Item.ActualName = value;
         OnPropertyChange(this, nameof(ActualName));
       }
     }

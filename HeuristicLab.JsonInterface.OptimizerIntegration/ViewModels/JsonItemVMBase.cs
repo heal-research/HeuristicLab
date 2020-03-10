@@ -8,9 +8,16 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace HeuristicLab.JsonInterface.OptimizerIntegration {
-  public abstract class JsonItemVMBase : IJsonItemVM {
-    private IJsonItem item;
-    public IJsonItem Item {
+  public abstract class JsonItemVMBase<JsonItemType> : IJsonItemVM<JsonItemType>
+    where JsonItemType : class, IJsonItem 
+  {
+    IJsonItem IJsonItemVM.Item { 
+      get => item; 
+      set => item = (JsonItemType)value; 
+    }
+
+    private JsonItemType item;
+    public JsonItemType Item {
       get => item;
       set {
         item?.LoosenPath();
@@ -26,7 +33,7 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
       set {
         Item.Active = value;
         if(TreeNode != null) {
-          TreeNode.ForeColor = (Selected ? Color.Black : Color.Red);
+          TreeNode.ForeColor = (Selected ? Color.Green : Color.Black);
           TreeNode.Checked = value;
         }
         if (TreeView != null)
@@ -49,7 +56,7 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
       }
     }
 
-    public abstract Type JsonItemType { get; }
+    public abstract Type TargetedJsonItemType { get; }
     public abstract UserControl Control { get; }
 
     public event PropertyChangedEventHandler PropertyChanged;

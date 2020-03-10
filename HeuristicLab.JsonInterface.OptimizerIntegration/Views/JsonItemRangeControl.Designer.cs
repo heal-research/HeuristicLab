@@ -25,16 +25,16 @@
     private void InitializeComponent() {
       this.components = new System.ComponentModel.Container();
       this.groupBox1 = new System.Windows.Forms.GroupBox();
-      this.textBoxValueTo = new System.Windows.Forms.TextBox();
-      this.label4 = new System.Windows.Forms.Label();
-      this.label2 = new System.Windows.Forms.Label();
-      this.errorProvider = new System.Windows.Forms.ErrorProvider(this.components);
-      this.textBoxValueFrom = new System.Windows.Forms.TextBox();
       this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+      this.label2 = new System.Windows.Forms.Label();
+      this.textBoxValueTo = new System.Windows.Forms.TextBox();
+      this.textBoxValueFrom = new System.Windows.Forms.TextBox();
+      this.label4 = new System.Windows.Forms.Label();
+      this.errorProvider = new System.Windows.Forms.ErrorProvider(this.components);
       this.numericRangeControl = new HeuristicLab.JsonInterface.OptimizerIntegration.NumericRangeControl();
       this.groupBox1.SuspendLayout();
-      ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
       this.tableLayoutPanel1.SuspendLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
       this.SuspendLayout();
       // 
       // groupBox1
@@ -49,52 +49,6 @@
       this.groupBox1.TabIndex = 17;
       this.groupBox1.TabStop = false;
       this.groupBox1.Text = "Value";
-      // 
-      // textBoxValueTo
-      // 
-      this.textBoxValueTo.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.textBoxValueTo.Location = new System.Drawing.Point(100, 24);
-      this.textBoxValueTo.Margin = new System.Windows.Forms.Padding(0);
-      this.textBoxValueTo.Name = "textBoxValueTo";
-      this.textBoxValueTo.Size = new System.Drawing.Size(394, 20);
-      this.textBoxValueTo.TabIndex = 3;
-      // 
-      // label4
-      // 
-      this.label4.AutoSize = true;
-      this.label4.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.label4.Location = new System.Drawing.Point(0, 24);
-      this.label4.Margin = new System.Windows.Forms.Padding(0);
-      this.label4.Name = "label4";
-      this.label4.Size = new System.Drawing.Size(100, 25);
-      this.label4.TabIndex = 1;
-      this.label4.Text = "To:";
-      this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-      // 
-      // label2
-      // 
-      this.label2.AutoSize = true;
-      this.label2.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.label2.Location = new System.Drawing.Point(0, 0);
-      this.label2.Margin = new System.Windows.Forms.Padding(0);
-      this.label2.Name = "label2";
-      this.label2.Size = new System.Drawing.Size(100, 24);
-      this.label2.TabIndex = 0;
-      this.label2.Text = "From:";
-      this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-      // 
-      // errorProvider
-      // 
-      this.errorProvider.ContainerControl = this;
-      // 
-      // textBoxValueFrom
-      // 
-      this.textBoxValueFrom.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.textBoxValueFrom.Location = new System.Drawing.Point(100, 0);
-      this.textBoxValueFrom.Margin = new System.Windows.Forms.Padding(0);
-      this.textBoxValueFrom.Name = "textBoxValueFrom";
-      this.textBoxValueFrom.Size = new System.Drawing.Size(394, 20);
-      this.textBoxValueFrom.TabIndex = 2;
       // 
       // tableLayoutPanel1
       // 
@@ -114,6 +68,52 @@
       this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
       this.tableLayoutPanel1.Size = new System.Drawing.Size(494, 49);
       this.tableLayoutPanel1.TabIndex = 19;
+      // 
+      // label2
+      // 
+      this.label2.AutoSize = true;
+      this.label2.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.label2.Location = new System.Drawing.Point(0, 0);
+      this.label2.Margin = new System.Windows.Forms.Padding(0);
+      this.label2.Name = "label2";
+      this.label2.Size = new System.Drawing.Size(100, 24);
+      this.label2.TabIndex = 0;
+      this.label2.Text = "From:";
+      this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+      // 
+      // textBoxValueTo
+      // 
+      this.textBoxValueTo.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.textBoxValueTo.Location = new System.Drawing.Point(100, 24);
+      this.textBoxValueTo.Margin = new System.Windows.Forms.Padding(0);
+      this.textBoxValueTo.Name = "textBoxValueTo";
+      this.textBoxValueTo.Size = new System.Drawing.Size(394, 20);
+      this.textBoxValueTo.TabIndex = 3;
+      // 
+      // textBoxValueFrom
+      // 
+      this.textBoxValueFrom.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.textBoxValueFrom.Location = new System.Drawing.Point(100, 0);
+      this.textBoxValueFrom.Margin = new System.Windows.Forms.Padding(0);
+      this.textBoxValueFrom.Name = "textBoxValueFrom";
+      this.textBoxValueFrom.Size = new System.Drawing.Size(394, 20);
+      this.textBoxValueFrom.TabIndex = 2;
+      // 
+      // label4
+      // 
+      this.label4.AutoSize = true;
+      this.label4.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.label4.Location = new System.Drawing.Point(0, 24);
+      this.label4.Margin = new System.Windows.Forms.Padding(0);
+      this.label4.Name = "label4";
+      this.label4.Size = new System.Drawing.Size(100, 25);
+      this.label4.TabIndex = 1;
+      this.label4.Text = "To:";
+      this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+      // 
+      // errorProvider
+      // 
+      this.errorProvider.ContainerControl = this;
       // 
       // numericRangeControl
       // 
@@ -136,9 +136,9 @@
       this.Name = "JsonItemRangeControl";
       this.Size = new System.Drawing.Size(500, 147);
       this.groupBox1.ResumeLayout(false);
-      ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
       this.tableLayoutPanel1.ResumeLayout(false);
       this.tableLayoutPanel1.PerformLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
       this.ResumeLayout(false);
 
     }

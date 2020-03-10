@@ -61,7 +61,7 @@ namespace HeuristicLab.JsonInterface {
     private void PopulateJsonItems(IJsonItem item, IList<IJsonItem> jsonItems) {
       IEnumerable<IJsonItem> children = item.Children;
       
-      if (item.Active && (item.Value != null || item.Range != null || item is IResultJsonItem || item is ILookupJsonItem)) {
+      if (item.Active && !(item is EmptyJsonItem)) {
         jsonItems.Add(item);
       }
 

@@ -33,14 +33,6 @@ namespace HeuristicLab.JsonInterface {
       set => throw new NotSupportedException();
     }
 
-    public override object Value {
-      get => throw new NotSupportedException();
-      set => throw new NotSupportedException();
-    }
-
-    public override IEnumerable<object> Range {
-      get => throw new NotSupportedException();
-      set => throw new NotSupportedException();
-    }
+    protected override bool Validate() => true;
   }
 }

@@ -5,19 +5,11 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace HeuristicLab.JsonInterface {
-  public class IntJsonItem : JsonItem<int> {
-    //public new IEnumerable<int> Range { get; }
+  public class IntJsonItem : IntervalRestrictedValueJsonItem<int> { }
+  public class IntArrayJsonItem : IntervalRestrictedArrayJsonItem<int> { }
+  public class IntRangeJsonItem : RangedJsonItem<int> { }
+  public class IntMatrixJsonItem : IntervalRestrictedMatrixJsonItem<int> {
     /*
-    public int MinValue { get; set; } 
-    public int MaxValue { get; set; }
-    */
-  }
-  public class IntArrayJsonItem : ArrayJsonItemBase<int> { }
-  public class IntRangeJsonItem : ArrayJsonItemBase<int> {
-    public override bool Resizable { get => false; set { } }
-  }
-  public class IntMatrixJsonItem : MatrixJsonItemBase<int> {
-
     protected override bool IsInRange() {
       for (int c = 0; c < Value.Length; ++c) {
         for (int r = 0; r < Value[c].Length; ++r) {
@@ -27,5 +19,6 @@ namespace HeuristicLab.JsonInterface {
       }
       return true;
     }
+    */
   }
 }

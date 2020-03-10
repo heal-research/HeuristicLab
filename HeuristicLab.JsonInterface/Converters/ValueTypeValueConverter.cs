@@ -17,10 +17,12 @@ namespace HeuristicLab.JsonInterface {
 
     public override IJsonItem Extract(IItem value, IJsonItemConverter root) =>
       new IntJsonItem() {
-        Name = "[OverridableParamName]",
+        //Name = "[OverridableParamName]",
+        Name = value.ItemName,
         Description = value.ItemDescription,
         Value = ((IntValue)value).Value,
-        Range = new int[] { int.MinValue, int.MaxValue }
+        Minimum = int.MinValue,
+        Maximum = int.MaxValue
       };
   }
 
@@ -33,10 +35,12 @@ namespace HeuristicLab.JsonInterface {
 
     public override IJsonItem Extract(IItem value, IJsonItemConverter root) =>
       new DoubleJsonItem() {
-        Name = "[OverridableParamName]",
+        //Name = "[OverridableParamName]",
+        Name = value.ItemName,
         Description = value.ItemDescription,
         Value = ((DoubleValue)value).Value,
-        Range = new double[] { double.MinValue, double.MaxValue }
+        Minimum = double.MinValue,
+        Maximum = double.MaxValue
       };
   }
 
@@ -49,10 +53,12 @@ namespace HeuristicLab.JsonInterface {
 
     public override IJsonItem Extract(IItem value, IJsonItemConverter root) =>
       new DoubleJsonItem() {
-        Name = "[OverridableParamName]",
+        //Name = "[OverridableParamName]",
+        Name = value.ItemName,
         Description = value.ItemDescription,
         Value = ((PercentValue)value).Value,
-        Range = new double[] { double.MinValue, double.MaxValue }
+        Minimum = double.MinValue,
+        Maximum = double.MaxValue
       };
   }
 
@@ -65,10 +71,10 @@ namespace HeuristicLab.JsonInterface {
 
     public override IJsonItem Extract(IItem value, IJsonItemConverter root) =>
       new BoolJsonItem() {
-        Name = "[OverridableParamName]",
+        //Name = "[OverridableParamName]",
+        Name = value.ItemName,
         Description = value.ItemDescription,
-        Value = ((BoolValue)value).Value,
-        Range = new bool[] { false, true }
+        Value = ((BoolValue)value).Value
       };
   }
 
@@ -81,10 +87,12 @@ namespace HeuristicLab.JsonInterface {
 
     public override IJsonItem Extract(IItem value, IJsonItemConverter root) =>
       new DateTimeJsonItem() {
-        Name = "[OverridableParamName]",
+        //Name = "[OverridableParamName]",
+        Name = value.ItemName,
         Description = value.ItemDescription,
         Value = ((DateTimeValue)value).Value,
-        Range = new DateTime[] { DateTime.MinValue, DateTime.MaxValue }
+        Minimum = DateTime.MinValue,
+        Maximum = DateTime.MaxValue
       };
   }
 }

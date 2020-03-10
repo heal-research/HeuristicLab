@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace HeuristicLab.JsonInterface.OptimizerIntegration {
-  public class StringValueVM : JsonItemVMBase {
-    public override Type JsonItemType => typeof(StringJsonItem);
+  public class StringValueVM : JsonItemVMBase<StringJsonItem> {
+    public override Type TargetedJsonItemType => typeof(StringJsonItem);
     public override UserControl Control =>
        new JsonItemValidValuesControl(this);
 
@@ -21,9 +21,9 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
     }
 
     public IEnumerable<string> Range {
-      get => Item.Range?.Cast<string>();
+      get => Item.ConcreteRestrictedItems;
       set {
-        Item.Range = value;
+        Item.ConcreteRestrictedItems = value;
         //check if value is still in range
         if (!Range.Any(x => x == Value)) {
           Value = Range.FirstOrDefault();
@@ -36,5 +36,6 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
         OnPropertyChange(this, nameof(Range));
       }
     }
+
   }
 }

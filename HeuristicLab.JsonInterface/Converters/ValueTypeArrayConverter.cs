@@ -29,7 +29,8 @@ namespace HeuristicLab.JsonInterface {
         Name = "[OverridableParamName]",
         Description = value.ItemDescription,
         Value = ((IntArray)value).CloneAsArray(),
-        Range = new int[] { int.MinValue, int.MaxValue }
+        Minimum = int.MinValue,
+        Maximum = int.MaxValue
       };
   }
 
@@ -55,7 +56,8 @@ namespace HeuristicLab.JsonInterface {
         Name = "[OverridableParamName]",
         Description = value.ItemDescription,
         Value = ((DoubleArray)value).CloneAsArray(),
-        Range = new double[] { double.MinValue, double.MaxValue }
+        Minimum = double.MinValue,
+        Maximum = double.MaxValue
       };
   }
 
@@ -79,7 +81,8 @@ namespace HeuristicLab.JsonInterface {
         Name = "[OverridableParamName]",
         Description = value.ItemDescription,
         Value = ((PercentArray)value).CloneAsArray(),
-        Range = new double[] { 0.0d, 1.0d }
+        Minimum = 0.0d,
+        Maximum = 1.0d
       };
   }
 
@@ -100,10 +103,10 @@ namespace HeuristicLab.JsonInterface {
 
     public override IJsonItem Extract(IItem value, IJsonItemConverter root) =>
       new BoolArrayJsonItem() {
-        Name = "[OverridableParamName]",
+        //Name = "[OverridableParamName]",
+        Name = value.ItemName,
         Description = value.ItemDescription,
-        Value = ((BoolArray)value).CloneAsArray(),
-        Range = new bool[] { false, true }
+        Value = ((BoolArray)value).CloneAsArray()
       };
   }
 }

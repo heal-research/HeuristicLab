@@ -10,7 +10,7 @@ namespace HeuristicLab.JsonInterface {
   /// <summary>
   /// Main data class for json interface.
   /// </summary>
-  public class JsonItem : IJsonItem {
+  public abstract class JsonItem : IJsonItem {
 
     public class JsonItemValidator : IJsonItemValidator {
       private IDictionary<int, bool> Cache = new Dictionary<int, bool>();
@@ -24,19 +24,20 @@ namespace HeuristicLab.JsonInterface {
         return ValidateHelper(Root, ref faultyItems);
       }
 
+      // TODO: return ValidationResult ?
       private bool ValidateHelper(JsonItem item, ref IList<IJsonItem> faultyItems) {
         int hash = item.GetHashCode();
         if (Cache.TryGetValue(hash, out bool r))
           return r;
 
-        bool res = true;
-        if (item.Value != null && item.Range != null)
-          res = item.IsInRange();
+        bool res = item.Validate();
         if (!res) faultyItems.Add(item);
         Cache.Add(hash, res);
-        if(item.Children != null)
+        if(item.Children != null) {
           foreach (var child in item.Children)
-            res = res && ValidateHelper(child as JsonItem, ref faultyItems);
+            if (!ValidateHelper(child as JsonItem, ref faultyItems))
+              res = false && res;
+        }
         return res;
       }
     }
@@ -61,9 +62,9 @@ namespace HeuristicLab.JsonInterface {
       }
     }
 
-    public virtual object Value { get; set; }
+    //public virtual object Value { get; set; }
 
-    public virtual IEnumerable<object> Range { get; set; }
+    //public virtual IEnumerable<object> Range { get; set; }
     
     // TODO jsonIgnore dataType?
 
@@ -104,8 +105,8 @@ namespace HeuristicLab.JsonInterface {
     public void LoosenPath() => fixedPath = "";
 
     public virtual void SetFromJObject(JObject jObject) {
-      Value = jObject[nameof(IJsonItem.Value)]?.ToObject<object>();
-      Range = jObject[nameof(IJsonItem.Range)]?.ToObject<object[]>();
+      //Value = jObject[nameof(IJsonItem.Value)]?.ToObject<object>();
+      //Range = jObject[nameof(IJsonItem.Range)]?.ToObject<object[]>();
     }
     #endregion
 
@@ -113,7 +114,8 @@ namespace HeuristicLab.JsonInterface {
     /*
      * TODO protected abstract bool Validate();
      */
-     
+    protected abstract bool Validate();
+    /*
     protected virtual bool IsInRange() {
       bool b1 = true, b2 = true;
       if (Value is IEnumerable && !(Value is string)) {
@@ -155,6 +157,7 @@ namespace HeuristicLab.JsonInterface {
         (((T)min).CompareTo(value) == -1 || ((T)min).CompareTo(value) == 0) &&
         (((T)max).CompareTo(value) == 1 || ((T)max).CompareTo(value) == 0);
     }
+    */
     #endregion
   }
 }

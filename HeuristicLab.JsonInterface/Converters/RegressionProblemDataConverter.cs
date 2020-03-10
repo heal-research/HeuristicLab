@@ -30,15 +30,15 @@ namespace HeuristicLab.JsonInterface {
       object dataset = (object)val.Dataset;
       var dataInfo = dataset.GetType().GetField("variableValues", flags);
       dataInfo.SetValue(dataset, dictTmp);
-      val.TargetVariable = (string)data.Children[3].Value;
-      val.TrainingPartition.Start = ((IntRangeJsonItem)data.Children[2]).Value.First();
-      val.TrainingPartition.End = ((IntRangeJsonItem)data.Children[2]).Value.Last();
-      val.TestPartition.Start = ((IntRangeJsonItem)data.Children[1]).Value.First();
-      val.TestPartition.End = ((IntRangeJsonItem)data.Children[1]).Value.Last();
+      val.TargetVariable = ((StringJsonItem)data.Children[3]).Value;
+      val.TrainingPartition.Start = ((IntRangeJsonItem)data.Children[2]).MinValue;
+      val.TrainingPartition.End = ((IntRangeJsonItem)data.Children[2]).MaxValue;
+      val.TestPartition.Start = ((IntRangeJsonItem)data.Children[1]).MinValue;
+      val.TestPartition.End = ((IntRangeJsonItem)data.Children[1]).MaxValue;
     }
 
     public override IJsonItem Extract(IItem value, IJsonItemConverter root) {
-      IJsonItem item = new JsonItem() { 
+      IJsonItem item = new EmptyJsonItem() { 
         Name = value.ItemName,
         Description = value.ItemDescription
       };
@@ -70,7 +70,9 @@ namespace HeuristicLab.JsonInterface {
         item.AddChildren(new DoubleMatrixJsonItem() {
           Name = "Dataset",
           Value = mat,
-          RowNames = rowNames
+          RowNames = rowNames,
+          Minimum = double.MinValue,
+          Maximum = double.MaxValue
         });
       }
 
@@ -79,22 +81,26 @@ namespace HeuristicLab.JsonInterface {
 
       item.AddChildren(new IntRangeJsonItem() {
         Name = "TestPartition",
-        Value = new int[] { testPartition.Start, testPartition.End },
-        Range = new int[] { 0, Math.Max(testPartition.End, trainingPartition.End) }
+        MinValue = testPartition.Start, 
+        MaxValue = testPartition.End,
+        Minimum = 0, 
+        Maximum = Math.Max(testPartition.End, trainingPartition.End)
       });
 
       
       item.AddChildren(new IntRangeJsonItem() {
         Name = "TrainingPartition",
-        Value = new int[] { trainingPartition.Start, trainingPartition.End },
-        Range = new int[] { 0, Math.Max(testPartition.End, trainingPartition.End)}
+        MinValue = trainingPartition.Start,
+        MaxValue = trainingPartition.End,
+        Minimum = 0,
+        Maximum = Math.Max(testPartition.End, trainingPartition.End)
       });
 
       IEnumerable<StringValue> variables = (IEnumerable<StringValue>)val.InputVariables;
-      item.AddChildren(new JsonItem() {
+      item.AddChildren(new StringJsonItem() {
         Name = "TargetVariable",
-        Value = (object)targetVariable,
-        Range = variables.Select(x => x.Value)
+        Value = (string)targetVariable,
+        ConcreteRestrictedItems = variables.Select(x => x.Value)
       });
 
       /*

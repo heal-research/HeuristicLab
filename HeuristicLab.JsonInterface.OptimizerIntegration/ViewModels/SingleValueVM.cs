@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace HeuristicLab.JsonInterface.OptimizerIntegration {
-  public class IntValueVM : SingleValueVM<int> {
-    public override Type JsonItemType => typeof(IntJsonItem);
+  public class IntValueVM : SingleValueVM<int, IntJsonItem> {
+    public override Type TargetedJsonItemType => typeof(IntJsonItem);
 
     protected override int MinTypeValue => int.MinValue;
     protected override int MaxTypeValue => int.MaxValue;
@@ -17,8 +17,8 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
       new JsonItemIntValueControl(this);
   }
 
-  public class DoubleValueVM : SingleValueVM<double> {
-    public override Type JsonItemType => typeof(DoubleJsonItem);
+  public class DoubleValueVM : SingleValueVM<double, DoubleJsonItem> {
+    public override Type TargetedJsonItemType => typeof(DoubleJsonItem);
 
     protected override double MinTypeValue => double.MinValue;
     protected override double MaxTypeValue => double.MaxValue;
@@ -27,20 +27,28 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
        new JsonItemDoubleValueControl(this);
   }
 
-  public class BoolValueVM : SingleValueVM<bool> {
-    public override Type JsonItemType => typeof(BoolJsonItem);
+  public class BoolValueVM : JsonItemVMBase<BoolJsonItem> {
+    public override Type TargetedJsonItemType => typeof(BoolJsonItem);
 
-    protected override bool MinTypeValue => false;
-    protected override bool MaxTypeValue => true;
-
+    public bool Value { 
+      get => Item.Value;
+      set {
+        Item.Value = value;
+        OnPropertyChange(this, nameof(Value));
+      }
+    }
+    
     public override UserControl Control =>
        new JsonItemBoolControl(this);
   }
 
-  public abstract class SingleValueVM<T> : RangedValueBaseVM<T> {
-    
+  public abstract class SingleValueVM<T, JsonItemType> : RangedValueBaseVM<T, JsonItemType>
+    where T : IComparable
+    where JsonItemType : class, IIntervalRestrictedJsonItem<T>, IValueJsonItem<T> 
+  {
+
     public T Value { 
-      get => Cast(Item.Value);
+      get => Item.Value;
       set {
         Item.Value = value;
         OnPropertyChange(this, nameof(Value));

@@ -27,12 +27,12 @@
       this.errorProvider = new System.Windows.Forms.ErrorProvider(this.components);
       this.textBoxName = new System.Windows.Forms.TextBox();
       this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-      this.labelDescription = new System.Windows.Forms.Label();
-      this.textBoxDescription = new System.Windows.Forms.TextBox();
-      this.label1 = new System.Windows.Forms.Label();
-      this.labelEnable = new System.Windows.Forms.Label();
-      this.checkBoxActive = new System.Windows.Forms.CheckBox();
       this.tableLayoutPanel5 = new System.Windows.Forms.TableLayoutPanel();
+      this.textBoxDescription = new System.Windows.Forms.TextBox();
+      this.checkBoxActive = new System.Windows.Forms.CheckBox();
+      this.label1 = new System.Windows.Forms.Label();
+      this.labelDescription = new System.Windows.Forms.Label();
+      this.labelEnable = new System.Windows.Forms.Label();
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
       this.tableLayoutPanel1.SuspendLayout();
       this.tableLayoutPanel5.SuspendLayout();
@@ -47,7 +47,7 @@
       // 
       this.textBoxName.Dock = System.Windows.Forms.DockStyle.Fill;
       this.errorProvider.SetIconAlignment(this.textBoxName, System.Windows.Forms.ErrorIconAlignment.MiddleLeft);
-      this.textBoxName.Location = new System.Drawing.Point(100, 24);
+      this.textBoxName.Location = new System.Drawing.Point(100, 25);
       this.textBoxName.Margin = new System.Windows.Forms.Padding(0);
       this.textBoxName.Name = "textBoxName";
       this.textBoxName.Size = new System.Drawing.Size(394, 20);
@@ -71,62 +71,6 @@
       this.tableLayoutPanel1.Size = new System.Drawing.Size(494, 594);
       this.tableLayoutPanel1.TabIndex = 16;
       // 
-      // labelDescription
-      // 
-      this.labelDescription.AutoSize = true;
-      this.labelDescription.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.labelDescription.Location = new System.Drawing.Point(0, 48);
-      this.labelDescription.Margin = new System.Windows.Forms.Padding(0);
-      this.labelDescription.Name = "labelDescription";
-      this.labelDescription.Size = new System.Drawing.Size(100, 27);
-      this.labelDescription.TabIndex = 13;
-      this.labelDescription.Text = "Description";
-      this.labelDescription.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-      // 
-      // textBoxDescription
-      // 
-      this.textBoxDescription.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.textBoxDescription.Location = new System.Drawing.Point(100, 50);
-      this.textBoxDescription.Margin = new System.Windows.Forms.Padding(0, 2, 0, 0);
-      this.textBoxDescription.Name = "textBoxDescription";
-      this.textBoxDescription.Size = new System.Drawing.Size(394, 20);
-      this.textBoxDescription.TabIndex = 14;
-      // 
-      // label1
-      // 
-      this.label1.AutoSize = true;
-      this.label1.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.label1.Location = new System.Drawing.Point(0, 24);
-      this.label1.Margin = new System.Windows.Forms.Padding(0);
-      this.label1.Name = "label1";
-      this.label1.Size = new System.Drawing.Size(100, 24);
-      this.label1.TabIndex = 9;
-      this.label1.Text = "Name";
-      this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-      // 
-      // labelEnable
-      // 
-      this.labelEnable.AutoSize = true;
-      this.labelEnable.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.labelEnable.Location = new System.Drawing.Point(0, 0);
-      this.labelEnable.Margin = new System.Windows.Forms.Padding(0);
-      this.labelEnable.Name = "labelEnable";
-      this.labelEnable.Size = new System.Drawing.Size(100, 24);
-      this.labelEnable.TabIndex = 3;
-      this.labelEnable.Text = "Enable";
-      this.labelEnable.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-      // 
-      // checkBoxActive
-      // 
-      this.checkBoxActive.AutoSize = true;
-      this.checkBoxActive.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.checkBoxActive.Location = new System.Drawing.Point(100, 0);
-      this.checkBoxActive.Margin = new System.Windows.Forms.Padding(0);
-      this.checkBoxActive.Name = "checkBoxActive";
-      this.checkBoxActive.Size = new System.Drawing.Size(394, 24);
-      this.checkBoxActive.TabIndex = 2;
-      this.checkBoxActive.UseVisualStyleBackColor = true;
-      // 
       // tableLayoutPanel5
       // 
       this.tableLayoutPanel5.ColumnCount = 2;
@@ -149,6 +93,62 @@
       this.tableLayoutPanel5.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
       this.tableLayoutPanel5.Size = new System.Drawing.Size(494, 75);
       this.tableLayoutPanel5.TabIndex = 17;
+      // 
+      // textBoxDescription
+      // 
+      this.textBoxDescription.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.textBoxDescription.Location = new System.Drawing.Point(100, 52);
+      this.textBoxDescription.Margin = new System.Windows.Forms.Padding(0, 2, 0, 0);
+      this.textBoxDescription.Name = "textBoxDescription";
+      this.textBoxDescription.Size = new System.Drawing.Size(394, 20);
+      this.textBoxDescription.TabIndex = 14;
+      // 
+      // checkBoxActive
+      // 
+      this.checkBoxActive.AutoSize = true;
+      this.checkBoxActive.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.checkBoxActive.Location = new System.Drawing.Point(100, 0);
+      this.checkBoxActive.Margin = new System.Windows.Forms.Padding(0);
+      this.checkBoxActive.Name = "checkBoxActive";
+      this.checkBoxActive.Size = new System.Drawing.Size(394, 25);
+      this.checkBoxActive.TabIndex = 2;
+      this.checkBoxActive.UseVisualStyleBackColor = true;
+      // 
+      // label1
+      // 
+      this.label1.AutoSize = true;
+      this.label1.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.label1.Location = new System.Drawing.Point(0, 25);
+      this.label1.Margin = new System.Windows.Forms.Padding(0);
+      this.label1.Name = "label1";
+      this.label1.Size = new System.Drawing.Size(100, 25);
+      this.label1.TabIndex = 9;
+      this.label1.Text = "Name";
+      this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+      // 
+      // labelDescription
+      // 
+      this.labelDescription.AutoSize = true;
+      this.labelDescription.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.labelDescription.Location = new System.Drawing.Point(0, 50);
+      this.labelDescription.Margin = new System.Windows.Forms.Padding(0);
+      this.labelDescription.Name = "labelDescription";
+      this.labelDescription.Size = new System.Drawing.Size(100, 25);
+      this.labelDescription.TabIndex = 13;
+      this.labelDescription.Text = "Description";
+      this.labelDescription.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+      // 
+      // labelEnable
+      // 
+      this.labelEnable.AutoSize = true;
+      this.labelEnable.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.labelEnable.Location = new System.Drawing.Point(0, 0);
+      this.labelEnable.Margin = new System.Windows.Forms.Padding(0);
+      this.labelEnable.Name = "labelEnable";
+      this.labelEnable.Size = new System.Drawing.Size(100, 25);
+      this.labelEnable.TabIndex = 3;
+      this.labelEnable.Text = "Enable";
+      this.labelEnable.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
       // 
       // JsonItemBaseControl
       // 

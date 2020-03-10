@@ -18,8 +18,8 @@ namespace HeuristicLab.JsonInterface {
       foreach (var op in val.Operators) {
         IJsonItem childItem = GetChildItem(op.Name, data);
         if(childItem != null) {
-          if(childItem.Value is bool b) {
-            val.Operators.SetItemCheckedState(op, b);
+          if(childItem is BoolJsonItem boolJsonItem) {
+            val.Operators.SetItemCheckedState(op, boolJsonItem.Value);
           }
           root.Inject((IItem)op, childItem, root);
         }
@@ -33,8 +33,7 @@ namespace HeuristicLab.JsonInterface {
         IJsonItem operatorItem = new BoolJsonItem() {
           Name = op.Name,
           Description = op.Description,
-          Value = val.Operators.ItemChecked(op),
-          Range = new bool[] { false, true }
+          Value = val.Operators.ItemChecked(op)
         };
         IJsonItem c = root.Extract((IItem)op, root);
         if(c != null && c.Children != null)
@@ -48,12 +47,13 @@ namespace HeuristicLab.JsonInterface {
     #region Helper
     private bool GetOperatorState(string name, IJsonItem data) {
       foreach(var op in data.Children) {
-        if (op.Name == name && op.Value is bool) return (bool)op.Value;
+        if (op.Name == name && op is BoolJsonItem b) return b.Value;
       }
       return false;
     }
 
     private IJsonItem GetChildItem(string name, IJsonItem parent) {
+      if (parent.Children == null) return null;
       foreach(var c in parent.Children) {
         if (c.Name == name) return c;
       }

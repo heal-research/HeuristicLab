@@ -13,5 +13,7 @@ namespace HeuristicLab.JsonInterface {
       base.SetFromJObject(jObject);
       ActualName = jObject[nameof(ILookupJsonItem.ActualName)]?.ToString();
     }
+
+    protected override bool Validate() => true;
   }
 }

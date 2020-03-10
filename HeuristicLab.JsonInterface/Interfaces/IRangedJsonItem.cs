@@ -5,7 +5,10 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace HeuristicLab.JsonInterface {
-  public class ResultJsonItem : JsonItem, IResultJsonItem {
-    protected override bool Validate() => true;
+  public interface IRangedJsonItem<T> : IIntervalRestrictedJsonItem<T>
+    where T : IComparable 
+  {
+    T MinValue { get; set; }
+    T MaxValue { get; set; }
   }
 }

@@ -16,7 +16,8 @@ namespace HeuristicLab.JsonInterface {
 
     public override IJsonItem Extract(IItem value, IJsonItemConverter root) =>
       new StringJsonItem() {
-        Name = "[OverridableParamName]",
+        //Name = "[OverridableParamName]",
+        Name = value.ItemName,
         Description = value.ItemDescription,
         Value = ((StringValue)value).Value
       };

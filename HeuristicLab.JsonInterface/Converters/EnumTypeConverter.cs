@@ -23,7 +23,7 @@ namespace HeuristicLab.JsonInterface {
         Name = value.ItemName,
         Description = value.ItemDescription,
         Value = Enum.GetName(enumType, val),
-        Range = Enum.GetNames(enumType)
+        ConcreteRestrictedItems = Enum.GetNames(enumType)
     };
     }
   }
