@@ -11,12 +11,16 @@ namespace HeuristicLab.JsonInterface {
     public T Minimum { get; set; }
     public T Maximum { get; set; }
 
-    protected override bool Validate() {
-      foreach(var x in Value) {
-        if (Minimum.CompareTo(x) > 0 || Maximum.CompareTo(x) < 0)
-          return false;
+    protected override ValidationResult Validate() {
+      IList<string> errors = new List<string>();
+      bool success = true;
+      foreach (var x in Value) {
+        if (Minimum.CompareTo(x) > 0 && Maximum.CompareTo(x) < 0) {
+          success = false;
+          errors.Add($"[{Path}]: Value {x} is not between {Minimum} and {Maximum}.");
+        }
       }
-      return true;
+      return new ValidationResult(success, errors);
     }
 
     public override void SetJObject(JObject jObject) {

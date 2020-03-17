@@ -7,7 +7,6 @@ using Newtonsoft.Json.Linq;
 
 namespace HeuristicLab.JsonInterface {
   public class DateTimeJsonItem : IntervalRestrictedValueJsonItem<DateTime> {
-    protected override bool Validate() => Minimum.CompareTo(Value) >= 0 && Maximum.CompareTo(Value) <= 0;
     
     public override JObject GenerateJObject() {
       var obj = base.GenerateJObject();

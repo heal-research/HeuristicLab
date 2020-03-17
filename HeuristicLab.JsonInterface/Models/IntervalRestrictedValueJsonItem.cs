@@ -11,7 +11,11 @@ namespace HeuristicLab.JsonInterface {
     public T Minimum { get; set; }
     public T Maximum { get; set; }
 
-    protected override bool Validate() => Minimum.CompareTo(Value) <= 0 && Maximum.CompareTo(Value) >= 0;
+    protected override ValidationResult Validate() {
+      bool res = Minimum.CompareTo(Value) <= 0 && Maximum.CompareTo(Value) >= 0;
+      if (res) return ValidationResult.Successful();
+      else return ValidationResult.Faulty($"[{Path}]: Value {Value} is not between {Minimum} and {Maximum}.");
+    }
 
     public override void SetJObject(JObject jObject) {
       base.SetJObject(jObject);

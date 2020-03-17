@@ -7,6 +7,27 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace HeuristicLab.JsonInterface {
+
+  public readonly struct ValidationResult {
+
+    public static ValidationResult Successful() => new ValidationResult(true, Enumerable.Empty<string>());
+    public static ValidationResult Faulty(IEnumerable<string> errors) => new ValidationResult(false, errors);
+    public static ValidationResult Faulty(string error) => new ValidationResult(false, error);
+
+    public ValidationResult(bool success, IEnumerable<string> errors) {
+      Success = success;
+      Errors = errors;
+    }
+
+    public ValidationResult(bool success, string error) {
+      Success = success;
+      Errors = Enumerable.Repeat(error, 1);
+    }
+
+    public bool Success { get; }
+    public IEnumerable<string> Errors { get; }
+  }
+
   /// <summary>
   /// Main data class for json interface.
   /// </summary>
@@ -19,26 +40,16 @@ namespace HeuristicLab.JsonInterface {
         Root = root;
       }
 
-      public bool Validate(ref IList<IJsonItem> faultyItems) {
-        faultyItems = new List<IJsonItem>();
-        return ValidateHelper(Root, ref faultyItems);
-      }
-
-      // TODO: return ValidationResult ?
-      private bool ValidateHelper(JsonItem item, ref IList<IJsonItem> faultyItems) {
-        int hash = item.GetHashCode();
-        if (Cache.TryGetValue(hash, out bool r))
-          return r;
-
-        bool res = item.Validate();
-        if (!res) faultyItems.Add(item);
-        Cache.Add(hash, res);
-        if(item.Children != null) {
-          foreach (var child in item.Children)
-            if (!ValidateHelper(child as JsonItem, ref faultyItems))
-              res = false && res;
+      public ValidationResult Validate() {
+        IEnumerable<string> errors = Enumerable.Empty<string>();
+        bool success = true;
+        foreach(var x in Root) {
+          var res = ((JsonItem)x).Validate();
+          //if one success is false -> whole validation is false
+          success = success && res.Success; 
+          errors.Concat(res.Errors);
         }
-        return res;
+        return new ValidationResult(success, errors);
       }
     }
 
@@ -95,7 +106,7 @@ namespace HeuristicLab.JsonInterface {
       }
     }
 
-    public virtual IJsonItemValidator GetValidator() => new JsonItemValidator(this);
+    public IJsonItemValidator GetValidator() => new JsonItemValidator(this);
 
     public void FixatePath() => fixedPath = Path;
     public void LoosenPath() => fixedPath = "";
@@ -111,7 +122,7 @@ namespace HeuristicLab.JsonInterface {
     #endregion
 
     #region Abstract Methods
-    protected abstract bool Validate();
+    protected abstract ValidationResult Validate();
     #endregion
 
     #region IEnumerable Support

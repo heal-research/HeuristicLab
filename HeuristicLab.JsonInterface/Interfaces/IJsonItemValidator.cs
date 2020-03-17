@@ -6,6 +6,6 @@ using System.Threading.Tasks;
 
 namespace HeuristicLab.JsonInterface {
   public interface IJsonItemValidator {
-    bool Validate(ref IList<IJsonItem> faultyItems);
+    ValidationResult Validate();
   }
 }

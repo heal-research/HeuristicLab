@@ -33,6 +33,6 @@ namespace HeuristicLab.JsonInterface {
       set => throw new NotSupportedException();
     }
 
-    protected override bool Validate() => true;
+    protected override ValidationResult Validate() => ValidationResult.Successful();
   }
 }

@@ -13,9 +13,14 @@ using HeuristicLab.Optimization;
 using Newtonsoft.Json.Linq;
 
 namespace HeuristicLab.JsonInterface {
-  public struct InstantiatorResult {
-    public IOptimizer Optimizer { get; set; }
-    public IEnumerable<IResultJsonItem> ConfiguredResultItems { get; set; }
+  public readonly struct InstantiatorResult {
+    public InstantiatorResult(IOptimizer optimizer, IEnumerable<IResultJsonItem> configuredResultItems) {
+      Optimizer = optimizer;
+      ConfiguredResultItems = configuredResultItems;
+    }
+
+    public IOptimizer Optimizer { get; }
+    public IEnumerable<IResultJsonItem> ConfiguredResultItems { get; }
   }
 
 
@@ -43,7 +48,6 @@ namespace HeuristicLab.JsonInterface {
 
     #region Helper
     private InstantiatorResult ExecuteInstantiaton(string templateFile, string configFile = null) {
-      InstantiatorResult result = new InstantiatorResult();
 
       #region Parse Files
       Template = JToken.Parse(File.ReadAllText(templateFile));
@@ -57,7 +61,6 @@ namespace HeuristicLab.JsonInterface {
       #region Deserialize HL File
       ProtoBufSerializer serializer = new ProtoBufSerializer();
       IOptimizer optimizer = (IOptimizer)serializer.Deserialize(hLFileLocation);
-      result.Optimizer = optimizer;
       #endregion
 
       // collect all parameterizedItems from template
@@ -72,9 +75,7 @@ namespace HeuristicLab.JsonInterface {
       // inject configuration
       JsonItemConverter.Inject(optimizer, rootItem);
 
-      result.ConfiguredResultItems = CollectResults();
-
-      return result;
+      return new InstantiatorResult(optimizer, CollectResults());
     }
 
     
