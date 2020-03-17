@@ -11,10 +11,9 @@ namespace HeuristicLab.JsonInterface {
     
     public IJsonItem ActualValue { get; set; }
 
-    protected override bool Validate() {
-      if (ActualValue == null) return true;
-      IList<IJsonItem> faultyItems = new List<IJsonItem>();
-      return ActualValue.GetValidator().Validate(ref faultyItems);
+    protected override ValidationResult Validate() {
+      if (ActualValue == null) return ValidationResult.Successful();
+      return ActualValue.GetValidator().Validate();
     }
 
     public override JObject GenerateJObject() {

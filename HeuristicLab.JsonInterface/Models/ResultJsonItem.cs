@@ -6,6 +6,6 @@ using System.Threading.Tasks;
 
 namespace HeuristicLab.JsonInterface {
   public class ResultJsonItem : JsonItem, IResultJsonItem {
-    protected override bool Validate() => true;
+    protected override ValidationResult Validate() => ValidationResult.Successful();
   }
 }

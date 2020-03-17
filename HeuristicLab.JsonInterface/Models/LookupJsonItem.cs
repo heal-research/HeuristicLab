@@ -14,6 +14,6 @@ namespace HeuristicLab.JsonInterface {
       ActualName = jObject[nameof(ILookupJsonItem.ActualName)]?.ToString();
     }
 
-    protected override bool Validate() => true;
+    protected override ValidationResult Validate() => ValidationResult.Successful();
   }
 }

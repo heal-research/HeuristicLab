@@ -272,7 +272,6 @@
 
     #endregion
 
-    private System.Windows.Forms.GroupBox groupBox1;
     private System.Windows.Forms.BindingSource jsonItemBindingSource;
     private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn1;
     private System.Windows.Forms.Button exportButton;

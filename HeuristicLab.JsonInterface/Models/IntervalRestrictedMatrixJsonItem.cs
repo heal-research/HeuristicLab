@@ -10,15 +10,21 @@ namespace HeuristicLab.JsonInterface {
     where T : IComparable {
     public T Minimum { get; set; }
     public T Maximum { get; set; }
-    protected override bool Validate() {
+
+    protected override ValidationResult Validate() {
+      IList<string> errors = new List<string>();
+      bool success = true;
       foreach (var x in Value) {
-        foreach(var y in x) {
-          if (Minimum.CompareTo(y) > 0 || Maximum.CompareTo(y) < 0)
-            return false;
+        foreach (var y in x) {
+          if (Minimum.CompareTo(y) > 0 || Maximum.CompareTo(y) < 0) {
+            success = false;
+            errors.Add($"[{Path}]: Value {y} is not between {Minimum} and {Maximum}.");
+          }
         }
       }
-      return true;
+      return new ValidationResult(success, errors);
     }
+
     public override void SetJObject(JObject jObject) {
       base.SetJObject(jObject);
 

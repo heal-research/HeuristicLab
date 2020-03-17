@@ -6,14 +6,14 @@ using System.Threading.Tasks;
 
 namespace HeuristicLab.JsonInterface {
   public class BoolJsonItem : ValueJsonItem<bool> {
-    protected override bool Validate() => true;
+    protected override ValidationResult Validate() => ValidationResult.Successful();
   }
 
   public class BoolArrayJsonItem : ArrayJsonItem<bool> {
-    protected override bool Validate() => true;
+    protected override ValidationResult Validate() => ValidationResult.Successful();
   }
 
   public class BoolMatrixJsonItem : MatrixJsonItem<bool> {
-    protected override bool Validate() => true;
+    protected override ValidationResult Validate() => ValidationResult.Successful();
   }
 }

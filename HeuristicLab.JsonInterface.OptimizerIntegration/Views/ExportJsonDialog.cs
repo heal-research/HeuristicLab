@@ -68,14 +68,13 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
 
       // clear all runs
       Optimizer.Runs.Clear();
-      
-      IList<IJsonItem> faultyItems = new List<IJsonItem>();
-      
-      if (!Root.GetValidator().Validate(ref faultyItems)) {
+
+      var validationResult = Root.GetValidator().Validate();
+      if (!validationResult.Success) {
         IList<Exception> list = new List<Exception>();
         //print faultyItems
-        foreach (var x in faultyItems) {
-          list.Add(new Exception($"Combination of value and range is not valid for {x.Name}"));
+        foreach (var x in validationResult.Errors) {
+          list.Add(new Exception(x));
         }
         ErrorHandling.ShowErrorDialog(this, new AggregateException(list));
       } else {
