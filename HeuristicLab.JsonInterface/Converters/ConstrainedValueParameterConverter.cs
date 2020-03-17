@@ -15,13 +15,13 @@ namespace HeuristicLab.JsonInterface {
       StringJsonItem cdata = data as StringJsonItem;
       IParameter parameter = item as IParameter;
       foreach (var x in GetValidValues(parameter))
-        if(x.ToString() == CastValue<string>(cdata.Value))
+        if(x.ToString() == cdata.Value)
           parameter.ActualValue = x;
 
-      if (parameter.ActualValue != null && /*parameter.ActualValue is IParameterizedItem &&*/ cdata.Children != null) {
-        foreach(var param in cdata.Children) {
-          if(param.Name == parameter.ActualValue.ItemName)
-            root.Inject(parameter.ActualValue, param, root);
+      if (parameter.ActualValue != null && parameter.ActualValue is IParameterizedItem && cdata.Children != null) {
+        foreach(var child in cdata.Children) {
+          if(child.Name == parameter.ActualValue.ItemName) // name kann verändert werden? egal da bei inject der original name vorhanden ist
+            root.Inject(parameter.ActualValue, child, root);
         }
       }
     }
@@ -35,7 +35,7 @@ namespace HeuristicLab.JsonInterface {
         Value = parameter.ActualValue?.ToString(),
         ConcreteRestrictedItems = GetValidValues(parameter).Select(x => x.ToString())
       };
-      item.AddChildren(GetParameterizedChilds(parameter));
+      item.AddChildren(GetParameterizedChilds(parameter, root));
 
       return item;
     }
@@ -48,12 +48,12 @@ namespace HeuristicLab.JsonInterface {
       return list.ToArray();
     }
 
-    private IList<IJsonItem> GetParameterizedChilds(IParameter value) {
+    private IList<IJsonItem> GetParameterizedChilds(IParameter value, IJsonItemConverter root) {
       List<IJsonItem> list = new List<IJsonItem>();
       var values = ((dynamic)value).ValidValues;
       foreach(var x in values) {
-        if (x is IParameterizedItem) {
-          IJsonItem tmp = JsonItemConverter.Extract(x);
+        if (x is IParameterizedItem) { // only makes sense for IParameterizedItems to go deeper
+          IJsonItem tmp = root.Extract(x, root);
           if(!(tmp is UnsupportedJsonItem))
             list.Add(tmp);
         }

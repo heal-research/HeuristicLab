@@ -46,19 +46,13 @@ namespace Heuristiclab.ConfigStarter {
 
       IJsonItem root = JsonItemConverter.Extract(alg);
       ActivateJsonItems(root);
-      //var x = root.Children[0];
-      //root.Children.Remove(x);
-      //x.Parent = null;
 
-
-      JCGenerator generator = new JCGenerator();
-      generator.GenerateTemplate(@"C:\Workspace", "Template", alg, root);
-      //JsonTemplateInstantiator.Instantiate(@"C:\Workspace\Template.json");
+      JCGenerator.GenerateTemplate(@"C:\Workspace", "Template", alg, root);
       
       List<ICommandLineArgument> arguments = new List<ICommandLineArgument>();
       arguments.Add(new StartArgument("JsonInterface"));
       arguments.Add(new OpenArgument(@"C:\Workspace\Template.json"));
-      arguments.Add(new OpenArgument(@"C:\Workspace\ConfigProto1.json"));
+      arguments.Add(new OpenArgument(@"C:\Workspace\Config.json"));
       arguments.Add(new StringArgument(@"C:\Workspace\Output.json"));
 
       app.Run(arguments.ToArray());
@@ -66,10 +60,11 @@ namespace Heuristiclab.ConfigStarter {
     }
 
     private static void ActivateJsonItems(IJsonItem item) {
-      item.Active = true;
-      if(item.Children != null) {
-        foreach (var x in item.Children)
-          ActivateJsonItems(x);
+      foreach (var x in item) {
+        x.Active = true;
+        if (x is ValueLookupJsonItem i) {
+          i.Active = true;
+        }
       }
     }
   }

@@ -22,8 +22,8 @@ namespace HeuristicLab.JsonInterface {
       set => cols = new List<string>(value);
     }
 
-    public override void SetFromJObject(JObject jObject) {
-      base.SetFromJObject(jObject);
+    public override void SetJObject(JObject jObject) {
+      base.SetJObject(jObject);
       RowsResizable = (jObject[nameof(IMatrixJsonItem.RowsResizable)]?.ToObject<bool>()).GetValueOrDefault();
       ColumnsResizable = (jObject[nameof(IMatrixJsonItem.ColumnsResizable)]?.ToObject<bool>()).GetValueOrDefault();
       RowNames = jObject[nameof(IMatrixJsonItem.RowNames)]?.ToObject<IEnumerable<string>>();

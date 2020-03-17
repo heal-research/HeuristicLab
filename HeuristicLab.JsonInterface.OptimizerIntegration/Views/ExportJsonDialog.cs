@@ -15,6 +15,8 @@ using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.JsonInterface.OptimizerIntegration {
   public partial class ExportJsonDialog : Form {
+
+    #region Private Properties
     private static FolderBrowserDialog FolderBrowserDialog { get; set; }
     private IDictionary<TreeNode, UserControl> Node2Control { get; set; } = new Dictionary<TreeNode, UserControl>();
     private IDictionary<TreeNode, IJsonItemVM> Node2VM { get; set; } = new Dictionary<TreeNode, IJsonItemVM>();
@@ -22,7 +24,7 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
     private IJsonItem Root { get; set; }
     private IOptimizer Optimizer { get; set; }
     private IList<IJsonItemVM> VMs { get; set; }
-    private JCGenerator Generator { get; set; } = new JCGenerator();
+    #endregion
 
     private IContent content;
     public IContent Content {
@@ -30,9 +32,11 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
       set {
         content = value;
 
+        #region Clear
         VMs = new List<IJsonItemVM>();
         treeView.Nodes.Clear();
         treeViewResults.Nodes.Clear();
+        #endregion
 
         Optimizer = content as IOptimizer;
         Root = JsonItemConverter.Extract(Optimizer);
@@ -44,9 +48,6 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
         
       } 
     }
-
-    
-
 
     private void InitCache() {
       JI2VM = new Dictionary<Type, Type>();
@@ -84,7 +85,7 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
         }
 
         if (FolderBrowserDialog.ShowDialog() == DialogResult.OK) {
-          Generator.GenerateTemplate(FolderBrowserDialog.SelectedPath, textBoxTemplateName.Text, Optimizer, Root);
+          JCGenerator.GenerateTemplate(FolderBrowserDialog.SelectedPath, textBoxTemplateName.Text, Optimizer, Root);
           Close();
         }
       }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,7 +8,8 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace HeuristicLab.JsonInterface {
-  public interface IJsonItem {
+  [JsonObject]
+  public interface IJsonItem : IEnumerable<IJsonItem> {
     bool Active { get; set; }
     string Name { get; set; }
 
@@ -22,11 +24,7 @@ namespace HeuristicLab.JsonInterface {
 
     [JsonIgnore]
     IJsonItem Parent { get; set; }
-
-    //object Value { get; set; }
-
-    //IEnumerable<object> Range { get; set; }
-    
+        
     IJsonItemValidator GetValidator();
 
     void AddChildren(params IJsonItem[] childs);
@@ -45,6 +43,7 @@ namespace HeuristicLab.JsonInterface {
     /// </summary>
     void LoosenPath();
 
-    void SetFromJObject(JObject jObject);
+    JObject GenerateJObject();
+    void SetJObject(JObject jObject);
   }
 }

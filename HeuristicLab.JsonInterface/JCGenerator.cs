@@ -16,74 +16,59 @@ namespace HeuristicLab.JsonInterface {
   /// </summary>
   public class JCGenerator {
 
-    public void GenerateTemplate(string path, IOptimizer optimizer) =>
+    public static void GenerateTemplate(string path, IOptimizer optimizer) =>
       GenerateTemplate(path, optimizer.Name, optimizer);
 
-    public void GenerateTemplate(string path, string templateName, IOptimizer optimizer) =>
+    public static void GenerateTemplate(string path, string templateName, IOptimizer optimizer) =>
       GenerateTemplate(path, templateName, optimizer, JsonItemConverter.Extract(optimizer));
 
-    public void GenerateTemplate(string path, string templateName, IOptimizer optimizer, IJsonItem rootItem) {
-      // init
+    public static void GenerateTemplate(string path, string templateName, IOptimizer optimizer, IJsonItem rootItem) {
+      #region Init
       JObject template = JObject.Parse(Constants.Template);
       JArray parameterItems = new JArray();
       JArray resultItems = new JArray();
       IList<IJsonItem> jsonItems = new List<IJsonItem>();
       string fullPath = Path.GetFullPath(path);
-      
+      #endregion
+
       // recursively filter items with values/ranges/actualNames
       PopulateJsonItems(rootItem, jsonItems);
 
-      // serialize hl file
+      #region Serialize HL File
       ProtoBufSerializer serializer = new ProtoBufSerializer();
       string hlFilePath = fullPath + @"\" + templateName + ".hl";
       serializer.Serialize(optimizer, hlFilePath);
+      #endregion
 
-      // filter result items
+      #region Filter Items
       foreach (var item in jsonItems) {
         if (item is IResultJsonItem)
-          resultItems.Add(Serialize(item));
+          resultItems.Add(item.GenerateJObject());
         else
-          parameterItems.Add(Serialize(item));
+          parameterItems.Add(item.GenerateJObject());
       }
-      
-      // set template data
+      #endregion
+
+      #region Set Template Data
       template[Constants.Metadata][Constants.TemplateName] = templateName;
       template[Constants.Metadata][Constants.HLFileLocation] = hlFilePath;
       template[Constants.Parameters] = parameterItems;
       template[Constants.Results] = resultItems;
+      #endregion
 
-      // serialize template and write file
+      #region Serialize and write to file
       File.WriteAllText(fullPath + @"\" + templateName + ".json", SingleLineArrayJsonWriter.Serialize(template));
+      #endregion
     }
 
     #region Helper    
-    // serializes ParameterizedItems and saves them in list "JsonItems".
-    private void PopulateJsonItems(IJsonItem item, IList<IJsonItem> jsonItems) {
-      IEnumerable<IJsonItem> children = item.Children;
-      
-      if (item.Active && !(item is EmptyJsonItem)) {
-        jsonItems.Add(item);
-      }
-
-      if (children != null) {
-        foreach (var p in children) {
-          PopulateJsonItems(p, jsonItems);
+    private static void PopulateJsonItems(IJsonItem item, IList<IJsonItem> jsonItems) {
+      foreach(var x in item) {
+        if (x.Active && !(x is EmptyJsonItem)) {
+          jsonItems.Add(x);
         }
       }
     }
-
-    private static JObject Serialize(IJsonItem item) => 
-      JObject.FromObject(item, Settings());
-
-    /// <summary>
-    /// Settings for the json serialization.
-    /// </summary>
-    /// <returns>A configured JsonSerializer.</returns>
-    private static JsonSerializer Settings() => new JsonSerializer() {
-      TypeNameHandling = TypeNameHandling.None,
-      NullValueHandling = NullValueHandling.Ignore,
-      ReferenceLoopHandling = ReferenceLoopHandling.Serialize
-    };
     #endregion
   }
 }

@@ -13,10 +13,15 @@ namespace HeuristicLab.JsonInterface {
 
     protected override bool Validate() => Minimum.CompareTo(Value) <= 0 && Maximum.CompareTo(Value) >= 0;
 
-    public override void SetFromJObject(JObject jObject) {
-      base.SetFromJObject(jObject);
-      Minimum = jObject[nameof(IIntervalRestrictedJsonItem<T>.Minimum)].ToObject<T>();
-      Maximum = jObject[nameof(IIntervalRestrictedJsonItem<T>.Maximum)].ToObject<T>();
+    public override void SetJObject(JObject jObject) {
+      base.SetJObject(jObject);
+
+      var minProp = jObject[nameof(IIntervalRestrictedJsonItem<T>.Minimum)];
+      if (minProp != null) Minimum = minProp.ToObject<T>();
+
+
+      var maxProp = jObject[nameof(IIntervalRestrictedJsonItem<T>.Maximum)];
+      if (maxProp != null) Maximum = maxProp.ToObject<T>();
     }
   }
 }

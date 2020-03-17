@@ -8,6 +8,6 @@ using Newtonsoft.Json;
 namespace HeuristicLab.JsonInterface {
   public interface IValueLookupJsonItem : ILookupJsonItem {
     [JsonIgnore]
-    IJsonItem JsonItemReference { get; set; }
+    IJsonItem ActualValue { get; set; }
   }
 }

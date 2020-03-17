@@ -23,7 +23,6 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
       }
     }
     public static void ExportJsonTemplate(IContentView view) {
-      // TODO: view to select free params, warning if no results are generated
       IStorableContent content = view.Content as IStorableContent;
       if (!view.Locked && content != null) {
         exportDialog.Content = content;
@@ -45,7 +44,7 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
       if (openFileDialog.ShowDialog() == DialogResult.OK) {
         try {
           var content = JsonTemplateInstantiator.Instantiate(openFileDialog.FileName);
-          IView view = MainFormManager.MainForm.ShowContent(content);
+          IView view = MainFormManager.MainForm.ShowContent(content.Optimizer);
           if (view == null)
             ErrorHandling.ShowErrorDialog("There is no view for the loaded item. It cannot be displayed.", new InvalidOperationException("No View Available"));
         } catch (Exception ex) {
