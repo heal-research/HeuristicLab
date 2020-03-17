@@ -39,7 +39,7 @@ namespace HeuristicLab.JsonInterface {
       IList<IJsonItemConverter> possibleConverters = new List<IJsonItemConverter>();
       
       foreach (var x in Converters)
-        if (type.IsEqualTo(x.Key))
+        if (CompareTypes(type, x.Key))
           possibleConverters.Add(x.Value);
 
       if(possibleConverters.Count > 0) {
@@ -90,5 +90,16 @@ namespace HeuristicLab.JsonInterface {
     internal JsonItemConverter(IDictionary<Type, IJsonItemConverter> converters) {
       Converters = converters;
     }
+
+    private bool CompareGenericTypes(Type t1, Type t2) =>
+      (t1.IsGenericType && t1.GetGenericTypeDefinition() == t2) ||
+      (t2.IsGenericType && t2.GetGenericTypeDefinition() == t1);
+
+    private bool CompareTypes(Type t1, Type t2) =>
+      t1 == t2 || t1.IsAssignableFrom(t2) ||
+      t1.GetInterfaces().Any(
+        i => i == t2 || CompareGenericTypes(i, t2)
+      ) ||
+      CompareGenericTypes(t1, t2);
   }
 }
