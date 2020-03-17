@@ -9,11 +9,8 @@ namespace HeuristicLab.JsonInterface {
   public abstract class ValueJsonItem : JsonItem, IValueJsonItem {
     public object Value { get; set; }
 
-    //public IEnumerable<object> Range { get; set; }
-
-    public override void SetFromJObject(JObject jObject) {
+    public override void SetJObject(JObject jObject) {
       Value = jObject[nameof(IValueJsonItem.Value)]?.ToObject<object>();
-      //Range = jObject[nameof(IValueJsonItem.Range)]?.ToObject<object[]>();
     }
 
   }
@@ -23,13 +20,6 @@ namespace HeuristicLab.JsonInterface {
       get => ConvertObject(base.Value);
       set => base.Value = value;
     }
-
-    /*
-    public new IEnumerable<T> Range {
-      get => base.Range?.Cast<T>();
-      set => base.Range = value.Cast<object>();
-    }
-    */
 
     private T ConvertObject(object obj) {
       if (obj is IConvertible)
@@ -41,10 +31,9 @@ namespace HeuristicLab.JsonInterface {
       return (T)obj;
     }
 
-    public override void SetFromJObject(JObject jObject) {
+    public override void SetJObject(JObject jObject) {
       if(jObject[nameof(IValueJsonItem<T>.Value)] != null)
         Value = jObject[nameof(IValueJsonItem<T>.Value)].ToObject<T>();
-      //Range = jObject[nameof(IValueJsonItem<T>.Range)]?.ToObject<T[]>();
     }
   }
 }

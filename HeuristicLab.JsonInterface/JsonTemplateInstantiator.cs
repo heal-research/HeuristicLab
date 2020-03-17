@@ -13,25 +13,22 @@ using HeuristicLab.Optimization;
 using Newtonsoft.Json.Linq;
 
 namespace HeuristicLab.JsonInterface {
+  public struct InstantiatorResult {
+    public IOptimizer Optimizer { get; set; }
+    public IEnumerable<IResultJsonItem> ConfiguredResultItems { get; set; }
+  }
+
+
   /// <summary>
-  /// Static class to instantiate an IAlgorithm object with a json interface template and config.
+  /// Class to instantiate an IAlgorithm object with a json interface template and config.
   /// </summary>
-  public static class JsonTemplateInstantiator {
-    private struct InstData {
-      public JToken Template { get; set; }
-      public JArray Config { get; set; }
-      public IDictionary<string, IJsonItem> Objects { get; set; }
-      public IOptimizer Optimizer { get; set; }
-    }
+  public class JsonTemplateInstantiator {
 
-    public static IOptimizer Instantiate(string templateFile) =>
-      Instantiate(templateFile, null, out IEnumerable<string> allowedResultNames);
-
-
-    public static IOptimizer Instantiate(string templateFile, out IEnumerable<string> allowedResultNames) =>
-      Instantiate(templateFile, null, out allowedResultNames);
-
-   
+    #region Private Properties
+    private JToken Template { get; set; }
+    private JArray Config { get; set; }
+    private IDictionary<string, IJsonItem> Objects { get; set; } = new Dictionary<string, IJsonItem>();
+    #endregion
 
     /// <summary>
     /// Instantiate an IAlgorithm object with a template and config.
@@ -39,87 +36,84 @@ namespace HeuristicLab.JsonInterface {
     /// <param name="templateFile">Template file (json), generated with JCGenerator.</param>
     /// <param name="configFile">Config file (json) for the template.</param>
     /// <returns>confugrated IOptimizer object</returns>
-    public static IOptimizer Instantiate(string templateFile, string configFile, out IEnumerable<string> allowedResultNames) {
-      InstData instData = new InstData() {
-        Objects = new Dictionary<string, IJsonItem>()
-      };
-
-      // parse template and config files
-      instData.Template = JToken.Parse(File.ReadAllText(templateFile));
-      if(!string.IsNullOrEmpty(configFile))
-        instData.Config = JArray.Parse(File.ReadAllText(configFile));
-
-      // extract metadata information
-      string hLFileLocation = Path.GetFullPath(instData.Template[Constants.Metadata][Constants.HLFileLocation].ToString());
-
-      // deserialize hl file
-      ProtoBufSerializer serializer = new ProtoBufSerializer();
-      IOptimizer optimizer = (IOptimizer)serializer.Deserialize(hLFileLocation);
-      instData.Optimizer = optimizer;
-
-      // collect all parameterizedItems from template
-      CollectParameterizedItems(instData);
-      
-      // if config != null -> merge Template and Config 
-      if (instData.Config != null)
-        MergeTemplateWithConfig(instData);
-
-      // get algorthm data and object
-      IJsonItem optimizerData = instData.Objects.First().Value;
-      
-      // inject configuration
-      JsonItemConverter.Inject(optimizer, optimizerData);
-
-      allowedResultNames = CollectResults(instData);
-
-      return optimizer;
+    public static InstantiatorResult Instantiate(string templateFile, string configFile = null) {
+      JsonTemplateInstantiator instantiator = new JsonTemplateInstantiator();
+      return instantiator.ExecuteInstantiaton(templateFile, configFile);
     }
 
     #region Helper
-    private static IEnumerable<string> CollectResults(InstData instData) {
-      IList<string> res = new List<string>();
-      foreach(JObject obj in instData.Template[Constants.Results]) {
-        res.Add(obj.Property("Name").Value.ToString());
+    private InstantiatorResult ExecuteInstantiaton(string templateFile, string configFile = null) {
+      InstantiatorResult result = new InstantiatorResult();
+
+      #region Parse Files
+      Template = JToken.Parse(File.ReadAllText(templateFile));
+      if(!string.IsNullOrEmpty(configFile))
+        Config = JArray.Parse(File.ReadAllText(configFile));
+      #endregion
+
+      // extract metadata information
+      string hLFileLocation = Path.GetFullPath(Template[Constants.Metadata][Constants.HLFileLocation].ToString());
+
+      #region Deserialize HL File
+      ProtoBufSerializer serializer = new ProtoBufSerializer();
+      IOptimizer optimizer = (IOptimizer)serializer.Deserialize(hLFileLocation);
+      result.Optimizer = optimizer;
+      #endregion
+
+      // collect all parameterizedItems from template
+      CollectParameterizedItems(optimizer);
+      
+      if (Config != null)
+        MergeTemplateWithConfig();
+
+      // get algorithm root item
+      IJsonItem rootItem = Objects.First().Value;
+      
+      // inject configuration
+      JsonItemConverter.Inject(optimizer, rootItem);
+
+      result.ConfiguredResultItems = CollectResults();
+
+      return result;
+    }
+
+    
+    private IEnumerable<IResultJsonItem> CollectResults() {
+      IList<IResultJsonItem> res = new List<IResultJsonItem>();
+      foreach(JObject obj in Template[Constants.Results]) {
+        string name = obj.Property("Name").Value.ToString();
+        res.Add(new ResultJsonItem() { Name = name });
       }
       return res;
     }
 
-    private static void CollectParameterizedItems(InstData instData) {
-      IJsonItem root = JsonItemConverter.Extract(instData.Optimizer);
-      instData.Objects.Add(root.Path, root);
+    private void CollectParameterizedItems(IOptimizer optimizer) {
+      IJsonItem root = JsonItemConverter.Extract(optimizer);
+      Objects.Add(root.Path, root);
 
-      foreach (JObject obj in instData.Template[Constants.Parameters]) {
-        string[] pathParts = obj.Property("Path").Value.ToString().Split('.');
-        IJsonItem tmp = root;
-        IJsonItem old = null;
-        for(int i = 1; i < pathParts.Length; ++i) {
-          foreach(var c in tmp.Children) {
-            if (c.Name == pathParts[i])
-              tmp = c;
+      foreach (JObject obj in Template[Constants.Parameters]) {
+        string path = obj.Property("Path").Value.ToString();
+        foreach(var tmp in root) {
+          if(tmp.Path == path) {
+            tmp.SetJObject(obj);
+            Objects.Add(tmp.Path, tmp);
           }
-          if (old == tmp)
-            throw new Exception($"Invalid path '{string.Join(".", pathParts)}'");
-          else old = tmp;
         }
-        tmp.SetFromJObject(obj);
-        instData.Objects.Add(tmp.Path, tmp);
       }
-      //IList<IJsonItem> faultyItems = new List<IJsonItem>();
-      //root.GetValidator().Validate(ref faultyItems);
     }
     
-    private static void MergeTemplateWithConfig(InstData instData) {
-      foreach (JObject obj in instData.Config) {
+    private void MergeTemplateWithConfig() {
+      foreach (JObject obj in Config) {
         // build item from config object
         string path = obj.Property("Path").Value.ToString();
         // override default value
-        if (instData.Objects.TryGetValue(path, out IJsonItem param)) {
+        if (Objects.TryGetValue(path, out IJsonItem param)) {
           // remove fixed template parameter => dont allow to copy them from concrete config
           obj.Property(nameof(IIntervalRestrictedJsonItem<int>.Minimum))?.Remove();
           obj.Property(nameof(IIntervalRestrictedJsonItem<int>.Maximum))?.Remove();
           obj.Property(nameof(IConcreteRestrictedJsonItem<string>.ConcreteRestrictedItems))?.Remove();
           // merge
-          param.SetFromJObject(obj);
+          param.SetJObject(obj);
         } else throw new InvalidDataException($"No parameter with path='{path}' defined!");
       }
     }

@@ -15,18 +15,18 @@ namespace HeuristicLab.JsonInterface {
 
     public override void Inject(IItem item, IJsonItem data, IJsonItemConverter root) {
       IntArray arr = item as IntArray;
-      int[] d = CastValue<int[]>(data);
+      IntArrayJsonItem intArrayItem = data as IntArrayJsonItem;
       bool resizeTmp = arr.Resizable;
       arr.Resizable = true;
-      arr.Length = d.Length;
-      for (int i = 0; i < d.Length; ++i)
-        arr[i] = d[i];
+      arr.Length = intArrayItem.Value.Length;
+      for (int i = 0; i < intArrayItem.Value.Length; ++i)
+        arr[i] = intArrayItem.Value[i];
       arr.Resizable = resizeTmp;
     }
 
     public override IJsonItem Extract(IItem value, IJsonItemConverter root) =>
       new IntArrayJsonItem() {
-        Name = "[OverridableParamName]",
+        Name = value.ItemName,
         Description = value.ItemDescription,
         Value = ((IntArray)value).CloneAsArray(),
         Minimum = int.MinValue,
@@ -40,20 +40,18 @@ namespace HeuristicLab.JsonInterface {
 
     public override void Inject(IItem item, IJsonItem data, IJsonItemConverter root) {
       DoubleArray arr = item as DoubleArray;
-      DoubleArrayJsonItem doubleItem = data as DoubleArrayJsonItem;
-      //double[] d = CastValue<double[]>(data);
+      DoubleArrayJsonItem doubleArrayItem = data as DoubleArrayJsonItem;
       bool resizeTmp = arr.Resizable;
       arr.Resizable = true;
-      //arr.Length = d.Length;
-      arr.Length = doubleItem.Value.Length;
-      for (int i = 0; i < doubleItem.Value.Length; ++i)
-        arr[i] = doubleItem.Value[i];
+      arr.Length = doubleArrayItem.Value.Length;
+      for (int i = 0; i < doubleArrayItem.Value.Length; ++i)
+        arr[i] = doubleArrayItem.Value[i];
       arr.Resizable = resizeTmp;
     }
 
     public override IJsonItem Extract(IItem value, IJsonItemConverter root) =>
       new DoubleArrayJsonItem() {
-        Name = "[OverridableParamName]",
+        Name = value.ItemName,
         Description = value.ItemDescription,
         Value = ((DoubleArray)value).CloneAsArray(),
         Minimum = double.MinValue,
@@ -67,18 +65,18 @@ namespace HeuristicLab.JsonInterface {
 
     public override void Inject(IItem item, IJsonItem data, IJsonItemConverter root) {
       PercentArray arr = item as PercentArray;
-      double[] d = CastValue<double[]>(data);
+      DoubleArrayJsonItem doubleArrayItem = data as DoubleArrayJsonItem;
       bool resizeTmp = arr.Resizable;
       arr.Resizable = true;
-      arr.Length = d.Length;
-      for (int i = 0; i < d.Length; ++i)
-        arr[i] = d[i];
+      arr.Length = doubleArrayItem.Value.Length;
+      for (int i = 0; i < doubleArrayItem.Value.Length; ++i)
+        arr[i] = doubleArrayItem.Value[i];
       arr.Resizable = resizeTmp;
     }
 
     public override IJsonItem Extract(IItem value, IJsonItemConverter root) =>
       new DoubleArrayJsonItem() {
-        Name = "[OverridableParamName]",
+        Name = value.ItemName,
         Description = value.ItemDescription,
         Value = ((PercentArray)value).CloneAsArray(),
         Minimum = 0.0d,
@@ -92,18 +90,17 @@ namespace HeuristicLab.JsonInterface {
 
     public override void Inject(IItem item, IJsonItem data, IJsonItemConverter root) {
       BoolArray arr = item as BoolArray;
-      bool[] d = CastValue<bool[]>(data);
+      BoolArrayJsonItem boolArrayItem = data as BoolArrayJsonItem;
       bool resizeTmp = arr.Resizable;
       arr.Resizable = true;
-      arr.Length = d.Length;
-      for(int i = 0; i < d.Length; ++i)
-        arr[i] = d[i];
+      arr.Length = boolArrayItem.Value.Length;
+      for(int i = 0; i < boolArrayItem.Value.Length; ++i)
+        arr[i] = boolArrayItem.Value[i];
       arr.Resizable = resizeTmp;
     }
 
     public override IJsonItem Extract(IItem value, IJsonItemConverter root) =>
       new BoolArrayJsonItem() {
-        //Name = "[OverridableParamName]",
         Name = value.ItemName,
         Description = value.ItemDescription,
         Value = ((BoolArray)value).CloneAsArray()

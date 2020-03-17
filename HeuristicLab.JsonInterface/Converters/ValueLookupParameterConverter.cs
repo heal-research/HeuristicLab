@@ -14,8 +14,8 @@ namespace HeuristicLab.JsonInterface {
       IValueLookupParameter param = item as IValueLookupParameter;
       IValueLookupJsonItem lookupItem = data as IValueLookupJsonItem;
       param.ActualName = lookupItem.ActualName;
-      if (param.Value != null)
-        root.Inject(param.Value, lookupItem.JsonItemReference, root);
+      if (param.Value != null && lookupItem.ActualValue != null)
+        root.Inject(param.Value, lookupItem.ActualValue, root);
     }
 
     public override IJsonItem Extract(IItem value, IJsonItemConverter root) {
@@ -25,8 +25,9 @@ namespace HeuristicLab.JsonInterface {
 
       if (param.Value != null) {
         IJsonItem tmp = root.Extract(param.Value, root);
-        item.AddChildren(tmp.Children);
-        item.JsonItemReference = tmp;
+        tmp.Parent = item;
+        //item.AddChildren(tmp.Children);
+        item.ActualValue = tmp;
       }
       item.Name = param.Name;
       item.Description = param.Description;

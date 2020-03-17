@@ -3,22 +3,83 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
 
 namespace HeuristicLab.JsonInterface {
-  public class IntJsonItem : IntervalRestrictedValueJsonItem<int> { }
-  public class IntArrayJsonItem : IntervalRestrictedArrayJsonItem<int> { }
-  public class IntRangeJsonItem : RangedJsonItem<int> { }
-  public class IntMatrixJsonItem : IntervalRestrictedMatrixJsonItem<int> {
-    /*
-    protected override bool IsInRange() {
-      for (int c = 0; c < Value.Length; ++c) {
-        for (int r = 0; r < Value[c].Length; ++r) {
-          if (Value[c][r] < Range.First() && Range.Last() < Value[c][r])
-            return false;
-        }
-      }
-      return true;
+  public class IntJsonItem : IntervalRestrictedValueJsonItem<int> {
+    public override JObject GenerateJObject() {
+      var obj = base.GenerateJObject();
+
+      if (Minimum.CompareTo(int.MinValue) == 0)
+        obj.Property("Minimum").Remove();
+
+      if (Maximum.CompareTo(int.MaxValue) == 0)
+        obj.Property("Maximum").Remove();
+
+      return obj;
     }
-    */
+
+    public override void SetJObject(JObject jObject) {
+      Minimum = int.MinValue;
+      Maximum = int.MaxValue;
+      base.SetJObject(jObject);
+    }
+  }
+  public class IntArrayJsonItem : IntervalRestrictedArrayJsonItem<int> {
+    public override JObject GenerateJObject() {
+      var obj = base.GenerateJObject();
+
+      if (Minimum.CompareTo(int.MinValue) == 0)
+        obj.Property("Minimum").Remove();
+
+      if (Maximum.CompareTo(int.MaxValue) == 0)
+        obj.Property("Maximum").Remove();
+
+      return obj;
+    }
+
+    public override void SetJObject(JObject jObject) {
+      Minimum = int.MinValue;
+      Maximum = int.MaxValue;
+      base.SetJObject(jObject);
+    }
+  }
+  public class IntRangeJsonItem : RangedJsonItem<int> {
+    public override JObject GenerateJObject() {
+      var obj = base.GenerateJObject();
+
+      if (Minimum.CompareTo(int.MinValue) == 0)
+        obj.Property("Minimum").Remove();
+
+      if (Maximum.CompareTo(int.MaxValue) == 0)
+        obj.Property("Maximum").Remove();
+
+      return obj;
+    }
+
+    public override void SetJObject(JObject jObject) {
+      Minimum = int.MinValue;
+      Maximum = int.MaxValue;
+      base.SetJObject(jObject);
+    }
+  }
+  public class IntMatrixJsonItem : IntervalRestrictedMatrixJsonItem<int> {
+    public override JObject GenerateJObject() {
+      var obj = base.GenerateJObject();
+
+      if (Minimum.CompareTo(int.MinValue) == 0)
+        obj.Property("Minimum").Remove();
+
+      if (Maximum.CompareTo(int.MaxValue) == 0)
+        obj.Property("Maximum").Remove();
+
+      return obj;
+    }
+
+    public override void SetJObject(JObject jObject) {
+      Minimum = int.MinValue;
+      Maximum = int.MaxValue;
+      base.SetJObject(jObject);
+    }
   }
 }

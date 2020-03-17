@@ -61,11 +61,7 @@ namespace HeuristicLab.JsonInterface {
         return builder.ToString();
       }
     }
-
-    //public virtual object Value { get; set; }
-
-    //public virtual IEnumerable<object> Range { get; set; }
-    
+        
     // TODO jsonIgnore dataType?
 
     [JsonIgnore]
@@ -104,60 +100,34 @@ namespace HeuristicLab.JsonInterface {
     public void FixatePath() => fixedPath = Path;
     public void LoosenPath() => fixedPath = "";
 
-    public virtual void SetFromJObject(JObject jObject) {
-      //Value = jObject[nameof(IJsonItem.Value)]?.ToObject<object>();
-      //Range = jObject[nameof(IJsonItem.Range)]?.ToObject<object[]>();
-    }
+    public virtual JObject GenerateJObject() =>
+      JObject.FromObject(this, new JsonSerializer() {
+        TypeNameHandling = TypeNameHandling.None,
+        NullValueHandling = NullValueHandling.Ignore,
+        ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+      });
+
+    public virtual void SetJObject(JObject jObject) { }
     #endregion
 
-    #region Helper
-    /*
-     * TODO protected abstract bool Validate();
-     */
+    #region Abstract Methods
     protected abstract bool Validate();
-    /*
-    protected virtual bool IsInRange() {
-      bool b1 = true, b2 = true;
-      if (Value is IEnumerable && !(Value is string)) {
-        foreach (var x in (IEnumerable)Value) {
-          b1 = b1 ? IsInRangeList(x) : b1;
-          b2 = b2 ? IsInNumericRange(x) : b2;
+    #endregion
+
+    #region IEnumerable Support
+    public virtual IEnumerator<IJsonItem> GetEnumerator() {
+      yield return this;
+      
+      if (Children != null) {
+        foreach (var x in Children) {
+          foreach (var c in x) {
+            yield return c;
+          }
         }
-      } 
-      else {
-        b1 = IsInRangeList(Value); 
-        b2 = IsInNumericRange(Value);
-      } 
-      return b1 || b2;
+      }
     }
 
-    protected bool IsInRangeList(object value) {
-      foreach (var x in Range)
-        if (x.Equals(value)) return true;
-      return false;
-    }
-
-    protected bool IsInNumericRange(object value) =>
-      IsInNumericRange<ulong>(value)
-      || IsInNumericRange<uint>(value)
-      || IsInNumericRange<ushort>(value)
-      || IsInNumericRange<long>(value)
-      || IsInNumericRange<int>(value)
-      || IsInNumericRange<short>(value)
-      || IsInNumericRange<byte>(value)
-      || IsInNumericRange<float>(value)
-      || IsInNumericRange<double>(value)
-      || (value is float && float.IsNaN((float)value))
-      || (value is double && double.IsNaN((double)value));
-
-    protected bool IsInNumericRange<T>(object value) where T : IComparable {
-      object min = Range.First(), max = Range.Last();
-      return
-        value != null && min != null && max != null && value is T && min is T && max is T &&
-        (((T)min).CompareTo(value) == -1 || ((T)min).CompareTo(value) == 0) &&
-        (((T)max).CompareTo(value) == 1 || ((T)max).CompareTo(value) == 0);
-    }
-    */
+    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     #endregion
   }
 }

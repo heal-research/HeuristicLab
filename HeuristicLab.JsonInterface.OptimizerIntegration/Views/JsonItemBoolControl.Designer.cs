@@ -36,6 +36,7 @@
       this.checkBoxValue.Location = new System.Drawing.Point(100, 0);
       this.checkBoxValue.Margin = new System.Windows.Forms.Padding(0);
       this.checkBoxValue.Name = "checkBoxValue";
+      this.checkBoxValue.Padding = new System.Windows.Forms.Padding(0, 0, 0, 1);
       this.checkBoxValue.Size = new System.Drawing.Size(400, 22);
       this.checkBoxValue.TabIndex = 19;
       this.checkBoxValue.UseVisualStyleBackColor = true;

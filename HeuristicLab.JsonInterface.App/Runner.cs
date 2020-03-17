@@ -15,32 +15,36 @@ using Newtonsoft.Json.Linq;
 namespace HeuristicLab.JsonInterface.App {
   internal static class Runner {
     internal static void Run(string template, string config, string outputFile) {
-      IOptimizer optimizer = JsonTemplateInstantiator.Instantiate(template, config, out IEnumerable<string> allowedResultNames);
+      InstantiatorResult instantiatorResult = JsonTemplateInstantiator.Instantiate(template, config);
+      IOptimizer optimizer = instantiatorResult.Optimizer;
+      IEnumerable<IResultJsonItem> configuredResultItem = instantiatorResult.ConfiguredResultItems;
+
       optimizer.Runs.Clear();
       if(optimizer is EngineAlgorithm e)
         e.Engine = new ParallelEngine.ParallelEngine();
       
       Task task = optimizer.StartAsync();
       while(!task.IsCompleted) {
-        WriteResultsToFile(outputFile, optimizer, allowedResultNames);
+        WriteResultsToFile(outputFile, optimizer, configuredResultItem);
         Thread.Sleep(100);
       }
      
-      WriteResultsToFile(outputFile, optimizer, allowedResultNames);
+      WriteResultsToFile(outputFile, optimizer, configuredResultItem);
     }
 
-    private static void WriteResultsToFile(string file, IOptimizer optimizer, IEnumerable<string> allowedResultNames) =>
-      File.WriteAllText(file, FetchResults(optimizer, allowedResultNames));
+    private static void WriteResultsToFile(string file, IOptimizer optimizer, IEnumerable<IResultJsonItem> configuredResultItem) =>
+      File.WriteAllText(file, FetchResults(optimizer, configuredResultItem));
 
-    private static string FetchResults(IOptimizer optimizer, IEnumerable<string> allowedResultNames) {
+    private static string FetchResults(IOptimizer optimizer, IEnumerable<IResultJsonItem> configuredResultItem) {
       JArray arr = new JArray();
-      
+      IEnumerable<string> configuredResults = configuredResultItem.Select(x => x.Name);
+
       foreach (var run in optimizer.Runs) {
         JObject obj = new JObject();
         arr.Add(obj);
         obj.Add("Run", JToken.FromObject(run.ToString()));
         foreach (var res in run.Results) {
-          if (allowedResultNames.Contains(res.Key)) {
+          if (configuredResults.Contains(res.Key)) {
             if (res.Value is ISymbolicRegressionSolution solution) {
               var formatter = new SymbolicDataAnalysisExpressionMATLABFormatter();
               var x = formatter.Format(solution.Model.SymbolicExpressionTree);

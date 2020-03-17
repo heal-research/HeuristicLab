@@ -12,8 +12,8 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
     where JsonItemType : class, IJsonItem 
   {
     IJsonItem IJsonItemVM.Item { 
-      get => item; 
-      set => item = (JsonItemType)value; 
+      get => Item; 
+      set => Item = (JsonItemType)value; 
     }
 
     private JsonItemType item;
@@ -38,6 +38,7 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
         }
         if (TreeView != null)
           TreeView.Refresh();
+        SelectedChanged?.Invoke();
         OnPropertyChange(this, nameof(Selected));
       }
     }
@@ -61,6 +62,7 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
 
     public event PropertyChangedEventHandler PropertyChanged;
     public event Action ItemChanged;
+    public event Action SelectedChanged;
 
 
     protected void OnPropertyChange(object sender, string propertyName) {
