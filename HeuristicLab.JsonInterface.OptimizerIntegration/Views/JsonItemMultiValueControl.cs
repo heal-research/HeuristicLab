@@ -181,32 +181,40 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
 
     #region Validation
     private void textBoxRows_Validating(object sender, CancelEventArgs e) {
-      if (string.IsNullOrWhiteSpace(textBoxRows.Text)) {
-        errorProvider.SetError(textBoxRows, "'Rows' must not be empty.");
-        e.Cancel = true;
-      } else if (!int.TryParse(textBoxRows.Text, out int r)) {
-        errorProvider.SetError(textBoxRows, "Value of 'Rows' must be an integer.");
-        e.Cancel = true;
-      } else if (r == 0) {
-        errorProvider.SetError(textBoxRows, "Value of 'Rows' must be an integer larger than 0.");
-        e.Cancel = true;
-      } else {
+      if (textBoxRows.ReadOnly) {
         errorProvider.SetError(textBoxRows, null);
+      } else {
+        if (string.IsNullOrWhiteSpace(textBoxRows.Text)) {
+          errorProvider.SetError(textBoxRows, "'Rows' must not be empty.");
+          e.Cancel = true;
+        } else if (!int.TryParse(textBoxRows.Text, out int r)) {
+          errorProvider.SetError(textBoxRows, "Value of 'Rows' must be an integer.");
+          e.Cancel = true;
+        } else if (r == 0) {
+          errorProvider.SetError(textBoxRows, "Value of 'Rows' must be an integer larger than 0.");
+          e.Cancel = true;
+        } else {
+          errorProvider.SetError(textBoxRows, null);
+        }
       }
     }
 
     private void textBoxColumns_Validating(object sender, CancelEventArgs e) {
-      if (string.IsNullOrWhiteSpace(textBoxColumns.Text)) {
-        errorProvider.SetError(textBoxColumns, "'Columns' must not be empty.");
-        e.Cancel = true;
-      } else if (!int.TryParse(textBoxColumns.Text, out int r)) {
-        errorProvider.SetError(textBoxColumns, "Value of 'Columns' must be an integer.");
-        e.Cancel = true;
-      } else if (r == 0) {
-        errorProvider.SetError(textBoxColumns, "Value of 'Columns' must be an integer larger than 0.");
-        e.Cancel = true;
-      } else {
+      if (textBoxColumns.ReadOnly) {
         errorProvider.SetError(textBoxColumns, null);
+      } else {
+        if (string.IsNullOrWhiteSpace(textBoxColumns.Text)) {
+          errorProvider.SetError(textBoxColumns, "'Columns' must not be empty.");
+          e.Cancel = true;
+        } else if (!int.TryParse(textBoxColumns.Text, out int r)) {
+          errorProvider.SetError(textBoxColumns, "Value of 'Columns' must be an integer.");
+          e.Cancel = true;
+        } else if (r == 0) {
+          errorProvider.SetError(textBoxColumns, "Value of 'Columns' must be an integer larger than 0.");
+          e.Cancel = true;
+        } else {
+          errorProvider.SetError(textBoxColumns, null);
+        }
       }
     }
     #endregion

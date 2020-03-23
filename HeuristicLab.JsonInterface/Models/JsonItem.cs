@@ -41,13 +41,16 @@ namespace HeuristicLab.JsonInterface {
       }
 
       public ValidationResult Validate() {
-        IEnumerable<string> errors = Enumerable.Empty<string>();
+        List<string> errors = new List<string>();
         bool success = true;
         foreach(var x in Root) {
-          var res = ((JsonItem)x).Validate();
-          //if one success is false -> whole validation is false
-          success = success && res.Success; 
-          errors.Concat(res.Errors);
+          JsonItem item = x as JsonItem;
+          if(item.Active) {
+            var res = ((JsonItem)x).Validate();
+            //if one success is false -> whole validation is false
+            success = success && res.Success;
+            errors.AddRange(res.Errors);
+          }
         }
         return new ValidationResult(success, errors);
       }
