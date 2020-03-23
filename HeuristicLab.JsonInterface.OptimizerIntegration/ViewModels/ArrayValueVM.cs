@@ -19,9 +19,9 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
       new JsonItemDoubleArrayValueControl(this);
     
     public override double[] Value {
-      get => ((DoubleArrayJsonItem)Item).Value;
+      get => Item.Value;
       set {
-        ((DoubleArrayJsonItem)Item).Value = value;
+        Item.Value = value;
         OnPropertyChange(this, nameof(Value));
       }
     }
@@ -38,9 +38,9 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
       new JsonItemBaseControl(this, new JsonItemIntArrayValueControl(this));
     
     public override int[] Value {
-      get => ((IntArrayJsonItem)Item).Value;
+      get => Item.Value;
       set {
-        ((IntArrayJsonItem)Item).Value = value;
+        Item.Value = value;
         OnPropertyChange(this, nameof(Value));
       }
     }
@@ -51,23 +51,12 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
     where JsonItemType : class, IArrayJsonItem, IIntervalRestrictedJsonItem<T> {
     
     public ArrayValueVM() { }
-
-    public void SetIndexValue(T data, int index) {
-      T[] tmp = Value;
-      if(index >= tmp.Length) { // increasing array
-        T[] newArr = new T[index+1];
-        Array.Copy(tmp, 0, newArr, 0, tmp.Length);
-        tmp = newArr;
-      }
-      tmp[index] = data;
-      Value = tmp;
-    }
-
+    
     public abstract T[] Value { get; set; }
     public bool Resizable { 
-      get => ((IArrayJsonItem)Item).Resizable; 
+      get => Item.Resizable; 
       set {
-        ((IArrayJsonItem)Item).Resizable = value;
+        Item.Resizable = value;
         OnPropertyChange(this, nameof(IArrayJsonItemVM.Resizable));
       }
     }

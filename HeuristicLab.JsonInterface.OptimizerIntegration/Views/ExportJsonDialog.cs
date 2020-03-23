@@ -45,7 +45,9 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
         BuildTreeNode(parent, Root);
         treeView.Nodes.Add(parent);
         treeView.ExpandAll();
-        
+        panelParameterDetails.Controls.Clear();
+        panelResultDetails.Controls.Clear();
+
       } 
     }
 
