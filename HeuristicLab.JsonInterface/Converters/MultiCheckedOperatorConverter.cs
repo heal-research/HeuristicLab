@@ -43,7 +43,6 @@ namespace HeuristicLab.JsonInterface {
       return item;
     }
 
-
     #region Helper
     private bool GetOperatorState(string name, IJsonItem data) {
       foreach(var op in data.Children) {

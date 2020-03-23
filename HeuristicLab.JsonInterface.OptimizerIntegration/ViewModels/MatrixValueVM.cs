@@ -14,9 +14,9 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
       new JsonItemDoubleMatrixValueControl(this);
 
     public override double[][] Value {
-      get => ((DoubleMatrixJsonItem)Item).Value;
+      get => Item.Value;
       set {
-        ((DoubleMatrixJsonItem)Item).Value = value;
+        Item.Value = value;
         OnPropertyChange(this, nameof(Value));
       }
     }
@@ -31,59 +31,34 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
     where JsonItemType : class, IMatrixJsonItem, IIntervalRestrictedJsonItem<T> {
     public abstract T[][] Value { get; set; }
     public bool RowsResizable {
-      get => ((IMatrixJsonItem)Item).RowsResizable; 
+      get => Item.RowsResizable; 
       set {
-        ((IMatrixJsonItem)Item).RowsResizable = value;
+        Item.RowsResizable = value;
         OnPropertyChange(this, nameof(RowsResizable));
       }
     }
 
     public bool ColumnsResizable {
-      get => ((IMatrixJsonItem)Item).ColumnsResizable;
+      get => Item.ColumnsResizable;
       set {
-        ((IMatrixJsonItem)Item).ColumnsResizable = value;
+        Item.ColumnsResizable = value;
         OnPropertyChange(this, nameof(ColumnsResizable));
       }
     }
 
     public IEnumerable<string> RowNames {
-      get => ((JsonItemType)Item).RowNames;
+      get => Item.RowNames;
       set {
-        ((JsonItemType)Item).RowNames = value;
+        Item.RowNames = value;
         OnPropertyChange(this, nameof(RowNames));
       }
     }
     public IEnumerable<string> ColumnNames {
-      get => ((JsonItemType)Item).ColumnNames;
+      get => Item.ColumnNames;
       set {
-        ((JsonItemType)Item).ColumnNames = value;
+        Item.ColumnNames = value;
         OnPropertyChange(this, nameof(ColumnNames));
       }
-    }
-
-    public void SetCellValue(T data, int row, int col) {
-      
-      T[][] tmp = Value;
-      
-      // increase y
-      if (row >= tmp.Length) { // increasing array
-        T[][] newArr = new T[row + 1][];
-        Array.Copy(tmp, 0, newArr, 0, tmp.Length);
-        newArr[row] = new T[0];
-        tmp = newArr;
-      }
-
-      // increase x
-      for(int i = 0; i < tmp.Length; ++i) {
-        if(col >= tmp[i].Length) {
-          T[] newArr = new T[col + 1];
-          Array.Copy(tmp[i], 0, newArr, 0, tmp[i].Length);
-          tmp[i] = newArr;
-        }
-      }
-
-      tmp[row][col] = data;
-      Value = tmp;
     }
   }
 }

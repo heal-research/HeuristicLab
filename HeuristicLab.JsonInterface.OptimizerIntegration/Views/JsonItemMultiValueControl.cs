@@ -13,9 +13,9 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
   public class JsonItemDoubleMatrixValueControl : JsonItemMultiValueControl<double> {
     public JsonItemDoubleMatrixValueControl(DoubleMatrixValueVM vm) : base(vm, vm.Value) { }
     
-    protected override void SaveCellData(double data, int row, int col) {
+    protected override void Save() {
       DoubleMatrixValueVM vm = VM as DoubleMatrixValueVM;
-      vm.SetCellValue(data, row, col);
+      vm.Value = Matrix;
     }
     
   }
@@ -23,9 +23,9 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
   public class JsonItemIntArrayValueControl : JsonItemMultiValueControl<int> {
     public JsonItemIntArrayValueControl(IntArrayValueVM vm) : base(vm, vm.Value) { }
     
-    protected override void SaveCellData(int data, int row, int col) {
+    protected override void Save() {
       IntArrayValueVM vm = VM as IntArrayValueVM;
-      vm.SetIndexValue(data, row);
+      vm.Value = Matrix[0];
     }
     
   }
@@ -33,9 +33,9 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
   public class JsonItemDoubleArrayValueControl : JsonItemMultiValueControl<double> {
     public JsonItemDoubleArrayValueControl(DoubleArrayValueVM vm) : base(vm, vm.Value) { }
     
-    protected override void SaveCellData(double data, int row, int col) {
+    protected override void Save() {
       DoubleArrayValueVM vm = VM as DoubleArrayValueVM;
-      vm.SetIndexValue(data, row);
+      vm.Value = Matrix[0];
     }
     
   }
@@ -46,7 +46,7 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
     private int Rows { get; set; }
     private int Columns { get; set; }
 
-    private T[][] Matrix { get; set; }
+    protected T[][] Matrix { get; set; }
     
     protected IEnumerable<string> RowNames {
       get {
@@ -107,25 +107,7 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
       InitRangeBinding();
     }
     
-    protected abstract void SaveCellData(T data, int row, int col);
-
-    private void InitSizeConfiguration(int? rows, int? columns) {
-      if(rows != null) {
-        checkBoxRows.CheckedChanged += CheckBoxRows_CheckedChanged;
-        textBoxRows.Text = rows.ToString();
-      } else {
-        checkBoxRows.Enabled = false;
-        textBoxRows.ReadOnly = true;
-      }
-
-      if (columns != null) {
-        checkBoxColumns.CheckedChanged += CheckBoxColumns_CheckedChanged;
-        textBoxColumns.Text = columns.ToString();
-      } else {
-        checkBoxColumns.Enabled = false;
-        textBoxColumns.ReadOnly = true;
-      }
-    }
+    protected abstract void Save();
 
     private void RefreshMatrix() {
       dataGridView.Rows.Clear();
@@ -134,6 +116,7 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
       T[][] tmp = Matrix;
       Matrix = new T[Columns][];
       
+      // add columns
       for (int c = 0; c < Columns; ++c) {
         string name = $"Column {c}";
         if (RowNames != null && c < RowNames.Count())
@@ -141,6 +124,7 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
         dataGridView.Columns.Add(name, name);
       }
 
+      // copy data from old matrix into new
       for (int c = 0; c < Columns; ++c) {
         T[] newCol = new T[Rows];
         if(c < tmp.Length)
@@ -148,6 +132,7 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
         Matrix[c] = newCol;
       }
 
+      // add rows
       if(Rows > 0 && Columns > 0) {
         dataGridView.Rows.Add(Rows);
         for (int c = 0; c < Columns; ++c) {
@@ -164,6 +149,25 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
       dataGridView.RowHeadersWidth = 100;
     }
 
+    #region Init
+    private void InitSizeConfiguration(int? rows, int? columns) {
+      if (rows != null) {
+        checkBoxRows.CheckedChanged += CheckBoxRows_CheckedChanged;
+        textBoxRows.Text = rows.ToString();
+      } else {
+        checkBoxRows.Enabled = false;
+        textBoxRows.ReadOnly = true;
+      }
+
+      if (columns != null) {
+        checkBoxColumns.CheckedChanged += CheckBoxColumns_CheckedChanged;
+        textBoxColumns.Text = columns.ToString();
+      } else {
+        checkBoxColumns.Enabled = false;
+        textBoxColumns.ReadOnly = true;
+      }
+    }
+
     private void InitRangeBinding() {
       NumericRangeControl = numericRangeControl1;
       NumericRangeControl.TBMinRange.DataBindings.Add("Text", VM, nameof(RangedValueBaseVM<int, IntJsonItem>.MinRange));
@@ -173,7 +177,9 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
       NumericRangeControl.EnableMaxRange.DataBindings.Add("Checked", VM, nameof(RangedValueBaseVM<int, IntJsonItem>.EnableMaxRange),
         false, DataSourceUpdateMode.OnPropertyChanged);
     }
+    #endregion
 
+    #region Validation
     private void textBoxRows_Validating(object sender, CancelEventArgs e) {
       if (string.IsNullOrWhiteSpace(textBoxRows.Text)) {
         errorProvider.SetError(textBoxRows, "'Rows' must not be empty.");
@@ -203,11 +209,14 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
         errorProvider.SetError(textBoxColumns, null);
       }
     }
-    
+    #endregion
+
+    #region Events
     private void textBoxRows_TextChanged(object sender, EventArgs e) {
       if(!textBoxRows.ReadOnly && int.TryParse(textBoxRows.Text, out int r) && Rows != r) {
         Rows = r;
         RefreshMatrix();
+        Save();
       }
     }
 
@@ -215,6 +224,7 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
       if (!textBoxColumns.ReadOnly && int.TryParse(textBoxColumns.Text, out int c) && Columns != c) {
         Columns = c;
         RefreshMatrix();
+        Save();
       }
     }
 
@@ -231,7 +241,9 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
       Matrix[e.ColumnIndex][e.RowIndex] = (T)Convert.ChangeType(val.ToString().Replace(",", "."),
                                             typeof(T),
                                             System.Globalization.CultureInfo.InvariantCulture);
-      SaveCellData(Matrix[e.ColumnIndex][e.RowIndex], e.ColumnIndex, e.RowIndex);
+      //Save(Matrix[e.ColumnIndex][e.RowIndex], e.ColumnIndex, e.RowIndex);
+      Save();
     }
+    #endregion
   }
 }

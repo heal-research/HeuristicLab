@@ -28,6 +28,12 @@ namespace HeuristicLab.JsonInterface {
 
       dynamic val = (dynamic)item;
       object dataset = (object)val.Dataset;
+      var rows = dataset.GetType().GetField("rows", flags);
+      rows.SetValue(dataset, matrix.Value[0].Length);
+
+      var variableNames = dataset.GetType().GetField("variableNames", flags);
+      variableNames.SetValue(dataset, matrix.RowNames);
+
       var dataInfo = dataset.GetType().GetField("variableValues", flags);
       dataInfo.SetValue(dataset, dictTmp);
       val.TargetVariable = ((StringJsonItem)data.Children[3]).Value;
