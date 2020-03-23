@@ -20,7 +20,7 @@ namespace HeuristicLab.JsonInterface {
 
       if (parameter.ActualValue != null && parameter.ActualValue is IParameterizedItem && cdata.Children != null) {
         foreach(var child in cdata.Children) {
-          if(child.Name == cdata.Value || child.Path.EndsWith(cdata.Value))
+          if(child.Name == cdata.Value || child.Path.EndsWith(cdata.Value) || child.Name == parameter.ActualValue.ItemName)
             root.Inject(parameter.ActualValue, child, root);
         }
       }
