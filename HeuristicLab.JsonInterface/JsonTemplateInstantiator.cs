@@ -109,7 +109,7 @@ namespace HeuristicLab.JsonInterface {
         string path = obj.Property("Path").Value.ToString();
         // override default value
         if (Objects.TryGetValue(path, out IJsonItem param)) {
-          // remove fixed template parameter => dont allow to copy them from concrete config
+          // remove fixed template parameter from config => dont allow to copy them from concrete config
           obj.Property(nameof(IIntervalRestrictedJsonItem<int>.Minimum))?.Remove();
           obj.Property(nameof(IIntervalRestrictedJsonItem<int>.Maximum))?.Remove();
           obj.Property(nameof(IConcreteRestrictedJsonItem<string>.ConcreteRestrictedItems))?.Remove();

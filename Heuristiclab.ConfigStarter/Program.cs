@@ -23,7 +23,6 @@ namespace Heuristiclab.ConfigStarter {
         string pluginPath = Path.GetFullPath(Directory.GetCurrentDirectory());
         var pluginManager = new PluginManager(pluginPath);
         pluginManager.DiscoverAndCheckPlugins();
-        
       } catch(Exception e) {
         Console.WriteLine(e);
       }

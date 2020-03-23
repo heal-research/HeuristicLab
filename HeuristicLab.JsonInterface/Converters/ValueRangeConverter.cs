@@ -24,7 +24,6 @@ namespace HeuristicLab.JsonInterface {
     public override IJsonItem Extract(IItem value, IJsonItemConverter root) {
       IntRange range = value as IntRange;
       return new IntRangeJsonItem() {
-        //Name = "[OverridableParamName]",
         Name = value.ItemName,
         Description = value.ItemDescription,
         MinValue = range.Start,
@@ -49,7 +48,6 @@ namespace HeuristicLab.JsonInterface {
     public override IJsonItem Extract(IItem value, IJsonItemConverter root) {
       DoubleRange range = value as DoubleRange;
       return new DoubleRangeJsonItem() {
-        //Name = "[OverridableParamName]",
         Name = value.ItemName,
         Description = value.ItemDescription,
         MinValue = range.Start,
