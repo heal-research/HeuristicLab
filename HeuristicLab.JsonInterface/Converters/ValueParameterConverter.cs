@@ -20,7 +20,7 @@ namespace HeuristicLab.JsonInterface {
           if (data.Children == null || data.Children.Count == 0)
             root.Inject(parameter.ActualValue, data, root);
           else
-            root.Inject(parameter.ActualValue, /*data.Children?.First()*/ data, root);
+            root.Inject(parameter.ActualValue, data, root);
          
       }
     }
@@ -39,15 +39,6 @@ namespace HeuristicLab.JsonInterface {
           tmp.Name = parameter.Name;
           tmp.Description = parameter.Description;
           item = tmp;
-          /*
-          if (tmp.Name == "[OverridableParamName]") {
-            tmp.Name = parameter.Name;
-            tmp.Description = parameter.Description;
-            item = tmp;
-            //JsonItem.Merge(item as JsonItem, tmp as JsonItem);
-          } else
-            item.AddChildren(tmp);
-            */
         }
       }
       return item;

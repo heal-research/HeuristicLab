@@ -17,7 +17,6 @@ namespace HeuristicLab.JsonInterface {
 
     public override IJsonItem Extract(IItem value, IJsonItemConverter root) =>
       new IntJsonItem() {
-        //Name = "[OverridableParamName]",
         Name = value.ItemName,
         Description = value.ItemDescription,
         Value = ((IntValue)value).Value,
@@ -35,7 +34,6 @@ namespace HeuristicLab.JsonInterface {
 
     public override IJsonItem Extract(IItem value, IJsonItemConverter root) =>
       new DoubleJsonItem() {
-        //Name = "[OverridableParamName]",
         Name = value.ItemName,
         Description = value.ItemDescription,
         Value = ((DoubleValue)value).Value,
@@ -53,12 +51,11 @@ namespace HeuristicLab.JsonInterface {
 
     public override IJsonItem Extract(IItem value, IJsonItemConverter root) =>
       new DoubleJsonItem() {
-        //Name = "[OverridableParamName]",
         Name = value.ItemName,
         Description = value.ItemDescription,
         Value = ((PercentValue)value).Value,
-        Minimum = double.MinValue,
-        Maximum = double.MaxValue
+        Minimum = 0.0d,
+        Maximum = 1.0d
       };
   }
 
@@ -71,7 +68,6 @@ namespace HeuristicLab.JsonInterface {
 
     public override IJsonItem Extract(IItem value, IJsonItemConverter root) =>
       new BoolJsonItem() {
-        //Name = "[OverridableParamName]",
         Name = value.ItemName,
         Description = value.ItemDescription,
         Value = ((BoolValue)value).Value
@@ -87,7 +83,6 @@ namespace HeuristicLab.JsonInterface {
 
     public override IJsonItem Extract(IItem value, IJsonItemConverter root) =>
       new DateTimeJsonItem() {
-        //Name = "[OverridableParamName]",
         Name = value.ItemName,
         Description = value.ItemDescription,
         Value = ((DateTimeValue)value).Value,

@@ -8,7 +8,6 @@ using Newtonsoft.Json.Linq;
 
 namespace HeuristicLab.JsonInterface {
   public class ValueLookupJsonItem : LookupJsonItem, IValueLookupJsonItem {
-    
     public IJsonItem ActualValue { get; set; }
 
     protected override ValidationResult Validate() {
@@ -19,8 +18,7 @@ namespace HeuristicLab.JsonInterface {
     public override JObject GenerateJObject() {
       var obj = base.GenerateJObject();
       if(ActualValue != null) {
-        var actualValue = ActualValue.GenerateJObject();
-        obj.Add(nameof(IValueLookupJsonItem.ActualValue), actualValue);
+        obj.Add(nameof(IValueLookupJsonItem.ActualValue), ActualValue.Path);
       }
       return obj;
     }

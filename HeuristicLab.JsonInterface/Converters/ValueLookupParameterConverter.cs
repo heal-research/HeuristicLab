@@ -21,12 +21,11 @@ namespace HeuristicLab.JsonInterface {
     public override IJsonItem Extract(IItem value, IJsonItemConverter root) {
       IValueLookupParameter param = value as IValueLookupParameter;
 
-      IValueLookupJsonItem item = new ValueLookupJsonItem() {};
+      IValueLookupJsonItem item = new ValueLookupJsonItem();
 
       if (param.Value != null) {
         IJsonItem tmp = root.Extract(param.Value, root);
         tmp.Parent = item;
-        //item.AddChildren(tmp.Children);
         item.ActualValue = tmp;
       }
       item.Name = param.Name;
