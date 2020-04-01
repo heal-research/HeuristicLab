@@ -72,7 +72,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification.Views {
       this.btnSimplify.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
       this.btnSimplify.UseVisualStyleBackColor = true;
       this.btnSimplify.Click += new System.EventHandler(this.btn_SimplifyModel_Click);
-      this.toolTip.SetToolTip(this.btnSimplify, "Simplify solution");
+      this.toolTip.SetToolTip(this.btnSimplify, "Opens a new view for model simplification and manipulation.");
       // 
       // exportButton
       // 
