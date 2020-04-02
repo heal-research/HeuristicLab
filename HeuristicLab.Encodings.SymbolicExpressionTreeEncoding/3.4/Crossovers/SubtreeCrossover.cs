@@ -105,7 +105,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       ISymbolicExpressionTree parent0, ISymbolicExpressionTree parent1,
       double probability,
       double internalCrossoverPointProbability, int maxTreeLength, int maxTreeDepth) {
-      if (random.NextDouble() >= probability) return random.NextDouble() < 0.5 ? parent0 : parent1;
+      if ((probability < 1) && (random.NextDouble() >= probability)) return random.NextDouble() < 0.5 ? parent0 : parent1;
       // select a random crossover point in the first parent 
       CutPoint crossoverPoint0;
       SelectCrossoverPoint(random, parent0, internalCrossoverPointProbability, maxTreeLength, maxTreeDepth, out crossoverPoint0);
