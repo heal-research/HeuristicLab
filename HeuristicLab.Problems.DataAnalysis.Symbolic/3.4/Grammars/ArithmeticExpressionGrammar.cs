@@ -20,17 +20,17 @@
 #endregion
 
 using System.Collections.Generic;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HEAL.Attic;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [NonDiscoverableType]
   [StorableType("FCBA02B7-5D29-42F5-A64C-A60AD8EA475D")]
   [Item("ArithmeticExpressionGrammar", "Represents a grammar for functional expressions using only arithmetic operations.")]
-  public class ArithmeticExpressionGrammar : SymbolicExpressionGrammar, ISymbolicDataAnalysisGrammar {
+  public class ArithmeticExpressionGrammar : DataAnalysisGrammar, ISymbolicDataAnalysisGrammar {
 
     [StorableConstructor]
     protected ArithmeticExpressionGrammar(StorableConstructorFlag _) : base(_) { }
@@ -55,7 +55,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       var binFactorVariableSymbol = new BinaryFactorVariable();
       var factorVariableSymbol = new FactorVariable();
 
-      var allSymbols = new List<Symbol>() { add, sub, mul, div, constant, variableSymbol, binFactorVariableSymbol, factorVariableSymbol};
+      var allSymbols = new List<Symbol>() { add, sub, mul, div, constant, variableSymbol, binFactorVariableSymbol, factorVariableSymbol };
       var functionSymbols = new List<Symbol>() { add, sub, mul, div };
 
       foreach (var symb in allSymbols)
