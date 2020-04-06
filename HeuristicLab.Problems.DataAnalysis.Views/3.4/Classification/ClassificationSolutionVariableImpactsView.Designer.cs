@@ -191,7 +191,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       this.Controls.Add(this.variableImpactsArrayView);
       this.Name = "ClassificationSolutionVariableImpactsView";
       this.Size = new System.Drawing.Size(712, 365);
-      this.VisibleChanged += new System.EventHandler(this.ClassificationSolutionVariableImpactsView_VisibleChanged);
       this.ResumeLayout(false);
       this.PerformLayout();
 

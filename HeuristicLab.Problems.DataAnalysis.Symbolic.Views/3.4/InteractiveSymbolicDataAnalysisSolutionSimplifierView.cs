@@ -192,18 +192,24 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       treeChart.Tree = tree.Root.SubtreeCount > 1 ? new SymbolicExpressionTree(tree.Root) : new SymbolicExpressionTree(tree.Root.GetSubtree(0).GetSubtree(0));
 
       progress.Start("Calculate Impact and Replacement Values ...");
-      progress.CanBeStopped = true;
       cancellationTokenSource = new CancellationTokenSource();
-      var impactAndReplacementValues = await Task.Run(() => CalculateImpactAndReplacementValues(tree));
+      progress.CanBeStopped = true;
       try {
-        await Task.Delay(500, cancellationTokenSource.Token); // wait for progressbar to finish animation
-      } catch (OperationCanceledException) { }
-      var replacementValues = impactAndReplacementValues.ToDictionary(x => x.Key, x => x.Value.Item2);
-      foreach (var pair in replacementValues.Where(pair => !(pair.Key is ConstantTreeNode))) {
-        foldedNodes[pair.Key] = MakeConstantTreeNode(pair.Value);
+        var impactAndReplacementValues = await Task.Run(() => CalculateImpactAndReplacementValues(tree));
+        try {
+          await Task.Delay(300, cancellationTokenSource.Token); // wait for progressbar to finish animation
+        } catch (OperationCanceledException) { }
+
+        var replacementValues = impactAndReplacementValues.ToDictionary(x => x.Key, x => x.Value.Item2);
+        foreach (var pair in replacementValues.Where(pair => !(pair.Key is ConstantTreeNode))) {
+          foldedNodes[pair.Key] = MakeConstantTreeNode(pair.Value);
+        }
+
+        nodeImpacts = impactAndReplacementValues.ToDictionary(x => x.Key, x => x.Value.Item1);
+      } finally {
+        progress.Finish();
       }
-      nodeImpacts = impactAndReplacementValues.ToDictionary(x => x.Key, x => x.Value.Item1);
-      progress.Finish();
+
       progress.CanBeStopped = false;
       PaintNodeImpacts();
     }
@@ -313,12 +319,17 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
 
     private async void btnOptimizeConstants_Click(object sender, EventArgs e) {
       progress.Start("Optimizing Constants ...");
+      cancellationTokenSource = new CancellationTokenSource();
+      progress.CanBeStopped = true;
       try {
         var tree = (ISymbolicExpressionTree)Content.Model.SymbolicExpressionTree.Clone();
+
         var newTree = await Task.Run(() => OptimizeConstants(tree, progress));
-        await Task.Delay(500); // wait for progressbar to finish animation
-        UpdateModel(newTree);
-      } finally {
+        try {
+          await Task.Delay(300, cancellationTokenSource.Token); // wait for progressbar to finish animation
+        } catch (OperationCanceledException) { }
+        UpdateModel(newTree); // triggers progress.Finish after calculating the node impacts when model is changed
+      } catch {
         progress.Finish();
       }
     }
