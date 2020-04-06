@@ -36,7 +36,29 @@ namespace HeuristicLab.Problems.DataAnalysis {
     [StorableConstructor]
     protected Interval(StorableConstructorFlag _) { }
 
+    /// <summary>
+    /// Creates an interval with given bounds, where lower bound must be smaller than
+    /// the upper bound. Floating point precision errors trough calculations are fixed by,
+    /// checking if the intervals are almost the same (E-12). If this is the case, the bounds 
+    /// will be set to the bound closer to zero.
+    /// </summary>
+    /// <param name="lowerBound">Lower bound of the interval</param>
+    /// <param name="upperBound">Upper bound of the interval</param>
     public Interval(double lowerBound, double upperBound) {
+      if (lowerBound.IsAlmost(upperBound)) {
+        //If the bounds go over zero
+        if (lowerBound <= 0 && upperBound >= 0) {
+          lowerBound = 0.0;
+          upperBound = 0.0;
+          //Interval is negative
+        } else if (upperBound < 0) {
+          lowerBound = upperBound;
+          //Interval is positive
+        } else {
+          upperBound = lowerBound;
+        }
+      }
+
       if (lowerBound > upperBound)
         throw new ArgumentException("LowerBound must be smaller than UpperBound.");
 
@@ -57,6 +79,20 @@ namespace HeuristicLab.Problems.DataAnalysis {
         return double.IsInfinity(LowerBound) || double.IsInfinity(UpperBound) ||
                 double.IsNaN(LowerBound) || double.IsNaN(UpperBound);
       }
+    }
+
+    /// <summary>
+    /// True if the interval is positive without zero
+    /// </summary>
+    public bool IsPositive {
+      get => LowerBound > 0.0; 
+    }
+
+    /// <summary>
+    /// True if the interval is negative without zero
+    /// </summary>
+    public bool IsNegative {
+      get => UpperBound < 0.0;
     }
 
     public static Interval GetInterval(IEnumerable<double> values) {
@@ -127,7 +163,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       return new Interval(min, max);
     }
 
-    //mkommend: Division by intervals containing 0 is implemented as defined in
+    //Division by intervals containing 0 is implemented as defined in
     //http://en.wikipedia.org/wiki/Interval_arithmetic
     public static Interval Divide(Interval a, Interval b) {
       if (b.Contains(0.0)) {
@@ -170,7 +206,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
     public static Interval Tangens(Interval a) {
       return Interval.Divide(Interval.Sine(a), Interval.Cosine(a));
-    }  
+    }
     public static Interval HyperbolicTangent(Interval a) {
       return new Interval(Math.Tanh(a.LowerBound), Math.Tanh(a.UpperBound));
     }
@@ -205,7 +241,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     public static Interval Square(Interval a) {
       if (a.UpperBound <= 0) return new Interval(a.UpperBound * a.UpperBound, a.LowerBound * a.LowerBound);     // interval is negative
       else if (a.LowerBound >= 0) return new Interval(a.LowerBound * a.LowerBound, a.UpperBound * a.UpperBound); // interval is positive
-      else return new Interval(0, Math.Max(a.LowerBound*a.LowerBound, a.UpperBound*a.UpperBound)); // interval goes over zero
+      else return new Interval(0, Math.Max(a.LowerBound * a.LowerBound, a.UpperBound * a.UpperBound)); // interval goes over zero
     }
 
     public static Interval Cube(Interval a) {
@@ -225,8 +261,32 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
 
     public static Interval CubicRoot(Interval a) {
-      if (a.LowerBound < 0) return new Interval(double.NaN, double.NaN);
-      return new Interval(Math.Pow(a.LowerBound, 1.0/3), Math.Pow(a.UpperBound, 1.0/3));
+      var lower = (a.LowerBound < 0) ? -Math.Pow(-a.LowerBound, 1d / 3d) : Math.Pow(a.LowerBound, 1d / 3d);
+      var upper = (a.UpperBound < 0) ? -Math.Pow(-a.UpperBound, 1d / 3d) : Math.Pow(a.UpperBound, 1d / 3d);
+
+      return new Interval(lower, upper);
+    }
+
+    public static Interval Absolute(Interval a) {
+      var absLower = Math.Abs(a.LowerBound);
+      var absUpper = Math.Abs(a.UpperBound);
+      var min = Math.Min(absLower, absUpper);
+      var max = Math.Max(absLower, absUpper);
+
+      if (a.Contains(0.0)) {
+        min = 0.0;
+      }
+
+      return new Interval(min, max);
+    }
+
+    public static Interval AnalyticalQuotient(Interval a, Interval b) {
+      var dividend = a;
+      var divisor = Add(Square(b), new Interval(1.0, 1.0));
+      divisor = SquareRoot(divisor);
+
+      var quotient = Divide(dividend, divisor);
+      return quotient;
     }
     #endregion
   }
