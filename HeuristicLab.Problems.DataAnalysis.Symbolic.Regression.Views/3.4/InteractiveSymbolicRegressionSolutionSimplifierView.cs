@@ -37,6 +37,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression.Views {
       this.Caption = "Interactive Regression Solution Simplifier";
     }
 
+    protected override void SetEnabledStateOfControls() {
+      base.SetEnabledStateOfControls();
+
+      var tree = Content?.Model?.SymbolicExpressionTree;
+      btnOptimizeConstants.Enabled = tree != null && SymbolicRegressionConstantOptimizationEvaluator.CanOptimizeConstants(tree);
+    }
+
     protected override void UpdateModel(ISymbolicExpressionTree tree) {
       var model = new SymbolicRegressionModel(Content.ProblemData.TargetVariable, tree, Content.Model.Interpreter, Content.Model.LowerEstimationLimit, Content.Model.UpperEstimationLimit);
       model.Scale(Content.ProblemData);

@@ -167,6 +167,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
 
     private void Content_Changed(object sender, EventArgs e) {
       UpdateView();
+      SetEnabledStateOfControls();
     }
 
     protected override void OnContentChanged() {
@@ -312,10 +313,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
 
     private async void btnOptimizeConstants_Click(object sender, EventArgs e) {
       progress.Start("Optimizing Constants ...");
-      var tree = (ISymbolicExpressionTree)Content.Model.SymbolicExpressionTree.Clone();
-      var newTree = await Task.Run(() => OptimizeConstants(tree, progress));
-      await Task.Delay(500); // wait for progressbar to finish animation
-      UpdateModel(newTree); // UpdateModel calls Progress.Finish (via Content_Changed)
+      try {
+        var tree = (ISymbolicExpressionTree)Content.Model.SymbolicExpressionTree.Clone();
+        var newTree = await Task.Run(() => OptimizeConstants(tree, progress));
+        await Task.Delay(500); // wait for progressbar to finish animation
+        UpdateModel(newTree);
+      } finally {
+        progress.Finish();
+      }
     }
   }
 }
