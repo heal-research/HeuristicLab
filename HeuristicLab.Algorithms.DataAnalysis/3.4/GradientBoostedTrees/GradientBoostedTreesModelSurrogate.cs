@@ -23,9 +23,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HEAL.Attic;
 using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
@@ -37,6 +37,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   public sealed class GradientBoostedTreesModelSurrogate : RegressionModel, IGradientBoostedTreesModel {
     // don't store the actual model!
     // the actual model is only recalculated when necessary
+    private IGradientBoostedTreesModel fullModel;
     private readonly Lazy<IGradientBoostedTreesModel> actualModel;
     private IGradientBoostedTreesModel ActualModel {
       get { return actualModel.Value; }
@@ -47,17 +48,17 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     [Storable]
     private readonly uint seed;
     [Storable]
-    private ILossFunction lossFunction;
+    private readonly ILossFunction lossFunction;
     [Storable]
-    private double r;
+    private readonly double r;
     [Storable]
-    private double m;
+    private readonly double m;
     [Storable]
-    private double nu;
+    private readonly double nu;
     [Storable]
-    private int iterations;
+    private readonly int iterations;
     [Storable]
-    private int maxSize;
+    private readonly int maxSize;
 
 
     public override IEnumerable<string> VariablesUsedForPrediction {
@@ -68,15 +69,12 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     [StorableConstructor]
     private GradientBoostedTreesModelSurrogate(StorableConstructorFlag _) : base(_) {
-      actualModel = new Lazy<IGradientBoostedTreesModel>(() => RecalculateModel());
+      actualModel = CreateLazyInitFunc();
     }
 
     private GradientBoostedTreesModelSurrogate(GradientBoostedTreesModelSurrogate original, Cloner cloner)
       : base(original, cloner) {
-      IGradientBoostedTreesModel clonedModel = null;
-      if (original.actualModel.IsValueCreated) clonedModel = cloner.Clone(original.ActualModel);
-      actualModel = new Lazy<IGradientBoostedTreesModel>(CreateLazyInitFunc(clonedModel)); // only capture clonedModel in the closure
-
+      // clone data which is necessary to rebuild the model
       this.trainingProblemData = cloner.Clone(original.trainingProblemData);
       this.lossFunction = cloner.Clone(original.lossFunction);
       this.seed = original.seed;
@@ -85,12 +83,17 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       this.r = original.r;
       this.m = original.m;
       this.nu = original.nu;
+
+      // clone full model if it has already been created
+      if (original.fullModel != null) this.fullModel = cloner.Clone(original.fullModel);
+      actualModel = CreateLazyInitFunc();
     }
 
-    private Func<IGradientBoostedTreesModel> CreateLazyInitFunc(IGradientBoostedTreesModel clonedModel) {
-      return () => {
-        return clonedModel ?? RecalculateModel();
-      };
+    private Lazy<IGradientBoostedTreesModel> CreateLazyInitFunc() {
+      return new Lazy<IGradientBoostedTreesModel>(() => {
+        if (fullModel == null) fullModel = RecalculateModel();
+        return fullModel;
+      });
     }
 
     // create only the surrogate model without an actual model
@@ -106,14 +109,14 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       this.m = m;
       this.nu = nu;
 
-      actualModel = new Lazy<IGradientBoostedTreesModel>(() => RecalculateModel());
+      actualModel = CreateLazyInitFunc();
     }
 
-    // wrap an actual model in a surrograte
+    // wrap an actual model in a surrogate
     public GradientBoostedTreesModelSurrogate(IGradientBoostedTreesModel model, IRegressionProblemData trainingProblemData, uint seed,
       ILossFunction lossFunction, int iterations, int maxSize, double r, double m, double nu)
       : this(trainingProblemData, seed, lossFunction, iterations, maxSize, r, m, nu) {
-      actualModel = new Lazy<IGradientBoostedTreesModel>(() => model);
+      fullModel = model;
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -134,15 +137,11 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     public IEnumerable<IRegressionModel> Models {
-      get {
-        return ActualModel.Models;
-      }
+      get { return ActualModel.Models; }
     }
 
     public IEnumerable<double> Weights {
-      get {
-        return ActualModel.Weights;
-      }
+      get { return ActualModel.Weights; }
     }
   }
 }
