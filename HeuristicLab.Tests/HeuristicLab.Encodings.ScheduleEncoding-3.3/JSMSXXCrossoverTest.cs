@@ -39,15 +39,15 @@ namespace HeuristicLab.Encodings.ScheduleEncoding.Tests {
     [TestProperty("Time", "short")]
     public void ApplyTest() {
       IRandom random = new TestRandom(new int[] { 0, 3 }, null);
-      JSMEncoding p1 = TestUtils.CreateTestJSM1();
-      JSMEncoding p2 = TestUtils.CreateTestJSM2();
-      JSMEncoding expected = new JSMEncoding(0);
+      JSM p1 = TestUtils.CreateTestJSM1();
+      JSM p2 = TestUtils.CreateTestJSM2();
+      JSM expected = new JSM(0);
       ItemList<Permutation> jsm = expected.JobSequenceMatrix;
       for (int i = 0; i < 6; i++) {
         jsm.Add(new Permutation(PermutationTypes.Absolute, new int[] { 2, 1, 0, 3, 4, 5 }));
       }
 
-      JSMEncoding actual;
+      JSM actual;
       actual = JSMSXXCrossover.Apply(random, p1, p2);
 
       Assert.IsTrue(TestUtils.JSMEncodingEquals(expected, actual));

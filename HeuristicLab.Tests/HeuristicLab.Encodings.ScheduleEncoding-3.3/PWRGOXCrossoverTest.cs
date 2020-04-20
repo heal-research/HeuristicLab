@@ -39,11 +39,11 @@ namespace HeuristicLab.Encodings.ScheduleEncoding.Tests {
     [TestProperty("Time", "short")]
     public void ApplyTest() {
       IRandom random = new TestRandom(new int[] { 3 }, null);
-      PWREncoding parent1 = TestUtils.CreateTestPWR1();
-      PWREncoding parent2 = TestUtils.CreateTestPWR2();
-      PWREncoding expected = new PWREncoding();
+      PWR parent1 = TestUtils.CreateTestPWR1();
+      PWR parent2 = TestUtils.CreateTestPWR2();
+      PWR expected = new PWR();
       expected.PermutationWithRepetition = new IntegerVector(new int[] { 1, 0, 1, 0, 2, 0, 1, 2, 2 });
-      PWREncoding actual;
+      PWR actual;
       actual = PWRGOXCrossover.Apply(random, parent1, parent2);
       Assert.IsTrue(TestUtils.PRWEncodingEquals(expected, actual));
     }

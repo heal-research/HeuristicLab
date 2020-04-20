@@ -28,16 +28,16 @@ using HeuristicLab.Tests;
 
 namespace HeuristicLab.Encodings.ScheduleEncoding.Tests {
   public class TestUtils {
-    public static JSMEncoding CreateTestJSM1() {
-      JSMEncoding result = new JSMEncoding(0);
+    public static JSM CreateTestJSM1() {
+      JSM result = new JSM(0);
       ItemList<Permutation> jsm = result.JobSequenceMatrix;
       for (int i = 0; i < 6; i++)
         jsm.Add(new Permutation(PermutationTypes.Absolute, new int[] { 0, 1, 2, 3, 4, 5 }));
       return result;
     }
 
-    public static JSMEncoding CreateTestJSM2() {
-      JSMEncoding result = new JSMEncoding(0);
+    public static JSM CreateTestJSM2() {
+      JSM result = new JSM(0);
       ItemList<Permutation> jsm = result.JobSequenceMatrix;
       for (int i = 0; i < 6; i++)
         jsm.Add(new Permutation(PermutationTypes.Absolute, new int[] { 5, 4, 3, 2, 1, 0 }));
@@ -45,15 +45,15 @@ namespace HeuristicLab.Encodings.ScheduleEncoding.Tests {
     }
 
 
-    public static PWREncoding CreateTestPWR1() {
-      PWREncoding result = new PWREncoding();
+    public static PWR CreateTestPWR1() {
+      PWR result = new PWR();
       IntegerVector pwr = new IntegerVector(new int[] { 1, 0, 1, 1, 2, 0, 2, 2, 0 });
       result.PermutationWithRepetition = pwr;
       return result;
     }
 
-    public static PWREncoding CreateTestPWR2() {
-      PWREncoding result = new PWREncoding();
+    public static PWR CreateTestPWR2() {
+      PWR result = new PWR();
       IntegerVector pwr = new IntegerVector(new int[] { 0, 1, 1, 0, 2, 0, 1, 2, 2 });
       result.PermutationWithRepetition = pwr;
       return result;
@@ -86,12 +86,12 @@ namespace HeuristicLab.Encodings.ScheduleEncoding.Tests {
     }
 
     public static Schedule CreateTestSchedule1() {
-      Schedule result = DirectScheduleRandomCreator.Apply(new PWREncoding(3, 3, new TestRandom(new int[] { 1, 0, 1, 1, 2, 0, 2, 2, 0 }, null)), CreateJobData());
+      Schedule result = DirectScheduleRandomCreator.Apply(new PWR(3, 3, new TestRandom(new int[] { 1, 0, 1, 1, 2, 0, 2, 2, 0 }, null)), CreateJobData());
       return result;
     }
 
     public static Schedule CreateTestSchedule2() {
-      Schedule result = DirectScheduleRandomCreator.Apply(new PWREncoding(3, 3, new TestRandom(new int[] { 0, 1, 1, 0, 2, 0, 1, 2, 2 }, null)), CreateJobData());
+      Schedule result = DirectScheduleRandomCreator.Apply(new PWR(3, 3, new TestRandom(new int[] { 0, 1, 1, 0, 2, 0, 1, 2, 2 }, null)), CreateJobData());
       return result;
     }
     public static bool ScheduleEquals(Schedule actual, Schedule expected) {
@@ -116,7 +116,7 @@ namespace HeuristicLab.Encodings.ScheduleEncoding.Tests {
         actual.TaskNr == expected.TaskNr;
     }
 
-    public static bool JSMEncodingEquals(JSMEncoding expected, JSMEncoding actual) {
+    public static bool JSMEncodingEquals(JSM expected, JSM actual) {
       if (expected.JobSequenceMatrix.Count != actual.JobSequenceMatrix.Count)
         return false;
       for (int i = 0; i < expected.JobSequenceMatrix.Count; i++) {
@@ -135,7 +135,7 @@ namespace HeuristicLab.Encodings.ScheduleEncoding.Tests {
       return true;
     }
 
-    public static bool PRWEncodingEquals(PWREncoding expected, PWREncoding actual) {
+    public static bool PRWEncodingEquals(PWR expected, PWR actual) {
       if (expected.PermutationWithRepetition.Length != actual.PermutationWithRepetition.Length)
         return false;
       for (int i = 0; i < expected.PermutationWithRepetition.Length; i++) {
