@@ -21,9 +21,9 @@
 
 using System;
 using System.Threading;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HEAL.Attic;
 
 namespace HeuristicLab.Optimization {
   [StorableType("EFBEE5EB-B15B-4FBB-A210-C4E36898B89D")]
@@ -41,11 +41,6 @@ namespace HeuristicLab.Optimization {
 
     [Storable]
     private bool initialized;
-    [Storable]
-    private readonly ResultCollection results;
-    public override ResultCollection Results {
-      get { return results; }
-    }
 
     private CancellationTokenSource cancellationTokenSource;
     protected CancellationTokenSource CancellationTokenSource {
@@ -57,18 +52,15 @@ namespace HeuristicLab.Optimization {
     protected BasicAlgorithm(StorableConstructorFlag _) : base(_) { }
     protected BasicAlgorithm(BasicAlgorithm original, Cloner cloner)
       : base(original, cloner) {
-      results = cloner.Clone(original.Results);
       initialized = original.initialized;
     }
     protected BasicAlgorithm()
       : base() {
-      results = new ResultCollection();
     }
 
     public override void Prepare() {
       if (Problem == null) return;
       base.Prepare();
-      results.Clear();
       initialized = false;
       OnPrepared();
     }

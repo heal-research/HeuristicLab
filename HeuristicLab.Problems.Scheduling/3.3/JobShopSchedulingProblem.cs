@@ -106,6 +106,11 @@ namespace HeuristicLab.Problems.Scheduling {
       get { return ObjectiveParameter.Value.Value; }
       set { ObjectiveParameter.Value.Value = value; }
     }
+
+    public new IScheduleEncoding Encoding {
+      get { return base.Encoding; }
+      set { base.Encoding = value; }
+    }
     #endregion
 
     [StorableConstructor]

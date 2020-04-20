@@ -94,7 +94,11 @@ namespace HeuristicLab.Optimization {
       }
     }
 
-    public abstract ResultCollection Results { get; }
+    [Storable]
+    private readonly ResultCollection results = new ResultCollection();
+    public ResultCollection Results {
+      get { return results; }
+    }
 
     [Storable]
     private bool storeAlgorithmInEachRun;
@@ -184,6 +188,7 @@ namespace HeuristicLab.Optimization {
       problem = cloner.Clone(original.problem);
       storeAlgorithmInEachRun = original.storeAlgorithmInEachRun;
       runsCounter = original.runsCounter;
+      results = cloner.Clone(original.Results);
       runs = cloner.Clone(original.runs);
       Initialize();
     }
@@ -196,6 +201,7 @@ namespace HeuristicLab.Optimization {
     public virtual void Prepare() {
       if ((ExecutionState != ExecutionState.Prepared) && (ExecutionState != ExecutionState.Paused) && (ExecutionState != ExecutionState.Stopped))
         throw new InvalidOperationException(string.Format("Prepare not allowed in execution state \"{0}\".", ExecutionState));
+      results.Clear();
     }
     public void Prepare(bool clearRuns) {
       if ((ExecutionState != ExecutionState.Prepared) && (ExecutionState != ExecutionState.Paused) && (ExecutionState != ExecutionState.Stopped))
@@ -285,12 +291,16 @@ namespace HeuristicLab.Optimization {
     }
     public event EventHandler Started;
     protected virtual void OnStarted() {
+      foreach (var param in Parameters.Concat(Problem.Parameters).OfType<IResultParameter>())
+        param.ResultCollection = results;
       ExecutionState = ExecutionState.Started;
       EventHandler handler = Started;
       if (handler != null) handler(this, EventArgs.Empty);
     }
     public event EventHandler Paused;
     protected virtual void OnPaused() {
+      foreach (var param in Parameters.Concat(Problem.Parameters).OfType<IResultParameter>())
+        param.ResultCollection = null;
       ExecutionState = ExecutionState.Paused;
       EventHandler handler = Paused;
       if (handler != null) handler(this, EventArgs.Empty);
@@ -310,6 +320,8 @@ namespace HeuristicLab.Optimization {
           OnExceptionOccurred(new InvalidOperationException("Run creation failed.", e));
         }
       } finally {
+        foreach (var param in Parameters.Concat(Problem.Parameters).OfType<IResultParameter>())
+          param.ResultCollection = null;
         ExecutionState = ExecutionState.Stopped;
         EventHandler handler = Stopped;
         if (handler != null) handler(this, EventArgs.Empty);

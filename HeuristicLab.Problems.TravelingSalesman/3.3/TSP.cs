@@ -46,6 +46,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
 
     [Storable] public IValueParameter<ITSPData> TSPDataParameter { get; private set; }
     [Storable] public IValueParameter<ITSPSolution> BestKnownSolutionParameter { get; private set; }
+    [Storable] public IResultParameter<ITSPSolution> BestTSPSolutionParameter { get; private set; }
 
     public ITSPData TSPData {
       get { return TSPDataParameter.Value; }
@@ -63,13 +64,15 @@ namespace HeuristicLab.Problems.TravelingSalesman {
       : base(original, cloner) {
       TSPDataParameter = cloner.Clone(original.TSPDataParameter);
       BestKnownSolutionParameter = cloner.Clone(original.BestKnownSolutionParameter);
+      BestTSPSolutionParameter = cloner.Clone(original.BestTSPSolutionParameter);
     }
 
     public TSP() : base(new PermutationEncoding("Tour", 16, PermutationTypes.RelativeUndirected)) {
       Maximization = false;
       Parameters.Add(TSPDataParameter = new ValueParameter<ITSPData>("TSPData", "The main parameters of the TSP."));
       Parameters.Add(BestKnownSolutionParameter = new OptionalValueParameter<ITSPSolution>("BestKnownSolution", "The best known solution."));
-
+      Parameters.Add(BestTSPSolutionParameter = new ResultParameter<ITSPSolution>("Best TSP Solution", "The best so far solution found."));
+      
       TSPData = new EuclideanTSPData();
       Encoding.Length = TSPData.Cities;
 
@@ -111,14 +114,10 @@ namespace HeuristicLab.Problems.TravelingSalesman {
         BestKnownSolutionParameter.Value = bestKnown;
       }
 
-      IResult bestSolutionResult;
-      if (results.TryGetValue("Best TSP Solution", out bestSolutionResult)) {
-        var bestSolution = bestSolutionResult.Value as ITSPSolution;
-        if (bestSolution == null || Maximization && bestSolution.TourLength.Value < qualities[i]
-          || !Maximization && bestSolution.TourLength.Value > qualities[i]) {
-          bestSolutionResult.Value = TSPData.GetSolution(solutions[i], qualities[i]);
-        }
-      } else results.Add(new Result("Best TSP Solution", TSPData.GetSolution(solutions[i], qualities[i])));
+      var bestSolution = BestTSPSolutionParameter.ActualValue;
+      if (bestSolution == null || IsBetter(qualities[i], bestSolution.TourLength.Value)) {
+        BestTSPSolutionParameter.ActualValue = TSPData.GetSolution(solutions[i], qualities[i]);
+      }
     }
 
     public override IEnumerable<Permutation> GetNeighbors(Permutation solution, IRandom random) {

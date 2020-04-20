@@ -45,9 +45,9 @@ namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
     [Storable]
     private IRandom random;
 
-    private const string IterationsParameterName = "Iterations";
-    private const string BestQualityResultName = "Best quality";
-    private const string IterationsResultName = "Iterations";
+    [Storable] public IFixedValueParameter<IntValue> MaximumIterationsParameter { get; private set; }
+    [Storable] public IResultParameter<DoubleValue> BestQualityResultParameter { get; private set; }
+    [Storable] public IResultParameter<IntValue> IterationsResultParameter { get; private set; }
 
     public override Type ProblemType {
       get { return typeof(ISingleObjectiveProblemDefinition<BinaryVectorEncoding, BinaryVector>); }
@@ -59,30 +59,18 @@ namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
 
     public override bool SupportsPause { get { return false; } }
 
-    public IFixedValueParameter<IntValue> IterationsParameter {
-      get { return (IFixedValueParameter<IntValue>)Parameters[IterationsParameterName]; }
+    public int MaximumIterations {
+      get { return MaximumIterationsParameter.Value.Value; }
+      set { MaximumIterationsParameter.Value.Value = value; }
     }
-
-    public int Iterations {
-      get { return IterationsParameter.Value.Value; }
-      set { IterationsParameter.Value.Value = value; }
-    }
-
-    #region ResultsProperties
-    private double ResultsBestQuality {
-      get { return ((DoubleValue)Results[BestQualityResultName].Value).Value; }
-      set { ((DoubleValue)Results[BestQualityResultName].Value).Value = value; }
-    }
-    private int ResultsIterations {
-      get { return ((IntValue)Results[IterationsResultName].Value).Value; }
-      set { ((IntValue)Results[IterationsResultName].Value).Value = value; }
-    }
-    #endregion
 
     [StorableConstructor]
     protected HillClimber(StorableConstructorFlag _) : base(_) { }
     protected HillClimber(HillClimber original, Cloner cloner)
       : base(original, cloner) {
+      MaximumIterationsParameter = cloner.Clone(original.MaximumIterationsParameter);
+      BestQualityResultParameter = cloner.Clone(original.BestQualityResultParameter);
+      IterationsResultParameter = cloner.Clone(original.IterationsResultParameter);
     }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new HillClimber(this, cloner);
@@ -91,17 +79,13 @@ namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
     public HillClimber()
       : base() {
       random = new MersenneTwister();
-      Parameters.Add(new FixedValueParameter<IntValue>(IterationsParameterName, "", new IntValue(100)));
+      Parameters.Add(MaximumIterationsParameter = new FixedValueParameter<IntValue>("Maximum Iterations", "", new IntValue(100)));
+      Parameters.Add(BestQualityResultParameter = new ResultParameter<DoubleValue>("Best Quality", "", "Results", new DoubleValue(double.NaN)));
+      Parameters.Add(IterationsResultParameter = new ResultParameter<IntValue>("Iterations", "", "Results", new IntValue(0)));
     }
 
-
-    protected override void Initialize(CancellationToken cancellationToken) {
-      Results.Add(new Result(BestQualityResultName, new DoubleValue(double.NaN)));
-      Results.Add(new Result(IterationsResultName, new IntValue(0)));
-      base.Initialize(cancellationToken);
-    }
     protected override void Run(CancellationToken cancellationToken) {
-      while (ResultsIterations < Iterations) {
+      while (IterationsResultParameter.ActualValue.Value < MaximumIterations) {
         cancellationToken.ThrowIfCancellationRequested();
 
         var solution = new BinaryVector(Problem.Encoding.Length);
@@ -113,11 +97,12 @@ namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
         var fitness = evaluationResult.Quality;
 
         fitness = ImproveToLocalOptimum(Problem, solution, fitness, random);
-        if (double.IsNaN(ResultsBestQuality) || Problem.IsBetter(fitness, ResultsBestQuality)) {
-          ResultsBestQuality = fitness;
+        var bestSoFar = BestQualityResultParameter.ActualValue.Value;
+        if (double.IsNaN(bestSoFar) || Problem.IsBetter(fitness, bestSoFar)) {
+          BestQualityResultParameter.ActualValue.Value = fitness;
         }
 
-        ResultsIterations++;
+        IterationsResultParameter.ActualValue.Value++;
       }
     }
     // In the GECCO paper, Section 2.1

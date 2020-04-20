@@ -27,6 +27,8 @@ namespace HeuristicLab.Optimization {
   [StorableType("af5d3f60-6f3a-4a44-a906-688ac8296fe3")]
   public interface IResultParameter : ILookupParameter {
     string ResultCollectionName { get; set; }
+    ResultCollection ResultCollection { get; set; }
+
     event EventHandler ResultCollectionNameChanged;
   }
 

@@ -20,10 +20,9 @@
 #endregion
 
 using System;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Optimization;
-using HEAL.Attic;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Clients.OKB.RunCreation {
@@ -40,11 +39,6 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
       get { return false; }
     }
 
-    private ResultCollection results;
-    public override Optimization.ResultCollection Results {
-      get { return results; }
-    }
-
     #region Persistence Properties
     [Storable(Name = "ExceptionMessage")]
     private string ExceptionMessage {
@@ -55,16 +49,13 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
 
     [StorableConstructor]
     private EmptyAlgorithm(StorableConstructorFlag _) : base(_) {
-      this.results = new ResultCollection();
     }
     private EmptyAlgorithm(EmptyAlgorithm original, Cloner cloner)
       : base(original, cloner) {
       this.exceptionMessage = original.exceptionMessage;
-      this.results = new ResultCollection();
     }
     public EmptyAlgorithm()
       : base() {
-      results = new ResultCollection();
     }
     public EmptyAlgorithm(string exceptionMessage)
       : this() {

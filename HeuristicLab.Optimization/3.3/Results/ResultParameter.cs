@@ -59,12 +59,16 @@ namespace HeuristicLab.Optimization {
       }
     }
 
+    [Storable]
+    public ResultCollection ResultCollection { get; set; }
+
     [StorableConstructor]
     private ResultParameter(StorableConstructorFlag _) : base(_) { }
     private ResultParameter(ResultParameter<T> original, Cloner cloner)
       : base(original, cloner) {
       resultCollectionName = original.resultCollectionName;
       defaultValue = cloner.Clone(original.defaultValue);
+      ResultCollection = cloner.Clone(original.ResultCollection);
     }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new ResultParameter<T>(this, cloner);
@@ -88,21 +92,23 @@ namespace HeuristicLab.Optimization {
     }
 
     protected override IItem GetActualValue() {
-      ResultCollection results;
-      if (CachedActualValue != null) {
-        results = CachedActualValue as ResultCollection;
-        if (results == null) throw new InvalidOperationException("ResultParameter (" + ActualName + "): ResultCollection not found.");
-      } else {
-        var tmp = ResultCollectionName;
-        // verifyType has to be disabled, because the ResultCollection may not be identical to the generic type of the parameter
-        results = GetValue(ExecutionContext, ref tmp) as ResultCollection;
-        if (results == null) throw new InvalidOperationException("ResultParameter (" + ActualName + "): ResultCollection with name " + tmp + " not found.");
-        CachedActualValue = results;
+      ResultCollection results = ResultCollection;
+      if (results == null) {
+        if (CachedActualValue != null) {
+          results = CachedActualValue as ResultCollection;
+          if (results == null) throw new InvalidOperationException("ResultParameter (" + ActualName + "): ResultCollection not found.");
+        } else {
+          var tmp = ResultCollectionName;
+          // verifyType has to be disabled, because the ResultCollection may not be identical to the generic type of the parameter
+          results = GetValue(ExecutionContext, ref tmp) as ResultCollection;
+          if (results == null) throw new InvalidOperationException("ResultParameter (" + ActualName + "): ResultCollection with name " + tmp + " not found.");
+          CachedActualValue = results;
+        }
       }
 
       IResult result;
       if (!results.TryGetValue(ActualName, out result)) {
-        if (DefaultValue == null) throw new InvalidOperationException("ResultParameter (" + ActualName + "): Result not found and no default value specified.");
+        if (DefaultValue == null) return null;
         result = ItemDescription == Description ? new Result(ActualName, (T)DefaultValue.Clone()) : new Result(ActualName, Description, (T)DefaultValue.Clone());
         results.Add(result);
       }
@@ -115,15 +121,17 @@ namespace HeuristicLab.Optimization {
     }
 
     protected override void SetActualValue(IItem value) {
-      ResultCollection results;
-      if (CachedActualValue != null) {
-        results = CachedActualValue as ResultCollection;
-        if (results == null) throw new InvalidOperationException("ResultParameter (" + ActualName + "): ResultCollection not found.");
-      } else {
-        var tmp = ResultCollectionName;
-        results = GetValue(ExecutionContext, ref tmp) as ResultCollection;
-        if (results == null) throw new InvalidOperationException("ResultParameter (" + ActualName + "): ResultCollection with name " + tmp + " not found.");
-        CachedActualValue = results;
+      ResultCollection results = ResultCollection;
+      if (results == null) {
+        if (CachedActualValue != null) {
+          results = CachedActualValue as ResultCollection;
+          if (results == null) throw new InvalidOperationException("ResultParameter (" + ActualName + "): ResultCollection not found.");
+        } else {
+          var tmp = ResultCollectionName;
+          results = GetValue(ExecutionContext, ref tmp) as ResultCollection;
+          if (results == null) throw new InvalidOperationException("ResultParameter (" + ActualName + "): ResultCollection with name " + tmp + " not found.");
+          CachedActualValue = results;
+        }
       }
 
       IResult result;
