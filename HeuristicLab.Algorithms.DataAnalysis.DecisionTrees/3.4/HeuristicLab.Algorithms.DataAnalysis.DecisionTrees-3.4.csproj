@@ -77,7 +77,6 @@
     <Compile Include="LeafTypes\ComplexLeaf.cs" />
     <Compile Include="LeafTypes\ComponentReductionLinearLeaf.cs" />
     <Compile Include="LeafTypes\ConstantLeaf.cs" />
-    <Compile Include="LeafTypes\GaussianProcessLeaf.cs" />
     <Compile Include="LeafTypes\Leaf.cs" />
     <Compile Include="LeafTypes\LeafBase.cs" />
     <Compile Include="LeafTypes\LinearLeaf.cs" />

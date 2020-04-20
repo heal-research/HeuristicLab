@@ -136,7 +136,6 @@
     <Compile Include="GaussianProcess\CovarianceFunctions\CovariancePiecewisePolynomial.cs" />
     <Compile Include="GaussianProcess\CovarianceFunctions\CovarianceNeuralNetwork.cs" />
     <Compile Include="GaussianProcess\CovarianceFunctions\CovariancePolynomial.cs" />
-    <Compile Include="GaussianProcess\GaussianProcessBase.cs" />
     <Compile Include="GaussianProcess\CovarianceFunctions\CovarianceConst.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -179,7 +178,6 @@
     </Compile>
     <Compile Include="GaussianProcess\GaussianProcessClassificationSolutionCreator.cs" />
     <Compile Include="GaussianProcess\GaussianProcessClassificationModelCreator.cs" />
-    <Compile Include="GaussianProcess\GaussianProcessClassification.cs" />
     <Compile Include="GaussianProcess\MeanFunctions\MeanModel.cs" />
     <Compile Include="GaussianProcess\MeanFunctions\MeanConst.cs" />
     <Compile Include="GaussianProcess\MeanFunctions\MeanLinear.cs" />
@@ -200,7 +198,6 @@
     <Compile Include="GaussianProcess\Util.cs" />
     <Compile Include="GaussianProcess\IMeanFunction.cs" />
     <Compile Include="GaussianProcess\GaussianProcessModel.cs" />
-    <Compile Include="GaussianProcess\GaussianProcessRegression.cs" />
     <Compile Include="GaussianProcess\GaussianProcessRegressionSolution.cs" />
     <Compile Include="GaussianProcess\ICovarianceFunction.cs" />
     <Compile Include="GBM\GradientBoostingRegressionAlgorithm.cs" />
@@ -274,7 +271,6 @@
     <Compile Include="Nca\Matrix.cs" />
     <Compile Include="Nca\ModelCreation\INcaModelCreator.cs" />
     <Compile Include="Nca\ModelCreation\NcaModelCreator.cs" />
-    <Compile Include="Nca\NcaAlgorithm.cs" />
     <Compile Include="Nca\NcaClassificationSolution.cs" />
     <Compile Include="Nca\NcaGradientCalculator.cs" />
     <Compile Include="Nca\NcaModel.cs" />

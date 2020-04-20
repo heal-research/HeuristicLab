@@ -21,6 +21,7 @@
 
 using System;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -29,7 +30,6 @@ using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 
 namespace HeuristicLab.Algorithms.LocalSearch {
   /// <summary>
@@ -40,7 +40,7 @@ namespace HeuristicLab.Algorithms.LocalSearch {
   public sealed class LocalSearchImprovementOperator : SingleSuccessorOperator, ILocalImprovementAlgorithmOperator, IStochasticOperator, ISingleObjectiveOperator {
     #region IGenericLocalImprovementOperator Properties
     public Type ProblemType { get { return typeof(ISingleObjectiveHeuristicOptimizationProblem); } }
-    public IProblem Problem {
+    public IEncodedProblem Problem {
       get { return problem; }
       set {
         if (problem != value) {

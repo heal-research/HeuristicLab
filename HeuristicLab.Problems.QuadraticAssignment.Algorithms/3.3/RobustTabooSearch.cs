@@ -384,7 +384,7 @@ Please note that the MinimumTabuTenure parameter has no effect in the new versio
     private void UpdateAnalyzers() {
       AnalyzerParameter.Value.Operators.Clear();
       if (Problem != null) {
-        foreach (IAnalyzer analyzer in ((IProblem)Problem).Operators.OfType<IAnalyzer>()) {
+        foreach (IAnalyzer analyzer in ((IEncodedProblem)Problem).Operators.OfType<IAnalyzer>()) {
           AnalyzerParameter.Value.Operators.Add(analyzer, analyzer.EnabledByDefault);
           if (!(analyzer is BestQAPSolutionAnalyzer))
             AnalyzerParameter.Value.Operators.SetItemCheckedState(analyzer, false);

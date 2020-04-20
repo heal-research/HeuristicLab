@@ -25,11 +25,11 @@ using System.Drawing;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using HEAL.Attic;
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HEAL.Attic;
 
 namespace HeuristicLab.Optimization {
   /// <summary>
@@ -300,18 +300,16 @@ namespace HeuristicLab.Optimization {
       try {
         foreach (
           IStatefulItem statefulObject in
-          this.GetObjectGraphObjects(new HashSet<object>() {Runs}).OfType<IStatefulItem>()) {
+          this.GetObjectGraphObjects(new HashSet<object>() { Runs }).OfType<IStatefulItem>()) {
           statefulObject.ClearState();
         }
         runsCounter++;
         try {
           runs.Add(new Run(string.Format("{0} Run {1}", Name, runsCounter), this));
-        }
-        catch (ArgumentException e) {
+        } catch (ArgumentException e) {
           OnExceptionOccurred(new InvalidOperationException("Run creation failed.", e));
         }
-      }    
-      finally {
+      } finally {
         ExecutionState = ExecutionState.Stopped;
         EventHandler handler = Stopped;
         if (handler != null) handler(this, EventArgs.Empty);
@@ -324,14 +322,11 @@ namespace HeuristicLab.Optimization {
     }
 
     protected virtual void DeregisterProblemEvents() {
-      problem.OperatorsChanged -= new EventHandler(Problem_OperatorsChanged);
       problem.Reset -= new EventHandler(Problem_Reset);
     }
     protected virtual void RegisterProblemEvents() {
-      problem.OperatorsChanged += new EventHandler(Problem_OperatorsChanged);
       problem.Reset += new EventHandler(Problem_Reset);
     }
-    protected virtual void Problem_OperatorsChanged(object sender, EventArgs e) { }
     protected virtual void Problem_Reset(object sender, EventArgs e) {
       Prepare();
     }

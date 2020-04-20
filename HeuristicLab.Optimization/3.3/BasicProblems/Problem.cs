@@ -30,12 +30,12 @@ using HeuristicLab.Parameters;
 
 namespace HeuristicLab.Optimization {
   [StorableType("D877082E-9E77-4CB1-ABDB-35F63878E116")]
-  public abstract class Problem<TEncoding, TEncodedSolution, TEvaluator> : Problem,
+  public abstract class Problem<TEncoding, TEncodedSolution, TEvaluator> : EncodedProblem,
     IHeuristicOptimizationProblem, IProblemDefinition<TEncoding, TEncodedSolution>, IStorableContent
     where TEncoding : class, IEncoding<TEncodedSolution>
     where TEncodedSolution : class, IEncodedSolution
     where TEvaluator : class, IEvaluator {
-   
+
 
     //TODO remove parameter for encoding?
     protected IValueParameter<TEncoding> EncodingParameter {
@@ -96,7 +96,7 @@ namespace HeuristicLab.Optimization {
     public override IEnumerable<IParameterizedItem> ExecutionContextItems {
       get {
         if (Encoding == null) return base.ExecutionContextItems;
-        return base.ExecutionContextItems.Concat(new[] {Encoding});
+        return base.ExecutionContextItems.Concat(new[] { Encoding });
       }
     }
 
@@ -104,7 +104,7 @@ namespace HeuristicLab.Optimization {
       : base() {
       Parameters.Add(new ValueParameter<TEncoding>("Encoding", "Describes the configuration of the encoding, what the variables are called, what type they are and their bounds if any.") { Hidden = true });
       Parameters.Add(new ValueParameter<TEvaluator>("Evaluator", "The operator used to evaluate a solution.") { Hidden = true });
-      
+
       if (Encoding != null) {
         oldEncoding = Encoding;
         Parameterize();
@@ -179,7 +179,7 @@ namespace HeuristicLab.Optimization {
         var newMultiEncoding = (CombinedEncoding)newEncoding;
         if (!oldMultiEncoding.Encodings.SequenceEqual(newMultiEncoding.Encodings, new TypeEqualityComparer<IEncoding>())) return;
 
-        var nestedEncodings = oldMultiEncoding.Encodings.Zip(newMultiEncoding.Encodings, (o, n) => new {oldEnc = o, newEnc = n});
+        var nestedEncodings = oldMultiEncoding.Encodings.Zip(newMultiEncoding.Encodings, (o, n) => new { oldEnc = o, newEnc = n });
         foreach (var multi in nestedEncodings)
           AdaptEncodingOperators(multi.oldEnc, multi.newEnc);
       }

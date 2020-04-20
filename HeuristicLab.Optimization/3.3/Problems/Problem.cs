@@ -30,28 +30,57 @@ using HeuristicLab.Data;
 using HeuristicLab.Parameters;
 
 namespace HeuristicLab.Optimization {
+  [StorableType("C213CE21-A970-4886-BC4C-9790B9897738")]
+  public abstract class Problem : ParameterizedNamedItem, IProblem {
+    public string Filename { get; set; }
+
+    public static new Image StaticItemImage {
+      get { return HeuristicLab.Common.Resources.VSImageLibrary.Type; }
+    }
+
+
+
+    [StorableConstructor]
+    protected Problem(StorableConstructorFlag _) : base(_) { }
+    protected Problem(Problem original, Cloner cloner) : base(original, cloner) { }
+    public Problem() : base() { }
+
+    protected override IEnumerable<KeyValuePair<string, IItem>> GetCollectedValues(IValueParameter param) {
+      var children = base.GetCollectedValues(param);
+      foreach (var child in children) {
+        if (child.Value is IOperator)
+          yield return new KeyValuePair<string, IItem>(child.Key, new StringValue(((IOperator)child.Value).Name));
+        else yield return child;
+      }
+    }
+
+    public event EventHandler Reset;
+    protected virtual void OnReset() {
+      EventHandler handler = Reset;
+      if (handler != null)
+        handler(this, EventArgs.Empty);
+    }
+  }
+
+
+
   [Item("Problem", "Represents the base class for a problem.")]
   [StorableType("6DC97432-9BD1-4304-802A-1FC48A0E0468")]
-  public abstract class Problem : ParameterizedNamedItem, IProblem {
-    public string Filename { get; set; } 
+  public abstract class EncodedProblem : Problem, IEncodedProblem {
 
     private const string OperatorsParameterName = "Operators";
     public IFixedValueParameter<ItemCollection<IItem>> OperatorsParameter {
       get { return (IFixedValueParameter<ItemCollection<IItem>>)Parameters[OperatorsParameterName]; }
     }
 
-    public static new Image StaticItemImage {
-      get { return HeuristicLab.Common.Resources.VSImageLibrary.Type; }
-    }
-
     [StorableConstructor]
-    protected Problem(StorableConstructorFlag _) : base(_) { }
-    protected Problem(Problem original, Cloner cloner)
+    protected EncodedProblem(StorableConstructorFlag _) : base(_) { }
+    protected EncodedProblem(EncodedProblem original, Cloner cloner)
       : base(original, cloner) {
       RegisterEventHandlers();
     }
 
-    protected Problem()
+    protected EncodedProblem()
       : base() {
       Parameters.Add(new FixedValueParameter<ItemCollection<IItem>>(OperatorsParameterName, "The operators and items that the problem provides to the algorithms.", new ItemCollection<IItem>()) { GetsCollected = false });
       OperatorsParameter.Hidden = true;
@@ -115,7 +144,7 @@ namespace HeuristicLab.Optimization {
         return OperatorsParameter.Value;
       }
     }
-    IEnumerable<IItem> IProblem.Operators { get { return GetOperators(); } }
+    IEnumerable<IItem> IEncodedProblem.Operators { get { return GetOperators(); } }
 
     protected virtual IEnumerable<IItem> GetOperators() {
       return Operators;
@@ -126,14 +155,7 @@ namespace HeuristicLab.Optimization {
     }
     #endregion
 
-    protected override IEnumerable<KeyValuePair<string, IItem>> GetCollectedValues(IValueParameter param) {
-      var children = base.GetCollectedValues(param);
-      foreach (var child in children) {
-        if (child.Value is IOperator)
-          yield return new KeyValuePair<string, IItem>(child.Key, new StringValue(((IOperator)child.Value).Name));
-        else yield return child;
-      }
-    }
+
 
     #region events
     private void Operators_Changed(object sender, EventArgs e) {
@@ -142,13 +164,6 @@ namespace HeuristicLab.Optimization {
     public event EventHandler OperatorsChanged;
     protected virtual void OnOperatorsChanged() {
       EventHandler handler = OperatorsChanged;
-      if (handler != null)
-        handler(this, EventArgs.Empty);
-    }
-
-    public event EventHandler Reset;
-    protected virtual void OnReset() {
-      EventHandler handler = Reset;
       if (handler != null)
         handler(this, EventArgs.Empty);
     }

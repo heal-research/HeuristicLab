@@ -20,17 +20,17 @@
 #endregion
 
 using System;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 
 namespace HeuristicLab.Optimization {
   [Item("Heuristic Optimization Problem", "Represents the base class for a heuristic optimization problem.")]
   [StorableType("DE0478BA-3797-4AC3-9A89-3734D2643823")]
-  public abstract class HeuristicOptimizationProblem<T, U> : Problem, IHeuristicOptimizationProblem
-    where T : class,IEvaluator
-    where U : class,ISolutionCreator {
+  public abstract class HeuristicOptimizationProblem<T, U> : EncodedProblem, IHeuristicOptimizationProblem
+    where T : class, IEvaluator
+    where U : class, ISolutionCreator {
     private const string EvaluatorParameterName = "Evaluator";
     private const string SolutionCreateParameterName = "SolutionCreator";
 

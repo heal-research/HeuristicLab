@@ -42,8 +42,10 @@ namespace HeuristicLab.Optimization {
     void Evaluate(ISingleObjectiveSolutionContext<TEncodedSolution> solutionContext, IRandom random);
     void Evaluate(ISingleObjectiveSolutionContext<TEncodedSolution> solutionContext, IRandom random, CancellationToken cancellationToken);
 
+    //TODO add cancellationtoken?
     void Analyze(ISingleObjectiveSolutionContext<TEncodedSolution>[] solutionContexts, ResultCollection results, IRandom random);
 
+    //TODO remove neighbors from ProblemDefinition?
     IEnumerable<TEncodedSolution> GetNeighbors(TEncodedSolution solution, IRandom random);
     IEnumerable<ISingleObjectiveSolutionContext<TEncodedSolution>> GetNeighbors(ISingleObjectiveSolutionContext<TEncodedSolution> solutionContext, IRandom random);
   }

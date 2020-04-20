@@ -234,7 +234,7 @@ namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
       if (SetSeedRandomly) Seed = RandomSeedGenerator.GetSeed();
       pyramid = new List<Population>();
       seen.Clear();
-      random.Reset(Seed);
+      random.Reset(Seed);                                                          
       tracker = new EvaluationTracker(Problem, MaximumEvaluations);
 
       // Set up the results display

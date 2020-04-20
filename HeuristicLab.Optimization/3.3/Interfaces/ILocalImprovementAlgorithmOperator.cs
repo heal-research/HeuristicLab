@@ -26,6 +26,6 @@ namespace HeuristicLab.Optimization {
   [StorableType("a45976c5-caad-4eb6-8150-f168a1ff89f5")]
   public interface ILocalImprovementAlgorithmOperator : ILocalImprovementOperator {
     Type ProblemType { get; }
-    IProblem Problem { get; set; }
+    IEncodedProblem Problem { get; set; }
   }
 }

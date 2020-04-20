@@ -21,6 +21,7 @@
 
 using System;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -28,7 +29,6 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Algorithms.SimulatedAnnealing {
@@ -40,7 +40,7 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
   public sealed class SimulatedAnnealingImprovementOperator : SingleSuccessorOperator, ILocalImprovementAlgorithmOperator, IStochasticOperator, ISingleObjectiveOperator {
     #region IGenericLocalImprovementOperator Properties
     public Type ProblemType { get { return typeof(ISingleObjectiveHeuristicOptimizationProblem); } }
-    public IProblem Problem {
+    public IEncodedProblem Problem {
       get { return problem; }
       set {
         if (problem != value) {

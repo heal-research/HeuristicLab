@@ -21,9 +21,9 @@
 
 using System;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HEAL.Attic;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Optimization {
@@ -47,6 +47,11 @@ namespace HeuristicLab.Optimization {
           Prepare();
         }
       }
+    }
+
+    public new IEncodedProblem Problem {
+      get { return (IEncodedProblem)base.Problem; }
+      set { base.Problem = Problem; }
     }
 
     [Storable]
@@ -180,7 +185,18 @@ namespace HeuristicLab.Optimization {
       if (engine != null) engine.Stop();
     }
 
+
+
     #region Events
+    protected override void DeregisterProblemEvents() {
+      Problem.Reset -= new EventHandler(Problem_Reset);
+    }
+    protected override void RegisterProblemEvents() {
+      Problem.Reset += new EventHandler(Problem_Reset);
+    }
+    protected virtual void Problem_OperatorsChanged(object sender, EventArgs e) { }
+
+
     public event EventHandler EngineChanged;
     protected virtual void OnEngineChanged() {
       EventHandler handler = EngineChanged;

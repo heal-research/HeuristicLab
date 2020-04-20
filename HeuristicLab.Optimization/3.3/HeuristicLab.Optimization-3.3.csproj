@@ -258,7 +258,7 @@
     <Compile Include="Interfaces\ICrossover.cs" />
     <Compile Include="Interfaces\IEvaluator.cs" />
     <Compile Include="Interfaces\IManipulator.cs" />
-    <Compile Include="Interfaces\IProblem.cs" />
+    <Compile Include="BasicProblems\Interfaces\IProblem.cs" />
     <Compile Include="Interfaces\ISingleObjectiveEvaluator.cs" />
     <Compile Include="Interfaces\ISolutionCreator.cs" />
     <Compile Include="Interfaces\IStochasticOperator.cs" />

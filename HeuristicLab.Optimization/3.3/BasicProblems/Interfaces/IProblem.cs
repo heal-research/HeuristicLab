@@ -1,4 +1,4 @@
-﻿#region License Information
+#region License Information
 /* HeuristicLab
  * Copyright (C) Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
@@ -20,21 +20,32 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using HEAL.Attic;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.Optimization {
-  [StorableType("51d66e7a-e4bd-429a-b6e5-1cfe9ce4364f")]
+  [StorableType("e16ad337-8c18-4c29-a893-e83f671e804c")]
   /// <summary>
-  /// Interface to represent a heuristic optimization problem.
+  /// Interface to represent an optimization problem.
   /// </summary>
-  public interface IHeuristicOptimizationProblem : IEncodedProblem {
-    IParameter SolutionCreatorParameter { get; }
-    ISolutionCreator SolutionCreator { get; }
-    IParameter EvaluatorParameter { get; }
-    IEvaluator Evaluator { get; }
+  public interface IProblem : IParameterizedNamedItem, IStorableContent {
 
-    event EventHandler SolutionCreatorChanged;
-    event EventHandler EvaluatorChanged;
+    event EventHandler Reset;
   }
+
+  //TODO Intermediate class for compatibility 
+  //TODO move members to generic IProblem after every problem used the new architecture
+  public interface IEncodedProblem : IProblem {
+    IEnumerable<IItem> Operators { get; }
+
+    IEnumerable<IParameterizedItem> ExecutionContextItems { get; }
+    event EventHandler OperatorsChanged;
+  }
+
+  [StorableType("1b4af8b9-bdf5-4ffd-86e6-35b481bfbf45")]
+  public interface IProblem<TEncoding, TEncodedSolution> : IHeuristicOptimizationProblem
+    where TEncoding : class, IEncoding<TEncodedSolution>
+    where TEncodedSolution : class, IEncodedSolution { }
 }

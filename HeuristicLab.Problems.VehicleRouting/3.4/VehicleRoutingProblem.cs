@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -30,7 +31,6 @@ using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Problems.Instances;
 using HeuristicLab.Problems.VehicleRouting.Encodings.Alba;
@@ -43,7 +43,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
   [Item("Vehicle Routing Problem (VRP)", "Represents a Vehicle Routing Problem.")]
   [Creatable(CreatableAttribute.Categories.CombinatorialProblems, Priority = 110)]
   [StorableType("95137523-AE3B-4638-958C-E86829D54CE3")]
-  public sealed class VehicleRoutingProblem : Problem, ISingleObjectiveHeuristicOptimizationProblem, IStorableContent, IProblemInstanceConsumer<IVRPData> {
+  public sealed class VehicleRoutingProblem : EncodedProblem, ISingleObjectiveHeuristicOptimizationProblem, IStorableContent, IProblemInstanceConsumer<IVRPData> {
     public string Filename { get; set; }
 
     public static new Image StaticItemImage {
