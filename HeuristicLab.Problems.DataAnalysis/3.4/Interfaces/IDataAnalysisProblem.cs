@@ -20,11 +20,12 @@
 #endregion
 
 using System;
+using HEAL.Attic;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
-using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis {
+  //TODO Change to new empty problem interface
   [StorableType("74e4c570-3881-4bfa-a5bb-2bb71cdee2b3")]
   public interface IDataAnalysisProblem : IProblem {
     IParameter ProblemDataParameter { get; }

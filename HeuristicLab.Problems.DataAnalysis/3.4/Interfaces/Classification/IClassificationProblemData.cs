@@ -24,9 +24,7 @@ using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis {
   [StorableType("8cd26df9-aed7-4378-9516-04322b6f9d2e")]
-  public interface IClassificationProblemData : IDataAnalysisProblemData {
-    string TargetVariable { get; set; }
-
+  public interface IClassificationProblemData : ISupervisedDataAnalysisProblemData {
     IEnumerable<string> ClassNames { get; }
     string PositiveClass { get; set; }
     IEnumerable<double> ClassValues { get; }

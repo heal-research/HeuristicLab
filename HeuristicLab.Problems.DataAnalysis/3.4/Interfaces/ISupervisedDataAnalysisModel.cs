@@ -19,21 +19,19 @@
  */
 #endregion
 
+using System;
 using HEAL.Attic;
-using HeuristicLab.Common;
-using HeuristicLab.Core;
 
 namespace HeuristicLab.Problems.DataAnalysis {
-  [StorableType("93696570-A410-4885-A210-7220771B6050")]
-  [Item("Classification Problem", "A general classification problem.")]
-  public class ClassificationProblem : DataAnalysisProblem<IClassificationProblemData>, IClassificationProblem, IStorableContent {
-    public string Filename { get; set; }
 
-    [StorableConstructor]
-    protected ClassificationProblem(StorableConstructorFlag _) : base(_) { }
-    protected ClassificationProblem(ClassificationProblem original, Cloner cloner) : base(original, cloner) { }
-    public override IDeepCloneable Clone(Cloner cloner) { return new ClassificationProblem(this, cloner); }
+  /// <summary>
+  /// Interface for all data-analysis models (regression/classification/clustering).
+  /// <remarks>All methods and properties in this interface must be implemented thread safely</remarks>
+  /// </summary>
 
-    public ClassificationProblem() : base(new ClassificationProblemData()) { }
+  [StorableType("68245386-0EEC-4FB4-BFC1-8C4FFE9AB0BC")]
+  public interface ISupervisedDataAnalysisModel : IDataAnalysisModel {
+    string TargetVariable { get; set; }
+    event EventHandler TargetVariableChanged;
   }
 }

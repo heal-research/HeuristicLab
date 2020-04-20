@@ -1,4 +1,4 @@
-#region License Information
+﻿#region License Information
 /* HeuristicLab
  * Copyright (C) Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
@@ -20,20 +20,10 @@
 #endregion
 
 using HEAL.Attic;
-using HeuristicLab.Common;
-using HeuristicLab.Core;
 
 namespace HeuristicLab.Problems.DataAnalysis {
-  [StorableType("93696570-A410-4885-A210-7220771B6050")]
-  [Item("Classification Problem", "A general classification problem.")]
-  public class ClassificationProblem : DataAnalysisProblem<IClassificationProblemData>, IClassificationProblem, IStorableContent {
-    public string Filename { get; set; }
-
-    [StorableConstructor]
-    protected ClassificationProblem(StorableConstructorFlag _) : base(_) { }
-    protected ClassificationProblem(ClassificationProblem original, Cloner cloner) : base(original, cloner) { }
-    public override IDeepCloneable Clone(Cloner cloner) { return new ClassificationProblem(this, cloner); }
-
-    public ClassificationProblem() : base(new ClassificationProblemData()) { }
+  [StorableType("5CE2C127-E046-496E-BD98-80DC9F4631A6")]
+  public interface ISupervisedDataAnalysisProblemData : IDataAnalysisProblemData {
+    string TargetVariable { get; set; }
   }
 }

@@ -117,6 +117,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Interfaces\ISupervisedDataAnalysisModel.cs" />
+    <Compile Include="Interfaces\ISupervisedDataAnalysisProblem.cs" />
+    <Compile Include="Interfaces\ISupervisedDataAnalysisProblemData.cs" />
     <Compile Include="DatasetExtensions.cs" />
     <Compile Include="DatasetUtil.cs" />
     <Compile Include="DoubleLimit.cs" />

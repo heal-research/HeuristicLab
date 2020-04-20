@@ -20,20 +20,10 @@
 #endregion
 
 using HEAL.Attic;
-using HeuristicLab.Common;
-using HeuristicLab.Core;
 
 namespace HeuristicLab.Problems.DataAnalysis {
-  [StorableType("93696570-A410-4885-A210-7220771B6050")]
-  [Item("Classification Problem", "A general classification problem.")]
-  public class ClassificationProblem : DataAnalysisProblem<IClassificationProblemData>, IClassificationProblem, IStorableContent {
-    public string Filename { get; set; }
-
-    [StorableConstructor]
-    protected ClassificationProblem(StorableConstructorFlag _) : base(_) { }
-    protected ClassificationProblem(ClassificationProblem original, Cloner cloner) : base(original, cloner) { }
-    public override IDeepCloneable Clone(Cloner cloner) { return new ClassificationProblem(this, cloner); }
-
-    public ClassificationProblem() : base(new ClassificationProblemData()) { }
-  }
+  //TODO Change to new empty problem interface
+  [StorableType("19DF0689-7500-41E3-9815-C0C648E53AE7")]
+  public interface ISupervisedDataAnalysisProblem<T> : IDataAnalysisProblem<T>
+    where T : class, ISupervisedDataAnalysisProblemData { }
 }
