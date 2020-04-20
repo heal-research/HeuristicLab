@@ -1,0 +1,55 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net461</TargetFrameworks>
+    <SignAssembly>True</SignAssembly>
+    <AssemblyOriginatorKeyFile>SimSharp.snk</AssemblyOriginatorKeyFile>
+    <DelaySign>False</DelaySign>
+    <AssemblyName>SimSharp-3.3.1</AssemblyName>
+    <RootNamespace>SimSharp</RootNamespace>
+    <Version>3.3.1</Version>
+    <Authors>Andreas Beham</Authors>
+    <Description>Sim# aims to port the concepts used in SimPy (https://pypi.python.org/pypi/simpy) to the .NET world. It is implemented in C# and builds on the .NET Framework 4.5 / .NET Standard 2.0. Sim# uses an efficient event queue (adapted from https://github.com/BlueRaja/High-Speed-Priority-Queue-for-C-Sharp). The MachineShop benchmark comes close to 3.5 million events per second on a Core i7-7 2.7Ghz.
+
+Sim# allows modeling processes easily and with little boiler plate code. A process is described as a method that yields events. When an event is yielded, the process waits on it. Processes are themselves events and so it is convenient to spawn sub-processes that can either be waited upon or that run next to each other. There is no need to inherit from classes or understand a complex object oriented design.</Description>
+    <Product>Sim#</Product>
+    <Company>HEAL, FH Upper Austria</Company>
+    <Copyright>Andreas Beham</Copyright>
+    <PackageProjectUrl>https://github.com/abeham/SimSharp</PackageProjectUrl>
+    <PackageReleaseNotes>Sim# 3.3.1 adds a RandChoice method to generate random samples from a weighted source of items.
+
+It also fixes a bug with respect to the calculation of the sigma parameter in RandLogNormal2 methods (which takes the desired sample standard deviation as input).</PackageReleaseNotes>
+    <NeutralLanguage />
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <IncludeSource>True</IncludeSource>
+    <IncludeSymbols>True</IncludeSymbols>
+    <NoWarn>$(NoWarn);1591;1734</NoWarn>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+  </PropertyGroup>
+  
+  <PropertyGroup Condition="'$(Configuration)'=='Release'">
+    <DefineConstants></DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\SimSharp.xml</DocumentationFile>
+    <RepositoryUrl>https://github.com/abeham/SimSharp.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>discrete-event simulation</PackageTags>
+  </PropertyGroup>
+
+  <Target Name="CopyDocumentationFile" AfterTargets="ComputeFilesToPublish">
+    <ItemGroup>
+      <ResolvedFileToPublish Include="@(FinalDocFile)" RelativePath="@(FinalDocFile->'%(Filename)%(Extension)')" />
+    </ItemGroup>
+  </Target>
+
+  <ItemGroup>
+    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+  </ItemGroup>
+</Project>

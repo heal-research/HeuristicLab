@@ -167,9 +167,6 @@ namespace HeuristicLab.Clients.Hive {
             service.GetAssignedResourcesForProjectsAdministration(projectIds)
                    .ForEach(a => projectResourceAssignments.Add(a));
 
-            var unsortedJobs = service.GetJobsByProjectIds(projectIds)
-                                      .OrderBy(x => x.DateCreated).ToList();
-
             projectNames = service.GetProjectNames();
             resourceNames = service.GetResourceNames();
           }

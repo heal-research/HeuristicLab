@@ -53,7 +53,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Tests {
         for (int i = 0; i < POPULATION_SIZE; i++) {
           var par0 = (ISymbolicExpressionTree)trees.SampleRandom(random).Clone();
           var par1 = (ISymbolicExpressionTree)trees.SampleRandom(random).Clone();
-          children[i] = SubtreeCrossover.Cross(random, par0, par1, 0.9, 100, 10);
+          children[i] = SubtreeCrossover.Cross(random, par0, par1, 1.0, 0.9, 100, 10);
         }
         trees = children;
       }
