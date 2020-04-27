@@ -107,6 +107,8 @@
       <DependentUpon>NumericRangeControl.cs</DependentUpon>
     </Compile>
     <Compile Include="ViewModels\ArrayValueVM.cs" />
+    <Compile Include="ViewModels\DoubleVMs.cs" />
+    <Compile Include="ViewModels\IntVMs.cs" />
     <Compile Include="ViewModels\JsonItemVMBase.cs" />
     <Compile Include="ViewModels\LookupJsonItemVM.cs" />
     <Compile Include="ViewModels\MatrixValueVM.cs" />
@@ -116,6 +118,12 @@
     <Compile Include="ViewModels\SingleValueVM.cs" />
     <Compile Include="ViewModels\StringValueVM.cs" />
     <Compile Include="ViewModels\ValueLookupJsonItemVM.cs" />
+    <Compile Include="Shared\ConcreteItemsRestrictor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Shared\ConcreteItemsRestrictor.Designer.cs">
+      <DependentUpon>ConcreteItemsRestrictor.cs</DependentUpon>
+    </Compile>
     <Compile Include="Views\ExportJsonDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -123,6 +131,12 @@
       <DependentUpon>ExportJsonDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="FileManager.cs" />
+    <Compile Include="Views\JsonItemConcreteItemArrayControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\JsonItemConcreteItemArrayControl.Designer.cs">
+      <DependentUpon>JsonItemConcreteItemArrayControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Views\JsonItemMultiValueControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -223,8 +237,14 @@
     <EmbeddedResource Include="Shared\NumericRangeControl.resx">
       <DependentUpon>NumericRangeControl.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Shared\ConcreteItemsRestrictor.resx">
+      <DependentUpon>ConcreteItemsRestrictor.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Views\ExportJsonDialog.resx">
       <DependentUpon>ExportJsonDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\JsonItemConcreteItemArrayControl.resx">
+      <DependentUpon>JsonItemConcreteItemArrayControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\JsonItemMultiValueControl.resx">
       <DependentUpon>JsonItemMultiValueControl.cs</DependentUpon>

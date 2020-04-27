@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace HeuristicLab.JsonInterface {
   public abstract class ConcreteRestrictedArrayJsonItem<T> : ArrayJsonItem<T>, IConcreteRestrictedJsonItem<T> {
     public IEnumerable<T> ConcreteRestrictedItems { get; set; }
@@ -11,6 +7,7 @@ namespace HeuristicLab.JsonInterface {
     protected override ValidationResult Validate() {
       bool res = true;
       IList<string> errors = new List<string>();
+      if (ConcreteRestrictedItems == null) return ValidationResult.Successful();
       foreach(var x in Value) {
         bool tmp = false;
         foreach(var restrictedItem in ConcreteRestrictedItems) {

@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace HeuristicLab.JsonInterface {
-  public interface IResultJsonItem : IJsonItem {
-  }
+﻿namespace HeuristicLab.JsonInterface {
+  /// <summary>
+  /// Empty JsonItem, which indicates a result. For example 'BestQuality'.
+  /// Types of this JsonItems are stored in the result section of the template.
+  /// </summary>
+  public interface IResultJsonItem : IJsonItem { }
 }

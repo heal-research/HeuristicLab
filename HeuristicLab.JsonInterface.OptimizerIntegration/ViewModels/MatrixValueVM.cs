@@ -8,23 +8,6 @@ using System.Windows.Forms;
 
 namespace HeuristicLab.JsonInterface.OptimizerIntegration {
 
-  public class DoubleMatrixValueVM : MatrixValueVM<double, DoubleMatrixJsonItem> {
-    public override Type TargetedJsonItemType => typeof(DoubleMatrixJsonItem);
-    public override UserControl Control =>
-      new JsonItemDoubleMatrixValueControl(this);
-
-    public override double[][] Value {
-      get => Item.Value;
-      set {
-        Item.Value = value;
-        OnPropertyChange(this, nameof(Value));
-      }
-    }
-
-    protected override double MinTypeValue => double.MinValue;
-
-    protected override double MaxTypeValue => double.MaxValue;
-  }
 
   public abstract class MatrixValueVM<T, JsonItemType> : RangedValueBaseVM<T, JsonItemType>, IMatrixJsonItemVM
     where T : IComparable

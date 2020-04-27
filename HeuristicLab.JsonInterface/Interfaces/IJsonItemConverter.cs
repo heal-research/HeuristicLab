@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using HeuristicLab.Core;
-using Newtonsoft.Json.Linq;
 
 namespace HeuristicLab.JsonInterface {
   public interface IJsonItemConverter {
@@ -24,7 +19,14 @@ namespace HeuristicLab.JsonInterface {
     /// <returns>JsonItem with infos to reinitialise the IItem.</returns>
     IJsonItem Extract(IItem value, IJsonItemConverter root);
 
+    /// <summary>
+    /// The targeted type for the converter.
+    /// </summary>
     Type ConvertableType { get; }
+
+    /// <summary>
+    /// A given priority, higher numbers are prior.
+    /// </summary>
     int Priority { get; }
   }
 }

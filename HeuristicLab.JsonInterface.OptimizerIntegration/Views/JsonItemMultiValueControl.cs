@@ -79,7 +79,7 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
 
       int cols = matrix.Length;
       int rows = matrix.Max(x => x.Length);
-
+      
       Matrix = matrix;
       Columns = cols;
       Rows = rows;
@@ -249,7 +249,6 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
       Matrix[e.ColumnIndex][e.RowIndex] = (T)Convert.ChangeType(val.ToString().Replace(",", "."),
                                             typeof(T),
                                             System.Globalization.CultureInfo.InvariantCulture);
-      //Save(Matrix[e.ColumnIndex][e.RowIndex], e.ColumnIndex, e.RowIndex);
       Save();
     }
     #endregion

@@ -7,7 +7,6 @@ using System.Windows.Forms;
 
 namespace HeuristicLab.JsonInterface.OptimizerIntegration {
   public class LookupJsonItemVM : JsonItemVMBase<LookupJsonItem>, ILookupJsonItemVM {
-    public override Type TargetedJsonItemType => typeof(LookupJsonItem);
 
     public override UserControl Control => new LookupJsonItemControl(this);
 

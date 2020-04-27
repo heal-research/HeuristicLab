@@ -17,7 +17,7 @@ namespace HeuristicLab.JsonInterface {
         parameter.ActualValue = Instantiate(parameter.DataType);
 
       if(parameter.ActualValue != null) {
-          if (data.Children == null || data.Children.Count == 0)
+          if (data.Children == null || data.Children.Count() == 0)
             root.Inject(parameter.ActualValue, data, root);
           else
             root.Inject(parameter.ActualValue, data, root);
