@@ -20,11 +20,11 @@
 #endregion
 
 using System;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 using HeuristicLab.Problems.Instances;
 
 namespace HeuristicLab.Problems.DataAnalysis {
@@ -35,9 +35,6 @@ namespace HeuristicLab.Problems.DataAnalysis {
     private const string ProblemDataParameterName = "ProblemData";
     private const string ProblemDataParameterDescription = "The data set, target variable and input variables of the data analysis problem.";
     #region parameter properties
-    IParameter IDataAnalysisProblem.ProblemDataParameter {
-      get { return ProblemDataParameter; }
-    }
     public IValueParameter<T> ProblemDataParameter {
       get { return (IValueParameter<T>)Parameters[ProblemDataParameterName]; }
     }

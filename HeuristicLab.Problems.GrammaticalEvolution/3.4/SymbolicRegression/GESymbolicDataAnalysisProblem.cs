@@ -73,9 +73,6 @@ namespace HeuristicLab.Problems.GrammaticalEvolution {
     #endregion
 
     #region parameter properties
-    IParameter IDataAnalysisProblem.ProblemDataParameter {
-      get { return ProblemDataParameter; }
-    }
     public IValueParameter<T> ProblemDataParameter {
       get { return (IValueParameter<T>)Parameters[ProblemDataParameterName]; }
     }

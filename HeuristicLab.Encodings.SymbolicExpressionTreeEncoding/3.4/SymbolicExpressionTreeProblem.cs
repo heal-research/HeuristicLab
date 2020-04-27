@@ -45,6 +45,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       : base(original, cloner) {
     }
 
+    protected SymbolicExpressionTreeProblem() : this(new SymbolicExpressionTreeEncoding()) { }    
     protected SymbolicExpressionTreeProblem(SymbolicExpressionTreeEncoding encoding)
       : base(encoding) {
       EncodingParameter.ReadOnly = true;

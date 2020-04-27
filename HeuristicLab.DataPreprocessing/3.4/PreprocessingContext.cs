@@ -110,13 +110,13 @@ namespace HeuristicLab.DataPreprocessing {
       var preprocessedAlgorithm = (IAlgorithm)source.Clone();
       preprocessedAlgorithm.Name = preprocessedAlgorithm.Name + "(Preprocessed)";
       preprocessedAlgorithm.Runs.Clear();
-      var problem = (IDataAnalysisProblem)preprocessedAlgorithm.Problem;
-      problem.ProblemDataParameter.ActualValue = CreateNewProblemData();
+      dynamic problem = preprocessedAlgorithm.Problem;
+      problem.ProblemData = (dynamic) CreateNewProblemData();
       return preprocessedAlgorithm;
     }
     private IDataAnalysisProblem ExportProblem(IDataAnalysisProblem source) {
-      var preprocessedProblem = (IDataAnalysisProblem)source.Clone();
-      preprocessedProblem.ProblemDataParameter.ActualValue = CreateNewProblemData();
+      dynamic preprocessedProblem = (IDataAnalysisProblem)source.Clone();
+      preprocessedProblem.ProblemData = (dynamic)CreateNewProblemData();
       return preprocessedProblem;
     }
     private IDataAnalysisProblemData ExportProblemData(IDataAnalysisProblemData source) {

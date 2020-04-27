@@ -108,8 +108,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       if (algorithm == null) throw new ArgumentNullException("algorithm");
       if (problemData == null) throw new ArgumentNullException("problemData");
 
-      var problem = algorithm.Problem as IDataAnalysisProblem;
-      if (problem != null) problem.ProblemDataParameter.ActualValue = problemData;
+      dynamic problem = algorithm.Problem;
+      problem.ProblemData = (dynamic) problemData;
     }
   }
 }

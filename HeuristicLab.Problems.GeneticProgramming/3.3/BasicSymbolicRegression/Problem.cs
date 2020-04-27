@@ -44,8 +44,6 @@ namespace HeuristicLab.Problems.GeneticProgramming.BasicSymbolicRegression {
     #endregion
 
     #region Parameter Properties
-    IParameter IDataAnalysisProblem.ProblemDataParameter { get { return ProblemDataParameter; } }
-
     public IValueParameter<IRegressionProblemData> ProblemDataParameter {
       get { return (IValueParameter<IRegressionProblemData>)Parameters[ProblemDataParameterName]; }
     }

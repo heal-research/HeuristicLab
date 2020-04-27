@@ -103,8 +103,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     #endregion
 
     #region Parameter Properties
-    IParameter IDataAnalysisProblem.ProblemDataParameter { get { return ProblemDataParameter; } }
-
     public IValueParameter<IRegressionProblemData> ProblemDataParameter {
       get { return (IValueParameter<IRegressionProblemData>)Parameters[ProblemDataParameterName]; }
     }
