@@ -62,6 +62,9 @@ namespace HeuristicLab.Optimization {
     [Storable]
     public ResultCollection ResultCollection { get; set; }
 
+    string IResultDefinition.Name { get => ActualName; set => ActualName = value; }
+    T IResultDefinition<T>.Get(ResultCollection results) => results[ActualName].Value as T;
+
     [StorableConstructor]
     private ResultParameter(StorableConstructorFlag _) : base(_) { }
     private ResultParameter(ResultParameter<T> original, Cloner cloner)

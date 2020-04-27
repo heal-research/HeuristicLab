@@ -148,6 +148,10 @@ namespace HeuristicLab.Optimization {
     }
 
     //TODO refactor to solution contexts
+    protected ISingleObjectiveSolutionContext<TEncodedSolution> GetBest(ISingleObjectiveSolutionContext<TEncodedSolution>[] solutionContexts) {
+      return Maximization ? solutionContexts.MaxItems(x => x.EvaluationResult.Quality).First()
+        : solutionContexts.MinItems(x => x.EvaluationResult.Quality).First();
+    }
     protected Tuple<TEncodedSolution, double> GetBestSolution(TEncodedSolution[] solutions, double[] qualities) {
       return GetBestSolution(solutions, qualities, Maximization);
     }

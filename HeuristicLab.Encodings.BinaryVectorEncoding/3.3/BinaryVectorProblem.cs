@@ -32,7 +32,8 @@ using HeuristicLab.Optimization.Operators;
 namespace HeuristicLab.Encodings.BinaryVectorEncoding {
   [StorableType("2F6FEB34-BD19-47AF-9484-7F48565C0C43")]
   public abstract class BinaryVectorProblem : SingleObjectiveProblem<BinaryVectorEncoding, BinaryVector> {
-    [Storable] public IResultParameter<BinaryVector> BestSolutionParameter { get; private set; }
+    [Storable] protected IResultParameter<ISingleObjectiveSolutionContext<BinaryVector>> BestResultParameter { get; private set; }
+    public IResultDefinition<ISingleObjectiveSolutionContext<BinaryVector>> BestResult { get { return BestResultParameter; } }
 
     public int Length {
       get { return Encoding.Length; }
@@ -48,15 +49,14 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
 
     protected BinaryVectorProblem(BinaryVectorProblem original, Cloner cloner)
       : base(original, cloner) {
-      BestSolutionParameter = cloner.Clone(original.BestSolutionParameter);
+      BestResultParameter = cloner.Clone(original.BestResultParameter);
       RegisterEventHandlers();
     }
 
     protected BinaryVectorProblem() : this(new BinaryVectorEncoding() { Length = 10 }) { }
     protected BinaryVectorProblem(BinaryVectorEncoding encoding) : base(encoding) {
       EncodingParameter.ReadOnly = true;
-      BestSolutionParameter = new ResultParameter<BinaryVector>("Best Solution", "The best solution.");
-      Parameters.Add(BestSolutionParameter);
+      Parameters.Add(BestResultParameter = new ResultParameter<ISingleObjectiveSolutionContext<BinaryVector>>("Best Solution", "The best solution."));
 
       Operators.Add(new HammingSimilarityCalculator());
       Operators.Add(new QualitySimilarityCalculator());
@@ -66,10 +66,11 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
       RegisterEventHandlers();
     }
 
-    public override void Analyze(BinaryVector[] vectors, double[] qualities, ResultCollection results, IRandom random) {
-      base.Analyze(vectors, qualities, results, random);
-      var best = GetBestSolution(vectors, qualities);
-      BestSolutionParameter.ActualValue = (BinaryVector)best.Item1.Clone();
+    public override void Analyze(ISingleObjectiveSolutionContext<BinaryVector>[] solutionContexts, ResultCollection results, IRandom random) {
+      var best = GetBest(solutionContexts);
+      var currentBest = BestResultParameter.ActualValue;
+      if (currentBest == null || IsBetter(best.EvaluationResult.Quality, currentBest.EvaluationResult.Quality))
+        BestResultParameter.ActualValue = (ISingleObjectiveSolutionContext<BinaryVector>)best.Clone();
     }
 
     protected override void OnEncodingChanged() {

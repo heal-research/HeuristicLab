@@ -30,6 +30,9 @@ using HeuristicLab.Optimization;
 namespace HeuristicLab.Encodings.BinaryVectorEncoding {
   [StorableType("b64caac0-a23a-401a-bb7e-ffa3e22b80ea")]
   public abstract class BinaryVectorMultiObjectiveProblem : MultiObjectiveProblem<BinaryVectorEncoding, BinaryVector> {
+    [Storable] protected IResultParameter<ParetoFrontScatterPlot<BinaryVector>> BestResultParameter { get; private set; }
+    public IResultDefinition<ParetoFrontScatterPlot<BinaryVector>> BestResult { get { return BestResultParameter; } }
+
     public int Length {
       get { return Encoding.Length; }
       set { Encoding.Length = value; }
@@ -44,12 +47,14 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
 
     protected BinaryVectorMultiObjectiveProblem(BinaryVectorMultiObjectiveProblem original, Cloner cloner)
       : base(original, cloner) {
+      BestResultParameter = cloner.Clone(original.BestResultParameter);
       RegisterEventHandlers();
     }
 
     protected BinaryVectorMultiObjectiveProblem() : this(new BinaryVectorEncoding() { Length = 10 }) { }
     protected BinaryVectorMultiObjectiveProblem(BinaryVectorEncoding encoding) : base(encoding) {
       EncodingParameter.ReadOnly = true;
+      Parameters.Add(BestResultParameter = new ResultParameter<ParetoFrontScatterPlot<BinaryVector>>("Best Pareto Front", "The best Pareto front found."));
 
       Operators.Add(new HammingSimilarityCalculator());
       Operators.Add(new PopulationSimilarityAnalyzer(Operators.OfType<ISolutionSimilarityCalculator>()));
@@ -63,7 +68,8 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
 
       var fronts = DominationCalculator.CalculateAllParetoFrontsIndices(individuals, qualities, Maximization);
       var plot = new ParetoFrontScatterPlot<BinaryVector>(fronts, individuals, qualities, Objectives, BestKnownFront);
-      results.AddOrUpdateResult("Pareto Front Scatter Plot", plot);
+      
+      BestResultParameter.ActualValue = plot;
     }
 
     protected override void OnEncodingChanged() {

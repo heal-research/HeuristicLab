@@ -33,6 +33,9 @@ using HeuristicLab.Optimization.Operators;
 namespace HeuristicLab.Encodings.IntegerVectorEncoding {
   [StorableType("c6081457-a3de-45ce-9f47-e0eb1c851bd2")]
   public abstract class IntegerVectorProblem : SingleObjectiveProblem<IntegerVectorEncoding, IntegerVector> {
+    [Storable] protected IResultParameter<IntegerVector> BestResultParameter { get; private set; }
+    public IResultDefinition<IntegerVector> BestResult { get => BestResultParameter; }
+
     public int Length {
       get { return Encoding.Length; }
       set { Encoding.Length = value; }
@@ -47,12 +50,14 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
 
     protected IntegerVectorProblem(IntegerVectorProblem original, Cloner cloner)
       : base(original, cloner) {
+      BestResultParameter = cloner.Clone(original.BestResultParameter);
       RegisterEventHandlers();
     }
 
     protected IntegerVectorProblem() : this(new IntegerVectorEncoding() { Length = 10 }) { }
     protected IntegerVectorProblem(IntegerVectorEncoding encoding) : base(encoding) {
       EncodingParameter.ReadOnly = true;
+      Parameters.Add(BestResultParameter = new ResultParameter<IntegerVector>("Best Solution", "The best solution."));
 
       Operators.Add(new HammingSimilarityCalculator());
       Operators.Add(new QualitySimilarityCalculator());
