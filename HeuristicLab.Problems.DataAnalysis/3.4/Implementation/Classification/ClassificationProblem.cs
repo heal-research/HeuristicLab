@@ -26,14 +26,14 @@ using HeuristicLab.Core;
 namespace HeuristicLab.Problems.DataAnalysis {
   [StorableType("93696570-A410-4885-A210-7220771B6050")]
   [Item("Classification Problem", "A general classification problem.")]
-  public class ClassificationProblem : DataAnalysisProblem<IClassificationProblemData>, IClassificationProblem, IStorableContent {
-    public string Filename { get; set; }
-
+  public sealed class ClassificationProblem : DataAnalysisProblem<IClassificationProblemData>, IClassificationProblem, IStorableContent {
     [StorableConstructor]
-    protected ClassificationProblem(StorableConstructorFlag _) : base(_) { }
-    protected ClassificationProblem(ClassificationProblem original, Cloner cloner) : base(original, cloner) { }
+    private ClassificationProblem(StorableConstructorFlag _) : base(_) { }
+    private ClassificationProblem(ClassificationProblem original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) { return new ClassificationProblem(this, cloner); }
 
     public ClassificationProblem() : base(new ClassificationProblemData()) { }
+    public ClassificationProblem(IClassificationProblemData problemData) : base(problemData) { }
+
   }
 }
