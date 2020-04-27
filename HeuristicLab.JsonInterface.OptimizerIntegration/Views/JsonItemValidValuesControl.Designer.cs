@@ -24,10 +24,10 @@
     /// </summary>
     private void InitializeComponent() {
       this.components = new System.ComponentModel.Container();
-      this.tableOptions = new System.Windows.Forms.TableLayoutPanel();
       this.comboBoxValues = new System.Windows.Forms.ComboBox();
       this.label2 = new System.Windows.Forms.Label();
       this.groupBoxRange = new System.Windows.Forms.GroupBox();
+      this.concreteItemsRestrictor = new HeuristicLab.JsonInterface.OptimizerIntegration.ConcreteItemsRestrictor();
       this.errorProvider = new System.Windows.Forms.ErrorProvider(this.components);
       this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
       this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
@@ -36,22 +36,6 @@
       this.tableLayoutPanel1.SuspendLayout();
       this.tableLayoutPanel2.SuspendLayout();
       this.SuspendLayout();
-      // 
-      // tableOptions
-      // 
-      this.tableOptions.AutoScroll = true;
-      this.tableOptions.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-      this.tableOptions.ColumnCount = 2;
-      this.tableOptions.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-      this.tableOptions.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-      this.tableOptions.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-      this.tableOptions.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.tableOptions.Location = new System.Drawing.Point(3, 16);
-      this.tableOptions.Name = "tableOptions";
-      this.tableOptions.RowCount = 1;
-      this.tableOptions.RowStyles.Add(new System.Windows.Forms.RowStyle());
-      this.tableOptions.Size = new System.Drawing.Size(494, 217);
-      this.tableOptions.TabIndex = 12;
       // 
       // comboBoxValues
       // 
@@ -78,7 +62,7 @@
       // 
       // groupBoxRange
       // 
-      this.groupBoxRange.Controls.Add(this.tableOptions);
+      this.groupBoxRange.Controls.Add(this.concreteItemsRestrictor);
       this.groupBoxRange.Dock = System.Windows.Forms.DockStyle.Fill;
       this.groupBoxRange.Location = new System.Drawing.Point(0, 22);
       this.groupBoxRange.Margin = new System.Windows.Forms.Padding(0);
@@ -87,6 +71,15 @@
       this.groupBoxRange.TabIndex = 17;
       this.groupBoxRange.TabStop = false;
       this.groupBoxRange.Text = "Range";
+      // 
+      // concreteItemsRestrictor
+      // 
+      this.concreteItemsRestrictor.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.concreteItemsRestrictor.Location = new System.Drawing.Point(3, 16);
+      this.concreteItemsRestrictor.Margin = new System.Windows.Forms.Padding(0);
+      this.concreteItemsRestrictor.Name = "concreteItemsRestrictor";
+      this.concreteItemsRestrictor.Size = new System.Drawing.Size(494, 217);
+      this.concreteItemsRestrictor.TabIndex = 0;
       // 
       // errorProvider
       // 
@@ -121,7 +114,7 @@
       this.tableLayoutPanel2.Name = "tableLayoutPanel2";
       this.tableLayoutPanel2.RowCount = 1;
       this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-      this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+      this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 22F));
       this.tableLayoutPanel2.Size = new System.Drawing.Size(500, 22);
       this.tableLayoutPanel2.TabIndex = 19;
       // 
@@ -145,12 +138,12 @@
     }
 
     #endregion
-    private System.Windows.Forms.TableLayoutPanel tableOptions;
     private System.Windows.Forms.ComboBox comboBoxValues;
     private System.Windows.Forms.Label label2;
     private System.Windows.Forms.GroupBox groupBoxRange;
     private System.Windows.Forms.ErrorProvider errorProvider;
     private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
     private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+    private ConcreteItemsRestrictor concreteItemsRestrictor;
   }
 }

@@ -177,7 +177,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       Parameters.Add(new FixedValueParameter<IntRange>(TrainingPartitionParameterName, "", new IntRange(trainingPartitionStart, trainingPartitionEnd)));
       Parameters.Add(new FixedValueParameter<IntRange>(TestPartitionParameterName, "", new IntRange(testPartitionStart, testPartitionEnd)));
       Parameters.Add(new FixedValueParameter<ReadOnlyItemList<ITransformation>>(TransformationsParameterName, "", transformationsList.AsReadOnly()));
-
+     
       TransformationsParameter.Hidden = true;
 
       ((ValueParameter<Dataset>)DatasetParameter).ReactOnValueToStringChangedAndValueItemImageChanged = false;

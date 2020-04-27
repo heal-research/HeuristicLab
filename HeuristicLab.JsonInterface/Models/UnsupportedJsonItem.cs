@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Newtonsoft.Json;
 
 namespace HeuristicLab.JsonInterface {
@@ -22,7 +19,7 @@ namespace HeuristicLab.JsonInterface {
     }
 
     [JsonIgnore]
-    public override IList<IJsonItem> Children {
+    public override IEnumerable<IJsonItem> Children {
       get => throw new NotSupportedException();
       protected set => throw new NotSupportedException();
     }

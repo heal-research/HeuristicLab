@@ -1,14 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using HeuristicLab.Core;
-using HeuristicLab.Data;
-using HeuristicLab.PluginInfrastructure;
-using HEAL.Attic;
-using System.Collections;
-
 namespace HeuristicLab.JsonInterface {
   /// <summary>
   /// Class for handling json converters.

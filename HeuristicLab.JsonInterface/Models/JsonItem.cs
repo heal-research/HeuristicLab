@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -75,11 +74,10 @@ namespace HeuristicLab.JsonInterface {
         return builder.ToString();
       }
     }
-        
-    // TODO jsonIgnore dataType?
 
+    // TODO jsonIgnore dataType?
     [JsonIgnore]
-    public virtual IList<IJsonItem> Children { get; protected set; }
+    public virtual IEnumerable<IJsonItem> Children { get; protected set; }
 
     [JsonIgnore]
     public virtual IJsonItem Parent { get; set; }
@@ -103,9 +101,11 @@ namespace HeuristicLab.JsonInterface {
       if (childs == null) return;
       if (Children == null)
         Children = new List<IJsonItem>();
-      foreach (var child in childs) {
-        Children.Add(child);
-        child.Parent = this;
+      if(Children is IList<IJsonItem> list) {
+        foreach (var child in childs) {
+          list.Add(child);
+          child.Parent = this;
+        }
       }
     }
 

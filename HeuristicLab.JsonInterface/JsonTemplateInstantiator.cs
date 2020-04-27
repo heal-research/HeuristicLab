@@ -1,14 +1,7 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using HEAL.Attic;
-using HeuristicLab.Core;
-using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using Newtonsoft.Json.Linq;
 
@@ -78,7 +71,6 @@ namespace HeuristicLab.JsonInterface {
       return new InstantiatorResult(optimizer, CollectResults());
     }
 
-    
     private IEnumerable<IResultJsonItem> CollectResults() {
       IList<IResultJsonItem> res = new List<IResultJsonItem>();
       foreach(JObject obj in Template[Constants.Results]) {

@@ -15,21 +15,25 @@ using Newtonsoft.Json.Linq;
 namespace HeuristicLab.JsonInterface.App {
   internal static class Runner {
     internal static void Run(string template, string config, string outputFile) {
-      InstantiatorResult instantiatorResult = JsonTemplateInstantiator.Instantiate(template, config);
-      IOptimizer optimizer = instantiatorResult.Optimizer;
-      IEnumerable<IResultJsonItem> configuredResultItem = instantiatorResult.ConfiguredResultItems;
+      try {
+        InstantiatorResult instantiatorResult = JsonTemplateInstantiator.Instantiate(template, config);
+        IOptimizer optimizer = instantiatorResult.Optimizer;
+        IEnumerable<IResultJsonItem> configuredResultItem = instantiatorResult.ConfiguredResultItems;
 
-      optimizer.Runs.Clear();
-      if(optimizer is EngineAlgorithm e)
-        e.Engine = new ParallelEngine.ParallelEngine();
-      
-      Task task = optimizer.StartAsync();
-      while(!task.IsCompleted) {
+        optimizer.Runs.Clear();
+        if (optimizer is EngineAlgorithm e)
+          e.Engine = new ParallelEngine.ParallelEngine();
+
+        Task task = optimizer.StartAsync();
+        while (!task.IsCompleted) {
+          WriteResultsToFile(outputFile, optimizer, configuredResultItem);
+          Thread.Sleep(100);
+        }
+
         WriteResultsToFile(outputFile, optimizer, configuredResultItem);
-        Thread.Sleep(100);
+      } catch (Exception e) {
+        File.WriteAllText(outputFile, e.Message + "\n\n\n\n" + e.StackTrace);
       }
-     
-      WriteResultsToFile(outputFile, optimizer, configuredResultItem);
     }
 
     private static void WriteResultsToFile(string file, IOptimizer optimizer, IEnumerable<IResultJsonItem> configuredResultItem) =>
@@ -46,6 +50,10 @@ namespace HeuristicLab.JsonInterface.App {
         foreach (var res in run.Results) {
           if (configuredResults.Contains(res.Key)) {
             if (res.Value is ISymbolicRegressionSolution solution) {
+              /* TEST */
+              var csFormatter = new CSharpSymbolicExpressionTreeStringFormatter();
+              File.WriteAllText(@"C:\Workspace\output\csFormatted.cs", csFormatter.Format(solution.Model.SymbolicExpressionTree));
+              /* END TEST */
               var formatter = new SymbolicDataAnalysisExpressionMATLABFormatter();
               var x = formatter.Format(solution.Model.SymbolicExpressionTree);
               obj.Add(res.Key, JToken.FromObject(x));

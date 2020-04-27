@@ -8,7 +8,6 @@ using System.Windows.Forms;
 
 namespace HeuristicLab.JsonInterface.OptimizerIntegration {
   public class StringValueVM : JsonItemVMBase<StringJsonItem> {
-    public override Type TargetedJsonItemType => typeof(StringJsonItem);
     public override UserControl Control =>
        new JsonItemValidValuesControl(this);
 
@@ -36,6 +35,26 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
         OnPropertyChange(this, nameof(Range));
       }
     }
+  }
 
+  public class StringArrayVM : JsonItemVMBase<StringArrayJsonItem> {
+    public override UserControl Control =>
+       new JsonItemConcreteItemArrayControl(this);
+
+    public string[] Value {
+      get => Item.Value;
+      set {
+        Item.Value = value;
+        OnPropertyChange(this, nameof(Value));
+      }
+    }
+
+    public IEnumerable<string> Range {
+      get => Item.ConcreteRestrictedItems;
+      set {
+        Item.ConcreteRestrictedItems = value;
+        OnPropertyChange(this, nameof(Range));
+      }
+    }
   }
 }

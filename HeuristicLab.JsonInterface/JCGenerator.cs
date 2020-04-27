@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using HeuristicLab.Common;
-using HeuristicLab.Core;
-using HeuristicLab.Data;
+﻿using System.Collections.Generic;
 using HeuristicLab.Optimization;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using HEAL.Attic;
 using System.IO;
@@ -36,7 +30,7 @@ namespace HeuristicLab.JsonInterface {
 
       #region Serialize HL File
       ProtoBufSerializer serializer = new ProtoBufSerializer();
-      string hlFilePath = fullPath + @"\" + templateName + ".hl";
+      string hlFilePath = fullPath + templateName + ".hl";
       serializer.Serialize(optimizer, hlFilePath);
       #endregion
 

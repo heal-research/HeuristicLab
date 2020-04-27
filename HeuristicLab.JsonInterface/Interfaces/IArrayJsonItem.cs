@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace HeuristicLab.JsonInterface {
 
-namespace HeuristicLab.JsonInterface {
   public interface IArrayJsonItem : IValueJsonItem {
+    /// <summary>
+    /// Property to define an array item to be resizable.
+    /// </summary>
     bool Resizable { get; set; }
   }
 }
