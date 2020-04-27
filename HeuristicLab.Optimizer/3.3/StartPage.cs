@@ -121,7 +121,8 @@ namespace HeuristicLab.Optimizer {
         var serializer = new ProtoBufSerializer();
         NamedItem item;
         try {
-          item = (NamedItem)serializer.Deserialize(stream, false);
+          item = (NamedItem)serializer.Deserialize(stream, out var info,false);
+          if (item == null) item = new ErrorMessage(name, "Sample failed to load!");
         } catch {
           item = new ErrorMessage(name, "Sample failed to load!");
         }
@@ -203,7 +204,7 @@ namespace HeuristicLab.Optimizer {
     }
 
     [Item("Error Message", "")]
-    class ErrorMessage : NamedItem {
+    private class ErrorMessage : NamedItem {
       public override Image ItemImage => Common.Resources.VSImageLibrary.Error;
 
       protected ErrorMessage(ErrorMessage original, Cloner cloner) : base(original, cloner) { }
