@@ -19,19 +19,13 @@
  */
 #endregion
 
-using HeuristicLab.Core;
-using HeuristicLab.Data;
-using HeuristicLab.Encodings.IntegerVectorEncoding;
 using HEAL.Attic;
+using HeuristicLab.Core;
+using HeuristicLab.Encodings.IntegerVectorEncoding;
 
 namespace HeuristicLab.Problems.Orienteering {
   [StorableType("7E0D4527-4D8C-4FBA-BB3A-26F20B6463ED")]
   public interface IOrienteeringSolutionCreator : IIntegerVectorCreator {
-    ILookupParameter<DistanceMatrix> DistanceMatrixParameter { get; }
-    ILookupParameter<DoubleArray> ScoresParameter { get; }
-    ILookupParameter<DoubleValue> MaximumDistanceParameter { get; }
-    ILookupParameter<IntValue> StartingPointParameter { get; }
-    ILookupParameter<IntValue> TerminalPointParameter { get; }
-    ILookupParameter<DoubleValue> PointVisitingCostsParameter { get; }
+    ILookupParameter<IOrienteeringProblemData> OrienteeringProblemDataParameter { get; }
   }
 }

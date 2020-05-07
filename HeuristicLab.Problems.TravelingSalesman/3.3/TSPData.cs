@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -33,6 +34,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
     int Cities { get; }
 
     double GetDistance(int fromCity, int toCity);
+    double GetPathDistance(IEnumerable<int> path, bool closed = true);
     ITSPSolution GetSolution(Permutation tspTour, double tourLength);
     TSPData Export();
   }
@@ -84,7 +86,20 @@ namespace HeuristicLab.Problems.TravelingSalesman {
     }
 
     public double GetDistance(int fromCity, int toCity) => Matrix[fromCity, toCity];
-
+    public double GetPathDistance(IEnumerable<int> path, bool closed = true) {
+      var iter = path.GetEnumerator();
+      if (!iter.MoveNext()) return 0;
+      var start = iter.Current;
+      var prev = start;
+      var distance = 0.0;
+      while (iter.MoveNext()) {
+        var cur = iter.Current;
+        distance += Matrix[prev, cur];
+        prev = cur;
+      }
+      if (closed) distance += Matrix[prev, start];
+      return distance;
+    }
     public TSPData Export() {
       return new TSPData() {
         Name = name,
@@ -132,6 +147,20 @@ namespace HeuristicLab.Problems.TravelingSalesman {
     }
 
     public abstract double GetDistance(double fromX, double fromY, double toX, double toY);
+    public double GetPathDistance(IEnumerable<int> path, bool closed = true) {
+      var iter = path.GetEnumerator();
+      if (!iter.MoveNext()) return 0;
+      var start = iter.Current;
+      var prev = start;
+      var distance = 0.0;
+      while (iter.MoveNext()) {
+        var cur = iter.Current;
+        distance += GetDistance(prev, cur);
+        prev = cur;
+      }
+      if (closed) distance += GetDistance(prev, start);
+      return distance;
+    }
 
     public virtual ITSPSolution GetSolution(Permutation tour, double tourLength) {
       return new TSPSolution(this, tour, new DoubleValue(tourLength));

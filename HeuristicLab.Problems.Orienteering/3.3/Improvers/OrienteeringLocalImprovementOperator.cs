@@ -21,6 +21,7 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -28,7 +29,6 @@ using HeuristicLab.Encodings.IntegerVectorEncoding;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 
 namespace HeuristicLab.Problems.Orienteering {
   /// <summary>
@@ -44,24 +44,10 @@ namespace HeuristicLab.Problems.Orienteering {
     public ILookupParameter<IntegerVector> IntegerVectorParameter {
       get { return (ILookupParameter<IntegerVector>)Parameters["OrienteeringSolution"]; }
     }
-    public ILookupParameter<DistanceMatrix> DistanceMatrixParameter {
-      get { return (ILookupParameter<DistanceMatrix>)Parameters["DistanceMatrix"]; }
+    public ILookupParameter<IOrienteeringProblemData> OrienteeringProblemDataParameter {
+      get { return (ILookupParameter<IOrienteeringProblemData>)Parameters["OrienteeringProblemData"]; }
     }
-    public ILookupParameter<DoubleArray> ScoresParameter {
-      get { return (ILookupParameter<DoubleArray>)Parameters["Scores"]; }
-    }
-    public ILookupParameter<DoubleValue> MaximumDistanceParameter {
-      get { return (ILookupParameter<DoubleValue>)Parameters["MaximumDistance"]; }
-    }
-    public ILookupParameter<IntValue> StartingPointParameter {
-      get { return (ILookupParameter<IntValue>)Parameters["StartingPoint"]; }
-    }
-    public ILookupParameter<IntValue> TerminalPointParameter {
-      get { return (ILookupParameter<IntValue>)Parameters["TerminalPoint"]; }
-    }
-    public ILookupParameter<DoubleValue> PointVisitingCostsParameter {
-      get { return (ILookupParameter<DoubleValue>)Parameters["PointVisitingCosts"]; }
-    }
+
     #region ILocalImprovementOperator Parameters
     public IValueLookupParameter<IntValue> LocalIterationsParameter {
       get { return (IValueLookupParameter<IntValue>)Parameters["LocalIterations"]; }
@@ -95,12 +81,7 @@ namespace HeuristicLab.Problems.Orienteering {
     public OrienteeringLocalImprovementOperator()
       : base() {
       Parameters.Add(new LookupParameter<IntegerVector>("OrienteeringSolution", "The Orienteering Solution given in path representation."));
-      Parameters.Add(new LookupParameter<DistanceMatrix>("DistanceMatrix", "The matrix which contains the distances between the points."));
-      Parameters.Add(new LookupParameter<DoubleArray>("Scores", "The scores of the points."));
-      Parameters.Add(new LookupParameter<DoubleValue>("MaximumDistance", "The maximum distance constraint for a Orienteering solution."));
-      Parameters.Add(new LookupParameter<IntValue>("StartingPoint", "Index of the starting point."));
-      Parameters.Add(new LookupParameter<IntValue>("TerminalPoint", "Index of the ending point."));
-      Parameters.Add(new LookupParameter<DoubleValue>("PointVisitingCosts", "The costs for visiting a point."));
+      Parameters.Add(new LookupParameter<IOrienteeringProblemData>("OrienteeringProblemData", "The main data that comprises the orienteering problem."));
 
       Parameters.Add(new ValueLookupParameter<IntValue>("LocalIterations", "The number of iterations that have already been performed.", new IntValue(0)));
       Parameters.Add(new ValueLookupParameter<IntValue>("MaximumIterations", "The maximum number of generations which should be processed.", new IntValue(150)));
@@ -117,11 +98,7 @@ namespace HeuristicLab.Problems.Orienteering {
     }
 
     public override IOperation Apply() {
-      int numPoints = ScoresParameter.ActualValue.Length;
-      var distances = DistanceMatrixParameter.ActualValue;
-      var scores = ScoresParameter.ActualValue;
-      double pointVisitingCosts = PointVisitingCostsParameter.ActualValue.Value;
-      double maxLength = MaximumDistanceParameter.ActualValue.Value;
+      var data = OrienteeringProblemDataParameter.ActualValue;
       int maxIterations = MaximumIterationsParameter.ActualValue.Value;
       int maxBlockLength = MaximumBlockLengthParmeter.Value.Value;
       bool useMaxBlockLength = UseMaximumBlockLengthParmeter.Value.Value;
@@ -131,7 +108,7 @@ namespace HeuristicLab.Problems.Orienteering {
       var tour = IntegerVectorParameter.ActualValue.ToList();
 
       double tourLength = 0;
-      double tourScore = tour.Sum(point => scores[point]);
+      double tourScore = tour.Sum(point => data.GetScore(point));
 
       var localIterations = LocalIterationsParameter.ActualValue;
       var evaluatedSolutions = EvaluatedSolutionsParameter.ActualValue;
@@ -142,23 +119,19 @@ namespace HeuristicLab.Problems.Orienteering {
         solutionChanged = false;
 
         if (localIterations.Value == 0)
-          tourLength = distances.CalculateTourLength(tour, pointVisitingCosts);
+          tourLength = OrienteeringProblem.CalculateTravelCosts(data, tour);
 
         // Try to shorten the path
-        ShortenPath(tour, distances, maxBlockLength, useMaxBlockLength, ref tourLength, ref evaluations);
+        ShortenPath(tour, data, maxBlockLength, useMaxBlockLength, ref tourLength, ref evaluations);
 
         // Determine all points that have not yet been visited by this tour
-        var visitablePoints = Enumerable.Range(0, numPoints).Except(tour).ToList();
+        var visitablePoints = Enumerable.Range(0, data.RoutingData.Cities).Except(tour).ToList();
 
         // Determine if any of the visitable points can be included at any position within the tour
-        IncludeNewPoints(tour, visitablePoints,
-          distances, pointVisitingCosts, maxLength, scores,
-          ref tourLength, ref tourScore, ref evaluations, ref solutionChanged);
+        IncludeNewPoints(tour, visitablePoints, data, ref tourLength, ref tourScore, ref evaluations, ref solutionChanged);
 
         // Determine if any of the visitable points can take the place of an already visited point in the tour to improve the scores
-        ReplacePoints(tour, visitablePoints,
-          distances, maxLength, scores,
-          ref tourLength, ref tourScore, ref evaluations, ref solutionChanged);
+        ReplacePoints(tour, visitablePoints, data, ref tourLength, ref tourScore, ref evaluations, ref solutionChanged);
 
         localIterations.Value++;
       }
@@ -173,7 +146,7 @@ namespace HeuristicLab.Problems.Orienteering {
       return base.Apply();
     }
 
-    private void ShortenPath(List<int> tour, DistanceMatrix distances, int maxBlockLength, bool useMaxBlockLength, ref double tourLength, ref int evaluations) {
+    private void ShortenPath(List<int> tour, IOrienteeringProblemData data, int maxBlockLength, bool useMaxBlockLength, ref double tourLength, ref int evaluations) {
       bool solutionChanged;
       int pathSize = tour.Count;
       maxBlockLength = (useMaxBlockLength && (pathSize > maxBlockLength + 1)) ? maxBlockLength : (pathSize - 2);
@@ -194,10 +167,10 @@ namespace HeuristicLab.Problems.Orienteering {
 
             double newLength = tourLength;
             // Recalculate length of whole swapped part, in case distances are not symmetric
-            for (int index = position - 1; index < position + blockLength; index++) newLength -= distances[tour[index], tour[index + 1]];
-            for (int index = position + blockLength - 1; index > position; index--) newLength += distances[tour[index], tour[index - 1]];
-            newLength += distances[tour[position - 1], tour[position + blockLength - 1]];
-            newLength += distances[tour[position], tour[position + blockLength]];
+            for (int index = position - 1; index < position + blockLength; index++) newLength -= data.RoutingData.GetDistance(tour[index], tour[index + 1]);
+            for (int index = position + blockLength - 1; index > position; index--) newLength += data.RoutingData.GetDistance(tour[index], tour[index - 1]);
+            newLength += data.RoutingData.GetDistance(tour[position - 1], tour[position + blockLength - 1]);
+            newLength += data.RoutingData.GetDistance(tour[position], tour[position + blockLength]);
 
             if (newLength < tourLength - 0.00001) {
               // Avoid cycling caused by precision
@@ -216,8 +189,7 @@ namespace HeuristicLab.Problems.Orienteering {
       } while (solutionChanged);
     }
 
-    private void IncludeNewPoints(List<int> tour, List<int> visitablePoints,
-      DistanceMatrix distances, double pointVisitingCosts, double maxLength, DoubleArray scores,
+    private void IncludeNewPoints(List<int> tour, List<int> visitablePoints, IOrienteeringProblemData data,
       ref double tourLength, ref double tourScore, ref int evaluations, ref bool solutionChanged) {
 
       for (int tourPosition = 1; tourPosition < tour.Count; tourPosition++) {
@@ -230,16 +202,16 @@ namespace HeuristicLab.Problems.Orienteering {
 
           evaluations++;
 
-          double detour = distances.CalculateInsertionCosts(tour, tourPosition, visitablePoints[i], pointVisitingCosts);
+          double detour = OrienteeringProblem.CalculateInsertionCosts(data, tour, tourPosition, visitablePoints[i]);
 
           // Determine if including the point does not violate any constraint
-          if (tourLength + detour <= maxLength) {
+          if (tourLength + detour <= data.MaximumTravelCosts) {
             // Insert the new point at this position
             tour.Insert(tourPosition, visitablePoints[i]);
 
             // Update the overall tour tourLength and score
             tourLength += detour;
-            tourScore += scores[visitablePoints[i]];
+            tourScore += data.GetScore(visitablePoints[i]);
 
             // Re-run this optimization
             solutionChanged = true;
@@ -248,8 +220,7 @@ namespace HeuristicLab.Problems.Orienteering {
       }
     }
 
-    private void ReplacePoints(List<int> tour, List<int> visitablePoints,
-      DistanceMatrix distances, double maxLength, DoubleArray scores,
+    private void ReplacePoints(List<int> tour, List<int> visitablePoints, IOrienteeringProblemData data,
       ref double tourLength, ref double tourScore, ref int evaluations, ref bool solutionChanged) {
 
       for (int tourPosition = 1; tourPosition < tour.Count - 1; tourPosition++) {
@@ -262,12 +233,12 @@ namespace HeuristicLab.Problems.Orienteering {
 
           evaluations++;
 
-          double detour = distances.CalculateReplacementCosts(tour, tourPosition, visitablePoints[i]);
+          double detour = OrienteeringProblem.CalculateReplacementCosts(data, tour, tourPosition, visitablePoints[i]);
 
-          double oldPointScore = scores[tour[tourPosition]];
-          double newPointScore = scores[visitablePoints[i]];
+          double oldPointScore = data.GetScore(tour[tourPosition]);
+          double newPointScore = data.GetScore(visitablePoints[i]);
 
-          if ((tourLength + detour <= maxLength) && (newPointScore > oldPointScore)) {
+          if ((tourLength + detour <= data.MaximumTravelCosts) && (newPointScore > oldPointScore)) {
             // Replace the old point by the new one
             tour[tourPosition] = visitablePoints[i];
 

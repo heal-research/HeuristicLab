@@ -57,11 +57,7 @@ namespace HeuristicLab.Problems.PTSP {
       Probabilities = new PercentArray(Enumerable.Repeat(0.5, TSPData.Cities).ToArray(), @readonly: true);
     }
     public ProbabilisticTSPData(ITSPData tspData, double[] probabilities)
-      : base(tspData.Name, tspData.Description) {
-      if (tspData.Cities != probabilities.Length) throw new ArgumentException("Unequal number of cities and probabilities.");
-      TSPData = tspData;
-      Probabilities = new PercentArray(probabilities, @readonly: true);
-    }
+      : this(tspData, new PercentArray(probabilities, @readonly: true)) { }
     public ProbabilisticTSPData(ITSPData tspData, PercentArray probabilities)
       : base(tspData.Name, tspData.Description) {
       if (tspData.Cities != probabilities.Length) throw new ArgumentException("Unequal number of cities and probabilities.");

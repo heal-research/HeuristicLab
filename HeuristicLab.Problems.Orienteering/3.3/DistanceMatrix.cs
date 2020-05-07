@@ -21,10 +21,10 @@
 
 using System;
 using System.Collections.Generic;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HEAL.Attic;
 
 namespace HeuristicLab.Problems.Orienteering {
   /// <summary>
@@ -66,12 +66,12 @@ namespace HeuristicLab.Problems.Orienteering {
       detour -= this[path[insertPosition - 1], path[insertPosition]];
       return detour;
     }
-    public double CalculateReplacementCosts(List<int> path, int replacePosition, int point) {
+    public double CalculateReplacementCosts(IList<int> path, int replacePosition, int point) {
       double detour = this[path[replacePosition - 1], point] + this[point, path[replacePosition + 1]];
       detour -= this[path[replacePosition - 1], path[replacePosition]] + this[path[replacePosition], path[replacePosition + 1]];
       return detour;
     }
-    public double CalculateRemovementSaving(List<int> path, int removePosition, double pointVisitingCosts) {
+    public double CalculateRemovementSaving(IList<int> path, int removePosition, double pointVisitingCosts) {
       double saving = this[path[removePosition - 1], path[removePosition]];
       saving += this[path[removePosition], path[removePosition + 1]];
       saving -= this[path[removePosition - 1], path[removePosition + 1]];

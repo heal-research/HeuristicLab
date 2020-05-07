@@ -19,341 +19,178 @@
  */
 #endregion
 
-using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
+using HEAL.Attic;
 using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Data;
 using HeuristicLab.Encodings.IntegerVectorEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 using HeuristicLab.Problems.Instances;
 using HeuristicLab.Problems.Instances.Types;
+using HeuristicLab.Problems.TravelingSalesman;
 
 namespace HeuristicLab.Problems.Orienteering {
   [Item("Orienteering Problem (OP)", "Represents a single-objective Orienteering Problem.")]
   [Creatable(CreatableAttribute.Categories.CombinatorialProblems, Priority = 115)]
   [StorableType("0B8DB4A4-F183-4368-86C6-C51289B183D2")]
-  public sealed class OrienteeringProblem
-    : SingleObjectiveHeuristicOptimizationProblem<IOrienteeringEvaluator, IOrienteeringSolutionCreator>,
-    IStorableContent, IProblemInstanceConsumer<OPData>, IProblemInstanceConsumer<TSPData>, IProblemInstanceConsumer<CVRPData> {
+  public sealed class OrienteeringProblem : IntegerVectorProblem,
+      IProblemInstanceConsumer<OPData>, IProblemInstanceConsumer<TSPData>, IProblemInstanceConsumer<CVRPData> {
 
-    public string Filename { get; set; }
+    [Storable] public ValueParameter<IOrienteeringProblemData> OrienteeringProblemDataParameter { get; private set; }
+    [Storable] public OptionalValueParameter<OrienteeringSolution> BestKnownSolutionParameter { get; private set; }
+    [Storable] private IResultParameter<OrienteeringSolution> BestOrienteeringSolutionParameter { get; set; }
+    public IResultDefinition<OrienteeringSolution> BestOrienteeringSolution => BestOrienteeringSolutionParameter;
 
-    #region Parameter Properties
-    public OptionalValueParameter<DoubleMatrix> CoordinatesParameter {
-      get { return (OptionalValueParameter<DoubleMatrix>)Parameters["Coordinates"]; }
+    public IOrienteeringProblemData OrienteeringProblemData {
+      get { return OrienteeringProblemDataParameter.Value; }
+      set { OrienteeringProblemDataParameter.Value = value; }
     }
-    public IValueParameter<DistanceMatrix> DistanceMatrixParameter {
-      get { return (IValueParameter<DistanceMatrix>)Parameters["DistanceMatrix"]; }
-    }
-
-    public IFixedValueParameter<IntValue> StartingPointParameter {
-      get { return (IFixedValueParameter<IntValue>)Parameters["StartingPoint"]; }
-    }
-    public IFixedValueParameter<IntValue> TerminalPointParameter {
-      get { return (IFixedValueParameter<IntValue>)Parameters["TerminalPoint"]; }
-    }
-    public IFixedValueParameter<DoubleValue> MaximumDistanceParameter {
-      get { return (IFixedValueParameter<DoubleValue>)Parameters["MaximumDistance"]; }
-    }
-    public IValueParameter<DoubleArray> ScoresParameter {
-      get { return (IValueParameter<DoubleArray>)Parameters["Scores"]; }
-    }
-    public IFixedValueParameter<DoubleValue> PointVisitingCostsParameter {
-      get { return (IFixedValueParameter<DoubleValue>)Parameters["PointVisitingCosts"]; }
-    }
-
-    public OptionalValueParameter<IntegerVector> BestKnownSolutionParameter {
-      get { return (OptionalValueParameter<IntegerVector>)Parameters["BestKnownSolution"]; }
-    }
-    #endregion
-
-    #region Properties
-    public DoubleMatrix Coordinates {
-      get { return CoordinatesParameter.Value; }
-      set { CoordinatesParameter.Value = value; }
-    }
-    public DistanceMatrix DistanceMatrix {
-      get { return DistanceMatrixParameter.Value; }
-      set { DistanceMatrixParameter.Value = value; }
-    }
-    public int StartingPoint {
-      get { return StartingPointParameter.Value.Value; }
-      set { StartingPointParameter.Value.Value = value; }
-    }
-    public int TerminalPoint {
-      get { return TerminalPointParameter.Value.Value; }
-      set { TerminalPointParameter.Value.Value = value; }
-    }
-    public double MaximumDistance {
-      get { return MaximumDistanceParameter.Value.Value; }
-      set { MaximumDistanceParameter.Value.Value = value; }
-    }
-    public DoubleArray Scores {
-      get { return ScoresParameter.Value; }
-      set { ScoresParameter.Value = value; }
-    }
-    public double PointVisitingCosts {
-      get { return PointVisitingCostsParameter.Value.Value; }
-      set { PointVisitingCostsParameter.Value.Value = value; }
-    }
-    public IntegerVector BestKnownSolution {
+    public OrienteeringSolution BestKnownSolution {
       get { return BestKnownSolutionParameter.Value; }
       set { BestKnownSolutionParameter.Value = value; }
     }
-    private BestOrienteeringSolutionAnalyzer BestOrienteeringSolutionAnalyser {
-      get { return Operators.OfType<BestOrienteeringSolutionAnalyzer>().SingleOrDefault(); }
-    }
-    #endregion
 
     [StorableConstructor]
     private OrienteeringProblem(StorableConstructorFlag _) : base(_) {
     }
     private OrienteeringProblem(OrienteeringProblem original, Cloner cloner)
       : base(original, cloner) {
-      RegisterEventHandlers();
+      OrienteeringProblemDataParameter = cloner.Clone(original.OrienteeringProblemDataParameter);
+      BestKnownSolutionParameter = cloner.Clone(original.BestKnownSolutionParameter);
+      BestOrienteeringSolutionParameter = cloner.Clone(original.BestOrienteeringSolutionParameter);
     }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new OrienteeringProblem(this, cloner);
     }
     public OrienteeringProblem()
-      : base(new OrienteeringEvaluator(), new GreedyOrienteeringTourCreator()) {
-      Parameters.Add(new OptionalValueParameter<DoubleMatrix>("Coordinates", "The x- and y-Coordinates of the points."));
-      Parameters.Add(new ValueParameter<DistanceMatrix>("DistanceMatrix", "The matrix which contains the distances between the points."));
-      Parameters.Add(new FixedValueParameter<IntValue>("StartingPoint", "Index of the starting point.", new IntValue(0)));
-      Parameters.Add(new FixedValueParameter<IntValue>("TerminalPoint", "Index of the ending point.", new IntValue(0)));
-      Parameters.Add(new FixedValueParameter<DoubleValue>("MaximumDistance", "The maximum distance constraint for a Orienteering solution."));
-      Parameters.Add(new ValueParameter<DoubleArray>("Scores", "The scores of the points."));
-      Parameters.Add(new FixedValueParameter<DoubleValue>("PointVisitingCosts", "The costs for visiting a point."));
-      Parameters.Add(new OptionalValueParameter<IntegerVector>("BestKnownSolution", "The best known solution of this Orienteering instance."));
-
-      Maximization.Value = true;
-      MaximizationParameter.Hidden = true;
-
-      SolutionCreator.IntegerVectorParameter.ActualName = "OrienteeringSolution";
-
-      InitializeInitialOrienteeringInstance();
-
-      ParameterizeSolutionCreator();
-      ParameterizeEvaluator();
+      : base(new IntegerVectorEncoding("Route")) {
+      Parameters.Add(OrienteeringProblemDataParameter = new ValueParameter<IOrienteeringProblemData>("OP Data", "The main parameters for the orienteering problem.", new OrienteeringProblemData()));
+      Parameters.Add(BestKnownSolutionParameter = new OptionalValueParameter<OrienteeringSolution>("BestKnownSolution", "The best known solution of this Orienteering instance."));
+      Parameters.Add(BestOrienteeringSolutionParameter = new ResultParameter<OrienteeringSolution>("Best Orienteering Solution", "The best so far solution found."));
+      Maximization = true;
 
       InitializeOperators();
-      RegisterEventHandlers();
     }
 
-    #region Events
-    protected override void OnSolutionCreatorChanged() {
-      base.OnSolutionCreatorChanged();
-      SolutionCreator.IntegerVectorParameter.ActualNameChanged += SolutionCreator_IntegerVectorParameter_ActualNameChanged;
-      ParameterizeSolutionCreator();
-      ParameterizeEvaluator();
-      ParameterizeAnalyzer();
+    public override ISingleObjectiveEvaluationResult Evaluate(IntegerVector solution, IRandom random, CancellationToken cancellationToken) {
+      var data = OrienteeringProblemData;
+      var score = CalculateScore(data, solution);
+      var travelCosts = CalculateTravelCosts(data, solution);
+      var quality = CalculateQuality(data, score, travelCosts);
+
+      return new SingleObjectiveEvaluationResult(quality);
+    }
+
+    public static double CalculateQuality(IOrienteeringProblemData data, double score, double travelCosts) {
+      if (travelCosts > data.MaximumTravelCosts) return data.MaximumTravelCosts - travelCosts; // negative excessive distance
+      return score;
+    }
+    public static double CalculateScore(IOrienteeringProblemData data, IEnumerable<int> solution) {
+      return solution.Sum(t => data.GetScore(t));
+    }
+    public static double CalculateTravelCosts(IOrienteeringProblemData data, IntegerVector solution) {
+      var distance = data.RoutingData.GetPathDistance(solution, closed: false);
+      distance += (solution.Length - 2) * data.PointVisitingCosts;
+      return distance;
+    }
+    public static double CalculateTravelCosts(IOrienteeringProblemData data, IList<int> solution) {
+      var distance = data.RoutingData.GetPathDistance(solution, closed: false);
+      distance += (solution.Count - 2) * data.PointVisitingCosts;
+      return distance;
+    }
+
+    public override void Analyze(IntegerVector[] vectors, double[] qualities, ResultCollection results, IRandom random) {
+      base.Analyze(vectors, qualities, results, random);
+      var data = OrienteeringProblemData;
+
+      var best = GetBestSolution(vectors, qualities);
+      var score = CalculateScore(OrienteeringProblemData, best.Item1);
+      var travelCosts = CalculateTravelCosts(OrienteeringProblemData, best.Item1);
+      var quality = CalculateQuality(OrienteeringProblemData, score, travelCosts);
+
+      if (BestKnownQuality == double.NaN || best.Item2 > BestKnownQuality) {
+        BestKnownQuality = best.Item2;
+        BestKnownSolutionParameter.ActualValue = data.GetSolution((IntegerVector)best.Item1.Clone(), quality, score, travelCosts);
+      }
+
+      var bestSoFar = BestOrienteeringSolutionParameter.ActualValue;
+      
+      if (bestSoFar == null) {
+        bestSoFar = data.GetSolution((IntegerVector)best.Item1.Clone(), quality, score, travelCosts);
+        BestOrienteeringSolutionParameter.ActualValue = bestSoFar;
+      } else {
+        if (IsBetter(best.Item2, bestSoFar.Quality.Value)) {
+          bestSoFar.Route = (IntegerVector)best.Item1.Clone();
+          bestSoFar.Quality.Value = quality;
+          bestSoFar.Score.Value = score;
+          bestSoFar.TravelCosts.Value = travelCosts;
+        }
+      }
+    }
+    public static double CalculateInsertionCosts(IOrienteeringProblemData data, IList<int> path, int insertPosition, int point) {
+      double detour = data.RoutingData.GetDistance(path[insertPosition - 1], point) + data.RoutingData.GetDistance(point, path[insertPosition]);
+      detour += data.PointVisitingCosts;
+      detour -= data.RoutingData.GetDistance(path[insertPosition - 1], path[insertPosition]);
+      return detour;
+    }
+    public static double CalculateReplacementCosts(IOrienteeringProblemData data, IList<int> path, int replacePosition, int point) {
+      double detour = data.RoutingData.GetDistance(path[replacePosition - 1], point) + data.RoutingData.GetDistance(point, path[replacePosition + 1]);
+      detour -= data.RoutingData.GetDistance(path[replacePosition - 1], path[replacePosition]) + data.RoutingData.GetDistance(path[replacePosition], path[replacePosition + 1]);
+      return detour;
+    }
+    public static double CalculateRemovementSaving(IOrienteeringProblemData data, IList<int> path, int removePosition) {
+      double saving = data.RoutingData.GetDistance(path[removePosition - 1], path[removePosition]);
+      saving += data.RoutingData.GetDistance(path[removePosition], path[removePosition + 1]);
+      saving -= data.RoutingData.GetDistance(path[removePosition - 1], path[removePosition + 1]);
+      saving += data.PointVisitingCosts;
+      return saving;
+    }
+
+    protected override void OnEncodingChanged() {
+      base.OnEncodingChanged();
       ParameterizeOperators();
     }
+
     protected override void OnEvaluatorChanged() {
       base.OnEvaluatorChanged();
-      ParameterizeEvaluator();
-      ParameterizeAnalyzer();
-    }
-    private void SolutionCreator_IntegerVectorParameter_ActualNameChanged(object sender, EventArgs e) {
-      ParameterizeEvaluator();
-      ParameterizeAnalyzer();
       ParameterizeOperators();
     }
-    private void CoordinatesParameter_ValueChanged(object sender, EventArgs e) {
-      if (Coordinates != null) {
-        Coordinates.ItemChanged += new EventHandler<EventArgs<int, int>>(CoordinatesValue_ItemChanged);
-        Coordinates.Reset += new EventHandler(CoordinatesValue_Reset);
-      }
-      ParameterizeSolutionCreator();
-      UpdateDistanceMatrix();
-      CheckStartingIndex();
-      CheckTerminalIndex();
-    }
-    private void CoordinatesValue_ItemChanged(object sender, EventArgs<int, int> e) {
-      UpdateDistanceMatrix();
-      CheckStartingIndex();
-      CheckTerminalIndex();
-    }
-    private void CoordinatesValue_Reset(object sender, EventArgs e) {
-      ParameterizeSolutionCreator();
-      UpdateDistanceMatrix();
-      CheckStartingIndex();
-      CheckTerminalIndex();
-    }
-    private void StartingPointParameterValue_ValueChanged(object sender, EventArgs e) {
-      CheckStartingIndex();
-    }
 
-    private void TerminalPointParameterValue_ValueChanged(object sender, EventArgs e) {
-      CheckTerminalIndex();
-    }
-    private void MaximumDistanceParameterValue_ValueChanged(object sender, EventArgs e) { }
-    private void ScoresParameter_ValueChanged(object sender, EventArgs e) {
-      ParameterizeEvaluator();
-      ParameterizeAnalyzer();
-      ParameterizeSolutionCreator();
-
-      ScoresParameter.Value.Reset += new EventHandler(ScoresValue_Reset);
-    }
-    private void ScoresValue_Reset(object sender, EventArgs e) {
-      ParameterizeSolutionCreator();
-    }
-    private void PointVisitingCostsParameterValue_ValueChanged(object sender, EventArgs e) { }
-
-    private void BestKnownSolutionParameter_ValueChanged(object sender, EventArgs e) {
-      if (BestKnownSolution == null)
-        BestKnownQuality = null;
-    }
-    #endregion
-
-    #region Helpers
-    [StorableHook(HookType.AfterDeserialization)]
-    private void AfterDeserialization() {
-      RegisterEventHandlers();
-    }
-
-    private void RegisterEventHandlers() {
-      SolutionCreator.IntegerVectorParameter.ActualNameChanged += SolutionCreator_IntegerVectorParameter_ActualNameChanged;
-
-      CoordinatesParameter.ValueChanged += CoordinatesParameter_ValueChanged;
-      if (CoordinatesParameter.Value != null) {
-        CoordinatesParameter.Value.ItemChanged += CoordinatesValue_ItemChanged;
-        CoordinatesParameter.Value.Reset += CoordinatesValue_Reset;
-      }
-
-      StartingPointParameter.Value.ValueChanged += StartingPointParameterValue_ValueChanged;
-      TerminalPointParameter.Value.ValueChanged += TerminalPointParameterValue_ValueChanged;
-      MaximumDistanceParameter.Value.ValueChanged += MaximumDistanceParameterValue_ValueChanged;
-      PointVisitingCostsParameter.Value.ValueChanged += PointVisitingCostsParameterValue_ValueChanged;
-
-      ScoresParameter.ValueChanged += ScoresParameter_ValueChanged;
-      ScoresParameter.Value.Reset += ScoresValue_Reset;
-
-      BestKnownSolutionParameter.ValueChanged += BestKnownSolutionParameter_ValueChanged;
-    }
-
-    private void ParameterizeSolutionCreator() {
-      SolutionCreator.DistanceMatrixParameter.ActualName = DistanceMatrixParameter.Name;
-      SolutionCreator.ScoresParameter.ActualName = ScoresParameter.Name;
-      SolutionCreator.MaximumDistanceParameter.ActualName = MaximumDistanceParameter.Name;
-      SolutionCreator.StartingPointParameter.ActualName = StartingPointParameter.Name;
-      SolutionCreator.TerminalPointParameter.ActualName = TerminalPointParameter.Name;
-      SolutionCreator.PointVisitingCostsParameter.ActualName = PointVisitingCostsParameter.Name;
-    }
-    private void ParameterizeEvaluator() {
-      Evaluator.IntegerVectorParameter.ActualName = SolutionCreator.IntegerVectorParameter.ActualName;
-      Evaluator.ScoresParameter.ActualName = ScoresParameter.Name;
-      Evaluator.DistanceMatrixParameter.ActualName = DistanceMatrixParameter.Name;
-      Evaluator.MaximumDistanceParameter.ActualName = MaximumDistanceParameter.Name;
-      Evaluator.PointVisitingCostsParameter.ActualName = PointVisitingCostsParameter.Name;
-    }
-    private void ParameterizeAnalyzer() {
-      if (BestOrienteeringSolutionAnalyser != null) {
-        BestOrienteeringSolutionAnalyser.QualityParameter.ActualName = Evaluator.QualityParameter.ActualName;
-
-        BestOrienteeringSolutionAnalyser.IntegerVector.ActualName = SolutionCreator.IntegerVectorParameter.ActualName;
-        BestOrienteeringSolutionAnalyser.CoordinatesParameter.ActualName = CoordinatesParameter.Name;
-        BestOrienteeringSolutionAnalyser.ScoresParameter.ActualName = ScoresParameter.Name;
-
-        BestOrienteeringSolutionAnalyser.ResultsParameter.ActualName = "Results";
-        BestOrienteeringSolutionAnalyser.BestKnownQualityParameter.ActualName = BestKnownQualityParameter.Name;
-        BestOrienteeringSolutionAnalyser.BestKnownSolutionParameter.ActualName = BestKnownSolutionParameter.Name;
-      }
-    }
     private void InitializeOperators() {
-      Operators.Add(new BestOrienteeringSolutionAnalyzer());
-      ParameterizeAnalyzer();
+      Encoding.SolutionCreator = new GreedyOrienteeringTourCreator() {
+        OrienteeringProblemDataParameter = { ActualName = OrienteeringProblemDataParameter.Name }
+      };
 
-      Operators.Add(new OrienteeringLocalImprovementOperator());
-      Operators.Add(new OrienteeringShakingOperator());
+      Operators.Add(new OrienteeringLocalImprovementOperator() {
+        OrienteeringProblemDataParameter = { ActualName = OrienteeringProblemDataParameter.Name }
+      });
+      Operators.Add(new OrienteeringShakingOperator() {
+        OrienteeringProblemDataParameter = { ActualName = OrienteeringProblemDataParameter.Name }
+      });
       Operators.Add(new QualitySimilarityCalculator());
       Operators.Add(new PopulationSimilarityAnalyzer(Operators.OfType<ISolutionSimilarityCalculator>()));
 
       ParameterizeOperators();
     }
+
     private void ParameterizeOperators() {
       foreach (var op in Operators.OfType<OrienteeringLocalImprovementOperator>()) {
-        op.IntegerVectorParameter.ActualName = SolutionCreator.IntegerVectorParameter.ActualName;
-        op.DistanceMatrixParameter.ActualName = DistanceMatrixParameter.Name;
-        op.ScoresParameter.ActualName = ScoresParameter.Name;
-        op.MaximumDistanceParameter.ActualName = MaximumDistanceParameter.Name;
-        op.StartingPointParameter.ActualName = StartingPointParameter.Name;
-        op.TerminalPointParameter.ActualName = TerminalPointParameter.Name;
-        op.PointVisitingCostsParameter.ActualName = PointVisitingCostsParameter.Name;
+        op.IntegerVectorParameter.ActualName = Encoding.Name;
+        op.QualityParameter.ActualName = Evaluator.QualityParameter.ActualName;
       }
       foreach (var op in Operators.OfType<OrienteeringShakingOperator>()) {
-        op.IntegerVectorParameter.ActualName = SolutionCreator.IntegerVectorParameter.ActualName;
-        op.DistanceMatrixParameter.ActualName = DistanceMatrixParameter.Name;
-        op.ScoresParameter.ActualName = ScoresParameter.Name;
-        op.MaximumDistanceParameter.ActualName = MaximumDistanceParameter.Name;
-        op.StartingPointParameter.ActualName = StartingPointParameter.Name;
-        op.TerminalPointParameter.ActualName = TerminalPointParameter.Name;
-        op.PointVisitingCostsParameter.ActualName = PointVisitingCostsParameter.Name;
+        op.IntegerVectorParameter.ActualName = Encoding.Name;
       }
       foreach (var similarityCalculator in Operators.OfType<ISolutionSimilarityCalculator>()) {
-        similarityCalculator.SolutionVariableName = SolutionCreator.IntegerVectorParameter.ActualName;
+        similarityCalculator.SolutionVariableName = Encoding.Name;
         similarityCalculator.QualityVariableName = Evaluator.QualityParameter.ActualName;
       }
-    }
-    #endregion
-
-    private DistanceMatrix CalculateDistanceMatrix(double[,] coordinates) {
-      var distances = DistanceHelper.GetDistanceMatrix(DistanceMeasure.Euclidean, coordinates, null, coordinates.GetLength(0));
-
-      return new DistanceMatrix(distances);
-    }
-    private void UpdateDistanceMatrix() {
-      if (Coordinates == null) {
-        DistanceMatrix = new DistanceMatrix(0, 0);
-        return;
-      }
-
-      var coordinates = Coordinates;
-      int dimension = coordinates.Rows;
-      var distances = new double[dimension, dimension];
-      for (int i = 0; i < dimension - 1; i++) {
-        for (int j = i + 1; j < dimension; j++) {
-          double x1 = coordinates[i, 0];
-          double y1 = coordinates[i, 1];
-          double x2 = coordinates[j, 0];
-          double y2 = coordinates[j, 1];
-          distances[i, j] = Math.Sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
-          distances[j, i] = distances[i, j];
-        }
-      }
-      DistanceMatrix = new DistanceMatrix(distances);
-    }
-    private void CheckStartingIndex() {
-      if (StartingPoint < 0) StartingPoint = 0;
-      if (StartingPoint >= DistanceMatrix.Rows) StartingPoint = DistanceMatrix.Rows - 1;
-    }
-    private void CheckTerminalIndex() {
-      if (TerminalPoint < 0) TerminalPoint = 0;
-      if (TerminalPoint >= DistanceMatrix.Rows) TerminalPoint = DistanceMatrix.Rows - 1;
-    }
-
-    private void InitializeInitialOrienteeringInstance() {
-      var coordinates = new double[21, 2] {
-        {  4.60,  7.10 }, {  5.70, 11.40 }, {  4.40, 12.30 }, {  2.80, 14.30 }, {  3.20, 10.30 },
-        {  3.50,  9.80 }, {  4.40,  8.40 }, {  7.80, 11.00 }, {  8.80,  9.80 }, {  7.70,  8.20 },
-        {  6.30,  7.90 }, {  5.40,  8.20 }, {  5.80,  6.80 }, {  6.70,  5.80 }, { 13.80, 13.10 },
-        { 14.10, 14.20 }, { 11.20, 13.60 }, {  9.70, 16.40 }, {  9.50, 18.80 }, {  4.70, 16.80 },
-        {  5.00,  5.60 }
-      };
-      Coordinates = new DoubleMatrix(coordinates);
-      DistanceMatrix = CalculateDistanceMatrix(coordinates);
-
-      StartingPoint = 0;
-      TerminalPoint = 20;
-      MaximumDistance = 30;
-
-      Scores = new DoubleArray(new double[21] { 0, 20, 20, 30, 15, 15, 10, 20, 20, 20, 15, 10, 10, 25, 40, 40, 30, 30, 50, 30, 0 });
     }
 
     #region Instance consuming
@@ -369,18 +206,8 @@ namespace HeuristicLab.Problems.Orienteering {
       Name = data.Name;
       Description = data.Description;
 
-      Coordinates = data.Coordinates != null ? new DoubleMatrix(data.Coordinates) : null;
-      if (data.Distances != null)
-        DistanceMatrix = new DistanceMatrix(data.Distances);
-      else
-        DistanceMatrix = new DistanceMatrix(data.GetDistanceMatrix());
-
-      StartingPoint = data.StartingPoint;
-      TerminalPoint = data.TerminalPoint;
-
-      PointVisitingCosts = data.PointVisitingCosts;
-      MaximumDistance = data.MaximumDistance;
-      Scores = new DoubleArray(data.Scores);
+      var tsp = data.Coordinates != null ? (ITSPData)new EuclideanTSPData(Name, data.Coordinates) : new MatrixTSPData(Name, data.Distances ?? data.GetDistanceMatrix(), data.Coordinates);
+      OrienteeringProblemData = new OrienteeringProblemData(tsp, data.StartingPoint, data.TerminalPoint, data.Scores, data.MaximumDistance, data.PointVisitingCosts);
     }
 
     public void Load(TSPData data) {
@@ -395,18 +222,16 @@ namespace HeuristicLab.Problems.Orienteering {
       Name = data.Name;
       Description = data.Description;
 
-      Coordinates = data.Coordinates != null ? new DoubleMatrix(data.Coordinates) : null;
-      if (data.Distances != null)
-        DistanceMatrix = new DistanceMatrix(data.Distances);
-      else
-        DistanceMatrix = new DistanceMatrix(data.GetDistanceMatrix());
 
-      StartingPoint = 0; // First city is interpreted as start point
-      TerminalPoint = data.Dimension - 1; // Last city is interpreted als end point
+      var tsp = data.Coordinates != null ? (ITSPData)new EuclideanTSPData(Name, data.Coordinates) : new MatrixTSPData(Name, data.Distances ?? data.GetDistanceMatrix(), data.Coordinates);
+      var avgDist = 0.0;
+      for (var i = 0; i < data.Dimension - 1; i++)
+        for (var j = i + 1; i < data.Dimension; j++)
+          avgDist += tsp.GetDistance(i, j);
+      avgDist /= (data.Dimension - 1) * data.Dimension / 2.0;
 
-      PointVisitingCosts = 0;
-      MaximumDistance = DistanceMatrix.Average() * 5.0; // distance from start to end first to last city is interpreted as maximum distance
-      Scores = new DoubleArray(Enumerable.Repeat(1.0, data.Dimension).ToArray()); // all scores are 1
+      OrienteeringProblemData = new OrienteeringProblemData(tsp, 0, data.Dimension - 1,
+        Enumerable.Repeat(1.0, data.Dimension).ToArray(), 5 * avgDist, 0);
     }
 
     public void Load(CVRPData data) {
@@ -421,17 +246,10 @@ namespace HeuristicLab.Problems.Orienteering {
       Name = data.Name;
       Description = data.Description;
 
-      Coordinates = data.Coordinates != null ? new DoubleMatrix(data.Coordinates) : null;
-      DistanceMatrix = data.Distances != null
-        ? new DistanceMatrix(data.Distances)
-        : CalculateDistanceMatrix(data.Coordinates);
+      var tsp = data.Coordinates != null ? (ITSPData)new EuclideanTSPData(Name, data.Coordinates) : new MatrixTSPData(Name, data.Distances ?? data.GetDistanceMatrix(), data.Coordinates);
 
-      StartingPoint = 0; // Depot is interpreted as start point
-      TerminalPoint = 0; // Depot is interpreted als end point
-
-      PointVisitingCosts = 0;
-      MaximumDistance = data.Capacity * 2; // capacity is interpreted as max distance
-      Scores = new DoubleArray(data.Demands); // demands are interpreted as scores
+      OrienteeringProblemData = new OrienteeringProblemData(tsp, 0, 0,
+        data.Demands, data.Capacity * 2, 0);
     }
     #endregion
   }

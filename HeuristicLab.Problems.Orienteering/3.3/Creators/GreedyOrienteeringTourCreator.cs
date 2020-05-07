@@ -21,12 +21,12 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.IntegerVectorEncoding;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 
 namespace HeuristicLab.Problems.Orienteering {
   /// <summary>
@@ -42,26 +42,9 @@ namespace HeuristicLab.Problems.Orienteering {
   public sealed class GreedyOrienteeringTourCreator : IntegerVectorCreator, IOrienteeringSolutionCreator {
     public override bool CanChangeName { get { return false; } }
 
-    #region Parameter Properties
-    public ILookupParameter<DistanceMatrix> DistanceMatrixParameter {
-      get { return (ILookupParameter<DistanceMatrix>)Parameters["DistanceMatrix"]; }
+    public ILookupParameter<IOrienteeringProblemData> OrienteeringProblemDataParameter {
+      get { return (ILookupParameter<IOrienteeringProblemData>)Parameters["OrienteeringProblemData"]; }
     }
-    public ILookupParameter<DoubleArray> ScoresParameter {
-      get { return (ILookupParameter<DoubleArray>)Parameters["Scores"]; }
-    }
-    public ILookupParameter<DoubleValue> MaximumDistanceParameter {
-      get { return (ILookupParameter<DoubleValue>)Parameters["MaximumDistance"]; }
-    }
-    public ILookupParameter<IntValue> StartingPointParameter {
-      get { return (ILookupParameter<IntValue>)Parameters["StartingPoint"]; }
-    }
-    public ILookupParameter<IntValue> TerminalPointParameter {
-      get { return (ILookupParameter<IntValue>)Parameters["TerminalPoint"]; }
-    }
-    public ILookupParameter<DoubleValue> PointVisitingCostsParameter {
-      get { return (ILookupParameter<DoubleValue>)Parameters["PointVisitingCosts"]; }
-    }
-    #endregion
 
     [StorableConstructor]
     private GreedyOrienteeringTourCreator(StorableConstructorFlag _) : base(_) { }
@@ -70,12 +53,7 @@ namespace HeuristicLab.Problems.Orienteering {
 
     public GreedyOrienteeringTourCreator()
       : base() {
-      Parameters.Add(new LookupParameter<DistanceMatrix>("DistanceMatrix", "The matrix which contains the distances between the points."));
-      Parameters.Add(new LookupParameter<DoubleArray>("Scores", "The scores of the points."));
-      Parameters.Add(new LookupParameter<DoubleValue>("MaximumDistance", "The maximum distance constraint for a Orienteering solution."));
-      Parameters.Add(new LookupParameter<IntValue>("StartingPoint", "Index of the starting point."));
-      Parameters.Add(new LookupParameter<IntValue>("TerminalPoint", "Index of the ending point."));
-      Parameters.Add(new LookupParameter<DoubleValue>("PointVisitingCosts", "The costs for visiting a point."));
+      Parameters.Add(new LookupParameter<IOrienteeringProblemData>("OrienteeringProblemData", "The main data that comprises the orienteering problem."));
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -83,31 +61,26 @@ namespace HeuristicLab.Problems.Orienteering {
     }
 
     protected override IntegerVector Create(IRandom random, IntValue length, IntMatrix bounds) {
-      int startPoint = StartingPointParameter.ActualValue.Value;
-      int endPoint = TerminalPointParameter.ActualValue.Value;
-      int numPoints = ScoresParameter.ActualValue.Length;
-      var distances = DistanceMatrixParameter.ActualValue;
-      double pointVisitingCosts = PointVisitingCostsParameter.ActualValue.Value;
-      double maxDistance = MaximumDistanceParameter.ActualValue.Value;
-      var scores = ScoresParameter.ActualValue;
+      var data = OrienteeringProblemDataParameter.ActualValue;
 
       // Find all points within the maximum distance allowed (ellipse)
       var feasiblePoints = (
-        from point in Enumerable.Range(0, numPoints)
-        let distance = distances[startPoint, point] + distances[point, endPoint] + pointVisitingCosts
-        let score = scores[point]
-        where distance <= maxDistance
-        where point != startPoint && point != endPoint
+        from point in Enumerable.Range(0, data.RoutingData.Cities)
+        let travelCosts = data.RoutingData.GetDistance(data.StartingPoint, point)
+        + data.RoutingData.GetDistance(point, data.TerminalPoint) + data.PointVisitingCosts
+        let score = data.GetScore(point)
+        where travelCosts <= data.MaximumTravelCosts
+        where point != data.StartingPoint && point != data.TerminalPoint
         orderby score descending
         select point
       ).ToList();
 
       // Add the starting and terminus point
       var tour = new List<int> {
-        startPoint,
-        endPoint
+        data.StartingPoint,
+        data.TerminalPoint
       };
-      double tourLength = distances[startPoint, endPoint];
+      double tourLength = data.RoutingData.GetDistance(data.StartingPoint, data.TerminalPoint);
 
       // Add points in a greedy way
       bool insertionPerformed = true;
@@ -117,10 +90,10 @@ namespace HeuristicLab.Problems.Orienteering {
         for (int i = 0; i < feasiblePoints.Count; i++) {
           for (int insertPosition = 1; insertPosition < tour.Count; insertPosition++) {
             // Create the candidate tour
-            double detour = distances.CalculateInsertionCosts(tour, insertPosition, feasiblePoints[i], pointVisitingCosts);
+            double detour = OrienteeringProblem.CalculateInsertionCosts(data, tour, insertPosition, feasiblePoints[i]);
 
             // If the insertion would be feasible, perform it
-            if (tourLength + detour <= maxDistance) {
+            if (tourLength + detour <= data.MaximumTravelCosts) {
               tour.Insert(insertPosition, feasiblePoints[i]);
               tourLength += detour;
               feasiblePoints.RemoveAt(i);

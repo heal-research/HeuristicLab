@@ -27,11 +27,12 @@ namespace HeuristicLab.Optimization {
   [StorableType("986fa3d0-38f8-43aa-820e-e67d09a29025")]
   public interface IResultDefinition {
     string Name { get; set; }
+    IItem Get(ResultCollection results);
   }
 
   [StorableType("4c0c854b-676d-4ccd-96c4-b06a3d7f2fa1")]
   public interface IResultDefinition<T> : IResultDefinition where T : class, IItem {
-    T Get(ResultCollection results);
+    new T Get(ResultCollection results);
   }
 
   [StorableType("af5d3f60-6f3a-4a44-a906-688ac8296fe3")]

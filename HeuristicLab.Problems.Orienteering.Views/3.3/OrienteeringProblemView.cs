@@ -37,21 +37,11 @@ namespace HeuristicLab.Problems.Orienteering.Views {
     }
 
     protected override void DeregisterContentEvents() {
-      Content.CoordinatesParameter.ValueChanged -= CoordinatesParameter_ValueChanged;
-      Content.StartingPointParameter.ValueChanged -= StartingPointParameter_ValueChanged;
-      Content.TerminalPointParameter.ValueChanged -= TerminalPointParameter_ValueChanged;
-      Content.ScoresParameter.ValueChanged -= ScoresParameter_ValueChanged;
-      Content.BestKnownQualityParameter.ValueChanged -= BestKnownQualityParameter_ValueChanged;
       Content.BestKnownSolutionParameter.ValueChanged -= BestKnownSolutionParameter_ValueChanged;
       base.DeregisterContentEvents();
     }
     protected override void RegisterContentEvents() {
       base.RegisterContentEvents();
-      Content.CoordinatesParameter.ValueChanged += CoordinatesParameter_ValueChanged;
-      Content.StartingPointParameter.ValueChanged += StartingPointParameter_ValueChanged;
-      Content.TerminalPointParameter.ValueChanged += TerminalPointParameter_ValueChanged;
-      Content.ScoresParameter.ValueChanged += ScoresParameter_ValueChanged;
-      Content.BestKnownQualityParameter.ValueChanged += BestKnownQualityParameter_ValueChanged;
       Content.BestKnownSolutionParameter.ValueChanged += BestKnownSolutionParameter_ValueChanged;
     }
 
@@ -60,56 +50,17 @@ namespace HeuristicLab.Problems.Orienteering.Views {
       if (Content == null) {
         orienteeringSolutionView.Content = null;
       } else {
-        orienteeringSolutionView.Content = new OrienteeringSolution(Content.BestKnownSolution,
-          Content.Coordinates, Content.StartingPointParameter.Value, Content.TerminalPointParameter.Value, Content.Scores);
-        if (Content.BestKnownSolution != null) {
-          EvaluateBestSolution();
-        }
+        orienteeringSolutionView.Content = Content.BestKnownSolution;
       }
     }
 
     protected override void SetEnabledStateOfControls() {
       base.SetEnabledStateOfControls();
-      orienteeringSolutionView.Enabled = Content != null;
-    }
-
-    private void CoordinatesParameter_ValueChanged(object sender, EventArgs e) {
-      orienteeringSolutionView.Content.Coordinates = Content.Coordinates;
-    }
-
-    private void StartingPointParameter_ValueChanged(object sender, EventArgs e) {
-      orienteeringSolutionView.Content.StartingPoint.Value = Content.StartingPoint;
-    }
-
-    private void TerminalPointParameter_ValueChanged(object sender, EventArgs e) {
-      orienteeringSolutionView.Content.TerminalPoint.Value = Content.TerminalPoint;
-    }
-
-    private void ScoresParameter_ValueChanged(object sender, EventArgs e) {
-      orienteeringSolutionView.Content.Scores = Content.Scores;
-    }
-
-    private void BestKnownQualityParameter_ValueChanged(object sender, EventArgs e) {
-      orienteeringSolutionView.Content.Quality = Content.BestKnownQuality;
+      orienteeringSolutionView.Enabled = Content != null && !ReadOnly && !Locked;
     }
 
     private void BestKnownSolutionParameter_ValueChanged(object sender, EventArgs e) {
-      orienteeringSolutionView.Content.IntegerVector = Content.BestKnownSolution;
-      if (Content.BestKnownSolution != null)
-        EvaluateBestSolution();
-      else {
-        var solution = orienteeringSolutionView.Content;
-        solution.Penalty = null;
-        solution.Distance = null;
-      }
-    }
-
-    private void EvaluateBestSolution() {
-      var evaluation = Content.Evaluator.Evaluate(Content.BestKnownSolution, Content.Scores, Content.DistanceMatrix,
-        Content.MaximumDistance, Content.PointVisitingCosts);
-      orienteeringSolutionView.Content.Quality = evaluation.Quality;
-      orienteeringSolutionView.Content.Penalty = evaluation.Penalty;
-      orienteeringSolutionView.Content.Distance = evaluation.Distance;
+      orienteeringSolutionView.Content = Content.BestKnownSolution;
     }
   }
 }

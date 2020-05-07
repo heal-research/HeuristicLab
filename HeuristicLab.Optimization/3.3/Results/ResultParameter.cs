@@ -63,7 +63,8 @@ namespace HeuristicLab.Optimization {
     public ResultCollection ResultCollection { get; set; }
 
     string IResultDefinition.Name { get => ActualName; set => ActualName = value; }
-    T IResultDefinition<T>.Get(ResultCollection results) => results[ActualName].Value as T;
+    T IResultDefinition<T>.Get(ResultCollection results) => ((IResultDefinition)this).Get(results) as T;
+    IItem IResultDefinition.Get(ResultCollection results) => results[ActualName].Value;
 
     [StorableConstructor]
     private ResultParameter(StorableConstructorFlag _) : base(_) { }
