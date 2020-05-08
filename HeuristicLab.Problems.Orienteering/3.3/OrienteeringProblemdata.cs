@@ -8,7 +8,7 @@ using HeuristicLab.Problems.Instances.Types;
 using HeuristicLab.Problems.TravelingSalesman;
 
 namespace HeuristicLab.Problems.Orienteering {
-  [StorableType("dd2d0ecc-372e-46f1-846f-fb4ca2afa124")]
+  [StorableType("c33063a6-a2ee-4054-9dd8-46a738003139")]
   public interface IOrienteeringProblemData : INamedItem {
     ITSPData RoutingData { get; }
     int StartingPoint { get; }
