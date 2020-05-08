@@ -65,7 +65,6 @@ namespace HeuristicLab.Problems.Orienteering.Views {
       if (Content == null) {
         qualityValueView.Content = null;
         scoreValueView.Content = null;
-        splitContainer.Panel1Collapsed = true;
         Visualizer.Data = null;
         Visualizer.IsFeasible = false;
       } else {

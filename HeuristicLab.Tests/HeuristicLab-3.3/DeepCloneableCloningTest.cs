@@ -47,7 +47,6 @@ namespace HeuristicLab.Tests {
         typeof (HeuristicLab.Problems.DataAnalysis.Dataset),
         typeof (HeuristicLab.Problems.DataAnalysis.ClassificationEnsembleSolution),
         typeof (HeuristicLab.Problems.DataAnalysis.RegressionEnsembleSolution),
-        typeof (HeuristicLab.Problems.Orienteering.DistanceMatrix),
         typeof (HeuristicLab.Problems.TravelingSalesman.EuclideanTSPData),
       };
       excludedTypes.Add(typeof(SymbolicExpressionGrammar).Assembly.GetType("HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.EmptySymbolicExpressionTreeGrammar"));

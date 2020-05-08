@@ -59,13 +59,13 @@ namespace HeuristicLab.Problems.TravelingSalesman.Views {
     protected override void OnContentChanged() {
       base.OnContentChanged();
       if (Content == null) {
-        qualityViewHost.Content = null;
+        distanceView.Content = null;
         pictureBox.Image = null;
         tourViewHost.Content = null;
         Visualizer.Coordinates = null;
         Visualizer.Tour = null;
       } else {
-        qualityViewHost.Content = Content.TourLength;
+        distanceView.Content = Content.TourLength;
         if (Content.TSPData is CoordinatesTSPData coordTsp)
           Visualizer.Coordinates = coordTsp.Coordinates;
         else if (Content.TSPData is MatrixTSPData matrixTsp)
@@ -78,9 +78,8 @@ namespace HeuristicLab.Problems.TravelingSalesman.Views {
 
     protected override void SetEnabledStateOfControls() {
       base.SetEnabledStateOfControls();
-      qualityGroupBox.Enabled = Content != null;
+      distanceView.Enabled = Content != null;
       pictureBox.Enabled = Content != null;
-      tourGroupBox.Enabled = Content != null;
     }
 
     protected virtual void GenerateImage() {
@@ -111,7 +110,7 @@ namespace HeuristicLab.Problems.TravelingSalesman.Views {
             tourViewHost.Content = Content.Tour;
             break;
           case nameof(Content.TourLength):
-            qualityViewHost.Content = Content.TourLength;
+            distanceView.Content = Content.TourLength;
             break;
         }
       }

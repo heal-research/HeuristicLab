@@ -109,28 +109,21 @@ namespace HeuristicLab.Problems.Orienteering {
       base.Analyze(vectors, qualities, results, random);
       var data = OrienteeringProblemData;
 
-      var best = GetBestSolution(vectors, qualities);
-      var score = CalculateScore(OrienteeringProblemData, best.Item1);
-      var travelCosts = CalculateTravelCosts(OrienteeringProblemData, best.Item1);
+      var best = GetBestSolution(vectors, qualities).Item1;
+      var score = CalculateScore(OrienteeringProblemData, best);
+      var travelCosts = CalculateTravelCosts(OrienteeringProblemData, best);
       var quality = CalculateQuality(OrienteeringProblemData, score, travelCosts);
 
-      if (BestKnownQuality == double.NaN || best.Item2 > BestKnownQuality) {
-        BestKnownQuality = best.Item2;
-        BestKnownSolutionParameter.ActualValue = data.GetSolution((IntegerVector)best.Item1.Clone(), quality, score, travelCosts);
+      if (double.IsNaN(BestKnownQuality) || IsBetter(quality, BestKnownQuality)) {
+        BestKnownQuality = quality;
+        BestKnownSolutionParameter.ActualValue = data.GetSolution((IntegerVector)best.Clone(), quality, score, travelCosts);
       }
 
       var bestSoFar = BestOrienteeringSolutionParameter.ActualValue;
       
-      if (bestSoFar == null) {
-        bestSoFar = data.GetSolution((IntegerVector)best.Item1.Clone(), quality, score, travelCosts);
+      if (bestSoFar == null || IsBetter(quality, bestSoFar.Quality.Value)) {
+        bestSoFar = data.GetSolution((IntegerVector)best.Clone(), quality, score, travelCosts);
         BestOrienteeringSolutionParameter.ActualValue = bestSoFar;
-      } else {
-        if (IsBetter(best.Item2, bestSoFar.Quality.Value)) {
-          bestSoFar.Route = (IntegerVector)best.Item1.Clone();
-          bestSoFar.Quality.Value = quality;
-          bestSoFar.Score.Value = score;
-          bestSoFar.TravelCosts.Value = travelCosts;
-        }
       }
     }
     public static double CalculateInsertionCosts(IOrienteeringProblemData data, IList<int> path, int insertPosition, int point) {

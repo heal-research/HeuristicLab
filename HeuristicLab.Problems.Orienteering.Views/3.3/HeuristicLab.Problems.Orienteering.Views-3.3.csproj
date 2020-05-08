@@ -107,6 +107,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="OrienteeringProblemDataView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="OrienteeringProblemDataView.Designer.cs">
+      <DependentUpon>OrienteeringProblemDataView.cs</DependentUpon>
+    </Compile>
     <Compile Include="OrienteeringProblemView.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -204,14 +210,6 @@
       <Name>HeuristicLab.Problems.TravelingSalesman.Views-3.3</Name>
       <Private>False</Private>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="OrienteeringProblemView.resx">
-      <DependentUpon>OrienteeringProblemView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="OrienteeringSolutionView.resx">
-      <DependentUpon>OrienteeringSolutionView.cs</DependentUpon>
-    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

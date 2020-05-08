@@ -44,91 +44,53 @@ namespace HeuristicLab.Problems.Orienteering.Views {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
-      this.ScoreLabel = new System.Windows.Forms.Label();
+      this.scoreLabel = new System.Windows.Forms.Label();
       this.qualityLabel = new System.Windows.Forms.Label();
       this.qualityValueView = new HeuristicLab.Data.Views.StringConvertibleValueView();
       this.scoreValueView = new HeuristicLab.Data.Views.StringConvertibleValueView();
-      ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).BeginInit();
       this.tabControl.SuspendLayout();
       this.visualizationTabPage.SuspendLayout();
-      this.valueTabPage.SuspendLayout();
-      this.tourGroupBox.SuspendLayout();
-      ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
-      this.splitContainer.Panel1.SuspendLayout();
-      this.splitContainer.Panel2.SuspendLayout();
-      this.splitContainer.SuspendLayout();
-      this.qualityGroupBox.SuspendLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).BeginInit();
+      this.routeTabPage.SuspendLayout();
       this.SuspendLayout();
-      // 
-      // pictureBox
-      // 
-      this.pictureBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)));
-      this.pictureBox.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.pictureBox.Location = new System.Drawing.Point(3, 3);
-      this.pictureBox.Size = new System.Drawing.Size(403, 228);
       // 
       // tabControl
       // 
-      this.tabControl.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-      this.tabControl.Location = new System.Drawing.Point(3, 72);
-      this.tabControl.Size = new System.Drawing.Size(417, 260);
+      this.tabControl.Location = new System.Drawing.Point(3, 88);
+      this.tabControl.Size = new System.Drawing.Size(417, 314);
       // 
       // visualizationTabPage
       // 
-      this.visualizationTabPage.Size = new System.Drawing.Size(409, 234);
+      this.visualizationTabPage.Size = new System.Drawing.Size(409, 288);
       // 
-      // valueTabPage
+      // pictureBox
       // 
-      this.valueTabPage.Size = new System.Drawing.Size(409, 234);
+      this.pictureBox.Size = new System.Drawing.Size(403, 282);
       // 
-      // tourGroupBox
+      // routeTabPage
       // 
-      this.tourGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)));
-      this.tourGroupBox.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.tourGroupBox.Location = new System.Drawing.Point(3, 3);
-      this.tourGroupBox.Size = new System.Drawing.Size(403, 228);
+      this.routeTabPage.Size = new System.Drawing.Size(409, 234);
       // 
       // tourViewHost
       // 
-      this.tourViewHost.Size = new System.Drawing.Size(391, 203);
+      this.tourViewHost.Size = new System.Drawing.Size(403, 228);
       // 
-      // splitContainer
+      // distanceView
       // 
+      this.distanceView.Location = new System.Drawing.Point(62, 61);
       // 
-      // splitContainer.Panel1
+      // distanceLabel
       // 
-      this.splitContainer.Panel1.Controls.Add(this.ScoreLabel);
-      this.splitContainer.Panel1.Controls.Add(this.qualityLabel);
-      this.splitContainer.Panel1.Controls.Add(this.qualityValueView);
-      this.splitContainer.Panel1.Controls.Add(this.scoreValueView);
-      this.splitContainer.Panel1.Margin = new System.Windows.Forms.Padding(0, 0, 5, 0);
-      this.splitContainer.Panel1MinSize = 0;
+      this.distanceLabel.Location = new System.Drawing.Point(4, 64);
       // 
-      // splitContainer.Panel2
+      // scoreLabel
       // 
-      this.splitContainer.Panel2.Controls.Add(this.qualityGroupBox);
-      this.splitContainer.SplitterDistance = 63;
-      // 
-      // qualityGroupBox
-      // 
-      this.qualityGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-      this.qualityGroupBox.Location = new System.Drawing.Point(3, 3);
-      this.qualityGroupBox.Size = new System.Drawing.Size(417, 63);
-      // 
-      // qualityViewHost
-      // 
-      this.qualityViewHost.Size = new System.Drawing.Size(405, 38);
-      // 
-      // ScoreLabel
-      // 
-      this.ScoreLabel.AutoSize = true;
-      this.ScoreLabel.Location = new System.Drawing.Point(7, 38);
-      this.ScoreLabel.Name = "ScoreLabel";
-      this.ScoreLabel.Size = new System.Drawing.Size(38, 13);
-      this.ScoreLabel.TabIndex = 1;
-      this.ScoreLabel.Text = "Score:";
+      this.scoreLabel.AutoSize = true;
+      this.scoreLabel.Location = new System.Drawing.Point(7, 38);
+      this.scoreLabel.Name = "scoreLabel";
+      this.scoreLabel.Size = new System.Drawing.Size(38, 13);
+      this.scoreLabel.TabIndex = 1;
+      this.scoreLabel.Text = "Score:";
       // 
       // qualityLabel
       // 
@@ -146,10 +108,10 @@ namespace HeuristicLab.Problems.Orienteering.Views {
       this.qualityValueView.Caption = "StringConvertibleValue View";
       this.qualityValueView.Content = null;
       this.qualityValueView.LabelVisible = false;
-      this.qualityValueView.Location = new System.Drawing.Point(65, 7);
+      this.qualityValueView.Location = new System.Drawing.Point(62, 7);
       this.qualityValueView.Name = "qualityValueView";
       this.qualityValueView.ReadOnly = false;
-      this.qualityValueView.Size = new System.Drawing.Size(354, 21);
+      this.qualityValueView.Size = new System.Drawing.Size(357, 21);
       this.qualityValueView.TabIndex = 0;
       // 
       // scoreValueView
@@ -159,33 +121,38 @@ namespace HeuristicLab.Problems.Orienteering.Views {
       this.scoreValueView.Caption = "StringConvertibleValue View";
       this.scoreValueView.Content = null;
       this.scoreValueView.LabelVisible = false;
-      this.scoreValueView.Location = new System.Drawing.Point(65, 34);
+      this.scoreValueView.Location = new System.Drawing.Point(62, 34);
       this.scoreValueView.Name = "scoreValueView";
       this.scoreValueView.ReadOnly = false;
-      this.scoreValueView.Size = new System.Drawing.Size(354, 21);
+      this.scoreValueView.Size = new System.Drawing.Size(357, 21);
       this.scoreValueView.TabIndex = 0;
       // 
       // OrienteeringSolutionView
       // 
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
+      this.Controls.Add(this.scoreLabel);
+      this.Controls.Add(this.qualityLabel);
+      this.Controls.Add(this.qualityValueView);
+      this.Controls.Add(this.scoreValueView);
       this.Name = "OrienteeringSolutionView";
-      ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).EndInit();
+      this.Controls.SetChildIndex(this.scoreValueView, 0);
+      this.Controls.SetChildIndex(this.qualityValueView, 0);
+      this.Controls.SetChildIndex(this.qualityLabel, 0);
+      this.Controls.SetChildIndex(this.scoreLabel, 0);
+      this.Controls.SetChildIndex(this.tabControl, 0);
+      this.Controls.SetChildIndex(this.distanceView, 0);
+      this.Controls.SetChildIndex(this.distanceLabel, 0);
       this.tabControl.ResumeLayout(false);
       this.visualizationTabPage.ResumeLayout(false);
-      this.valueTabPage.ResumeLayout(false);
-      this.tourGroupBox.ResumeLayout(false);
-      this.splitContainer.Panel1.ResumeLayout(false);
-      this.splitContainer.Panel1.PerformLayout();
-      this.splitContainer.Panel2.ResumeLayout(false);
-      ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).EndInit();
-      this.splitContainer.ResumeLayout(false);
-      this.qualityGroupBox.ResumeLayout(false);
+      ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).EndInit();
+      this.routeTabPage.ResumeLayout(false);
       this.ResumeLayout(false);
+      this.PerformLayout();
 
     }
 
     #endregion
-    private System.Windows.Forms.Label ScoreLabel;
+    private System.Windows.Forms.Label scoreLabel;
     private System.Windows.Forms.Label qualityLabel;
     private Data.Views.StringConvertibleValueView qualityValueView;
     private Data.Views.StringConvertibleValueView scoreValueView;

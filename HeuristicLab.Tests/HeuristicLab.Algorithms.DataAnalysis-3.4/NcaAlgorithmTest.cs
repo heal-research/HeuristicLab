@@ -29,6 +29,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace HeuristicLab.Algorithms.DataAnalysis.Tests {
   [TestClass]
   public class NcaAlgorithmTest {
+    /* TODO: Refactor test
     [TestMethod]
     [TestCategory("Algorithms.DataAnalysis")]
     [TestProperty("Time", "medium")]
@@ -49,5 +50,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Tests {
       Assert.IsNotNull(quality);
       Assert.IsTrue(quality.Value < -98);
     }
+    */
   }
 }

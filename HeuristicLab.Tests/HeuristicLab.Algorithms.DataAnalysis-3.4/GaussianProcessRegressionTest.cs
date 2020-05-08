@@ -38,7 +38,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Tests {
     }
 
     private Exception ex;
-
+    /* TODO: Refactor test
     [TestMethod]
     [TestCategory("Algorithms.DataAnalysis")]
     [TestProperty("Time", "long")]
@@ -70,7 +70,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Tests {
 
       TestContext.WriteLine("Runtime: {0}", alg.ExecutionTime.ToString());
     }
-
+    */
     private void cv_ExceptionOccurred(object sender, EventArgs<Exception> e) {
       ex = e.Value;
     }

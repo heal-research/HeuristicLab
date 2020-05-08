@@ -100,6 +100,7 @@ namespace HeuristicLab.Problems.Orienteering {
     private OrienteeringSolution(OrienteeringSolution original, Cloner cloner)
       : base(original, cloner) {
       this.route = cloner.Clone(original.route);
+      this.routeAsPermutation = cloner.Clone(original.routeAsPermutation);
       this.opData = cloner.Clone(original.opData);
       this.quality = cloner.Clone(original.quality);
       this.score = cloner.Clone(original.score);
@@ -109,6 +110,7 @@ namespace HeuristicLab.Problems.Orienteering {
     public OrienteeringSolution(IntegerVector route, IOrienteeringProblemData opData, DoubleValue quality = null, DoubleValue score = null, DoubleValue distance = null)
       : base() {
       this.route = route;
+      this.routeAsPermutation = new Permutation(PermutationTypes.RelativeDirected, route);
       this.opData = opData;
       this.quality = quality;
       this.score = score;
