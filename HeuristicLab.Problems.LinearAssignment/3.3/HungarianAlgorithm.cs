@@ -20,14 +20,12 @@
 #endregion
 
 using System;
-using System.Linq;
-using HeuristicLab.Analysis;
+using System.Threading;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Operators;
+using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Optimization;
-using HeuristicLab.Parameters;
-using HEAL.Attic;
 
 namespace HeuristicLab.Problems.LinearAssignment {
   /// <summary>
@@ -36,8 +34,8 @@ namespace HeuristicLab.Problems.LinearAssignment {
   [Item("Hungarian Algorithm", "The Hungarian algorithm can be used to solve the linear assignment problem in O(n^3). It is also known as the Kuhn–Munkres algorithm or Munkres assignment algorithm.")]
   [Creatable(CreatableAttribute.Categories.SingleSolutionAlgorithms, Priority = 170)]
   [StorableType("2A2C1C1B-E0C3-4757-873B-C3F7C6D11A01")]
-  public sealed class HungarianAlgorithm : EngineAlgorithm, IStorableContent {
-    public string Filename { get; set; }
+  public sealed class HungarianAlgorithm : BasicAlgorithm {
+    public override bool SupportsPause => false;
 
     #region Problem Properties
     public override Type ProblemType {
@@ -49,43 +47,11 @@ namespace HeuristicLab.Problems.LinearAssignment {
     }
     #endregion
 
-    #region Parameter Properties
-    private ValueParameter<MultiAnalyzer> AnalyzerParameter {
-      get { return (ValueParameter<MultiAnalyzer>)Parameters["Analyzer"]; }
-    }
-    #endregion
-
-    #region Properties
-    public MultiAnalyzer Analyzer {
-      get { return AnalyzerParameter.Value; }
-      set { AnalyzerParameter.Value = value; }
-    }
-    private LinearAssignmentProblemSolver Solver {
-      get { return (LinearAssignmentProblemSolver)OperatorGraph.InitialOperator; }
-    }
-    #endregion
-
     [StorableConstructor]
     private HungarianAlgorithm(StorableConstructorFlag _) : base(_) { }
-    private HungarianAlgorithm(HungarianAlgorithm original, Cloner cloner)
-      : base(original, cloner) {
-      RegisterEventHandlers();
-    }
+    private HungarianAlgorithm(HungarianAlgorithm original, Cloner cloner) : base(original, cloner) { }
     public HungarianAlgorithm()
       : base() {
-      Parameters.Add(new ValueParameter<MultiAnalyzer>("Analyzer", "The operator used to analyze the result.", new MultiAnalyzer()));
-
-      var solver = new LinearAssignmentProblemSolver();
-      OperatorGraph.InitialOperator = solver;
-
-      var placeholder = new Placeholder();
-      placeholder.Name = "(Analyzer)";
-      placeholder.OperatorParameter.ActualName = AnalyzerParameter.Name;
-      solver.Successor = placeholder;
-
-      UpdateAnalyzers();
-      RegisterEventHandlers();
-
       Problem = new LinearAssignmentProblem();
     }
 
@@ -93,62 +59,11 @@ namespace HeuristicLab.Problems.LinearAssignment {
       return new HungarianAlgorithm(this, cloner);
     }
 
-    public override void Prepare() {
-      if (Problem != null) base.Prepare();
-    }
+    protected override void Run(CancellationToken cancellationToken) {
+      var assignment = LinearAssignmentProblemSolver.Solve(Problem.Costs, out double quality);
 
-    #region Events
-    protected override void OnProblemChanged() {
-      Problem.SolutionCreatorChanged += new EventHandler(Problem_SolutionCreatorChanged);
-      Problem.EvaluatorChanged += new EventHandler(Problem_EvaluatorChanged);
-      UpdateAnalyzers();
-      Parameterize();
-      base.OnProblemChanged();
+      Problem.Analyze(new[] { new Permutation(PermutationTypes.Absolute, assignment) },
+        new[] { quality }, Results, null);
     }
-
-    private void Problem_SolutionCreatorChanged(object sender, EventArgs e) {
-      Parameterize();
-    }
-
-    private void Problem_EvaluatorChanged(object sender, EventArgs e) {
-      Parameterize();
-    }
-
-    protected override void Problem_OperatorsChanged(object sender, EventArgs e) {
-      UpdateAnalyzers();
-      base.Problem_OperatorsChanged(sender, e);
-    }
-    #endregion
-
-    #region Helpers
-    [StorableHook(HookType.AfterDeserialization)]
-    private void AfterDeserialization() {
-      RegisterEventHandlers();
-    }
-
-    private void RegisterEventHandlers() {
-      if (Problem != null) {
-        Problem.SolutionCreatorChanged += new EventHandler(Problem_SolutionCreatorChanged);
-        Problem.EvaluatorChanged += new EventHandler(Problem_EvaluatorChanged);
-      }
-    }
-    private void UpdateAnalyzers() {
-      Analyzer.Operators.Clear();
-      if (Problem != null) {
-        foreach (var analyzer in Problem.OperatorsParameter.Value.OfType<IAnalyzer>()) {
-          foreach (IScopeTreeLookupParameter param in analyzer.Parameters.OfType<IScopeTreeLookupParameter>())
-            param.Depth = 0;
-          Analyzer.Operators.Add(analyzer);
-        }
-      }
-    }
-    private void Parameterize() {
-      if (Problem != null) {
-        Solver.AssignmentParameter.ActualName = Problem.SolutionCreator.PermutationParameter.ActualName;
-        Solver.CostsParameter.ActualName = Problem.CostsParameter.Name;
-        Solver.QualityParameter.ActualName = Problem.Evaluator.QualityParameter.ActualName;
-      }
-    }
-    #endregion
   }
 }

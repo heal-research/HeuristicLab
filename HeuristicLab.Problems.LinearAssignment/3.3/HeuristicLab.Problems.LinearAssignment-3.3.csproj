@@ -121,9 +121,6 @@
     <Compile Include="HungarianAlgorithm.cs" />
     <Compile Include="LAPAssignment.cs" />
     <None Include="Plugin.cs.frame" />
-    <Compile Include="Analyzers\BestLAPSolutionAnalyzer.cs" />
-    <Compile Include="Interfaces\ILAPEvaluator.cs" />
-    <Compile Include="LAPEvaluator.cs" />
     <Compile Include="LinearAssignmentProblem.cs" />
     <Compile Include="LinearAssignmentProblemSolver.cs" />
     <Compile Include="Plugin.cs" />
