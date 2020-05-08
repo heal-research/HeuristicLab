@@ -49,7 +49,7 @@ namespace HeuristicLab.Tests {
     }
 
     private Exception ex;
-
+    /* TODO: Refactor test
     [TestMethod]
     [TestCategory("Algorithms.DataAnalysis")]
     [TestProperty("Time", "medium")]
@@ -76,7 +76,7 @@ namespace HeuristicLab.Tests {
       TestContext.WriteLine("Runtime: {0}", cv.ExecutionTime.ToString());
 
     }
-
+    */
     // poly-10: y = x1 x2 + x3 x4 + x5 x6 + x1 x7 x9 + x3 x6 x10
     private double[,] GenerateData(int n, IRandom random) {
       double[,] data = new double[n, 11];
