@@ -95,7 +95,7 @@ namespace HeuristicLab.Problems.Orienteering {
     public override IOperation Apply() {
       var initialTour = IntegerVectorParameter.ActualValue;
       var data = OrienteeringProblemDataParameter.ActualValue;
-      int numPoints = data.RoutingData.Cities;
+      int numPoints = data.Cities;
 
       if (NeighborhoodCountParameter.ActualValue == null)
         NeighborhoodCountParameter.ActualValue = new IntValue(initialTour.Length);
@@ -116,7 +116,7 @@ namespace HeuristicLab.Problems.Orienteering {
         var visitablePoints = (
           from point in Enumerable.Range(0, numPoints)
           // Calculate the distance when going from the starting point to this point and then to the end point
-          let distance = data.RoutingData.GetDistance(data.StartingPoint, point) + data.RoutingData.GetDistance(point, data.TerminalPoint) + data.PointVisitingCosts
+          let distance = data.GetDistance(data.StartingPoint, point) + data.GetDistance(point, data.TerminalPoint) + data.PointVisitingCosts
           // If this distance is feasible and the point is neither starting nor ending point, check the point
           where distance < data.MaximumTravelCosts && point != data.StartingPoint && point != data.TerminalPoint
           // The point was not yet visited, so add it to the candidate list

@@ -19,13 +19,8 @@
  */
 #endregion
 
-using System;
-using System.Drawing;
 using HeuristicLab.Core.Views;
-using HeuristicLab.Data;
-using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.MainForm;
-using HeuristicLab.Problems.TravelingSalesman.Views;
 
 namespace HeuristicLab.Problems.PTSP.Views {
   /// <summary>
@@ -34,7 +29,8 @@ namespace HeuristicLab.Problems.PTSP.Views {
   [View("pTSP Solution View")]
   [Content(typeof(IProbabilisticTSPSolution), true)]
   public sealed partial class ProbabilisticTSPSolutionView : ItemView {
-    public TSPVisualizer Visualizer { get; set; }
+
+    public ProbabilisticTSPVisualizer Visualizer { get; set; }
 
     public new IProbabilisticTSPSolution Content {
       get { return (IProbabilisticTSPSolution)base.Content; }
@@ -47,6 +43,15 @@ namespace HeuristicLab.Problems.PTSP.Views {
     public ProbabilisticTSPSolutionView() {
       InitializeComponent();
       Visualizer = new ProbabilisticTSPVisualizer();
+      tspSolutionView.Visualizer = Visualizer;
+    }
+
+    protected override void OnContentChanged() {
+      base.OnContentChanged();
+      if (Content == null)
+        Visualizer.Probabilities = null;
+      else Visualizer.Probabilities = Content.Probabilities;
+      tspSolutionView.Content = Content;
     }
   }
 }

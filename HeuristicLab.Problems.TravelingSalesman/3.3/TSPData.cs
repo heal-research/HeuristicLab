@@ -37,6 +37,8 @@ namespace HeuristicLab.Problems.TravelingSalesman {
     double GetPathDistance(IEnumerable<int> path, bool closed = true);
     ITSPSolution GetSolution(Permutation tspTour, double tourLength);
     TSPData Export();
+
+    DoubleMatrix GetCoordinatesOrDefault();
   }
 
   [Item("Matrix-based TSP Data", "TSP that is representd by a distance matrix.")]
@@ -110,6 +112,10 @@ namespace HeuristicLab.Problems.TravelingSalesman {
         Distances = Matrix.CloneAsMatrix()
       };
     }
+
+    public DoubleMatrix GetCoordinatesOrDefault() {
+      return DisplayCoordinates;
+    }
   }
 
   [Item("Coordinates-based TSP Data", "TSP that is represented by coordinates of locations.")]
@@ -177,6 +183,10 @@ namespace HeuristicLab.Problems.TravelingSalesman {
     }
 
     public abstract TSPData Export();
+
+    public DoubleMatrix GetCoordinatesOrDefault() {
+      return Coordinates;
+    }
   }
 
   [Item("Euclidean TSP Data", "TSP that is represented by coordinates in an Euclidean plane.")]

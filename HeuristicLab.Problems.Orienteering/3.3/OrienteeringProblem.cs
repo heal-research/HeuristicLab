@@ -95,12 +95,12 @@ namespace HeuristicLab.Problems.Orienteering {
       return solution.Sum(t => data.GetScore(t));
     }
     public static double CalculateTravelCosts(IOrienteeringProblemData data, IntegerVector solution) {
-      var distance = data.RoutingData.GetPathDistance(solution, closed: false);
+      var distance = data.GetPathDistance(solution, closed: false);
       distance += (solution.Length - 2) * data.PointVisitingCosts;
       return distance;
     }
     public static double CalculateTravelCosts(IOrienteeringProblemData data, IList<int> solution) {
-      var distance = data.RoutingData.GetPathDistance(solution, closed: false);
+      var distance = data.GetPathDistance(solution, closed: false);
       distance += (solution.Count - 2) * data.PointVisitingCosts;
       return distance;
     }
@@ -126,20 +126,20 @@ namespace HeuristicLab.Problems.Orienteering {
       }
     }
     public static double CalculateInsertionCosts(IOrienteeringProblemData data, IList<int> path, int insertPosition, int point) {
-      double detour = data.RoutingData.GetDistance(path[insertPosition - 1], point) + data.RoutingData.GetDistance(point, path[insertPosition]);
+      double detour = data.GetDistance(path[insertPosition - 1], point) + data.GetDistance(point, path[insertPosition]);
       detour += data.PointVisitingCosts;
-      detour -= data.RoutingData.GetDistance(path[insertPosition - 1], path[insertPosition]);
+      detour -= data.GetDistance(path[insertPosition - 1], path[insertPosition]);
       return detour;
     }
     public static double CalculateReplacementCosts(IOrienteeringProblemData data, IList<int> path, int replacePosition, int point) {
-      double detour = data.RoutingData.GetDistance(path[replacePosition - 1], point) + data.RoutingData.GetDistance(point, path[replacePosition + 1]);
-      detour -= data.RoutingData.GetDistance(path[replacePosition - 1], path[replacePosition]) + data.RoutingData.GetDistance(path[replacePosition], path[replacePosition + 1]);
+      double detour = data.GetDistance(path[replacePosition - 1], point) + data.GetDistance(point, path[replacePosition + 1]);
+      detour -= data.GetDistance(path[replacePosition - 1], path[replacePosition]) + data.GetDistance(path[replacePosition], path[replacePosition + 1]);
       return detour;
     }
     public static double CalculateRemovementSaving(IOrienteeringProblemData data, IList<int> path, int removePosition) {
-      double saving = data.RoutingData.GetDistance(path[removePosition - 1], path[removePosition]);
-      saving += data.RoutingData.GetDistance(path[removePosition], path[removePosition + 1]);
-      saving -= data.RoutingData.GetDistance(path[removePosition - 1], path[removePosition + 1]);
+      double saving = data.GetDistance(path[removePosition - 1], path[removePosition]);
+      saving += data.GetDistance(path[removePosition], path[removePosition + 1]);
+      saving -= data.GetDistance(path[removePosition - 1], path[removePosition + 1]);
       saving += data.PointVisitingCosts;
       return saving;
     }

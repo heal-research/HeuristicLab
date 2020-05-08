@@ -44,9 +44,9 @@ namespace HeuristicLab.Problems.Orienteering.Views {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
+      HeuristicLab.Problems.TravelingSalesman.Views.TSPVisualizer tspVisualizer1 = new HeuristicLab.Problems.TravelingSalesman.Views.TSPVisualizer();
       this.tabControl = new System.Windows.Forms.TabControl();
       this.routingDataTabPage = new System.Windows.Forms.TabPage();
-      this.routingDataViewHost = new HeuristicLab.MainForm.WindowsForms.ViewHost();
       this.OrienteeringDataTabPage = new System.Windows.Forms.TabPage();
       this.splitContainer1 = new System.Windows.Forms.SplitContainer();
       this.scoresArrayView = new HeuristicLab.Data.Views.StringConvertibleArrayView();
@@ -59,6 +59,7 @@ namespace HeuristicLab.Problems.Orienteering.Views {
       this.terminalPointLabel = new System.Windows.Forms.Label();
       this.startingPointTextBox = new System.Windows.Forms.TextBox();
       this.startingPointLabel = new System.Windows.Forms.Label();
+      this.tspDataView = new HeuristicLab.Problems.TravelingSalesman.Views.ITSPDataView();
       this.tabControl.SuspendLayout();
       this.routingDataTabPage.SuspendLayout();
       this.OrienteeringDataTabPage.SuspendLayout();
@@ -81,7 +82,7 @@ namespace HeuristicLab.Problems.Orienteering.Views {
       // 
       // routingDataTabPage
       // 
-      this.routingDataTabPage.Controls.Add(this.routingDataViewHost);
+      this.routingDataTabPage.Controls.Add(this.tspDataView);
       this.routingDataTabPage.Location = new System.Drawing.Point(4, 22);
       this.routingDataTabPage.Name = "routingDataTabPage";
       this.routingDataTabPage.Padding = new System.Windows.Forms.Padding(3);
@@ -89,20 +90,6 @@ namespace HeuristicLab.Problems.Orienteering.Views {
       this.routingDataTabPage.TabIndex = 0;
       this.routingDataTabPage.Text = "Routing Data";
       this.routingDataTabPage.UseVisualStyleBackColor = true;
-      // 
-      // routingDataViewHost
-      // 
-      this.routingDataViewHost.Caption = "View";
-      this.routingDataViewHost.Content = null;
-      this.routingDataViewHost.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.routingDataViewHost.Enabled = false;
-      this.routingDataViewHost.Location = new System.Drawing.Point(3, 3);
-      this.routingDataViewHost.Name = "routingDataViewHost";
-      this.routingDataViewHost.ReadOnly = false;
-      this.routingDataViewHost.Size = new System.Drawing.Size(527, 395);
-      this.routingDataViewHost.TabIndex = 0;
-      this.routingDataViewHost.ViewsLabelVisible = true;
-      this.routingDataViewHost.ViewType = null;
       // 
       // OrienteeringDataTabPage
       // 
@@ -238,6 +225,20 @@ namespace HeuristicLab.Problems.Orienteering.Views {
       this.startingPointLabel.TabIndex = 0;
       this.startingPointLabel.Text = "Starting Point:";
       // 
+      // tspDataView
+      // 
+      this.tspDataView.Caption = "TSP Data View";
+      this.tspDataView.Content = null;
+      this.tspDataView.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.tspDataView.Location = new System.Drawing.Point(3, 3);
+      this.tspDataView.Name = "tspDataView";
+      this.tspDataView.ReadOnly = false;
+      this.tspDataView.Size = new System.Drawing.Size(527, 395);
+      this.tspDataView.TabIndex = 0;
+      tspVisualizer1.Coordinates = null;
+      tspVisualizer1.Tour = null;
+      this.tspDataView.Visualizer = tspVisualizer1;
+      // 
       // OrienteeringProblemDataView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -262,7 +263,6 @@ namespace HeuristicLab.Problems.Orienteering.Views {
 
     private System.Windows.Forms.TabControl tabControl;
     private System.Windows.Forms.TabPage routingDataTabPage;
-    private MainForm.WindowsForms.ViewHost routingDataViewHost;
     private System.Windows.Forms.TabPage OrienteeringDataTabPage;
     private System.Windows.Forms.SplitContainer splitContainer1;
     private Data.Views.StringConvertibleArrayView scoresArrayView;
@@ -275,5 +275,6 @@ namespace HeuristicLab.Problems.Orienteering.Views {
     private System.Windows.Forms.Label maximumTravelCostsLabel;
     private System.Windows.Forms.TextBox terminalPointTextBox;
     private System.Windows.Forms.Label terminalPointLabel;
+    private TravelingSalesman.Views.ITSPDataView tspDataView;
   }
 }

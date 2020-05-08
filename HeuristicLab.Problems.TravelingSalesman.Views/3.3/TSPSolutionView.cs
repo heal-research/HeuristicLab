@@ -66,10 +66,7 @@ namespace HeuristicLab.Problems.TravelingSalesman.Views {
         Visualizer.Tour = null;
       } else {
         distanceView.Content = Content.TourLength;
-        if (Content.TSPData is CoordinatesTSPData coordTsp)
-          Visualizer.Coordinates = coordTsp.Coordinates;
-        else if (Content.TSPData is MatrixTSPData matrixTsp)
-          Visualizer.Coordinates = matrixTsp.DisplayCoordinates;
+        Visualizer.Coordinates = Content.Data.GetCoordinatesOrDefault();
         Visualizer.Tour = Content.Tour;
         GenerateImage();
         tourViewHost.Content = Content.Tour;
@@ -97,10 +94,10 @@ namespace HeuristicLab.Problems.TravelingSalesman.Views {
         Invoke((Action<object, PropertyChangedEventArgs>)ContentOnPropertyChanged, sender, e);
       else {
         switch (e.PropertyName) {
-          case nameof(Content.TSPData):
-            if (Content.TSPData is CoordinatesTSPData coordTsp)
+          case nameof(Content.Data):
+            if (Content.Data is CoordinatesTSPData coordTsp)
               Visualizer.Coordinates = coordTsp.Coordinates;
-            else if (Content.TSPData is MatrixTSPData matrixTsp)
+            else if (Content.Data is MatrixTSPData matrixTsp)
               Visualizer.Coordinates = matrixTsp.DisplayCoordinates;
             GenerateImage();
             break;

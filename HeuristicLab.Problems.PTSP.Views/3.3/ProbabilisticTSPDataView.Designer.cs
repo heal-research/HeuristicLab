@@ -27,7 +27,7 @@
       this.coordinatesTabPage = new System.Windows.Forms.TabPage();
       this.probabilitiesTabPage = new System.Windows.Forms.TabPage();
       this.probabilitiesView = new HeuristicLab.Data.Views.StringConvertibleArrayView();
-      this.tspViewHost = new HeuristicLab.MainForm.WindowsForms.ViewHost();
+      this.tspDataView = new HeuristicLab.Problems.TravelingSalesman.Views.ITSPDataView();
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
       this.tabControl.SuspendLayout();
       this.coordinatesTabPage.SuspendLayout();
@@ -54,7 +54,7 @@
       // 
       // coordinatesTabPage
       // 
-      this.coordinatesTabPage.Controls.Add(this.tspViewHost);
+      this.coordinatesTabPage.Controls.Add(this.tspDataView);
       this.coordinatesTabPage.Location = new System.Drawing.Point(4, 22);
       this.coordinatesTabPage.Name = "coordinatesTabPage";
       this.coordinatesTabPage.Padding = new System.Windows.Forms.Padding(3);
@@ -85,19 +85,16 @@
       this.probabilitiesView.Size = new System.Drawing.Size(337, 360);
       this.probabilitiesView.TabIndex = 0;
       // 
-      // tspViewHost
+      // tspDataView
       // 
-      this.tspViewHost.Caption = "View";
-      this.tspViewHost.Content = null;
-      this.tspViewHost.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.tspViewHost.Enabled = false;
-      this.tspViewHost.Location = new System.Drawing.Point(3, 3);
-      this.tspViewHost.Name = "tspViewHost";
-      this.tspViewHost.ReadOnly = false;
-      this.tspViewHost.Size = new System.Drawing.Size(337, 360);
-      this.tspViewHost.TabIndex = 0;
-      this.tspViewHost.ViewsLabelVisible = true;
-      this.tspViewHost.ViewType = null;
+      this.tspDataView.Caption = "TSP Data View";
+      this.tspDataView.Content = null;
+      this.tspDataView.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.tspDataView.Location = new System.Drawing.Point(3, 3);
+      this.tspDataView.Name = "tspDataView";
+      this.tspDataView.ReadOnly = false;
+      this.tspDataView.Size = new System.Drawing.Size(337, 360);
+      this.tspDataView.TabIndex = 0;
       // 
       // ProbabilisticTSPDataView
       // 
@@ -123,6 +120,6 @@
     private System.Windows.Forms.TabPage coordinatesTabPage;
     private System.Windows.Forms.TabPage probabilitiesTabPage;
     private Data.Views.StringConvertibleArrayView probabilitiesView;
-    private MainForm.WindowsForms.ViewHost tspViewHost;
+    private TravelingSalesman.Views.ITSPDataView tspDataView;
   }
 }

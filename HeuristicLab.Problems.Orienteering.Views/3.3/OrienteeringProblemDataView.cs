@@ -21,7 +21,6 @@
 
 using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
-using HeuristicLab.Problems.TravelingSalesman.Views;
 
 namespace HeuristicLab.Problems.Orienteering.Views {
   [View("Orienteering Problem Data View")]
@@ -40,24 +39,19 @@ namespace HeuristicLab.Problems.Orienteering.Views {
     protected override void OnContentChanged() {
       base.OnContentChanged();
       if (Content == null) {
-        routingDataViewHost.Content = null;
         startingPointTextBox.Text = string.Empty;
         terminalPointTextBox.Text = string.Empty;
         pointVisitingCostsTextBox.Text = string.Empty;
         maximumTravelCostsTextBox.Text = string.Empty;
         scoresArrayView.Content = null;
       } else {
-        routingDataViewHost.Content = Content.RoutingData;
         startingPointTextBox.Text = Content.StartingPoint.ToString();
         terminalPointTextBox.Text = Content.TerminalPoint.ToString();
         pointVisitingCostsTextBox.Text = Content.PointVisitingCosts.ToString();
         maximumTravelCostsTextBox.Text = Content.MaximumTravelCosts.ToString();
         scoresArrayView.Content = Content.Scores;
-        if (routingDataViewHost.ActiveView is ITSPVisualizerView tspVis)
-          tspVis.Visualizer = new OrienteeringVisualizer() {
-            Data = Content
-          };
       }
+      tspDataView.Content = Content?.RoutingData;
     }
   }
 }

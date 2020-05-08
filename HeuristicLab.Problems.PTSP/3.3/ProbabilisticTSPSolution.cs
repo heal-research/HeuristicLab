@@ -25,13 +25,13 @@ using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Problems.TravelingSalesman;
 
 namespace HeuristicLab.Problems.PTSP {
   [StorableType("596f52b5-b2c8-45a0-a7bd-e5b9c787c960")]
-  public interface IProbabilisticTSPSolution : IItem, INotifyPropertyChanged {
-    ITSPSolution TSPSolution { get; }
-    DoubleArray Probabilities { get; }
+  public interface IProbabilisticTSPSolution : ITSPSolution {
+    PercentArray Probabilities { get; }
   }
 
   /// <summary>
@@ -56,8 +56,8 @@ namespace HeuristicLab.Problems.PTSP {
     }
 
     [Storable]
-    private DoubleArray probabilities;
-    public DoubleArray Probabilities {
+    private PercentArray probabilities;
+    public PercentArray Probabilities {
       get { return probabilities; }
       set {
         if (probabilities == value) return;
@@ -65,6 +65,12 @@ namespace HeuristicLab.Problems.PTSP {
         OnPropertyChanged(nameof(Probabilities));
       }
     }
+
+    ITSPData ITSPSolution.Data => tspSolution.Data;
+
+    Permutation ITSPSolution.Tour => tspSolution.Tour;
+
+    DoubleValue ITSPSolution.TourLength => tspSolution.TourLength;
 
     [StorableConstructor]
     private ProbabilisticTSPSolution(StorableConstructorFlag _) : base(_) { }

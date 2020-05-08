@@ -35,7 +35,7 @@ namespace HeuristicLab.Problems.Orienteering.Views {
       var bitmap = new Bitmap(width, height);
 
       if ((coordinates != null) && (coordinates.Rows > 0) && (coordinates.Columns == 2)
-        && (coordinates.Rows == Data.RoutingData.Cities)) {
+        && (coordinates.Rows == Data.Cities)) {
         double xMin = double.MaxValue, yMin = double.MaxValue, xMax = double.MinValue, yMax = double.MinValue;
         for (int i = 0; i < coordinates.Rows; i++) {
           if (xMin > coordinates[i, 0]) xMin = coordinates[i, 0];

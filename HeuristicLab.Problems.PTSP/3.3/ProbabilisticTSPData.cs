@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using HEAL.Attic;
 using HeuristicLab.Common;
@@ -31,12 +32,10 @@ using HeuristicLab.Problems.TravelingSalesman;
 
 namespace HeuristicLab.Problems.PTSP {
   [StorableType("dd2d0ecc-372e-46f1-846f-fb4ca2afa124")]
-  public interface IProbabilisticTSPData : INamedItem {
-    ITSPData TSPData { get; }
-
+  public interface IProbabilisticTSPData : ITSPData {
     double GetProbability(int city);
-    IProbabilisticTSPSolution GetSolution(Permutation tspTour, double tourLength);
-    PTSPData Export();
+    new IProbabilisticTSPSolution GetSolution(Permutation tspTour, double tourLength);
+    new PTSPData Export();
   }
 
   [Item("Probabilistic TSP Data", "An extension to the TSP where customers have to be served with a certain probability only.")]
@@ -88,5 +87,14 @@ namespace HeuristicLab.Problems.PTSP {
         Probabilities = Probabilities.CloneAsArray()
       };
     }
+
+    #region ITSPData members
+    int ITSPData.Cities => TSPData.Cities;
+    double ITSPData.GetDistance(int fromCity, int toCity) => TSPData.GetDistance(fromCity, toCity);
+    double ITSPData.GetPathDistance(IEnumerable<int> path, bool closed) => TSPData.GetPathDistance(path, closed);
+    ITSPSolution ITSPData.GetSolution(Permutation tspTour, double tourLength) => TSPData.GetSolution(tspTour, tourLength);
+    TSPData ITSPData.Export() => TSPData.Export();
+    DoubleMatrix ITSPData.GetCoordinatesOrDefault() => TSPData.GetCoordinatesOrDefault();
+    #endregion
   }
 }

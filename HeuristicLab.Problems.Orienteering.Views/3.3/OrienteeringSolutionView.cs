@@ -20,24 +20,23 @@
 #endregion
 
 using System.ComponentModel;
+using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
-using HeuristicLab.Problems.TravelingSalesman.Views;
 
 namespace HeuristicLab.Problems.Orienteering.Views {
   [View("OrienteeringSolution View")]
-  [Content(typeof(OrienteeringSolution), true)]
-  public partial class OrienteeringSolutionView : TSPSolutionView {
-    public new OrienteeringVisualizer Visualizer {
-      get { return (OrienteeringVisualizer)base.Visualizer; }
-      set { base.Visualizer = value; }
-    }
-    public new OrienteeringSolution Content {
-      get { return (OrienteeringSolution)base.Content; }
+  [Content(typeof(IOrienteeringSolution), true)]
+  public partial class OrienteeringSolutionView : ItemView {
+    public OrienteeringVisualizer Visualizer { get; set; }
+
+    public new IOrienteeringSolution Content {
+      get { return (IOrienteeringSolution)base.Content; }
       set { base.Content = value; }
     }
     public OrienteeringSolutionView() {
       InitializeComponent();
       Visualizer = new OrienteeringVisualizer();
+      tspSolutionView.Visualizer = Visualizer;
     }
 
     protected override void DeregisterContentEvents() {
@@ -49,8 +48,7 @@ namespace HeuristicLab.Problems.Orienteering.Views {
       Content.PropertyChanged += ContentOnPropertyChanged;
     }
 
-    protected override void ContentOnPropertyChanged(object sender, PropertyChangedEventArgs e) {
-      base.ContentOnPropertyChanged(sender, e);
+    protected virtual void ContentOnPropertyChanged(object sender, PropertyChangedEventArgs e) {
       switch (e.PropertyName) {
         case nameof(Content.Quality):
           qualityValueView.Content = Content.Quality;
@@ -70,9 +68,10 @@ namespace HeuristicLab.Problems.Orienteering.Views {
       } else {
         qualityValueView.Content = Content.Quality;
         scoreValueView.Content = Content.Score;
-        Visualizer.Data = Content.OPData;
-        Visualizer.IsFeasible = Content.TravelCosts.Value <= Content.OPData.MaximumTravelCosts;
+        Visualizer.Data = Content.Data;
+        Visualizer.IsFeasible = Content.TravelCosts.Value <= Content.Data.MaximumTravelCosts;
       }
+      tspSolutionView.Content = Content;
       base.OnContentChanged();
     }
 

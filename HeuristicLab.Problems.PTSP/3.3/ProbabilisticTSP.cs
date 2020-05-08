@@ -41,8 +41,8 @@ namespace HeuristicLab.Problems.PTSP {
     public static int DistanceMatrixSizeLimit = 1000;
 
     #region Parameter Properties
-    [Storable] public ValueParameter<IProbabilisticTSPData> PTSPDataParameter { get; private set; }
-    [Storable] public OptionalValueParameter<IProbabilisticTSPSolution> BestKnownSolutionParameter { get; private set; }
+    [Storable] public ValueParameter<IProbabilisticTSPData> PTSPDataParameter { get; }
+    [Storable] public OptionalValueParameter<IProbabilisticTSPSolution> BestKnownSolutionParameter { get; }
     #endregion
 
     #region Properties
@@ -69,12 +69,12 @@ namespace HeuristicLab.Problems.PTSP {
       Parameters.Add(BestKnownSolutionParameter = new OptionalValueParameter<IProbabilisticTSPSolution>("BestKnownSolution", "The best known solution of this pTSP instance."));
 
       ProbabilisticTSPData = new ProbabilisticTSPData();
-      Encoding.Length = ProbabilisticTSPData.TSPData.Cities;
+      Encoding.Length = ProbabilisticTSPData.Cities;
     }
 
     protected override void OnEncodingChanged() {
       base.OnEncodingChanged();
-      Encoding.Length = ProbabilisticTSPData.TSPData.Cities;
+      Encoding.Length = ProbabilisticTSPData.Cities;
     }
 
     public override void Analyze(Permutation[] solutions, double[] qualities, ResultCollection results, IRandom random) {

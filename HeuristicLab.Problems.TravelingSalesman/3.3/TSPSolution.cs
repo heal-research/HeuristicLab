@@ -30,7 +30,7 @@ using HeuristicLab.Encodings.PermutationEncoding;
 namespace HeuristicLab.Problems.TravelingSalesman {
   [StorableType("f08a63d9-0b83-4944-9251-42925baeb872")]
   public interface ITSPSolution : IItem, INotifyPropertyChanged {
-    ITSPData TSPData { get; }
+    ITSPData Data { get; }
     Permutation Tour { get; }
     DoubleValue TourLength { get; }
   }
@@ -46,12 +46,12 @@ namespace HeuristicLab.Problems.TravelingSalesman {
     }
 
     [Storable] private ITSPData tspData;
-    public ITSPData TSPData {
+    public ITSPData Data {
       get { return tspData; }
       set {
         if (tspData == value) return;
         tspData = value;
-        OnPropertyChanged(nameof(TSPData));
+        OnPropertyChanged(nameof(Data));
       }
     }
 

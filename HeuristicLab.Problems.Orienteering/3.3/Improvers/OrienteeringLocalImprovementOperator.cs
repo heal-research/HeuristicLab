@@ -125,7 +125,7 @@ namespace HeuristicLab.Problems.Orienteering {
         ShortenPath(tour, data, maxBlockLength, useMaxBlockLength, ref tourLength, ref evaluations);
 
         // Determine all points that have not yet been visited by this tour
-        var visitablePoints = Enumerable.Range(0, data.RoutingData.Cities).Except(tour).ToList();
+        var visitablePoints = Enumerable.Range(0, data.Cities).Except(tour).ToList();
 
         // Determine if any of the visitable points can be included at any position within the tour
         IncludeNewPoints(tour, visitablePoints, data, ref tourLength, ref tourScore, ref evaluations, ref solutionChanged);
@@ -167,10 +167,10 @@ namespace HeuristicLab.Problems.Orienteering {
 
             double newLength = tourLength;
             // Recalculate length of whole swapped part, in case distances are not symmetric
-            for (int index = position - 1; index < position + blockLength; index++) newLength -= data.RoutingData.GetDistance(tour[index], tour[index + 1]);
-            for (int index = position + blockLength - 1; index > position; index--) newLength += data.RoutingData.GetDistance(tour[index], tour[index - 1]);
-            newLength += data.RoutingData.GetDistance(tour[position - 1], tour[position + blockLength - 1]);
-            newLength += data.RoutingData.GetDistance(tour[position], tour[position + blockLength]);
+            for (int index = position - 1; index < position + blockLength; index++) newLength -= data.GetDistance(tour[index], tour[index + 1]);
+            for (int index = position + blockLength - 1; index > position; index--) newLength += data.GetDistance(tour[index], tour[index - 1]);
+            newLength += data.GetDistance(tour[position - 1], tour[position + blockLength - 1]);
+            newLength += data.GetDistance(tour[position], tour[position + blockLength]);
 
             if (newLength < tourLength - 0.00001) {
               // Avoid cycling caused by precision

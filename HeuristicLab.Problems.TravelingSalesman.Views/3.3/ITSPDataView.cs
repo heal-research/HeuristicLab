@@ -19,8 +19,34 @@
  */
 #endregion
 
+using HeuristicLab.Core.Views;
+using HeuristicLab.MainForm;
+
 namespace HeuristicLab.Problems.TravelingSalesman.Views {
   public interface ITSPVisualizerView {
     TSPVisualizer Visualizer { get; set; }
+  }
+
+  [View("TSP Data View")]
+  [Content(typeof(ITSPData), IsDefaultView = true)]
+  public partial class ITSPDataView : ItemView {
+    public TSPVisualizer Visualizer { get; set; } = new TSPVisualizer();
+
+    public new ITSPData Content {
+      get { return (ITSPData)base.Content; }
+      set { base.Content = value; }
+    }
+
+    public ITSPDataView() {
+      InitializeComponent();
+    }
+
+    protected override void OnContentChanged() {
+      base.OnContentChanged();
+      viewHost.Content = Content;
+      if (viewHost.ActiveView is ITSPVisualizerView view)
+        view.Visualizer = Visualizer;
+    }
+
   }
 }

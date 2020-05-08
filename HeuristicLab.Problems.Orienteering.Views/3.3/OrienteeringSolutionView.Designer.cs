@@ -44,44 +44,13 @@ namespace HeuristicLab.Problems.Orienteering.Views {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
+      HeuristicLab.Problems.TravelingSalesman.Views.TSPVisualizer tspVisualizer2 = new HeuristicLab.Problems.TravelingSalesman.Views.TSPVisualizer();
       this.scoreLabel = new System.Windows.Forms.Label();
       this.qualityLabel = new System.Windows.Forms.Label();
       this.qualityValueView = new HeuristicLab.Data.Views.StringConvertibleValueView();
       this.scoreValueView = new HeuristicLab.Data.Views.StringConvertibleValueView();
-      this.tabControl.SuspendLayout();
-      this.visualizationTabPage.SuspendLayout();
-      ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).BeginInit();
-      this.routeTabPage.SuspendLayout();
+      this.tspSolutionView = new HeuristicLab.Problems.TravelingSalesman.Views.TSPSolutionView();
       this.SuspendLayout();
-      // 
-      // tabControl
-      // 
-      this.tabControl.Location = new System.Drawing.Point(3, 88);
-      this.tabControl.Size = new System.Drawing.Size(417, 314);
-      // 
-      // visualizationTabPage
-      // 
-      this.visualizationTabPage.Size = new System.Drawing.Size(409, 288);
-      // 
-      // pictureBox
-      // 
-      this.pictureBox.Size = new System.Drawing.Size(403, 282);
-      // 
-      // routeTabPage
-      // 
-      this.routeTabPage.Size = new System.Drawing.Size(409, 234);
-      // 
-      // tourViewHost
-      // 
-      this.tourViewHost.Size = new System.Drawing.Size(403, 228);
-      // 
-      // distanceView
-      // 
-      this.distanceView.Location = new System.Drawing.Point(62, 61);
-      // 
-      // distanceLabel
-      // 
-      this.distanceLabel.Location = new System.Drawing.Point(4, 64);
       // 
       // scoreLabel
       // 
@@ -111,7 +80,7 @@ namespace HeuristicLab.Problems.Orienteering.Views {
       this.qualityValueView.Location = new System.Drawing.Point(62, 7);
       this.qualityValueView.Name = "qualityValueView";
       this.qualityValueView.ReadOnly = false;
-      this.qualityValueView.Size = new System.Drawing.Size(357, 21);
+      this.qualityValueView.Size = new System.Drawing.Size(565, 21);
       this.qualityValueView.TabIndex = 0;
       // 
       // scoreValueView
@@ -124,28 +93,35 @@ namespace HeuristicLab.Problems.Orienteering.Views {
       this.scoreValueView.Location = new System.Drawing.Point(62, 34);
       this.scoreValueView.Name = "scoreValueView";
       this.scoreValueView.ReadOnly = false;
-      this.scoreValueView.Size = new System.Drawing.Size(357, 21);
+      this.scoreValueView.Size = new System.Drawing.Size(565, 21);
       this.scoreValueView.TabIndex = 0;
+      // 
+      // tspSolutionView
+      // 
+      this.tspSolutionView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.tspSolutionView.Caption = "TSP Solution View";
+      this.tspSolutionView.Content = null;
+      this.tspSolutionView.Location = new System.Drawing.Point(0, 61);
+      this.tspSolutionView.Name = "tspSolutionView";
+      this.tspSolutionView.ReadOnly = false;
+      this.tspSolutionView.Size = new System.Drawing.Size(630, 252);
+      this.tspSolutionView.TabIndex = 2;
+      tspVisualizer2.Coordinates = null;
+      tspVisualizer2.Tour = null;
+      this.tspSolutionView.Visualizer = tspVisualizer2;
       // 
       // OrienteeringSolutionView
       // 
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
+      this.Controls.Add(this.tspSolutionView);
       this.Controls.Add(this.scoreLabel);
       this.Controls.Add(this.qualityLabel);
       this.Controls.Add(this.qualityValueView);
       this.Controls.Add(this.scoreValueView);
       this.Name = "OrienteeringSolutionView";
-      this.Controls.SetChildIndex(this.scoreValueView, 0);
-      this.Controls.SetChildIndex(this.qualityValueView, 0);
-      this.Controls.SetChildIndex(this.qualityLabel, 0);
-      this.Controls.SetChildIndex(this.scoreLabel, 0);
-      this.Controls.SetChildIndex(this.tabControl, 0);
-      this.Controls.SetChildIndex(this.distanceView, 0);
-      this.Controls.SetChildIndex(this.distanceLabel, 0);
-      this.tabControl.ResumeLayout(false);
-      this.visualizationTabPage.ResumeLayout(false);
-      ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).EndInit();
-      this.routeTabPage.ResumeLayout(false);
+      this.Size = new System.Drawing.Size(630, 313);
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -156,5 +132,6 @@ namespace HeuristicLab.Problems.Orienteering.Views {
     private System.Windows.Forms.Label qualityLabel;
     private Data.Views.StringConvertibleValueView qualityValueView;
     private Data.Views.StringConvertibleValueView scoreValueView;
+    private TravelingSalesman.Views.TSPSolutionView tspSolutionView;
   }
 }

@@ -134,7 +134,12 @@
     <Compile Include="EuclideanTSPDataView.Designer.cs">
       <DependentUpon>EuclideanTSPDataView.cs</DependentUpon>
     </Compile>
-    <Compile Include="ITSPDataView.cs" />
+    <Compile Include="ITSPDataView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ITSPDataView.Designer.cs">
+      <DependentUpon>ITSPDataView.cs</DependentUpon>
+    </Compile>
     <Compile Include="MatrixTSPDataView.cs">
       <SubType>UserControl</SubType>
     </Compile>

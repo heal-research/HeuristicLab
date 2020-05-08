@@ -65,9 +65,9 @@ namespace HeuristicLab.Problems.Orienteering {
 
       // Find all points within the maximum distance allowed (ellipse)
       var feasiblePoints = (
-        from point in Enumerable.Range(0, data.RoutingData.Cities)
-        let travelCosts = data.RoutingData.GetDistance(data.StartingPoint, point)
-        + data.RoutingData.GetDistance(point, data.TerminalPoint) + data.PointVisitingCosts
+        from point in Enumerable.Range(0, data.Cities)
+        let travelCosts = data.GetDistance(data.StartingPoint, point)
+        + data.GetDistance(point, data.TerminalPoint) + data.PointVisitingCosts
         let score = data.GetScore(point)
         where travelCosts <= data.MaximumTravelCosts
         where point != data.StartingPoint && point != data.TerminalPoint
@@ -80,7 +80,7 @@ namespace HeuristicLab.Problems.Orienteering {
         data.StartingPoint,
         data.TerminalPoint
       };
-      double tourLength = data.RoutingData.GetDistance(data.StartingPoint, data.TerminalPoint);
+      double tourLength = data.GetDistance(data.StartingPoint, data.TerminalPoint);
 
       // Add points in a greedy way
       bool insertionPerformed = true;

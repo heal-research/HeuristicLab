@@ -1,16 +1,18 @@
 ﻿using System;
+using System.Collections.Generic;
 using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.IntegerVectorEncoding;
+using HeuristicLab.Encodings.PermutationEncoding;
+using HeuristicLab.Problems.Instances;
 using HeuristicLab.Problems.Instances.Types;
 using HeuristicLab.Problems.TravelingSalesman;
 
 namespace HeuristicLab.Problems.Orienteering {
   [StorableType("c33063a6-a2ee-4054-9dd8-46a738003139")]
-  public interface IOrienteeringProblemData : INamedItem {
-    ITSPData RoutingData { get; }
+  public interface IOrienteeringProblemData : ITSPData {
     int StartingPoint { get; }
     int TerminalPoint { get; }
     double MaximumTravelCosts { get; }
@@ -18,7 +20,7 @@ namespace HeuristicLab.Problems.Orienteering {
 
     double GetScore(int city);
     OrienteeringSolution GetSolution(IntegerVector route, double quality, double score, double travelCosts);
-    OPData Export();
+    new OPData Export();
   }
 
   [Item("Orienteering Problem Data", "Represents the main data for an orienteering problem.")]
@@ -91,6 +93,15 @@ namespace HeuristicLab.Problems.Orienteering {
         PointVisitingCosts = PointVisitingCosts
       };
     }
+
+    #region ITSPData members
+    int ITSPData.Cities => RoutingData.Cities;
+    double ITSPData.GetDistance(int fromCity, int toCity) => RoutingData.GetDistance(fromCity, toCity);
+    double ITSPData.GetPathDistance(IEnumerable<int> path, bool closed) => RoutingData.GetPathDistance(path, closed);
+    ITSPSolution ITSPData.GetSolution(Permutation tspTour, double tourLength) => RoutingData.GetSolution(tspTour, tourLength);
+    TSPData ITSPData.Export() => RoutingData.Export();
+    DoubleMatrix ITSPData.GetCoordinatesOrDefault() => RoutingData.GetCoordinatesOrDefault();
+    #endregion
 
     private static double[,] defaultCoordinates = new double[21, 2] {
       {  4.60,  7.10 }, {  5.70, 11.40 }, {  4.40, 12.30 }, {  2.80, 14.30 }, {  3.20, 10.30 },

@@ -23,7 +23,6 @@ using System.Windows.Forms;
 using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
-using HeuristicLab.Problems.TravelingSalesman.Views;
 
 namespace HeuristicLab.Problems.PTSP.Views {
   [View("Probabilistic TSP Data View")]
@@ -40,27 +39,25 @@ namespace HeuristicLab.Problems.PTSP.Views {
     public ProbabilisticTSPDataView() {
       InitializeComponent();
       Visualizer = new ProbabilisticTSPVisualizer();
+      tspDataView.Visualizer = Visualizer;
     }
 
     protected override void OnContentChanged() {
       base.OnContentChanged();
       if (Content == null) {
         probabilitiesView.Content = null;
-        tspViewHost.Content = null;
         Visualizer.Probabilities = null;
       } else {
         probabilitiesView.Content = Content.Probabilities;
         Visualizer.Probabilities = Content.Probabilities;
-        tspViewHost.Content = Content.TSPData;
-        if (tspViewHost.ActiveView is ITSPVisualizerView view)
-          view.Visualizer = Visualizer;
       }
+      tspDataView.Content = Content?.TSPData;
     }
 
     protected override void SetEnabledStateOfControls() {
       base.SetEnabledStateOfControls();
       probabilitiesView.Enabled = !ReadOnly && !Locked && Content != null;
-      tspViewHost.Enabled = !ReadOnly && !Locked && Content != null;
+      tspDataView.Enabled = !ReadOnly && !Locked && Content != null;
     }
   }
 }

@@ -30,33 +30,39 @@ using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Problems.TravelingSalesman;
 
 namespace HeuristicLab.Problems.Orienteering {
+  public interface IOrienteeringSolution : ITSPSolution {
+    new IOrienteeringProblemData Data { get; }
+    new IntegerVector Tour { get; }
+    DoubleValue Quality { get; }
+    DoubleValue Score { get; }
+    DoubleValue TravelCosts { get; }
+  }
+
   [Item("OrienteeringSolution", "Represents a Orienteering solution which can be visualized in the GUI.")]
   [StorableType("BC58ED08-B9A7-40F3-B8E0-A6B33AA993F4")]
-  public sealed class OrienteeringSolution : Item, ITSPSolution {
+  public sealed class OrienteeringSolution : Item, IOrienteeringSolution {
     public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Image; }
     }
 
     [Storable] private Permutation routeAsPermutation;
     [Storable] private IntegerVector route;
-    public IntegerVector Route {
+    public IntegerVector Tour {
       get { return route; }
       set {
         if (route == value) return;
         route = value;
         routeAsPermutation = new Permutation(PermutationTypes.RelativeDirected, value);
-        OnPropertyChanged(nameof(Route));
-        OnPropertyChanged(nameof(ITSPSolution.Tour));
+        OnPropertyChanged(nameof(Tour));
       }
     }
-    [Storable] private IOrienteeringProblemData opData;
-    public IOrienteeringProblemData OPData {
-      get { return opData; }
+    [Storable] private IOrienteeringProblemData data;
+    public IOrienteeringProblemData Data {
+      get { return data; }
       set {
-        if (opData == value) return;
-        opData = value;
-        OnPropertyChanged(nameof(OPData));
-        OnPropertyChanged(nameof(ITSPSolution.TSPData));
+        if (data == value) return;
+        data = value;
+        OnPropertyChanged(nameof(Data));
       }
     }
     [Storable]
@@ -91,7 +97,7 @@ namespace HeuristicLab.Problems.Orienteering {
       }
     }
 
-    ITSPData ITSPSolution.TSPData => OPData.RoutingData;
+    ITSPData ITSPSolution.Data => Data;
     Permutation ITSPSolution.Tour => routeAsPermutation;
     DoubleValue ITSPSolution.TourLength => TravelCosts;
 
@@ -101,7 +107,7 @@ namespace HeuristicLab.Problems.Orienteering {
       : base(original, cloner) {
       this.route = cloner.Clone(original.route);
       this.routeAsPermutation = cloner.Clone(original.routeAsPermutation);
-      this.opData = cloner.Clone(original.opData);
+      this.data = cloner.Clone(original.data);
       this.quality = cloner.Clone(original.quality);
       this.score = cloner.Clone(original.score);
     }
@@ -111,7 +117,7 @@ namespace HeuristicLab.Problems.Orienteering {
       : base() {
       this.route = route;
       this.routeAsPermutation = new Permutation(PermutationTypes.RelativeDirected, route);
-      this.opData = opData;
+      this.data = opData;
       this.quality = quality;
       this.score = score;
       this.travelCosts = distance;
