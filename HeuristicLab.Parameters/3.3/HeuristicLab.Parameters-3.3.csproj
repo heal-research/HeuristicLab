@@ -126,6 +126,7 @@
     <Compile Include="FixedValueParameter.cs" />
     <Compile Include="OptionalConstrainedValueParameter.cs" />
     <Compile Include="Plugin.cs" />
+    <Compile Include="ReferenceParameter.cs" />
     <Compile Include="ScopeTreeLookupParameter.cs" />
     <Compile Include="ValueParameter.cs" />
     <Compile Include="LookupParameter.cs" />
