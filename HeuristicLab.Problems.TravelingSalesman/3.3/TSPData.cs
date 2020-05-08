@@ -162,6 +162,16 @@ namespace HeuristicLab.Problems.TravelingSalesman {
       return distance;
     }
 
+    public double[,] CalculateDistanceMatrix() {
+      var matrix = new double[Cities, Cities];
+      for (var i = 0; i < Cities; i++) {
+        for (var j = 0; j < Cities; j++) {
+          matrix[i, j] = GetDistance(i, j);
+        }
+      }
+      return matrix;
+    }
+
     public virtual ITSPSolution GetSolution(Permutation tour, double tourLength) {
       return new TSPSolution(this, tour, new DoubleValue(tourLength));
     }

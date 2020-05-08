@@ -118,7 +118,6 @@ namespace HeuristicLab.Problems.Orienteering {
         BestKnownQuality = quality;
         BestKnownSolutionParameter.ActualValue = data.GetSolution((IntegerVector)best.Clone(), quality, score, travelCosts);
       }
-
       var bestSoFar = BestOrienteeringSolutionParameter.ActualValue;
       
       if (bestSoFar == null || IsBetter(quality, bestSoFar.Quality.Value)) {
@@ -199,7 +198,7 @@ namespace HeuristicLab.Problems.Orienteering {
       Name = data.Name;
       Description = data.Description;
 
-      var tsp = data.Coordinates != null ? (ITSPData)new EuclideanTSPData(Name, data.Coordinates) : new MatrixTSPData(Name, data.Distances ?? data.GetDistanceMatrix(), data.Coordinates);
+      var tsp = TSP.GetDataFromInstance(data);
       OrienteeringProblemData = new OrienteeringProblemData(tsp, data.StartingPoint, data.TerminalPoint, data.Scores, data.MaximumDistance, data.PointVisitingCosts);
     }
 
@@ -216,7 +215,7 @@ namespace HeuristicLab.Problems.Orienteering {
       Description = data.Description;
 
 
-      var tsp = data.Coordinates != null ? (ITSPData)new EuclideanTSPData(Name, data.Coordinates) : new MatrixTSPData(Name, data.Distances ?? data.GetDistanceMatrix(), data.Coordinates);
+      var tsp = TSP.GetDataFromInstance(data);
       var avgDist = 0.0;
       for (var i = 0; i < data.Dimension - 1; i++)
         for (var j = i + 1; i < data.Dimension; j++)
@@ -239,10 +238,8 @@ namespace HeuristicLab.Problems.Orienteering {
       Name = data.Name;
       Description = data.Description;
 
-      var tsp = data.Coordinates != null ? (ITSPData)new EuclideanTSPData(Name, data.Coordinates) : new MatrixTSPData(Name, data.Distances ?? data.GetDistanceMatrix(), data.Coordinates);
-
-      OrienteeringProblemData = new OrienteeringProblemData(tsp, 0, 0,
-        data.Demands, data.Capacity * 2, 0);
+      var tsp = TSP.GetDataFromInstance(data);
+      OrienteeringProblemData = new OrienteeringProblemData(tsp, 0, 0, data.Demands, data.Capacity * 2, 0);
     }
     #endregion
   }

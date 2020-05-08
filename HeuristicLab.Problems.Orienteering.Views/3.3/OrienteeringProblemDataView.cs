@@ -26,7 +26,7 @@ using HeuristicLab.Problems.TravelingSalesman.Views;
 namespace HeuristicLab.Problems.Orienteering.Views {
   [View("Orienteering Problem Data View")]
   [Content(typeof(OrienteeringProblemData), IsDefaultView = true)]
-  public partial class OrienteeringProblemDataView : NamedItemView {
+  public partial class OrienteeringProblemDataView : ItemView {
 
     public new OrienteeringProblemData Content {
       get { return (OrienteeringProblemData)base.Content; }

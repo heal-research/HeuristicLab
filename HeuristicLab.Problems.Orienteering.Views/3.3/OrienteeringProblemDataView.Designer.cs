@@ -59,7 +59,6 @@ namespace HeuristicLab.Problems.Orienteering.Views {
       this.terminalPointLabel = new System.Windows.Forms.Label();
       this.startingPointTextBox = new System.Windows.Forms.TextBox();
       this.startingPointLabel = new System.Windows.Forms.Label();
-      ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
       this.tabControl.SuspendLayout();
       this.routingDataTabPage.SuspendLayout();
       this.OrienteeringDataTabPage.SuspendLayout();
@@ -69,27 +68,15 @@ namespace HeuristicLab.Problems.Orienteering.Views {
       this.splitContainer1.SuspendLayout();
       this.SuspendLayout();
       // 
-      // nameTextBox
-      // 
-      this.errorProvider.SetIconAlignment(this.nameTextBox, System.Windows.Forms.ErrorIconAlignment.MiddleLeft);
-      this.errorProvider.SetIconPadding(this.nameTextBox, 2);
-      this.nameTextBox.Size = new System.Drawing.Size(454, 20);
-      // 
-      // infoLabel
-      // 
-      this.infoLabel.Location = new System.Drawing.Point(518, 3);
-      // 
       // tabControl
       // 
-      this.tabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
       this.tabControl.Controls.Add(this.routingDataTabPage);
       this.tabControl.Controls.Add(this.OrienteeringDataTabPage);
-      this.tabControl.Location = new System.Drawing.Point(0, 26);
+      this.tabControl.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.tabControl.Location = new System.Drawing.Point(0, 0);
       this.tabControl.Name = "tabControl";
       this.tabControl.SelectedIndex = 0;
-      this.tabControl.Size = new System.Drawing.Size(541, 401);
+      this.tabControl.Size = new System.Drawing.Size(541, 427);
       this.tabControl.TabIndex = 0;
       // 
       // routingDataTabPage
@@ -98,7 +85,7 @@ namespace HeuristicLab.Problems.Orienteering.Views {
       this.routingDataTabPage.Location = new System.Drawing.Point(4, 22);
       this.routingDataTabPage.Name = "routingDataTabPage";
       this.routingDataTabPage.Padding = new System.Windows.Forms.Padding(3);
-      this.routingDataTabPage.Size = new System.Drawing.Size(533, 375);
+      this.routingDataTabPage.Size = new System.Drawing.Size(533, 401);
       this.routingDataTabPage.TabIndex = 0;
       this.routingDataTabPage.Text = "Routing Data";
       this.routingDataTabPage.UseVisualStyleBackColor = true;
@@ -112,7 +99,7 @@ namespace HeuristicLab.Problems.Orienteering.Views {
       this.routingDataViewHost.Location = new System.Drawing.Point(3, 3);
       this.routingDataViewHost.Name = "routingDataViewHost";
       this.routingDataViewHost.ReadOnly = false;
-      this.routingDataViewHost.Size = new System.Drawing.Size(527, 369);
+      this.routingDataViewHost.Size = new System.Drawing.Size(527, 395);
       this.routingDataViewHost.TabIndex = 0;
       this.routingDataViewHost.ViewsLabelVisible = true;
       this.routingDataViewHost.ViewType = null;
@@ -123,9 +110,9 @@ namespace HeuristicLab.Problems.Orienteering.Views {
       this.OrienteeringDataTabPage.Location = new System.Drawing.Point(4, 22);
       this.OrienteeringDataTabPage.Name = "OrienteeringDataTabPage";
       this.OrienteeringDataTabPage.Padding = new System.Windows.Forms.Padding(3);
-      this.OrienteeringDataTabPage.Size = new System.Drawing.Size(533, 375);
+      this.OrienteeringDataTabPage.Size = new System.Drawing.Size(533, 401);
       this.OrienteeringDataTabPage.TabIndex = 1;
-      this.OrienteeringDataTabPage.Text = "Orienteering";
+      this.OrienteeringDataTabPage.Text = "Orienteering Data";
       this.OrienteeringDataTabPage.UseVisualStyleBackColor = true;
       // 
       // splitContainer1
@@ -149,7 +136,7 @@ namespace HeuristicLab.Problems.Orienteering.Views {
       this.splitContainer1.Panel2.Controls.Add(this.terminalPointLabel);
       this.splitContainer1.Panel2.Controls.Add(this.startingPointTextBox);
       this.splitContainer1.Panel2.Controls.Add(this.startingPointLabel);
-      this.splitContainer1.Size = new System.Drawing.Size(527, 369);
+      this.splitContainer1.Size = new System.Drawing.Size(527, 395);
       this.splitContainer1.SplitterDistance = 175;
       this.splitContainer1.TabIndex = 0;
       // 
@@ -163,7 +150,7 @@ namespace HeuristicLab.Problems.Orienteering.Views {
       this.scoresArrayView.Location = new System.Drawing.Point(3, 25);
       this.scoresArrayView.Name = "scoresArrayView";
       this.scoresArrayView.ReadOnly = false;
-      this.scoresArrayView.Size = new System.Drawing.Size(169, 341);
+      this.scoresArrayView.Size = new System.Drawing.Size(169, 367);
       this.scoresArrayView.TabIndex = 1;
       // 
       // scoresLabel
@@ -258,11 +245,6 @@ namespace HeuristicLab.Problems.Orienteering.Views {
       this.Controls.Add(this.tabControl);
       this.Name = "OrienteeringProblemDataView";
       this.Size = new System.Drawing.Size(541, 427);
-      this.Controls.SetChildIndex(this.tabControl, 0);
-      this.Controls.SetChildIndex(this.nameLabel, 0);
-      this.Controls.SetChildIndex(this.nameTextBox, 0);
-      this.Controls.SetChildIndex(this.infoLabel, 0);
-      ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
       this.tabControl.ResumeLayout(false);
       this.routingDataTabPage.ResumeLayout(false);
       this.OrienteeringDataTabPage.ResumeLayout(false);
@@ -273,7 +255,6 @@ namespace HeuristicLab.Problems.Orienteering.Views {
       ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
       this.splitContainer1.ResumeLayout(false);
       this.ResumeLayout(false);
-      this.PerformLayout();
 
     }
 
