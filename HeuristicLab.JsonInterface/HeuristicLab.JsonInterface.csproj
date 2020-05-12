@@ -62,6 +62,8 @@
   <ItemGroup>
     <Compile Include="Constants.cs" />
     <Compile Include="Converters\AlgorithmConverter.cs" />
+    <Compile Include="Converters\BatchRunConverter.cs" />
+    <Compile Include="Converters\ExperimentConverter.cs" />
     <Compile Include="Converters\RegressionProblemDataConverter.cs" />
     <Compile Include="Converters\ResultParameterConverter.cs" />
     <Compile Include="Converters\ValueLookupParameterConverter.cs" />
