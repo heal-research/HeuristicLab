@@ -30,7 +30,7 @@ namespace HeuristicLab.JsonInterface {
 
       #region Serialize HL File
       ProtoBufSerializer serializer = new ProtoBufSerializer();
-      string hlFilePath = fullPath + templateName + ".hl";
+      string hlFilePath = Path.Combine(fullPath, templateName + ".hl");
       serializer.Serialize(optimizer, hlFilePath);
       #endregion
 

@@ -50,10 +50,6 @@ namespace HeuristicLab.JsonInterface.App {
         foreach (var res in run.Results) {
           if (configuredResults.Contains(res.Key)) {
             if (res.Value is ISymbolicRegressionSolution solution) {
-              /* TEST */
-              var csFormatter = new CSharpSymbolicExpressionTreeStringFormatter();
-              File.WriteAllText(@"C:\Workspace\output\csFormatted.cs", csFormatter.Format(solution.Model.SymbolicExpressionTree));
-              /* END TEST */
               var formatter = new SymbolicDataAnalysisExpressionMATLABFormatter();
               var x = formatter.Format(solution.Model.SymbolicExpressionTree);
               obj.Add(res.Key, JToken.FromObject(x));

@@ -253,21 +253,25 @@ namespace HeuristicLab.JsonInterface {
         Maximum = Math.Max(testPartition.End, trainingPartition.End)
       };
     }
-      
 
-    private IJsonItem GetTargetVariable(IItem item) =>
-      new StringJsonItem() {
+
+    private IJsonItem GetTargetVariable(IItem item) {
+      var vars = (IEnumerable<StringValue>)((dynamic)item).InputVariables;
+      return new StringJsonItem() {
         Name = TargetVariable,
         Value = (string)((dynamic)item).TargetVariable,
-        //ConcreteRestrictedItems = variables.Select(x => x.Value)
+        ConcreteRestrictedItems = vars.Select(x => x.Value)
       };
+    }
 
-    private IJsonItem GetAllowedInputVariables(IItem item) =>
-      new StringArrayJsonItem() {
+    private IJsonItem GetAllowedInputVariables(IItem item) {
+      var vars = (IEnumerable<StringValue>)((dynamic)item).InputVariables;
+      return new StringArrayJsonItem() {
         Name = AllowedInputVariables,
         Value = ((IEnumerable<string>)((dynamic)item).AllowedInputVariables).ToArray(),
-        //ConcreteRestrictedItems = variables.Select(x => x.Value)
+        ConcreteRestrictedItems = vars.Select(x => x.Value)
       };
+    }
     #endregion
   }
 }

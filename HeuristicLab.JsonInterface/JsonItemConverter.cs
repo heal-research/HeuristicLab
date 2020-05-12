@@ -61,7 +61,7 @@ namespace HeuristicLab.JsonInterface {
       else {
         IJsonItemConverter converter = GetConverter(item.GetType());
         if (converter == null) return new UnsupportedJsonItem();
-        IJsonItem tmp = GetConverter(item.GetType()).Extract(item, root);
+        IJsonItem tmp = converter.Extract(item, root);
         ExtractCache.Add(hash, tmp);
         return tmp;
       }
