@@ -90,6 +90,7 @@ namespace HeuristicLab.Problems.Knapsack {
       Parameters.Add(new ValueParameter<IntArray>("Values", "The values of the items.", new IntArray(5)));
       Parameters.Add(new OptionalValueParameter<BinaryVector>("BestKnownSolution", "The best known solution of this Knapsack instance."));
 
+      Dimension = Weights.Length;
       InitializeRandomKnapsackInstance();
 
       InitializeOperators();
@@ -124,8 +125,6 @@ namespace HeuristicLab.Problems.Knapsack {
       WeightsParameter.Value.Reset += WeightsValue_Reset;
       ValuesParameter.ValueChanged += ValuesParameter_ValueChanged;
       ValuesParameter.Value.Reset += ValuesValue_Reset;
-      // TODO: There is no even to detect if the parameter itself was changed
-      Encoding.LengthParameter.ValueChanged += Encoding_LengthParameter_ValueChanged;
     }
 
     #region Events
@@ -143,6 +142,16 @@ namespace HeuristicLab.Problems.Knapsack {
       Evaluator.QualityParameter.ActualNameChanged += Evaluator_QualityParameter_ActualNameChanged;
       Parameterize();
     }
+    protected override void DimensionOnChanged() {
+      base.DimensionOnChanged();
+      if (Weights.Length != Dimension) {
+        ((IStringConvertibleArray)WeightsParameter.Value).Length = Dimension;
+      }
+      if (Values.Length != Dimension) {
+        ((IStringConvertibleArray)ValuesParameter.Value).Length = Dimension;
+      }
+      Parameterize();
+    }
     private void Evaluator_QualityParameter_ActualNameChanged(object sender, EventArgs e) {
       Parameterize();
     }
@@ -156,7 +165,7 @@ namespace HeuristicLab.Problems.Knapsack {
     private void WeightsValue_Reset(object sender, EventArgs e) {
       if (WeightsParameter.Value != null && ValuesParameter.Value != null) {
         ((IStringConvertibleArray)ValuesParameter.Value).Length = Weights.Length;
-        Encoding.Length = Weights.Length;
+        Dimension = Weights.Length;
       }
       Parameterize();
     }
@@ -167,16 +176,7 @@ namespace HeuristicLab.Problems.Knapsack {
     private void ValuesValue_Reset(object sender, EventArgs e) {
       if (WeightsParameter.Value != null && ValuesParameter.Value != null) {
         ((IStringConvertibleArray)WeightsParameter.Value).Length = Values.Length;
-        Encoding.Length = Values.Length;
-      }
-      Parameterize();
-    }
-    private void Encoding_LengthParameter_ValueChanged(object sender, EventArgs e) {
-      if (Weights.Length != Encoding.Length) {
-        ((IStringConvertibleArray)WeightsParameter.Value).Length = Encoding.Length;
-      }
-      if (Values.Length != Encoding.Length) {
-        ((IStringConvertibleArray)ValuesParameter.Value).Length = Encoding.Length;
+        Dimension = Values.Length;
       }
       Parameterize();
     }
@@ -270,6 +270,7 @@ namespace HeuristicLab.Problems.Knapsack {
       }
 
       KnapsackCapacity = (int)Math.Round(0.7 * totalWeight);
+      Dimension = Weights.Length;
     }
   }
 }

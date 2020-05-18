@@ -75,7 +75,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
       Parameters.Add(BestTSPSolutionParameter = new ResultParameter<ITSPSolution>("Best TSP Solution", "The best so far solution found."));
       
       TSPData = new EuclideanTSPData();
-      Encoding.Length = TSPData.Cities;
+      Dimension = TSPData.Cities;
 
       InitializeOperators();
     }
@@ -139,7 +139,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
       if (data.Coordinates != null && data.Coordinates.GetLength(1) != 2)
         throw new System.IO.InvalidDataException("The coordinates of the given instance are not in the right format, there need to be one row for each customer and two columns for the x and y coordinates.");
 
-      Encoding.Length = data.Dimension;
+      Dimension = data.Dimension;
       Name = data.Name;
       Description = data.Description;
 
@@ -211,7 +211,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
 
     protected override void OnEncodingChanged() {
       base.OnEncodingChanged();
-      Encoding.Length = TSPData.Cities;
+      Dimension = TSPData.Cities;
       ParameterizeOperators();
     }
 

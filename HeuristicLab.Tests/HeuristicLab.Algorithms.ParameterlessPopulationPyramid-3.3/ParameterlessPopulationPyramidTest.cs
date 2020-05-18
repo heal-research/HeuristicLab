@@ -59,12 +59,12 @@ namespace ParameterlessPopulationPyramid.Test {
     [TestCategory("Algorithms.ParameterlessPopulationPyramid")]
     public void P3DeceptiveTrap() {
       var problem = new DeceptiveTrapProblem();
-      problem.Length = 49;
+      problem.NumberOfTraps = 7;
       problem.TrapSize = 7;
       DoRun(problem, 100, 123, 0.857142857142857, 50);
       DoRun(problem, 9876, 123, 0.918367346938776, 981);
       DoRun(problem, 20000, 987, 1, 19977);
-      problem.Length = 700;
+      problem.NumberOfTraps = 100;
       DoRun(problem, 100000, 987, 0.941428571428571, 96901);
     }
 
@@ -74,13 +74,13 @@ namespace ParameterlessPopulationPyramid.Test {
     [TestCategory("Algorithms.ParameterlessPopulationPyramid")]
     public void P3DeceptiveStepTrap() {
       var problem = new DeceptiveStepTrapProblem();
-      problem.Length = 49;
+      problem.NumberOfTraps = 7;
       problem.TrapSize = 7;
       problem.StepSize = 2;
       DoRun(problem, 100, 123, 0.5, 6);
       DoRun(problem, 9876, 123, 0.785714285714286, 3489);
       DoRun(problem, 70000, 987, 1, 68292);
-      problem.Length = 700;
+      problem.NumberOfTraps = 100;
       DoRun(problem, 100000, 987, 0.76, 58711);
     }
 
@@ -90,10 +90,10 @@ namespace ParameterlessPopulationPyramid.Test {
     [TestCategory("Algorithms.ParameterlessPopulationPyramid")]
     public void P3HIFF() {
       var problem = new HIFFProblem();
-      problem.Length = 32;
+      problem.Dimension = 32;
       DoRun(problem, 50, 12345, 0.375, 26);
       DoRun(problem, 1000, 12345, 1, 976);
-      problem.Length = 512;
+      problem.Dimension = 512;
       DoRun(problem, 1000, 54321, 0.17361111111111, 440);
       DoRun(problem, 130000, 54321, 1, 89214);
     }

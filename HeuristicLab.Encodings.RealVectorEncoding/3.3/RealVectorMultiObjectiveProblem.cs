@@ -27,14 +27,26 @@ using HEAL.Attic;
 using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
+using HeuristicLab.Data;
 using HeuristicLab.Optimization;
+using HeuristicLab.Parameters;
 
 namespace HeuristicLab.Encodings.RealVectorEncoding {
   [StorableType("135697c1-1b2b-46b6-a518-1c6efae09475")]
   public abstract class RealVectorMultiObjectiveProblem : MultiObjectiveProblem<RealVectorEncoding, RealVector> {
-    public int Length {
-      get { return Encoding.Length; }
-      set { Encoding.Length = value; }
+    [Storable] protected ReferenceParameter<IntValue> DimensionRefParameter { get; private set; }
+    public IValueParameter<IntValue> DimensionParameter => DimensionRefParameter;
+    [Storable] protected ReferenceParameter<DoubleMatrix> BoundsRefParameter { get; private set; }
+    public IValueParameter<DoubleMatrix> BoundsParameter => BoundsRefParameter;
+
+    public int Dimension {
+      get { return DimensionRefParameter.Value.Value; }
+      set { DimensionRefParameter.Value.Value = value; }
+    }
+
+    public DoubleMatrix Bounds {
+      get { return BoundsRefParameter.Value; }
+      set { BoundsParameter.Value = value; }
     }
 
     [StorableConstructor]
@@ -46,12 +58,17 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
 
     protected RealVectorMultiObjectiveProblem(RealVectorMultiObjectiveProblem original, Cloner cloner)
       : base(original, cloner) {
+      DimensionRefParameter = cloner.Clone(original.DimensionRefParameter);
+      BoundsRefParameter = cloner.Clone(original.BoundsRefParameter);
       RegisterEventHandlers();
     }
 
     protected RealVectorMultiObjectiveProblem() : this(new RealVectorEncoding() { Length = 10 }) { }
     protected RealVectorMultiObjectiveProblem(RealVectorEncoding encoding) : base(encoding) {
       EncodingParameter.ReadOnly = true;
+      Parameters.Add(DimensionRefParameter = new ReferenceParameter<IntValue>("Dimension", "The dimension of the real vector problem.", Encoding.LengthParameter));
+      Parameters.Add(BoundsRefParameter = new ReferenceParameter<DoubleMatrix>("Bounds", "The bounding box of the values.", Encoding.BoundsParameter));
+
 
       Operators.Add(new HammingSimilarityCalculator());
       Operators.Add(new PopulationSimilarityAnalyzer(Operators.OfType<ISolutionSimilarityCalculator>()));
@@ -81,9 +98,20 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     }
 
     private void RegisterEventHandlers() {
-      Encoding.LengthParameter.Value.ValueChanged += LengthParameter_ValueChanged;
+      DimensionRefParameter.Value.ValueChanged += DimensionParameter_Value_ValueChanged;
+      BoundsRefParameter.ValueChanged += BoundsParameter_ValueChanged;
     }
 
-    protected virtual void LengthParameter_ValueChanged(object sender, EventArgs e) { }
+    private void DimensionParameter_Value_ValueChanged(object sender, EventArgs e) {
+      DimensionOnChanged();
+    }
+
+    private void BoundsParameter_ValueChanged(object sender, EventArgs e) {
+      BoundsOnChanged();
+    }
+
+    protected virtual void DimensionOnChanged() { }
+
+    protected virtual void BoundsOnChanged() { }
   }
 }

@@ -101,7 +101,6 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
       DistancesParameter = cloner.Clone(original.DistancesParameter);
       LowerBoundParameter = cloner.Clone(original.LowerBoundParameter);
       AverageQualityParameter = cloner.Clone(original.AverageQualityParameter);
-      RegisterEventHandlers();
     }
     public QuadraticAssignmentProblem()
       : base(new PermutationEncoding("Assignment") { Length = 5 }) {
@@ -132,7 +131,6 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
       }, @readonly: true);
 
       InitializeOperators();
-      RegisterEventHandlers();
     }
 
     public override ISingleObjectiveEvaluationResult Evaluate(Permutation assignment, IRandom random, CancellationToken cancellationToken) {
@@ -154,30 +152,10 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
       return new QuadraticAssignmentProblem(this, cloner);
     }
 
-    [StorableHook(HookType.AfterDeserialization)]
-    private void AfterDeserialization() {
-      // BackwardsCompatibility3.3
-      #region Backwards compatible code, remove with 3.4
-      if (BestKnownSolutionsParameter == null)
-        BestKnownSolutionsParameter = (IValueParameter<ItemSet<Permutation>>)Parameters["BestKnownSolutions"];
-      if (BestKnownSolutionParameter == null)
-        BestKnownSolutionParameter = (IValueParameter<Permutation>)Parameters["BestKnownSolution"];
-      if (WeightsParameter == null)
-        WeightsParameter = (IValueParameter<DoubleMatrix>)Parameters["Weights"];
-      if (DistancesParameter == null)
-        DistancesParameter = (IValueParameter<DoubleMatrix>)Parameters["Distances"];
-      if (LowerBoundParameter == null)
-        LowerBoundParameter = (IValueParameter<DoubleValue>)Parameters["LowerBound"];
-      if (AverageQualityParameter == null)
-        AverageQualityParameter = (IValueParameter<DoubleValue>)Parameters["AverageQuality"];
-      #endregion
-      RegisterEventHandlers();
-    }
-
     #region Events
     protected override void OnEncodingChanged() {
       base.OnEncodingChanged();
-      Encoding.Length = Weights.Rows;
+      Dimension = Weights.Rows;
       Parameterize();
     }
     protected override void OnEvaluatorChanged() {
@@ -190,12 +168,9 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
     }
     #endregion
 
-    private void RegisterEventHandlers() {
-      Encoding.LengthParameter.Value.ValueChanged += EncodingLengthOnChanged;
-    }
-
-    private void EncodingLengthOnChanged(object sender, EventArgs e) {
-      if (Encoding.Length != Weights.Rows) Encoding.Length = Weights.Rows;
+    protected override void DimensionOnChanged() {
+      base.DimensionOnChanged();
+      if (Dimension != Weights.Rows) Dimension = Weights.Rows;
     }
 
     #region Helpers
@@ -353,7 +328,7 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
 
       Weights = weights;
       Distances = distances;
-      Encoding.Length = weights.Rows;
+      Dimension = weights.Rows;
 
       BestKnownQualityParameter.Value = null;
       BestKnownSolution = null;

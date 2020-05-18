@@ -26,6 +26,7 @@ using System.Threading;
 using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
+using HeuristicLab.Data;
 using HeuristicLab.Encodings.BinaryVectorEncoding;
 using HeuristicLab.Optimization;
 
@@ -34,19 +35,12 @@ namespace HeuristicLab.Problems.Binary {
   [StorableType("8AC6D94E-E7B4-4216-B2CA-8E142E7A1391")]
   [Creatable(CreatableAttribute.Categories.CombinatorialProblems, Priority = 220)]
   public class HIFFProblem : BinaryVectorProblem {
-    [StorableConstructor]
-    protected HIFFProblem(StorableConstructorFlag _) : base(_) { }
-    protected HIFFProblem(HIFFProblem original, Cloner cloner)
-      : base(original, cloner) {
-    }
-    public override IDeepCloneable Clone(Cloner cloner) {
-      return new HIFFProblem(this, cloner);
-    }
 
     public HIFFProblem() : base() {
       Maximization = true;
-      Encoding.Length = 64;
+      DimensionRefParameter.ForceValue(new IntValue(64, @readonly: false));
     }
+
     // In the GECCO paper, Section 4.1
     public override ISingleObjectiveEvaluationResult Evaluate(BinaryVector individual, IRandom random, CancellationToken cancellationToken) {
       int[] level = new int[individual.Length];
@@ -85,6 +79,15 @@ namespace HeuristicLab.Problems.Binary {
       // Convert to percentage of total
       var quality = (double)total / maximum;
       return new SingleObjectiveEvaluationResult(quality);
+    }
+
+    [StorableConstructor]
+    protected HIFFProblem(StorableConstructorFlag _) : base(_) { }
+    protected HIFFProblem(HIFFProblem original, Cloner cloner)
+      : base(original, cloner) {
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new HIFFProblem(this, cloner);
     }
   }
 }

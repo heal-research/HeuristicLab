@@ -27,14 +27,19 @@ using HEAL.Attic;
 using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
+using HeuristicLab.Data;
 using HeuristicLab.Optimization;
+using HeuristicLab.Parameters;
 
 namespace HeuristicLab.Encodings.LinearLinkageEncoding {
   [StorableType("ad8b6097-a26b-440c-bfd4-92e5ecf17894")]
   public abstract class LinearLinkageMultiObjectiveProblem : MultiObjectiveProblem<LinearLinkageEncoding, LinearLinkage> {
-    public int Length {
-      get { return Encoding.Length; }
-      set { Encoding.Length = value; }
+    [Storable] protected ReferenceParameter<IntValue> DimensionRefParameter { get; private set; }
+    public IValueParameter<IntValue> DimensionParameter => DimensionRefParameter;
+
+    public int Dimension {
+      get { return DimensionRefParameter.Value.Value; }
+      set { DimensionRefParameter.Value.Value = value; }
     }
 
     [StorableConstructor]
@@ -46,12 +51,15 @@ namespace HeuristicLab.Encodings.LinearLinkageEncoding {
 
     protected LinearLinkageMultiObjectiveProblem(LinearLinkageMultiObjectiveProblem original, Cloner cloner)
       : base(original, cloner) {
+      DimensionRefParameter = cloner.Clone(original.DimensionRefParameter);
       RegisterEventHandlers();
     }
 
     protected LinearLinkageMultiObjectiveProblem() : this(new LinearLinkageEncoding() { Length = 10 }) { }
     protected LinearLinkageMultiObjectiveProblem(LinearLinkageEncoding encoding) : base(new LinearLinkageEncoding()) {
       EncodingParameter.ReadOnly = true;
+      Parameters.Add(DimensionRefParameter = new ReferenceParameter<IntValue>("Dimension", "The dimension of the linear linkage problem.", Encoding.LengthParameter));
+
 
       Operators.Add(new HammingSimilarityCalculator());
       Operators.Add(new PopulationSimilarityAnalyzer(Operators.OfType<ISolutionSimilarityCalculator>()));
@@ -81,9 +89,13 @@ namespace HeuristicLab.Encodings.LinearLinkageEncoding {
     }
 
     private void RegisterEventHandlers() {
-      Encoding.LengthParameter.Value.ValueChanged += LengthParameter_ValueChanged;
+      DimensionRefParameter.Value.ValueChanged += DimensionParameter_Value_ValueChanged;
     }
 
-    protected virtual void LengthParameter_ValueChanged(object sender, EventArgs e) { }
+    private void DimensionParameter_Value_ValueChanged(object sender, EventArgs e) {
+      DimensionOnChanged();
+    }
+
+    protected virtual void DimensionOnChanged() { }
   }
 }

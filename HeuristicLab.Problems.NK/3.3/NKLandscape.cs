@@ -231,8 +231,9 @@ namespace HeuristicLab.Problems.NK {
       }
     }
 
-    protected override void LengthParameter_ValueChanged(object sender, EventArgs e) {
-      NrOfFitnessComponentsParameter.Value = new IntValue(Length);
+    protected override void DimensionOnChanged() {
+      base.DimensionOnChanged();
+      NrOfFitnessComponentsParameter.Value = new IntValue(Dimension);
     }
 
     private void SeedParameter_ValueChanged(object sender, EventArgs e) {
@@ -258,7 +259,7 @@ namespace HeuristicLab.Problems.NK {
     private void InitializeInteractions() {
       if (InteractionInitializer != null)
         GeneInteractionsParameter.Value = InteractionInitializer.InitializeInterations(
-          Length,
+          Dimension,
           NrOfFitnessComponents.Value,
           NrOfInteractions.Value, random);
     }

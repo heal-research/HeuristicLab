@@ -25,17 +25,21 @@ using HEAL.Attic;
 using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
+using HeuristicLab.Data;
 using HeuristicLab.Optimization;
+using HeuristicLab.Parameters;
 
 namespace HeuristicLab.Encodings.BinaryVectorEncoding {
   [StorableType("b64caac0-a23a-401a-bb7e-ffa3e22b80ea")]
   public abstract class BinaryVectorMultiObjectiveProblem : MultiObjectiveProblem<BinaryVectorEncoding, BinaryVector> {
     [Storable] protected IResultParameter<ParetoFrontScatterPlot<BinaryVector>> BestResultParameter { get; private set; }
     public IResultDefinition<ParetoFrontScatterPlot<BinaryVector>> BestResult { get { return BestResultParameter; } }
+    [Storable] protected ReferenceParameter<IntValue> DimensionRefParameter { get; private set; }
+    public IValueParameter<IntValue> DimensionParameter => DimensionRefParameter;
 
-    public int Length {
-      get { return Encoding.Length; }
-      set { Encoding.Length = value; }
+    public int Dimension {
+      get { return DimensionRefParameter.Value.Value; }
+      set { DimensionRefParameter.Value.Value = value; }
     }
 
     [StorableConstructor]
@@ -48,6 +52,7 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
     protected BinaryVectorMultiObjectiveProblem(BinaryVectorMultiObjectiveProblem original, Cloner cloner)
       : base(original, cloner) {
       BestResultParameter = cloner.Clone(original.BestResultParameter);
+      DimensionRefParameter = cloner.Clone(original.DimensionRefParameter);
       RegisterEventHandlers();
     }
 
@@ -55,6 +60,7 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
     protected BinaryVectorMultiObjectiveProblem(BinaryVectorEncoding encoding) : base(encoding) {
       EncodingParameter.ReadOnly = true;
       Parameters.Add(BestResultParameter = new ResultParameter<ParetoFrontScatterPlot<BinaryVector>>("Best Pareto Front", "The best Pareto front found."));
+      Parameters.Add(DimensionRefParameter = new ReferenceParameter<IntValue>("Dimension", "The dimension of the binary vector problem.", Encoding.LengthParameter));
 
       Operators.Add(new HammingSimilarityCalculator());
       Operators.Add(new PopulationSimilarityAnalyzer(Operators.OfType<ISolutionSimilarityCalculator>()));
@@ -85,9 +91,13 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
     }
 
     private void RegisterEventHandlers() {
-      Encoding.LengthParameter.Value.ValueChanged += LengthParameter_ValueChanged;
+      DimensionRefParameter.Value.ValueChanged += DimensionParameter_Value_ValueChanged;
     }
 
-    protected virtual void LengthParameter_ValueChanged(object sender, EventArgs e) { }
+    private void DimensionParameter_Value_ValueChanged(object sender, EventArgs e) {
+      DimensionOnChanged();
+    }
+
+    protected virtual void DimensionOnChanged() { }
   }
 }

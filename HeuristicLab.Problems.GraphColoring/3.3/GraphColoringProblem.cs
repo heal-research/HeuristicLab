@@ -82,7 +82,7 @@ namespace HeuristicLab.Problems.GraphColoring {
         imat[i, 0] = defaultInstance[i].Item1 - 1;
         imat[i, 1] = defaultInstance[i].Item2 - 1;
       }
-      Encoding.Length = defaultInstanceNodes;
+      Dimension = defaultInstanceNodes;
       AdjacencyListParameter.Value = imat;
       BestKnownQualityParameter.Value = null;
       BestKnownColorsParameter.Value = new IntValue(defaultInstanceBestColors);
@@ -120,8 +120,8 @@ namespace HeuristicLab.Problems.GraphColoring {
       BestKnownQualityParameter.Value = null;
       if (FitnessFunction == FitnessFunction.Prioritized
         && BestKnownColorsParameter.Value != null
-        && Encoding.Length > 0) {
-        var mag = Math.Pow(10, -(int)Math.Ceiling(Math.Log10(Encoding.Length)));
+        && Dimension > 0) {
+        var mag = Math.Pow(10, -(int)Math.Ceiling(Math.Log10(Dimension)));
         // the value is e.g. 0.051 for 0 conflicts with 51 colors (and less than 1000 nodes)
         BestKnownQuality = BestKnownColorsParameter.Value.Value * mag;
       } else BestKnownQualityParameter.Value = null;
@@ -246,7 +246,7 @@ namespace HeuristicLab.Problems.GraphColoring {
     }
 
     public void Load(GCPData data) {
-      Encoding.Length = data.Nodes;
+      Dimension = data.Nodes;
       AdjacencyListParameter.Value = new IntMatrix(data.Adjacencies);
       if (data.BestKnownColoring != null) {
         var colors = data.BestKnownColoring.Distinct().Count();
@@ -278,7 +278,7 @@ namespace HeuristicLab.Problems.GraphColoring {
       var instance = new GCPData();
       instance.Name = Name;
       instance.Description = Description;
-      instance.Nodes = Encoding.Length;
+      instance.Nodes = Dimension;
       var adjList = AdjacencyListParameter.Value;
       instance.Adjacencies = new int[adjList.Rows, 2];
       for (var r = 0; r < adjList.Rows; r++) {

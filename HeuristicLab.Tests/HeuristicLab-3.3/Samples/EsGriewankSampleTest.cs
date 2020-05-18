@@ -63,7 +63,7 @@ namespace HeuristicLab.Tests {
 
       SingleObjectiveTestFunctionProblem problem = new SingleObjectiveTestFunctionProblem();
 
-      problem.ProblemSize = 10;
+      problem.Dimension = 10;
       problem.TestFunction = new Griewank();
       problem.Encoding.SolutionCreator = new UniformRandomRealVectorCreator();
       problem.Bounds = new DoubleMatrix(new double[,] { { -600, 600 } });

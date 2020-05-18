@@ -19,12 +19,12 @@
  */
 #endregion
 
-using System;
 using System.Linq;
 using System.Threading;
 using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
+using HeuristicLab.Data;
 using HeuristicLab.Encodings.BinaryVectorEncoding;
 using HeuristicLab.Optimization;
 
@@ -36,16 +36,8 @@ namespace HeuristicLab.Problems.Binary {
 
     public OneMaxProblem() : base() {
       Maximization = true;
-      Encoding.Length = 10;
-      BestKnownQuality = Encoding.Length;
-    }
-
-    [StorableConstructor]
-    protected OneMaxProblem(StorableConstructorFlag _) : base(_) { }
-
-    protected OneMaxProblem(OneMaxProblem original, Cloner cloner) : base(original, cloner) { }
-    public override IDeepCloneable Clone(Cloner cloner) {
-      return new OneMaxProblem(this, cloner);
+      DimensionRefParameter.ForceValue(new IntValue(10, @readonly: false));
+      BestKnownQuality = Dimension;
     }
 
     public override ISingleObjectiveEvaluationResult Evaluate(BinaryVector vector, IRandom random, CancellationToken cancellationToken) {
@@ -53,9 +45,16 @@ namespace HeuristicLab.Problems.Binary {
       return new SingleObjectiveEvaluationResult(quality);
     }
 
-    protected override void LengthParameter_ValueChanged(object sender, EventArgs e) {
-      base.LengthParameter_ValueChanged(sender, e);
-      BestKnownQuality = Length;
+    [StorableConstructor]
+    protected OneMaxProblem(StorableConstructorFlag _) : base(_) { }
+    protected OneMaxProblem(OneMaxProblem original, Cloner cloner) : base(original, cloner) { }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new OneMaxProblem(this, cloner);
+    }
+
+    protected override void DimensionOnChanged() {
+      base.DimensionOnChanged();
+      BestKnownQuality = Dimension;
     }
   }
 }

@@ -41,12 +41,6 @@ namespace HeuristicLab.Problems.TestFunctions {
     IProblemInstanceConsumer<SOTFData> {
 
     #region Parameter Properties
-    private IFixedValueParameter<IntValue> ProblemSizeParameter {
-      get { return (IFixedValueParameter<IntValue>)Parameters["ProblemSize"]; }
-    }
-    private IValueParameter<DoubleMatrix> BoundsParameter {
-      get { return (IValueParameter<DoubleMatrix>)Parameters["Bounds"]; }
-    }
     public OptionalValueParameter<RealVector> BestKnownSolutionParameter {
       get { return (OptionalValueParameter<RealVector>)Parameters["BestKnownSolution"]; }
     }
@@ -56,14 +50,6 @@ namespace HeuristicLab.Problems.TestFunctions {
     #endregion
 
     #region Properties
-    public int ProblemSize {
-      get { return ProblemSizeParameter.Value.Value; }
-      set { ProblemSizeParameter.Value.Value = value; }
-    }
-    public DoubleMatrix Bounds {
-      get { return BoundsParameter.Value; }
-      set { BoundsParameter.Value = value; }
-    }
     public ISingleObjectiveTestFunction TestFunction {
       get { return TestFunctionParameter.Value; }
       set { TestFunctionParameter.Value = value; }
@@ -78,14 +64,10 @@ namespace HeuristicLab.Problems.TestFunctions {
     }
     public SingleObjectiveTestFunctionProblem()
       : base(new RealVectorEncoding("Point")) {
-      Parameters.Add(new FixedValueParameter<IntValue>("ProblemSize", "The dimensionality of the problem instance (number of variables in the function).", new IntValue(2)));
-      Parameters.Add(new ValueParameter<DoubleMatrix>("Bounds", "The bounds of the solution given as either one line for all variables or a line for each variable. The first column specifies lower bound, the second upper bound.", new DoubleMatrix(new double[,] { { -100, 100 } })));
       Parameters.Add(new OptionalValueParameter<RealVector>("BestKnownSolution", "The best known solution for this test function instance."));
       Parameters.Add(new ValueParameter<ISingleObjectiveTestFunction>("TestFunction", "The function that is to be optimized.", new Ackley()));
       Maximization = TestFunction.Maximization;
 
-      Encoding.LengthParameter = ProblemSizeParameter;
-      Encoding.BoundsParameter = BoundsParameter;
       BestKnownQuality = TestFunction.BestKnownQuality;
 
       InitializeOperators();
@@ -104,8 +86,6 @@ namespace HeuristicLab.Problems.TestFunctions {
     private void RegisterEventHandlers() {
       Evaluator.QualityParameter.ActualNameChanged += Evaluator_QualityParameter_ActualNameChanged;
       TestFunctionParameter.ValueChanged += TestFunctionParameterOnValueChanged;
-      ProblemSizeParameter.Value.ValueChanged += ProblemSizeOnValueChanged;
-      BoundsParameter.ValueChanged += BoundsParameterOnValueChanged;
     }
 
     public override ISingleObjectiveEvaluationResult Evaluate(RealVector individual, IRandom random, CancellationToken cancellationToken) {
@@ -155,30 +135,31 @@ namespace HeuristicLab.Problems.TestFunctions {
       Evaluator.QualityParameter.ActualNameChanged += Evaluator_QualityParameter_ActualNameChanged;
       Parameterize();
     }
+    protected override void DimensionOnChanged() {
+      base.DimensionOnChanged();
+      if (Dimension < TestFunction.MinimumProblemSize || Dimension > TestFunction.MaximumProblemSize)
+        Dimension = Math.Min(TestFunction.MaximumProblemSize, Math.Max(TestFunction.MinimumProblemSize, Dimension));
+    }
+    protected override void BoundsOnChanged() {
+      base.BoundsOnChanged();
+      Parameterize();
+    }
     private void Evaluator_QualityParameter_ActualNameChanged(object sender, EventArgs e) {
       Parameterize();
     }
     private void TestFunctionParameterOnValueChanged(object sender, EventArgs eventArgs) {
-      var problemSizeChange = ProblemSize < TestFunction.MinimumProblemSize
-                              || ProblemSize > TestFunction.MaximumProblemSize;
+      var problemSizeChange = Dimension < TestFunction.MinimumProblemSize
+                              || Dimension > TestFunction.MaximumProblemSize;
       if (problemSizeChange) {
-        ProblemSize = Math.Max(TestFunction.MinimumProblemSize, Math.Min(ProblemSize, TestFunction.MaximumProblemSize));
+        Dimension = Math.Max(TestFunction.MinimumProblemSize, Math.Min(Dimension, TestFunction.MaximumProblemSize));
       }
       BestKnownQuality = TestFunction.BestKnownQuality;
       Bounds = (DoubleMatrix)TestFunction.Bounds.Clone();
-      var bestSolution = TestFunction.GetBestKnownSolution(ProblemSize);
+      var bestSolution = TestFunction.GetBestKnownSolution(Dimension);
       BestKnownSolutionParameter.Value = bestSolution;
       Maximization = TestFunction.Maximization;
 
       OnReset();
-    }
-    private void ProblemSizeOnValueChanged(object sender, EventArgs eventArgs) {
-      if (ProblemSize < TestFunction.MinimumProblemSize
-        || ProblemSize > TestFunction.MaximumProblemSize)
-        ProblemSize = Math.Min(TestFunction.MaximumProblemSize, Math.Max(TestFunction.MinimumProblemSize, ProblemSize));
-    }
-    private void BoundsParameterOnValueChanged(object sender, EventArgs eventArgs) {
-      Parameterize();
     }
     #endregion
 

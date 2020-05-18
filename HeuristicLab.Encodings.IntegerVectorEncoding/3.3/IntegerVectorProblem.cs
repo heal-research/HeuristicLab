@@ -27,18 +27,29 @@ using HEAL.Attic;
 using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
+using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Optimization.Operators;
+using HeuristicLab.Parameters;
 
 namespace HeuristicLab.Encodings.IntegerVectorEncoding {
   [StorableType("c6081457-a3de-45ce-9f47-e0eb1c851bd2")]
   public abstract class IntegerVectorProblem : SingleObjectiveProblem<IntegerVectorEncoding, IntegerVector> {
     [Storable] protected IResultParameter<IntegerVector> BestResultParameter { get; private set; }
     public IResultDefinition<IntegerVector> BestResult { get => BestResultParameter; }
+    [Storable] protected ReferenceParameter<IntValue> DimensionRefParameter { get; private set; }
+    public IValueParameter<IntValue> DimensionParameter => DimensionRefParameter;
+    [Storable] protected ReferenceParameter<IntMatrix> BoundsRefParameter { get; private set; }
+    public IValueParameter<IntMatrix> BoundsParameter => BoundsRefParameter;
 
-    public int Length {
-      get { return Encoding.Length; }
-      set { Encoding.Length = value; }
+    public int Dimension {
+      get { return DimensionRefParameter.Value.Value; }
+      set { DimensionRefParameter.Value.Value = value; }
+    }
+
+    public IntMatrix Bounds {
+      get { return BoundsRefParameter.Value; }
+      set { BoundsRefParameter.Value = value; }
     }
 
     [StorableConstructor]
@@ -51,6 +62,8 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
     protected IntegerVectorProblem(IntegerVectorProblem original, Cloner cloner)
       : base(original, cloner) {
       BestResultParameter = cloner.Clone(original.BestResultParameter);
+      DimensionRefParameter = cloner.Clone(original.DimensionRefParameter);
+      BoundsRefParameter = cloner.Clone(original.BoundsRefParameter);
       RegisterEventHandlers();
     }
 
@@ -58,6 +71,8 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
     protected IntegerVectorProblem(IntegerVectorEncoding encoding) : base(encoding) {
       EncodingParameter.ReadOnly = true;
       Parameters.Add(BestResultParameter = new ResultParameter<IntegerVector>("Best Solution", "The best solution."));
+      Parameters.Add(DimensionRefParameter = new ReferenceParameter<IntValue>("Dimension", "The dimension of the integer vector problem.", Encoding.LengthParameter));
+      Parameters.Add(BoundsRefParameter = new ReferenceParameter<IntMatrix>("Bounds", "The bounding box and step sizes of the values.", Encoding.BoundsParameter));
 
       Operators.Add(new HammingSimilarityCalculator());
       Operators.Add(new QualitySimilarityCalculator());
@@ -87,9 +102,20 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
     }
 
     private void RegisterEventHandlers() {
-      Encoding.LengthParameter.Value.ValueChanged += LengthParameter_ValueChanged;
+      DimensionRefParameter.Value.ValueChanged += DimensionParameter_Value_ValueChanged;
+      BoundsRefParameter.ValueChanged += BoundsParameter_ValueChanged;
     }
 
-    protected virtual void LengthParameter_ValueChanged(object sender, EventArgs e) { }
+    private void DimensionParameter_Value_ValueChanged(object sender, EventArgs e) {
+      DimensionOnChanged();
+    }
+
+    private void BoundsParameter_ValueChanged(object sender, EventArgs e) {
+      BoundsOnChanged();
+    }
+
+    protected virtual void DimensionOnChanged() { }
+
+    protected virtual void BoundsOnChanged() { }
   }
 }

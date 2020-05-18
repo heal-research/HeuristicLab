@@ -61,7 +61,7 @@ namespace HeuristicLab.Tests {
       problem.BestKnownSolutionParameter.Value = new RealVector(new double[] { 0, 0 });
       problem.Bounds = new DoubleMatrix(new double[,] { { -5.12, 5.12 } });
       problem.TestFunction= new Rastrigin();
-      problem.ProblemSize = 2;
+      problem.Dimension = 2;
       problem.Encoding.SolutionCreator = new UniformRandomRealVectorCreator();
       #endregion
       #region Algorithm Configuration

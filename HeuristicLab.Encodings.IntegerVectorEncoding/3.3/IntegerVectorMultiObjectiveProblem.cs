@@ -27,17 +27,21 @@ using HEAL.Attic;
 using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
+using HeuristicLab.Data;
 using HeuristicLab.Optimization;
+using HeuristicLab.Parameters;
 
 namespace HeuristicLab.Encodings.IntegerVectorEncoding {
   [StorableType("11916b0f-4c34-4ece-acae-e28d11211b43")]
   public abstract class IntegerVectorMultiObjectiveProblem : MultiObjectiveProblem<IntegerVectorEncoding, IntegerVector> {
     [Storable] protected IResultParameter<ParetoFrontScatterPlot<IntegerVector>> BestResultParameter { get; private set; }
     public IResultDefinition<ParetoFrontScatterPlot<IntegerVector>> BestResult { get { return BestResultParameter; } }
+    [Storable] protected ReferenceParameter<IntValue> DimensionRefParameter { get; private set; }
+    public IValueParameter<IntValue> DimensionParameter => DimensionRefParameter;
 
-    public int Length {
-      get { return Encoding.Length; }
-      set { Encoding.Length = value; }
+    public int Dimension {
+      get { return DimensionRefParameter.Value.Value; }
+      set { DimensionRefParameter.Value.Value = value; }
     }
 
     [StorableConstructor]
@@ -50,6 +54,7 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
     protected IntegerVectorMultiObjectiveProblem(IntegerVectorMultiObjectiveProblem original, Cloner cloner)
       : base(original, cloner) {
       BestResultParameter = cloner.Clone(original.BestResultParameter);
+      DimensionRefParameter = cloner.Clone(original.DimensionRefParameter);
       RegisterEventHandlers();
     }
 
@@ -57,6 +62,7 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
     protected IntegerVectorMultiObjectiveProblem(IntegerVectorEncoding encoding) : base(encoding) {
       EncodingParameter.ReadOnly = true;
       Parameters.Add(BestResultParameter = new ResultParameter<ParetoFrontScatterPlot<IntegerVector>>("Best Pareto Front", "The best Pareto front found."));
+      Parameters.Add(DimensionRefParameter = new ReferenceParameter<IntValue>("Dimension", "The dimension of the integer vector problem.", Encoding.LengthParameter));
 
       Operators.Add(new HammingSimilarityCalculator());
       Operators.Add(new PopulationSimilarityAnalyzer(Operators.OfType<ISolutionSimilarityCalculator>()));
@@ -87,9 +93,13 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
     }
 
     private void RegisterEventHandlers() {
-      Encoding.LengthParameter.Value.ValueChanged += LengthParameter_ValueChanged;
+      DimensionRefParameter.Value.ValueChanged += DimensionParameter_Value_ValueChanged;
     }
 
-    protected virtual void LengthParameter_ValueChanged(object sender, EventArgs e) { }
+    private void DimensionParameter_Value_ValueChanged(object sender, EventArgs e) {
+      DimensionOnChanged();
+    }
+
+    protected virtual void DimensionOnChanged() { }
   }
 }

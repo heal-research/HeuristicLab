@@ -69,12 +69,7 @@ namespace HeuristicLab.Problems.PTSP {
       Parameters.Add(BestKnownSolutionParameter = new OptionalValueParameter<IProbabilisticTSPSolution>("BestKnownSolution", "The best known solution of this pTSP instance."));
 
       ProbabilisticTSPData = new ProbabilisticTSPData();
-      Encoding.Length = ProbabilisticTSPData.Cities;
-    }
-
-    protected override void OnEncodingChanged() {
-      base.OnEncodingChanged();
-      Encoding.Length = ProbabilisticTSPData.Cities;
+      Dimension = ProbabilisticTSPData.Cities;
     }
 
     public override void Analyze(Permutation[] solutions, double[] qualities, ResultCollection results, IRandom random) {
@@ -111,7 +106,7 @@ namespace HeuristicLab.Problems.PTSP {
       if (data.Coordinates != null && data.Coordinates.GetLength(1) != 2)
         throw new System.IO.InvalidDataException("The coordinates of the given instance are not in the right format, there need to be one row for each customer and two columns for the x and y coordinates.");
 
-      Encoding.Length = data.Dimension;
+      Dimension = data.Dimension;
       Name = data.Name;
       Description = data.Description;
 

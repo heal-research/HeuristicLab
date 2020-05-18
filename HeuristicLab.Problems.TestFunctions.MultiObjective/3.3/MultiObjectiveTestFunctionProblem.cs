@@ -36,14 +36,8 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
   [Item("Test Function (multi-objective)", "Test functions with real valued inputs and multiple objectives.")]
   public class MultiObjectiveTestFunctionProblem : RealVectorMultiObjectiveProblem, IProblemInstanceConsumer<MOTFData>, IMultiObjectiveProblemDefinition<RealVectorEncoding, RealVector> {
     #region Parameter Properties
-    public IFixedValueParameter<IntValue> ProblemSizeParameter {
-      get { return (IFixedValueParameter<IntValue>)Parameters["ProblemSize"]; }
-    }
     public IFixedValueParameter<IntValue> ObjectivesParameter {
       get { return (IFixedValueParameter<IntValue>)Parameters["Objectives"]; }
-    }
-    public IValueParameter<DoubleMatrix> BoundsParameter {
-      get { return (IValueParameter<DoubleMatrix>)Parameters["Bounds"]; }
     }
     public IValueParameter<IMultiObjectiveTestFunction> TestFunctionParameter {
       get { return (IValueParameter<IMultiObjectiveTestFunction>)Parameters["TestFunction"]; }
@@ -51,17 +45,9 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
     #endregion
 
     #region Properties
-    public int ProblemSize {
-      get { return ProblemSizeParameter.Value.Value; }
-      set { ProblemSizeParameter.Value.Value = value; }
-    }
     public new int Objectives {
       get { return ObjectivesParameter.Value.Value; }
       set { ObjectivesParameter.Value.Value = value; }
-    }
-    public DoubleMatrix Bounds {
-      get { return BoundsParameter.Value; }
-      set { BoundsParameter.Value = value; }
     }
     public IMultiObjectiveTestFunction TestFunction {
       get { return TestFunctionParameter.Value; }
@@ -84,13 +70,9 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
     }
 
     public MultiObjectiveTestFunctionProblem() : base() {
-      Parameters.Add(new FixedValueParameter<IntValue>("ProblemSize", "The dimensionality of the problem instance (number of variables in the function).", new IntValue(2)));
       Parameters.Add(new FixedValueParameter<IntValue>("Objectives", "The dimensionality of the solution vector (number of objectives).", new IntValue(2)));
-      Parameters.Add(new ValueParameter<DoubleMatrix>("Bounds", "The bounds of the solution given as either one line for all variables or a line for each variable. The first column specifies lower bound, the second upper bound.", new DoubleMatrix(new double[,] { { -4, 4 } })));
       Parameters.Add(new ValueParameter<IMultiObjectiveTestFunction>("TestFunction", "The function that is to be optimized.", new Fonseca()));
 
-      Encoding.LengthParameter = ProblemSizeParameter;
-      Encoding.BoundsParameter = BoundsParameter;
       BestKnownFrontParameter.Hidden = true;
 
       UpdateParameterValues();
@@ -100,7 +82,6 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
 
     private void RegisterEventHandlers() {
       TestFunctionParameter.ValueChanged += TestFunctionParameterOnValueChanged;
-      ProblemSizeParameter.Value.ValueChanged += ProblemSizeOnValueChanged;
       ObjectivesParameter.Value.ValueChanged += ObjectivesOnValueChanged;
     }
 
@@ -155,18 +136,20 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
       UpdateParameterValues();
     }
 
+    protected override void DimensionOnChanged() {
+      base.DimensionOnChanged();
+      if (Dimension < TestFunction.MinimumSolutionLength || Dimension > TestFunction.MaximumSolutionLength)
+        Dimension = Math.Min(TestFunction.MaximumSolutionLength, Math.Max(TestFunction.MinimumSolutionLength, Dimension));
+      UpdateParameterValues();
+    }
+
     private void TestFunctionParameterOnValueChanged(object sender, EventArgs eventArgs) {
-      ProblemSize = Math.Max(TestFunction.MinimumSolutionLength, Math.Min(ProblemSize, TestFunction.MaximumSolutionLength));
+      Dimension = Math.Max(TestFunction.MinimumSolutionLength, Math.Min(Dimension, TestFunction.MaximumSolutionLength));
       Objectives = Math.Max(TestFunction.MinimumObjectives, Math.Min(Objectives, TestFunction.MaximumObjectives));
       Parameters.Remove(ReferencePointParameterName);
       Parameters.Add(new FixedValueParameter<DoubleArray>(ReferencePointParameterName, "The reference point for hypervolume calculations on this problem", new DoubleArray(TestFunction.ReferencePoint(Objectives))));
       UpdateParameterValues();
       OnReset();
-    }
-
-    private void ProblemSizeOnValueChanged(object sender, EventArgs eventArgs) {
-      ProblemSize = Math.Min(TestFunction.MaximumSolutionLength, Math.Max(TestFunction.MinimumSolutionLength, ProblemSize));
-      UpdateParameterValues();
     }
 
     private void ObjectivesOnValueChanged(object sender, EventArgs eventArgs) {

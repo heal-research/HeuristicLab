@@ -21,6 +21,7 @@
 
 #endregion
 
+using System;
 using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -33,21 +34,8 @@ namespace HeuristicLab.Problems.Binary {
   [StorableType("89777145-7979-4B7B-B798-5F7C7E892A21")]
   [Creatable(CreatableAttribute.Categories.CombinatorialProblems, Priority = 230)]
   public class DeceptiveStepTrapProblem : DeceptiveTrapProblem {
-    [StorableConstructor]
-    protected DeceptiveStepTrapProblem(StorableConstructorFlag _) : base(_) { }
-    protected DeceptiveStepTrapProblem(DeceptiveStepTrapProblem original, Cloner cloner)
-      : base(original, cloner) {
-      RegisterParameterEvents();
-    }
-    public override IDeepCloneable Clone(Cloner cloner) {
-      return new DeceptiveStepTrapProblem(this, cloner);
-    }
-
-    private const string StepSizeParameterName = "Step Size";
-
-    public IFixedValueParameter<IntValue> StepSizeParameter {
-      get { return (IFixedValueParameter<IntValue>)Parameters[StepSizeParameterName]; }
-    }
+    [Storable] private int offset = -1;
+    [Storable] public IFixedValueParameter<IntValue> StepSizeParameter { get; private set; }
 
     public int StepSize {
       get { return StepSizeParameter.Value.Value; }
@@ -55,37 +43,51 @@ namespace HeuristicLab.Problems.Binary {
     }
 
     public DeceptiveStepTrapProblem() : base() {
-      Parameters.Add(new FixedValueParameter<IntValue>(StepSizeParameterName, "", new IntValue(2)));
+      Parameters.Add(StepSizeParameter = new FixedValueParameter<IntValue>("Step Size", "", new IntValue(2)));
+      offset = (TrapSize - StepSize) % StepSize;
+
       RegisterParameterEvents();
-    }
-
-    [StorableHook(HookType.AfterDeserialization)]
-    private void AfterDeserialization() {
-      RegisterParameterEvents();
-    }
-
-    private void RegisterParameterEvents() {
-      TrapSizeParameter.Value.ValueChanged += (o, e) => { offset = -1; };
-      StepSizeParameter.Value.ValueChanged += (o, e) => { offset = -1; };
-    }
-
-
-    private int offset = -1;
-    private int Offset {
-      get {
-        if (offset == -1) offset = (TrapSize - StepSize) % StepSize;
-        return offset;
-      }
     }
 
     protected override int TrapMaximum {
-      get { return (Offset + TrapSize) / StepSize; }
+      get { return (offset + TrapSize) / StepSize; }
     }
 
     protected override int Score(BinaryVector individual, int trapIndex, int trapSize) {
       int partial = base.Score(individual, trapIndex, trapSize);
       // introduce plateaus using integer division
-      return (Offset + partial) / StepSize;
+      return (offset + partial) / StepSize;
+    }
+
+    [StorableConstructor]
+    protected DeceptiveStepTrapProblem(StorableConstructorFlag _) : base(_) { }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      RegisterParameterEvents();
+    }
+    protected DeceptiveStepTrapProblem(DeceptiveStepTrapProblem original, Cloner cloner)
+      : base(original, cloner) {
+      offset = original.offset;
+      StepSizeParameter = cloner.Clone(original.StepSizeParameter);
+
+      RegisterParameterEvents();
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new DeceptiveStepTrapProblem(this, cloner);
+    }
+
+    private void RegisterParameterEvents() {
+      StepSizeParameter.Value.ValueChanged += StepSizeOnChanged;
+    }
+
+    protected override void TrapSizeOnChanged(object sender, EventArgs e) {
+      base.TrapSizeOnChanged(sender, e);
+      offset = (TrapSize - StepSize) % StepSize;
+    }
+
+    private void StepSizeOnChanged(object sender, EventArgs e) {
+      offset = (TrapSize - StepSize) % StepSize;
     }
   }
 }

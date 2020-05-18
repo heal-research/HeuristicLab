@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -74,6 +75,7 @@ namespace HeuristicLab.Problems.Orienteering {
       Parameters.Add(BestKnownSolutionParameter = new OptionalValueParameter<OrienteeringSolution>("BestKnownSolution", "The best known solution of this Orienteering instance."));
       Parameters.Add(BestOrienteeringSolutionParameter = new ResultParameter<OrienteeringSolution>("Best Orienteering Solution", "The best so far solution found."));
       Maximization = true;
+      Dimension = OrienteeringProblemData.Cities;
 
       InitializeOperators();
     }
@@ -144,21 +146,28 @@ namespace HeuristicLab.Problems.Orienteering {
       return saving;
     }
 
-    protected override void OnEncodingChanged() {
-      base.OnEncodingChanged();
-      ParameterizeOperators();
+    private void RegisterEventHandlers() {
+      OrienteeringProblemDataParameter.ValueChanged += OrienteeringProblemDataParameterOnValueChanged;
+    }
+
+    private void OrienteeringProblemDataParameterOnValueChanged(object sender, EventArgs e) {
+      Dimension = OrienteeringProblemData.Cities;
     }
 
     protected override void OnEvaluatorChanged() {
       base.OnEvaluatorChanged();
       ParameterizeOperators();
     }
+    protected override void DimensionOnChanged() {
+      base.DimensionOnChanged();
+      if (Dimension != OrienteeringProblemData.Cities)
+        Dimension = OrienteeringProblemData.Cities;
+    }
 
     private void InitializeOperators() {
       Encoding.SolutionCreator = new GreedyOrienteeringTourCreator() {
         OrienteeringProblemDataParameter = { ActualName = OrienteeringProblemDataParameter.Name }
       };
-
       Operators.Add(new OrienteeringLocalImprovementOperator() {
         OrienteeringProblemDataParameter = { ActualName = OrienteeringProblemDataParameter.Name }
       });

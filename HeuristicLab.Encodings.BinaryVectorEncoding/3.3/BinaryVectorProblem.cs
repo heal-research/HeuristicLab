@@ -20,22 +20,24 @@
  */
 #endregion
 
-using System;
 using System.Linq;
 using HEAL.Attic;
 using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
+using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Optimization.Operators;
+using HeuristicLab.Parameters;
 
 namespace HeuristicLab.Encodings.BinaryVectorEncoding {
   [StorableType("2F6FEB34-BD19-47AF-9484-7F48565C0C43")]
   public abstract class BinaryVectorProblem : SingleObjectiveProblem<BinaryVectorEncoding, BinaryVector> {
     [Storable] protected IResultParameter<ISingleObjectiveSolutionContext<BinaryVector>> BestResultParameter { get; private set; }
-    public IResultDefinition<ISingleObjectiveSolutionContext<BinaryVector>> BestResult { get { return BestResultParameter; } }
+    public IResultDefinition<ISingleObjectiveSolutionContext<BinaryVector>> BestResult => BestResultParameter;
+    [Storable] protected ReferenceParameter<IntValue> DimensionRefParameter { get; private set; }
 
-    public int Length {
+    public int Dimension {
       get { return Encoding.Length; }
       set { Encoding.Length = value; }
     }
@@ -50,6 +52,7 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
     protected BinaryVectorProblem(BinaryVectorProblem original, Cloner cloner)
       : base(original, cloner) {
       BestResultParameter = cloner.Clone(original.BestResultParameter);
+      DimensionRefParameter = cloner.Clone(original.DimensionRefParameter);
       RegisterEventHandlers();
     }
 
@@ -57,6 +60,7 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
     protected BinaryVectorProblem(BinaryVectorEncoding encoding) : base(encoding) {
       EncodingParameter.ReadOnly = true;
       Parameters.Add(BestResultParameter = new ResultParameter<ISingleObjectiveSolutionContext<BinaryVector>>("Best Solution", "The best solution."));
+      Parameters.Add(DimensionRefParameter = new ReferenceParameter<IntValue>("Dimension", "The dimension of the binary vector problem.", Encoding.LengthParameter));
 
       Operators.Add(new HammingSimilarityCalculator());
       Operators.Add(new QualitySimilarityCalculator());
@@ -73,11 +77,6 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
         BestResultParameter.ActualValue = (ISingleObjectiveSolutionContext<BinaryVector>)best.Clone();
     }
 
-    protected override void OnEncodingChanged() {
-      base.OnEncodingChanged();
-      Parameterize();
-    }
-
     private void Parameterize() {
       foreach (var similarityCalculator in Operators.OfType<ISolutionSimilarityCalculator>()) {
         similarityCalculator.SolutionVariableName = Encoding.Name;
@@ -86,9 +85,12 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
     }
 
     private void RegisterEventHandlers() {
-      Encoding.LengthParameter.Value.ValueChanged += LengthParameter_ValueChanged;
+      Encoding.PropertyChanged += (sender, args) => {
+        if (args.PropertyName == nameof(Encoding.Length))
+          DimensionOnChanged();
+      };
     }
 
-    protected virtual void LengthParameter_ValueChanged(object sender, EventArgs e) { }
+    protected virtual void DimensionOnChanged() { }
   }
 }

@@ -242,6 +242,7 @@ namespace HeuristicLab.Problems.LinearAssignment {
     }
 
     private void Parameterize() {
+      if (Costs.Rows != Dimension) Dimension = Costs.Rows;
       foreach (var similarityCalculator in Operators.OfType<ISolutionSimilarityCalculator>()) {
         similarityCalculator.SolutionVariableName = Encoding.Name;
         similarityCalculator.QualityVariableName = Evaluator.QualityParameter.ActualName;

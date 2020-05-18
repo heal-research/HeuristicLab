@@ -36,24 +36,17 @@ namespace HeuristicLab.Problems.Binary {
   [StorableType("399FFE01-2B76-4DBF-B363-8BB65FE95A5D")]
   [Creatable(CreatableAttribute.Categories.CombinatorialProblems, Priority = 230)]
   public class DeceptiveTrapProblem : BinaryVectorProblem {
-    [StorableConstructor]
-    protected DeceptiveTrapProblem(StorableConstructorFlag _) : base(_) { }
-    protected DeceptiveTrapProblem(DeceptiveTrapProblem original, Cloner cloner)
-      : base(original, cloner) {
-    }
-    public override IDeepCloneable Clone(Cloner cloner) {
-      return new DeceptiveTrapProblem(this, cloner);
-    }
-
-    private const string TrapSizeParameterName = "Trap Size";
-
-    public IFixedValueParameter<IntValue> TrapSizeParameter {
-      get { return (IFixedValueParameter<IntValue>)Parameters[TrapSizeParameterName]; }
-    }
+    [Storable] public IFixedValueParameter<IntValue> TrapSizeParameter { get; private set; }
+    [Storable] public IFixedValueParameter<IntValue> NumberOfTrapsParameter { get; private set; }
 
     public int TrapSize {
       get { return TrapSizeParameter.Value.Value; }
       set { TrapSizeParameter.Value.Value = value; }
+    }
+
+    public int NumberOfTraps {
+      get { return NumberOfTrapsParameter.Value.Value; }
+      set { NumberOfTrapsParameter.Value.Value = value; }
     }
 
     protected virtual int TrapMaximum {
@@ -62,8 +55,11 @@ namespace HeuristicLab.Problems.Binary {
 
     public DeceptiveTrapProblem() : base() {
       Maximization = true;
-      Parameters.Add(new FixedValueParameter<IntValue>(TrapSizeParameterName, "", new IntValue(7)));
-      Encoding.Length = 49;
+      Parameters.Add(TrapSizeParameter = new FixedValueParameter<IntValue>("Trap Size", "", new IntValue(7)));
+      Parameters.Add(NumberOfTrapsParameter = new FixedValueParameter<IntValue>("Number of Traps", "", new IntValue(7)));
+      Dimension = TrapSize * NumberOfTraps;
+
+      RegisterEventHandlers();
     }
 
     // In the GECCO paper, calculates Equation 3
@@ -82,7 +78,7 @@ namespace HeuristicLab.Problems.Binary {
     }
 
     public override ISingleObjectiveEvaluationResult Evaluate(BinaryVector individual, IRandom random, CancellationToken cancellationToken) {
-      if (individual.Length != Length) throw new ArgumentException("The individual has not the correct length.");
+      if (individual.Length != Dimension) throw new ArgumentException("The individual has not the correct length.");
       int total = 0;
       var trapSize = TrapSize;
       for (int i = 0; i < individual.Length; i += trapSize) {
@@ -90,6 +86,36 @@ namespace HeuristicLab.Problems.Binary {
       }
       var quality =  (double)(total * trapSize) / (TrapMaximum * individual.Length);
       return new SingleObjectiveEvaluationResult(quality);
+    }
+
+    [StorableConstructor]
+    protected DeceptiveTrapProblem(StorableConstructorFlag _) : base(_) { }
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      RegisterEventHandlers();
+    }
+    protected DeceptiveTrapProblem(DeceptiveTrapProblem original, Cloner cloner)
+      : base(original, cloner) {
+      TrapSizeParameter = cloner.Clone(original.TrapSizeParameter);
+      NumberOfTrapsParameter = cloner.Clone(original.NumberOfTrapsParameter);
+
+      RegisterEventHandlers();
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new DeceptiveTrapProblem(this, cloner);
+    }
+
+    private void RegisterEventHandlers() {
+      TrapSizeParameter.Value.ValueChanged += TrapSizeOnChanged;
+      NumberOfTrapsParameter.Value.ValueChanged += NumberOfTrapsOnChanged;
+    }
+
+    protected virtual void TrapSizeOnChanged(object sender, EventArgs e) {
+      Dimension = TrapSize * NumberOfTraps;
+    }
+
+    private void NumberOfTrapsOnChanged(object sender, EventArgs e) {
+      Dimension = TrapSize * NumberOfTraps;
     }
   }
 }

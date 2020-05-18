@@ -27,19 +27,19 @@ using HEAL.Attic;
 using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
+using HeuristicLab.Data;
 using HeuristicLab.Optimization;
+using HeuristicLab.Parameters;
 
 namespace HeuristicLab.Encodings.PermutationEncoding {
   [StorableType("7bc5215b-c181-40d0-a758-d7c19a356e18")]
   public abstract class PermutationMultiObjectiveProblem : MultiObjectiveProblem<PermutationEncoding, Permutation> {
-    public int Length {
-      get { return Encoding.Length; }
-      set { Encoding.Length = value; }
-    }
+    [Storable] protected ReferenceParameter<IntValue> DimensionRefParameter { get; private set; }
+    public IValueParameter<IntValue> DimensionParameter => DimensionRefParameter;
 
-    public PermutationTypes Type {
-      get { return Encoding.Type; }
-      set { Encoding.Type = value; }
+    public int Dimension {
+      get { return DimensionRefParameter.Value.Value; }
+      set { DimensionRefParameter.Value.Value = value; }
     }
 
     [StorableConstructor]
@@ -51,12 +51,14 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
 
     protected PermutationMultiObjectiveProblem(PermutationMultiObjectiveProblem original, Cloner cloner)
       : base(original, cloner) {
+      DimensionRefParameter = cloner.Clone(original.DimensionRefParameter);
       RegisterEventHandlers();
     }
 
     protected PermutationMultiObjectiveProblem() : this(new PermutationEncoding() { Length = 10, Type = PermutationTypes.Absolute }) { }
     protected PermutationMultiObjectiveProblem(PermutationEncoding encoding) : base(encoding) {
       EncodingParameter.ReadOnly = true;
+      Parameters.Add(DimensionRefParameter = new ReferenceParameter<IntValue>("Dimension", "The dimension of the permutation problem.", Encoding.LengthParameter));
 
       Operators.Add(new HammingSimilarityCalculator());
       Operators.Add(new PopulationSimilarityAnalyzer(Operators.OfType<ISolutionSimilarityCalculator>()));
@@ -86,11 +88,13 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
     }
 
     private void RegisterEventHandlers() {
-      Encoding.LengthParameter.Value.ValueChanged += LengthParameter_ValueChanged;
-      Encoding.PermutationTypeParameter.Value.ValueChanged += TypeParameter_ValueChanged;
+      DimensionRefParameter.Value.ValueChanged += DimensionParameter_Value_ValueChanged;
     }
 
-    protected virtual void LengthParameter_ValueChanged(object sender, EventArgs e) { }
-    protected virtual void TypeParameter_ValueChanged(object sender, EventArgs e) { }
+    private void DimensionParameter_Value_ValueChanged(object sender, EventArgs e) {
+      DimensionOnChanged();
+    }
+
+    protected virtual void DimensionOnChanged() { }
   }
 }

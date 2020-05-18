@@ -40,16 +40,25 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
   [Creatable(CreatableAttribute.Categories.ExternalEvaluationProblemsSingleObjective, Priority = 100)]
   [StorableType("4ea0ded8-4451-4011-b88e-4d0680721b01")]
   public sealed class SingleObjectiveBinaryVectorExternalEvaluationProblem : ExternalEvaluationProblem<BinaryVectorEncoding, BinaryVector> {
+    [Storable] private ReferenceParameter<IntValue> DimensionRefParameter;
+    public IValueParameter<IntValue> DimensionParameter => DimensionRefParameter;
+
+    public int Dimension {
+      get => Encoding.Length;
+      set => Encoding.Length = value;
+    }
 
     [StorableConstructor]
     private SingleObjectiveBinaryVectorExternalEvaluationProblem(StorableConstructorFlag _) : base(_) { }
-    private SingleObjectiveBinaryVectorExternalEvaluationProblem(SingleObjectiveBinaryVectorExternalEvaluationProblem original, Cloner cloner) : base(original, cloner) { }
+    private SingleObjectiveBinaryVectorExternalEvaluationProblem(SingleObjectiveBinaryVectorExternalEvaluationProblem original, Cloner cloner)
+      : base(original, cloner) {
+      DimensionRefParameter = cloner.Clone(original.DimensionRefParameter);
+    }
 
     public SingleObjectiveBinaryVectorExternalEvaluationProblem()
       : base(new BinaryVectorEncoding()) {
-      var lengthParameter = new FixedValueParameter<IntValue>("Length", "The length of the vector.", new IntValue(10));
-      Parameters.Add(lengthParameter);
-      Encoding.LengthParameter = lengthParameter;
+      Parameters.Add(DimensionRefParameter = new ReferenceParameter<IntValue>("Dimension", "The dimension of the vector.", Encoding.LengthParameter));
+      DimensionRefParameter.ForceValue(new IntValue(Dimension, @readonly: false));
       // TODO: Add and parameterize additional operators, 
     }
 
@@ -63,16 +72,33 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
   [Creatable(CreatableAttribute.Categories.ExternalEvaluationProblemsSingleObjective, Priority = 101)]
   [StorableType("46465e8c-11d8-4d02-8c45-de41a08db7fa")]
   public sealed class SingleObjectiveIntegerVectorExternalEvaluationProblem : ExternalEvaluationProblem<IntegerVectorEncoding, IntegerVector> {
+    [Storable] private ReferenceParameter<IntValue> DimensionRefParameter;
+    public IValueParameter<IntValue> DimensionParameter => DimensionRefParameter;
+    [Storable] private ReferenceParameter<IntMatrix> BoundsRefParameter;
+    public IValueParameter<IntMatrix> BoundsParameter => BoundsRefParameter;
+
+    public int Dimension {
+      get => DimensionRefParameter.Value.Value;
+      set => DimensionRefParameter.Value.Value = value;
+    }
+
+    public IntMatrix Bounds {
+      get => BoundsRefParameter.Value;
+      set => BoundsRefParameter.Value = value;
+    }
 
     [StorableConstructor]
     private SingleObjectiveIntegerVectorExternalEvaluationProblem(StorableConstructorFlag _) : base(_) { }
-    private SingleObjectiveIntegerVectorExternalEvaluationProblem(SingleObjectiveIntegerVectorExternalEvaluationProblem original, Cloner cloner) : base(original, cloner) { }
+    private SingleObjectiveIntegerVectorExternalEvaluationProblem(SingleObjectiveIntegerVectorExternalEvaluationProblem original, Cloner cloner)
+      : base(original, cloner) {
+      DimensionRefParameter = cloner.Clone(original.DimensionRefParameter);
+      BoundsRefParameter = cloner.Clone(original.BoundsRefParameter);
+    }
 
     public SingleObjectiveIntegerVectorExternalEvaluationProblem()
       : base(new IntegerVectorEncoding()) {
-      var lengthParameter = new FixedValueParameter<IntValue>("Length", "The length of the vector.", new IntValue(10));
-      Parameters.Add(lengthParameter);
-      Encoding.LengthParameter = lengthParameter;
+      Parameters.Add(DimensionRefParameter = new ReferenceParameter<IntValue>("Dimension", "The dimension of the vector.", Encoding.LengthParameter));
+      Parameters.Add(BoundsRefParameter = new ReferenceParameter<IntMatrix>("Bounds", "The bounding box and step size of the elements.", Encoding.BoundsParameter));
       // TODO: Add and parameterize additional operators, 
     }
 
@@ -86,16 +112,33 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
   [Creatable(CreatableAttribute.Categories.ExternalEvaluationProblemsSingleObjective, Priority = 102)]
   [StorableType("637f091f-6601-494e-bafb-2a8ea474210c")]
   public sealed class SingleObjectiveRealVectorExternalEvaluationProblem : ExternalEvaluationProblem<RealVectorEncoding, RealVector> {
+    [Storable] private ReferenceParameter<IntValue> DimensionRefParameter;
+    public IValueParameter<IntValue> DimensionParameter => DimensionRefParameter;
+    [Storable] private ReferenceParameter<DoubleMatrix> BoundsRefParameter;
+    public IValueParameter<DoubleMatrix> BoundsParameter => BoundsRefParameter;
+
+    public int Dimension {
+      get => DimensionRefParameter.Value.Value;
+      set => DimensionRefParameter.Value.Value = value;
+    }
+
+    public DoubleMatrix Bounds {
+      get => BoundsRefParameter.Value;
+      set => BoundsRefParameter.Value = value;
+    }
 
     [StorableConstructor]
     private SingleObjectiveRealVectorExternalEvaluationProblem(StorableConstructorFlag _) : base(_) { }
-    private SingleObjectiveRealVectorExternalEvaluationProblem(SingleObjectiveRealVectorExternalEvaluationProblem original, Cloner cloner) : base(original, cloner) { }
+    private SingleObjectiveRealVectorExternalEvaluationProblem(SingleObjectiveRealVectorExternalEvaluationProblem original, Cloner cloner)
+      : base(original, cloner) {
+      DimensionRefParameter = cloner.Clone(original.DimensionRefParameter);
+      BoundsRefParameter = cloner.Clone(original.BoundsRefParameter);
+    }
 
     public SingleObjectiveRealVectorExternalEvaluationProblem()
       : base(new RealVectorEncoding()) {
-      var lengthParameter = new FixedValueParameter<IntValue>("Length", "The length of the vector.", new IntValue(10));
-      Parameters.Add(lengthParameter);
-      Encoding.LengthParameter = lengthParameter;
+      Parameters.Add(DimensionRefParameter = new ReferenceParameter<IntValue>("Dimension", "The dimension of the vector.", Encoding.LengthParameter));
+      Parameters.Add(BoundsRefParameter = new ReferenceParameter<DoubleMatrix>("Bounds", "The bounding box of the elements.", Encoding.BoundsParameter));
       // TODO: Add and parameterize additional operators, 
     }
 
@@ -109,16 +152,24 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
   [Creatable(CreatableAttribute.Categories.ExternalEvaluationProblemsSingleObjective, Priority = 103)]
   [StorableType("ad9d45f8-b97e-49a7-b3d2-487d9a2cbdf9")]
   public sealed class SingleObjectivePermutationExternalEvaluationProblem : ExternalEvaluationProblem<PermutationEncoding, Permutation> {
+    [Storable] private ReferenceParameter<IntValue> DimensionRefParameter;
+    public IValueParameter<IntValue> DimensionParameter => DimensionRefParameter;
+
+    public int Dimension {
+      get => DimensionRefParameter.Value.Value;
+      set => DimensionRefParameter.Value.Value = value;
+    }
 
     [StorableConstructor]
     private SingleObjectivePermutationExternalEvaluationProblem(StorableConstructorFlag _) : base(_) { }
-    private SingleObjectivePermutationExternalEvaluationProblem(SingleObjectivePermutationExternalEvaluationProblem original, Cloner cloner) : base(original, cloner) { }
+    private SingleObjectivePermutationExternalEvaluationProblem(SingleObjectivePermutationExternalEvaluationProblem original, Cloner cloner)
+      : base(original, cloner) {
+      DimensionRefParameter = cloner.Clone(original.DimensionRefParameter);
+    }
 
     public SingleObjectivePermutationExternalEvaluationProblem()
       : base(new PermutationEncoding()) {
-      var lengthParameter = new FixedValueParameter<IntValue>("Length", "The length of the permutation.", new IntValue(10));
-      Parameters.Add(lengthParameter);
-      Encoding.LengthParameter = lengthParameter;
+      Parameters.Add(DimensionRefParameter = new ReferenceParameter<IntValue>("Dimension", "The dimension of the vector.", Encoding.LengthParameter));
       // TODO: Add and parameterize additional operators, 
     }
 
@@ -139,6 +190,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
 
     public SingleObjectiveSymbolicExpressionTreeExternalEvaluationProblem()
       : base(new SymbolicExpressionTreeEncoding()) {
+      // TODO: Change to ReferenceParameter
       var lengthParameter = new FixedValueParameter<IntValue>("TreeLength", "The total amount of nodes.", new IntValue(50));
       Parameters.Add(lengthParameter);
       Encoding.TreeLengthParameter = lengthParameter;
@@ -158,16 +210,24 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
   [Creatable(CreatableAttribute.Categories.ExternalEvaluationProblemsSingleObjective, Priority = 105)]
   [StorableType("945a35d9-89a8-4423-9ea0-21829ac68887")]
   public sealed class SingleObjectiveLinearLinkageExternalEvaluationProblem : ExternalEvaluationProblem<LinearLinkageEncoding, LinearLinkage> {
+    [Storable] private ReferenceParameter<IntValue> DimensionRefParameter;
+    public IValueParameter<IntValue> DimensionParameter => DimensionRefParameter;
+
+    public int Dimension {
+      get => DimensionRefParameter.Value.Value;
+      set => DimensionRefParameter.Value.Value = value;
+    }
 
     [StorableConstructor]
     private SingleObjectiveLinearLinkageExternalEvaluationProblem(StorableConstructorFlag _) : base(_) { }
-    private SingleObjectiveLinearLinkageExternalEvaluationProblem(SingleObjectiveLinearLinkageExternalEvaluationProblem original, Cloner cloner) : base(original, cloner) { }
+    private SingleObjectiveLinearLinkageExternalEvaluationProblem(SingleObjectiveLinearLinkageExternalEvaluationProblem original, Cloner cloner)
+      : base(original, cloner) {
+      DimensionRefParameter = cloner.Clone(original.DimensionRefParameter);
+    }
 
     public SingleObjectiveLinearLinkageExternalEvaluationProblem()
       : base(new LinearLinkageEncoding()) {
-      var lengthParameter = new FixedValueParameter<IntValue>("Length", "The length of the vector.", new IntValue(10));
-      Parameters.Add(lengthParameter);
-      Encoding.LengthParameter = lengthParameter;
+      Parameters.Add(DimensionRefParameter = new ReferenceParameter<IntValue>("Dimension", "The dimension of the vector.", Encoding.LengthParameter));
       // TODO: Add and parameterize additional operators, 
     }
 
@@ -198,16 +258,25 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
   [Creatable(CreatableAttribute.Categories.ExternalEvaluationProblemsMultiObjective, Priority = 100)]
   [StorableType("f14c7e88-b74d-4cad-ae55-83daf7b4c288")]
   public sealed class MultiObjectiveBinaryVectorExternalEvaluationProblem : MultiObjectiveExternalEvaluationProblem<BinaryVectorEncoding, BinaryVector> {
+    [Storable] private ReferenceParameter<IntValue> DimensionRefParameter;
+    public IValueParameter<IntValue> DimensionParameter => DimensionRefParameter;
+
+    public int Dimension {
+      get => Encoding.Length;
+      set => Encoding.Length = value;
+    }
 
     [StorableConstructor]
     private MultiObjectiveBinaryVectorExternalEvaluationProblem(StorableConstructorFlag _) : base(_) { }
-    private MultiObjectiveBinaryVectorExternalEvaluationProblem(MultiObjectiveBinaryVectorExternalEvaluationProblem original, Cloner cloner) : base(original, cloner) { }
+    private MultiObjectiveBinaryVectorExternalEvaluationProblem(MultiObjectiveBinaryVectorExternalEvaluationProblem original, Cloner cloner)
+      : base(original, cloner) {
+      DimensionRefParameter = cloner.Clone(original.DimensionRefParameter);
+    }
 
     public MultiObjectiveBinaryVectorExternalEvaluationProblem()
       : base(new BinaryVectorEncoding()) {
-      var lengthParameter = new FixedValueParameter<IntValue>("Length", "The length of the vector.", new IntValue(10));
-      Parameters.Add(lengthParameter);
-      Encoding.LengthParameter = lengthParameter;
+      Parameters.Add(DimensionRefParameter = new ReferenceParameter<IntValue>("Dimension", "The dimension of the vector.", Encoding.LengthParameter));
+      DimensionRefParameter.ForceValue(new IntValue(Dimension, @readonly: false));
       // TODO: Add and parameterize additional operators, 
     }
 
@@ -221,16 +290,33 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
   [Creatable(CreatableAttribute.Categories.ExternalEvaluationProblemsMultiObjective, Priority = 101)]
   [StorableType("90a82c2f-6c37-4ffd-8495-bee278c583d3")]
   public sealed class MultiObjectiveIntegerVectorExternalEvaluationProblem : MultiObjectiveExternalEvaluationProblem<IntegerVectorEncoding, IntegerVector> {
+    [Storable] private ReferenceParameter<IntValue> DimensionRefParameter;
+    public IValueParameter<IntValue> DimensionParameter => DimensionRefParameter;
+    [Storable] private ReferenceParameter<IntMatrix> BoundsRefParameter;
+    public IValueParameter<IntMatrix> BoundsParameter => BoundsRefParameter;
+
+    public int Dimension {
+      get => DimensionRefParameter.Value.Value;
+      set => DimensionRefParameter.Value.Value = value;
+    }
+
+    public IntMatrix Bounds {
+      get => BoundsRefParameter.Value;
+      set => BoundsRefParameter.Value = value;
+    }
 
     [StorableConstructor]
     private MultiObjectiveIntegerVectorExternalEvaluationProblem(StorableConstructorFlag _) : base(_) { }
-    private MultiObjectiveIntegerVectorExternalEvaluationProblem(MultiObjectiveIntegerVectorExternalEvaluationProblem original, Cloner cloner) : base(original, cloner) { }
+    private MultiObjectiveIntegerVectorExternalEvaluationProblem(MultiObjectiveIntegerVectorExternalEvaluationProblem original, Cloner cloner)
+      : base(original, cloner) {
+      DimensionRefParameter = cloner.Clone(original.DimensionRefParameter);
+      BoundsRefParameter = cloner.Clone(original.BoundsRefParameter);
+    }
 
     public MultiObjectiveIntegerVectorExternalEvaluationProblem()
       : base(new IntegerVectorEncoding()) {
-      var lengthParameter = new FixedValueParameter<IntValue>("Length", "The length of the vector.", new IntValue(10));
-      Parameters.Add(lengthParameter);
-      Encoding.LengthParameter = lengthParameter;
+      Parameters.Add(DimensionRefParameter = new ReferenceParameter<IntValue>("Dimension", "The dimension of the vector.", Encoding.LengthParameter));
+      Parameters.Add(BoundsRefParameter = new ReferenceParameter<IntMatrix>("Bounds", "The bounding box and step size of the elements.", Encoding.BoundsParameter));
       // TODO: Add and parameterize additional operators, 
     }
 
@@ -244,16 +330,33 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
   [Creatable(CreatableAttribute.Categories.ExternalEvaluationProblemsMultiObjective, Priority = 102)]
   [StorableType("38e1d068-d569-48c5-bad6-cbdd685b7c6b")]
   public sealed class MultiObjectiveRealVectorExternalEvaluationProblem : MultiObjectiveExternalEvaluationProblem<RealVectorEncoding, RealVector> {
+    [Storable] private ReferenceParameter<IntValue> DimensionRefParameter;
+    public IValueParameter<IntValue> DimensionParameter => DimensionRefParameter;
+    [Storable] private ReferenceParameter<DoubleMatrix> BoundsRefParameter;
+    public IValueParameter<DoubleMatrix> BoundsParameter => BoundsRefParameter;
+
+    public int Dimension {
+      get => DimensionRefParameter.Value.Value;
+      set => DimensionRefParameter.Value.Value = value;
+    }
+
+    public DoubleMatrix Bounds {
+      get => BoundsRefParameter.Value;
+      set => BoundsRefParameter.Value = value;
+    }
 
     [StorableConstructor]
     private MultiObjectiveRealVectorExternalEvaluationProblem(StorableConstructorFlag _) : base(_) { }
-    private MultiObjectiveRealVectorExternalEvaluationProblem(MultiObjectiveRealVectorExternalEvaluationProblem original, Cloner cloner) : base(original, cloner) { }
+    private MultiObjectiveRealVectorExternalEvaluationProblem(MultiObjectiveRealVectorExternalEvaluationProblem original, Cloner cloner)
+      : base(original, cloner) {
+      DimensionRefParameter = cloner.Clone(original.DimensionRefParameter);
+      BoundsRefParameter = cloner.Clone(original.BoundsRefParameter);
+    }
 
     public MultiObjectiveRealVectorExternalEvaluationProblem()
       : base(new RealVectorEncoding()) {
-      var lengthParameter = new FixedValueParameter<IntValue>("Length", "The length of the vector.", new IntValue(10));
-      Parameters.Add(lengthParameter);
-      Encoding.LengthParameter = lengthParameter;
+      Parameters.Add(DimensionRefParameter = new ReferenceParameter<IntValue>("Dimension", "The dimension of the vector.", Encoding.LengthParameter));
+      Parameters.Add(BoundsRefParameter = new ReferenceParameter<DoubleMatrix>("Bounds", "The bounding box of the elements.", Encoding.BoundsParameter));
       // TODO: Add and parameterize additional operators, 
     }
 
@@ -267,16 +370,24 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
   [Creatable(CreatableAttribute.Categories.ExternalEvaluationProblemsMultiObjective, Priority = 103)]
   [StorableType("f1b265b0-ac7c-4c36-b346-5b3f2c37694b")]
   public sealed class MultiObjectivePermutationExternalEvaluationProblem : MultiObjectiveExternalEvaluationProblem<PermutationEncoding, Permutation> {
+    [Storable] private ReferenceParameter<IntValue> DimensionRefParameter;
+    public IValueParameter<IntValue> DimensionParameter => DimensionRefParameter;
+
+    public int Dimension {
+      get => DimensionRefParameter.Value.Value;
+      set => DimensionRefParameter.Value.Value = value;
+    }
 
     [StorableConstructor]
     private MultiObjectivePermutationExternalEvaluationProblem(StorableConstructorFlag _) : base(_) { }
-    private MultiObjectivePermutationExternalEvaluationProblem(MultiObjectivePermutationExternalEvaluationProblem original, Cloner cloner) : base(original, cloner) { }
+    private MultiObjectivePermutationExternalEvaluationProblem(MultiObjectivePermutationExternalEvaluationProblem original, Cloner cloner)
+      : base(original, cloner) {
+      DimensionRefParameter = cloner.Clone(original.DimensionRefParameter);
+    }
 
     public MultiObjectivePermutationExternalEvaluationProblem()
       : base(new PermutationEncoding()) {
-      var lengthParameter = new FixedValueParameter<IntValue>("Length", "The length of the permutation.", new IntValue(10));
-      Parameters.Add(lengthParameter);
-      Encoding.LengthParameter = lengthParameter;
+      Parameters.Add(DimensionRefParameter = new ReferenceParameter<IntValue>("Dimension", "The dimension of the vector.", Encoding.LengthParameter));
       // TODO: Add and parameterize additional operators, 
     }
 
@@ -297,6 +408,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
 
     public MultiObjectiveSymbolicExpressionTreeExternalEvaluationProblem()
       : base(new SymbolicExpressionTreeEncoding()) {
+      // TODO: Change to ReferenceParameter
       var lengthParameter = new FixedValueParameter<IntValue>("TreeLength", "The total amount of nodes.", new IntValue(50));
       Parameters.Add(lengthParameter);
       Encoding.TreeLengthParameter = lengthParameter;
@@ -316,16 +428,24 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
   [Creatable(CreatableAttribute.Categories.ExternalEvaluationProblemsMultiObjective, Priority = 105)]
   [StorableType("ed0c1129-651d-465f-87b0-f412f3e3b3d1")]
   public sealed class MultiObjectiveLinearLinkageExternalEvaluationProblem : MultiObjectiveExternalEvaluationProblem<LinearLinkageEncoding, LinearLinkage> {
+    [Storable] private ReferenceParameter<IntValue> DimensionRefParameter;
+    public IValueParameter<IntValue> DimensionParameter => DimensionRefParameter;
+
+    public int Dimension {
+      get => DimensionRefParameter.Value.Value;
+      set => DimensionRefParameter.Value.Value = value;
+    }
 
     [StorableConstructor]
     private MultiObjectiveLinearLinkageExternalEvaluationProblem(StorableConstructorFlag _) : base(_) { }
-    private MultiObjectiveLinearLinkageExternalEvaluationProblem(MultiObjectiveLinearLinkageExternalEvaluationProblem original, Cloner cloner) : base(original, cloner) { }
+    private MultiObjectiveLinearLinkageExternalEvaluationProblem(MultiObjectiveLinearLinkageExternalEvaluationProblem original, Cloner cloner)
+      : base(original, cloner) {
+      DimensionRefParameter = cloner.Clone(original.DimensionRefParameter);
+    }
 
     public MultiObjectiveLinearLinkageExternalEvaluationProblem()
       : base(new LinearLinkageEncoding()) {
-      var lengthParameter = new FixedValueParameter<IntValue>("Length", "The length of the vector.", new IntValue(10));
-      Parameters.Add(lengthParameter);
-      Encoding.LengthParameter = lengthParameter;
+      Parameters.Add(DimensionRefParameter = new ReferenceParameter<IntValue>("Dimension", "The dimension of the vector.", Encoding.LengthParameter));
       // TODO: Add and parameterize additional operators, 
     }
 
