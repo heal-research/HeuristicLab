@@ -87,16 +87,17 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       var problemData = Content.ProblemData;
       var ds = problemData.Dataset;
       var runs = new RunCollection();
-      // determine relevant variables (at least two different values)
-      var doubleVars = ds.DoubleVariables.Where(vn => ds.GetDoubleValues(vn).Distinct().Skip(1).Any()).ToArray();
-      var stringVars = ds.StringVariables.Where(vn => ds.GetStringValues(vn).Distinct().Skip(1).Any()).ToArray();
-      var dateTimeVars = ds.DateTimeVariables.Where(vn => ds.GetDateTimeValues(vn).Distinct().Skip(1).Any()).ToArray();
+
+      var doubleVars = ds.DoubleVariables.ToArray();
+      var stringVars = ds.StringVariables.ToArray();
+      var dateTimeVars = ds.DateTimeVariables.ToArray();
 
       var predictedValues = Content.EstimatedValues.ToArray();
+      var targetValues = ds.GetReadOnlyDoubleValues(problemData.TargetVariable);
+
       foreach (var i in problemData.AllIndices) {
         var run = CreateRunForIdx(i, problemData, doubleVars, stringVars, dateTimeVars);
-        var targetValue = ds.GetDoubleValue(problemData.TargetVariable, i);
-        AddErrors(run, predictedValues[i], targetValue);
+        AddErrors(run, predictedValues[i], targetValues[i]);
 
         if (problemData.IsTrainingSample(i) && problemData.IsTestSample(i)) {
           run.Results.Add(PartitionLabel, new StringValue("Training + Test"));
@@ -124,7 +125,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       bubbleChartView.SelectedYAxis = selectedYAxis;
     }
 
-    private void AddErrors(IRun run, double pred, double target) {
+    private static void AddErrors(IRun run, double pred, double target) {
       var residual = target - pred;
       var relError = residual / target;
       run.Results.Add(TargetLabel, new DoubleValue(target));
@@ -135,7 +136,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       run.Results.Add(AbsRelativeErrorLabel, new DoubleValue(Math.Abs(relError)));
     }
 
-    private IRun CreateRunForIdx(int i, IRegressionProblemData problemData, IEnumerable<string> doubleVars, IEnumerable<string> stringVars, IEnumerable<string> dateTimeVars) {
+    private static IRun CreateRunForIdx(int i, IRegressionProblemData problemData, IEnumerable<string> doubleVars, IEnumerable<string> stringVars, IEnumerable<string> dateTimeVars) {
       var ds = problemData.Dataset;
       var run = new Run();
       foreach (var variableName in doubleVars) {

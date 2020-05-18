@@ -82,7 +82,7 @@ namespace HeuristicLab.Tests {
       PluginLoader.Assemblies.ToArray();
       bool success = true;
       foreach (Type deepCloneableType in ApplicationManager.Manager.GetTypes(typeof(IDeepCloneable))) {
-        // skip types that explicitely choose not to deep-clone every member
+        // skip types that explicitly choose not to deep-clone every member
         if (excludedTypes.Contains(deepCloneableType)) continue;
         // test only types contained in HL plugin assemblies
         if (!PluginLoader.Assemblies.Contains(deepCloneableType.Assembly)) continue;
