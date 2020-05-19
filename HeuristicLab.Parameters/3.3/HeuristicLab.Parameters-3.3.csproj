@@ -125,6 +125,7 @@
     <Compile Include="ContextParameter.cs" />
     <Compile Include="FixedValueParameter.cs" />
     <Compile Include="OptionalConstrainedValueParameter.cs" />
+    <Compile Include="ParameterChangeHandler.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="ReferenceParameter.cs" />
     <Compile Include="ScopeTreeLookupParameter.cs" />
@@ -160,6 +161,11 @@
     <ProjectReference Include="..\..\HeuristicLab.Core\3.3\HeuristicLab.Core-3.3.csproj">
       <Project>{C36BD924-A541-4A00-AFA8-41701378DDC5}</Project>
       <Name>HeuristicLab.Core-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Data\3.3\HeuristicLab.Data-3.3.csproj">
+      <Project>{bbab9df5-5ef3-4ba8-ade9-b36e82114937}</Project>
+      <Name>HeuristicLab.Data-3.3</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Persistence\3.3\HeuristicLab.Persistence-3.3.csproj">

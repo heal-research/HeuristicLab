@@ -75,10 +75,7 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
     }
 
     private void RegisterEventHandlers() {
-      LengthParameter.ValueChanged += (_, __) => {
-        if (!LengthParameter.Value.ReadOnly) LengthParameter.Value.ValueChanged += (___, ____) => OnPropertyChanged(nameof(Length));
-        OnPropertyChanged(nameof(Length));
-      };
+      IntValueParameterChangeHandler.Create(LengthParameter, () => OnPropertyChanged(nameof(Length)));
     }
 
     #region Operator Discovery

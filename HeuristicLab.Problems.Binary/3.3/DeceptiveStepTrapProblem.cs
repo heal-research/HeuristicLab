@@ -21,7 +21,6 @@
 
 #endregion
 
-using System;
 using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -44,7 +43,7 @@ namespace HeuristicLab.Problems.Binary {
 
     public DeceptiveStepTrapProblem() : base() {
       Parameters.Add(StepSizeParameter = new FixedValueParameter<IntValue>("Step Size", "", new IntValue(2)));
-      offset = (TrapSize - StepSize) % StepSize;
+      CalculateOffset();
 
       RegisterParameterEvents();
     }
@@ -78,15 +77,15 @@ namespace HeuristicLab.Problems.Binary {
     }
 
     private void RegisterParameterEvents() {
-      StepSizeParameter.Value.ValueChanged += StepSizeOnChanged;
+      IntValueParameterChangeHandler.Create(StepSizeParameter, CalculateOffset);
     }
 
-    protected override void TrapSizeOnChanged(object sender, EventArgs e) {
-      base.TrapSizeOnChanged(sender, e);
-      offset = (TrapSize - StepSize) % StepSize;
+    protected override void TrapSizeOnChanged() {
+      base.TrapSizeOnChanged();
+      CalculateOffset();
     }
 
-    private void StepSizeOnChanged(object sender, EventArgs e) {
+    private void CalculateOffset() {
       offset = (TrapSize - StepSize) % StepSize;
     }
   }

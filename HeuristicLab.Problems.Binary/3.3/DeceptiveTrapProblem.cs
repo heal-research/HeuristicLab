@@ -106,15 +106,15 @@ namespace HeuristicLab.Problems.Binary {
     }
 
     private void RegisterEventHandlers() {
-      TrapSizeParameter.Value.ValueChanged += TrapSizeOnChanged;
-      NumberOfTrapsParameter.Value.ValueChanged += NumberOfTrapsOnChanged;
+      IntValueParameterChangeHandler.Create(TrapSizeParameter, TrapSizeOnChanged);
+      IntValueParameterChangeHandler.Create(NumberOfTrapsParameter, NumberOfTrapsOnChanged);
     }
 
-    protected virtual void TrapSizeOnChanged(object sender, EventArgs e) {
+    protected virtual void TrapSizeOnChanged() {
       Dimension = TrapSize * NumberOfTraps;
     }
 
-    private void NumberOfTrapsOnChanged(object sender, EventArgs e) {
+    private void NumberOfTrapsOnChanged() {
       Dimension = TrapSize * NumberOfTraps;
     }
   }

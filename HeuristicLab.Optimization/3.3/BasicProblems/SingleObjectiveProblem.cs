@@ -61,7 +61,6 @@ namespace HeuristicLab.Optimization {
       protected set {
         if (Maximization == value) return;
         MaximizationParameter.ForceValue(new BoolValue(value, @readonly: true));
-        OnMaximizationChanged();
       }
     }
 
@@ -73,10 +72,10 @@ namespace HeuristicLab.Optimization {
       BestKnownQualityParameter = cloner.Clone(original.BestKnownQualityParameter);
       MaximizationParameter = cloner.Clone(original.MaximizationParameter);
       ParameterizeOperators();
+      RegisterEventHandlers();
     }
 
     protected SingleObjectiveProblem() : base() {
-
       MaximizationParameter = new ValueParameter<BoolValue>("Maximization", "Whether the problem should be maximized (True) or minimized (False).", new BoolValue(false).AsReadOnly()) { Hidden = true, ReadOnly = true };
       BestKnownQualityParameter = new OptionalValueParameter<DoubleValue>("BestKnownQuality", "The quality of the best known solution of this problem.");
 
@@ -91,6 +90,7 @@ namespace HeuristicLab.Optimization {
       Operators.Add(new SingleObjectiveMoveMaker<TEncodedSolution>());
 
       ParameterizeOperators();
+      RegisterEventHandlers();
     }
 
     protected SingleObjectiveProblem(TEncoding encoding) : base(encoding) {
@@ -105,11 +105,13 @@ namespace HeuristicLab.Optimization {
       Operators.Add(new SingleObjectiveMoveMaker<TEncodedSolution>());
 
       ParameterizeOperators();
+      RegisterEventHandlers();
     }
 
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
       ParameterizeOperators();
+      RegisterEventHandlers();
     }
 
     public ISingleObjectiveEvaluationResult Evaluate(TEncodedSolution solution, IRandom random) {
@@ -197,6 +199,10 @@ namespace HeuristicLab.Optimization {
         op.Analyze = Analyze;
       foreach (var op in Operators.OfType<INeighborBasedOperator<TEncodedSolution>>())
         op.GetNeighbors = GetNeighbors;
+    }
+
+    private void RegisterEventHandlers() {
+      BoolValueParameterChangeHandler.Create(MaximizationParameter, OnMaximizationChanged);
     }
 
     #region ISingleObjectiveHeuristicOptimizationProblem Members
