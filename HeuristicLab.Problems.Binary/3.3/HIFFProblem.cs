@@ -26,7 +26,6 @@ using System.Threading;
 using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Data;
 using HeuristicLab.Encodings.BinaryVectorEncoding;
 using HeuristicLab.Optimization;
 
@@ -38,7 +37,7 @@ namespace HeuristicLab.Problems.Binary {
 
     public HIFFProblem() : base() {
       Maximization = true;
-      DimensionRefParameter.ForceValue(new IntValue(64, @readonly: false));
+      Dimension = 64;
     }
 
     // In the GECCO paper, Section 4.1

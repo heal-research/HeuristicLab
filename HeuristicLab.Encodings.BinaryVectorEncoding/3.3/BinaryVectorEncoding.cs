@@ -66,7 +66,7 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
     public BinaryVectorEncoding(int length) : this("BinaryVector", length) { }
     public BinaryVectorEncoding(string name, int length)
       : base(name) {
-      Parameters.Add(LengthParameter = new ValueParameter<IntValue>(Name + ".Length", new IntValue(length, @readonly: true)) { ReadOnly = true });
+      Parameters.Add(LengthParameter = new ValueParameter<IntValue>(Name + ".Length", new IntValue(length)) { ReadOnly = true });
       
       SolutionCreator = new RandomBinaryVectorCreator();
       DiscoverOperators();

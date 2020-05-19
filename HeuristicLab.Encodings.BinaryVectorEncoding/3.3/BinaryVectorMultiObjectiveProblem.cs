@@ -19,7 +19,6 @@
  */
 #endregion
 
-using System;
 using System.Linq;
 using HEAL.Attic;
 using HeuristicLab.Analysis;
@@ -35,11 +34,10 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
     [Storable] protected IResultParameter<ParetoFrontScatterPlot<BinaryVector>> BestResultParameter { get; private set; }
     public IResultDefinition<ParetoFrontScatterPlot<BinaryVector>> BestResult { get { return BestResultParameter; } }
     [Storable] protected ReferenceParameter<IntValue> DimensionRefParameter { get; private set; }
-    public IValueParameter<IntValue> DimensionParameter => DimensionRefParameter;
 
     public int Dimension {
-      get { return DimensionRefParameter.Value.Value; }
-      set { DimensionRefParameter.Value.Value = value; }
+      get { return Encoding.Length; }
+      set { Encoding.Length = value; }
     }
 
     [StorableConstructor]
@@ -91,11 +89,10 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
     }
 
     private void RegisterEventHandlers() {
-      DimensionRefParameter.Value.ValueChanged += DimensionParameter_Value_ValueChanged;
-    }
-
-    private void DimensionParameter_Value_ValueChanged(object sender, EventArgs e) {
-      DimensionOnChanged();
+      Encoding.PropertyChanged += (sender, args) => {
+        if (args.PropertyName == nameof(Encoding.Length))
+          DimensionOnChanged();
+      };
     }
 
     protected virtual void DimensionOnChanged() { }

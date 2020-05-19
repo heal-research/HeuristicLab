@@ -90,7 +90,7 @@ namespace HeuristicLab.Problems.Knapsack {
       Parameters.Add(new ValueParameter<IntArray>("Values", "The values of the items.", new IntArray(5)));
       Parameters.Add(new OptionalValueParameter<BinaryVector>("BestKnownSolution", "The best known solution of this Knapsack instance."));
 
-      Dimension = Weights.Length;
+      DimensionRefParameter.ForceValue(new IntValue(Weights.Length, @readonly: true));
       InitializeRandomKnapsackInstance();
 
       InitializeOperators();
