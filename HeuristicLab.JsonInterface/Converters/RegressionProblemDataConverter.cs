@@ -237,7 +237,7 @@ namespace HeuristicLab.JsonInterface {
         MinValue = testPartition.Start,
         MaxValue = testPartition.End,
         Minimum = 0,
-        Maximum = Math.Max(testPartition.End, trainingPartition.End)
+        Maximum = int.MaxValue //Math.Max(testPartition.End, trainingPartition.End)
       };
     }
 
@@ -250,7 +250,7 @@ namespace HeuristicLab.JsonInterface {
         MinValue = trainingPartition.Start,
         MaxValue = trainingPartition.End,
         Minimum = 0,
-        Maximum = Math.Max(testPartition.End, trainingPartition.End)
+        Maximum = int.MaxValue //Math.Max(testPartition.End, trainingPartition.End)
       };
     }
 

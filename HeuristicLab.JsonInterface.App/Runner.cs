@@ -47,14 +47,23 @@ namespace HeuristicLab.JsonInterface.App {
         JObject obj = new JObject();
         arr.Add(obj);
         obj.Add("Run", JToken.FromObject(run.ToString()));
+
+        // add empty values for configured results
+        var emptyToken = JToken.FromObject("");
+        foreach (var cr in configuredResults) {
+          obj.Add(cr, emptyToken);
+        }
+
+        // change empty values with calculated values
+        var formatter = new SymbolicDataAnalysisExpressionMATLABFormatter();
         foreach (var res in run.Results) {
-          if (configuredResults.Contains(res.Key)) {
+          if(obj.ContainsKey(res.Key)) {
             if (res.Value is ISymbolicRegressionSolution solution) {
-              var formatter = new SymbolicDataAnalysisExpressionMATLABFormatter();
-              var x = formatter.Format(solution.Model.SymbolicExpressionTree);
-              obj.Add(res.Key, JToken.FromObject(x));
-            } else
-              obj.Add(res.Key, JToken.FromObject(res.Value.ToString()));
+              var formattedModel = formatter.Format(solution.Model.SymbolicExpressionTree);
+              obj[res.Key] = JToken.FromObject(formattedModel);
+            } else {
+              obj[res.Key] = JToken.FromObject(res.Value.ToString());
+            }
           }
         }
       }

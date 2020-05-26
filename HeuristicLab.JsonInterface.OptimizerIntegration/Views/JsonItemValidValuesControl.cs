@@ -12,9 +12,11 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
       InitializeComponent();
       VM = vm;
       if (VM.Item.ConcreteRestrictedItems != null) {
+        string tmp = VM.Value;
         concreteItemsRestrictor.OnChecked += AddComboOption;
         concreteItemsRestrictor.OnUnchecked += RemoveComboOption;
         concreteItemsRestrictor.Init(VM.Item.ConcreteRestrictedItems);
+        VM.Value = tmp;
         comboBoxValues.DataBindings.Add("SelectedItem", VM, nameof(StringValueVM.Value));
       } else {
         groupBoxRange.Hide();
@@ -50,6 +52,7 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
         items.Add((string)i);
       }
       VM.Range = items;
+
       if (VM.Range.Count() <= 0) {
         comboBoxValues.Enabled = false;
         comboBoxValues.SelectedIndex = -1;
