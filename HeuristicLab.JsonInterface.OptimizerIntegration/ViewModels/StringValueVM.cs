@@ -24,7 +24,7 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
       set {
         Item.ConcreteRestrictedItems = value;
         //check if value is still in range
-        if (!Range.Any(x => x == Value)) {
+        if (!Range.Contains(Value)) {
           Value = Range.FirstOrDefault();
           if (Range.Count() == 0)
             //if no elements exists -> deselect item

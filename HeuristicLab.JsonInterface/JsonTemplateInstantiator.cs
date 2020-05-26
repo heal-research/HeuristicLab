@@ -64,7 +64,9 @@ namespace HeuristicLab.JsonInterface {
 
       // get algorithm root item
       IJsonItem rootItem = Objects.First().Value;
-      
+
+      //TODO validate
+
       // inject configuration
       JsonItemConverter.Inject(optimizer, rootItem);
 
