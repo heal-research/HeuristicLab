@@ -137,15 +137,18 @@ namespace HeuristicLab.Optimization {
     }
 
     private void RegisterEvents() {
-      EncodingParameter.ValueChanged += (o, e) => OnEncodingChanged();
-      EvaluatorParameter.ValueChanged += (o, e) => OnEvaluatorChanged();
+      EncodingParameter.ValueChanged += (o, e) => { ParameterizeOperators(); OnEncodingChanged(); };
+      EvaluatorParameter.ValueChanged += (o, e) => { ParameterizeOperators(); OnEvaluatorChanged(); };
       //var multiEncoding = Encoding as MultiEncoding;
       //if (multiEncoding != null) multiEncoding.EncodingsChanged += MultiEncodingOnEncodingsChanged;
     }
 
-    protected virtual void OnEncodingChanged() {
+    protected override void ParameterizeOperators() {
+      base.ParameterizeOperators();
       Parameterize();
+    }
 
+    protected virtual void OnEncodingChanged() {
       OnOperatorsChanged();
       OnReset();
     }
@@ -162,6 +165,7 @@ namespace HeuristicLab.Optimization {
       foreach (var op in Operators.OfType<IEncodingOperator<TEncodedSolution>>())
         op.EncodingParameter.ActualName = EncodingParameter.Name;
 
+      Encoding.ConfigureOperators(Operators);
       //var multiEncoding = Encoding as MultiEncoding;
       //if (multiEncoding != null) multiEncoding.EncodingsChanged += MultiEncodingOnEncodingsChanged;
     }

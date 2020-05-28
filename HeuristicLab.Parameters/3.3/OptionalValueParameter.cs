@@ -44,7 +44,6 @@ namespace HeuristicLab.Parameters {
     public virtual T Value {
       get { return this.value; }
       set {
-        if (ReadOnly) throw new InvalidOperationException("Cannot set the value of a readonly parameter.");
         DoSetValue(value);
       }
     }

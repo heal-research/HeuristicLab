@@ -283,6 +283,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     #region Specific operator wiring
 
     public override void ConfigureOperators(IEnumerable<IItem> operators) {
+      base.ConfigureOperators(operators);
       ConfigureTreeOperators(operators.OfType<ISymbolicExpressionTreeOperator>());
       ConfigureSizeConstraintOperators(operators.OfType<ISymbolicExpressionTreeSizeConstraintOperator>());
       ConfigureGrammarBaseOperators(operators.OfType<ISymbolicExpressionTreeGrammarBasedOperator>());

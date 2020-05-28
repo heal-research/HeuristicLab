@@ -156,10 +156,15 @@ namespace HeuristicLab.Optimization {
     #endregion
 
 
+    protected virtual void ParameterizeOperators() {
+
+    }
+
 
     #region events
     private void Operators_Changed(object sender, EventArgs e) {
       OnOperatorsChanged();
+      ParameterizeOperators();
     }
     public event EventHandler OperatorsChanged;
     protected virtual void OnOperatorsChanged() {

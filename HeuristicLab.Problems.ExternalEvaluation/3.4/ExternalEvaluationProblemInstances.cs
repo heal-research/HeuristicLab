@@ -44,8 +44,8 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
     public IValueParameter<IntValue> DimensionParameter => DimensionRefParameter;
 
     public int Dimension {
-      get => Encoding.Length;
-      set => Encoding.Length = value;
+      get => DimensionRefParameter.Value.Value;
+      set => DimensionRefParameter.Value.Value = value;
     }
 
     [StorableConstructor]
@@ -58,7 +58,6 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
     public SingleObjectiveBinaryVectorExternalEvaluationProblem()
       : base(new BinaryVectorEncoding()) {
       Parameters.Add(DimensionRefParameter = new ReferenceParameter<IntValue>("Dimension", "The dimension of the vector.", Encoding.LengthParameter));
-      DimensionRefParameter.Value = new IntValue(Dimension, @readonly: false);
       // TODO: Add and parameterize additional operators, 
     }
 
@@ -262,8 +261,8 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
     public IValueParameter<IntValue> DimensionParameter => DimensionRefParameter;
 
     public int Dimension {
-      get => Encoding.Length;
-      set => Encoding.Length = value;
+      get => DimensionRefParameter.Value.Value;
+      set => DimensionRefParameter.Value.Value = value;
     }
 
     [StorableConstructor]
@@ -276,7 +275,6 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
     public MultiObjectiveBinaryVectorExternalEvaluationProblem()
       : base(new BinaryVectorEncoding()) {
       Parameters.Add(DimensionRefParameter = new ReferenceParameter<IntValue>("Dimension", "The dimension of the vector.", Encoding.LengthParameter));
-      DimensionRefParameter.Value = new IntValue(Dimension, @readonly: false);
       // TODO: Add and parameterize additional operators, 
     }
 

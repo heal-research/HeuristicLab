@@ -37,6 +37,7 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
 
     public int Dimension {
       get { return DimensionRefParameter.Value.Value; }
+      protected set { DimensionRefParameter.Value.Value = value; }
     }
 
     [StorableConstructor]

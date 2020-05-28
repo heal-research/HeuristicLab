@@ -38,12 +38,7 @@ namespace HeuristicLab.Problems.Binary {
   public class DeceptiveTrapProblem : BinaryVectorProblem {
     [Storable] public IFixedValueParameter<IntValue> TrapSizeParameter { get; private set; }
     [Storable] public IFixedValueParameter<IntValue> NumberOfTrapsParameter { get; private set; }
-
-    public new int Dimension {
-      get { return base.Dimension; }
-      set { DimensionRefParameter.Value.Value = value; }
-    }
-
+    
     public int TrapSize {
       get { return TrapSizeParameter.Value.Value; }
       set { TrapSizeParameter.Value.Value = value; }
@@ -62,7 +57,8 @@ namespace HeuristicLab.Problems.Binary {
       Maximization = true;
       Parameters.Add(TrapSizeParameter = new FixedValueParameter<IntValue>("Trap Size", "", new IntValue(7)));
       Parameters.Add(NumberOfTrapsParameter = new FixedValueParameter<IntValue>("Number of Traps", "", new IntValue(7)));
-      DimensionRefParameter.Value = new IntValue(TrapSize * NumberOfTraps);
+      DimensionRefParameter.ReadOnly = true;
+      Dimension = TrapSize * NumberOfTraps;
 
       RegisterEventHandlers();
     }

@@ -71,7 +71,7 @@ namespace HeuristicLab.Optimization {
       : base(original, cloner) {
       BestKnownQualityParameter = cloner.Clone(original.BestKnownQualityParameter);
       MaximizationParameter = cloner.Clone(original.MaximizationParameter);
-      ParameterizeOperators();
+      Parameterize();
       RegisterEventHandlers();
     }
 
@@ -89,7 +89,7 @@ namespace HeuristicLab.Optimization {
       Operators.Add(new SingleObjectiveMoveGenerator<TEncodedSolution>());
       Operators.Add(new SingleObjectiveMoveMaker<TEncodedSolution>());
 
-      ParameterizeOperators();
+      Parameterize();
       RegisterEventHandlers();
     }
 
@@ -104,13 +104,13 @@ namespace HeuristicLab.Optimization {
       Operators.Add(new SingleObjectiveMoveGenerator<TEncodedSolution>());
       Operators.Add(new SingleObjectiveMoveMaker<TEncodedSolution>());
 
-      ParameterizeOperators();
+      Parameterize();
       RegisterEventHandlers();
     }
 
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
-      ParameterizeOperators();
+      Parameterize();
       RegisterEventHandlers();
     }
 
@@ -189,16 +189,29 @@ namespace HeuristicLab.Optimization {
 
     protected override void OnEvaluatorChanged() {
       base.OnEvaluatorChanged();
+      Evaluator.QualityParameter.ActualNameChanged += QualityParameterOnActualNameChanged;
+    }
+
+    protected virtual void QualityParameterOnActualNameChanged(object sender, EventArgs e) {
       ParameterizeOperators();
     }
 
-    private void ParameterizeOperators() {
+    protected override void ParameterizeOperators() {
+      base.ParameterizeOperators();
+      Parameterize();
+    }
+
+    private void Parameterize() {
       foreach (var op in Operators.OfType<ISingleObjectiveEvaluationOperator<TEncodedSolution>>())
         op.Evaluate = Evaluate;
       foreach (var op in Operators.OfType<ISingleObjectiveAnalysisOperator<TEncodedSolution>>())
         op.Analyze = Analyze;
       foreach (var op in Operators.OfType<INeighborBasedOperator<TEncodedSolution>>())
         op.GetNeighbors = GetNeighbors;
+      foreach (var op in Operators.OfType<ISolutionSimilarityCalculator>()) {
+        op.SolutionVariableName = Encoding.Name;
+        op.QualityVariableName = Evaluator.QualityParameter.ActualName;
+      }
     }
 
     private void RegisterEventHandlers() {

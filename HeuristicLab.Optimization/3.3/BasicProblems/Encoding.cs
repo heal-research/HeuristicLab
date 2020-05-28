@@ -117,11 +117,20 @@ namespace HeuristicLab.Optimization {
     public void ConfigureOperator(IItem @operator) { ConfigureOperators(new[] { @operator }); }
     public virtual void ConfigureOperators(IEnumerable<IItem> operators) {
       ConfigureSingleObjectiveImprovementOperators(operators.OfType<ISingleObjectiveImprovementOperator>());
+      ConfigureSingleObjectivePathRelinker(operators.OfType<ISingleObjectivePathRelinker>());
     }
 
     protected virtual void ConfigureSingleObjectiveImprovementOperators(IEnumerable<ISingleObjectiveImprovementOperator> operators) {
       foreach (var op in operators) {
         op.SolutionParameter.ActualName = Name;
+        op.SolutionParameter.Hidden = true;
+      }
+    }
+
+    protected virtual void ConfigureSingleObjectivePathRelinker(IEnumerable<ISingleObjectivePathRelinker> operators) {
+      foreach (var op in operators.OfType<ISingleObjectivePathRelinker>()) {
+        op.ParentsParameter.ActualName = Name;
+        op.ParentsParameter.Hidden = true;
       }
     }
 

@@ -37,7 +37,7 @@ namespace HeuristicLab.Problems.Binary {
 
     public new int Dimension {
       get { return base.Dimension; }
-      set { DimensionRefParameter.Value.Value = value; }
+      set { base.Dimension = value; }
     }
 
     public HIFFProblem() : base() {
