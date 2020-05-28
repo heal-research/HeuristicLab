@@ -44,10 +44,18 @@ namespace HeuristicLab.Parameters {
     [Storable]
     public IValueParameter ReferencedParameter { get; }
 
+    [Storable(DefaultValue = true)]
+    private bool readOnly;
     public bool ReadOnly {
-      get => ReferencedParameter.ReadOnly;
-      set => ReferencedParameter.ReadOnly = value;
+      get { return readOnly; }
+      set {
+        if (value != readOnly) {
+          readOnly = value;
+          OnReadOnlyChanged();
+        }
+      }
     }
+
 
     [Storable(DefaultValue = true)]
     private bool getsCollected;
@@ -79,6 +87,9 @@ namespace HeuristicLab.Parameters {
 
     protected ReferenceParameter(ReferenceParameter original, Cloner cloner) : base(original, cloner) {
       ReferencedParameter = cloner.Clone(original.ReferencedParameter);
+      ReadOnly = original.ReadOnly;
+      GetsCollected = original.GetsCollected;
+
       RegisterEvents();
     }
 
@@ -118,21 +129,9 @@ namespace HeuristicLab.Parameters {
       valueChanged?.Invoke(this, args); // note "this", not "sender" as sender would be the referenced parameter
     }
 
-    private EventHandler readOnlyChanged;
-    public event EventHandler ReadOnlyChanged {
-      add { // only subscribe when we have a subscriber ourselves
-        bool firstSubscription = readOnlyChanged == null;
-        readOnlyChanged += value;
-        if (firstSubscription && readOnlyChanged != null) //only subscribe once
-          ReferencedParameter.ReadOnlyChanged += OnReferencedParameterReadOnlyChanged;
-      }
-      remove { // unsubscribe if we have no more subscribers
-        readOnlyChanged -= value;
-        if (readOnlyChanged == null) ReferencedParameter.ReadOnlyChanged -= OnReferencedParameterReadOnlyChanged;
-      }
-    }
-    private void OnReferencedParameterReadOnlyChanged(object sender, EventArgs args) {
-      readOnlyChanged?.Invoke(this, args); // note "this", not "sender" as sender would be the referenced parameter
+    public event EventHandler ReadOnlyChanged;
+    private void OnReadOnlyChanged() {
+      ReadOnlyChanged?.Invoke(this, EventArgs.Empty);
     }
 
     public event EventHandler GetsCollectedChanged;
