@@ -22,12 +22,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Encodings.IntegerVectorEncoding {
@@ -187,6 +187,7 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
     #endregion
 
     public override void ConfigureOperators(IEnumerable<IItem> operators) {
+      base.ConfigureOperators(operators);
       ConfigureBoundedOperators(operators.OfType<IBoundedIntegerVectorOperator>());
       ConfigureCreators(operators.OfType<IIntegerVectorCreator>());
       ConfigureCrossovers(operators.OfType<IIntegerVectorCrossover>());

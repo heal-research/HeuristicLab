@@ -94,7 +94,7 @@ namespace HeuristicLab.Optimization {
       get { return MaximizationParameter.Value.CloneAsArray(); }
       protected set {
         if (MaximizationParameter.Value.SequenceEqual(value)) return;
-        MaximizationParameter.ForceValue(new BoolArray(value, @readonly: true));
+        MaximizationParameter.Value = new BoolArray(value, @readonly: true);
         OnMaximizationChanged();
       }
     }

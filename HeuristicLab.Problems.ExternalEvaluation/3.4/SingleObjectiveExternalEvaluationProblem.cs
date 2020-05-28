@@ -92,7 +92,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
     }
     public ExternalEvaluationProblem(TEncoding encoding)
       : base(encoding) {
-      MaximizationParameter.ForceValue(new BoolValue()); // is a read-only bool value in base class
+      MaximizationParameter.Value = new BoolValue(); // is a read-only bool value in base class TODO: change to set ReadOnly false
       Parameters.Add(new OptionalValueParameter<EvaluationCache>("Cache", "Cache of previously evaluated solutions."));
       Parameters.Add(new ValueParameter<CheckedItemCollection<IEvaluationServiceClient>>("Clients", "The clients that are used to communicate with the external application.", new CheckedItemCollection<IEvaluationServiceClient>() { new EvaluationServiceClient() }));
       Parameters.Add(new ValueParameter<SolutionMessageBuilder>("MessageBuilder", "The message builder that converts from HeuristicLab objects to SolutionMessage representation.", new SolutionMessageBuilder()) { Hidden = true });

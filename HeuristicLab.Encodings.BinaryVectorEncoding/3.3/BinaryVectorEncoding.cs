@@ -43,7 +43,7 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
       get { return LengthParameter.Value.Value; }
       set {
         if (Length == value) return;
-        LengthParameter.ForceValue(new IntValue(value, @readonly: LengthParameter.Value.ReadOnly));
+        LengthParameter.Value = new IntValue(value, @readonly: LengthParameter.Value.ReadOnly);
       }
     }
 
@@ -106,6 +106,7 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
     #endregion
 
     public override void ConfigureOperators(IEnumerable<IItem> operators) {
+      base.ConfigureOperators(operators);
       ConfigureCreators(operators.OfType<IBinaryVectorCreator>());
       ConfigureCrossovers(operators.OfType<IBinaryVectorCrossover>());
       ConfigureManipulators(operators.OfType<IBinaryVectorManipulator>());

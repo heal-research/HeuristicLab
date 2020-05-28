@@ -33,6 +33,11 @@ namespace HeuristicLab.Problems.Binary {
   [StorableType("A290ADDE-33F5-4607-ABC0-19349CD0FBF1")]
   public class OneMaxProblem : BinaryVectorProblem {
 
+    public new int Dimension {
+      get { return base.Dimension; }
+      set { DimensionRefParameter.Value.Value = value; }
+    }
+
     public OneMaxProblem() : base() {
       Maximization = true;
       Dimension = 10;

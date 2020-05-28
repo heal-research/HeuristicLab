@@ -165,8 +165,6 @@ namespace HeuristicLab.Parameters {
     public override IDeepCloneable Clone(Cloner cloner) {
       return new ReferenceParameter<T>(this, cloner);
     }
-
-    public void ForceValue(T value) { ReferencedParameter.ForceValue(value); }
   }
 
 
@@ -194,7 +192,5 @@ namespace HeuristicLab.Parameters {
     public override IDeepCloneable Clone(Cloner cloner) {
       return new ReferenceParameter<T, U>(this, cloner);
     }
-
-    public void ForceValue(T value) { ReferencedParameter.ForceValue(value); }
   }
 }

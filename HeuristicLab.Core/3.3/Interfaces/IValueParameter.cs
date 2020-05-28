@@ -36,11 +36,5 @@ namespace HeuristicLab.Core {
   [StorableType("645945d2-9cd7-45cd-8507-575b2ed53de4")]
   public interface IValueParameter<T> : IValueParameter where T : class, IItem {
     new T Value { get; set; }
-
-    /// <summary>
-    /// Sets property <see cref="Value"/> regardless of ReadOnly state
-    /// </summary>
-    /// <param name="value">The value to set.</param>
-    void ForceValue(T value);
   }
 }

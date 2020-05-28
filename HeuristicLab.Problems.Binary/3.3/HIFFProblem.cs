@@ -35,6 +35,11 @@ namespace HeuristicLab.Problems.Binary {
   [Creatable(CreatableAttribute.Categories.CombinatorialProblems, Priority = 220)]
   public class HIFFProblem : BinaryVectorProblem {
 
+    public new int Dimension {
+      get { return base.Dimension; }
+      set { DimensionRefParameter.Value.Value = value; }
+    }
+
     public HIFFProblem() : base() {
       Maximization = true;
       Dimension = 64;

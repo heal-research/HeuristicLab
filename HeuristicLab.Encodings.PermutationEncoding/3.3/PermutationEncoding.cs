@@ -22,12 +22,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Encodings.PermutationEncoding {
@@ -163,6 +163,7 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
     #endregion
 
     public override void ConfigureOperators(IEnumerable<IItem> operators) {
+      base.ConfigureOperators(operators);
       ConfigureCreators(operators.OfType<IPermutationCreator>());
       ConfigureCrossovers(operators.OfType<IPermutationCrossover>());
       ConfigureManipulators(operators.OfType<IPermutationManipulator>());

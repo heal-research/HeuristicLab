@@ -1,5 +1,4 @@
-﻿
-#region License Information
+﻿#region License Information
 /* HeuristicLab
  * Copyright (C) Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
@@ -38,8 +37,7 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
     [Storable] protected ReferenceParameter<IntValue> DimensionRefParameter { get; private set; }
 
     public int Dimension {
-      get { return Encoding.Length; }
-      set { Encoding.Length = value; }
+      get { return DimensionRefParameter.Value.Value; }
     }
 
     [StorableConstructor]
@@ -85,10 +83,7 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
     }
 
     private void RegisterEventHandlers() {
-      Encoding.PropertyChanged += (sender, args) => {
-        if (args.PropertyName == nameof(Encoding.Length))
-          DimensionOnChanged();
-      };
+      IntValueParameterChangeHandler.Create(DimensionRefParameter, DimensionOnChanged);
     }
 
     protected virtual void DimensionOnChanged() { }

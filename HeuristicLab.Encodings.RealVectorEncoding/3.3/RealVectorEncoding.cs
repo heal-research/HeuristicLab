@@ -22,12 +22,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Encodings.RealVectorEncoding {
@@ -200,6 +200,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     }
 
     public override void ConfigureOperators(IEnumerable<IItem> operators) {
+      base.ConfigureOperators(operators);
       ConfigureCreators(operators.OfType<IRealVectorCreator>());
       ConfigureCrossovers(operators.OfType<IRealVectorCrossover>());
       ConfigureManipulators(operators.OfType<IRealVectorManipulator>());

@@ -48,9 +48,6 @@ namespace HeuristicLab.Parameters {
         DoSetValue(value);
       }
     }
-    public virtual void ForceValue(T value) {
-      DoSetValue(value);
-    }
     private void DoSetValue(T value) {
       if (value != this.value) {
         DeregisterValueEvents();

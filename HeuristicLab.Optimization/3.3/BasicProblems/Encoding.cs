@@ -115,7 +115,15 @@ namespace HeuristicLab.Optimization {
     }
 
     public void ConfigureOperator(IItem @operator) { ConfigureOperators(new[] { @operator }); }
-    public abstract void ConfigureOperators(IEnumerable<IItem> operators);
+    public virtual void ConfigureOperators(IEnumerable<IItem> operators) {
+      ConfigureSingleObjectiveImprovementOperators(operators.OfType<ISingleObjectiveImprovementOperator>());
+    }
+
+    protected virtual void ConfigureSingleObjectiveImprovementOperators(IEnumerable<ISingleObjectiveImprovementOperator> operators) {
+      foreach (var op in operators) {
+        op.SolutionParameter.ActualName = Name;
+      }
+    }
 
     public event EventHandler SolutionCreatorChanged;
     protected virtual void OnSolutionCreatorChanged() {

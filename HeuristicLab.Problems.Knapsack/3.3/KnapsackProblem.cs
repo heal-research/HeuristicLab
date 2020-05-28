@@ -55,6 +55,10 @@ namespace HeuristicLab.Problems.Knapsack {
     #endregion
 
     #region Properties
+    public new int Dimension {
+      get { return base.Dimension; }
+      set { DimensionRefParameter.Value.Value = value; }
+    }
     public int KnapsackCapacity {
       get { return KnapsackCapacityParameter.Value.Value; }
       set { KnapsackCapacityParameter.Value.Value = value; }
@@ -90,7 +94,7 @@ namespace HeuristicLab.Problems.Knapsack {
       Parameters.Add(new ValueParameter<IntArray>("Values", "The values of the items.", new IntArray(5)));
       Parameters.Add(new OptionalValueParameter<BinaryVector>("BestKnownSolution", "The best known solution of this Knapsack instance."));
 
-      DimensionRefParameter.ForceValue(new IntValue(Weights.Length, @readonly: true));
+      DimensionRefParameter.Value = new IntValue(Weights.Length, @readonly: true);
       InitializeRandomKnapsackInstance();
 
       InitializeOperators();

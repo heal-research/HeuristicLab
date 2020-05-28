@@ -162,6 +162,7 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
 
 
     public override void ConfigureOperators(IEnumerable<IItem> operators) {
+      base.ConfigureOperators(operators);
       ConfigureCreators(operators.OfType<IScheduleCreator<TSchedule>>());
       ConfigureCrossovers(operators.OfType<IScheduleCrossover>());
       ConfigureManipulators(operators.OfType<IScheduleManipulator>());

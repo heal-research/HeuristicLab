@@ -58,7 +58,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
     public SingleObjectiveBinaryVectorExternalEvaluationProblem()
       : base(new BinaryVectorEncoding()) {
       Parameters.Add(DimensionRefParameter = new ReferenceParameter<IntValue>("Dimension", "The dimension of the vector.", Encoding.LengthParameter));
-      DimensionRefParameter.ForceValue(new IntValue(Dimension, @readonly: false));
+      DimensionRefParameter.Value = new IntValue(Dimension, @readonly: false);
       // TODO: Add and parameterize additional operators, 
     }
 
@@ -276,7 +276,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
     public MultiObjectiveBinaryVectorExternalEvaluationProblem()
       : base(new BinaryVectorEncoding()) {
       Parameters.Add(DimensionRefParameter = new ReferenceParameter<IntValue>("Dimension", "The dimension of the vector.", Encoding.LengthParameter));
-      DimensionRefParameter.ForceValue(new IntValue(Dimension, @readonly: false));
+      DimensionRefParameter.Value = new IntValue(Dimension, @readonly: false);
       // TODO: Add and parameterize additional operators, 
     }
 

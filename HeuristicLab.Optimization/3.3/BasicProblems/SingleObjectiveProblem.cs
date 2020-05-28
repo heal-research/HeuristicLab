@@ -60,7 +60,7 @@ namespace HeuristicLab.Optimization {
       get { return MaximizationParameter.Value.Value; }
       protected set {
         if (Maximization == value) return;
-        MaximizationParameter.ForceValue(new BoolValue(value, @readonly: true));
+        MaximizationParameter.Value = new BoolValue(value, @readonly: true);
       }
     }
 

@@ -38,10 +38,6 @@ namespace HeuristicLab.Parameters {
       set => throw new NotSupportedException("FixedValueParameters do not support setting their value.");
     }
 
-    public override void ForceValue(T value) {
-      throw new NotSupportedException("FixedValueParameters do not support setting their value.");
-    }
-
     [StorableConstructor]
     protected FixedValueParameter(StorableConstructorFlag _) : base(_) { }
     protected FixedValueParameter(FixedValueParameter<T> original, Cloner cloner) : base(original, cloner) { }
