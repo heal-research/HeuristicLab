@@ -102,8 +102,8 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       bounds[0, 0] = min;
       bounds[0, 1] = max;
 
-      lengthParameter = new FixedValueParameter<IntValue>(Name + ".Length", new IntValue(length));
-      boundsParameter = new ValueParameter<DoubleMatrix>(Name + ".Bounds", bounds);
+      lengthParameter = new FixedValueParameter<IntValue>(Name + ".Length", new IntValue(length)) { ReadOnly = true };
+      boundsParameter = new ValueParameter<DoubleMatrix>(Name + ".Bounds", bounds) { ReadOnly = true };
       Parameters.Add(lengthParameter);
       Parameters.Add(boundsParameter);
 

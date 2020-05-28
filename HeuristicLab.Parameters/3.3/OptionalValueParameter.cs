@@ -43,9 +43,7 @@ namespace HeuristicLab.Parameters {
     private T value;
     public virtual T Value {
       get { return this.value; }
-      set {
-        DoSetValue(value);
-      }
+      set { DoSetValue(value); }
     }
     private void DoSetValue(T value) {
       if (value != this.value) {

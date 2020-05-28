@@ -176,6 +176,8 @@ namespace HeuristicLab.Problems.TestFunctions {
 
     private void Parameterize() {
       var operators = new List<IItem>();
+
+      //TODO correct wiring code, because most of the parameters are wired in the encoding
       foreach (var op in Operators.OfType<PopulationSimilarityAnalyzer>()) {
         var calcs = Operators.OfType<ISolutionSimilarityCalculator>().ToArray();
         op.SimilarityCalculatorParameter.ValidValues.Clear();

@@ -94,9 +94,11 @@ namespace HeuristicLab.Optimization {
 
     protected Encoding(string name)
       : base(name) {
-      Parameters.Add(new ValueParameter<ISolutionCreator<TEncodedSolution>>(name + ".SolutionCreator", "The operator to create a solution."));
+      Parameters.Add(new ValueParameter<ISolutionCreator<TEncodedSolution>>(name + ".SolutionCreator", "The operator to create a solution.") {
+        ReadOnly = true
+      });
       Parameters.Add(new FixedValueParameter<ReadOnlyItemSet<IOperator>>(name + ".Operators", "The operators that the encoding specifies.", encodingOperators.AsReadOnly()) {
-        GetsCollected = false
+        GetsCollected = false, ReadOnly = true
       });
 
       RegisterEventHandlers();

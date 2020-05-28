@@ -104,6 +104,7 @@ namespace HeuristicLab.Parameters.Views {
 
     protected override void SetEnabledStateOfControls() {
       base.SetEnabledStateOfControls();
+      ReadOnly = Content == null || Content.ReadOnly;
       setValueButton.Enabled = Content != null && !Content.ReadOnly && !(Content is IFixedValueParameter) && !ReadOnly;
       clearValueButton.Enabled = Content != null && !Content.ReadOnly && Content.Value != null && !(Content is IFixedValueParameter) && !(Content is ValueParameter<T>) && !ReadOnly;
       showInRunCheckBox.Enabled = Content != null && !ReadOnly;
