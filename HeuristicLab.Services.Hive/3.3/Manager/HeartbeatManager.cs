@@ -119,15 +119,15 @@ namespace HeuristicLab.Services.Hive.Manager {
       var taskIds = heartbeat.JobProgress.Select(x => x.Key).ToList();
       var taskInfos = pm.UseTransaction(() =>
         (from task in taskDao.GetAll()
-          where taskIds.Contains(task.TaskId)
-          let lastStateLog = task.StateLogs.OrderByDescending(x => x.DateTime).FirstOrDefault()
-          select new {
-            TaskId = task.TaskId,
-            JobId = task.JobId,
-            State = task.State,
-            Command = task.Command,
-            SlaveId = lastStateLog != null ? lastStateLog.SlaveId : default(Guid)
-          }).ToList()
+         where taskIds.Contains(task.TaskId)
+         let lastStateLog = task.StateLogs.OrderByDescending(x => x.DateTime).FirstOrDefault(x => x.State == DA.TaskState.Transferring)
+         select new {
+           TaskId = task.TaskId,
+           JobId = task.JobId,
+           State = task.State,
+           Command = task.Command,
+           SlaveId = lastStateLog != null ? lastStateLog.SlaveId : Guid.Empty
+         }).ToList()
       );
 
       // process the jobProgresses
