@@ -82,57 +82,23 @@ namespace HeuristicLab.Services.Hive.Manager {
           try {
             mutexAquired = mutex.WaitOne(Properties.Settings.Default.SchedulingPatience);
             if (mutexAquired) {
-              var waitingTasks = pm.UseTransaction(() => taskDao.GetWaitingTasks(slave)
-                  .Select(x => new TaskInfoForScheduler {
-                    TaskId = x.TaskId,
-                    JobId = x.JobId,
-                    Priority = x.Priority
-                  })
-                  .ToList()
-              );
-              var availableTasks = TaskScheduler.Schedule(waitingTasks).ToArray();
-              if (availableTasks.Any()) {
-                var task = availableTasks.First();
-                AssignTask(pm, slave, task.TaskId);
-                actions.Add(new MessageContainer(MessageContainer.MessageType.CalculateTask, task.TaskId));
+              var scheduledTaskIds = TaskScheduler.Schedule(slave, 1).ToArray();
+              foreach (var id in scheduledTaskIds) {
+                actions.Add(new MessageContainer(MessageContainer.MessageType.CalculateTask, id));
               }
             } else {
-              LogFactory.GetLogger(this.GetType().Namespace).Log("HeartbeatManager: The mutex used for scheduling could not be aquired.");
+              LogFactory.GetLogger(this.GetType().Namespace).Log($"HeartbeatManager: The mutex used for scheduling could not be aquired. (HB from Slave {slave.ResourceId})");
             }
-          }
-          catch (AbandonedMutexException) {
-            LogFactory.GetLogger(this.GetType().Namespace).Log("HeartbeatManager: The mutex used for scheduling has been abandoned.");
-          }
-          catch (Exception ex) {
-            LogFactory.GetLogger(this.GetType().Namespace).Log(string.Format("HeartbeatManager threw an exception in ProcessHeartbeat: {0}", ex));
-          }
-          finally {
+          } catch (AbandonedMutexException) {
+            LogFactory.GetLogger(this.GetType().Namespace).Log($"HeartbeatManager: The mutex used for scheduling has been abandoned. (HB from Slave {slave.ResourceId})");
+          } catch (Exception ex) {
+            LogFactory.GetLogger(this.GetType().Namespace).Log($"HeartbeatManager threw an exception in ProcessHeartbeat (HB from Slave {slave.ResourceId}): {ex}");
+          } finally {
             if (mutexAquired) mutex.ReleaseMutex();
           }
         }
       }
       return actions;
-    }
-
-    private void AssignTask(IPersistenceManager pm, DA.Slave slave, Guid taskId) {
-      const DA.TaskState transferring = DA.TaskState.Transferring;
-      DateTime now = DateTime.Now;
-      var taskDao = pm.TaskDao;
-      var stateLogDao = pm.StateLogDao;
-      pm.UseTransaction(() => {
-        var task = taskDao.GetById(taskId);
-        stateLogDao.Save(new DA.StateLog {
-          State = transferring,
-          DateTime = now,
-          TaskId = taskId,
-          SlaveId = slave.ResourceId,
-          UserId = null,
-          Exception = null
-        });
-        task.State = transferring;
-        task.LastHeartbeat = now;
-        pm.SubmitChanges();
-      });
     }
 
     /// <summary>
