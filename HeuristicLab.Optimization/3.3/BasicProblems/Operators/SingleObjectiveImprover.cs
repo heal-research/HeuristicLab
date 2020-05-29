@@ -100,7 +100,7 @@ namespace HeuristicLab.Optimization {
 
       var count = 0;
       for (var i = 0; i < maxAttempts; i++) {
-        ISingleObjectiveSolutionContext<TEncodedSolution> best = default;
+        ISingleObjectiveSolutionContext<TEncodedSolution> best = null;
         var bestQuality = quality;
         foreach (var neighbor in GetNeighbors(solutionContext, random).Take(sampleSize)) {
           if (!neighbor.IsEvaluated)
