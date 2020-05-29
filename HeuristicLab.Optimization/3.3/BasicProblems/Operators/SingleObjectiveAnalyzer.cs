@@ -78,13 +78,13 @@ namespace HeuristicLab.Optimization {
         scopes = scopes.Select(x => (IEnumerable<IScope>)x.SubScopes).Aggregate((a, b) => a.Concat(b));
 
       var solutionContexts = scopes.Select(scope => {
-        var solution = ScopeUtil.GetEncodedSolution(scope, encoding);
-        var quality = ((DoubleValue)scope.Variables[QualityParameter.ActualName].Value).Value;
-        var solutionContext = new SingleObjectiveSolutionContextScope<TEncodedSolution>(scope, solution);
-        return solutionContext;
+        return ScopeUtil.CreateSolutionContext(scope, encoding);
       }).ToArray();
 
       Analyze(solutionContexts, results, random);
+      foreach (var s in solutionContexts.Zip(scopes, Tuple.Create)) {
+        ScopeUtil.CopyToScope(s.Item2, s.Item1);
+      }
       return base.Apply();
     }
   }

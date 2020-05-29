@@ -69,13 +69,14 @@ namespace HeuristicLab.Optimization {
     public override IOperation Apply() {
       var random = RandomParameter.ActualValue;
       var encoding = EncodingParameter.ActualValue;
-      var solution = ScopeUtil.GetEncodedSolution(ExecutionContext.Scope, encoding);
-      var solutionContext = new SingleObjectiveSolutionContextScope<TEncodedSolution>(ExecutionContext.Scope, solution);
+      var solutionContext = ScopeUtil.CreateSolutionContext(ExecutionContext.Scope, encoding);
 
-      Evaluate(solutionContext, random, CancellationToken.None);
+      if (!solutionContext.IsEvaluated)
+        Evaluate(solutionContext, random, CancellationToken.None);
       var qualityValue = solutionContext.EvaluationResult.Quality;
 
       MoveQualityParameter.ActualValue = new DoubleValue(qualityValue);
+      ScopeUtil.CopyToScope(ExecutionContext.Scope, solutionContext);
       return base.Apply();
     }
   }

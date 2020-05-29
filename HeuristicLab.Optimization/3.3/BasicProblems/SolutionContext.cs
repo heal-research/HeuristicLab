@@ -34,6 +34,7 @@ namespace HeuristicLab.Optimization {
 
     [Storable]
     private readonly Dictionary<string, object> data = new Dictionary<string, object>();
+    public IEnumerable<KeyValuePair<string, object>> AdditionalData { get { return data; } }
 
     IEncodedSolution ISolutionContext.EncodedSolution { get { return EncodedSolution; } }
 
@@ -76,7 +77,10 @@ namespace HeuristicLab.Optimization {
   [StorableType("DF6DA9C9-7EF4-4DC3-9855-6C43BDEDD735")]
   public class SingleObjectiveSolutionContext<TEncodedSolution> : SolutionContext<TEncodedSolution>, ISingleObjectiveSolutionContext<TEncodedSolution>
    where TEncodedSolution : class, IEncodedSolution {
-    public new ISingleObjectiveEvaluationResult EvaluationResult { get; set; }
+    public new ISingleObjectiveEvaluationResult EvaluationResult {
+      get { return (ISingleObjectiveEvaluationResult)base.EvaluationResult; }
+      set { base.EvaluationResult = value; }
+    }
 
     public SingleObjectiveSolutionContext(TEncodedSolution encodedSolution) : base(encodedSolution) { }
 
@@ -97,7 +101,10 @@ namespace HeuristicLab.Optimization {
   [StorableType("929868B3-8994-4D75-B363-CCF9C51410F9")]
   public class MultiObjectiveSolutionContext<TEncodedSolution> : SolutionContext<TEncodedSolution>, IMultiObjectiveSolutionContext<TEncodedSolution>
    where TEncodedSolution : class, IEncodedSolution {
-    public new IMultiObjectiveEvaluationResult EvaluationResult { get; set; }
+    public new IMultiObjectiveEvaluationResult EvaluationResult {
+      get { return (IMultiObjectiveEvaluationResult)base.EvaluationResult; }
+      set { base.EvaluationResult = value; }
+    }
 
     public MultiObjectiveSolutionContext(TEncodedSolution encodedSolution) : base(encodedSolution) { }
 

@@ -89,8 +89,7 @@ namespace HeuristicLab.Optimization {
       var maximize = MaximizationParameter.ActualValue.Value;
       var maxAttempts = ImprovementAttemptsParameter.ActualValue.Value;
       var sampleSize = SampleSizeParameter.ActualValue.Value;
-      var solution = ScopeUtil.GetEncodedSolution(ExecutionContext.Scope, encoding);
-      var solutionContext = new SingleObjectiveSolutionContextScope<TEncodedSolution>(ExecutionContext.Scope, solution);
+      var solutionContext = ScopeUtil.CreateSolutionContext(ExecutionContext.Scope, encoding);
 
       double quality;
       if (QualityParameter.ActualValue == null) {
@@ -101,25 +100,26 @@ namespace HeuristicLab.Optimization {
 
       var count = 0;
       for (var i = 0; i < maxAttempts; i++) {
-        TEncodedSolution best = default(TEncodedSolution);
+        ISingleObjectiveSolutionContext<TEncodedSolution> best = default;
         var bestQuality = quality;
         foreach (var neighbor in GetNeighbors(solutionContext, random).Take(sampleSize)) {
-          Evaluate(neighbor, random, CancellationToken);
+          if (!neighbor.IsEvaluated)
+            Evaluate(neighbor, random, CancellationToken);
           var q = neighbor.EvaluationResult.Quality;
           count++;
           if (maximize && bestQuality > q || !maximize && bestQuality < q) continue;
-          best = neighbor.EncodedSolution;
+          best = neighbor;
           bestQuality = q;
         }
         if (best == null) break;
-        solution = best;
+        solutionContext = best;
         quality = bestQuality;
       }
 
       LocalEvaluatedSolutionsParameter.ActualValue = new IntValue(count);
       QualityParameter.ActualValue = new DoubleValue(quality);
-
-      ScopeUtil.CopyEncodedSolutionToScope(ExecutionContext.Scope, encoding, solution);
+      ScopeUtil.CopyEncodedSolutionToScope(ExecutionContext.Scope, encoding, solutionContext.EncodedSolution);
+      ScopeUtil.CopyToScope(ExecutionContext.Scope, solutionContext);
       return base.Apply();
     }
   }

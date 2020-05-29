@@ -27,7 +27,9 @@ using HeuristicLab.Core;
 
 namespace HeuristicLab.Optimization {
   public static class ScopeUtil {
+    private const string EvaluationResultName = "EvaluationResult";
 
+    // TODO: Create SolutionContexts that derive from IScope to have a unified datastructure (e.g. #1614)
     public static TEncodedSolution CopyEncodedSolutionToScope<TEncodedSolution>(IScope scope, IEncoding<TEncodedSolution> encoding, TEncodedSolution solution)
       where TEncodedSolution : class, IEncodedSolution {
       return CopyEncodedSolutionToScope(scope, encoding.Name, solution);
@@ -62,5 +64,32 @@ namespace HeuristicLab.Optimization {
       return solution;
     }
 
+    public static ISingleObjectiveSolutionContext<TEncodedSolution> CreateSolutionContext<TEncodedSolution>(IScope scope, IEncoding<TEncodedSolution> encoding)
+      where TEncodedSolution : class, IEncodedSolution {
+      var solution = GetEncodedSolution(scope, encoding);
+      var context = new SingleObjectiveSolutionContext<TEncodedSolution>(solution);
+      foreach (var variable in scope.Variables) {
+        if (variable.Name != encoding.Name)
+          context.SetAdditionalData(variable.Name, variable.Value);
+      }
+      if (scope.Variables.TryGetValue(EvaluationResultName, out var variable2)) {
+        context.EvaluationResult = (ISingleObjectiveEvaluationResult)variable2.Value;
+      }
+      return context;
+    }
+
+    public static void CopyToScope<TEncodedSolution>(IScope scope, ISingleObjectiveSolutionContext<TEncodedSolution> solutionContext)
+      where TEncodedSolution : class, IEncodedSolution {
+      foreach (var item in solutionContext.AdditionalData) {
+        if (item.Value is IItem i) {
+          if (!scope.Variables.TryGetValue(item.Key, out var variable))
+            scope.Variables.Add(new Variable(item.Key, i));
+          else variable.Value = i;
+        }
+      }
+      if (!scope.Variables.TryGetValue(EvaluationResultName, out var variable2)) {
+        scope.Variables.Add(new Variable(EvaluationResultName, solutionContext.EvaluationResult));
+      } else variable2.Value = solutionContext.EvaluationResult;
+    }
   }
 }

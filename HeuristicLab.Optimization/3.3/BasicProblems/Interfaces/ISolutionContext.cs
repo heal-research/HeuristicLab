@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System.Collections.Generic;
 using HEAL.Attic;
 using HeuristicLab.Core;
 
@@ -28,6 +29,7 @@ namespace HeuristicLab.Optimization {
   public interface ISolutionContext : IItem {
 
     bool IsEvaluated { get; }
+    IEnumerable<KeyValuePair<string, object>> AdditionalData { get; }
     IEncodedSolution EncodedSolution { get; }
 
     IEvaluationResult EvaluationResult { get; }

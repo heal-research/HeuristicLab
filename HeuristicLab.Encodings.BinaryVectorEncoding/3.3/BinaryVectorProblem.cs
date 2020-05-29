@@ -70,10 +70,12 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
     }
 
     public override void Analyze(ISingleObjectiveSolutionContext<BinaryVector>[] solutionContexts, ResultCollection results, IRandom random) {
+      base.Analyze(solutionContexts, results, random);
       var best = GetBest(solutionContexts);
       var currentBest = BestResultParameter.ActualValue;
       if (currentBest == null || IsBetter(best.EvaluationResult.Quality, currentBest.EvaluationResult.Quality))
-        BestResultParameter.ActualValue = (ISingleObjectiveSolutionContext<BinaryVector>)best.Clone();
+        BestResultParameter.ActualValue = new SingleObjectiveSolutionContext<BinaryVector>(
+          (BinaryVector)best.EncodedSolution.Clone(), (ISingleObjectiveEvaluationResult)best.EvaluationResult.Clone());
     }
 
     private void Parameterize() {

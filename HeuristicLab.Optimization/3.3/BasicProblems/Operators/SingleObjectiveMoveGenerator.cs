@@ -67,14 +67,14 @@ namespace HeuristicLab.Optimization {
       var random = RandomParameter.ActualValue;
       var sampleSize = SampleSizeParameter.ActualValue.Value;
       var encoding = EncodingParameter.ActualValue;
-      var solution = ScopeUtil.GetEncodedSolution(ExecutionContext.Scope, encoding);
-      var solutionContext = new SingleObjectiveSolutionContextScope<TEncodedSolution>(ExecutionContext.Scope, solution);
+      var solutionContext = ScopeUtil.CreateSolutionContext(ExecutionContext.Scope, encoding);
 
       var nbhood = GetNeighbors(solutionContext, random).Take(sampleSize).ToList();
       var moveScopes = new Scope[nbhood.Count];
       for (int i = 0; i < moveScopes.Length; i++) {
         moveScopes[i] = new Scope(i.ToString(CultureInfo.InvariantCulture.NumberFormat));
         ScopeUtil.CopyEncodedSolutionToScope(moveScopes[i], encoding, nbhood[i].EncodedSolution);
+        ScopeUtil.CopyToScope(moveScopes[i], nbhood[i]);
       }
       ExecutionContext.Scope.SubScopes.AddRange(moveScopes);
 
