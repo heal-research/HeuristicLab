@@ -1,4 +1,4 @@
-#region License Information
+﻿#region License Information
 /* HeuristicLab
  * Copyright (C) Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
@@ -22,17 +22,19 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis {
   [StorableType("EE612297-B1AF-42D2-BF21-AF9A2D42791C")]
   [Item("RegressionProblemData", "Represents an item containing all data defining a regression problem.")]
   public class RegressionProblemData : DataAnalysisProblemData, IRegressionProblemData, IStorableContent {
     protected const string TargetVariableParameterName = "TargetVariable";
+    protected const string VariableRangesParameterName = "VariableRanges";
+    protected const string IntervalConstraintsParameterName = "IntervalConstraints";
     public string Filename { get; set; }
 
     #region default data
@@ -90,6 +92,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       problemData.Parameters.Add(new FixedValueParameter<IntRange>(TrainingPartitionParameterName, "", (IntRange)new IntRange(0, 0).AsReadOnly()));
       problemData.Parameters.Add(new FixedValueParameter<IntRange>(TestPartitionParameterName, "", (IntRange)new IntRange(0, 0).AsReadOnly()));
       problemData.Parameters.Add(new ConstrainedValueParameter<StringValue>(TargetVariableParameterName, new ItemSet<StringValue>()));
+      problemData.Parameters.Add(new FixedValueParameter<IntervalCollection>(VariableRangesParameterName, "", new IntervalCollection()));
       emptyProblemData = problemData;
     }
     #endregion
@@ -97,6 +100,14 @@ namespace HeuristicLab.Problems.DataAnalysis {
     public IConstrainedValueParameter<StringValue> TargetVariableParameter {
       get { return (IConstrainedValueParameter<StringValue>)Parameters[TargetVariableParameterName]; }
     }
+
+    public IFixedValueParameter<IntervalCollection> VariableRangesParameter => (IFixedValueParameter<IntervalCollection>)Parameters[VariableRangesParameterName];
+
+    public IntervalCollection VariableRanges {
+      get => VariableRangesParameter.Value;
+    }
+
+
     public string TargetVariable {
       get { return TargetVariableParameter.Value.Value; }
       set {
@@ -124,6 +135,10 @@ namespace HeuristicLab.Problems.DataAnalysis {
     protected RegressionProblemData(StorableConstructorFlag _) : base(_) { }
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
+      if (!Parameters.ContainsKey(VariableRangesParameterName)) {
+        var intervalCollection = CalculateDatasetIntervals(this.Dataset);
+        Parameters.Add(new FixedValueParameter<IntervalCollection>(VariableRangesParameterName, intervalCollection));
+      }
       RegisterParameterEvents();
     }
 
@@ -151,7 +166,19 @@ namespace HeuristicLab.Problems.DataAnalysis {
       : base(dataset, allowedInputVariables, transformations ?? Enumerable.Empty<ITransformation>()) {
       var variables = InputVariables.Select(x => x.AsReadOnly()).ToList();
       Parameters.Add(new ConstrainedValueParameter<StringValue>(TargetVariableParameterName, new ItemSet<StringValue>(variables), variables.Where(x => x.Value == targetVariable).First()));
+      var intervalCollection = CalculateDatasetIntervals(this.Dataset);
+      Parameters.Add(new FixedValueParameter<IntervalCollection>(VariableRangesParameterName, intervalCollection));
       RegisterParameterEvents();
+    }
+
+    private static IntervalCollection CalculateDatasetIntervals(IDataset dataset) {
+      IntervalCollection intervalCollection = new IntervalCollection();
+      foreach (var variable in dataset.DoubleVariables) {// intervals are only possible for double variables
+        var variableInterval = Interval.GetInterval(dataset.GetDoubleValues(variable));
+        intervalCollection.AddInterval(variable, variableInterval);
+      }
+
+      return intervalCollection;
     }
 
     private void RegisterParameterEvents() {

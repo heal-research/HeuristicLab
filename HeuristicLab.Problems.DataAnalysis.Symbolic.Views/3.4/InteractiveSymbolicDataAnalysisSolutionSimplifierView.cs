@@ -34,9 +34,10 @@ using HeuristicLab.MainForm.WindowsForms;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
   public abstract partial class InteractiveSymbolicDataAnalysisSolutionSimplifierView : AsynchronousContentView {
-    private Dictionary<ISymbolicExpressionTreeNode, ISymbolicExpressionTreeNode> foldedNodes;
-    private Dictionary<ISymbolicExpressionTreeNode, ISymbolicExpressionTreeNode> changedNodes;
-    private Dictionary<ISymbolicExpressionTreeNode, double> nodeImpacts;
+    private readonly Dictionary<ISymbolicExpressionTreeNode, ISymbolicExpressionTreeNode> foldedNodes = new Dictionary<ISymbolicExpressionTreeNode, ISymbolicExpressionTreeNode>();
+    private readonly Dictionary<ISymbolicExpressionTreeNode, ISymbolicExpressionTreeNode> changedNodes = new Dictionary<ISymbolicExpressionTreeNode, ISymbolicExpressionTreeNode>();
+    private readonly Dictionary<ISymbolicExpressionTreeNode, Interval> nodeIntervals = new Dictionary<ISymbolicExpressionTreeNode, Interval>();
+    private readonly Dictionary<ISymbolicExpressionTreeNode, double> nodeImpacts = new Dictionary<ISymbolicExpressionTreeNode, double>();
 
     private readonly ISymbolicDataAnalysisSolutionImpactValuesCalculator impactCalculator;
 
@@ -48,9 +49,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
 
     protected InteractiveSymbolicDataAnalysisSolutionSimplifierView(ISymbolicDataAnalysisSolutionImpactValuesCalculator impactCalculator) {
       InitializeComponent();
-      foldedNodes = new Dictionary<ISymbolicExpressionTreeNode, ISymbolicExpressionTreeNode>();
-      changedNodes = new Dictionary<ISymbolicExpressionTreeNode, ISymbolicExpressionTreeNode>();
-      nodeImpacts = new Dictionary<ISymbolicExpressionTreeNode, double>();
       this.Caption = "Interactive Solution Simplifier";
       this.impactCalculator = impactCalculator;
 
@@ -172,7 +170,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
 
     protected override void OnContentChanged() {
       base.OnContentChanged();
-      foldedNodes = new Dictionary<ISymbolicExpressionTreeNode, ISymbolicExpressionTreeNode>();
+      foldedNodes.Clear();
+      changedNodes.Clear();
+      nodeIntervals.Clear();
+      nodeImpacts.Clear();
       UpdateView();
       viewHost.Content = this.Content;
     }
@@ -204,8 +205,23 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
         foreach (var pair in replacementValues.Where(pair => !(pair.Key is ConstantTreeNode))) {
           foldedNodes[pair.Key] = MakeConstantTreeNode(pair.Value);
         }
+        
+        foreach (var pair in impactAndReplacementValues) {
+          nodeImpacts[pair.Key] = pair.Value.Item1;
+        }
 
-        nodeImpacts = impactAndReplacementValues.ToDictionary(x => x.Key, x => x.Value.Item1);
+        if (IntervalInterpreter.IsCompatible(tree)) { 
+          var regressionProblemData = Content.ProblemData as IRegressionProblemData;
+          if (regressionProblemData != null) {
+            var interpreter = new IntervalInterpreter();
+            var variableRanges = regressionProblemData.VariableRanges.GetReadonlyDictionary();
+            IDictionary<ISymbolicExpressionTreeNode, Interval> intervals;
+            interpreter.GetSymbolicExpressionTreeIntervals(tree, variableRanges, out intervals);
+            foreach (var kvp in intervals) {
+              nodeIntervals[kvp.Key] = kvp.Value;
+            }
+          }
+        }
       } finally {
         progress.Finish();
       }
@@ -302,12 +318,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
             visualTree.ToolTip += Environment.NewLine + "Replacement value: " + constantReplacementNode.Value;
           }
         }
-        if (visualTree != null)
+        if (visualTree != null) {
+          if (nodeIntervals.ContainsKey(treeNode))
+            visualTree.ToolTip += String.Format($"{Environment.NewLine}Intervals: [{nodeIntervals[treeNode].LowerBound:G5} ... {nodeIntervals[treeNode].UpperBound:G5}]");
           if (changedNodes.ContainsKey(treeNode)) {
             visualTree.LineColor = Color.DodgerBlue;
           } else if (treeNode is ConstantTreeNode && foldedNodes.ContainsKey(treeNode)) {
             visualTree.LineColor = Color.DarkOrange;
           }
+        }
       }
       treeChart.RepaintNodes();
     }

@@ -22,11 +22,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HEAL.Attic;
 using HeuristicLab.Parameters;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
@@ -79,7 +79,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       return GetSymbolicExpressionTreeIntervals(tree, variableRanges, out nodeIntervals);
     }
 
-    public Interval GetSymbolicExpressionTreeInterval(ISymbolicExpressionTree tree, IDictionary<string, Interval> variableRanges) {
+    public Interval GetSymbolicExpressionTreeInterval(ISymbolicExpressionTree tree, IReadOnlyDictionary<string, Interval> variableRanges) {
       lock (syncRoot) {
         EvaluatedSolutions++;
       }
@@ -96,7 +96,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
 
     public Interval GetSymbolicExpressionTreeIntervals(ISymbolicExpressionTree tree,
-      IDictionary<string, Interval> variableRanges, out IDictionary<ISymbolicExpressionTreeNode, Interval> nodeIntervals) {
+      IReadOnlyDictionary<string, Interval> variableRanges, out IDictionary<ISymbolicExpressionTreeNode, Interval> nodeIntervals) {
       lock (syncRoot) {
         EvaluatedSolutions++;
       }
@@ -123,7 +123,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
 
-    private static Instruction[] PrepareInterpreterState(ISymbolicExpressionTree tree, IDictionary<string, Interval> variableRanges) {
+    private static Instruction[] PrepareInterpreterState(ISymbolicExpressionTree tree, IReadOnlyDictionary<string, Interval> variableRanges) {
       if (variableRanges == null)
         throw new ArgumentNullException("No variablew ranges are present!", nameof(variableRanges));
 
@@ -233,30 +233,38 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             result = Interval.Exponential(argumentInterval);
             break;
           }
-        case OpCodes.Power: {
-            result = Evaluate(instructions, ref instructionCounter, nodeIntervals);
-            for (int i = 1; i < currentInstr.nArguments; i++) {
-              var argumentInterval = Evaluate(instructions, ref instructionCounter, nodeIntervals);
-              result = Interval.Power(result, argumentInterval);
-            }
-            break;
-          }
         case OpCodes.Square: {
             var argumentInterval = Evaluate(instructions, ref instructionCounter, nodeIntervals);
             result = Interval.Square(argumentInterval);
             break;
           }
-        case OpCodes.Root: {
-            result = Evaluate(instructions, ref instructionCounter, nodeIntervals);
-            for (int i = 1; i < currentInstr.nArguments; i++) {
-              var argumentInterval = Evaluate(instructions, ref instructionCounter, nodeIntervals);
-              result = Interval.Root(result, argumentInterval);
-            }
-            break;
-          }
         case OpCodes.SquareRoot: {
             var argumentInterval = Evaluate(instructions, ref instructionCounter, nodeIntervals);
             result = Interval.SquareRoot(argumentInterval);
+            break;
+          }
+        case OpCodes.Cube: {
+            var argumentInterval = Evaluate(instructions, ref instructionCounter, nodeIntervals);
+            result = Interval.Cube(argumentInterval);
+            break;
+          }
+        case OpCodes.CubeRoot: {
+            var argumentInterval = Evaluate(instructions, ref instructionCounter, nodeIntervals);
+            result = Interval.CubicRoot(argumentInterval);
+            break;
+          }
+        case OpCodes.Absolute: {
+            var argumentInterval = Evaluate(instructions, ref instructionCounter, nodeIntervals);
+            result = Interval.Absolute(argumentInterval);
+            break;
+          }
+        case OpCodes.AnalyticQuotient: {
+            result = Evaluate(instructions, ref instructionCounter, nodeIntervals);
+            for (var i = 1; i < currentInstr.nArguments; i++) {
+              var argumentInterval = Evaluate(instructions, ref instructionCounter, nodeIntervals);
+              result = Interval.AnalyticalQuotient(result, argumentInterval);
+            }
+
             break;
           }
         default:
@@ -273,6 +281,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       var containsUnknownSyumbol = (
         from n in tree.Root.GetSubtree(0).IterateNodesPrefix()
         where
+          !(n.Symbol is Problems.DataAnalysis.Symbolic.Variable) &&
+          !(n.Symbol is Constant) &&
           !(n.Symbol is StartSymbol) &&
           !(n.Symbol is Addition) &&
           !(n.Symbol is Subtraction) &&
@@ -283,12 +293,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           !(n.Symbol is Tangent) &&
           !(n.Symbol is Logarithm) &&
           !(n.Symbol is Exponential) &&
-          !(n.Symbol is Power) &&
           !(n.Symbol is Square) &&
-          !(n.Symbol is Root) &&
           !(n.Symbol is SquareRoot) &&
-          !(n.Symbol is Problems.DataAnalysis.Symbolic.Variable) &&
-          !(n.Symbol is Constant)
+          !(n.Symbol is Cube) &&
+          !(n.Symbol is CubeRoot) &&
+          !(n.Symbol is Absolute) &&
+          !(n.Symbol is AnalyticQuotient)
         select n).Any();
       return !containsUnknownSyumbol;
     }

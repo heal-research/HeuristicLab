@@ -220,6 +220,12 @@
     </Compile>
     <Compile Include="Interfaces\IDataPreprocessorStarter.cs" />
     <Compile Include="Interfaces\IPartialDependencePlot.cs" />
+    <Compile Include="IntervalCollectionView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="IntervalCollectionView.Designer.cs">
+      <DependentUpon>IntervalCollectionView.cs</DependentUpon>
+    </Compile>
     <Compile Include="MenuItems\ChangeDataOfOptimizersMenuItem.cs" />
     <Compile Include="MenuItems\ShrinkDataAnalysisRunsMenuItem.cs" />
     <Compile Include="ModifiableDatasetView.cs">
