@@ -19,11 +19,12 @@
  */
 #endregion
 
+using System;
 using System.Collections.Generic;
-using HeuristicLab.Services.Hive.DataTransfer;
+using HeuristicLab.Services.Hive.DataAccess;
 
 namespace HeuristicLab.Services.Hive {
   public interface ITaskScheduler {
-    IEnumerable<TaskInfoForScheduler> Schedule(IEnumerable<TaskInfoForScheduler> tasks, int count = 1);
+    IEnumerable<Guid> Schedule(Slave slave, int count = 1);
   }
 }

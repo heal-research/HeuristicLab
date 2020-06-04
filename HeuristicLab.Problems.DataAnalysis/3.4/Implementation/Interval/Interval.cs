@@ -22,8 +22,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using HeuristicLab.Common;
 using HEAL.Attic;
+using HeuristicLab.Common;
 
 namespace HeuristicLab.Problems.DataAnalysis {
   [StorableType("849e42d3-8934-419d-9aff-64ad81c06b67")]
@@ -60,7 +60,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       }
 
       if (lowerBound > upperBound)
-        throw new ArgumentException("LowerBound must be smaller than UpperBound.");
+        throw new ArgumentException("lowerBound must be smaller than or equal to upperBound.");
 
       this.LowerBound = lowerBound;
       this.UpperBound = upperBound;
@@ -68,6 +68,13 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     public bool Contains(double value) {
       return LowerBound <= value && value <= UpperBound;
+    }
+
+    public bool Contains(Interval other) {
+      if (double.IsNegativeInfinity(LowerBound) && double.IsPositiveInfinity(UpperBound)) return true;
+      if (other.LowerBound >= LowerBound && other.UpperBound <= UpperBound) return true;
+  
+      return false;
     }
 
     public override string ToString() {
@@ -218,26 +225,6 @@ namespace HeuristicLab.Problems.DataAnalysis {
       return new Interval(Math.Exp(a.LowerBound), Math.Exp(a.UpperBound));
     }
 
-    public static Interval Power(Interval a, Interval b) {
-      if (a.Contains(0.0) && b.LowerBound < 0) return new Interval(double.NaN, double.NaN);
-
-      int bLower = (int)Math.Round(b.LowerBound);
-      int bUpper = (int)Math.Round(b.UpperBound);
-
-      List<double> powerValues = new List<double>();
-      powerValues.Add(Math.Pow(a.UpperBound, bUpper));
-      powerValues.Add(Math.Pow(a.UpperBound, bUpper - 1));
-      powerValues.Add(Math.Pow(a.UpperBound, bLower));
-      powerValues.Add(Math.Pow(a.UpperBound, bLower + 1));
-
-      powerValues.Add(Math.Pow(a.LowerBound, bUpper));
-      powerValues.Add(Math.Pow(a.LowerBound, bUpper - 1));
-      powerValues.Add(Math.Pow(a.LowerBound, bLower));
-      powerValues.Add(Math.Pow(a.LowerBound, bLower + 1));
-
-      return new Interval(powerValues.Min(), powerValues.Max());
-    }
-
     public static Interval Square(Interval a) {
       if (a.UpperBound <= 0) return new Interval(a.UpperBound * a.UpperBound, a.LowerBound * a.LowerBound);     // interval is negative
       else if (a.LowerBound >= 0) return new Interval(a.LowerBound * a.LowerBound, a.UpperBound * a.UpperBound); // interval is positive
@@ -248,16 +235,15 @@ namespace HeuristicLab.Problems.DataAnalysis {
       return new Interval(Math.Pow(a.LowerBound, 3), Math.Pow(a.UpperBound, 3));
     }
 
-    public static Interval Root(Interval a, Interval b) {
-      int lower = (int)Math.Round(b.LowerBound);
-      int higher = (int)Math.Round(b.UpperBound);
-
-      return new Interval(Math.Pow(a.LowerBound, 1.0 / higher), Math.Pow(a.UpperBound, 1.0 / lower));
-    }
-
+    /// <summary>
+    /// The interval contains both possible results of the calculated square root +-sqrt(x). That results in a wider
+    /// interval, but it contains all possible solutions.
+    /// </summary>
+    /// <param name="a">Interval to build square root from.</param>
+    /// <returns></returns>
     public static Interval SquareRoot(Interval a) {
       if (a.LowerBound < 0) return new Interval(double.NaN, double.NaN);
-      return new Interval(Math.Sqrt(a.LowerBound), Math.Sqrt(a.UpperBound));
+      return new Interval(-Math.Sqrt(a.UpperBound), Math.Sqrt(a.UpperBound));
     }
 
     public static Interval CubicRoot(Interval a) {

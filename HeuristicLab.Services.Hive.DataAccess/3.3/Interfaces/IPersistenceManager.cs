@@ -63,7 +63,9 @@ namespace HeuristicLab.Services.Hive.DataAccess.Interfaces {
 
     #region Transaction management
     void UseTransaction(Action call, bool repeatableRead = false, bool longRunning = false);
+    void UseTransactionAndSubmit(Action call, bool repeatableRead = false, bool longRunning = false);
     T UseTransaction<T>(Func<T> call, bool repeatableRead = false, bool longRunning = false);
+    T UseTransactionAndSubmit<T>(Func<T> call, bool repeatableRead = false, bool longRunning = false);
     #endregion
 
     TableInformation GetTableInformation(string table);

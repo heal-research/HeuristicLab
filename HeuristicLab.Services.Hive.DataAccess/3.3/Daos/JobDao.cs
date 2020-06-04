@@ -36,13 +36,17 @@ namespace HeuristicLab.Services.Hive.DataAccess.Daos {
       DataContext.ExecuteCommand(DeleteByStateQueryString, Enum.GetName(typeof(JobState), state));
     }
 
+    public int DeleteByState(JobState state, int batchSize) {
+      return DataContext.ExecuteCommand(DeleteTopNByStateQueryString, batchSize, Enum.GetName(typeof(JobState), state));
+    }
+
     public IEnumerable<Job> GetByProjectId(Guid id) {
       return GetByProjectIdQuery(DataContext, id);
     }
 
     public IEnumerable<Job> GetByProjectIds(IEnumerable<Guid> projectIds) {
       string paramProjectIds = string.Join(",", projectIds.ToList().Select(x => string.Format("'{0}'", x)));
-      if(!string.IsNullOrWhiteSpace(paramProjectIds)) {
+      if (!string.IsNullOrWhiteSpace(paramProjectIds)) {
         string queryString = string.Format(GetByProjectIdsQueryString, paramProjectIds);
         return DataContext.ExecuteQuery<Job>(queryString);
       }
@@ -50,11 +54,11 @@ namespace HeuristicLab.Services.Hive.DataAccess.Daos {
     }
 
     public IEnumerable<Job> GetByState(JobState state) {
-      return GetByStateQuery(DataContext, state);
+      return GetByStateQuery(DataContext, state.ToString());
     }
 
     public IEnumerable<Guid> GetJobIdsByState(JobState state) {
-      return GetJobIdsByStateQuery(DataContext, state);
+      return GetJobIdsByStateQuery(DataContext, state.ToString());
     }
 
     public IEnumerable<Job> GetJobsReadyForDeletion() {
@@ -73,15 +77,15 @@ namespace HeuristicLab.Services.Hive.DataAccess.Daos {
         (from job in db.GetTable<Job>()
          where job.ProjectId == projectId
          select job));
-    private static readonly Func<DataContext, JobState, IEnumerable<Job>> GetByStateQuery =
-      CompiledQuery.Compile((DataContext db, JobState jobState) =>
+    private static readonly Func<DataContext, string, IEnumerable<Job>> GetByStateQuery =
+      CompiledQuery.Compile((DataContext db, string jobState) =>
         (from job in db.GetTable<Job>()
-         where job.State == jobState
+         where job.State.ToString() == jobState
          select job));
-    private static readonly Func<DataContext, JobState, IEnumerable<Guid>> GetJobIdsByStateQuery =
-      CompiledQuery.Compile((DataContext db, JobState jobState) =>
+    private static readonly Func<DataContext, string, IEnumerable<Guid>> GetJobIdsByStateQuery =
+      CompiledQuery.Compile((DataContext db, string jobState) =>
         (from job in db.GetTable<Job>()
-         where job.State == jobState
+         where job.State.ToString() == jobState
          select job.JobId));
     private static readonly Func<DataContext, IEnumerable<Job>> GetJobsReadyForDeletionQuery =
       CompiledQuery.Compile((DataContext db) =>
@@ -99,6 +103,11 @@ namespace HeuristicLab.Services.Hive.DataAccess.Daos {
     private const string DeleteByStateQueryString = @"
       DELETE FROM [Job]
       WHERE JobState = {0}
+    ";
+    private const string DeleteTopNByStateQueryString = @"
+      DELETE TOP ({0})
+      FROM [Job]
+      WHERE JobState = {1}
     ";
     private const string GetStatisticsPendingJobs = @"
       SELECT DISTINCT j.*

@@ -21,7 +21,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Data.Linq;
 using System.Linq;
 using HeuristicLab.Services.Access.DataAccess;
 using HeuristicLab.Services.Hive.DataAccess;
@@ -35,51 +34,85 @@ namespace HeuristicLab.Services.Hive {
     private static readonly TaskState[] CompletedStates = { TaskState.Finished, TaskState.Aborted, TaskState.Failed };
 
     public void GenerateStatistics() {
-      using (var pm = new PersistenceManager()) {
+      Console.WriteLine("started generate statistics");
 
-        pm.UseTransaction(() => {
-          UpdateDimProjectTable(pm);
-          pm.SubmitChanges();
-        });
+      using (var pm = new PersistenceManager(true)) {
+        var sw = new System.Diagnostics.Stopwatch();
 
-        pm.UseTransaction(() => {
+        sw.Start();
+        pm.UseTransactionAndSubmit(() => { UpdateDimProjectTable(pm); });
+        sw.Stop();
+        LogFactory.GetLogger(typeof(HiveJanitor).Namespace).Log($"UpdateDimProjectTable: {sw.Elapsed}");
+        Console.WriteLine($"UpdateDimProjectTable: {sw.Elapsed}");
+        sw.Reset();
+
+        pm.UseTransactionAndSubmit(() => {
+          sw.Start();
           UpdateDimUserTable(pm);
-          
+          sw.Stop();
+          LogFactory.GetLogger(typeof(HiveJanitor).Namespace).Log($"UpdateDimUserTable: {sw.Elapsed}");
+          Console.WriteLine($"UpdateDimUserTable: {sw.Elapsed}");
+          sw.Reset();
+
+          sw.Start();
           UpdateDimJobTable(pm);
+          sw.Stop();
+          LogFactory.GetLogger(typeof(HiveJanitor).Namespace).Log($"UpdateDimJobTable: {sw.Elapsed}");
+          Console.WriteLine($"UpdateDimJobTable: {sw.Elapsed}");
+          sw.Reset();
+
+          sw.Start();
           UpdateDimClientsTable(pm);
-          pm.SubmitChanges();
+          sw.Stop();
+          LogFactory.GetLogger(typeof(HiveJanitor).Namespace).Log($"UpdateDimClientsTable: {sw.Elapsed}");
+          Console.WriteLine($"UpdateDimClientsTable: {sw.Elapsed}");
+          sw.Reset();
         });
 
-        DimTime time = null;
-        pm.UseTransaction(() => {
-          time = UpdateDimTimeTable(pm);
-          pm.SubmitChanges();
-        });
+        pm.UseTransactionAndSubmit(() => {
+          sw.Start();
+          var time = UpdateDimTimeTable(pm);
+          sw.Stop();
+          LogFactory.GetLogger(typeof(HiveJanitor).Namespace).Log($"UpdateDimTimeTable: {sw.Elapsed}");
+          Console.WriteLine($"UpdateDimTimeTable: {sw.Elapsed}");
+          sw.Reset();
 
-        if (time != null) {
-          pm.UseTransaction(() => {
-            UpdateFactClientInfoTable(time, pm);
-            pm.SubmitChanges();
-            UpdateFactProjectInfoTable(time, pm);
-            pm.SubmitChanges();
-          });
+          sw.Start();
+          UpdateFactClientInfoTable(time, pm);
+          sw.Stop();
+          LogFactory.GetLogger(typeof(HiveJanitor).Namespace).Log($"UpdateFactClientInfoTable: {sw.Elapsed}");
+          Console.WriteLine($"UpdateFactClientInfoTable: {sw.Elapsed}");
+          sw.Reset();
 
-          pm.UseTransaction(() => {
-            try {
-              UpdateFactTaskTable(pm);
-              UpdateExistingDimJobs(pm);
-              FlagJobsForDeletion(pm);
-              pm.SubmitChanges();
-            }
-            catch (DuplicateKeyException e) {
-              var logger = LogFactory.GetLogger(typeof(HiveStatisticsGenerator).Namespace);
-              logger.Log(string.Format(
-                @"Propable change from summertime to wintertime, resulting in overlapping times.
-                          On wintertime to summertime change, slave timeouts and a fact gap will occur. 
-                          Exception Details: {0}", e));
-            }
-          });
-        }
+          sw.Start();
+          UpdateFactProjectInfoTable(time, pm);
+          sw.Stop();
+          LogFactory.GetLogger(typeof(HiveJanitor).Namespace).Log($"UpdateFactProjectInfoTable: {sw.Elapsed}");
+          Console.WriteLine($"UpdateFactProjectInfoTable: {sw.Elapsed}");
+          sw.Reset();
+
+
+          sw.Start();
+          UpdateFactTaskTable(pm);
+          sw.Stop();
+          LogFactory.GetLogger(typeof(HiveJanitor).Namespace).Log($"UpdateFactTaskTable: {sw.Elapsed}");
+          Console.WriteLine($"UpdateFactTaskTable: {sw.Elapsed}");
+          sw.Reset();
+
+          sw.Start();
+          UpdateExistingDimJobs(pm);
+          sw.Stop();
+          LogFactory.GetLogger(typeof(HiveJanitor).Namespace).Log($"UpdateExistingDimJobs: {sw.Elapsed}");
+          Console.WriteLine($"UpdateExistingDimJobs: {sw.Elapsed}");
+          sw.Reset();
+
+          sw.Start();
+          FlagJobsForDeletion(pm);
+          sw.Stop();
+          LogFactory.GetLogger(typeof(HiveJanitor).Namespace).Log($"FlagJobsForDeletion: {sw.Elapsed}");
+          Console.WriteLine($"FlagJobsForDeletion: {sw.Elapsed}");
+          sw.Reset();
+        }, longRunning: true);
       }
     }
 
@@ -206,48 +239,14 @@ namespace HeuristicLab.Services.Hive {
     }
 
     private void UpdateExistingDimJobs(PersistenceManager pm) {
-      var dimProjectDao = pm.DimProjectDao;
-      var jobDao = pm.JobDao;
       var dimJobDao = pm.DimJobDao;
-      var factTaskDao = pm.FactTaskDao;
-      foreach (var dimJob in dimJobDao.GetNotCompletedJobs()) {
-        var taskStates = factTaskDao.GetByJobId(dimJob.JobId)
-            .GroupBy(x => x.TaskState)
-            .Select(x => new {
-              State = x.Key,
-              Count = x.Count()
-            }).ToList();
-        int totalTasks = 0, completedTasks = 0;
-        foreach (var state in taskStates) {
-          totalTasks += state.Count;
-          if (CompletedStates.Contains(state.State)) {
-            completedTasks += state.Count;
-          }
-        }
-        var job = jobDao.GetById(dimJob.JobId);
-        if (totalTasks == completedTasks) {
-          var completeDate = factTaskDao.GetLastCompletedTaskFromJob(dimJob.JobId);
-          if (completeDate == null) {
-            if (job == null) {
-              completeDate = DateTime.Now;
-            }
-          }
-          dimJob.DateCompleted = completeDate;
-        }
-        if(job != null) {
-          dimJob.JobName = job.Name;
-          dimJob.ProjectId = dimProjectDao.GetLastValidIdByProjectId(job.ProjectId);
-        }
-
-        dimJob.TotalTasks = totalTasks;
-        dimJob.CompletedTasks = completedTasks;
-      }
+      dimJobDao.UpdateExistingDimJobs();
     }
 
     private void FlagJobsForDeletion(PersistenceManager pm) {
       var jobDao = pm.JobDao;
       var jobs = jobDao.GetJobsReadyForDeletion();
-      foreach(var job in jobs) {
+      foreach (var job in jobs) {
         job.State = JobState.DeletionPending;
       }
     }
@@ -256,15 +255,15 @@ namespace HeuristicLab.Services.Hive {
       var dimClientDao = pm.DimClientDao;
       var resourceDao = pm.ResourceDao;
 
-      var resources = resourceDao.GetAll().ToList();
-      var dimClients = dimClientDao.GetAllOnlineClients().ToList();
+      var resources = resourceDao.GetAll().ToList(); // all live now
+      var dimClients = dimClientDao.GetAllOnlineClients().ToList(); // all in statistics which are online (i.e. not expired)
 
       var onlineClients = dimClients.Where(x => resources.Select(y => y.ResourceId).Contains(x.ResourceId));
       var addedResources = resources.Where(x => !dimClients.Select(y => y.ResourceId).Contains(x.ResourceId));
       var removedResources = dimClients.Where(x => !resources.Select(y => y.ResourceId).Contains(x.ResourceId));
 
       // set expiration time of removed resources
-      foreach(var r in removedResources) {
+      foreach (var r in removedResources) {
         r.DateExpired = DateTime.Now;
       }
 
@@ -280,10 +279,10 @@ namespace HeuristicLab.Services.Hive {
 
       // expire client if its parent has changed and create a new entry
       // otherwise perform "normal" update
-      foreach(var dimc in onlineClients) {
+      foreach (var dimc in onlineClients) {
         var r = resources.Where(x => x.ResourceId == dimc.ResourceId).SingleOrDefault();
-        if(r != null) {
-          if(dimc.ParentResourceId == null ? r.ParentResourceId != null : dimc.ParentResourceId != r.ParentResourceId) {
+        if (r != null) {
+          if (dimc.ParentResourceId == null ? r.ParentResourceId != null : dimc.ParentResourceId != r.ParentResourceId) {
             var now = DateTime.Now;
             dimc.DateExpired = now;
             dimClientDao.Save(new DimClient {
@@ -415,13 +414,13 @@ namespace HeuristicLab.Services.Hive {
         let aStats = projectAvailabilityStats.Where(x => x.ProjectId == dimp.ProjectId).SingleOrDefault()
         let uStats = projectUsageStats.Where(x => x.ProjectId == dimp.ProjectId).SingleOrDefault()
         select new FactProjectInfo {
-            ProjectId = dimp.Id,
-            DimTime = newTime,
-            NumTotalCores = aStats != null ? aStats.Cores : 0,
-            TotalMemory = aStats != null ? aStats.Memory : 0,
-            NumUsedCores = uStats != null ? uStats.Cores : 0,
-            UsedMemory = uStats != null ? uStats.Memory : 0
-          }
+          ProjectId = dimp.Id,
+          DimTime = newTime,
+          NumTotalCores = aStats != null ? aStats.Cores : 0,
+          TotalMemory = aStats != null ? aStats.Memory : 0,
+          NumUsedCores = uStats != null ? uStats.Cores : 0,
+          UsedMemory = uStats != null ? uStats.Memory : 0
+        }
         );
     }
 
@@ -430,27 +429,42 @@ namespace HeuristicLab.Services.Hive {
       var taskDao = pm.TaskDao;
       var dimClientDao = pm.DimClientDao;
 
-      var factTaskIds = factTaskDao.GetAll().Select(x => x.TaskId);
-      var notFinishedFactTasks = factTaskDao.GetNotFinishedTasks();
-      //var notFinishedFactTasks = factTaskDao.GetNotFinishedTasks().Select(x => new {
-      //  x.TaskId,
-      //  x.LastClientId
-      //});
+      var preselectedNewAndNotFinishedTasks =
+        (from task in taskDao.GetAll()
+         from factTask in factTaskDao.GetAll().Where(f => task.TaskId == f.TaskId).DefaultIfEmpty()
+         let stateLogs = task.StateLogs.OrderByDescending(x => x.DateTime).ToList()
+         let lastSlaveId = stateLogs.First(x => x.SlaveId != null)
+         where !task.IsParentTask && (factTask.TaskId == null || factTask.EndTime == null)
+         select new { Task = task, StateLogs = stateLogs, LastSlaveId = lastSlaveId }).ToList();
 
-      // query several properties for all new and not finished tasks
-      // in order to use them later either...
-      // (1) to update the fact task entry of not finished tasks
-      // (2) to insert a new fact task entry for new tasks
+      Console.WriteLine("preselectedNewAndNotFinishedTasks.Count = {0}", preselectedNewAndNotFinishedTasks.Count);
+
+      // jkarder: maybe we can split this query into multiple ones to retrieve state logs and the last slave
+
+      var clients = dimClientDao.GetAllOnlineClients().ToList();
+      Console.WriteLine("clients.Count = {0}", clients.Count);
+      var notFinishedFactTasks = factTaskDao.GetNotFinishedTasks().ToList();
+      Console.WriteLine("notFinishedFactTasks.Count = {0}", notFinishedFactTasks.Count);
+
       var newAndNotFinishedTasks =
-        (from task in taskDao.GetAllChildTasks()
-         let stateLogs = task.StateLogs.OrderByDescending(x => x.DateTime)
-         let lastSlaveId = stateLogs.First(x => x.SlaveId != null).SlaveId
-         where (!factTaskIds.Contains(task.TaskId)
-                || notFinishedFactTasks.Select(x => x.TaskId).Contains(task.TaskId))
+        (from x in preselectedNewAndNotFinishedTasks
+         let task = x.Task
+         let stateLogs = x.StateLogs // jkarder: if multiple join results in multiple rows, statelogs of all equal tasks must be the same ...
+         let lastSlaveId = x.LastSlaveId
          join lastFactTask in notFinishedFactTasks on task.TaskId equals lastFactTask.TaskId into lastFactPerTask
          from lastFact in lastFactPerTask.DefaultIfEmpty()
-         join client in dimClientDao.GetAllOnlineClients() on lastSlaveId equals client.ResourceId into clientsPerSlaveId
-         from client in clientsPerSlaveId.DefaultIfEmpty()
+           // jkarder:
+           // we can still fix this another way, if we only select that one row from dimclients that fits the given statelog/lastslave entry
+           // dimclient has multiple entires for one and the same client, because we track changes in resource group hierarchies
+           // -> left join from task/statelog to dimclient results in multiple rows because multiple rows in dimclient with the same resource id exist
+           // -> further down the road we call singleordefault to single out tasks to get the data for the update
+           // -> dimclient should only contain one valid row for a given time span that fits to the lastslaveid.datetime
+           // -> client.datecreated <= lastslaveid.datetime <= client.dateexpired
+           // it's aweful ...
+         from client in clients.Where(c => lastSlaveId != null && lastSlaveId.SlaveId == c.ResourceId && c.DateCreated <= lastSlaveId.DateTime && (c.DateExpired == null || lastSlaveId.DateTime <= c.DateExpired)).DefaultIfEmpty()
+           // jkarder:
+           //join client in clients on lastSlaveId.SlaveId equals client.ResourceId into clientsPerSlaveId
+           //from client in clientsPerSlaveId.DefaultIfEmpty()
          select new {
            TaskId = task.TaskId,
            JobId = task.JobId,
@@ -458,18 +472,22 @@ namespace HeuristicLab.Services.Hive {
            CoresRequired = task.CoresNeeded,
            MemoryRequired = task.MemoryNeeded,
            State = task.State,
-           StateLogs = stateLogs.OrderBy(x => x.DateTime),
+           StateLogs = stateLogs.OrderBy(x => x.DateTime).ToList(),
            LastClientId = client != null
-                          ? client.Id : lastFact != null
-                          ? lastFact.LastClientId : (Guid?)null,
+                        ? client.Id : lastFact != null
+                        ? lastFact.LastClientId : (Guid?)null,
            NotFinishedTask = notFinishedFactTasks.Any(y => y.TaskId == task.TaskId)
          }).ToList();
+
+      Console.WriteLine("newAndNotFinishedTasks.Count = {0}", newAndNotFinishedTasks.Count);
+
 
       // (1) update data of already existing facts
       // i.e. for all in newAndNotFinishedTasks where NotFinishedTask = true
       foreach (var notFinishedFactTask in notFinishedFactTasks) {
-        var nfftUpdate = newAndNotFinishedTasks.Where(x => x.TaskId == notFinishedFactTask.TaskId).SingleOrDefault();
-        if(nfftUpdate != null) {
+        // jkarder: firstordefault should work too, because statelogs of multiple task rows that result from the earlier join have to be the same
+        var nfftUpdate = newAndNotFinishedTasks.Where(x => x.TaskId == notFinishedFactTask.TaskId).FirstOrDefault();
+        if (nfftUpdate != null) {
           var taskData = CalculateFactTaskData(nfftUpdate.StateLogs);
 
           notFinishedFactTask.StartTime = taskData.StartTime;
@@ -486,58 +504,39 @@ namespace HeuristicLab.Services.Hive {
           notFinishedFactTask.TaskState = nfftUpdate.State;
           notFinishedFactTask.Exception = taskData.Exception;
           notFinishedFactTask.InitialWaitingTime = taskData.InitialWaitingTime;
+        } else {
+          //Console.WriteLine("could not update task {0}", notFinishedFactTask.TaskId);
         }
       }
 
+      Console.WriteLine("nfft update complete");
+
       // (2) insert facts for new tasks
       // i.e. for all in newAndNotFinishedTasks where NotFinishedTask = false
-      factTaskDao.Save(
-        from x in newAndNotFinishedTasks
-        where !x.NotFinishedTask
-        let taskData = CalculateFactTaskData(x.StateLogs)
-        select new FactTask {
-          TaskId = x.TaskId,
-          JobId = x.JobId,
-          StartTime = taskData.StartTime,
-          EndTime = taskData.EndTime,
-          LastClientId = x.LastClientId,
-          Priority = x.Priority,
-          CoresRequired = x.CoresRequired,
-          MemoryRequired = x.MemoryRequired,
-          NumCalculationRuns = taskData.CalculationRuns,
-          NumRetries = taskData.Retries,
-          WaitingTime = taskData.WaitingTime,
-          CalculatingTime = taskData.CalculatingTime,
-          TransferTime = taskData.TransferTime,
-          TaskState = x.State,
-          Exception = taskData.Exception,
-          InitialWaitingTime = taskData.InitialWaitingTime
-        });
-
-
-      ////update data of already existing facts
-      //foreach (var notFinishedTask in factTaskDao.GetNotFinishedTasks()) {
-      //  var ntc = newTasks.Where(x => x.TaskId == notFinishedTask.TaskId);
-      //  if (ntc.Any()) {
-      //    var x = ntc.Single();
-      //    var taskData = CalculateFactTaskData(x.StateLogs);
-
-      //    notFinishedTask.StartTime = taskData.StartTime;
-      //    notFinishedTask.EndTime = taskData.EndTime;
-      //    notFinishedTask.LastClientId = x.LastClientId;
-      //    notFinishedTask.Priority = x.Priority;
-      //    notFinishedTask.CoresRequired = x.CoresRequired;
-      //    notFinishedTask.MemoryRequired = x.MemoryRequired;
-      //    notFinishedTask.NumCalculationRuns = taskData.CalculationRuns;
-      //    notFinishedTask.NumRetries = taskData.Retries;
-      //    notFinishedTask.WaitingTime = taskData.WaitingTime;
-      //    notFinishedTask.CalculatingTime = taskData.CalculatingTime;
-      //    notFinishedTask.TransferTime = taskData.TransferTime;
-      //    notFinishedTask.TaskState = x.State;
-      //    notFinishedTask.Exception = taskData.Exception;
-      //    notFinishedTask.InitialWaitingTime = taskData.InitialWaitingTime;
-      //  }
-      //}
+      var newFactTasks = (from x in newAndNotFinishedTasks
+                          where !x.NotFinishedTask
+                          let taskData = CalculateFactTaskData(x.StateLogs)
+                          select new FactTask {
+                            TaskId = x.TaskId,
+                            JobId = x.JobId,
+                            StartTime = taskData.StartTime,
+                            EndTime = taskData.EndTime,
+                            LastClientId = x.LastClientId,
+                            Priority = x.Priority,
+                            CoresRequired = x.CoresRequired,
+                            MemoryRequired = x.MemoryRequired,
+                            NumCalculationRuns = taskData.CalculationRuns,
+                            NumRetries = taskData.Retries,
+                            WaitingTime = taskData.WaitingTime,
+                            CalculatingTime = taskData.CalculatingTime,
+                            TransferTime = taskData.TransferTime,
+                            TaskState = x.State,
+                            Exception = taskData.Exception,
+                            InitialWaitingTime = taskData.InitialWaitingTime
+                          }).ToList();
+      Console.WriteLine("newFactTasks.Count = {0}", newFactTasks.Count);
+      factTaskDao.Save(newFactTasks);
+      Console.WriteLine("save of new fact tasks completed");
     }
 
     private string GetUserName(Guid userId) {
@@ -550,8 +549,7 @@ namespace HeuristicLab.Services.Hive {
           var user = dc.aspnet_Users.SingleOrDefault(x => x.UserId == userId);
           return user != null ? user.UserName : UnknownUserName;
         }
-      }
-      catch (Exception) {
+      } catch (Exception) {
         return UnknownUserName;
       }
     }

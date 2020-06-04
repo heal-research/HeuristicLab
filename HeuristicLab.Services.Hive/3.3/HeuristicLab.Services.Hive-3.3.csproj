@@ -172,6 +172,7 @@
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="Scheduler\TaskScheduler.cs" />
     <Compile Include="ServiceContracts\IHiveService.cs" />
     <Compile Include="ServiceFaults\PluginAlreadyExistsFault.cs" />
     <Compile Include="ServiceLocator.cs" />

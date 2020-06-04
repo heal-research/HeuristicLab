@@ -27,29 +27,63 @@ using HeuristicLab.Services.Hive.DataAccess.Interfaces;
 namespace HeuristicLab.Services.Hive.Manager {
   public class EventManager : IEventManager {
     private const string SlaveTimeout = "Slave timed out.";
+    private static readonly TaskState[] CompletedStates = { TaskState.Finished, TaskState.Aborted, TaskState.Failed };
+
     private IPersistenceManager PersistenceManager {
       get { return ServiceLocator.Instance.PersistenceManager; }
     }
 
     public void Cleanup() {
+      Console.WriteLine("started cleanup");
       var pm = PersistenceManager;
 
-      pm.UseTransaction(() => {
-        FinishJobDeletion(pm);
-        pm.SubmitChanges();
-      });
+      // preemptiv delete obsolete entities
+      // speeds up job deletion
+      BatchDelete((p, s) => p.StateLogDao.DeleteObsolete(s), 100, 100, true, pm, "DeleteObsoleteStateLogs");
+      BatchDelete((p, s) => p.TaskDataDao.DeleteObsolete(s), 100, 20, true, pm, "DeleteObsoleteTaskData");
+      BatchDelete((p, s) => p.TaskDao.DeleteObsolete(s), 100, 20, false, pm, "DeleteObsoleteTasks");
+      BatchDelete((p, s) => p.JobDao.DeleteByState(JobState.DeletionPending, s), 100, 20, true, pm, "DeleteObsoleteJobs");
 
-      pm.UseTransaction(() => {
-        SetTimeoutSlavesOffline(pm);
-        SetTimeoutTasksWaiting(pm);
-        DeleteObsoleteSlaves(pm);
-        pm.SubmitChanges();
-      });
+      LogFactory.GetLogger(typeof(HiveJanitor).Namespace).Log("HiveJanitor: SetTimeoutSlavesOffline");
+      Console.WriteLine("5");
+      pm.UseTransactionAndSubmit(() => { SetTimeoutSlavesOffline(pm); });
+      LogFactory.GetLogger(typeof(HiveJanitor).Namespace).Log("HiveJanitor: SetTimeoutTasksWaiting");
+      Console.WriteLine("6");
+      pm.UseTransactionAndSubmit(() => { SetTimeoutTasksWaiting(pm); });
+      LogFactory.GetLogger(typeof(HiveJanitor).Namespace).Log("HiveJanitor: DeleteObsoleteSlaves");
+      Console.WriteLine("7");
+      pm.UseTransactionAndSubmit(() => { DeleteObsoleteSlaves(pm); });
+      LogFactory.GetLogger(typeof(HiveJanitor).Namespace).Log("HiveJanitor: AbortObsoleteTasks");
+      Console.WriteLine("8");
+      pm.UseTransactionAndSubmit(() => { AbortObsoleteTasks(pm); });
+      LogFactory.GetLogger(typeof(HiveJanitor).Namespace).Log("HiveJanitor: FinishParentTasks");
+      Console.WriteLine("9");
+      pm.UseTransactionAndSubmit(() => { FinishParentTasks(pm); });
+      LogFactory.GetLogger(typeof(HiveJanitor).Namespace).Log("HiveJanitor: DONE");
+      Console.WriteLine("10");
+    }
 
-      pm.UseTransaction(() => {
-        FinishParentTasks(pm);
-        pm.SubmitChanges();
-      });
+    private void BatchDelete(
+      Func<IPersistenceManager, int, int> deletionFunc,
+      int batchSize,
+      int maxCalls,
+      bool limitIsBatchSize,
+      IPersistenceManager pm,
+      string logMessage
+    ) {
+      int totalDeleted = 0;
+      while (maxCalls > 0) {
+        maxCalls--;
+        LogFactory.GetLogger(typeof(HiveJanitor).Namespace).Log($"HiveJanitor: {logMessage}");
+        Console.WriteLine($"HiveJanitor: {logMessage}");
+        var deleted = pm.UseTransactionAndSubmit(() => { return deletionFunc(pm, batchSize); });
+        LogFactory.GetLogger(typeof(HiveJanitor).Namespace).Log($"HiveJanitor: {logMessage} DONE (deleted {deleted}, {maxCalls} calls left)");
+        Console.WriteLine($"HiveJanitor: {logMessage} DONE (deleted {deleted}, {maxCalls} calls left)");
+        totalDeleted += deleted;
+        if (limitIsBatchSize && deleted < batchSize || deleted <= 0) return;
+      }
+      LogFactory.GetLogger(typeof(HiveJanitor).Namespace).Log($"HiveJanitor: Possible rows left to delete (total deleted: {totalDeleted}).");
+      Console.WriteLine($"HiveJanitor: Possible rows left to delete (total deleted: {totalDeleted}).");
     }
 
     /// <summary>
@@ -133,6 +167,24 @@ namespace HeuristicLab.Services.Hive.Manager {
         if (!downtimesAvailable) {
           slaveDao.Delete(id);
         }
+      }
+    }
+
+    /// <summary>
+    /// Aborts tasks whose jobs have already been marked for deletion
+    /// </summary>
+    /// <param name="pm"></param>
+    private void AbortObsoleteTasks(IPersistenceManager pm) {
+      var jobDao = pm.JobDao;
+      var taskDao = pm.TaskDao;
+
+      var obsoleteTasks = (from jobId in jobDao.GetJobIdsByState(JobState.StatisticsPending)
+                           join task in taskDao.GetAll() on jobId equals task.JobId
+                           where !CompletedStates.Contains(task.State) && task.Command == null
+                           select task).ToList();
+
+      foreach (var t in obsoleteTasks) {
+        t.State = TaskState.Aborted;
       }
     }
   }

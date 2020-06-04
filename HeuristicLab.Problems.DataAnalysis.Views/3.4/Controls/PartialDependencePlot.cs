@@ -35,7 +35,7 @@ using HeuristicLab.Visualization.ChartControlsExtensions;
 
 namespace HeuristicLab.Problems.DataAnalysis.Views {
   public partial class PartialDependencePlot : UserControl, IPartialDependencePlot {
-    private ModifiableDataset sharedFixedVariables; // used for syncronising variable values between charts
+    private ModifiableDataset sharedFixedVariables; // used for synchronizing variable values between charts
     private ModifiableDataset internalDataset; // holds the x values for each point drawn
 
     private CancellationTokenSource cancelCurrentRecalculateSource;
@@ -350,8 +350,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     }
 
     private void RecalculateTrainingLimits(bool initializeAxisRanges) {
-      trainingMin = solutions.Select(s => s.ProblemData.Dataset.GetDoubleValues(freeVariable, s.ProblemData.TrainingIndices).Where(x => !double.IsNaN(x)).Min()).Max();
-      trainingMax = solutions.Select(s => s.ProblemData.Dataset.GetDoubleValues(freeVariable, s.ProblemData.TrainingIndices).Where(x => !double.IsNaN(x)).Max()).Min();
+      //Set min and max to the interval ranges
+      trainingMin = solutions.Select(s => s.ProblemData.VariableRanges.GetInterval(freeVariable).LowerBound).Max();
+      trainingMax = solutions.Select(s => s.ProblemData.VariableRanges.GetInterval(freeVariable).UpperBound).Min();
 
       if (initializeAxisRanges) {
         double xmin, xmax, xinterval;
@@ -437,7 +438,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       chart.ApplyPaletteColors();
       chart.Palette = ChartColorPalette.None;
 
-      // Add confidence interval series before its coresponding series for correct z index
+      // Add confidence interval series before its corresponding series for correct z index
       foreach (var solution in solutions) {
         Series ciSeries;
         if (ciSeriesCache.TryGetValue(solution, out ciSeries)) {

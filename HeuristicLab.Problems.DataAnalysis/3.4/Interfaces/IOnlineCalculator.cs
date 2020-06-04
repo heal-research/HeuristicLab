@@ -21,8 +21,11 @@
 
 
 using System;
+using HEAL.Attic;
+
 namespace HeuristicLab.Problems.DataAnalysis {
   [Flags]
+  [StorableType("8A28DDA1-4814-4B77-9457-0EE930BE9C73")]
   public enum OnlineCalculatorError {
     /// <summary>
     /// No error occurred
@@ -37,6 +40,8 @@ namespace HeuristicLab.Problems.DataAnalysis {
     /// </summary>
     InsufficientElementsAdded = 2
   }
+
+  [StorableType("119C8242-3EE7-4C34-A7AC-68ABF76EB11B")]
   public interface IOnlineCalculator {
     OnlineCalculatorError ErrorState { get; }
     double Value { get; }

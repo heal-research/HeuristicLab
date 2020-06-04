@@ -23,18 +23,17 @@ using System;
 using System.Runtime.Serialization;
 using HEAL.Attic;
 using HeuristicLab.Common;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Services.Hive {
   /// <summary>
   /// The MessageContainer is a container class for Messages. Its two parts are:
   /// the actual message itself and the TaskId, refered by the message
   /// </summary>
-  [StorableClass]
+  [StorableType("67DEE81F-81FA-4B47-B043-93DBC2028DB5")]
   [Serializable]
   [DataContract]
   public class MessageContainer : IDeepCloneable {
-
+    [StorableType("A907BDB0-99E3-4EE2-BA31-72FFD29F7B19")]
     public enum MessageType {
       // *** commands from hive server ***
       CalculateTask, // slave should calculate a task. the task is already assigned to the slave
@@ -61,7 +60,7 @@ namespace HeuristicLab.Services.Hive {
     public Guid TaskId { get; set; }
 
     [StorableConstructor]
-    protected MessageContainer(bool deserializing) { }
+    protected MessageContainer(StorableConstructorFlag _) { }
     protected MessageContainer() { }
     public MessageContainer(MessageType message) {
       Message = message;

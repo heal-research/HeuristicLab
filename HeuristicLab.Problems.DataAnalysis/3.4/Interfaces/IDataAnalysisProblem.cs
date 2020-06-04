@@ -34,7 +34,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
   [StorableType("c2f6fcdd-ab62-4423-be75-01aa694df411")]
   public interface IDataAnalysisProblem<T> : IDataAnalysisProblem
-  where T : class, IDataAnalysisProblemData {
+    where T : class, IDataAnalysisProblemData {
     IValueParameter<T> ProblemDataParameter { get; }
     new T ProblemData { get; set; }
   }

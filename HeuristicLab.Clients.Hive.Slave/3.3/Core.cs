@@ -250,7 +250,7 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
         }
         TaskData taskData = wcfService.GetTaskData(taskId);
         if (taskData == null) throw new TaskDataNotFoundException(taskId);
-        task = wcfService.UpdateJobState(taskId, TaskState.Calculating, null);
+        task = wcfService.UpdateTaskState(taskId, TaskState.Calculating, null);
         if (task == null) throw new TaskNotFoundException(taskId);
         taskManager.StartTaskAsync(task, taskData);
       }
@@ -267,16 +267,16 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
         throw;
       }
       catch (OutOfCoresException) {
-        wcfService.UpdateJobState(taskId, TaskState.Waiting, "No more cores available");
+        wcfService.UpdateTaskState(taskId, TaskState.Waiting, "No more cores available");
         throw;
       }
       catch (OutOfMemoryException) {
-        wcfService.UpdateJobState(taskId, TaskState.Waiting, "No more memory available");
+        wcfService.UpdateTaskState(taskId, TaskState.Waiting, "No more memory available");
         throw;
       }
       catch (Exception e) {
         SlaveStatusInfo.DecrementUsedCores(usedCores);
-        wcfService.UpdateJobState(taskId, TaskState.Failed, e.ToString());
+        wcfService.UpdateTaskState(taskId, TaskState.Failed, e.ToString());
         throw;
       }
     }
@@ -390,7 +390,7 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
         if (taskData != null) {
           wcfService.UpdateTaskData(task, taskData, configManager.GetClientInfo().Id, TaskState.Failed, exception.ToString());
         } else {
-          wcfService.UpdateJobState(task.Id, TaskState.Failed, exception.ToString());
+          wcfService.UpdateTaskState(task.Id, TaskState.Failed, exception.ToString());
         }
         SlaveClientCom.Instance.LogMessage(exception.Message);
       }
@@ -407,7 +407,7 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
     private void taskManager_TaskAborted(object sender, EventArgs<SlaveTask> e) {
       var slaveTask = e.Value;
       var task = wcfService.GetTask(slaveTask.TaskId);
-      wcfService.UpdateJobState(task.Id, TaskState.Aborted, null);
+      wcfService.UpdateTaskState(task.Id, TaskState.Aborted, null);
       SlaveStatusInfo.DecrementUsedCores(e.Value.CoresNeeded);
     }
     #endregion

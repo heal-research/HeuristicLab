@@ -21,8 +21,10 @@
 
 using System;
 using System.Collections.Generic;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis {
+  [StorableType("3283B3FB-8467-4B99-9B6E-23BF3D1B8505")]
   public interface IDependencyCalculator {
     double Maximum { get; }
     double Minimum { get; }

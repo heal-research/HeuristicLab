@@ -21,8 +21,10 @@
 
 
 using System.Collections.Generic;
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis {
+  [StorableType("7461AC5D-9D9A-4DCD-B32F-602260E58FFC")]
   public interface IOnlineTimeSeriesCalculator {
     OnlineCalculatorError ErrorState { get; }
     double Value { get; }

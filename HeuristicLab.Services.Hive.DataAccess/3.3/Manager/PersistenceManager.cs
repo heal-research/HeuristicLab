@@ -183,10 +183,11 @@ namespace HeuristicLab.Services.Hive.DataAccess.Manager {
 
     #region Transaction management
     public void UseTransaction(Action call, bool repeatableRead = false, bool longRunning = false) {
-      UseTransaction<object>(() => {
-        call();
-        return null;
-      });
+      UseTransaction<object>(() => { call(); return null; }, repeatableRead, longRunning);
+    }
+
+    public void UseTransactionAndSubmit(Action call, bool repeatableRead = false, bool longRunning = false) {
+      UseTransaction(() => { call(); SubmitChanges(); }, repeatableRead, longRunning);
     }
 
     public T UseTransaction<T>(Func<T> call, bool repeatableRead = false, bool longRunning = false) {
@@ -208,6 +209,10 @@ namespace HeuristicLab.Services.Hive.DataAccess.Manager {
         }
       }
       throw new Exception("Transaction couldn't be completed.");
+    }
+
+    public T UseTransactionAndSubmit<T>(Func<T> call, bool repeatableRead = false, bool longRunning = false) {
+      return UseTransaction(() => { var res = call(); SubmitChanges(); return res; }, repeatableRead, longRunning);
     }
 
     private static TransactionScope CreateTransaction(bool repeatableRead, bool longRunning) {

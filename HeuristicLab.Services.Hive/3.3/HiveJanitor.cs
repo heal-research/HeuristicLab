@@ -27,8 +27,7 @@ using HeuristicLab.Services.Hive.DataAccess.Interfaces;
 namespace HeuristicLab.Services.Hive {
   public class HiveJanitor {
     private bool stop;
-    private AutoResetEvent cleanupWaitHandle;
-    private AutoResetEvent generateStatisticsWaitHandle;
+    private AutoResetEvent runWaitHandle;
 
     private IPersistenceManager PersistenceManager {
       get { return ServiceLocator.Instance.PersistenceManager; }
@@ -43,62 +42,57 @@ namespace HeuristicLab.Services.Hive {
 
     public HiveJanitor() {
       stop = false;
-      cleanupWaitHandle = new AutoResetEvent(false);
-      generateStatisticsWaitHandle = new AutoResetEvent(false);
+      runWaitHandle = new AutoResetEvent(false);
     }
 
     public void StopJanitor() {
       stop = true;
-      cleanupWaitHandle.Set();
-      generateStatisticsWaitHandle.Set();
+      runWaitHandle.Set();
+    }
+
+    public void Run() {
+      while (!stop) {
+        RunCleanup();
+        RunGenerateStatistics();
+        runWaitHandle.WaitOne(Properties.Settings.Default.GenerateStatisticsInterval);
+      }
+      runWaitHandle.Close();
     }
 
     public void RunCleanup() {
       var pm = PersistenceManager;
-      while (!stop) {
-        try {
-          LogFactory.GetLogger(typeof(HiveJanitor).Namespace).Log("HiveJanitor: starting cleanup.");
-          bool cleanup = false;
+      try {
+        LogFactory.GetLogger(typeof(HiveJanitor).Namespace).Log("HiveJanitor: starting cleanup.");
+        bool cleanup = false;
 
-          var lifecycleDao = pm.LifecycleDao;
-          pm.UseTransaction(() => {
-            var lifecycle = lifecycleDao.GetLastLifecycle();
-            if (lifecycle == null
-                || DateTime.Now - lifecycle.LastCleanup > Properties.Settings.Default.CleanupInterval) {
-              lifecycleDao.UpdateLifecycle();
-              cleanup = true;
-            }
-            pm.SubmitChanges();
-          }, true);
-
-          if (cleanup) {
-            EventManager.Cleanup();
+        var lifecycleDao = pm.LifecycleDao;
+        pm.UseTransaction(() => {
+          var lifecycle = lifecycleDao.GetLastLifecycle();
+          if (lifecycle == null
+              || DateTime.Now - lifecycle.LastCleanup > Properties.Settings.Default.CleanupInterval) {
+            lifecycleDao.UpdateLifecycle();
+            cleanup = true;
           }
-          LogFactory.GetLogger(typeof(HiveJanitor).Namespace).Log("HiveJanitor: cleanup finished.");
+          pm.SubmitChanges();
+        }, true);
+
+        if (cleanup) {
+          EventManager.Cleanup();
         }
-        catch (Exception e) {
-          LogFactory.GetLogger(typeof(HiveJanitor).Namespace).Log(string.Format("HiveJanitor: The following exception occured: {0}", e.ToString()));
-        }
-        cleanupWaitHandle.WaitOne(Properties.Settings.Default.CleanupInterval);
+        LogFactory.GetLogger(typeof(HiveJanitor).Namespace).Log("HiveJanitor: cleanup finished.");
+      } catch (Exception e) {
+        LogFactory.GetLogger(typeof(HiveJanitor).Namespace).Log(string.Format("HiveJanitor: The following exception occured: {0}", e.ToString()));
       }
-      cleanupWaitHandle.Close();
     }
 
     public void RunGenerateStatistics() {
-      while (!stop) {
-        try {
-          LogFactory.GetLogger(typeof(HiveJanitor).Namespace).Log("HiveJanitor: starting generate statistics.");
-          StatisticsGenerator.GenerateStatistics();
-          LogFactory.GetLogger(typeof(HiveJanitor).Namespace).Log("HiveJanitor: generate statistics finished.");
-        }
-        catch (Exception e) {
-          LogFactory.GetLogger(typeof(HiveJanitor).Namespace).Log(string.Format("HiveJanitor: The following exception occured: {0}", e));
-        }
-
-        generateStatisticsWaitHandle.WaitOne(Properties.Settings.Default.GenerateStatisticsInterval);
+      try {
+        LogFactory.GetLogger(typeof(HiveJanitor).Namespace).Log("HiveJanitor: starting generate statistics.");
+        StatisticsGenerator.GenerateStatistics();
+        LogFactory.GetLogger(typeof(HiveJanitor).Namespace).Log("HiveJanitor: generate statistics finished.");
+      } catch (Exception e) {
+        LogFactory.GetLogger(typeof(HiveJanitor).Namespace).Log(string.Format("HiveJanitor: The following exception occured: {0}", e));
       }
-
-      generateStatisticsWaitHandle.Close();
     }
   }
 }

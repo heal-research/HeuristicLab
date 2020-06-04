@@ -43,12 +43,52 @@ namespace HeuristicLab.Services.Hive.DataAccess.Daos.HiveStatistics {
       return Table.Where(x => x.DateCompleted != null);
     }
 
+    public void UpdateExistingDimJobs() {
+      DataContext.ExecuteCommand(UpdateExistingDimJobsQuery);
+    }
+
     #region Compiled queries
     private static readonly Func<DataContext, Guid, DimJob> GetByIdQuery =
       CompiledQuery.Compile((DataContext db, Guid id) =>
         (from dimJob in db.GetTable<DimJob>()
          where dimJob.JobId == id
          select dimJob).SingleOrDefault());
+    #endregion
+
+    #region String queries
+    private const string UpdateExistingDimJobsQuery = @"
+UPDATE u
+SET
+  u.JobName = case when x.JobId is null then u.JobName else x.JobName end,
+  u.TotalTasks = x.TotalTasks,
+  u.CompletedTasks = x.CompletedTasks,
+  u.DateCompleted =
+    case when x.totaltasks = x.CompletedTasks
+      then (case when x.JobId is null and x.DateCompleted is null then GETDATE() else x.DateCompleted end)
+    else u.DateCompleted
+  end,
+  u.ProjectId = case when x.JobId is null then u.ProjectId else x.ProjectId end
+FROM [statistics].dimjob u
+JOIN (
+	SELECT
+	  dj.JobId as DimJobId,
+	  j.JobId as JobId,
+	  j.Name as JobName,
+	  COUNT(*) as TotalTasks,
+	  SUM(
+	  CASE
+		WHEN TaskState in ('Finished', 'Aborted', 'Failed') then 1
+		ELSE 0
+	  END) as CompletedTasks,
+	  MAX(EndTime) as DateCompleted,
+	  dp.ProjectId as ProjectId
+	from [statistics].DimJob dj
+	join [statistics].FactTask ft on dj.JobId = ft.JobId
+	left join Job j on j.JobId = dj.JobId
+	left join [statistics].DimProject dp on j.ProjectId = dp.ProjectId 
+	where dj.DateCompleted is null and dp.DateExpired is null
+	group by dj.JobId, j.JobId, j.Name, dp.ProjectId 
+) as x on u.JobId = x.DimJobId";
     #endregion
   }
 }

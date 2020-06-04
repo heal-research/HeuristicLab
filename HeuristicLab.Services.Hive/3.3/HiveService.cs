@@ -208,6 +208,11 @@ namespace HeuristicLab.Services.Hive {
       }
     }
 
+    private bool IsAuthorizedForTask(DA.Task task, Guid? slaveId) {
+      var lastStateLog = task.StateLogs.OrderByDescending(x => x.DateTime).FirstOrDefault(x => x.State == DA.TaskState.Transferring);
+      return lastStateLog == null || slaveId == null || lastStateLog.SlaveId == slaveId;
+    }
+
     public DT.Task UpdateTaskState(Guid taskId, DT.TaskState taskState, Guid? slaveId, Guid? userId, string exception) {
       RoleVerifier.AuthenticateForAnyRole(HiveRoles.Administrator, HiveRoles.Client, HiveRoles.Slave);
       AuthorizationManager.AuthorizeForTask(taskId, Permission.Full);
@@ -216,8 +221,10 @@ namespace HeuristicLab.Services.Hive {
         var taskDao = pm.TaskDao;
         return pm.UseTransaction(() => {
           var task = taskDao.GetById(taskId);
-          UpdateTaskState(pm, task, taskState, slaveId, userId, exception);
-          pm.SubmitChanges();
+          if (IsAuthorizedForTask(task, slaveId)) {
+            UpdateTaskState(pm, task, taskState, slaveId, userId, exception);
+            pm.SubmitChanges();
+          }
           return task.ToDto();
         });
       }

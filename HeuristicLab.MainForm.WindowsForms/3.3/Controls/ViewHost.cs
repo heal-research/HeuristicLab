@@ -169,29 +169,32 @@ namespace HeuristicLab.MainForm.WindowsForms {
       }
     }
 
-    private void OnViewTypeChanged() {
-      if (viewType != null) {
-        if (!ViewCanShowContent(viewType, Content))
-          throw new InvalidOperationException(string.Format("View \"{0}\" cannot display content \"{1}\".",
-                                                            viewType, Content.GetType()));
-        IContentView view = MainFormManager.CreateView(viewType);
-        view.Locked = Locked;
-        view.ReadOnly = ReadOnly;
-        ActiveView = view; //necessary to allow the views to change the status of the viewhost
-        view.Content = Content;
 
-        UpdateActiveMenuItem();
-      }
+    private void OnViewTypeChanged() {
+      if (viewType == null) return;
+      if (!ViewCanShowContent(viewType, Content))
+        throw new InvalidOperationException(string.Format("View \"{0}\" cannot display content \"{1}\".", viewType, Content.GetType()));
+
+      IContentView view = MainFormManager.CreateView(viewType);
+      view.Locked = Locked;
+      view.ReadOnly = ReadOnly;
+      ActiveView = view; //necessary to allow the views to change the status of the viewhost
+      view.Content = Content;
+
+      UpdateActiveMenuItem();
+
     }
 
     private void RegisterActiveViewEvents() {
       activeView.CaptionChanged += new EventHandler(activeView_CaptionChanged);
       activeView.LockedChanged += new EventHandler(activeView_LockedChanged);
+      activeView.ReadOnlyChanged += new EventHandler(activeView_ReadOnlyChanged);
       activeView.Changed += new EventHandler(activeView_Changed);
     }
     private void DeregisterActiveViewEvents() {
       activeView.CaptionChanged -= new EventHandler(activeView_CaptionChanged);
       activeView.LockedChanged -= new EventHandler(activeView_LockedChanged);
+      activeView.ReadOnlyChanged -= new EventHandler(activeView_ReadOnlyChanged);
       activeView.Changed -= new EventHandler(activeView_Changed);
     }
     private void activeView_CaptionChanged(object sender, EventArgs e) {
@@ -201,6 +204,10 @@ namespace HeuristicLab.MainForm.WindowsForms {
       Locked = activeView.Locked;
       configurationLabel.Enabled = !activeView.Locked;
     }
+    private void activeView_ReadOnlyChanged(object sender, EventArgs e) {
+      ReadOnly = activeView.ReadOnly;
+    }
+
     private void activeView_Changed(object sender, EventArgs e) {
       OnChanged();
     }
@@ -227,25 +234,25 @@ namespace HeuristicLab.MainForm.WindowsForms {
     }
 
     #region forwarding of view events
-    internal protected override void OnShown(ViewShownEventArgs e) {
+    protected internal override void OnShown(ViewShownEventArgs e) {
       base.OnShown(e);
       View view = ActiveView as View;
       if (view != null)
         view.OnShown(e);
     }
-    internal protected override void OnHidden(EventArgs e) {
+    protected internal override void OnHidden(EventArgs e) {
       base.OnHidden(e);
       View view = ActiveView as View;
       if (view != null)
         view.OnHidden(e);
     }
-    internal protected override void OnClosing(FormClosingEventArgs e) {
+    protected internal override void OnClosing(FormClosingEventArgs e) {
       base.OnClosing(e);
       View view = ActiveView as View;
       if (view != null)
         view.OnClosing(e);
     }
-    internal protected override void OnClosed(FormClosedEventArgs e) {
+    protected internal override void OnClosed(FormClosedEventArgs e) {
       base.OnClosed(e);
       View view = ActiveView as View;
       if (view != null)

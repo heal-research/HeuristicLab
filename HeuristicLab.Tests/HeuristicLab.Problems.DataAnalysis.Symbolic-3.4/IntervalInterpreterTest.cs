@@ -39,7 +39,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
       var interpreter = new IntervalInterpreter();
       Interval result;
       if (variableRanges == null)
-        result = interpreter.GetSymbolicExpressionTreeInterval(tree, problemData.Dataset, problemData.AllIndices);
+        result = interpreter.GetSymbolicExpressionTreeInterval(tree, problemData.Dataset, rows:problemData.AllIndices);
       else
         result = interpreter.GetSymbolicExpressionTreeInterval(tree, variableRanges);
 
@@ -162,19 +162,5 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
       EvaluateTest("exp(x1-x2)", new Interval(Math.Exp(-5), Math.Exp(6)), variableRanges);
     }
 
-    [TestMethod]
-    [TestCategory("Problems.DataAnalysis.Symbolic")]
-    [TestProperty("Time", "short")]
-    public void TestIntervalInterpreterExpRoot() {
-      EvaluateTest("exp(root(x1*x2, 2))", new Interval(Math.Exp(Math.Sqrt(6)), Math.Exp(Math.Sqrt(48))));
-      EvaluateTest("exp(root(x1*x2, 2))", new Interval(Math.Exp(Math.Sqrt(4)), Math.Exp(Math.Sqrt(60))), variableRanges);
-    }
-
-    [TestMethod]
-    [TestCategory("Problems.DataAnalysis.Symbolic")]
-    [TestProperty("Time", "short")]
-    public void TestIntervalInterpreterPower() {
-      EvaluateTest("pow(x1, 2)", new Interval(Math.Pow(3, 1), Math.Pow(8, 3)));
-    }
   }
 }

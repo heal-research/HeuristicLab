@@ -39,6 +39,10 @@ namespace HeuristicLab.Services.Hive.DataAccess.Daos {
       return GetLastStateLogFromTaskQuery(DataContext, task);
     }
 
+    public int DeleteObsolete(int batchSize) {
+      return DataContext.ExecuteCommand(DeleteObsoleteQueryString, batchSize);
+    }
+
     #region Compiled queries
     private static readonly Func<DataContext, Guid, StateLog> GetByIdQuery =
       CompiledQuery.Compile((DataContext db, Guid stateLogId) =>
@@ -52,6 +56,16 @@ namespace HeuristicLab.Services.Hive.DataAccess.Daos {
          where stateLog.TaskId == task.TaskId
          orderby stateLog.DateTime descending
          select stateLog).First(x => x.SlaveId != null));
+    #endregion
+
+    #region String queries
+    private const string DeleteObsoleteQueryString = @"
+delete top ({0}) s
+from statelog s
+  join task t on t.taskid = s.taskid
+  join job j on j.jobid = t.jobid
+where j.jobstate = 'deletionpending'
+    ";
     #endregion
   }
 }

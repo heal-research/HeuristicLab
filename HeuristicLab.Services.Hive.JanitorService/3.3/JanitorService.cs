@@ -25,8 +25,7 @@ using System.Threading;
 namespace HeuristicLab.Services.Hive.JanitorService {
   public partial class JanitorService : ServiceBase {
     private HiveJanitor janitor;
-    private Thread janitorCleanupThread;
-    private Thread janitorGenerateStatisticsThread;
+    private Thread janitorThread;
 
     public JanitorService() {
       InitializeComponent();
@@ -35,21 +34,16 @@ namespace HeuristicLab.Services.Hive.JanitorService {
     protected override void OnStart(string[] args) {
       janitor = new HiveJanitor();
 
-      janitorCleanupThread = new Thread(janitor.RunCleanup) {
-        IsBackground = true
-      };
-      janitorGenerateStatisticsThread = new Thread(janitor.RunGenerateStatistics) {
+      janitorThread = new Thread(janitor.Run) {
         IsBackground = true
       };
 
-      janitorCleanupThread.Start();
-      janitorGenerateStatisticsThread.Start();
+      janitorThread.Start();
     }
 
     protected override void OnStop() {
       janitor.StopJanitor();
-      janitorCleanupThread.Join();
-      janitorGenerateStatisticsThread.Join();
+      janitorThread.Join();
     }
   }
 }

@@ -49,10 +49,10 @@ namespace HeuristicLab.Services.Hive.DataAccess.Daos {
       //Originally we checked here if there are parent tasks which should be calculated (with GetParentTasks(resourceIds, count, false);).
       //Because there is at the moment no case where this makes sense (there don't exist parent tasks which need to be calculated), 
       //we skip this step because it's wasted runtime
-      return DataContext.ExecuteQuery<TaskPriorityInfo>(GetWaitingTasksQueryString, 
-        slave.ResourceId, 
-        Enum.GetName(typeof(TaskState), TaskState.Waiting), 
-        slave.FreeCores, 
+      return DataContext.ExecuteQuery<TaskPriorityInfo>(GetWaitingTasksQueryString,
+        slave.ResourceId,
+        Enum.GetName(typeof(TaskState), TaskState.Waiting),
+        slave.FreeCores,
         slave.FreeMemory).ToList();
     }
 
@@ -64,16 +64,16 @@ namespace HeuristicLab.Services.Hive.DataAccess.Daos {
     /// <param name="finished">if true, all parent tasks which have FinishWhenChildJobsFinished=true are returned, otherwise only FinishWhenChildJobsFinished=false are returned</param>
     /// <returns></returns>
     public IEnumerable<Task> GetParentTasks(IEnumerable<Guid> resourceIds, int count, bool finished) {
-    var query = from t in Table
-                where t.State == TaskState.Waiting
-                    && t.IsParentTask
-                    && t.Job.AssignedJobResources.All(x => resourceIds.ToList().Contains(x.ResourceId))
-                    && t.FinishWhenChildJobsFinished == finished
-                    && t.ChildJobs.Any()
-                    && t.ChildJobs.All(x =>
-                      x.State == TaskState.Finished
-                      || x.State == TaskState.Aborted
-                      || x.State == TaskState.Failed)
+      var query = from t in Table
+                  where t.State == TaskState.Waiting
+                      && t.IsParentTask
+                      && t.Job.AssignedJobResources.All(x => resourceIds.ToList().Contains(x.ResourceId))
+                      && t.FinishWhenChildJobsFinished == finished
+                      && t.ChildJobs.Any()
+                      && t.ChildJobs.All(x =>
+                        x.State == TaskState.Finished
+                        || x.State == TaskState.Aborted
+                        || x.State == TaskState.Failed)
                   orderby t.Priority descending
                   select t;
       return count == 0 ? query.ToArray() : query.Take(count).ToArray();
@@ -81,6 +81,10 @@ namespace HeuristicLab.Services.Hive.DataAccess.Daos {
 
     public void UpdateExecutionTime(Guid taskId, double executionTime) {
       DataContext.ExecuteCommand(UpdateExecutionTimeQuery, executionTime, DateTime.Now, taskId);
+    }
+
+    public int DeleteObsolete(int batchSize) {
+      return DataContext.ExecuteCommand(DeleteObsoleteQueryString, batchSize);
     }
 
     #region Compiled queries
@@ -128,6 +132,14 @@ namespace HeuristicLab.Services.Hive.DataAccess.Daos {
              LastHeartbeat = {1} 
        WHERE TaskId = {2}
     ";
+
+    private const string DeleteObsoleteQueryString = @"
+delete top ({0}) t1
+from task t1
+  left join task t2 on t1.taskid = t2.parenttaskid
+  join job j on j.jobid = t1.jobid
+where j.jobstate = 'deletionpending' and t2.taskid is null
+";
     #endregion
   }
 }

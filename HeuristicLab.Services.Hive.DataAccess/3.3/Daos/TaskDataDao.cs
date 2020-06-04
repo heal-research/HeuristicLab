@@ -31,12 +31,26 @@ namespace HeuristicLab.Services.Hive.DataAccess.Daos {
       return GetByIdQuery(DataContext, id);
     }
 
+    public int DeleteObsolete(int batchSize) {
+      return DataContext.ExecuteCommand(DeleteObsoleteQueryString, batchSize);
+    }
+
     #region Compiled queries
     private static readonly Func<DataContext, Guid, TaskData> GetByIdQuery =
       CompiledQuery.Compile((DataContext db, Guid taskId) =>
         (from taskData in db.GetTable<TaskData>()
          where taskData.TaskId == taskId
          select taskData).SingleOrDefault());
+    #endregion
+
+    #region String queries
+    private const string DeleteObsoleteQueryString = @"
+delete top ({0}) td
+from taskdata td
+  join task t on t.taskid = td.taskid
+  join job j on j.jobid = t.jobid
+where j.jobstate = 'deletionpending'
+    ";
     #endregion
   }
 }
