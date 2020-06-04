@@ -159,6 +159,7 @@
     <Compile Include="BasicProblems\Operators\SingleObjectiveMoveMaker.cs" />
     <Compile Include="BasicProblems\SingleObjectiveProblem.cs" />
     <Compile Include="BasicProblems\SolutionContext.cs" />
+    <Compile Include="BasicProblems\VectorEncoding.cs" />
     <Compile Include="Interfaces\ICharacteristicCalculator.cs" />
     <Compile Include="Interfaces\ILocalImprovementAlgorithmOperator.cs" />
     <Compile Include="Interfaces\IMultiObjectiveOperator.cs" />

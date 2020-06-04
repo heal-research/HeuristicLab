@@ -38,12 +38,12 @@ namespace HeuristicLab.Parameters {
     }
   }
 
-  public class ParameterChangeHandler<TItem, TValue> : ParameterChangeHandler<TItem>
+  public class ValueTypeValueParameterChangeHandler<TItem, TValue> : ParameterChangeHandler<TItem>
     where TValue : struct
     where TItem : ValueTypeValue<TValue> {
     private ValueTypeValue<TValue> last;
 
-    protected ParameterChangeHandler(IValueParameter<TItem> parameter, Action handler)
+    protected ValueTypeValueParameterChangeHandler(IValueParameter<TItem> parameter, Action handler)
       : base(parameter, handler) {
       last = parameter.Value;
       if (last != null && !last.ReadOnly)
@@ -62,44 +62,129 @@ namespace HeuristicLab.Parameters {
       handler();
     }
 
-    public static ParameterChangeHandler<TItem, TValue> Create(IValueParameter<TItem> parameter, Action handler)
-      => new ParameterChangeHandler<TItem, TValue>(parameter, handler);
+    public static ValueTypeValueParameterChangeHandler<TItem, TValue> Create(IValueParameter<TItem> parameter, Action handler)
+      => new ValueTypeValueParameterChangeHandler<TItem, TValue>(parameter, handler);
+  }
+  public class ValueTypeArrayParameterChangeHandler<TItem, TValue> : ParameterChangeHandler<TItem>
+    where TValue : struct
+    where TItem : ValueTypeArray<TValue> {
+    private ValueTypeArray<TValue> last;
+
+    protected ValueTypeArrayParameterChangeHandler(IValueParameter<TItem> parameter, Action handler)
+      : base(parameter, handler) {
+      last = parameter.Value;
+      if (last != null && !last.ReadOnly)
+        last.ToStringChanged += ParameterValueOnValueChanged;
+    }
+
+    protected override void ParameterOnValueChanged(object sender, EventArgs e) {
+      if (last != null) last.ToStringChanged -= ParameterValueOnValueChanged;
+      last = ((IValueParameter<TItem>)sender).Value;
+      if (last != null && !last.ReadOnly)
+        last.ToStringChanged += ParameterValueOnValueChanged;
+      base.ParameterOnValueChanged(sender, e);
+    }
+
+    protected void ParameterValueOnValueChanged(object sender, EventArgs e) {
+      handler();
+    }
+
+    public static ValueTypeArrayParameterChangeHandler<TItem, TValue> Create(IValueParameter<TItem> parameter, Action handler)
+      => new ValueTypeArrayParameterChangeHandler<TItem, TValue>(parameter, handler);
   }
 
-  public class BoolValueParameterChangeHandler : ParameterChangeHandler<BoolValue, bool> {
+  public class ValueTypeMatrixParameterChangeHandler<TItem, TValue> : ParameterChangeHandler<TItem>
+    where TValue : struct
+    where TItem : ValueTypeMatrix<TValue> {
+    private ValueTypeMatrix<TValue> last;
+
+    protected ValueTypeMatrixParameterChangeHandler(IValueParameter<TItem> parameter, Action handler)
+      : base(parameter, handler) {
+      last = parameter.Value;
+      if (last != null && !last.ReadOnly)
+        last.ToStringChanged += ParameterValueOnValueChanged;
+    }
+
+    protected override void ParameterOnValueChanged(object sender, EventArgs e) {
+      if (last != null) last.ToStringChanged -= ParameterValueOnValueChanged;
+      last = ((IValueParameter<TItem>)sender).Value;
+      if (last != null && !last.ReadOnly)
+        last.ToStringChanged += ParameterValueOnValueChanged;
+      base.ParameterOnValueChanged(sender, e);
+    }
+
+    protected void ParameterValueOnValueChanged(object sender, EventArgs e) {
+      handler();
+    }
+
+    public static ValueTypeMatrixParameterChangeHandler<TItem, TValue> Create(IValueParameter<TItem> parameter, Action handler)
+      => new ValueTypeMatrixParameterChangeHandler<TItem, TValue>(parameter, handler);
+  }
+
+  public class BoolValueParameterChangeHandler : ValueTypeValueParameterChangeHandler<BoolValue, bool> {
     private BoolValueParameterChangeHandler(IValueParameter<BoolValue> parameter, Action handler) : base(parameter, handler) { }
     public static new BoolValueParameterChangeHandler Create(IValueParameter<BoolValue> parameter, Action handler)
       => new BoolValueParameterChangeHandler(parameter, handler);
   }
-  public class IntValueParameterChangeHandler : ParameterChangeHandler<IntValue, int> {
+  public class IntValueParameterChangeHandler : ValueTypeValueParameterChangeHandler<IntValue, int> {
     private IntValueParameterChangeHandler(IValueParameter<IntValue> parameter, Action handler) : base(parameter, handler) { }
     public static new IntValueParameterChangeHandler Create(IValueParameter<IntValue> parameter, Action handler)
       => new IntValueParameterChangeHandler(parameter, handler);
   }
-  public class DoubleValueParameterChangeHandler : ParameterChangeHandler<DoubleValue, double> {
+  public class DoubleValueParameterChangeHandler : ValueTypeValueParameterChangeHandler<DoubleValue, double> {
     private DoubleValueParameterChangeHandler(IValueParameter<DoubleValue> parameter, Action handler) : base(parameter, handler) { }
     public static new DoubleValueParameterChangeHandler Create(IValueParameter<DoubleValue> parameter, Action handler)
       => new DoubleValueParameterChangeHandler(parameter, handler);
   }
-  public class PercentValueParameterChangeHandler : ParameterChangeHandler<PercentValue, double> {
+  public class PercentValueParameterChangeHandler : ValueTypeValueParameterChangeHandler<PercentValue, double> {
     private PercentValueParameterChangeHandler(IValueParameter<PercentValue> parameter, Action handler) : base(parameter, handler) { }
     public static new PercentValueParameterChangeHandler Create(IValueParameter<PercentValue> parameter, Action handler)
       => new PercentValueParameterChangeHandler(parameter, handler);
   }
-  public class DateTimeValueParameterChangeHandler : ParameterChangeHandler<DateTimeValue, DateTime> {
+  public class DateTimeValueParameterChangeHandler : ValueTypeValueParameterChangeHandler<DateTimeValue, DateTime> {
     private DateTimeValueParameterChangeHandler(IValueParameter<DateTimeValue> parameter, Action handler) : base(parameter, handler) { }
     public static new DateTimeValueParameterChangeHandler Create(IValueParameter<DateTimeValue> parameter, Action handler)
       => new DateTimeValueParameterChangeHandler(parameter, handler);
   }
-  public class TimeSpanValueParameterChangeHandler : ParameterChangeHandler<TimeSpanValue, TimeSpan> {
+  public class TimeSpanValueParameterChangeHandler : ValueTypeValueParameterChangeHandler<TimeSpanValue, TimeSpan> {
     private TimeSpanValueParameterChangeHandler(IValueParameter<TimeSpanValue> parameter, Action handler) : base(parameter, handler) { }
     public static new TimeSpanValueParameterChangeHandler Create(IValueParameter<TimeSpanValue> parameter, Action handler)
       => new TimeSpanValueParameterChangeHandler(parameter, handler);
   }
-  public class EnumValueParameterChangeHandler<TEnum> : ParameterChangeHandler<EnumValue<TEnum>, TEnum> where TEnum : struct, IComparable {
+  public class EnumValueParameterChangeHandler<TEnum> : ValueTypeValueParameterChangeHandler<EnumValue<TEnum>, TEnum> where TEnum : struct, IComparable {
     private EnumValueParameterChangeHandler(IValueParameter<EnumValue<TEnum>> parameter, Action handler) : base(parameter, handler) { }
     public static new EnumValueParameterChangeHandler<TEnum> Create(IValueParameter<EnumValue<TEnum>> parameter, Action handler)
       => new EnumValueParameterChangeHandler<TEnum>(parameter, handler);
+  }
+  public class BoolArrayParameterChangeHandler : ValueTypeArrayParameterChangeHandler<BoolArray, bool> {
+    private BoolArrayParameterChangeHandler(IValueParameter<BoolArray> parameter, Action handler) : base(parameter, handler) { }
+    public static new BoolArrayParameterChangeHandler Create(IValueParameter<BoolArray> parameter, Action handler)
+      => new BoolArrayParameterChangeHandler(parameter, handler);
+  }
+  public class IntArrayParameterChangeHandler : ValueTypeArrayParameterChangeHandler<IntArray, int> {
+    private IntArrayParameterChangeHandler(IValueParameter<IntArray> parameter, Action handler) : base(parameter, handler) { }
+    public static new IntArrayParameterChangeHandler Create(IValueParameter<IntArray> parameter, Action handler)
+      => new IntArrayParameterChangeHandler(parameter, handler);
+  }
+  public class DoubleArrayParameterChangeHandler : ValueTypeArrayParameterChangeHandler<DoubleArray, double> {
+    private DoubleArrayParameterChangeHandler(IValueParameter<DoubleArray> parameter, Action handler) : base(parameter, handler) { }
+    public static new DoubleArrayParameterChangeHandler Create(IValueParameter<DoubleArray> parameter, Action handler)
+      => new DoubleArrayParameterChangeHandler(parameter, handler);
+  }
+  public class BoolMatrixParameterChangeHandler : ValueTypeMatrixParameterChangeHandler<BoolMatrix, bool> {
+    private BoolMatrixParameterChangeHandler(IValueParameter<BoolMatrix> parameter, Action handler) : base(parameter, handler) { }
+    public static new BoolMatrixParameterChangeHandler Create(IValueParameter<BoolMatrix> parameter, Action handler)
+      => new BoolMatrixParameterChangeHandler(parameter, handler);
+  }
+  public class IntMatrixParameterChangeHandler : ValueTypeMatrixParameterChangeHandler<IntMatrix, int> {
+    private IntMatrixParameterChangeHandler(IValueParameter<IntMatrix> parameter, Action handler) : base(parameter, handler) { }
+    public static new IntMatrixParameterChangeHandler Create(IValueParameter<IntMatrix> parameter, Action handler)
+      => new IntMatrixParameterChangeHandler(parameter, handler);
+  }
+  public class DoubleMatrixParameterChangeHandler : ValueTypeMatrixParameterChangeHandler<DoubleMatrix, double> {
+    private DoubleMatrixParameterChangeHandler(IValueParameter<DoubleMatrix> parameter, Action handler) : base(parameter, handler) { }
+    public static new DoubleMatrixParameterChangeHandler Create(IValueParameter<DoubleMatrix> parameter, Action handler)
+      => new DoubleMatrixParameterChangeHandler(parameter, handler);
   }
   public class StringValueParameterChangeHandler : ParameterChangeHandler<StringValue> { // StringValue does not derive from ValueTypeValue
     private StringValue last;

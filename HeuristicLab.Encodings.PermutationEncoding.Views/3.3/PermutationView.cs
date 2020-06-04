@@ -57,7 +57,7 @@ namespace HeuristicLab.Encodings.PermutationEncoding.Views {
           permutationTypeView.Content.ValueChanged -= new System.EventHandler(PermutationTypeView_ValueChanged);
         permutationTypeView.Content = null;
       } else {
-        permutationTypeView.Content = new PermutationType(Content.PermutationType);
+        permutationTypeView.Content = new Data.EnumValue<PermutationTypes>(Content.PermutationType);
         permutationTypeView.Content.ValueChanged += new System.EventHandler(PermutationTypeView_ValueChanged);
       }
     }

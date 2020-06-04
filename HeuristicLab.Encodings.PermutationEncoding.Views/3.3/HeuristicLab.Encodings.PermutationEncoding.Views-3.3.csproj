@@ -115,12 +115,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="PermutationTypeView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="PermutationTypeView.Designer.cs">
-      <DependentUpon>PermutationTypeView.cs</DependentUpon>
-    </Compile>
     <Compile Include="PermutationView.cs">
       <SubType>UserControl</SubType>
     </Compile>

@@ -123,7 +123,7 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
       Parameters.Remove(ReferencePointParameterName);
       Parameters.Add(new FixedValueParameter<DoubleArray>(ReferencePointParameterName, "The reference point for hypervolume calculations on this problem", new DoubleArray(TestFunction.ReferencePoint(Objectives))));
 
-      BoundsParameter.Value = new DoubleMatrix(TestFunction.Bounds(Objectives));
+      BoundsRefParameter.Value = new DoubleMatrix(TestFunction.Bounds(Objectives));
     }
 
     protected override void OnEncodingChanged() {

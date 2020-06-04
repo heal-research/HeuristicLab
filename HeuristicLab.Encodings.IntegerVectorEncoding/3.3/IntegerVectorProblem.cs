@@ -21,7 +21,6 @@
 
 #endregion
 
-using System;
 using System.Linq;
 using HEAL.Attic;
 using HeuristicLab.Analysis;
@@ -38,18 +37,16 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
     [Storable] protected IResultParameter<IntegerVector> BestResultParameter { get; private set; }
     public IResultDefinition<IntegerVector> BestResult { get => BestResultParameter; }
     [Storable] protected ReferenceParameter<IntValue> DimensionRefParameter { get; private set; }
-    public IValueParameter<IntValue> DimensionParameter => DimensionRefParameter;
     [Storable] protected ReferenceParameter<IntMatrix> BoundsRefParameter { get; private set; }
-    public IValueParameter<IntMatrix> BoundsParameter => BoundsRefParameter;
 
     public int Dimension {
       get { return DimensionRefParameter.Value.Value; }
-      set { DimensionRefParameter.Value.Value = value; }
+      protected set { DimensionRefParameter.Value.Value = value; }
     }
 
     public IntMatrix Bounds {
       get { return BoundsRefParameter.Value; }
-      set { BoundsRefParameter.Value = value; }
+      protected set { BoundsRefParameter.Value = value; }
     }
 
     [StorableConstructor]
@@ -102,16 +99,8 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
     }
 
     private void RegisterEventHandlers() {
-      DimensionRefParameter.Value.ValueChanged += DimensionParameter_Value_ValueChanged;
-      BoundsRefParameter.ValueChanged += BoundsParameter_ValueChanged;
-    }
-
-    private void DimensionParameter_Value_ValueChanged(object sender, EventArgs e) {
-      DimensionOnChanged();
-    }
-
-    private void BoundsParameter_ValueChanged(object sender, EventArgs e) {
-      BoundsOnChanged();
+      IntValueParameterChangeHandler.Create(DimensionRefParameter, DimensionOnChanged);
+      IntMatrixParameterChangeHandler.Create(BoundsRefParameter, BoundsOnChanged);
     }
 
     protected virtual void DimensionOnChanged() { }

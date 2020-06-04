@@ -69,7 +69,9 @@ namespace HeuristicLab.Problems.TestFunctions {
       Maximization = TestFunction.Maximization;
 
       BestKnownQuality = TestFunction.BestKnownQuality;
-
+      Bounds = (DoubleMatrix)TestFunction.Bounds.Clone();
+      Dimension = TestFunction.MinimumProblemSize;
+      BestKnownSolutionParameter.Value = TestFunction.GetBestKnownSolution(Dimension);
       InitializeOperators();
       RegisterEventHandlers();
     }
@@ -117,7 +119,7 @@ namespace HeuristicLab.Problems.TestFunctions {
                                                            new DoubleValue(best.Item2),
                                                            TestFunctionParameter.Value) {
           BestKnownRealVector = bestKnownSolution,
-          Bounds = BoundsParameter.Value
+          Bounds = BoundsRefParameter.Value
         };
         results.Add(new Result("Best Solution", solution));
       }
@@ -199,14 +201,14 @@ namespace HeuristicLab.Problems.TestFunctions {
         // TODO: unified encoding parameters
         op.RealVectorParameter.ActualName = ((IRealVectorSolutionOperator)Encoding.SolutionCreator).RealVectorParameter.ActualName;
         op.RealVectorParameter.Hidden = true;
-        op.BoundsParameter.ActualName = BoundsParameter.Name;
+        op.BoundsParameter.ActualName = BoundsRefParameter.Name;
         op.BoundsParameter.Hidden = true;
       }
       foreach (var op in Operators.OfType<IRealVectorParticleUpdater>()) {
         // TODO: unified encoding parameters
         op.RealVectorParameter.ActualName = ((IRealVectorSolutionOperator)Encoding.SolutionCreator).RealVectorParameter.ActualName;
         op.RealVectorParameter.Hidden = true;
-        op.BoundsParameter.ActualName = BoundsParameter.Name;
+        op.BoundsParameter.ActualName = BoundsRefParameter.Name;
         op.BoundsParameter.Hidden = true;
       }
       foreach (var op in Operators.OfType<IRealVectorSwarmUpdater>()) {

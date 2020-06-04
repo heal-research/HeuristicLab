@@ -33,61 +33,30 @@ using HeuristicLab.PluginInfrastructure;
 namespace HeuristicLab.Encodings.RealVectorEncoding {
   [Item("RealVectorEncoding", "Describes a real vector encoding.")]
   [StorableType("155FFE02-931F-457D-AC95-A0389B0BFECD")]
-  public sealed class RealVectorEncoding : Encoding<RealVector> {
-    #region Encoding Parameters
-    [Storable]
-    private IFixedValueParameter<IntValue> lengthParameter;
-    public IFixedValueParameter<IntValue> LengthParameter {
-      get { return lengthParameter; }
-      set {
-        if (value == null) throw new ArgumentNullException("Length parameter must not be null.");
-        if (value.Value == null) throw new ArgumentNullException("Length parameter value must not be null.");
-        if (lengthParameter == value) return;
+  public sealed class RealVectorEncoding : VectorEncoding<RealVector> {
+    [Storable] public IValueParameter<DoubleMatrix> BoundsParameter { get; private set; }
 
-        if (lengthParameter != null) Parameters.Remove(lengthParameter);
-        lengthParameter = value;
-        Parameters.Add(lengthParameter);
-        OnLengthParameterChanged();
-      }
-    }
-    [Storable]
-    private IValueParameter<DoubleMatrix> boundsParameter;
-    public IValueParameter<DoubleMatrix> BoundsParameter {
-      get { return boundsParameter; }
-      set {
-        if (value == null) throw new ArgumentNullException("Bounds parameter must not be null.");
-        if (boundsParameter == value) return;
-
-        if (boundsParameter != null) Parameters.Remove(boundsParameter);
-        boundsParameter = value;
-        Parameters.Add(boundsParameter);
-        OnBoundsParameterChanged();
-      }
-    }
-    #endregion
-
-    public int Length {
-      get { return LengthParameter.Value.Value; }
-      set { LengthParameter.Value.Value = value; }
-    }
     public DoubleMatrix Bounds {
       get { return BoundsParameter.Value; }
-      set { BoundsParameter.Value = value; }
+      set {
+        if (value == null) throw new ArgumentNullException("Bounds parameter must not be null.");
+        if (Bounds == value) return;
+        BoundsParameter.Value = value;
+      }
     }
 
     [StorableConstructor]
     private RealVectorEncoding(StorableConstructorFlag _) : base(_) { }
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
-      RegisterParameterEvents();
       DiscoverOperators();
+      RegisterParameterEvents();
     }
 
     public override IDeepCloneable Clone(Cloner cloner) { return new RealVectorEncoding(this, cloner); }
     private RealVectorEncoding(RealVectorEncoding original, Cloner cloner)
       : base(original, cloner) {
-      lengthParameter = cloner.Clone(original.lengthParameter);
-      boundsParameter = cloner.Clone(original.boundsParameter);
+      BoundsParameter = cloner.Clone(original.BoundsParameter);
       RegisterParameterEvents();
     }
 
@@ -95,17 +64,15 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     public RealVectorEncoding(string name) : this(name, 10) { }
     public RealVectorEncoding(int length) : this("RealVector", length) { }
     public RealVectorEncoding(string name, int length, double min = -1000, double max = 1000)
-      : base(name) {
+      : base(name, length) {
       if (min >= max) throw new ArgumentException("min must be less than max", "min");
 
       var bounds = new DoubleMatrix(1, 2);
       bounds[0, 0] = min;
       bounds[0, 1] = max;
 
-      lengthParameter = new FixedValueParameter<IntValue>(Name + ".Length", new IntValue(length)) { ReadOnly = true };
-      boundsParameter = new ValueParameter<DoubleMatrix>(Name + ".Bounds", bounds) { ReadOnly = true };
-      Parameters.Add(lengthParameter);
-      Parameters.Add(boundsParameter);
+      BoundsParameter = new ValueParameter<DoubleMatrix>(Name + ".Bounds", bounds);
+      Parameters.Add(BoundsParameter);
 
       SolutionCreator = new UniformRandomRealVectorCreator();
       RegisterParameterEvents();
@@ -113,7 +80,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     }
 
     public RealVectorEncoding(string name, int length, IList<double> min, IList<double> max)
-      : base(name) {
+      : base(name, length) {
       if (min.Count == 0) throw new ArgumentException("Bounds must be given for the real parameters.");
       if (min.Count != max.Count) throw new ArgumentException("min must be of the same length as max", "min");
       if (min.Zip(max, (mi, ma) => mi >= ma).Any(x => x)) throw new ArgumentException("min must be less than max in each dimension", "min");
@@ -123,36 +90,19 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
         bounds[i, 0] = min[i];
         bounds[i, 1] = max[i];
       }
-      lengthParameter = new FixedValueParameter<IntValue>(Name + ".Length", new IntValue(length));
-      boundsParameter = new ValueParameter<DoubleMatrix>(Name + ".Bounds", bounds);
-      Parameters.Add(lengthParameter);
-      Parameters.Add(boundsParameter);
+      BoundsParameter = new ValueParameter<DoubleMatrix>(Name + ".Bounds", bounds);
+      Parameters.Add(BoundsParameter);
 
       SolutionCreator = new UniformRandomRealVectorCreator();
-      RegisterParameterEvents();
       DiscoverOperators();
-    }
-
-    private void OnLengthParameterChanged() {
-      RegisterLengthParameterEvents();
-      ConfigureOperators(Operators);
-    }
-    private void OnBoundsParameterChanged() {
-      RegisterBoundsParameterEvents();
-      ConfigureOperators(Operators);
+      RegisterParameterEvents();
     }
 
     private void RegisterParameterEvents() {
-      RegisterLengthParameterEvents();
-      RegisterBoundsParameterEvents();
-    }
-    private void RegisterLengthParameterEvents() {
-      LengthParameter.ValueChanged += (o, s) => ConfigureOperators(Operators);
-      LengthParameter.Value.ValueChanged += (o, s) => ConfigureOperators(Operators);
-    }
-    private void RegisterBoundsParameterEvents() {
-      BoundsParameter.ValueChanged += (o, s) => ConfigureOperators(Operators);
-      boundsParameter.Value.ToStringChanged += (o, s) => ConfigureOperators(Operators);
+      DoubleMatrixParameterChangeHandler.Create(BoundsParameter, () => {
+        ConfigureOperators(Operators);
+        OnBoundsChanged();
+      });
     }
 
     #region Operator Discovery
@@ -315,5 +265,15 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       }
     }
     #endregion
+
+    protected override void OnLengthChanged() {
+      ConfigureOperators(Operators);
+      base.OnLengthChanged();
+    }
+
+    public event EventHandler BoundsChanged;
+    private void OnBoundsChanged() {
+      BoundsChanged?.Invoke(this, EventArgs.Empty);
+    }
   }
 }

@@ -21,7 +21,6 @@
 
 #endregion
 
-using System;
 using System.Linq;
 using HEAL.Attic;
 using HeuristicLab.Analysis;
@@ -36,9 +35,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
   [StorableType("7860a955-af16-459a-9cd8-51667e06d38e")]
   public abstract class RealVectorProblem : SingleObjectiveProblem<RealVectorEncoding, RealVector> {
     [Storable] protected ReferenceParameter<IntValue> DimensionRefParameter { get; private set; }
-    public IValueParameter<IntValue> DimensionParameter => DimensionRefParameter;
     [Storable] protected ReferenceParameter<DoubleMatrix> BoundsRefParameter { get; private set; }
-    public IValueParameter<DoubleMatrix> BoundsParameter => BoundsRefParameter;
 
     public int Dimension {
       get { return DimensionRefParameter.Value.Value; }
@@ -47,7 +44,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
 
     public DoubleMatrix Bounds {
       get { return BoundsRefParameter.Value; }
-      set { BoundsParameter.Value = value; }
+      set { BoundsRefParameter.Value = value; }
     }
 
     [StorableConstructor]
@@ -98,16 +95,8 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     }
 
     private void RegisterEventHandlers() {
-      DimensionRefParameter.Value.ValueChanged += DimensionParameter_Value_ValueChanged;
-      BoundsRefParameter.ValueChanged += BoundsParameter_ValueChanged;
-    }
-
-    private void DimensionParameter_Value_ValueChanged(object sender, EventArgs e) {
-      DimensionOnChanged();
-    }
-
-    private void BoundsParameter_ValueChanged(object sender, EventArgs e) {
-      BoundsOnChanged();
+      IntValueParameterChangeHandler.Create(DimensionRefParameter, DimensionOnChanged);
+      DoubleMatrixParameterChangeHandler.Create(BoundsRefParameter, BoundsOnChanged);
     }
 
     protected virtual void DimensionOnChanged() { }

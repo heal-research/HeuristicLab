@@ -21,61 +21,34 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Data;
 using HeuristicLab.Optimization;
-using HeuristicLab.Parameters;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Encodings.BinaryVectorEncoding {
   [Item("BinaryVectorEncoding", "Describes a binary vector encoding.")]
   [StorableType("889C5E1A-3FBF-4AB3-AB2E-199A781503B5")]
-  public sealed class BinaryVectorEncoding : Encoding<BinaryVector>, INotifyPropertyChanged {
-    #region Encoding Parameters
-    [Storable] public IValueParameter<IntValue> LengthParameter { get; private set; }
-    #endregion
-
-    public int Length {
-      get { return LengthParameter.Value.Value; }
-      set {
-        if (Length == value) return;
-        LengthParameter.Value = new IntValue(value, @readonly: LengthParameter.Value.ReadOnly);
-      }
-    }
+  public sealed class BinaryVectorEncoding : VectorEncoding<BinaryVector> {
 
     [StorableConstructor]
     private BinaryVectorEncoding(StorableConstructorFlag _) : base(_) { }
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
       DiscoverOperators();
-      RegisterEventHandlers();
     }
     public override IDeepCloneable Clone(Cloner cloner) { return new BinaryVectorEncoding(this, cloner); }
-    private BinaryVectorEncoding(BinaryVectorEncoding original, Cloner cloner)
-      : base(original, cloner) {
-      LengthParameter = cloner.Clone(original.LengthParameter);
-      RegisterEventHandlers();
-    }
-
+    private BinaryVectorEncoding(BinaryVectorEncoding original, Cloner cloner) : base(original, cloner) { }
     public BinaryVectorEncoding() : this("BinaryVector", 10) { }
     public BinaryVectorEncoding(string name) : this(name, 10) { }
     public BinaryVectorEncoding(int length) : this("BinaryVector", length) { }
     public BinaryVectorEncoding(string name, int length)
-      : base(name) {
-      Parameters.Add(LengthParameter = new ValueParameter<IntValue>(Name + ".Length", new IntValue(length)) { ReadOnly = true });
-      
+      : base(name, length) {      
       SolutionCreator = new RandomBinaryVectorCreator();
+
       DiscoverOperators();
-
-      RegisterEventHandlers();
-    }
-
-    private void RegisterEventHandlers() {
-      IntValueParameterChangeHandler.Create(LengthParameter, () => OnPropertyChanged(nameof(Length)));
     }
 
     #region Operator Discovery
@@ -152,10 +125,5 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
         solutionsOperator.BinaryVectorsParameter.ActualName = Name;
     }
     #endregion
-
-    public event PropertyChangedEventHandler PropertyChanged;
-    private void OnPropertyChanged(string property) {
-      PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
-    }
   }
 }

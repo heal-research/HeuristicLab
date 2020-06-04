@@ -33,62 +33,30 @@ using HeuristicLab.PluginInfrastructure;
 namespace HeuristicLab.Encodings.IntegerVectorEncoding {
   [Item("IntegerVectorEncoding", "Describes an integer vector encoding.")]
   [StorableType("15D6E55E-C39F-4784-8350-14A0FD47CF0E")]
-  public sealed class IntegerVectorEncoding : Encoding<IntegerVector> {
-    #region Encoding Parameters
-    [Storable]
-    private IFixedValueParameter<IntValue> lengthParameter;
-    public IFixedValueParameter<IntValue> LengthParameter {
-      get { return lengthParameter; }
-      set {
-        if (value == null) throw new ArgumentNullException("Length parameter must not be null.");
-        if (value.Value == null) throw new ArgumentNullException("Length parameter value must not be null.");
-        if (lengthParameter == value) return;
+  public sealed class IntegerVectorEncoding : VectorEncoding<IntegerVector> {
+    [Storable] public IValueParameter<IntMatrix> BoundsParameter { get; private set; }
 
-        if (lengthParameter != null) Parameters.Remove(lengthParameter);
-        lengthParameter = value;
-        Parameters.Add(lengthParameter);
-        OnLengthParameterChanged();
-      }
-    }
-
-    [Storable]
-    private IValueParameter<IntMatrix> boundsParameter;
-    public IValueParameter<IntMatrix> BoundsParameter {
-      get { return boundsParameter; }
-      set {
-        if (value == null) throw new ArgumentNullException("Bounds parameter must not be null.");
-        if (boundsParameter == value) return;
-
-        if (boundsParameter != null) Parameters.Remove(boundsParameter);
-        boundsParameter = value;
-        Parameters.Add(boundsParameter);
-        OnBoundsParameterChanged();
-      }
-    }
-    #endregion
-
-    public int Length {
-      get { return LengthParameter.Value.Value; }
-      set { LengthParameter.Value.Value = value; }
-    }
     public IntMatrix Bounds {
       get { return BoundsParameter.Value; }
-      set { BoundsParameter.Value = value; }
+      set {
+        if (value == null) throw new ArgumentNullException("Bounds must not be null.");
+        if (Bounds == value) return;
+        BoundsParameter.Value = value;
+      }
     }
 
     [StorableConstructor]
     private IntegerVectorEncoding(StorableConstructorFlag _) : base(_) { }
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
-      RegisterParameterEvents();
       DiscoverOperators();
+      RegisterEventHandlers();
     }
 
     private IntegerVectorEncoding(IntegerVectorEncoding original, Cloner cloner)
       : base(original, cloner) {
-      lengthParameter = cloner.Clone(original.lengthParameter);
-      boundsParameter = cloner.Clone(original.boundsParameter);
-      RegisterParameterEvents();
+      BoundsParameter = cloner.Clone(original.BoundsParameter);
+      RegisterEventHandlers();
     }
     public override IDeepCloneable Clone(Cloner cloner) { return new IntegerVectorEncoding(this, cloner); }
 
@@ -97,7 +65,7 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
     public IntegerVectorEncoding(string name) : this(name, 10) { }
     public IntegerVectorEncoding(int length) : this("integerVector", length) { }
     public IntegerVectorEncoding(string name, int length, int min = int.MinValue, int max = int.MaxValue, int? step = null)
-      : base(name) {
+      : base(name, length) {
       if (min >= max) throw new ArgumentException("min must be less than max", "min");
       if (step.HasValue && step.Value <= 0) throw new ArgumentException("step must be greater than zero or null", "step");
 
@@ -106,17 +74,15 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
       bounds[0, 1] = max;
       if (step.HasValue) bounds[0, 2] = step.Value;
 
-      lengthParameter = new FixedValueParameter<IntValue>(Name + ".Length", new IntValue(length));
-      boundsParameter = new ValueParameter<IntMatrix>(Name + ".Bounds", bounds);
-      Parameters.Add(lengthParameter);
-      Parameters.Add(boundsParameter);
+      BoundsParameter = new ValueParameter<IntMatrix>(Name + ".Bounds", bounds);
+      Parameters.Add(BoundsParameter);
 
       SolutionCreator = new UniformRandomIntegerVectorCreator();
-      RegisterParameterEvents();
       DiscoverOperators();
+      RegisterEventHandlers();
     }
     public IntegerVectorEncoding(string name, int length, IList<int> min, IList<int> max, IList<int> step = null)
-      : base(name) {
+      : base(name, length) {
       if (min.Count == 0) throw new ArgumentException("Bounds must be given for the integer parameters.");
       if (min.Count != max.Count) throw new ArgumentException("min must be of the same length as max", "min");
       if (step != null && min.Count != step.Count) throw new ArgumentException("step must be of the same length as min or null", "step");
@@ -129,36 +95,19 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
         if (step != null) bounds[i, 2] = step[i];
       }
 
-      lengthParameter = new FixedValueParameter<IntValue>(Name + ".Length", new IntValue(length));
-      boundsParameter = new ValueParameter<IntMatrix>(Name + ".Bounds", bounds);
-      Parameters.Add(lengthParameter);
-      Parameters.Add(boundsParameter);
+      BoundsParameter = new ValueParameter<IntMatrix>(Name + ".Bounds", bounds);
+      Parameters.Add(BoundsParameter);
 
       SolutionCreator = new UniformRandomIntegerVectorCreator();
-      RegisterParameterEvents();
       DiscoverOperators();
+      RegisterEventHandlers();
     }
 
-    private void OnLengthParameterChanged() {
-      RegisterLengthParameterEvents();
-      ConfigureOperators(Operators);
-    }
-    private void OnBoundsParameterChanged() {
-      RegisterBoundsParameterEvents();
-      ConfigureOperators(Operators);
-    }
-
-    private void RegisterParameterEvents() {
-      RegisterLengthParameterEvents();
-      RegisterBoundsParameterEvents();
-    }
-    private void RegisterLengthParameterEvents() {
-      LengthParameter.ValueChanged += (o, s) => ConfigureOperators(Operators);
-      LengthParameter.Value.ValueChanged += (o, s) => ConfigureOperators(Operators);
-    }
-    private void RegisterBoundsParameterEvents() {
-      BoundsParameter.ValueChanged += (o, s) => ConfigureOperators(Operators);
-      boundsParameter.Value.ToStringChanged += (o, s) => ConfigureOperators(Operators);
+    private void RegisterEventHandlers() {
+      IntMatrixParameterChangeHandler.Create(BoundsParameter, () => {
+        ConfigureOperators(Operators);
+        OnBoundsChanged();
+      });
     }
 
 
@@ -270,5 +219,15 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
       }
     }
     #endregion
+
+    protected override void OnLengthChanged() {
+      ConfigureOperators(Operators);
+      base.OnLengthChanged();
+    }
+
+    public event EventHandler BoundsChanged;
+    private void OnBoundsChanged() {
+      BoundsChanged?.Invoke(this, EventArgs.Empty);
+    }
   }
 }

@@ -21,7 +21,6 @@
 
 #endregion
 
-using System;
 using System.Linq;
 using HEAL.Attic;
 using HeuristicLab.Analysis;
@@ -36,7 +35,6 @@ namespace HeuristicLab.Encodings.LinearLinkageEncoding {
   [StorableType("fb4cfc7c-dc7c-4da6-843f-0dad7d3d7981")]
   public abstract class LinearLinkageProblem : SingleObjectiveProblem<LinearLinkageEncoding, LinearLinkage> {
     [Storable] protected ReferenceParameter<IntValue> DimensionRefParameter { get; private set; }
-    public IValueParameter<IntValue> DimensionParameter => DimensionRefParameter;
 
     public int Dimension {
       get { return DimensionRefParameter.Value.Value; }
@@ -89,11 +87,7 @@ namespace HeuristicLab.Encodings.LinearLinkageEncoding {
     }
 
     private void RegisterEventHandlers() {
-      DimensionRefParameter.Value.ValueChanged += DimensionParameter_Value_ValueChanged;
-    }
-
-    private void DimensionParameter_Value_ValueChanged(object sender, EventArgs e) {
-      DimensionOnChanged();
+      IntValueParameterChangeHandler.Create(DimensionRefParameter, DimensionOnChanged);
     }
 
     protected virtual void DimensionOnChanged() { }

@@ -19,10 +19,10 @@
  */
 #endregion
 
+using HEAL.Attic;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
-using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.PermutationEncoding {
   [StorableType("ead61b5e-63a4-40dc-a31d-7bb10c98b3db")]
@@ -31,6 +31,6 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
   /// </summary>
   public interface IPermutationCreator : IPermutationSolutionOperator, ISolutionCreator<Permutation> {
     IValueLookupParameter<IntValue> LengthParameter { get; }
-    IValueParameter<PermutationType> PermutationTypeParameter { get; }
+    IValueParameter<EnumValue<PermutationTypes>> PermutationTypeParameter { get; }
   }
 }

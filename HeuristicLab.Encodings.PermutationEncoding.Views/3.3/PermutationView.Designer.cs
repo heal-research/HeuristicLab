@@ -19,6 +19,8 @@
  */
 #endregion
 
+using HeuristicLab.Data.Views;
+
 namespace HeuristicLab.Encodings.PermutationEncoding.Views {
   partial class PermutationView {
     /// <summary> 
@@ -44,7 +46,7 @@ namespace HeuristicLab.Encodings.PermutationEncoding.Views {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
-      this.permutationTypeView = new HeuristicLab.Encodings.PermutationEncoding.Views.PermutationTypeView();
+      this.permutationTypeView = new HeuristicLab.Data.Views.EnumValueView<PermutationTypes>();
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
       this.SuspendLayout();
       // 
@@ -82,7 +84,7 @@ namespace HeuristicLab.Encodings.PermutationEncoding.Views {
 
     #endregion
 
-    private PermutationTypeView permutationTypeView;
+    private EnumValueView<PermutationTypes> permutationTypeView;
 
   }
 }

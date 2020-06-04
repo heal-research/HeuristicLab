@@ -33,64 +33,30 @@ using HeuristicLab.PluginInfrastructure;
 namespace HeuristicLab.Encodings.PermutationEncoding {
   [Item("PermutationEncoding", "Describes a permutation encoding.")]
   [StorableType("E30E7507-44BA-4021-8F56-C3FC5569A6FE")]
-  public sealed class PermutationEncoding : Encoding<Permutation> {
+  public sealed class PermutationEncoding : VectorEncoding<Permutation> {
     #region encoding parameters
-    [Storable]
-    private IFixedValueParameter<IntValue> lengthParameter;
-    public IFixedValueParameter<IntValue> LengthParameter {
-      get { return lengthParameter; }
+    [Storable] public IValueParameter<EnumValue<PermutationTypes>> PermutationTypeParameter { get; private set; }
+    public PermutationTypes Type {
+      get { return PermutationTypeParameter.Value.Value; }
       set {
-        if (value == null) throw new ArgumentNullException("Length parameter must not be null.");
-        if (value.Value == null) throw new ArgumentNullException("Length parameter value must not be null.");
-        if (lengthParameter == value) return;
-
-        if (lengthParameter != null) Parameters.Remove(lengthParameter);
-        lengthParameter = value;
-        Parameters.Add(lengthParameter);
-        OnLengthParameterChanged();
-      }
-    }
-
-    [Storable]
-    private IFixedValueParameter<PermutationType> permutationTypeParameter;
-    public IFixedValueParameter<PermutationType> PermutationTypeParameter {
-      get { return permutationTypeParameter; }
-      set {
-        if (value == null) throw new ArgumentNullException("Permutation type parameter must not be null.");
-        if (value.Value == null) throw new ArgumentNullException("Permutation type parameter value must not be null.");
-        if (permutationTypeParameter == value) return;
-
-        if (permutationTypeParameter != null) Parameters.Remove(permutationTypeParameter);
-        permutationTypeParameter = value;
-        Parameters.Add(permutationTypeParameter);
-        OnPermutationTypeParameterChanged();
+        if (Type == value) return;
+        PermutationTypeParameter.Value.Value = value;
       }
     }
     #endregion
-
-    public int Length {
-      get { return LengthParameter.Value.Value; }
-      set { LengthParameter.Value.Value = value; }
-    }
-
-    public PermutationTypes Type {
-      get { return PermutationTypeParameter.Value.Value; }
-      set { PermutationTypeParameter.Value.Value = value; }
-    }
 
     [StorableConstructor]
     private PermutationEncoding(StorableConstructorFlag _) : base(_) { }
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
-      RegisterParameterEvents();
       DiscoverOperators();
+      RegisterParameterEvents();
     }
 
     public override IDeepCloneable Clone(Cloner cloner) { return new PermutationEncoding(this, cloner); }
     private PermutationEncoding(PermutationEncoding original, Cloner cloner)
       : base(original, cloner) {
-      lengthParameter = cloner.Clone(original.lengthParameter);
-      permutationTypeParameter = cloner.Clone(original.permutationTypeParameter);
+      PermutationTypeParameter = cloner.Clone(original.PermutationTypeParameter);
       RegisterParameterEvents();
     }
 
@@ -99,36 +65,20 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
     public PermutationEncoding(string name) : this(name, 10, PermutationTypes.Absolute) { }
     public PermutationEncoding(int length) : this("Permutation", length, PermutationTypes.Absolute) { }
     public PermutationEncoding(string name, int length, PermutationTypes type)
-      : base(name) {
-      lengthParameter = new FixedValueParameter<IntValue>(Name + ".Length", new IntValue(length));
-      permutationTypeParameter = new FixedValueParameter<PermutationType>(Name + ".Type", new PermutationType(type));
-      Parameters.Add(lengthParameter);
-      Parameters.Add(permutationTypeParameter);
+      : base(name, length) {
+      PermutationTypeParameter = new ValueParameter<EnumValue<PermutationTypes>>(Name + ".Type", new EnumValue<PermutationTypes>(type));
+      Parameters.Add(PermutationTypeParameter);
 
       SolutionCreator = new RandomPermutationCreator();
-      RegisterParameterEvents();
       DiscoverOperators();
-    }
-
-    private void OnLengthParameterChanged() {
-      RegisterLengthParameterEvents();
-      ConfigureOperators(Operators);
-    }
-
-    private void OnPermutationTypeParameterChanged() {
-      RegisterPermutationTypeParameterEvents();
-      ConfigureOperators(Operators);
+      RegisterParameterEvents();
     }
 
     private void RegisterParameterEvents() {
-      RegisterLengthParameterEvents();
-      RegisterPermutationTypeParameterEvents();
-    }
-    private void RegisterLengthParameterEvents() {
-      LengthParameter.Value.ValueChanged += (o, s) => ConfigureOperators(Operators);
-    }
-    private void RegisterPermutationTypeParameterEvents() {
-      PermutationTypeParameter.Value.ValueChanged += (o, s) => ConfigureOperators(Operators);
+      EnumValueParameterChangeHandler<PermutationTypes>.Create(PermutationTypeParameter, () => {
+        ConfigureOperators(Operators);
+        OnTypeChanged();
+      });
     }
 
     #region Operator Discovery
@@ -238,5 +188,10 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
       }
     }
     #endregion
+
+    public event EventHandler TypeChanged;
+    private void OnTypeChanged() {
+      TypeChanged?.Invoke(this, EventArgs.Empty);
+    }
   }
 }

@@ -21,7 +21,6 @@
 
 #endregion
 
-using System;
 using System.Linq;
 using HEAL.Attic;
 using HeuristicLab.Analysis;
@@ -37,11 +36,16 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
     [Storable] protected IResultParameter<ParetoFrontScatterPlot<IntegerVector>> BestResultParameter { get; private set; }
     public IResultDefinition<ParetoFrontScatterPlot<IntegerVector>> BestResult { get { return BestResultParameter; } }
     [Storable] protected ReferenceParameter<IntValue> DimensionRefParameter { get; private set; }
-    public IValueParameter<IntValue> DimensionParameter => DimensionRefParameter;
+    [Storable] protected ReferenceParameter<IntMatrix> BoundsRefParameter { get; private set; }
 
     public int Dimension {
       get { return DimensionRefParameter.Value.Value; }
       set { DimensionRefParameter.Value.Value = value; }
+    }
+
+    public IntMatrix Bounds {
+      get { return BoundsRefParameter.Value; }
+      set { BoundsRefParameter.Value = value; }
     }
 
     [StorableConstructor]
@@ -55,6 +59,7 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
       : base(original, cloner) {
       BestResultParameter = cloner.Clone(original.BestResultParameter);
       DimensionRefParameter = cloner.Clone(original.DimensionRefParameter);
+      BoundsRefParameter = cloner.Clone(original.BoundsRefParameter);
       RegisterEventHandlers();
     }
 
@@ -63,6 +68,7 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
       EncodingParameter.ReadOnly = true;
       Parameters.Add(BestResultParameter = new ResultParameter<ParetoFrontScatterPlot<IntegerVector>>("Best Pareto Front", "The best Pareto front found."));
       Parameters.Add(DimensionRefParameter = new ReferenceParameter<IntValue>("Dimension", "The dimension of the integer vector problem.", Encoding.LengthParameter));
+      Parameters.Add(BoundsRefParameter = new ReferenceParameter<IntMatrix>("Bounds", "The bounds of the integer vector problem.", Encoding.BoundsParameter));
 
       Operators.Add(new HammingSimilarityCalculator());
       Operators.Add(new PopulationSimilarityAnalyzer(Operators.OfType<ISolutionSimilarityCalculator>()));
@@ -93,13 +99,12 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
     }
 
     private void RegisterEventHandlers() {
-      DimensionRefParameter.Value.ValueChanged += DimensionParameter_Value_ValueChanged;
-    }
-
-    private void DimensionParameter_Value_ValueChanged(object sender, EventArgs e) {
-      DimensionOnChanged();
+      IntValueParameterChangeHandler.Create(DimensionRefParameter, DimensionOnChanged);
+      IntMatrixParameterChangeHandler.Create(BoundsRefParameter, BoundsOnChanged);
     }
 
     protected virtual void DimensionOnChanged() { }
+
+    protected virtual void BoundsOnChanged() { }
   }
 }

@@ -206,7 +206,6 @@
     <Compile Include="PermutationManipulator.cs" />
     <Compile Include="PermutationCrossover.cs" />
     <Compile Include="Permutation.cs" />
-    <Compile Include="PermutationType.cs" />
     <Compile Include="PermutationTypes.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

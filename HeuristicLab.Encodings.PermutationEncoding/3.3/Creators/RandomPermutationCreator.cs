@@ -47,8 +47,8 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
     public ILookupParameter<Permutation> PermutationParameter {
       get { return (ILookupParameter<Permutation>)Parameters["Permutation"]; }
     }
-    public IValueParameter<PermutationType> PermutationTypeParameter {
-      get { return (IValueParameter<PermutationType>)Parameters["PermutationType"]; }
+    public IValueParameter<EnumValue<PermutationTypes>> PermutationTypeParameter {
+      get { return (IValueParameter<EnumValue<PermutationTypes>>)Parameters["PermutationType"]; }
     }
 
     public PermutationTypes PermutationType {
@@ -64,7 +64,7 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
       Parameters.Add(new LookupParameter<IRandom>("Random", "The pseudo random number generator which should be used to initialize the new random permutation."));
       Parameters.Add(new ValueLookupParameter<IntValue>("Length", "The length of the new random permutation."));
       Parameters.Add(new LookupParameter<Permutation>("Permutation", "The new random permutation."));
-      Parameters.Add(new ValueParameter<PermutationType>("PermutationType", "The type of the permutation.", new PermutationType(PermutationTypes.RelativeUndirected)));
+      Parameters.Add(new ValueParameter<EnumValue<PermutationTypes>>("PermutationType", "The type of the permutation.", new EnumValue<PermutationTypes>(PermutationTypes.RelativeUndirected)));
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {

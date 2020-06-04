@@ -21,7 +21,6 @@
 
 #endregion
 
-using System;
 using System.Linq;
 using HEAL.Attic;
 using HeuristicLab.Analysis;
@@ -35,11 +34,16 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
   [StorableType("7bc5215b-c181-40d0-a758-d7c19a356e18")]
   public abstract class PermutationMultiObjectiveProblem : MultiObjectiveProblem<PermutationEncoding, Permutation> {
     [Storable] protected ReferenceParameter<IntValue> DimensionRefParameter { get; private set; }
-    public IValueParameter<IntValue> DimensionParameter => DimensionRefParameter;
+    [Storable] protected ReferenceParameter<EnumValue<PermutationTypes>> PermutationTypeRefParameter { get; private set; }
 
     public int Dimension {
       get { return DimensionRefParameter.Value.Value; }
       set { DimensionRefParameter.Value.Value = value; }
+    }
+
+    public PermutationTypes Type {
+      get { return PermutationTypeRefParameter.Value.Value; }
+      set { PermutationTypeRefParameter.Value.Value = value; }
     }
 
     [StorableConstructor]
@@ -52,6 +56,7 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
     protected PermutationMultiObjectiveProblem(PermutationMultiObjectiveProblem original, Cloner cloner)
       : base(original, cloner) {
       DimensionRefParameter = cloner.Clone(original.DimensionRefParameter);
+      PermutationTypeRefParameter = cloner.Clone(original.PermutationTypeRefParameter);
       RegisterEventHandlers();
     }
 
@@ -59,6 +64,7 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
     protected PermutationMultiObjectiveProblem(PermutationEncoding encoding) : base(encoding) {
       EncodingParameter.ReadOnly = true;
       Parameters.Add(DimensionRefParameter = new ReferenceParameter<IntValue>("Dimension", "The dimension of the permutation problem.", Encoding.LengthParameter));
+      Parameters.Add(PermutationTypeRefParameter = new ReferenceParameter<EnumValue<PermutationTypes>>("Type", "The type of the permutation.", Encoding.PermutationTypeParameter));
 
       Operators.Add(new HammingSimilarityCalculator());
       Operators.Add(new PopulationSimilarityAnalyzer(Operators.OfType<ISolutionSimilarityCalculator>()));
@@ -88,13 +94,12 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
     }
 
     private void RegisterEventHandlers() {
-      DimensionRefParameter.Value.ValueChanged += DimensionParameter_Value_ValueChanged;
-    }
-
-    private void DimensionParameter_Value_ValueChanged(object sender, EventArgs e) {
-      DimensionOnChanged();
+      IntValueParameterChangeHandler.Create(DimensionRefParameter, DimensionOnChanged);
+      EnumValueParameterChangeHandler<PermutationTypes>.Create(PermutationTypeRefParameter, TypeOnChanged);
     }
 
     protected virtual void DimensionOnChanged() { }
+
+    protected virtual void TypeOnChanged() { }
   }
 }

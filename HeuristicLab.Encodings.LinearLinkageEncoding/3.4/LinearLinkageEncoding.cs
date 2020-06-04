@@ -25,77 +25,31 @@ using System.Linq;
 using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Data;
 using HeuristicLab.Optimization;
-using HeuristicLab.Parameters;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Encodings.LinearLinkageEncoding {
   [Item("Linear Linkage Encoding", "Describes a linear linkage (LLE) encoding.")]
   [StorableType("7AE11F39-E6BD-4FC7-8112-0A5EDCBFBDB6")]
-  public sealed class LinearLinkageEncoding : Encoding<LinearLinkage> {
-    #region encoding parameters
-    [Storable]
-    private IFixedValueParameter<IntValue> lengthParameter;
-    public IFixedValueParameter<IntValue> LengthParameter {
-      get { return lengthParameter; }
-      set {
-        if (value == null) throw new ArgumentNullException("Length parameter must not be null.");
-        if (value.Value == null) throw new ArgumentNullException("Length parameter value must not be null.");
-        if (lengthParameter == value) return;
-
-        if (lengthParameter != null) Parameters.Remove(lengthParameter);
-        lengthParameter = value;
-        Parameters.Add(lengthParameter);
-        OnLengthParameterChanged();
-      }
-    }
-    #endregion
-
-    public int Length {
-      get { return LengthParameter.Value.Value; }
-      set { LengthParameter.Value.Value = value; }
-    }
+  public sealed class LinearLinkageEncoding : VectorEncoding<LinearLinkage> {
 
     [StorableConstructor]
     private LinearLinkageEncoding(StorableConstructorFlag _) : base(_) { }
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
-      RegisterParameterEvents();
       DiscoverOperators();
     }
 
     public override IDeepCloneable Clone(Cloner cloner) { return new LinearLinkageEncoding(this, cloner); }
-    private LinearLinkageEncoding(LinearLinkageEncoding original, Cloner cloner)
-      : base(original, cloner) {
-      lengthParameter = cloner.Clone(original.lengthParameter);
-      RegisterParameterEvents();
-    }
-
+    private LinearLinkageEncoding(LinearLinkageEncoding original, Cloner cloner) : base(original, cloner) { }
 
     public LinearLinkageEncoding() : this("LLE", 10) { }
     public LinearLinkageEncoding(string name) : this(name, 10) { }
     public LinearLinkageEncoding(int length) : this("LLE", length) { }
     public LinearLinkageEncoding(string name, int length)
-      : base(name) {
-      lengthParameter = new FixedValueParameter<IntValue>(Name + ".Length", new IntValue(length));
-      Parameters.Add(lengthParameter);
-
+      : base(name, length) {
       SolutionCreator = new RandomLinearLinkageCreator();
-      RegisterParameterEvents();
       DiscoverOperators();
-    }
-
-    private void OnLengthParameterChanged() {
-      RegisterLengthParameterEvents();
-      ConfigureOperators(Operators);
-    }
-
-    private void RegisterParameterEvents() {
-      RegisterLengthParameterEvents();
-    }
-    private void RegisterLengthParameterEvents() {
-      LengthParameter.Value.ValueChanged += (o, s) => ConfigureOperators(Operators);
     }
 
     #region Operator Discovery
@@ -166,6 +120,5 @@ namespace HeuristicLab.Encodings.LinearLinkageEncoding {
       }
     }
     #endregion
-
   }
 }
