@@ -236,14 +236,14 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
 
     /// <summary>
-    /// Calculates the principal square root of a given interval. Discards the second possible result of root, because
-    /// all interpreters just calculate the positive principal root.
+    /// The interval contains both possible results of the calculated square root +-sqrt(x). That results in a wider
+    /// interval, but it contains all possible solutions.
     /// </summary>
     /// <param name="a">Interval to build square root from.</param>
     /// <returns></returns>
     public static Interval SquareRoot(Interval a) {
       if (a.LowerBound < 0) return new Interval(double.NaN, double.NaN);
-      return new Interval(Math.Sqrt(a.LowerBound), Math.Sqrt(a.UpperBound));
+      return new Interval(-Math.Sqrt(a.UpperBound), Math.Sqrt(a.UpperBound));
     }
 
     public static Interval CubicRoot(Interval a) {
