@@ -117,9 +117,9 @@ namespace HeuristicLab.Optimization {
       }
 
       LocalEvaluatedSolutionsParameter.ActualValue = new IntValue(count);
-      QualityParameter.ActualValue = new DoubleValue(quality);
       ScopeUtil.CopyEncodedSolutionToScope(ExecutionContext.Scope, encoding, solutionContext.EncodedSolution);
       ScopeUtil.CopyToScope(ExecutionContext.Scope, solutionContext);
+      QualityParameter.ActualValue = new DoubleValue(quality);
       return base.Apply();
     }
   }
