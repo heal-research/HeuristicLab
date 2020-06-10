@@ -66,7 +66,7 @@ namespace HeuristicLab.Problems.LinearAssignment {
     private IResultParameter<LAPAssignment> BestLAPSolutionParameter {
       get { return (IResultParameter<LAPAssignment>)Parameters["Best LAP Solution"]; }
     }
-    public IResultDefinition<LAPAssignment> BestLAPSolution => BestLAPSolutionParameter;
+    //public IResultDefinition<LAPAssignment> BestLAPSolution => BestLAPSolutionParameter;
     #endregion
 
     #region Properties

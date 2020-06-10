@@ -33,7 +33,7 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
   [StorableType("2F6FEB34-BD19-47AF-9484-7F48565C0C43")]
   public abstract class BinaryVectorProblem : SingleObjectiveProblem<BinaryVectorEncoding, BinaryVector> {
     [Storable] protected IResultParameter<ISingleObjectiveSolutionContext<BinaryVector>> BestResultParameter { get; private set; }
-    public IResultDefinition<ISingleObjectiveSolutionContext<BinaryVector>> BestResult => BestResultParameter;
+    //public IResultDefinition<ISingleObjectiveSolutionContext<BinaryVector>> BestResult => BestResultParameter;
     [Storable] protected ReferenceParameter<IntValue> DimensionRefParameter { get; private set; }
 
     public int Dimension {
@@ -74,8 +74,7 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
       var best = GetBest(solutionContexts);
       var currentBest = BestResultParameter.ActualValue;
       if (currentBest == null || IsBetter(best.EvaluationResult.Quality, currentBest.EvaluationResult.Quality))
-        BestResultParameter.ActualValue = new SingleObjectiveSolutionContext<BinaryVector>(
-          (BinaryVector)best.EncodedSolution.Clone(), (ISingleObjectiveEvaluationResult)best.EvaluationResult.Clone());
+        BestResultParameter.ActualValue = best.Clone() as SingleObjectiveSolutionContext<BinaryVector>;
     }
 
     private void Parameterize() {

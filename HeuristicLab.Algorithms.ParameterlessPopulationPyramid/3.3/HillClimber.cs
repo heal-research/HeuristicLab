@@ -30,6 +30,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.BinaryVectorEncoding;
 using HeuristicLab.Optimization;
+
 using HeuristicLab.Parameters;
 using HeuristicLab.Random;
 
@@ -46,8 +47,9 @@ namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
     private IRandom random;
 
     [Storable] public IFixedValueParameter<IntValue> MaximumIterationsParameter { get; private set; }
-    [Storable] public IResultParameter<DoubleValue> BestQualityResultParameter { get; private set; }
-    [Storable] public IResultParameter<IntValue> IterationsResultParameter { get; private set; }
+
+    [Storable] public IResult<DoubleValue> BestQualityResult { get; private set; }
+    [Storable] public IResult<IntValue> IterationsResult { get; private set; }
 
     public override Type ProblemType {
       get { return typeof(ISingleObjectiveProblemDefinition<BinaryVectorEncoding, BinaryVector>); }
@@ -69,8 +71,8 @@ namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
     protected HillClimber(HillClimber original, Cloner cloner)
       : base(original, cloner) {
       MaximumIterationsParameter = cloner.Clone(original.MaximumIterationsParameter);
-      BestQualityResultParameter = cloner.Clone(original.BestQualityResultParameter);
-      IterationsResultParameter = cloner.Clone(original.IterationsResultParameter);
+      BestQualityResult = cloner.Clone(original.BestQualityResult);
+      IterationsResult = cloner.Clone(original.IterationsResult);
     }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new HillClimber(this, cloner);
@@ -80,12 +82,18 @@ namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
       : base() {
       random = new MersenneTwister();
       Parameters.Add(MaximumIterationsParameter = new FixedValueParameter<IntValue>("Maximum Iterations", "", new IntValue(100)));
-      Parameters.Add(BestQualityResultParameter = new ResultParameter<DoubleValue>("Best Quality", "", "Results", new DoubleValue(double.NaN)));
-      Parameters.Add(IterationsResultParameter = new ResultParameter<IntValue>("Iterations", "", "Results", new IntValue(0)));
+
+      Results.Add(BestQualityResult = new Result<DoubleValue>("Best Quality"));
+      Results.Add(IterationsResult = new Result<IntValue>("Iterations"));
     }
 
+
+
     protected override void Run(CancellationToken cancellationToken) {
-      while (IterationsResultParameter.ActualValue.Value < MaximumIterations) {
+      IterationsResult.Value = new IntValue();
+      BestQualityResult.Value = new DoubleValue(double.NaN);
+
+      while (IterationsResult.Value.Value < MaximumIterations) {
         cancellationToken.ThrowIfCancellationRequested();
 
         var solution = new BinaryVector(Problem.Encoding.Length);
@@ -97,12 +105,12 @@ namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
         var fitness = evaluationResult.Quality;
 
         fitness = ImproveToLocalOptimum(Problem, solution, fitness, random);
-        var bestSoFar = BestQualityResultParameter.ActualValue.Value;
+        var bestSoFar = BestQualityResult.Value.Value;
         if (double.IsNaN(bestSoFar) || Problem.IsBetter(fitness, bestSoFar)) {
-          BestQualityResultParameter.ActualValue.Value = fitness;
+          BestQualityResult.Value.Value = fitness;
         }
 
-        IterationsResultParameter.ActualValue.Value++;
+        IterationsResult.Value.Value++;
       }
     }
     // In the GECCO paper, Section 2.1

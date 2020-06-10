@@ -32,7 +32,7 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
   [StorableType("b64caac0-a23a-401a-bb7e-ffa3e22b80ea")]
   public abstract class BinaryVectorMultiObjectiveProblem : MultiObjectiveProblem<BinaryVectorEncoding, BinaryVector> {
     [Storable] protected IResultParameter<ParetoFrontScatterPlot<BinaryVector>> BestResultParameter { get; private set; }
-    public IResultDefinition<ParetoFrontScatterPlot<BinaryVector>> BestResult { get { return BestResultParameter; } }
+    //public IResultDefinition<ParetoFrontScatterPlot<BinaryVector>> BestResult { get { return BestResultParameter; }}
     [Storable] protected ReferenceParameter<IntValue> DimensionRefParameter { get; private set; }
 
     public int Dimension {
@@ -72,7 +72,7 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
 
       var fronts = DominationCalculator.CalculateAllParetoFrontsIndices(individuals, qualities, Maximization);
       var plot = new ParetoFrontScatterPlot<BinaryVector>(fronts, individuals, qualities, Objectives, BestKnownFront);
-      
+
       BestResultParameter.ActualValue = plot;
     }
 

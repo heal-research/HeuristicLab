@@ -47,7 +47,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
     [Storable] public IValueParameter<ITSPData> TSPDataParameter { get; private set; }
     [Storable] public IValueParameter<ITSPSolution> BestKnownSolutionParameter { get; private set; }
     [Storable] protected IResultParameter<ITSPSolution> BestTSPSolutionParameter { get; private set; }
-    public IResultDefinition<ITSPSolution> BestTSPSolution => BestTSPSolutionParameter;
+    //public IResultDefinition<ITSPSolution> BestTSPSolution => BestTSPSolutionParameter;
 
     public ITSPData TSPData {
       get { return TSPDataParameter.Value; }
@@ -73,7 +73,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
       Parameters.Add(TSPDataParameter = new ValueParameter<ITSPData>("TSPData", "The main parameters of the TSP."));
       Parameters.Add(BestKnownSolutionParameter = new OptionalValueParameter<ITSPSolution>("BestKnownSolution", "The best known solution."));
       Parameters.Add(BestTSPSolutionParameter = new ResultParameter<ITSPSolution>("Best TSP Solution", "The best so far solution found."));
-      
+
       TSPData = new EuclideanTSPData();
       Dimension = TSPData.Cities;
 

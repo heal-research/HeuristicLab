@@ -62,9 +62,9 @@ namespace HeuristicLab.Optimization {
     [Storable]
     public ResultCollection ResultCollection { get; set; }
 
-    string IResultDefinition.Name { get => ActualName; set => ActualName = value; }
-    T IResultDefinition<T>.Get(ResultCollection results) => ((IResultDefinition)this).Get(results) as T;
-    IItem IResultDefinition.Get(ResultCollection results) => results[ActualName].Value;
+    //string IResultDefinition.Name { get => ActualName; set => ActualName = value; }
+    //T IResultDefinition<T>.Get(ResultCollection results) => ((IResultDefinition)this).Get(results) as T;
+    //IItem IResultDefinition.Get(ResultCollection results) => results[ActualName].Value;
 
     [StorableConstructor]
     private ResultParameter(StorableConstructorFlag _) : base(_) { }
@@ -77,9 +77,8 @@ namespace HeuristicLab.Optimization {
     public override IDeepCloneable Clone(Cloner cloner) {
       return new ResultParameter<T>(this, cloner);
     }
-    public ResultParameter() : this("Anonymous", string.Empty, "Results") { }
-    public ResultParameter(string name, string description) : this(name, description, "Results") { }
 
+    public ResultParameter(string name, string description) : this(name, description, "Results") { }
     public ResultParameter(string name, string description, string resultCollectionName)
       : base(name, description, string.Empty) {
       if (string.IsNullOrEmpty(resultCollectionName)) throw new ArgumentException("resultCollectionName");
@@ -118,7 +117,7 @@ namespace HeuristicLab.Optimization {
       }
 
       var resultValue = result.Value as T;
-      if (resultValue == null)
+      if (result.Value != null && resultValue == null)
         throw new InvalidOperationException(string.Format("Type mismatch. Result \"{0}\" does not contain a \"{1}\".", ActualName, typeof(T).GetPrettyName()));
 
       return resultValue;

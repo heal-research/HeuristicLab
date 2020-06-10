@@ -20,9 +20,9 @@
 #endregion
 
 using System.Collections.Generic;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HEAL.Attic;
 
 namespace HeuristicLab.Optimization {
   [StorableType("959230E3-C51B-4EC0-BDB2-0B0D71F5A6E3")]
@@ -80,6 +80,10 @@ namespace HeuristicLab.Optimization {
         res = new Result(name, value);
         Add(res);
       } else res.Value = value;
+    }
+
+    public void Reset() {
+      ForEach(r => r.Reset());
     }
   }
 }

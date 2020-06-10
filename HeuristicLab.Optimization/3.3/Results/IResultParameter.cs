@@ -24,19 +24,20 @@ using HEAL.Attic;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.Optimization {
-  [StorableType("986fa3d0-38f8-43aa-820e-e67d09a29025")]
-  public interface IResultDefinition {
-    string Name { get; set; }
-    IItem Get(ResultCollection results);
-  }
+  //[StorableType("986fa3d0-38f8-43aa-820e-e67d09a29025")]
+  //public interface IResultDefinition {
+  //  string Name { get; set; }
+  //  IItem Get(ResultCollection results);
+  //}
 
-  [StorableType("4c0c854b-676d-4ccd-96c4-b06a3d7f2fa1")]
-  public interface IResultDefinition<T> : IResultDefinition where T : class, IItem {
-    new T Get(ResultCollection results);
-  }
+  //[StorableType("4c0c854b-676d-4ccd-96c4-b06a3d7f2fa1")]
+  //public interface IResultDefinition<T> : IResultDefinition where T : class, IItem {
+  //  new T Get(ResultCollection results);
+  //}
 
   [StorableType("af5d3f60-6f3a-4a44-a906-688ac8296fe3")]
-  public interface IResultParameter : ILookupParameter, IResultDefinition {
+  //public interface IResultParameter : ILookupParameter, IResultDefinition {
+  public interface IResultParameter : ILookupParameter {
     string ResultCollectionName { get; set; }
     ResultCollection ResultCollection { get; set; }
 
@@ -44,7 +45,8 @@ namespace HeuristicLab.Optimization {
   }
 
   [StorableType("803e6ad6-dd9d-497a-ad1c-7cd3dc5b0d3c")]
-  public interface IResultParameter<T> : ILookupParameter<T>, IResultParameter, IResultDefinition<T> where T : class, IItem {
+  //public interface IResultParameter<T> : ILookupParameter<T>, IResultParameter, IResultDefinition<T> where T : class, IItem {
+  public interface IResultParameter<T> : ILookupParameter<T>, IResultParameter where T : class, IItem {
     T DefaultValue { get; set; }
     event EventHandler DefaultValueChanged;
   }

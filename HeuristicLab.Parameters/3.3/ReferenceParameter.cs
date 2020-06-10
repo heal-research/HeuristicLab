@@ -142,7 +142,7 @@ namespace HeuristicLab.Parameters {
   }
 
 
-  [Item("ReferenceParameter<T>", "ValueParameter<T> that forwards to another (referenced) ValueParameter<T>).")]
+  [Item("ReferenceParameter", "ValueParameter<T> that forwards to another (referenced) ValueParameter<T>).")]
   [StorableType("6DD59BE5-C618-4AD4-90FE-0FAAF15650C3")]
   public sealed class ReferenceParameter<T> : ReferenceParameter, IValueParameter<T>
     where T : class, IItem {
@@ -168,7 +168,7 @@ namespace HeuristicLab.Parameters {
   }
 
 
-  [Item("ReferenceParameter<T,U>", "ValueParameter<T> that forwards to another (referenced) ValueParameter<U>).")]
+  [Item("ReferenceParameter", "ValueParameter<T> that forwards to another (referenced) ValueParameter<U>).")]
   [StorableType("83FEA704-6AED-4D76-B25A-B469E0E9187A")]
   public sealed class ReferenceParameter<T, U> : ReferenceParameter, IValueParameter<T>
     where T : class, U

@@ -21,19 +21,17 @@
 
 using System;
 using System.Drawing;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HEAL.Attic;
 
 namespace HeuristicLab.Optimization {
   /// <summary>
   /// Represents a result which has a name and a data type and holds an IItem.
   /// </summary>
   [Item("Result", "A result which has a name and a data type and holds an IItem.")]
-  [StorableType("219051C0-9D62-4CDE-9BA1-32233C81B678")]
-  public sealed class Result : NamedItem, IResult, IStorableContent {
+  public class Result : ResultDefinition, IResult, IStorableContent {
     public string Filename { get; set; }
-
     public override Image ItemImage {
       get {
         if (value != null) return value.ItemImage;
@@ -41,111 +39,86 @@ namespace HeuristicLab.Optimization {
       }
     }
 
-    public override bool CanChangeName {
-      get { return false; }
-    }
-    public override bool CanChangeDescription {
-      get { return false; }
-    }
-
-    [Storable]
-    private Type dataType;
-    public Type DataType {
-      get { return dataType; }
-    }
-
     [Storable]
     private IItem value;
     public IItem Value {
-      get { return value; }
-      set {
-        if (this.value != value) {
-          if ((value != null) && (!dataType.IsInstanceOfType(value)))
-            throw new ArgumentException(
-              string.Format("Type mismatch. Value is not a \"{0}\".",
-                            dataType.GetPrettyName())
-            );
-
-          DeregisterValueEvents();
-          this.value = value;
-          RegisterValueEvents();
-          OnValueChanged();
-        }
-      }
+      get => value;
+      set => SetValue(value);
     }
+
+    public bool HasValue => Value != null;
 
     [StorableConstructor]
-    private Result(StorableConstructorFlag _) : base(_) { }
-    private Result(Result original, Cloner cloner)
-      : base(original, cloner) {
-      dataType = original.dataType;
-      value = cloner.Clone(original.value);
-      Initialize();
-    }
-    public Result()
-      : base("Anonymous") {
-      this.dataType = typeof(IItem);
-      this.value = null;
-    }
-    public Result(string name, Type dataType)
-      : base(name) {
-      this.dataType = dataType;
-      this.value = null;
-    }
-    public Result(string name, string description, Type dataType)
-      : base(name, description) {
-      this.dataType = dataType;
-      this.value = null;
-    }
-    public Result(string name, IItem value)
-      : base(name) {
-      this.dataType = value == null ? typeof(IItem) : value.GetType();
-      this.value = value;
-      Initialize();
-    }
-    public Result(string name, string description, IItem value)
-      : base(name, description) {
-      this.dataType = value == null ? typeof(IItem) : value.GetType();
-      this.value = value;
-      Initialize();
-    }
-
+    protected Result(StorableConstructorFlag _) : base(_) { }
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
-      Initialize();
+      RegisterValueEvents();
     }
 
+    protected Result(Result original, Cloner cloner)
+      : base(original, cloner) {
+      value = cloner.Clone(original.value);
+      RegisterValueEvents();
+    }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new Result(this, cloner);
     }
 
-    private void Initialize() {
+    public Result(string name, Type dataType) : this(name, string.Empty, dataType) { }
+    public Result(string name, string description, Type dataType) : base(name, description, dataType) {
+      value = null;
+    }
+
+    public Result(string name, IItem value) : this(name, string.Empty, value.GetType(), value) { }
+    public Result(string name, string description, IItem value) : this(name, description, value.GetType(), value) { }
+    public Result(string name, string description, Type dataType, IItem value) : base(name, description, dataType) {
+      this.value = value;
       RegisterValueEvents();
     }
 
+    private void SetValue(IItem newValue) {
+      if (value == newValue) return;
+      if (newValue == null) throw new ArgumentNullException(nameof(Value));
+      if (!DataType.IsInstanceOfType(newValue))
+        throw new ArgumentException(string.Format("Type mismatch. Value is not a \"{0}\".", DataType.GetPrettyName()));
+
+      DeregisterValueEvents();
+      value = newValue;
+      RegisterValueEvents();
+      OnValueChanged();
+    }
+
+    public virtual void Reset() {
+      DeregisterValueEvents();
+      value = null;
+      OnValueChanged();
+    }
+
     public override string ToString() {
-      return string.Format("{0}: {1}", Name, Value == null ? "null" : Value.ToString());
+      if (value != null)
+        return string.Format("{0}: {1}", Name, value.ToString());
+
+      return base.ToString();
     }
 
     public event EventHandler ValueChanged;
     private void OnValueChanged() {
-      var handler = ValueChanged;
-      if (handler != null) handler(this, EventArgs.Empty);
+      ValueChanged?.Invoke(this, EventArgs.Empty);
       OnItemImageChanged();
       OnToStringChanged();
     }
 
     private void RegisterValueEvents() {
-      if (value != null) {
-        value.ItemImageChanged += new EventHandler(Value_ItemImageChanged);
-        value.ToStringChanged += new EventHandler(Value_ToStringChanged);
-      }
+      if (value == null) return;
+
+      value.ItemImageChanged += Value_ItemImageChanged;
+      value.ToStringChanged += Value_ToStringChanged;
     }
     private void DeregisterValueEvents() {
-      if (value != null) {
-        value.ItemImageChanged -= new EventHandler(Value_ItemImageChanged);
-        value.ToStringChanged -= new EventHandler(Value_ToStringChanged);
-      }
+      if (value == null) return;
+
+      value.ItemImageChanged -= Value_ItemImageChanged;
+      value.ToStringChanged -= Value_ToStringChanged;
     }
     private void Value_ItemImageChanged(object sender, EventArgs e) {
       OnItemImageChanged();
@@ -153,5 +126,35 @@ namespace HeuristicLab.Optimization {
     private void Value_ToStringChanged(object sender, EventArgs e) {
       OnToStringChanged();
     }
+  }
+
+  /// <summary>
+  /// Represents a result which has a name and a data type and holds an IItem.
+  /// </summary>
+  [Item("Result", "A typed result which has a name and a data type and holds a value of type T.")]
+  [StorableType("BA883E2F-1E0B-4F05-A31A-7A0973CB63A3")]
+  public sealed class Result<T> : Result, IResult<T>, IStorableContent
+    where T : IItem {
+
+    public new T Value {
+      get { return (T)base.Value; }
+      set { base.Value = value; }
+    }
+
+    [StorableConstructor]
+    private Result(StorableConstructorFlag _) : base(_) { }
+    private Result(Result<T> original, Cloner cloner) : base(original, cloner) {
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new Result<T>(this, cloner);
+    }
+
+    public Result(string name) : this(name, typeof(T)) { }
+    public Result(string name, Type dataType) : this(name, string.Empty, dataType) { }
+    public Result(string name, string description, Type dataType) : base(name, description, dataType) { }
+
+    public Result(string name, T value) : this(name, string.Empty, value.GetType(), value) { }
+    public Result(string name, string description, T value) : this(name, description, value.GetType(), value) { }
+    public Result(string name, string description, Type dataType, IItem value) : base(name, description, dataType, value) { }
   }
 }

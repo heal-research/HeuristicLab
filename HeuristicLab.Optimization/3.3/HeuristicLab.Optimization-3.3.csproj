@@ -180,6 +180,7 @@
     <Compile Include="MetaOptimizers\BatchRun.cs" />
     <Compile Include="MetaOptimizers\Experiment.cs" />
     <Compile Include="MetaOptimizers\TimeLimitRun.cs" />
+    <Compile Include="Results\ResultDefinition.cs" />
     <Compile Include="Results\ResultParameter.cs" />
     <Compile Include="RunCollectionModification\RunCollectionRunRemover.cs" />
     <Compile Include="Plugin.cs" />

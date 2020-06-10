@@ -201,7 +201,8 @@ namespace HeuristicLab.Optimization {
     public virtual void Prepare() {
       if ((ExecutionState != ExecutionState.Prepared) && (ExecutionState != ExecutionState.Paused) && (ExecutionState != ExecutionState.Stopped))
         throw new InvalidOperationException(string.Format("Prepare not allowed in execution state \"{0}\".", ExecutionState));
-      results.Clear();
+
+      Results.Reset();
     }
     public void Prepare(bool clearRuns) {
       if ((ExecutionState != ExecutionState.Prepared) && (ExecutionState != ExecutionState.Paused) && (ExecutionState != ExecutionState.Stopped))

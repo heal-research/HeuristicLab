@@ -46,7 +46,7 @@ namespace HeuristicLab.Problems.Orienteering {
     [Storable] public ValueParameter<IOrienteeringProblemData> OrienteeringProblemDataParameter { get; private set; }
     [Storable] public OptionalValueParameter<OrienteeringSolution> BestKnownSolutionParameter { get; private set; }
     [Storable] private IResultParameter<OrienteeringSolution> BestOrienteeringSolutionParameter { get; set; }
-    public IResultDefinition<OrienteeringSolution> BestOrienteeringSolution => BestOrienteeringSolutionParameter;
+    //public IResultDefinition<OrienteeringSolution> BestOrienteeringSolution => BestOrienteeringSolutionParameter;
 
     public IOrienteeringProblemData OrienteeringProblemData {
       get { return OrienteeringProblemDataParameter.Value; }

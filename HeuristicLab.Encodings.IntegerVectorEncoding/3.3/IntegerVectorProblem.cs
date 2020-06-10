@@ -35,7 +35,7 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
   [StorableType("c6081457-a3de-45ce-9f47-e0eb1c851bd2")]
   public abstract class IntegerVectorProblem : SingleObjectiveProblem<IntegerVectorEncoding, IntegerVector> {
     [Storable] protected IResultParameter<IntegerVector> BestResultParameter { get; private set; }
-    public IResultDefinition<IntegerVector> BestResult { get => BestResultParameter; }
+    //public IResultDefinition<IntegerVector> BestResult { get => BestResultParameter; }
     [Storable] protected ReferenceParameter<IntValue> DimensionRefParameter { get; private set; }
     [Storable] protected ReferenceParameter<IntMatrix> BoundsRefParameter { get; private set; }
 
