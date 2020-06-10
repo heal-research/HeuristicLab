@@ -30,6 +30,7 @@ namespace HeuristicLab.Optimization {
   /// Represents a result which has a name and a data type and holds an IItem.
   /// </summary>
   [Item("Result", "A result which has a name and a data type and holds an IItem.")]
+  [StorableType("CDD8C915-3223-44E1-81A1-CA1CE86D2598")]
   public class Result : ResultDefinition, IResult, IStorableContent {
     public string Filename { get; set; }
     public override Image ItemImage {
