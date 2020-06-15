@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System.Windows.Forms;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.JsonInterface.App
@@ -39,6 +40,9 @@ namespace HeuristicLab.JsonInterface.App
     public override void Run(ICommandLineArgument[] args) {
       if(args.Length == 4 && args[1] is OpenArgument && args[2] is OpenArgument && (args[3] is StringArgument || args[3] is OpenArgument)) {
         Runner.Run(args[1].Value.ToString(), args[2].Value.ToString(), args[3].Value.ToString());
+      } else {
+        JsonInterfaceForm form = new JsonInterfaceForm();
+        Application.Run(form);
       }
     }
   }
