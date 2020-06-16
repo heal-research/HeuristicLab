@@ -8,7 +8,7 @@ namespace HeuristicLab.JsonInterface {
   /// <summary>
   /// Class to generate json interface templates.
   /// </summary>
-  public class JCGenerator {
+  public class JsonTemplateGenerator {
 
     public static void GenerateTemplate(string path, IOptimizer optimizer) =>
       GenerateTemplate(path, optimizer.Name, optimizer);
