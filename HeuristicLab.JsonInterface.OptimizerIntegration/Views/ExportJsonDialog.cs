@@ -86,7 +86,7 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
         }
 
         if (FolderBrowserDialog.ShowDialog() == DialogResult.OK) {
-          JCGenerator.GenerateTemplate(FolderBrowserDialog.SelectedPath, textBoxTemplateName.Text, Optimizer, Root);
+          JsonTemplateGenerator.GenerateTemplate(FolderBrowserDialog.SelectedPath, textBoxTemplateName.Text, Optimizer, Root);
           Close();
         }
       }
