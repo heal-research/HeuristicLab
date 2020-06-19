@@ -174,6 +174,20 @@ namespace HeuristicLab.Parameters {
       ValidValues.UnionWith(items.OfType<T>());
     }
 
+    public virtual void Repopulate(IEnumerable<IItem> items) {
+      var itemsOfT = items.OfType<T>().ToList();
+      T oldItem = Value;
+      ValidValues.Clear();
+
+      foreach (T i in itemsOfT.OrderBy(x => x is INamedItem ? ((INamedItem)x).Name : x.ItemName))
+        ValidValues.Add(i);
+
+      if (oldItem != null) {
+        T item = ValidValues.FirstOrDefault(x => x.GetType() == oldItem.GetType());
+        if (item != null) Value = item;
+      }
+    }
+
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
       Initialize();

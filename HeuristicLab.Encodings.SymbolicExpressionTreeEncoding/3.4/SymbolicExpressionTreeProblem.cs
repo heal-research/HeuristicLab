@@ -28,27 +28,57 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
+using HeuristicLab.Parameters;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   [StorableType("A1B9F4C8-5E29-493C-A483-2AC68453BC63")]
   public abstract class SymbolicExpressionTreeProblem : SingleObjectiveProblem<SymbolicExpressionTreeEncoding, ISymbolicExpressionTree> {
+    [Storable] private ReferenceParameter<IntValue> TreeLengthRefParameter { get; set; }
+    [Storable] private ReferenceParameter<IntValue> TreeDepthRefParameter { get; set; }
+    [Storable] private ReferenceParameter<ISymbolicExpressionGrammar> GrammarRefParameter { get; set; }
+
+    public int TreeLength {
+      get => TreeLengthRefParameter.Value.Value;
+      set => TreeLengthRefParameter.Value.Value = value;
+    }
+
+    public int TreeDepth {
+      get => TreeDepthRefParameter.Value.Value;
+      set => TreeDepthRefParameter.Value.Value = value;
+    }
+
+    public ISymbolicExpressionGrammar Grammar {
+      get => GrammarRefParameter.Value;
+      set => GrammarRefParameter.Value = value;
+    }
 
     // persistence
     [StorableConstructor]
     protected SymbolicExpressionTreeProblem(StorableConstructorFlag _) : base(_) { }
     [StorableHook(HookType.AfterDeserialization)]
-    private void AfterDeserialization() { }
-
+    private void AfterDeserialization() {
+      RegisterEventHandlers();
+    }
 
     // cloning
     protected SymbolicExpressionTreeProblem(SymbolicExpressionTreeProblem original, Cloner cloner)
       : base(original, cloner) {
+      TreeLengthRefParameter = cloner.Clone(original.TreeLengthRefParameter);
+      TreeDepthRefParameter = cloner.Clone(original.TreeDepthRefParameter);
+      GrammarRefParameter = cloner.Clone(original.GrammarRefParameter);
+      RegisterEventHandlers();
     }
 
     protected SymbolicExpressionTreeProblem() : this(new SymbolicExpressionTreeEncoding()) { }    
     protected SymbolicExpressionTreeProblem(SymbolicExpressionTreeEncoding encoding)
       : base(encoding) {
       EncodingParameter.ReadOnly = true;
+      Parameters.Add(TreeLengthRefParameter = new ReferenceParameter<IntValue>("TreeLength", "The maximum amount of nodes.", Encoding.TreeLengthParameter));
+      Parameters.Add(TreeDepthRefParameter = new ReferenceParameter<IntValue>("TreeDepth", "The maximum depth of the tree.", Encoding.TreeDepthParameter));
+      Parameters.Add(GrammarRefParameter = new ReferenceParameter<ISymbolicExpressionGrammar>("Grammar", "The grammar that describes a valid tree.", Encoding.GrammarParameter));
+
+      Parameterize();
+      RegisterEventHandlers();
     }
 
     public override void Analyze(ISymbolicExpressionTree[] trees, double[] qualities, ResultCollection results,
@@ -72,16 +102,20 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       }
     }
 
-    protected override void OnEncodingChanged() {
-      base.OnEncodingChanged();
-      Parameterize();
-    }
-
     private void Parameterize() {
       foreach (var similarityCalculator in Operators.OfType<ISolutionSimilarityCalculator>()) {
         similarityCalculator.SolutionVariableName = Encoding.Name;
         similarityCalculator.QualityVariableName = Evaluator.QualityParameter.ActualName;
       }
     }
+    private void RegisterEventHandlers() {
+      IntValueParameterChangeHandler.Create(TreeLengthRefParameter, TreeLengthOnChanged);
+      IntValueParameterChangeHandler.Create(TreeDepthRefParameter, TreeDepthOnChanged);
+      ParameterChangeHandler<ISymbolicExpressionGrammar>.Create(GrammarRefParameter, GrammarOnChanged);
+    }
+
+    protected virtual void TreeLengthOnChanged() { }
+    protected virtual void TreeDepthOnChanged() { }
+    protected virtual void GrammarOnChanged() { }
   }
 }

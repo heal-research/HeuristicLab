@@ -27,16 +27,12 @@ using HeuristicLab.Core;
 namespace HeuristicLab.Optimization {
   [StorableType("d70b2675-246c-489c-a91b-b2e19a1616a3")]
   public interface IEncoding : IParameterizedNamedItem {
-    IValueParameter SolutionCreatorParameter { get; }
-    ISolutionCreator SolutionCreator { get; }
-
     IEnumerable<IOperator> Operators { get; set; }
 
     void ConfigureOperator(IItem @operator);
     void ConfigureOperators(IEnumerable<IItem> operators);
 
     event EventHandler OperatorsChanged;
-    event EventHandler SolutionCreatorChanged;
   }
 
   [StorableType("DB23907F-BE6E-44E4-9596-3D3BF1532631")]

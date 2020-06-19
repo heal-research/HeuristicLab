@@ -41,7 +41,6 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
 
     public PermutationWithRepetitionEncoding()
       : base("PWR") {
-      SolutionCreator = new PWRRandomCreator();
       Decoder = new PWRDecoder();
       DiscoverOperators();
     }

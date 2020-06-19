@@ -42,7 +42,6 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
 
     public JobSequenceMatrixEncoding()
       : base("JSM") {
-      SolutionCreator = new JSMRandomCreator();
       Decoder = new JSMDecoder();
       DiscoverOperators();
     }

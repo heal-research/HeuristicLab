@@ -51,29 +51,7 @@ namespace HeuristicLab.Optimization {
           throw new ArgumentException("The provided operators contain no suitable solution creator");
         encodingOperators.Clear();
         foreach (var op in value) encodingOperators.Add(op);
-
-        ISolutionCreator<TEncodedSolution> newSolutionCreator = (ISolutionCreator<TEncodedSolution>)encodingOperators.FirstOrDefault(o => o.GetType() == SolutionCreator.GetType()) ??
-                               encodingOperators.OfType<ISolutionCreator<TEncodedSolution>>().First();
-        SolutionCreator = newSolutionCreator;
         OnOperatorsChanged();
-      }
-    }
-
-    public IValueParameter SolutionCreatorParameter {
-      get { return (IValueParameter)Parameters[Name + ".SolutionCreator"]; }
-    }
-
-    ISolutionCreator IEncoding.SolutionCreator {
-      get { return SolutionCreator; }
-    }
-    public ISolutionCreator<TEncodedSolution> SolutionCreator {
-      get { return (ISolutionCreator<TEncodedSolution>)SolutionCreatorParameter.Value; }
-      set {
-        if (value == null) throw new ArgumentNullException("SolutionCreator must not be null.");
-        encodingOperators.Remove(SolutionCreator);
-        encodingOperators.Add(value);
-        SolutionCreatorParameter.Value = value;
-        OnSolutionCreatorChanged();
       }
     }
 
@@ -81,31 +59,18 @@ namespace HeuristicLab.Optimization {
     [StorableConstructor]
     protected Encoding(StorableConstructorFlag _) : base(_) { }
     [StorableHook(HookType.AfterDeserialization)]
-    private void AfterDeserialization() {
-      RegisterEventHandlers();
-    }
+    private void AfterDeserialization() { }
 
     protected Encoding(Encoding<TEncodedSolution> original, Cloner cloner)
       : base(original, cloner) {
       encodingOperators = cloner.Clone(original.encodingOperators);
-
-      RegisterEventHandlers();
     }
 
     protected Encoding(string name)
       : base(name) {
-      Parameters.Add(new ValueParameter<ISolutionCreator<TEncodedSolution>>(name + ".SolutionCreator", "The operator to create a solution.") {
-        ReadOnly = true
-      });
       Parameters.Add(new FixedValueParameter<ReadOnlyItemSet<IOperator>>(name + ".Operators", "The operators that the encoding specifies.", encodingOperators.AsReadOnly()) {
         GetsCollected = false, ReadOnly = true
       });
-
-      RegisterEventHandlers();
-    }
-
-    private void RegisterEventHandlers() {
-      SolutionCreatorParameter.ValueChanged += (o, e) => OnSolutionCreatorChanged();
     }
 
     protected bool AddOperator(IOperator @operator) {
@@ -134,13 +99,6 @@ namespace HeuristicLab.Optimization {
         op.ParentsParameter.ActualName = Name;
         op.ParentsParameter.Hidden = true;
       }
-    }
-
-    public event EventHandler SolutionCreatorChanged;
-    protected virtual void OnSolutionCreatorChanged() {
-      ConfigureOperator(SolutionCreator);
-      var handler = SolutionCreatorChanged;
-      if (handler != null) handler(this, EventArgs.Empty);
     }
 
     public event EventHandler OperatorsChanged;

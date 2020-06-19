@@ -48,7 +48,6 @@ namespace HeuristicLab.Encodings.LinearLinkageEncoding {
     public LinearLinkageEncoding(int length) : this("LLE", length) { }
     public LinearLinkageEncoding(string name, int length)
       : base(name, length) {
-      SolutionCreator = new RandomLinearLinkageCreator();
       DiscoverOperators();
     }
 

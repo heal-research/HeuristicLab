@@ -19,17 +19,17 @@
  */
 #endregion
 
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.ScheduleEncoding {
   [Item("JobSequenceMatrixCreator", "Creator class used to create Job Sequence Matrix solutions for standard JobShop scheduling problems.")]
   [StorableType("F8053C69-31C2-4E05-8FA0-5AED15FAF804")]
-  public class JSMRandomCreator : ScheduleCreator<JSM>, IStochasticOperator {
+  public class JSMRandomCreator : ScheduleCreator<JSM>, IJSMOperator, IStochasticOperator {
 
     public ILookupParameter<IRandom> RandomParameter {
       get { return (LookupParameter<IRandom>)Parameters["Random"]; }

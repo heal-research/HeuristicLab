@@ -19,16 +19,16 @@
  */
 #endregion
 
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.ScheduleEncoding {
   [Item("PermutationWithRepetitionRandomCreator", "Creates PWR-individuals at random.")]
   [StorableType("6E753916-C0FD-4585-B6A6-47FD66ED098F")]
-  public class PWRRandomCreator : ScheduleCreator<PWR>, IStochasticOperator {
+  public class PWRRandomCreator : ScheduleCreator<PWR>, IPWROperator, IStochasticOperator {
 
     public ILookupParameter<IRandom> RandomParameter {
       get { return (LookupParameter<IRandom>)Parameters["Random"]; }

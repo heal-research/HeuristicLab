@@ -54,7 +54,6 @@ namespace HeuristicLab.Optimization {
     public CombinedEncoding()
       : base("CombinedEncoding") {
       encodings = new ItemCollection<IEncoding>();
-      SolutionCreator = new MultiEncodingCreator() { SolutionParameter = { ActualName = Name } };
       foreach (var @operator in ApplicationManager.Manager.GetInstances<IMultiEncodingOperator>()) {
         @operator.SolutionParameter.ActualName = Name;
         AddOperator(@operator);

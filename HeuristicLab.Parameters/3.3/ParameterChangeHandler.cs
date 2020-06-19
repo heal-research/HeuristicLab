@@ -24,7 +24,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 
 namespace HeuristicLab.Parameters {
-  public abstract class ParameterChangeHandler<TItem> where TItem : class, IItem {
+  public class ParameterChangeHandler<TItem> where TItem : class, IItem {
     protected Action handler;
 
     protected ParameterChangeHandler(IValueParameter<TItem> parameter, Action handler) {
@@ -35,6 +35,10 @@ namespace HeuristicLab.Parameters {
 
     protected virtual void ParameterOnValueChanged(object sender, EventArgs e) {
       handler();
+    }
+
+    public static ParameterChangeHandler<TItem> Create(IValueParameter<TItem> parameter, Action handler) {
+      return new ParameterChangeHandler<TItem>(parameter, handler);
     }
   }
 

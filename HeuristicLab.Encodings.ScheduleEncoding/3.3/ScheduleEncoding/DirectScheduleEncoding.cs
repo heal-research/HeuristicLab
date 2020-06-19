@@ -42,7 +42,6 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
 
     public DirectScheduleEncoding()
       : base("Schedule") {
-      SolutionCreator = new DirectScheduleRandomCreator();
       Decoder = new DirectScheduleDecoder();
       DiscoverOperators();
     }

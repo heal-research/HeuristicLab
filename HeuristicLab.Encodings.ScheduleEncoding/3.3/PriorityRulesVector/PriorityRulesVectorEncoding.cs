@@ -64,7 +64,6 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
       numberOfRulesParameter = new FixedValueParameter<IntValue>(Name + ".NumberOfRules", new IntValue(10));
       Parameters.Add(numberOfRulesParameter);
 
-      SolutionCreator = new PRVRandomCreator();
       Decoder = new PRVDecoder();
       DiscoverOperators();
     }

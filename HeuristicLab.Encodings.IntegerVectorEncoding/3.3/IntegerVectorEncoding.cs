@@ -77,7 +77,6 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
       BoundsParameter = new ValueParameter<IntMatrix>(Name + ".Bounds", bounds);
       Parameters.Add(BoundsParameter);
 
-      SolutionCreator = new UniformRandomIntegerVectorCreator();
       DiscoverOperators();
       RegisterEventHandlers();
     }
@@ -98,7 +97,6 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
       BoundsParameter = new ValueParameter<IntMatrix>(Name + ".Bounds", bounds);
       Parameters.Add(BoundsParameter);
 
-      SolutionCreator = new UniformRandomIntegerVectorCreator();
       DiscoverOperators();
       RegisterEventHandlers();
     }

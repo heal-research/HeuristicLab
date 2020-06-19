@@ -40,8 +40,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
   [Creatable(CreatableAttribute.Categories.ExternalEvaluationProblemsSingleObjective, Priority = 100)]
   [StorableType("4ea0ded8-4451-4011-b88e-4d0680721b01")]
   public sealed class SingleObjectiveBinaryVectorExternalEvaluationProblem : ExternalEvaluationProblem<BinaryVectorEncoding, BinaryVector> {
-    [Storable] private ReferenceParameter<IntValue> DimensionRefParameter;
-    public IValueParameter<IntValue> DimensionParameter => DimensionRefParameter;
+    [Storable] private ReferenceParameter<IntValue> DimensionRefParameter { get; set; }
 
     public int Dimension {
       get => DimensionRefParameter.Value.Value;
@@ -71,10 +70,8 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
   [Creatable(CreatableAttribute.Categories.ExternalEvaluationProblemsSingleObjective, Priority = 101)]
   [StorableType("46465e8c-11d8-4d02-8c45-de41a08db7fa")]
   public sealed class SingleObjectiveIntegerVectorExternalEvaluationProblem : ExternalEvaluationProblem<IntegerVectorEncoding, IntegerVector> {
-    [Storable] private ReferenceParameter<IntValue> DimensionRefParameter;
-    public IValueParameter<IntValue> DimensionParameter => DimensionRefParameter;
-    [Storable] private ReferenceParameter<IntMatrix> BoundsRefParameter;
-    public IValueParameter<IntMatrix> BoundsParameter => BoundsRefParameter;
+    [Storable] private ReferenceParameter<IntValue> DimensionRefParameter { get; set; }
+    [Storable] private ReferenceParameter<IntMatrix> BoundsRefParameter { get; set; }
 
     public int Dimension {
       get => DimensionRefParameter.Value.Value;
@@ -111,10 +108,8 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
   [Creatable(CreatableAttribute.Categories.ExternalEvaluationProblemsSingleObjective, Priority = 102)]
   [StorableType("637f091f-6601-494e-bafb-2a8ea474210c")]
   public sealed class SingleObjectiveRealVectorExternalEvaluationProblem : ExternalEvaluationProblem<RealVectorEncoding, RealVector> {
-    [Storable] private ReferenceParameter<IntValue> DimensionRefParameter;
-    public IValueParameter<IntValue> DimensionParameter => DimensionRefParameter;
-    [Storable] private ReferenceParameter<DoubleMatrix> BoundsRefParameter;
-    public IValueParameter<DoubleMatrix> BoundsParameter => BoundsRefParameter;
+    [Storable] private ReferenceParameter<IntValue> DimensionRefParameter { get; set; }
+    [Storable] private ReferenceParameter<DoubleMatrix> BoundsRefParameter { get; set; }
 
     public int Dimension {
       get => DimensionRefParameter.Value.Value;
@@ -151,8 +146,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
   [Creatable(CreatableAttribute.Categories.ExternalEvaluationProblemsSingleObjective, Priority = 103)]
   [StorableType("ad9d45f8-b97e-49a7-b3d2-487d9a2cbdf9")]
   public sealed class SingleObjectivePermutationExternalEvaluationProblem : ExternalEvaluationProblem<PermutationEncoding, Permutation> {
-    [Storable] private ReferenceParameter<IntValue> DimensionRefParameter;
-    public IValueParameter<IntValue> DimensionParameter => DimensionRefParameter;
+    [Storable] private ReferenceParameter<IntValue> DimensionRefParameter { get; set; }
 
     public int Dimension {
       get => DimensionRefParameter.Value.Value;
@@ -182,20 +176,39 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
   [Creatable(CreatableAttribute.Categories.ExternalEvaluationProblemsSingleObjective, Priority = 104)]
   [StorableType("9b3ee4a8-7076-4edd-ae7e-4188bc49aaa3")]
   public sealed class SingleObjectiveSymbolicExpressionTreeExternalEvaluationProblem : ExternalEvaluationProblem<SymbolicExpressionTreeEncoding, ISymbolicExpressionTree> {
+    [Storable] private ReferenceParameter<IntValue> TreeLengthRefParameter { get; set; }
+    [Storable] private ReferenceParameter<IntValue> TreeDepthRefParameter { get; set; }
+    [Storable] private ReferenceParameter<ISymbolicExpressionGrammar> GrammarRefParameter { get; set; }
+
+    public int TreeLength {
+      get => TreeLengthRefParameter.Value.Value;
+      set => TreeLengthRefParameter.Value.Value = value;
+    }
+
+    public int TreeDepth {
+      get => TreeDepthRefParameter.Value.Value;
+      set => TreeDepthRefParameter.Value.Value = value;
+    }
+
+    public ISymbolicExpressionGrammar Grammar {
+      get => GrammarRefParameter.Value;
+      set => GrammarRefParameter.Value = value;
+    }
 
     [StorableConstructor]
     private SingleObjectiveSymbolicExpressionTreeExternalEvaluationProblem(StorableConstructorFlag _) : base(_) { }
-    private SingleObjectiveSymbolicExpressionTreeExternalEvaluationProblem(SingleObjectiveSymbolicExpressionTreeExternalEvaluationProblem original, Cloner cloner) : base(original, cloner) { }
+    private SingleObjectiveSymbolicExpressionTreeExternalEvaluationProblem(SingleObjectiveSymbolicExpressionTreeExternalEvaluationProblem original, Cloner cloner)
+      : base(original, cloner) {
+      TreeLengthRefParameter = cloner.Clone(original.TreeLengthRefParameter);
+      TreeDepthRefParameter = cloner.Clone(original.TreeDepthRefParameter);
+      GrammarRefParameter = cloner.Clone(original.GrammarRefParameter);
+    }
 
     public SingleObjectiveSymbolicExpressionTreeExternalEvaluationProblem()
       : base(new SymbolicExpressionTreeEncoding()) {
-      // TODO: Change to ReferenceParameter
-      var lengthParameter = new FixedValueParameter<IntValue>("TreeLength", "The total amount of nodes.", new IntValue(50));
-      Parameters.Add(lengthParameter);
-      Encoding.TreeLengthParameter = lengthParameter;
-      var depthParameter = new FixedValueParameter<IntValue>("TreeDepth", "The depth of the tree.", new IntValue(10));
-      Parameters.Add(depthParameter);
-      Encoding.TreeDepthParameter = depthParameter;
+      Parameters.Add(TreeLengthRefParameter = new ReferenceParameter<IntValue>("TreeLength", "The maximum amount of nodes.", Encoding.TreeLengthParameter));
+      Parameters.Add(TreeDepthRefParameter = new ReferenceParameter<IntValue>("TreeDepth", "The maximum depth of the tree.", Encoding.TreeDepthParameter));
+      Parameters.Add(GrammarRefParameter = new ReferenceParameter<ISymbolicExpressionGrammar>("Grammar", "The grammar that describes a valid tree.", Encoding.GrammarParameter));
       // TODO: Add and parameterize additional operators, 
     }
 
@@ -209,8 +222,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
   [Creatable(CreatableAttribute.Categories.ExternalEvaluationProblemsSingleObjective, Priority = 105)]
   [StorableType("945a35d9-89a8-4423-9ea0-21829ac68887")]
   public sealed class SingleObjectiveLinearLinkageExternalEvaluationProblem : ExternalEvaluationProblem<LinearLinkageEncoding, LinearLinkage> {
-    [Storable] private ReferenceParameter<IntValue> DimensionRefParameter;
-    public IValueParameter<IntValue> DimensionParameter => DimensionRefParameter;
+    [Storable] private ReferenceParameter<IntValue> DimensionRefParameter { get; set; }
 
     public int Dimension {
       get => DimensionRefParameter.Value.Value;
@@ -257,8 +269,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
   [Creatable(CreatableAttribute.Categories.ExternalEvaluationProblemsMultiObjective, Priority = 100)]
   [StorableType("f14c7e88-b74d-4cad-ae55-83daf7b4c288")]
   public sealed class MultiObjectiveBinaryVectorExternalEvaluationProblem : MultiObjectiveExternalEvaluationProblem<BinaryVectorEncoding, BinaryVector> {
-    [Storable] private ReferenceParameter<IntValue> DimensionRefParameter;
-    public IValueParameter<IntValue> DimensionParameter => DimensionRefParameter;
+    [Storable] private ReferenceParameter<IntValue> DimensionRefParameter { get; set; }
 
     public int Dimension {
       get => DimensionRefParameter.Value.Value;
@@ -288,10 +299,8 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
   [Creatable(CreatableAttribute.Categories.ExternalEvaluationProblemsMultiObjective, Priority = 101)]
   [StorableType("90a82c2f-6c37-4ffd-8495-bee278c583d3")]
   public sealed class MultiObjectiveIntegerVectorExternalEvaluationProblem : MultiObjectiveExternalEvaluationProblem<IntegerVectorEncoding, IntegerVector> {
-    [Storable] private ReferenceParameter<IntValue> DimensionRefParameter;
-    public IValueParameter<IntValue> DimensionParameter => DimensionRefParameter;
-    [Storable] private ReferenceParameter<IntMatrix> BoundsRefParameter;
-    public IValueParameter<IntMatrix> BoundsParameter => BoundsRefParameter;
+    [Storable] private ReferenceParameter<IntValue> DimensionRefParameter { get; set; }
+    [Storable] private ReferenceParameter<IntMatrix> BoundsRefParameter { get; set; }
 
     public int Dimension {
       get => DimensionRefParameter.Value.Value;
@@ -328,10 +337,8 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
   [Creatable(CreatableAttribute.Categories.ExternalEvaluationProblemsMultiObjective, Priority = 102)]
   [StorableType("38e1d068-d569-48c5-bad6-cbdd685b7c6b")]
   public sealed class MultiObjectiveRealVectorExternalEvaluationProblem : MultiObjectiveExternalEvaluationProblem<RealVectorEncoding, RealVector> {
-    [Storable] private ReferenceParameter<IntValue> DimensionRefParameter;
-    public IValueParameter<IntValue> DimensionParameter => DimensionRefParameter;
-    [Storable] private ReferenceParameter<DoubleMatrix> BoundsRefParameter;
-    public IValueParameter<DoubleMatrix> BoundsParameter => BoundsRefParameter;
+    [Storable] private ReferenceParameter<IntValue> DimensionRefParameter { get; set; }
+    [Storable] private ReferenceParameter<DoubleMatrix> BoundsRefParameter { get; set; }
 
     public int Dimension {
       get => DimensionRefParameter.Value.Value;
@@ -368,8 +375,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
   [Creatable(CreatableAttribute.Categories.ExternalEvaluationProblemsMultiObjective, Priority = 103)]
   [StorableType("f1b265b0-ac7c-4c36-b346-5b3f2c37694b")]
   public sealed class MultiObjectivePermutationExternalEvaluationProblem : MultiObjectiveExternalEvaluationProblem<PermutationEncoding, Permutation> {
-    [Storable] private ReferenceParameter<IntValue> DimensionRefParameter;
-    public IValueParameter<IntValue> DimensionParameter => DimensionRefParameter;
+    [Storable] private ReferenceParameter<IntValue> DimensionRefParameter { get; set; }
 
     public int Dimension {
       get => DimensionRefParameter.Value.Value;
@@ -399,20 +405,39 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
   [Creatable(CreatableAttribute.Categories.ExternalEvaluationProblemsMultiObjective, Priority = 104)]
   [StorableType("fb6834e2-2d56-4711-a3f8-5e0ab55cd040")]
   public sealed class MultiObjectiveSymbolicExpressionTreeExternalEvaluationProblem : MultiObjectiveExternalEvaluationProblem<SymbolicExpressionTreeEncoding, ISymbolicExpressionTree> {
+    [Storable] private ReferenceParameter<IntValue> TreeLengthRefParameter { get; set; }
+    [Storable] private ReferenceParameter<IntValue> TreeDepthRefParameter { get; set; }
+    [Storable] private ReferenceParameter<ISymbolicExpressionGrammar> GrammarRefParameter { get; set; }
+
+    public int TreeLength {
+      get => TreeLengthRefParameter.Value.Value;
+      set => TreeLengthRefParameter.Value.Value = value;
+    }
+
+    public int TreeDepth {
+      get => TreeDepthRefParameter.Value.Value;
+      set => TreeDepthRefParameter.Value.Value = value;
+    }
+
+    public ISymbolicExpressionGrammar Grammar {
+      get => GrammarRefParameter.Value;
+      set => GrammarRefParameter.Value = value;
+    }
 
     [StorableConstructor]
     private MultiObjectiveSymbolicExpressionTreeExternalEvaluationProblem(StorableConstructorFlag _) : base(_) { }
-    private MultiObjectiveSymbolicExpressionTreeExternalEvaluationProblem(MultiObjectiveSymbolicExpressionTreeExternalEvaluationProblem original, Cloner cloner) : base(original, cloner) { }
+    private MultiObjectiveSymbolicExpressionTreeExternalEvaluationProblem(MultiObjectiveSymbolicExpressionTreeExternalEvaluationProblem original, Cloner cloner)
+      : base(original, cloner) {
+      TreeLengthRefParameter = cloner.Clone(original.TreeLengthRefParameter);
+      TreeDepthRefParameter = cloner.Clone(original.TreeDepthRefParameter);
+      GrammarRefParameter = cloner.Clone(original.GrammarRefParameter);
+    }
 
     public MultiObjectiveSymbolicExpressionTreeExternalEvaluationProblem()
       : base(new SymbolicExpressionTreeEncoding()) {
-      // TODO: Change to ReferenceParameter
-      var lengthParameter = new FixedValueParameter<IntValue>("TreeLength", "The total amount of nodes.", new IntValue(50));
-      Parameters.Add(lengthParameter);
-      Encoding.TreeLengthParameter = lengthParameter;
-      var depthParameter = new FixedValueParameter<IntValue>("TreeDepth", "The depth of the tree.", new IntValue(10));
-      Parameters.Add(depthParameter);
-      Encoding.TreeDepthParameter = depthParameter;
+      Parameters.Add(TreeLengthRefParameter = new ReferenceParameter<IntValue>("TreeLength", "The maximum amount of nodes.", Encoding.TreeLengthParameter));
+      Parameters.Add(TreeDepthRefParameter = new ReferenceParameter<IntValue>("TreeDepth", "The maximum depth of the tree.", Encoding.TreeDepthParameter));
+      Parameters.Add(GrammarRefParameter = new ReferenceParameter<ISymbolicExpressionGrammar>("Grammar", "The grammar that describes a valid tree.", Encoding.GrammarParameter));
       // TODO: Add and parameterize additional operators, 
     }
 
@@ -426,8 +451,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
   [Creatable(CreatableAttribute.Categories.ExternalEvaluationProblemsMultiObjective, Priority = 105)]
   [StorableType("ed0c1129-651d-465f-87b0-f412f3e3b3d1")]
   public sealed class MultiObjectiveLinearLinkageExternalEvaluationProblem : MultiObjectiveExternalEvaluationProblem<LinearLinkageEncoding, LinearLinkage> {
-    [Storable] private ReferenceParameter<IntValue> DimensionRefParameter;
-    public IValueParameter<IntValue> DimensionParameter => DimensionRefParameter;
+    [Storable] private ReferenceParameter<IntValue> DimensionRefParameter { get; set; }
 
     public int Dimension {
       get => DimensionRefParameter.Value.Value;

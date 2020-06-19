@@ -19,8 +19,6 @@
  */
 #endregion
 
-using System;
-using System.Linq;
 using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -54,29 +52,6 @@ namespace HeuristicLab.Optimization {
       if (!Parameters.ContainsKey("Random")) {
         Parameters.Add(new LookupParameter<IRandom>("Random", "The random number generator used by the individual operators."));
       }
-    }
-
-    public override void AddEncoding(IEncoding encoding) {
-      base.AddEncoding(encoding);
-      var parameter = GetParameter(encoding);
-      parameter.Value = encoding.SolutionCreator;
-      encoding.SolutionCreatorChanged += Encoding_SolutionCreatorChanged;
-    }
-
-    public override bool RemoveEncoding(IEncoding encoding) {
-      var success = base.RemoveEncoding(encoding);
-      encoding.SolutionCreatorChanged -= Encoding_SolutionCreatorChanged;
-      return success;
-    }
-
-    private void Encoding_SolutionCreatorChanged(object sender, EventArgs e) {
-      var encoding = (IEncoding)sender;
-      var parameter = GetParameter(encoding);
-
-      var oldCreator = parameter.ValidValues.Single(creator => creator.GetType() == encoding.SolutionCreator.GetType());
-      parameter.ValidValues.Remove(oldCreator);
-      parameter.ValidValues.Add(encoding.SolutionCreator);
-      parameter.Value = encoding.SolutionCreator;
     }
 
 

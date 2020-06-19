@@ -164,9 +164,12 @@ namespace HeuristicLab.Problems.Orienteering {
     }
 
     private void InitializeOperators() {
-      Encoding.SolutionCreator = new GreedyOrienteeringTourCreator() {
+      ISolutionCreator creator;
+      SolutionCreatorParameter.ValidValues.Add(creator = new GreedyOrienteeringTourCreator() {
         OrienteeringProblemDataParameter = { ActualName = OrienteeringProblemDataParameter.Name }
-      };
+      });
+      SolutionCreatorParameter.Value = creator;
+
       Operators.Add(new OrienteeringLocalImprovementOperator() {
         OrienteeringProblemDataParameter = { ActualName = OrienteeringProblemDataParameter.Name }
       });

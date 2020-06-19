@@ -19,16 +19,16 @@
  */
 #endregion
 
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.ScheduleEncoding {
   [Item("PriorityRulesRandomCreator", "Creator class used to create PRV encoding objects for scheduling problems.")]
   [StorableType("5FF2A11E-86F9-4A8B-8E1C-713D6801506C")]
-  public class PRVRandomCreator : ScheduleCreator<PRV>, IStochasticOperator {
+  public class PRVRandomCreator : ScheduleCreator<PRV>, IPRVOperator, IStochasticOperator {
 
     [Storable]
     public int NrOfRules { get; set; }

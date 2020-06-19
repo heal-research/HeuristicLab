@@ -380,37 +380,11 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       }
     }
     private void UpdateCrossovers() {
-      ICrossover oldCrossover = CrossoverParameter.Value;
-      CrossoverParameter.ValidValues.Clear();
-      ICrossover defaultCrossover = Problem.Operators.OfType<ICrossover>().FirstOrDefault();
-
-      foreach (ICrossover crossover in Problem.Operators.OfType<ICrossover>().OrderBy(x => x.Name))
-        CrossoverParameter.ValidValues.Add(crossover);
-
-      if (oldCrossover != null) {
-        ICrossover crossover = CrossoverParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldCrossover.GetType());
-        if (crossover != null) CrossoverParameter.Value = crossover;
-        else oldCrossover = null;
-      }
-      if (oldCrossover == null && defaultCrossover != null)
-        CrossoverParameter.Value = defaultCrossover;
+      CrossoverParameter.Repopulate(Problem.Operators);
     }
+
     private void UpdateMutators() {
-      IManipulator oldMutator = MutatorParameter.Value;
-      MutatorParameter.ValidValues.Clear();
-      IManipulator defaultMutator = Problem.Operators.OfType<IManipulator>().FirstOrDefault();
-
-      foreach (IManipulator mutator in Problem.Operators.OfType<IManipulator>().OrderBy(x => x.Name))
-        MutatorParameter.ValidValues.Add(mutator);
-
-      if (oldMutator != null) {
-        IManipulator mutator = MutatorParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldMutator.GetType());
-        if (mutator != null) MutatorParameter.Value = mutator;
-        else oldMutator = null;
-      }
-
-      if (oldMutator == null && defaultMutator != null)
-        MutatorParameter.Value = defaultMutator;
+      MutatorParameter.Repopulate(Problem.Operators);
     }
     private void UpdateAnalyzers() {
       Analyzer.Operators.Clear();

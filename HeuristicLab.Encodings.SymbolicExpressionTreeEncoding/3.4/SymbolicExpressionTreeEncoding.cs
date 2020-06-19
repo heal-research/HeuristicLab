@@ -176,7 +176,6 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       Parameters.Add(functionDefinitionsParameter);
       Parameters.Add(functionArgumentsParameter);
 
-      SolutionCreator = new ProbabilisticTreeCreator();
       RegisterParameterEvents();
       DiscoverOperators();
     }

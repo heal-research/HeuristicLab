@@ -69,7 +69,6 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
       PermutationTypeParameter = new ValueParameter<EnumValue<PermutationTypes>>(Name + ".Type", new EnumValue<PermutationTypes>(type));
       Parameters.Add(PermutationTypeParameter);
 
-      SolutionCreator = new RandomPermutationCreator();
       DiscoverOperators();
       RegisterParameterEvents();
     }

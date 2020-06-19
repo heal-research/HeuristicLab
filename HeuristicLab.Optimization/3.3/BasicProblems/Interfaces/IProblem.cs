@@ -39,6 +39,8 @@ namespace HeuristicLab.Optimization {
 
   //TODO Intermediate class for compatibility 
   //TODO move members to generic IProblem after every problem used the new architecture
+  //TODO ABE: We can maybe use it as non-generic interface that exports IEncoding Encoding { get; }
+  //TODO ABE: and which is explicitely implemented in some base class
   public interface IEncodedProblem : IProblem {
     IEnumerable<IItem> Operators { get; }
 

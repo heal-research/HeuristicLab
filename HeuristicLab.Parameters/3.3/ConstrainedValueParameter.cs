@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using HEAL.Attic;
 using HeuristicLab.Collections;
@@ -54,6 +55,24 @@ namespace HeuristicLab.Parameters {
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new ConstrainedValueParameter<T>(this, cloner);
+    }
+
+    public override void Repopulate(IEnumerable<IItem> items) {
+      var itemsOfT = items.OfType<T>().ToList();
+      T oldItem = Value;
+      ValidValues.Clear();
+      T defaultItem = itemsOfT.FirstOrDefault();
+
+      foreach (T i in itemsOfT.OrderBy(x => x is INamedItem ? ((INamedItem)x).Name : x.ItemName))
+        ValidValues.Add(i);
+
+      if (oldItem != null) {
+        T item = ValidValues.FirstOrDefault(x => x.GetType() == oldItem.GetType());
+        if (item != null) Value = item;
+        else oldItem = null;
+      }
+      if (oldItem == null && defaultItem != null)
+        Value = defaultItem;
     }
 
     protected override void ValidValues_ItemsAdded(object sender, CollectionItemsChangedEventArgs<T> e) {

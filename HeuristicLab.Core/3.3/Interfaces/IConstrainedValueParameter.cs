@@ -28,5 +28,6 @@ namespace HeuristicLab.Core {
     IItemSet<T> ValidValues { get; }
 
     void Populate(IEnumerable<IItem> items);
+    void Repopulate(IEnumerable<IItem> items);
   }
 }

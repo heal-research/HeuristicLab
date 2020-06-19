@@ -74,7 +74,6 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       BoundsParameter = new ValueParameter<DoubleMatrix>(Name + ".Bounds", bounds);
       Parameters.Add(BoundsParameter);
 
-      SolutionCreator = new UniformRandomRealVectorCreator();
       RegisterParameterEvents();
       DiscoverOperators();
     }
@@ -93,7 +92,6 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       BoundsParameter = new ValueParameter<DoubleMatrix>(Name + ".Bounds", bounds);
       Parameters.Add(BoundsParameter);
 
-      SolutionCreator = new UniformRandomRealVectorCreator();
       DiscoverOperators();
       RegisterParameterEvents();
     }

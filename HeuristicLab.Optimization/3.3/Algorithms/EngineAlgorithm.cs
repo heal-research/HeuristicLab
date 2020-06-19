@@ -184,9 +184,11 @@ namespace HeuristicLab.Optimization {
     #region Events
     protected override void DeregisterProblemEvents() {
       Problem.Reset -= new EventHandler(Problem_Reset);
+      Problem.OperatorsChanged -= new EventHandler(Problem_OperatorsChanged);
     }
     protected override void RegisterProblemEvents() {
       Problem.Reset += new EventHandler(Problem_Reset);
+      Problem.OperatorsChanged += new EventHandler(Problem_OperatorsChanged);
     }
     protected virtual void Problem_OperatorsChanged(object sender, EventArgs e) { }
 

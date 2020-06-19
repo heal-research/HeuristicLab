@@ -45,9 +45,7 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
     public BinaryVectorEncoding(string name) : this(name, 10) { }
     public BinaryVectorEncoding(int length) : this("BinaryVector", length) { }
     public BinaryVectorEncoding(string name, int length)
-      : base(name, length) {      
-      SolutionCreator = new RandomBinaryVectorCreator();
-
+      : base(name, length) {
       DiscoverOperators();
     }
 

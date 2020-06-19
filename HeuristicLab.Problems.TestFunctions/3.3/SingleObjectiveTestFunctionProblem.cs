@@ -185,7 +185,7 @@ namespace HeuristicLab.Problems.TestFunctions {
         op.SimilarityCalculatorParameter.ValidValues.Clear();
         foreach (var c in calcs) {
           // TODO: unified encoding parameters
-          c.SolutionVariableName = ((IRealVectorSolutionOperator)Encoding.SolutionCreator).RealVectorParameter.ActualName;
+          c.SolutionVariableName = Encoding.Name;
           c.QualityVariableName = Evaluator.QualityParameter.ActualName;
           op.SimilarityCalculatorParameter.ValidValues.Add(c);
         }
@@ -199,14 +199,14 @@ namespace HeuristicLab.Problems.TestFunctions {
       }
       foreach (var op in Operators.OfType<IRealVectorParticleCreator>()) {
         // TODO: unified encoding parameters
-        op.RealVectorParameter.ActualName = ((IRealVectorSolutionOperator)Encoding.SolutionCreator).RealVectorParameter.ActualName;
+        op.RealVectorParameter.ActualName = Encoding.Name;
         op.RealVectorParameter.Hidden = true;
         op.BoundsParameter.ActualName = BoundsRefParameter.Name;
         op.BoundsParameter.Hidden = true;
       }
       foreach (var op in Operators.OfType<IRealVectorParticleUpdater>()) {
         // TODO: unified encoding parameters
-        op.RealVectorParameter.ActualName = ((IRealVectorSolutionOperator)Encoding.SolutionCreator).RealVectorParameter.ActualName;
+        op.RealVectorParameter.ActualName = Encoding.Name;
         op.RealVectorParameter.Hidden = true;
         op.BoundsParameter.ActualName = BoundsRefParameter.Name;
         op.BoundsParameter.Hidden = true;
