@@ -31,6 +31,8 @@ namespace HeuristicLab.Optimization {
   /// Interface to represent an optimization problem.
   /// </summary>
   public interface IProblem : IParameterizedNamedItem, IStorableContent {
+    //TODO extract into interface? ResultsProducingItems? Problem and Algorithm 
+    ResultCollection Results { get; }
 
     event EventHandler Reset;
   }
@@ -47,5 +49,6 @@ namespace HeuristicLab.Optimization {
   [StorableType("1b4af8b9-bdf5-4ffd-86e6-35b481bfbf45")]
   public interface IProblem<TEncoding, TEncodedSolution> : IHeuristicOptimizationProblem
     where TEncoding : class, IEncoding<TEncodedSolution>
-    where TEncodedSolution : class, IEncodedSolution { }
+    where TEncodedSolution : class, IEncodedSolution {
+  }
 }

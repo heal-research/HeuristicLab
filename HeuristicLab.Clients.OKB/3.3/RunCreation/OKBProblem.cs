@@ -71,8 +71,10 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
       }
     }
 
+    public ResultCollection Results { get => Problem.Results; }
+
     [Storable]
-    private ItemList<OKBSolution> solutions; 
+    private ItemList<OKBSolution> solutions;
     public ItemList<OKBSolution> Solutions {
       get { return solutions; }
     }

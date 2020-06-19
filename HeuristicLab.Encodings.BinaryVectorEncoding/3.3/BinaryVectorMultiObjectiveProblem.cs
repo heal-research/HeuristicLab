@@ -32,7 +32,6 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
   [StorableType("b64caac0-a23a-401a-bb7e-ffa3e22b80ea")]
   public abstract class BinaryVectorMultiObjectiveProblem : MultiObjectiveProblem<BinaryVectorEncoding, BinaryVector> {
     [Storable] protected IResultParameter<ParetoFrontScatterPlot<BinaryVector>> BestResultParameter { get; private set; }
-    //public IResultDefinition<ParetoFrontScatterPlot<BinaryVector>> BestResult { get { return BestResultParameter; }}
     [Storable] protected ReferenceParameter<IntValue> DimensionRefParameter { get; private set; }
 
     public int Dimension {

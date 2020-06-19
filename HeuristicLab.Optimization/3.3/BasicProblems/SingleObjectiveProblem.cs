@@ -131,6 +131,10 @@ namespace HeuristicLab.Optimization {
       return IsBetter(Maximization, quality, bestQuality);
     }
 
+    public virtual bool IsBetter(ISingleObjectiveSolutionContext<TEncodedSolution> solution, ISingleObjectiveSolutionContext<TEncodedSolution> otherSolution) {
+      return IsBetter(Maximization, solution.EvaluationResult.Quality, otherSolution.EvaluationResult.Quality);
+    }
+
     //TODO refactor to solution contexts
     protected ISingleObjectiveSolutionContext<TEncodedSolution> GetBest(ISingleObjectiveSolutionContext<TEncodedSolution>[] solutionContexts) {
       return Maximization ? solutionContexts.MaxItems(x => x.EvaluationResult.Quality).First()

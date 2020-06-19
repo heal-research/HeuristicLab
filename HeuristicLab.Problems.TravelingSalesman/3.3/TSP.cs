@@ -47,7 +47,6 @@ namespace HeuristicLab.Problems.TravelingSalesman {
     [Storable] public IValueParameter<ITSPData> TSPDataParameter { get; private set; }
     [Storable] public IValueParameter<ITSPSolution> BestKnownSolutionParameter { get; private set; }
     [Storable] protected IResultParameter<ITSPSolution> BestTSPSolutionParameter { get; private set; }
-    //public IResultDefinition<ITSPSolution> BestTSPSolution => BestTSPSolutionParameter;
 
     public ITSPData TSPData {
       get { return TSPDataParameter.Value; }

@@ -19,11 +19,10 @@
  */
 #endregion
 
+using HEAL.Attic;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Optimization;
-using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableType("17dc51c4-499c-49dc-b3ac-72364358f7e7")]
@@ -50,7 +49,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   }
 
   [StorableType("07b08ca0-40cb-433e-8aed-72df06a87d62")]
-  public interface ISymbolicDataAnalysisSingleObjectiveProblem : ISymbolicDataAnalysisProblem, ISingleObjectiveProblem<SymbolicExpressionTreeEncoding, ISymbolicExpressionTree> { }
+  public interface ISymbolicDataAnalysisSingleObjectiveProblem : ISymbolicDataAnalysisProblem, ISingleObjectiveHeuristicOptimizationProblem
+    //ISingleObjectiveProblem<SymbolicExpressionTreeEncoding, ISymbolicExpressionTree> 
+    { }
   [StorableType("1c5a0cf4-1286-45d8-b126-a6f5ddccf7bf")]
-  public interface ISymbolicDataAnalysisMultiObjectiveProblem : ISymbolicDataAnalysisProblem, IMultiObjectiveProblem<SymbolicExpressionTreeEncoding, ISymbolicExpressionTree> { }
+  public interface ISymbolicDataAnalysisMultiObjectiveProblem : ISymbolicDataAnalysisProblem, IMultiObjectiveHeuristicOptimizationProblem
+    //IMultiObjectiveProblem<SymbolicExpressionTreeEncoding, ISymbolicExpressionTree>
+    { }
 }

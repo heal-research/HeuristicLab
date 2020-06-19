@@ -39,8 +39,7 @@ namespace HeuristicLab.Optimization {
   [Item("User-Defined Problem", "A problem which can be defined by the user.")]
   [Creatable(CreatableAttribute.Categories.Problems, Priority = 120)]
   [StorableType("9F18A098-A8B8-4F70-93CF-79FF1496AC8A")]
-  public sealed class UserDefinedProblem : ParameterizedNamedItem, ISingleObjectiveHeuristicOptimizationProblem, IStorableContent {
-    public string Filename { get; set; }
+  public sealed class UserDefinedProblem : Problem, ISingleObjectiveHeuristicOptimizationProblem, IStorableContent {
 
     public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Type; }
@@ -169,11 +168,6 @@ namespace HeuristicLab.Optimization {
     public event EventHandler OperatorsChanged;
     private void OnOperatorsChanged() {
       EventHandler handler = OperatorsChanged;
-      if (handler != null) handler(this, EventArgs.Empty);
-    }
-    public event EventHandler Reset;
-    private void OnReset() {
-      EventHandler handler = Reset;
       if (handler != null) handler(this, EventArgs.Empty);
     }
     #endregion

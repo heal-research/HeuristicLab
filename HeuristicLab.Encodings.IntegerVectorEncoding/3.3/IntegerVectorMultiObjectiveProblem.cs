@@ -34,7 +34,6 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
   [StorableType("11916b0f-4c34-4ece-acae-e28d11211b43")]
   public abstract class IntegerVectorMultiObjectiveProblem : MultiObjectiveProblem<IntegerVectorEncoding, IntegerVector> {
     [Storable] protected IResultParameter<ParetoFrontScatterPlot<IntegerVector>> BestResultParameter { get; private set; }
-    //public IResultDefinition<ParetoFrontScatterPlot<IntegerVector>> BestResult { get { return BestResultParameter; } }
     [Storable] protected ReferenceParameter<IntValue> DimensionRefParameter { get; private set; }
     [Storable] protected ReferenceParameter<IntMatrix> BoundsRefParameter { get; private set; }
 

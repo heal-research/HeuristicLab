@@ -85,9 +85,15 @@ namespace HeuristicLab.Optimization {
       set {
         if (problem != value) {
           if ((value != null) && !ProblemType.IsInstanceOfType(value)) throw new ArgumentException("Invalid problem type.");
-          if (problem != null) DeregisterProblemEvents();
+          if (problem != null) {
+            Results.RemoveRange(problem.Results);
+            DeregisterProblemEvents();
+          }
           problem = value;
-          if (problem != null) RegisterProblemEvents();
+          if (problem != null) {
+            Results.AddRange(problem.Results);
+            RegisterProblemEvents();
+          }
           OnProblemChanged();
           Prepare();
         }
@@ -202,6 +208,7 @@ namespace HeuristicLab.Optimization {
       if ((ExecutionState != ExecutionState.Prepared) && (ExecutionState != ExecutionState.Paused) && (ExecutionState != ExecutionState.Stopped))
         throw new InvalidOperationException(string.Format("Prepare not allowed in execution state \"{0}\".", ExecutionState));
 
+      //TODO Reset all results
       Results.Reset();
     }
     public void Prepare(bool clearRuns) {

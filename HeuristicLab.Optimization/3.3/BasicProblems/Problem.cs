@@ -51,6 +51,7 @@ namespace HeuristicLab.Optimization {
       }
     }
 
+
     ISolutionCreator IHeuristicOptimizationProblem.SolutionCreator {
       get { return Encoding.SolutionCreator; }
     }
@@ -66,7 +67,7 @@ namespace HeuristicLab.Optimization {
       }
     }
 
-    //TODO is a parameter for the evaluator really necessary, only single-objective or multi-objective evulators calling the func are possible
+    //TODO is a parameter for the evaluator really necessary, only single-objective or multi-objective evaluators calling the func are possible
     public ValueParameter<TEvaluator> EvaluatorParameter {
       get { return (ValueParameter<TEvaluator>)Parameters["Evaluator"]; }
     }

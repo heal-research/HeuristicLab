@@ -38,11 +38,14 @@ namespace HeuristicLab.Optimization {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Type; }
     }
 
-
+    [Storable]
+    public ResultCollection Results { get; } = new ResultCollection();
 
     [StorableConstructor]
     protected Problem(StorableConstructorFlag _) : base(_) { }
-    protected Problem(Problem original, Cloner cloner) : base(original, cloner) { }
+    protected Problem(Problem original, Cloner cloner) : base(original, cloner) {
+      Results = cloner.Clone(original.Results);
+    }
     public Problem() : base() { }
 
     protected override IEnumerable<KeyValuePair<string, IItem>> GetCollectedValues(IValueParameter param) {
@@ -156,9 +159,7 @@ namespace HeuristicLab.Optimization {
     #endregion
 
 
-    protected virtual void ParameterizeOperators() {
-
-    }
+    protected virtual void ParameterizeOperators() { }
 
 
     #region events

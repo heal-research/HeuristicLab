@@ -33,6 +33,5 @@ namespace HeuristicLab.Optimization {
     where TEncoding : class, IEncoding<TEncodedSolution>
     where TEncodedSolution : class, IEncodedSolution {
     TEncoding Encoding { get; }
-
   }
 }
