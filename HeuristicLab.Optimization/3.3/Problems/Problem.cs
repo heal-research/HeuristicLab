@@ -39,7 +39,7 @@ namespace HeuristicLab.Optimization {
     }
 
     [Storable]
-    public ResultCollection Results { get; } = new ResultCollection();
+    public ResultCollection Results { get; private set; } = new ResultCollection();
 
     [StorableConstructor]
     protected Problem(StorableConstructorFlag _) : base(_) { }
