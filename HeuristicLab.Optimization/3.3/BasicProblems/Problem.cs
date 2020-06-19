@@ -100,18 +100,7 @@ namespace HeuristicLab.Optimization {
       }
     }
 
-    protected Problem()
-      : base() {
-      Parameters.Add(new ValueParameter<TEncoding>("Encoding", "Describes the configuration of the encoding, what the variables are called, what type they are and their bounds if any.") { Hidden = true });
-      Parameters.Add(new ValueParameter<TEvaluator>("Evaluator", "The operator used to evaluate a solution.") { Hidden = true });
-
-      if (Encoding != null) {
-        oldEncoding = Encoding;
-        Parameterize();
-      }
-      RegisterEvents();
-    }
-    protected Problem(TEncoding encoding) {
+    protected Problem(TEncoding encoding) : base() {
       if (encoding == null) throw new ArgumentNullException("encoding");
       Parameters.Add(new ValueParameter<TEncoding>("Encoding", "Describes the configuration of the encoding, what the variables are called, what type they are and their bounds if any.", encoding) { Hidden = true });
       Parameters.Add(new ValueParameter<TEvaluator>("Evaluator", "The operator used to evaluate a solution.") { Hidden = true });

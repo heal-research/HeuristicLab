@@ -37,12 +37,12 @@ namespace HeuristicLab.Optimization {
     IMultiObjectiveProblemDefinition<TEncoding, TEncodedSolution>
     where TEncoding : class, IEncoding<TEncodedSolution>
     where TEncodedSolution : class, IEncodedSolution {
-    #region Parameternames
+    #region Parameter names
     public const string BestKnownFrontParameterName = "BestKnownFront";
     public const string ReferencePointParameterName = "ReferencePoint";
     #endregion
 
-    #region Parameterproperties
+    #region Parameter properties
     [Storable] public IValueParameter<BoolArray> MaximizationParameter { get; }
     public IValueParameter<DoubleMatrix> BestKnownFrontParameter {
       get { return (IValueParameter<DoubleMatrix>)Parameters[BestKnownFrontParameterName]; }
@@ -62,21 +62,11 @@ namespace HeuristicLab.Optimization {
       ParameterizeOperators();
     }
 
-    protected MultiObjectiveProblem() : base() {
-      MaximizationParameter = new ValueParameter<BoolArray>("Maximization", "The dimensions correspond to the different objectives: False if the objective should be minimized, true if it should be maximized..", new BoolArray(new bool[] { }, @readonly: true));
-      Parameters.Add(MaximizationParameter);
-      Parameters.Add(new OptionalValueParameter<DoubleMatrix>(BestKnownFrontParameterName, "A double matrix representing the best known qualites for this problem (aka points on the Pareto front). Points are to be given in a row-wise fashion."));
-      Parameters.Add(new OptionalValueParameter<DoubleArray>(ReferencePointParameterName, "The refrence point for hypervolume calculations on this problem"));
-      Operators.Add(Evaluator);
-      Operators.Add(new MultiObjectiveAnalyzer<TEncodedSolution>());
-      ParameterizeOperators();
-    }
-
     protected MultiObjectiveProblem(TEncoding encoding) : base(encoding) {
       MaximizationParameter = new ValueParameter<BoolArray>("Maximization", "The dimensions correspond to the different objectives: False if the objective should be minimized, true if it should be maximized..", new BoolArray(new bool[] { }, @readonly: true));
       Parameters.Add(MaximizationParameter);
       Parameters.Add(new OptionalValueParameter<DoubleMatrix>(BestKnownFrontParameterName, "A double matrix representing the best known qualites for this problem (aka points on the Pareto front). Points are to be given in a row-wise fashion."));
-      Parameters.Add(new OptionalValueParameter<DoubleArray>(ReferencePointParameterName, "The refrence point for hypervolume calculations on this problem"));
+      Parameters.Add(new OptionalValueParameter<DoubleArray>(ReferencePointParameterName, "The reference point for hypervolume calculations on this problem"));
       Operators.Add(Evaluator);
       Operators.Add(new MultiObjectiveAnalyzer<TEncodedSolution>());
       ParameterizeOperators();

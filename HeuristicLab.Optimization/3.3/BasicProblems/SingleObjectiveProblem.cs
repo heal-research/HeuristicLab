@@ -75,24 +75,6 @@ namespace HeuristicLab.Optimization {
       RegisterEventHandlers();
     }
 
-    protected SingleObjectiveProblem() : base() {
-      MaximizationParameter = new ValueParameter<BoolValue>("Maximization", "Whether the problem should be maximized (True) or minimized (False).", new BoolValue(false).AsReadOnly()) { Hidden = true, ReadOnly = true };
-      BestKnownQualityParameter = new OptionalValueParameter<DoubleValue>("BestKnownQuality", "The quality of the best known solution of this problem.");
-
-      Parameters.Add(MaximizationParameter);
-      Parameters.Add(BestKnownQualityParameter);
-
-      Operators.Add(Evaluator);
-      Operators.Add(new SingleObjectiveAnalyzer<TEncodedSolution>());
-      Operators.Add(new SingleObjectiveImprover<TEncodedSolution>());
-      Operators.Add(new SingleObjectiveMoveEvaluator<TEncodedSolution>());
-      Operators.Add(new SingleObjectiveMoveGenerator<TEncodedSolution>());
-      Operators.Add(new SingleObjectiveMoveMaker<TEncodedSolution>());
-
-      Parameterize();
-      RegisterEventHandlers();
-    }
-
     protected SingleObjectiveProblem(TEncoding encoding) : base(encoding) {
       Parameters.Add(MaximizationParameter = new ValueParameter<BoolValue>("Maximization", "Set to false if the problem should be minimized.", new BoolValue(false).AsReadOnly()) { Hidden = true, ReadOnly = true });
       Parameters.Add(BestKnownQualityParameter = new OptionalValueParameter<DoubleValue>("BestKnownQuality", "The quality of the best known solution of this problem."));
