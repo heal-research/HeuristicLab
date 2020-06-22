@@ -48,7 +48,7 @@ namespace HeuristicLab.Problems.Orienteering {
   /// </summary>
   [Item("OrienteeringShakingOperator", @"Implements the shaking procedure described in Schilde M., Doerner K.F., Hartl R.F., Kiechle G. 2009. Metaheuristics for the bi-objective orienteering problem. Swarm Intelligence, Volume 3, Issue 3, pp 179-201.")]
   [StorableType("D6654BD1-63CD-4057-89C8-36D1EE6EA7DF")]
-  public sealed class OrienteeringShakingOperator : SingleSuccessorOperator, IMultiNeighborhoodShakingOperator, IStochasticOperator {
+  public sealed class OrienteeringShakingOperator : SingleSuccessorOperator, IOrienteeringOperator, IIntegerVectorMultiNeighborhoodShakingOperator, IStochasticOperator {
 
     #region Shaking Parameter Properties
     public IValueLookupParameter<IntValue> CurrentNeighborhoodIndexParameter {

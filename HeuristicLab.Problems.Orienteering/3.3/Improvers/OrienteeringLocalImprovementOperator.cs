@@ -38,7 +38,7 @@ namespace HeuristicLab.Problems.Orienteering {
   /// </summary>
   [Item("OrienteeringLocalImprovementOperator", @"Implements the iterative improvement procedure described in Schilde M., Doerner K.F., Hartl R.F., Kiechle G. 2009. Metaheuristics for the bi-objective orienteering problem. Swarm Intelligence, Volume 3, Issue 3, pp 179-201.")]
   [StorableType("92FA69B3-F243-4D12-A67A-AA1D7EBCD302")]
-  public sealed class OrienteeringLocalImprovementOperator : SingleSuccessorOperator, ILocalImprovementOperator {
+  public sealed class OrienteeringLocalImprovementOperator : SingleSuccessorOperator, IOrienteeringOperator, IIntegerVectorLocalImprovementOperator {
 
     #region Parameter Properties
     public ILookupParameter<IntegerVector> IntegerVectorParameter {

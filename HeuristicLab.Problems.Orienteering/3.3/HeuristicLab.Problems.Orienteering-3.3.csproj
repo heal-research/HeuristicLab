@@ -90,6 +90,7 @@
   <ItemGroup>
     <Compile Include="Creators\GreedyOrienteeringTourCreator.cs" />
     <Compile Include="Improvers\OrienteeringLocalImprovementOperator.cs" />
+    <Compile Include="Interfaces\IOrienteeringOperator.cs" />
     <Compile Include="Interfaces\IOrienteeringSolutionCreator.cs" />
     <Compile Include="OrienteeringProblemData.cs" />
     <Compile Include="OrienteeringProblem.cs" />

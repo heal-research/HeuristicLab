@@ -66,7 +66,9 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
       EncodingParameter.ReadOnly = true;
       Parameters.Add(DimensionRefParameter = new ReferenceParameter<IntValue>("Dimension", "The dimension of the permutation problem.", Encoding.LengthParameter));
       Parameters.Add(PermutationTypeRefParameter = new ReferenceParameter<EnumValue<PermutationTypes>>("Type", "The type of the permutation.", Encoding.PermutationTypeParameter));
+      
       Operators.Add(new HammingSimilarityCalculator());
+      // TODO: These should be added in the SingleObjectiveProblem base class (if they were accessible from there)
       Operators.Add(new QualitySimilarityCalculator());
       Operators.Add(new PopulationSimilarityAnalyzer(Operators.OfType<ISolutionSimilarityCalculator>()));
 
@@ -80,12 +82,13 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
       results.AddOrUpdateResult("Best Solution", (IItem)best.Item1.Clone());
     }
 
-    protected override void OnEncodingChanged() {
-      base.OnEncodingChanged();
+    protected override void ParameterizeOperators() {
+      base.ParameterizeOperators();
       Parameterize();
     }
 
     private void Parameterize() {
+      // TODO: this is done in base class as well (but operators are added at this level of the hierarchy)
       foreach (var similarityCalculator in Operators.OfType<ISolutionSimilarityCalculator>()) {
         similarityCalculator.SolutionVariableName = Encoding.Name;
         similarityCalculator.QualityVariableName = Evaluator.QualityParameter.ActualName;

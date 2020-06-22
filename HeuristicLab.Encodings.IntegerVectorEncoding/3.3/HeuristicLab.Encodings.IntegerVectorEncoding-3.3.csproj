@@ -145,6 +145,9 @@
     <Compile Include="Interfaces\IIntegerVectorStdDevStrategyParameterCrossover.cs" />
     <Compile Include="Interfaces\IIntegerVectorStdDevStrategyParameterManipulator.cs" />
     <Compile Include="Interfaces\IIntegerVectorStdDevStrategyParameterOperator.cs" />
+    <Compile Include="Interfaces\IIntegerVectorLocalImprovementOperator.cs" />
+    <Compile Include="Interfaces\IIntegerVectorSolutionOperator.cs" />
+    <Compile Include="Interfaces\IIntegerVectorSolutionsOperator.cs" />
     <Compile Include="Manipulators\UniformSomePositionsManipulator.cs" />
     <Compile Include="Manipulators\RoundedNormalAllPositionsManipulator.cs" />
     <Compile Include="Manipulators\SelfAdaptiveRoundedNormalAllPositionsManipulator.cs" />

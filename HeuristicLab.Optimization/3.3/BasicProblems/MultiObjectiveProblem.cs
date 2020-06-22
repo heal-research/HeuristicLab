@@ -160,7 +160,12 @@ namespace HeuristicLab.Optimization {
       ParameterizeOperators();
     }
 
-    private void ParameterizeOperators() {
+    protected override void ParameterizeOperators() {
+      base.ParameterizeOperators();
+      Parameterize();
+    }
+
+    private void Parameterize() {
       foreach (var op in Operators.OfType<IMultiObjectiveEvaluationOperator<TEncodedSolution>>())
         op.EvaluateFunc = Evaluate;
       foreach (var op in Operators.OfType<IMultiObjectiveAnalysisOperator<TEncodedSolution>>())

@@ -20,10 +20,12 @@
 #endregion
 
 using HEAL.Attic;
+using HeuristicLab.Core;
 using HeuristicLab.Encodings.IntegerVectorEncoding;
 
 namespace HeuristicLab.Problems.Orienteering {
-  [StorableType("7E0D4527-4D8C-4FBA-BB3A-26F20B6463ED")]
-  public interface IOrienteeringSolutionCreator : IIntegerVectorCreator, IOrienteeringOperator {
+  [StorableType("a0dcae1a-f324-4f24-9af2-ac30ecb2ccb6")]
+  public interface IOrienteeringOperator : IIntegerVectorOperator {
+    ILookupParameter<IOrienteeringProblemData> OrienteeringProblemDataParameter { get; }
   }
 }

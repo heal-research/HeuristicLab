@@ -75,8 +75,8 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
       BestResultParameter.ActualValue = plot;
     }
 
-    protected override void OnEncodingChanged() {
-      base.OnEncodingChanged();
+    protected override void ParameterizeOperators() {
+      base.ParameterizeOperators();
       Parameterize();
     }
 

@@ -82,8 +82,8 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       results.AddOrUpdateResult("Pareto Front Scatter Plot", plot);
     }
 
-    protected override void OnEncodingChanged() {
-      base.OnEncodingChanged();
+    protected override void ParameterizeOperators() {
+      base.ParameterizeOperators();
       Parameterize();
     }
 

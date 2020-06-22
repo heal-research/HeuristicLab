@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,11 +19,8 @@
  */
 #endregion
 
-using HEAL.Attic;
-using HeuristicLab.Encodings.IntegerVectorEncoding;
+using HeuristicLab.Optimization;
 
-namespace HeuristicLab.Problems.Orienteering {
-  [StorableType("7E0D4527-4D8C-4FBA-BB3A-26F20B6463ED")]
-  public interface IOrienteeringSolutionCreator : IIntegerVectorCreator, IOrienteeringOperator {
-  }
+namespace HeuristicLab.Encodings.IntegerVectorEncoding {
+  public interface IIntegerVectorLocalImprovementOperator : IIntegerVectorSolutionOperator, ILocalImprovementOperator { }
 }

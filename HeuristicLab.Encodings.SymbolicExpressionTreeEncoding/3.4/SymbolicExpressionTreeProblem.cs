@@ -24,10 +24,12 @@
 using System;
 using System.Linq;
 using HEAL.Attic;
+using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
+using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
@@ -76,6 +78,10 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       Parameters.Add(TreeLengthRefParameter = new ReferenceParameter<IntValue>("TreeLength", "The maximum amount of nodes.", Encoding.TreeLengthParameter));
       Parameters.Add(TreeDepthRefParameter = new ReferenceParameter<IntValue>("TreeDepth", "The maximum depth of the tree.", Encoding.TreeDepthParameter));
       Parameters.Add(GrammarRefParameter = new ReferenceParameter<ISymbolicExpressionGrammar>("Grammar", "The grammar that describes a valid tree.", Encoding.GrammarParameter));
+      
+      // TODO: These should be added in the SingleObjectiveProblem base class (if they were accessible from there)
+      Operators.Add(new QualitySimilarityCalculator());
+      Operators.Add(new PopulationSimilarityAnalyzer(Operators.OfType<ISolutionSimilarityCalculator>()));
 
       Parameterize();
       RegisterEventHandlers();
@@ -102,7 +108,13 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       }
     }
 
+    protected override void ParameterizeOperators() {
+      base.ParameterizeOperators();
+      Parameterize();
+    }
+
     private void Parameterize() {
+      // TODO: this is done in base class as well (but operators are added at this level of the hierarchy)
       foreach (var similarityCalculator in Operators.OfType<ISolutionSimilarityCalculator>()) {
         similarityCalculator.SolutionVariableName = Encoding.Name;
         similarityCalculator.QualityVariableName = Evaluator.QualityParameter.ActualName;

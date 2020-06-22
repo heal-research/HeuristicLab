@@ -90,6 +90,11 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       results.AddOrUpdateResult("Pareto Front Scatter Plot", plot);
     }
 
+    protected override void ParameterizeOperators() {
+      base.ParameterizeOperators();
+      Parameterize();
+    }
+
     private void Parameterize() {
       foreach (var similarityCalculator in Operators.OfType<ISolutionSimilarityCalculator>()) {
         similarityCalculator.SolutionVariableName = Encoding.Name;

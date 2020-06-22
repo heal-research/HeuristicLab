@@ -85,8 +85,8 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
       BestResultParameter.ActualValue = plot;
     }
 
-    protected override void OnEncodingChanged() {
-      base.OnEncodingChanged();
+    protected override void ParameterizeOperators() {
+      base.ParameterizeOperators();
       Parameterize();
     }
 

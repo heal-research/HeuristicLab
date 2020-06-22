@@ -25,12 +25,10 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using HEAL.Attic;
-using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.IntegerVectorEncoding;
 using HeuristicLab.Optimization;
-using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
 using HeuristicLab.Problems.Instances;
 using HeuristicLab.Problems.Instances.Types;
@@ -64,6 +62,7 @@ namespace HeuristicLab.Problems.Orienteering {
       OrienteeringProblemDataParameter = cloner.Clone(original.OrienteeringProblemDataParameter);
       BestKnownSolutionParameter = cloner.Clone(original.BestKnownSolutionParameter);
       BestOrienteeringSolutionParameter = cloner.Clone(original.BestOrienteeringSolutionParameter);
+      RegisterEventHandlers();
     }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new OrienteeringProblem(this, cloner);
@@ -75,8 +74,20 @@ namespace HeuristicLab.Problems.Orienteering {
       Parameters.Add(BestOrienteeringSolutionParameter = new ResultParameter<OrienteeringSolution>("Best Orienteering Solution", "The best so far solution found."));
       Maximization = true;
       Dimension = OrienteeringProblemData.Cities;
+      Bounds = new Data.IntMatrix(new[,] { { 0, Dimension } }, @readonly: true);
 
-      InitializeOperators();
+      var creator = new GreedyOrienteeringTourCreator();
+      Operators.AddRange(new IItem[] { creator, new OrienteeringLocalImprovementOperator(), new OrienteeringShakingOperator() });
+      SolutionCreatorParameter.Value = creator;
+
+      Parameterize();
+      RegisterEventHandlers();
+    }
+
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      RegisterEventHandlers();
     }
 
     public override ISingleObjectiveEvaluationResult Evaluate(IntegerVector solution, IRandom random, CancellationToken cancellationToken) {
@@ -151,49 +162,28 @@ namespace HeuristicLab.Problems.Orienteering {
 
     private void OrienteeringProblemDataParameterOnValueChanged(object sender, EventArgs e) {
       Dimension = OrienteeringProblemData.Cities;
+      Bounds = new Data.IntMatrix(new[,] { { 0, Dimension } }, @readonly: true);
     }
 
-    protected override void OnEvaluatorChanged() {
-      base.OnEvaluatorChanged();
-      ParameterizeOperators();
-    }
     protected override void DimensionOnChanged() {
       base.DimensionOnChanged();
-      if (Dimension != OrienteeringProblemData.Cities)
+      if (Dimension != OrienteeringProblemData.Cities) {
         Dimension = OrienteeringProblemData.Cities;
+        Bounds = new Data.IntMatrix(new [,] { { 0, Dimension } }, @readonly: true);
+      }
     }
 
-    private void InitializeOperators() {
-      ISolutionCreator creator;
-      SolutionCreatorParameter.ValidValues.Add(creator = new GreedyOrienteeringTourCreator() {
-        OrienteeringProblemDataParameter = { ActualName = OrienteeringProblemDataParameter.Name }
-      });
-      SolutionCreatorParameter.Value = creator;
-
-      Operators.Add(new OrienteeringLocalImprovementOperator() {
-        OrienteeringProblemDataParameter = { ActualName = OrienteeringProblemDataParameter.Name }
-      });
-      Operators.Add(new OrienteeringShakingOperator() {
-        OrienteeringProblemDataParameter = { ActualName = OrienteeringProblemDataParameter.Name }
-      });
-      Operators.Add(new QualitySimilarityCalculator());
-      Operators.Add(new PopulationSimilarityAnalyzer(Operators.OfType<ISolutionSimilarityCalculator>()));
-
-      ParameterizeOperators();
+    protected override void ParameterizeOperators() {
+      base.ParameterizeOperators();
+      Parameterize();
     }
 
-    private void ParameterizeOperators() {
-      foreach (var op in Operators.OfType<OrienteeringLocalImprovementOperator>()) {
-        op.IntegerVectorParameter.ActualName = Encoding.Name;
+    private void Parameterize() {
+      foreach (var op in Operators.OfType<OrienteeringLocalImprovementOperator>())
         op.QualityParameter.ActualName = Evaluator.QualityParameter.ActualName;
-      }
-      foreach (var op in Operators.OfType<OrienteeringShakingOperator>()) {
-        op.IntegerVectorParameter.ActualName = Encoding.Name;
-      }
-      foreach (var similarityCalculator in Operators.OfType<ISolutionSimilarityCalculator>()) {
-        similarityCalculator.SolutionVariableName = Encoding.Name;
-        similarityCalculator.QualityVariableName = Evaluator.QualityParameter.ActualName;
-      }
+
+      foreach (var op in Operators.OfType<IOrienteeringOperator>())
+        op.OrienteeringProblemDataParameter.ActualName = OrienteeringProblemDataParameter.Name;
     }
 
     #region Instance consuming

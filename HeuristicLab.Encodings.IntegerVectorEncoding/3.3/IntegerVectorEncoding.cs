@@ -119,6 +119,9 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
         typeof (IIntegerVectorManipulator),
         typeof (IIntegerVectorStdDevStrategyParameterOperator),
         typeof (IIntegerVectorMultiNeighborhoodShakingOperator),
+        typeof (IIntegerVectorLocalImprovementOperator),
+        typeof (IIntegerVectorSolutionOperator),
+        typeof (IIntegerVectorSolutionsOperator)
       };
     }
     private void DiscoverOperators() {
@@ -141,6 +144,9 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
       ConfigureManipulators(operators.OfType<IIntegerVectorManipulator>());
       ConfigureShakingOperators(operators.OfType<IIntegerVectorMultiNeighborhoodShakingOperator>());
       ConfigureStrategyVectorOperator(operators.OfType<IIntegerVectorStdDevStrategyParameterOperator>());
+      ConfigureLocalImprovementOperators(operators.OfType<IIntegerVectorLocalImprovementOperator>());
+      ConfigureSolutionOperators(operators.OfType<IIntegerVectorSolutionOperator>());
+      ConfigureSolutionsOperators(operators.OfType<IIntegerVectorSolutionsOperator>());
     }
 
     #region Specific Operator Wiring
@@ -214,6 +220,19 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
           x.ParentsParameter.ActualName = Name + "Strategy";
           x.StrategyParameterParameter.ActualName = Name + "Strategy";
         }
+      }
+    }
+    private void ConfigureLocalImprovementOperators(IEnumerable<IIntegerVectorLocalImprovementOperator> localImprovementOperators) {
+      // IIntegerVectorLocalImprovementOperator does not contain additional parameters (already contained in IIntegerVectorSolutionOperator)
+    }
+    private void ConfigureSolutionOperators(IEnumerable<IIntegerVectorSolutionOperator> solutionOperators) {
+      foreach (var solutionOperator in solutionOperators) {
+        solutionOperator.IntegerVectorParameter.ActualName = Name;
+      }
+    }
+    private void ConfigureSolutionsOperators(IEnumerable<IIntegerVectorSolutionsOperator> solutionsOperators) {
+      foreach (var solutionsOperator in solutionsOperators) {
+        solutionsOperator.IntegerVectorsParameter.ActualName = Name;
       }
     }
     #endregion

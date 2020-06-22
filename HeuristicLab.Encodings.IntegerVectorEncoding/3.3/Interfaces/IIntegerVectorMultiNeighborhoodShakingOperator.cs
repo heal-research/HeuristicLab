@@ -19,12 +19,13 @@
  */
 #endregion
 
-using HeuristicLab.Core;
 using HEAL.Attic;
+using HeuristicLab.Core;
+using HeuristicLab.Optimization;
 
 namespace HeuristicLab.Encodings.IntegerVectorEncoding {
   [StorableType("2b21442c-735f-4df3-a163-4e3147cd11a5")]
-  public interface IIntegerVectorMultiNeighborhoodShakingOperator : IIntegerVectorOperator {
+  public interface IIntegerVectorMultiNeighborhoodShakingOperator : IIntegerVectorOperator, IMultiNeighborhoodShakingOperator {
     ILookupParameter<IntegerVector> IntegerVectorParameter { get; }
   }
 }

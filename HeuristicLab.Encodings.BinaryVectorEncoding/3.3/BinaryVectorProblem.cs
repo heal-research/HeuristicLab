@@ -66,6 +66,7 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
       Results.Add(BestSolutionResult = new Result<ISingleObjectiveSolutionContext<BinaryVector>>("Best Solution"));
 
       Operators.Add(new HammingSimilarityCalculator());
+      // TODO: These should be added in the SingleObjectiveProblem base class (if they were accessible from there)
       Operators.Add(new QualitySimilarityCalculator());
       Operators.Add(new PopulationSimilarityAnalyzer(Operators.OfType<ISolutionSimilarityCalculator>()));
 
@@ -80,7 +81,13 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
         BestSolution = best.Clone() as SingleObjectiveSolutionContext<BinaryVector>;
     }
 
+    protected override void ParameterizeOperators() {
+      base.ParameterizeOperators();
+      Parameterize();
+    }
+
     private void Parameterize() {
+      // TODO: this is done in base class as well (but operators are added at this level of the hierarchy)
       foreach (var similarityCalculator in Operators.OfType<ISolutionSimilarityCalculator>()) {
         similarityCalculator.SolutionVariableName = Encoding.Name;
         similarityCalculator.QualityVariableName = Evaluator.QualityParameter.ActualName;
