@@ -19,15 +19,15 @@
  */
 #endregion
 
-using HeuristicLab.Core;
 using HEAL.Attic;
+using HeuristicLab.Core;
 
 namespace HeuristicLab.Optimization {
   [StorableType("59e9ace8-9cd7-4722-b00f-6ad288350c9f")]
   /// <summary>
   /// Interface to represent an operator that generates a particle. 
   /// </summary>
-  public interface IParticleCreator : ISolutionCreator {
+  public interface IParticleCreator : IOperator {
     ILookupParameter<ISolutionCreator> SolutionCreatorParameter { get; }
   }
 }

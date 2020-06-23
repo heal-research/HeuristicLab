@@ -132,6 +132,7 @@ namespace HeuristicLab.Parameters {
         else scope.Variables.Add(new Variable(name, values[j]));
         j++;
       }
+      CachedActualValue = values;
     }
 
     public event EventHandler DepthChanged;

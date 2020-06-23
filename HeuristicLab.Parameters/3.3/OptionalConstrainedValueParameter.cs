@@ -54,21 +54,16 @@ namespace HeuristicLab.Parameters {
       get { return this.value; }
       set {
         if (ReadOnly) throw new InvalidOperationException("Cannot set the value of a readonly parameter.");
-        DoSetValue(value);
+        if (value != this.value) {
+          if ((value != null) && !validValues.Contains(value)) throw new ArgumentException("Invalid value.");
+          DeregisterValueEvents();
+          this.value = value;
+          RegisterValueEvents();
+          OnValueChanged();
+        }
       }
     }
-    public virtual void ForceValue(T value) {
-      DoSetValue(value);
-    }
-    private void DoSetValue(T value) {
-      if (value != this.value) {
-        if ((value != null) && !validValues.Contains(value)) throw new ArgumentException("Invalid value.");
-        DeregisterValueEvents();
-        this.value = value;
-        RegisterValueEvents();
-        OnValueChanged();
-      }
-    }
+
     IItem IValueParameter.Value {
       get { return Value; }
       set {
@@ -169,7 +164,7 @@ namespace HeuristicLab.Parameters {
     }
     #endregion
 
-    public void Populate(IEnumerable<IItem> items) {
+    public virtual void Populate(IEnumerable<IItem> items) {
       ValidValues.Clear();
       ValidValues.UnionWith(items.OfType<T>());
     }
@@ -186,6 +181,12 @@ namespace HeuristicLab.Parameters {
         T item = ValidValues.FirstOrDefault(x => x.GetType() == oldItem.GetType());
         if (item != null) Value = item;
       }
+    }
+
+    public virtual IItem SetValueToFirstOf(Type itemType) {
+      var item = ValidValues.Where(i => itemType.IsAssignableFrom(i.GetType())).FirstOrDefault();
+      if (item != null) Value = item;
+      return item;
     }
 
     [StorableHook(HookType.AfterDeserialization)]

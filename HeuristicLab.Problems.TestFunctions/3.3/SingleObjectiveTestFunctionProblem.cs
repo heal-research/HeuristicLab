@@ -24,7 +24,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using HEAL.Attic;
-using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -70,9 +69,20 @@ namespace HeuristicLab.Problems.TestFunctions {
 
       BestKnownQuality = TestFunction.BestKnownQuality;
       Bounds = (DoubleMatrix)TestFunction.Bounds.Clone();
-      Dimension = TestFunction.MinimumProblemSize;
+      Dimension = Math.Min(Math.Max(2, TestFunction.MinimumProblemSize), TestFunction.MaximumProblemSize);
       BestKnownSolutionParameter.Value = TestFunction.GetBestKnownSolution(Dimension);
-      InitializeOperators();
+
+
+      Operators.AddRange(new IItem[] {
+        new SingleObjectiveTestFunctionImprovementOperator(),
+        new SingleObjectiveTestFunctionPathRelinker(),
+        new SingleObjectiveTestFunctionSimilarityCalculator(),
+        new EuclideanSimilarityCalculator(),
+        new AdditiveMoveEvaluator() });
+
+      SolutionCreatorParameter.SetValueToFirstOf(typeof(UniformRandomRealVectorCreator));
+
+      Parameterize();
       RegisterEventHandlers();
     }
 
@@ -86,7 +96,6 @@ namespace HeuristicLab.Problems.TestFunctions {
     }
 
     private void RegisterEventHandlers() {
-      Evaluator.QualityParameter.ActualNameChanged += Evaluator_QualityParameter_ActualNameChanged;
       TestFunctionParameter.ValueChanged += TestFunctionParameterOnValueChanged;
     }
 
@@ -108,7 +117,7 @@ namespace HeuristicLab.Problems.TestFunctions {
       }
 
       SingleObjectiveTestFunctionSolution solution = null;
-      if (results.TryGetValue("Best Solution", out var res)) {
+      if (results.TryGetValue("Best Solution", out var res) && res.Value != null) {
         solution = (SingleObjectiveTestFunctionSolution)res.Value;
         if (IsBetter(best.Item2, solution.BestQuality.Value)) {
           solution.BestRealVector = (RealVector)best.Item1.Clone();
@@ -121,20 +130,15 @@ namespace HeuristicLab.Problems.TestFunctions {
           BestKnownRealVector = bestKnownSolution,
           Bounds = BoundsRefParameter.Value
         };
-        results.Add(new Result("Best Solution", solution));
+        results.AddOrUpdateResult("Best Solution", solution);
       }
       if (best.Item1.Length == 2) solution.Population = new ItemArray<RealVector>(realVectors.Select(x => (RealVector)x.Clone()));
       if (bestKnownUpdate) solution.BestKnownRealVector = bestKnownSolution;
     }
 
     #region Events
-    protected override void OnEncodingChanged() {
-      base.OnEncodingChanged();
-      Parameterize();
-    }
-    protected override void OnEvaluatorChanged() {
-      base.OnEvaluatorChanged();
-      Evaluator.QualityParameter.ActualNameChanged += Evaluator_QualityParameter_ActualNameChanged;
+    protected override void ParameterizeOperators() {
+      base.ParameterizeOperators();
       Parameterize();
     }
     protected override void DimensionOnChanged() {
@@ -144,9 +148,6 @@ namespace HeuristicLab.Problems.TestFunctions {
     }
     protected override void BoundsOnChanged() {
       base.BoundsOnChanged();
-      Parameterize();
-    }
-    private void Evaluator_QualityParameter_ActualNameChanged(object sender, EventArgs e) {
       Parameterize();
     }
     private void TestFunctionParameterOnValueChanged(object sender, EventArgs eventArgs) {
@@ -166,64 +167,11 @@ namespace HeuristicLab.Problems.TestFunctions {
     #endregion
 
     #region Helpers
-    private void InitializeOperators() {
-      Operators.Add(new SingleObjectiveTestFunctionImprovementOperator());
-      Operators.Add(new SingleObjectiveTestFunctionPathRelinker());
-      Operators.Add(new SingleObjectiveTestFunctionSimilarityCalculator());
-      Operators.Add(new EuclideanSimilarityCalculator());
-      Operators.Add(new AdditiveMoveEvaluator());
-
-      Parameterize();
-    }
-
     private void Parameterize() {
       var operators = new List<IItem>();
 
-      //TODO correct wiring code, because most of the parameters are wired in the encoding
-      foreach (var op in Operators.OfType<PopulationSimilarityAnalyzer>()) {
-        var calcs = Operators.OfType<ISolutionSimilarityCalculator>().ToArray();
-        op.SimilarityCalculatorParameter.ValidValues.Clear();
-        foreach (var c in calcs) {
-          // TODO: unified encoding parameters
-          c.SolutionVariableName = Encoding.Name;
-          c.QualityVariableName = Evaluator.QualityParameter.ActualName;
-          op.SimilarityCalculatorParameter.ValidValues.Add(c);
-        }
-      }
-      foreach (var op in Operators.OfType<ISingleObjectiveTestFunctionAdditiveMoveEvaluator>()) {
-        operators.Add(op);
-        op.QualityParameter.ActualName = Evaluator.QualityParameter.ActualName;
-        op.QualityParameter.Hidden = true;
-        foreach (var movOp in Encoding.Operators.OfType<IRealVectorAdditiveMoveQualityOperator>())
-          movOp.MoveQualityParameter.ActualName = op.MoveQualityParameter.ActualName;
-      }
-      foreach (var op in Operators.OfType<IRealVectorParticleCreator>()) {
-        // TODO: unified encoding parameters
-        op.RealVectorParameter.ActualName = Encoding.Name;
-        op.RealVectorParameter.Hidden = true;
-        op.BoundsParameter.ActualName = BoundsRefParameter.Name;
-        op.BoundsParameter.Hidden = true;
-      }
-      foreach (var op in Operators.OfType<IRealVectorParticleUpdater>()) {
-        // TODO: unified encoding parameters
-        op.RealVectorParameter.ActualName = Encoding.Name;
-        op.RealVectorParameter.Hidden = true;
-        op.BoundsParameter.ActualName = BoundsRefParameter.Name;
-        op.BoundsParameter.Hidden = true;
-      }
-      foreach (var op in Operators.OfType<IRealVectorSwarmUpdater>()) {
-        op.MaximizationParameter.ActualName = MaximizationParameter.Name;
-        op.MaximizationParameter.Hidden = true;
-      }
-      foreach (var op in Operators.OfType<ISingleObjectiveImprovementOperator>()) {
-        operators.Add(op);
-        op.SolutionParameter.ActualName = Encoding.Name;
-        op.SolutionParameter.Hidden = true;
-      }
       foreach (var op in Operators.OfType<ITestFunctionSolutionSimilarityCalculator>()) {
         operators.Add(op);
-        op.SolutionVariableName = Encoding.Name;
-        op.QualityVariableName = Evaluator.QualityParameter.ActualName;
         op.Bounds = Bounds;
       }
 
