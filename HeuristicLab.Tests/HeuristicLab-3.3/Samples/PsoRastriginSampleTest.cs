@@ -24,7 +24,6 @@ using System.IO;
 using System.Linq;
 using HEAL.Attic;
 using HeuristicLab.Algorithms.ParticleSwarmOptimization;
-using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Problems.TestFunctions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -68,7 +67,6 @@ namespace HeuristicLab.Tests {
       var problem = new SingleObjectiveTestFunctionProblem();
       var provider = new SOTFInstanceProvider();
       problem.Load(provider.LoadData(provider.GetDataDescriptors().Single(x => x.Name == "Rastrigin Function")));
-      problem.Encoding.SolutionCreator = new UniformRandomRealVectorCreator();
       #endregion
       #region Algorithm Configuration
       pso.Name = "Particle Swarm Optimization - Rastrigin";

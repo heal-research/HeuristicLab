@@ -64,7 +64,6 @@ namespace HeuristicLab.Tests {
 
       problem.Dimension = 10;
       problem.TestFunction = new Griewank();
-      problem.Encoding.SolutionCreator = new UniformRandomRealVectorCreator();
       problem.Bounds = new DoubleMatrix(new double[,] { { -600, 600 } });
       problem.BestKnownQuality = 0;
       problem.BestKnownSolutionParameter.Value = new RealVector(10);
