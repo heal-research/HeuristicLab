@@ -27,11 +27,9 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
-  [NonDiscoverableType]
   [StorableType("AA3649C4-18CF-480B-AA41-F5D6F148B494")]
   [Item("BalancedTreeCreator", "An operator that produces trees with a specified distribution")]
   public class BalancedTreeCreator : SymbolicExpressionTreeCreator {

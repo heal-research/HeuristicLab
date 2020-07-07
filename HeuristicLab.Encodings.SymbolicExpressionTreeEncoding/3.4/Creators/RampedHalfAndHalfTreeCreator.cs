@@ -19,13 +19,11 @@
  */
 #endregion
 
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HEAL.Attic;
-using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
-  [NonDiscoverableType]
   [StorableType("0E43AC76-6CD1-4371-90A6-05F7C5B05EC8")]
   [Item("RampedHalfAndHalfTreeCreator", "An operator that creates new symbolic expression trees in an alternate way: half the trees are created usign the 'Grow' method while the other half are created using the 'Full' method")]
   public class RampedHalfAndHalfTreeCreator : SymbolicExpressionTreeCreator {

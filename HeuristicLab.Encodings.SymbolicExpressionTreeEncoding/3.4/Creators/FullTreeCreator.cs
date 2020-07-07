@@ -21,13 +21,11 @@
 
 using System;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HEAL.Attic;
-using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
-  [NonDiscoverableType]
   [StorableType("1A36CB91-B3AD-4D3D-B44F-2CA5508C55ED")]
   [Item("FullTreeCreator", "An operator that creates new symbolic expression trees using the 'Full' method")]
   public class FullTreeCreator : SymbolicExpressionTreeCreator,

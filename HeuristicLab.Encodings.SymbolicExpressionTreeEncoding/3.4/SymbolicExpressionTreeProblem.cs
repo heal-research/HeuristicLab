@@ -35,9 +35,9 @@ using HeuristicLab.Parameters;
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   [StorableType("A1B9F4C8-5E29-493C-A483-2AC68453BC63")]
   public abstract class SymbolicExpressionTreeProblem : SingleObjectiveProblem<SymbolicExpressionTreeEncoding, ISymbolicExpressionTree> {
-    [Storable] private ReferenceParameter<IntValue> TreeLengthRefParameter { get; set; }
-    [Storable] private ReferenceParameter<IntValue> TreeDepthRefParameter { get; set; }
-    [Storable] private ReferenceParameter<ISymbolicExpressionGrammar> GrammarRefParameter { get; set; }
+    [Storable] protected ReferenceParameter<IntValue> TreeLengthRefParameter { get; private set; }
+    [Storable] protected ReferenceParameter<IntValue> TreeDepthRefParameter { get; private set; }
+    [Storable] protected ReferenceParameter<ISymbolicExpressionGrammar> GrammarRefParameter { get; private set; }
 
     public int TreeLength {
       get => TreeLengthRefParameter.Value.Value;

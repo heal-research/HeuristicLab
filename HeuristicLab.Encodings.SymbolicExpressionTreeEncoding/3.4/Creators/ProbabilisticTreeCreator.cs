@@ -22,13 +22,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HEAL.Attic;
-using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
-  [NonDiscoverableType]
   [StorableType("6B26A8D9-60CC-4723-94ED-D185BB716AD1")]
   [Item("ProbabilisticTreeCreator", "An operator that creates new symbolic expression trees with uniformly distributed length")]
   public class ProbabilisticTreeCreator : SymbolicExpressionTreeCreator,
