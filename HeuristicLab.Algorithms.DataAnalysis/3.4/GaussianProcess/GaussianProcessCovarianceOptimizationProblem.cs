@@ -180,9 +180,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
       Encoding.TreeLength = 10;
       Encoding.TreeDepth = 5;
-      Encoding.GrammarParameter.ReadOnly = false;
       Encoding.Grammar = g;
-      Encoding.GrammarParameter.ReadOnly = true;
+      Encoding.GrammarParameter.ReadOnly = GrammarRefParameter.ReadOnly = true;
     }
 
     public void InitializeState() { ClearState(); }

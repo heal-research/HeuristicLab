@@ -87,6 +87,7 @@ namespace HeuristicLab.Problems.GeneticProgramming.Robocode {
 
       Encoding.FunctionArguments = 0;
       Encoding.FunctionDefinitions = 0;
+      Encoding.GrammarParameter.ReadOnly = GrammarRefParameter.ReadOnly = true;
 
       RegisterEventHandlers();
     }

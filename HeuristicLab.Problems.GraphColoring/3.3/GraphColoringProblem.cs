@@ -73,9 +73,9 @@ namespace HeuristicLab.Problems.GraphColoring {
     }
     public GraphColoringProblem() {
       Maximization = false;
-      Parameters.Add(adjacencyListParameter = new ValueParameter<IntMatrix>("Adjacency List", "The adjacency list that describes the (symmetric) edges in the graph with nodes from 0 to N-1."));
+      Parameters.Add(adjacencyListParameter = new ValueParameter<IntMatrix>("Adjacency List", "The adjacency list that describes the (symmetric) edges in the graph with nodes from 0 to N-1.") { ReadOnly = true });
       Parameters.Add(fitnessFunctionParameter = new ValueParameter<EnumValue<FitnessFunction>>("Fitness Function", "The function to use for evaluating the quality of a solution.", new EnumValue<FitnessFunction>(FitnessFunction.Penalized)));
-      Parameters.Add(bestKnownColorsParameter = new OptionalValueParameter<IntValue>("BestKnownColors", "The least amount of colors in a valid coloring."));
+      Parameters.Add(bestKnownColorsParameter = new OptionalValueParameter<IntValue>("BestKnownColors", "The least amount of colors in a valid coloring.") { ReadOnly = true });
 
       var imat = new IntMatrix(defaultInstance.Length, 2);
       for (var i = 0; i < defaultInstance.Length; i++) {
@@ -83,6 +83,7 @@ namespace HeuristicLab.Problems.GraphColoring {
         imat[i, 1] = defaultInstance[i].Item2 - 1;
       }
       Dimension = defaultInstanceNodes;
+      Encoding.LengthParameter.ReadOnly = DimensionRefParameter.ReadOnly = true;
       AdjacencyListParameter.Value = imat;
       BestKnownQualityParameter.Value = null;
       BestKnownColorsParameter.Value = new IntValue(defaultInstanceBestColors);

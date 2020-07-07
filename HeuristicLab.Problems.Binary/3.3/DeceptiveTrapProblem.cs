@@ -57,7 +57,7 @@ namespace HeuristicLab.Problems.Binary {
       Maximization = true;
       Parameters.Add(TrapSizeParameter = new FixedValueParameter<IntValue>("Trap Size", "", new IntValue(7)));
       Parameters.Add(NumberOfTrapsParameter = new FixedValueParameter<IntValue>("Number of Traps", "", new IntValue(7)));
-      DimensionRefParameter.ReadOnly = true;
+      Encoding.LengthParameter.ReadOnly = DimensionRefParameter.ReadOnly = true;
       Dimension = TrapSize * NumberOfTraps;
 
       RegisterEventHandlers();

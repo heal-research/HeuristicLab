@@ -76,7 +76,7 @@ namespace HeuristicLab.Problems.Knapsack {
     }
     public KnapsackProblem()
       : base(new BinaryVectorEncoding("Selection")) {
-      DimensionRefParameter.ReadOnly = true;
+      Encoding.LengthParameter.ReadOnly = DimensionRefParameter.ReadOnly = true;
       Maximization = true;
       Parameters.Add(KnapsackCapacityParameter = new ValueParameter<IntValue>("KnapsackCapacity", "Capacity of the Knapsack.", new IntValue(1)));
       Parameters.Add(WeightsParameter = new ValueParameter<IntArray>("Weights", "The weights of the items.", new IntArray(5)));

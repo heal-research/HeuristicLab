@@ -174,9 +174,8 @@ namespace HeuristicLab.Problems.GeneticProgramming.BasicSymbolicRegression {
         g.AddTerminalSymbol(newErcSy);
       }
 
-      Encoding.GrammarParameter.ReadOnly = false;
       Encoding.Grammar = g;
-      Encoding.GrammarParameter.ReadOnly = true;
+      Encoding.GrammarParameter.ReadOnly = GrammarRefParameter.ReadOnly = true;
     }
     #endregion
 
