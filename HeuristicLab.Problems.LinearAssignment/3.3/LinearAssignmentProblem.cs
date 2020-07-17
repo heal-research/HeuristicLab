@@ -66,7 +66,6 @@ namespace HeuristicLab.Problems.LinearAssignment {
     private IResultParameter<LAPAssignment> BestLAPSolutionParameter {
       get { return (IResultParameter<LAPAssignment>)Parameters["Best LAP Solution"]; }
     }
-    //public IResultDefinition<LAPAssignment> BestLAPSolution => BestLAPSolutionParameter;
     #endregion
 
     #region Properties
@@ -100,6 +99,8 @@ namespace HeuristicLab.Problems.LinearAssignment {
     }
     public LinearAssignmentProblem()
       : base(new PermutationEncoding("Assignment")) {
+      Encoding.LengthParameter.ReadOnly = DimensionRefParameter.ReadOnly = true;
+
       Parameters.Add(new ValueParameter<DoubleMatrix>("Costs", CostsDescription, new DoubleMatrix(3, 3)));
       Parameters.Add(new OptionalValueParameter<ItemSet<Permutation>>("BestKnownSolutions", "The list of best known solutions which is updated whenever a new better solution is found or may be the optimal solution if it is known beforehand.", null));
       Parameters.Add(new OptionalValueParameter<Permutation>("BestKnownSolution", "The best known solution which is updated whenever a new better solution is found or may be the optimal solution if it is known beforehand.", null));

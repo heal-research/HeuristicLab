@@ -78,10 +78,10 @@ namespace HeuristicLab.Problems.Scheduling {
     }
     
     #region Parameter Properties
-    [Storable] public IValueParameter<ItemList<Job>> JobDataParameter { get; private set; }
+    [Storable] public ReferenceParameter<ItemList<Job>> JobDataParameter { get; private set; }
     [Storable] public OptionalValueParameter<Schedule> BestKnownSolutionParameter { get; private set; }
-    [Storable] public IFixedValueParameter<IntValue> JobsParameter { get; private set; }
-    [Storable] public IFixedValueParameter<IntValue> ResourcesParameter { get; private set; }
+    [Storable] public ReferenceParameter<IntValue> JobsParameter { get; private set; }
+    [Storable] public ReferenceParameter<IntValue> ResourcesParameter { get; private set; }
     [Storable] public IFixedValueParameter<EnumValue<JSSPObjective>> ObjectiveParameter { get; private set; }
     #endregion
 
@@ -136,16 +136,12 @@ namespace HeuristicLab.Problems.Scheduling {
 
     public JobShopSchedulingProblem()
       : base(new JobSequenceMatrixEncoding()) {
-      Parameters.Add(JobDataParameter = new ValueParameter<ItemList<Job>>("JobData", "Jobdata defining the precedence relationships and the duration of the tasks in this JSSP-Instance.", new ItemList<Job>()));
+      Parameters.Add(JobDataParameter = new ReferenceParameter<ItemList<Job>>("JobData", "Jobdata defining the precedence relationships and the duration of the tasks in this JSSP-Instance.", Encoding.JobDataParameter));
       Parameters.Add(BestKnownSolutionParameter = new OptionalValueParameter<Schedule>("BestKnownSolution", "The best known solution of this JSSP instance."));
-      Parameters.Add(JobsParameter = new FixedValueParameter<IntValue>("Jobs", "The number of jobs used in this JSSP instance.", new IntValue()));
-      Parameters.Add(ResourcesParameter = new FixedValueParameter<IntValue>("Resources", "The number of resources used in this JSSP instance.", new IntValue()));
+      Parameters.Add(JobsParameter = new ReferenceParameter<IntValue>("Jobs", "The number of jobs used in this JSSP instance.", Encoding.JobsParameter));
+      Parameters.Add(ResourcesParameter = new ReferenceParameter<IntValue>("Resources", "The number of resources used in this JSSP instance.", Encoding.ResourcesParameter));
       Parameters.Add(ObjectiveParameter = new FixedValueParameter<EnumValue<JSSPObjective>>("Objective", "The objective to use in the evaluation of a schedule.", new EnumValue<JSSPObjective>(JSSPObjective.Makespan)));
       EncodingParameter.Hidden = false;
-
-      Encoding.ResourcesParameter = ResourcesParameter;
-      Encoding.JobsParameter = JobsParameter;
-      Encoding.JobDataParameter = JobDataParameter;
 
       RegisterEventHandlers();
       Load(DefaultInstance);
@@ -190,9 +186,12 @@ namespace HeuristicLab.Problems.Scheduling {
 
     protected override void OnEncodingChanged() {
       base.OnEncodingChanged();
-      Encoding.ResourcesParameter = ResourcesParameter;
-      Encoding.JobsParameter = JobsParameter;
-      Encoding.JobDataParameter = JobDataParameter;
+      Parameters.Remove(JobDataParameter);
+      Parameters.Add(JobDataParameter = new ReferenceParameter<ItemList<Job>>("JobData", "Jobdata defining the precedence relationships and the duration of the tasks in this JSSP-Instance.", Encoding.JobDataParameter));
+      Parameters.Remove(JobsParameter);
+      Parameters.Add(JobsParameter = new ReferenceParameter<IntValue>("Jobs", "The number of jobs used in this JSSP instance.", Encoding.JobsParameter));
+      Parameters.Remove(ResourcesParameter);
+      Parameters.Add(ResourcesParameter = new ReferenceParameter<IntValue>("Resources", "The number of resources used in this JSSP instance.", Encoding.ResourcesParameter));
     }
 
 

@@ -65,6 +65,10 @@ namespace HeuristicLab.Problems.PTSP {
     }
     protected ProbabilisticTSP() : base(new PermutationEncoding("Tour")) {
       Maximization = false;
+      Encoding.LengthParameter.ReadOnly = DimensionRefParameter.ReadOnly = true;
+      Encoding.PermutationTypeParameter.ReadOnly = PermutationTypeRefParameter.ReadOnly = true;
+      PermutationTypeRefParameter.Hidden = true;
+
       Parameters.Add(PTSPDataParameter = new ValueParameter<IProbabilisticTSPData>("PTSP Data", "The main parameters for the pTSP."));
       Parameters.Add(BestKnownSolutionParameter = new OptionalValueParameter<IProbabilisticTSPSolution>("BestKnownSolution", "The best known solution of this pTSP instance."));
 

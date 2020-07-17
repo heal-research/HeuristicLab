@@ -69,10 +69,14 @@ namespace HeuristicLab.Problems.Orienteering {
     }
     public OrienteeringProblem()
       : base(new IntegerVectorEncoding("Route")) {
+      Maximization = true;
+      Encoding.LengthParameter.ReadOnly = DimensionRefParameter.ReadOnly = true;
+      Encoding.BoundsParameter.ReadOnly = BoundsRefParameter.ReadOnly = true;
+
       Parameters.Add(OrienteeringProblemDataParameter = new ValueParameter<IOrienteeringProblemData>("OP Data", "The main parameters for the orienteering problem.", new OrienteeringProblemData()));
       Parameters.Add(BestKnownSolutionParameter = new OptionalValueParameter<OrienteeringSolution>("BestKnownSolution", "The best known solution of this Orienteering instance."));
       Parameters.Add(BestOrienteeringSolutionParameter = new ResultParameter<OrienteeringSolution>("Best Orienteering Solution", "The best so far solution found."));
-      Maximization = true;
+      
       Dimension = OrienteeringProblemData.Cities;
       Bounds = new Data.IntMatrix(new[,] { { 0, Dimension } }, @readonly: true);
 

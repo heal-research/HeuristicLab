@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using System.ComponentModel;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 
@@ -212,5 +213,32 @@ namespace HeuristicLab.Parameters {
     }
     public static StringValueParameterChangeHandler Create(IValueParameter<StringValue> parameter, Action handler)
      => new StringValueParameterChangeHandler(parameter, handler);
+  }
+
+  public class ItemListParameterChangeHandler<T> : ParameterChangeHandler<ItemList<T>> where T : class,IItem {
+    private ItemList<T> last;
+
+    private ItemListParameterChangeHandler(IValueParameter<ItemList<T>> parameter, Action handler)
+      : base(parameter, handler) {
+      last = parameter.Value;
+      if (last != null && !(last is ReadOnlyItemList<T>)) {
+        last.PropertyChanged += ParameterValueOnListChanged;
+      }
+    }
+
+    protected override void ParameterOnValueChanged(object sender, EventArgs e) {
+      if (last != null && !(last is ReadOnlyItemList<T>))
+        last.PropertyChanged -= ParameterValueOnListChanged;
+      last = ((IValueParameter<ItemList<T>>)sender).Value;
+      if (last != null && !(last is ReadOnlyItemList<T>))
+        last.PropertyChanged += ParameterValueOnListChanged;
+      base.ParameterOnValueChanged(sender, e);
+    }
+
+    private void ParameterValueOnListChanged(object sender, PropertyChangedEventArgs e) {
+      if (e.PropertyName == "Item[]") handler();
+    }
+    public static ItemListParameterChangeHandler<T> Create(IValueParameter<ItemList<T>> parameter, Action handler)
+     => new ItemListParameterChangeHandler<T>(parameter, handler);
   }
 }

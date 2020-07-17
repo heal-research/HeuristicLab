@@ -33,70 +33,10 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
   [StorableType("D2FB1AF9-EF13-4ED2-B3E9-D5BE4E5772EA")]
   public abstract class ScheduleEncoding<TSchedule> : Encoding<TSchedule>, IScheduleEncoding
   where TSchedule : class, IScheduleSolution {
-    #region Encoding Parameters
-    [Storable]
-    private IValueParameter<ItemList<Job>> jobDataParameter;
-    public IValueParameter<ItemList<Job>> JobDataParameter {
-      get { return jobDataParameter; }
-      set {
-        if (value == null) throw new ArgumentNullException("JobData parameter must not be null.");
-        if (value.Value == null) throw new ArgumentNullException("JobData parameter value must not be null.");
-        if (jobDataParameter == value) return;
-
-        if (jobDataParameter != null) Parameters.Remove(jobDataParameter);
-        jobDataParameter = value;
-        Parameters.Add(jobDataParameter);
-        OnJobDataParameterChanged();
-      }
-    }
-
-    [Storable]
-    private IFixedValueParameter<IntValue> jobsParameter;
-    public IFixedValueParameter<IntValue> JobsParameter {
-      get { return jobsParameter; }
-      set {
-        if (value == null) throw new ArgumentNullException("Jobs parameter must not be null.");
-        if (value.Value == null) throw new ArgumentNullException("Jobs parameter value must not be null.");
-        if (jobsParameter == value) return;
-
-        if (jobsParameter != null) Parameters.Remove(jobsParameter);
-        jobsParameter = value;
-        Parameters.Add(jobsParameter);
-        OnJobsParameterChanged();
-      }
-    }
-    [Storable]
-    private IFixedValueParameter<IntValue> resourcesParameter;
-    public IFixedValueParameter<IntValue> ResourcesParameter {
-      get { return resourcesParameter; }
-      set {
-        if (value == null) throw new ArgumentNullException("Resources parameter must not be null.");
-        if (value.Value == null) throw new ArgumentNullException("Resources parameter value must not be null.");
-        if (resourcesParameter == value) return;
-
-        if (resourcesParameter != null) Parameters.Remove(resourcesParameter);
-        resourcesParameter = value;
-        Parameters.Add(resourcesParameter);
-        OnBoundsParameterChanged();
-      }
-    }
-
-    [Storable]
-    private IValueParameter<IScheduleDecoder<TSchedule>> decoderParameter;
-    public IValueParameter<IScheduleDecoder<TSchedule>> DecoderParameter {
-      get { return decoderParameter; }
-      set {
-        if (value == null) throw new ArgumentNullException("Decoder parameter must not be null.");
-        if (value.Value == null) throw new ArgumentNullException("Decoder parameter value must not be null.");
-        if (decoderParameter == value) return;
-
-        if (decoderParameter != null) Parameters.Remove(decoderParameter);
-        decoderParameter = value;
-        Parameters.Add(decoderParameter);
-        OnDecoderParameterChanged();
-      }
-    }
-    #endregion
+    [Storable] public IValueParameter<ItemList<Job>> JobDataParameter { get; private set; }
+    [Storable] public IFixedValueParameter<IntValue> JobsParameter { get; private set; }
+    [Storable] public IFixedValueParameter<IntValue> ResourcesParameter { get; private set; }
+    [Storable] public IValueParameter<IScheduleDecoder<TSchedule>> DecoderParameter { get; private set; }
 
     public ItemList<Job> JobData {
       get { return JobDataParameter.Value; }
@@ -119,10 +59,12 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
     protected ScheduleEncoding(StorableConstructorFlag _) : base(_) { }
     protected ScheduleEncoding(ScheduleEncoding<TSchedule> original, Cloner cloner)
       : base(original, cloner) {
-      jobDataParameter = cloner.Clone(original.JobDataParameter);
-      jobsParameter = cloner.Clone(original.JobsParameter);
-      resourcesParameter = cloner.Clone(original.ResourcesParameter);
-      decoderParameter = cloner.Clone(original.DecoderParameter);
+      JobDataParameter = cloner.Clone(original.JobDataParameter);
+      JobsParameter = cloner.Clone(original.JobsParameter);
+      ResourcesParameter = cloner.Clone(original.ResourcesParameter);
+      DecoderParameter = cloner.Clone(original.DecoderParameter);
+
+      RegisterParameterEvents();
     }
 
     protected ScheduleEncoding(string name) : this(name, Enumerable.Empty<Job>()) { }
@@ -131,33 +73,35 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
       int jobs = jobData.Count();
       int resources = jobData.SelectMany(j => j.Tasks).Select(t => t.ResourceNr).Distinct().Count();
 
-      jobDataParameter = new ValueParameter<ItemList<Job>>(Name + ".JobData", new ItemList<Job>(jobData));
-      jobsParameter = new FixedValueParameter<IntValue>(Name + ".Jobs", new IntValue(jobs));
-      resourcesParameter = new FixedValueParameter<IntValue>(Name + ".Resources", new IntValue(resources));
-      decoderParameter = new ValueParameter<IScheduleDecoder<TSchedule>>(Name + ".Decoder");
+      Parameters.Add(JobDataParameter = new ValueParameter<ItemList<Job>>(Name + ".JobData", new ItemList<Job>(jobData)));
+      Parameters.Add(JobsParameter = new FixedValueParameter<IntValue>(Name + ".Jobs", new IntValue(jobs)));
+      Parameters.Add(ResourcesParameter = new FixedValueParameter<IntValue>(Name + ".Resources", new IntValue(resources)));
+      Parameters.Add(DecoderParameter = new ValueParameter<IScheduleDecoder<TSchedule>>(Name + ".Decoder"));
 
-      Parameters.Add(jobDataParameter);
-      Parameters.Add(jobsParameter);
-      Parameters.Add(resourcesParameter);
-      Parameters.Add(decoderParameter);
+      RegisterParameterEvents();
+    }
+
+    private void RegisterParameterEvents() {
+      ItemListParameterChangeHandler<Job>.Create(JobDataParameter, () => {
+        ConfigureOperators(Operators);
+        OnJobDataChanged();
+      });
+      IntValueParameterChangeHandler.Create(JobsParameter, () => {
+        ConfigureOperators(Operators);
+        OnJobsChanged();
+      });
+      IntValueParameterChangeHandler.Create(ResourcesParameter, () => {
+        ConfigureOperators(Operators);
+        OnResourcesChanged();
+      });
+      ParameterChangeHandler<IScheduleDecoder<TSchedule>>.Create(DecoderParameter, () => {
+        ConfigureOperators(Operators);
+        OnDecoderChanged();
+      });
     }
 
     public Schedule Decode(IScheduleSolution schedule, ItemList<Job> jobData) {
       return Decoder.DecodeSchedule(schedule, jobData);
-    }
-
-    private void OnJobDataParameterChanged() {
-      ConfigureOperators(Operators);
-    }
-    private void OnJobsParameterChanged() {
-      ConfigureOperators(Operators);
-    }
-    private void OnBoundsParameterChanged() {
-      ConfigureOperators(Operators);
-    }
-
-    private void OnDecoderParameterChanged() {
-      ConfigureOperators(Operators);
     }
 
     public override void ConfigureOperators(IEnumerable<IItem> operators) {
@@ -186,5 +130,17 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
       foreach (var manipulator in manipulators)
         manipulator.ScheduleParameter.ActualName = Name;
     }
+
+    public event EventHandler JobDataChanged;
+    protected virtual void OnJobDataChanged() => JobDataChanged?.Invoke(this, EventArgs.Empty);
+
+    public event EventHandler JobsChanged;
+    protected virtual void OnJobsChanged() => JobsChanged?.Invoke(this, EventArgs.Empty);
+    
+    public event EventHandler ResourcesChanged;
+    protected virtual void OnResourcesChanged() => ResourcesChanged?.Invoke(this, EventArgs.Empty);
+
+    public event EventHandler DecoderChanged;
+    protected virtual void OnDecoderChanged() => DecoderChanged?.Invoke(this, EventArgs.Empty);
   }
 }

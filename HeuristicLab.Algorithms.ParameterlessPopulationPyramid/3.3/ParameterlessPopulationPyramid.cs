@@ -118,49 +118,30 @@ namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
     #endregion
 
     #region ResultsProperties
-    private double ResultsBestQuality {
-      get { return ((DoubleValue)Results["Best Quality"].Value).Value; }
-      set { ((DoubleValue)Results["Best Quality"].Value).Value = value; }
+    [Storable] private DoubleValue resultsBestQuality;
+    public double ResultsBestQuality {
+      get => resultsBestQuality.Value;
+      set => resultsBestQuality.Value = value;
     }
-
-    private BinaryVector ResultsBestSolution {
-      get { return (BinaryVector)Results["Best Solution"].Value; }
-      set { Results["Best Solution"].Value = value; }
+    [Storable] private IntValue resultsBestFoundOnEvaluation;
+    public int ResultsBestFoundOnEvaluation {
+      get => resultsBestFoundOnEvaluation.Value;
+      set => resultsBestFoundOnEvaluation.Value = value;
     }
-
-    private int ResultsBestFoundOnEvaluation {
-      get { return ((IntValue)Results["Evaluation Best Solution Was Found"].Value).Value; }
-      set { ((IntValue)Results["Evaluation Best Solution Was Found"].Value).Value = value; }
+    [Storable] private IntValue resultsEvaluations;
+    public int ResultsEvaluations {
+      get => resultsEvaluations.Value;
+      set => resultsEvaluations.Value = value;
     }
-
-    private int ResultsEvaluations {
-      get { return ((IntValue)Results["Evaluations"].Value).Value; }
-      set { ((IntValue)Results["Evaluations"].Value).Value = value; }
+    [Storable] private IntValue resultsIterations;
+    public int ResultsIterations {
+      get => resultsIterations.Value;
+      set => resultsIterations.Value = value;
     }
-    private int ResultsIterations {
-      get { return ((IntValue)Results["Iterations"].Value).Value; }
-      set { ((IntValue)Results["Iterations"].Value).Value = value; }
-    }
-
-    private DataTable ResultsQualities {
-      get { return ((DataTable)Results["Qualities"].Value); }
-    }
-    private DataRow ResultsQualitiesBest {
-      get { return ResultsQualities.Rows["Best Quality"]; }
-    }
-
-    private DataRow ResultsQualitiesIteration {
-      get { return ResultsQualities.Rows["Iteration Quality"]; }
-    }
-
-
-    private DataRow ResultsLevels {
-      get { return ((DataTable)Results["Pyramid Levels"].Value).Rows["Levels"]; }
-    }
-
-    private DataRow ResultsSolutions {
-      get { return ((DataTable)Results["Stored Solutions"].Value).Rows["Solutions"]; }
-    }
+    [Storable] public DataRow ResultsQualitiesBest { get; private set; }
+    [Storable] public DataRow ResultsQualitiesIteration { get; private set; }
+    [Storable] public DataRow ResultsLevels { get; private set; }
+    [Storable] public DataRow ResultsSolutions { get; private set; }
     #endregion
 
     public override bool SupportsPause { get { return true; } }
@@ -174,6 +155,14 @@ namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
       pyramid = original.pyramid.Select(cloner.Clone).ToList();
       tracker = cloner.Clone(original.tracker);
       seen = new HashSet<BinaryVector>(original.seen.Select(cloner.Clone), new EnumerableBoolEqualityComparer());
+      resultsBestQuality = cloner.Clone(original.resultsBestQuality);
+      resultsBestFoundOnEvaluation = cloner.Clone(original.resultsBestFoundOnEvaluation);
+      resultsEvaluations = cloner.Clone(original.resultsEvaluations);
+      resultsIterations = cloner.Clone(original.resultsIterations);
+      ResultsQualitiesBest = cloner.Clone(original.ResultsQualitiesBest);
+      ResultsQualitiesIteration = cloner.Clone(original.ResultsQualitiesIteration);
+      ResultsLevels = cloner.Clone(original.ResultsLevels);
+      ResultsSolutions = cloner.Clone(original.ResultsSolutions);
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -238,25 +227,37 @@ namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
       tracker = new EvaluationTracker(Problem, MaximumEvaluations);
 
       // Set up the results display
-      Results.Add(new Result("Iterations", new IntValue(0)));
-      Results.Add(new Result("Evaluations", new IntValue(0)));
-      Results.Add(new Result("Best Solution", new BinaryVector(tracker.BestSolution)));
-      Results.Add(new Result("Best Quality", new DoubleValue(tracker.BestQuality)));
-      Results.Add(new Result("Evaluation Best Solution Was Found", new IntValue(tracker.BestFoundOnEvaluation)));
+      if (!Results.TryGetValue("Iterations", out var result))
+        Results.Add(new Result("Iterations", resultsIterations = new IntValue(0)));
+      else result.Value = resultsIterations = new IntValue(0);
+      if (!Results.TryGetValue("Evaluations", out var result2))
+        Results.Add(new Result("Evaluations", resultsEvaluations = new IntValue(0)));
+      else result2.Value = resultsEvaluations = new IntValue(0);
+      if (!Results.TryGetValue("Best Quality", out var result4))
+        Results.Add(new Result("Best Quality", resultsBestQuality = new DoubleValue(tracker.BestQuality)));
+      else result4.Value = resultsBestQuality = new DoubleValue(tracker.BestQuality);
+      if (!Results.TryGetValue("Evaluation Best Solution Was Found", out var result5))
+        Results.Add(new Result("Evaluation Best Solution Was Found", resultsBestFoundOnEvaluation = new IntValue(tracker.BestFoundOnEvaluation)));
+      else result5.Value = resultsBestFoundOnEvaluation = new IntValue(tracker.BestFoundOnEvaluation);
       var table = new DataTable("Qualities");
-      table.Rows.Add(new DataRow("Best Quality"));
-      var iterationRows = new DataRow("Iteration Quality");
-      iterationRows.VisualProperties.LineStyle = DataRowVisualProperties.DataRowLineStyle.Dot;
-      table.Rows.Add(iterationRows);
-      Results.Add(new Result("Qualities", table));
+      table.Rows.Add(ResultsQualitiesBest = new DataRow("Best Quality"));
+      table.Rows.Add(ResultsQualitiesIteration = new DataRow("Iteration Quality"));
+      ResultsQualitiesIteration.VisualProperties.LineStyle = DataRowVisualProperties.DataRowLineStyle.Dot;
+      if (!Results.TryGetValue("Qualities", out var result6))
+        Results.Add(new Result("Qualities", table));
+      else result6.Value = table;
 
       table = new DataTable("Pyramid Levels");
-      table.Rows.Add(new DataRow("Levels"));
-      Results.Add(new Result("Pyramid Levels", table));
+      table.Rows.Add(ResultsLevels = new DataRow("Levels"));
+      if (!Results.TryGetValue("Pyramid Levels", out var result7))
+        Results.Add(new Result("Pyramid Levels", table));
+      else result7.Value = table;
 
       table = new DataTable("Stored Solutions");
-      table.Rows.Add(new DataRow("Solutions"));
-      Results.Add(new Result("Stored Solutions", table));
+      table.Rows.Add(ResultsSolutions = new DataRow("Solutions"));
+      if (!Results.TryGetValue("Stored Solutions", out var result8))
+        Results.Add(new Result("Stored Solutions", table));
+      else result8.Value = table;
 
       base.Initialize(cancellationToken);
     }
@@ -272,7 +273,6 @@ namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
           cancellationToken.ThrowIfCancellationRequested();
         } finally {
           ResultsEvaluations = tracker.Evaluations;
-          ResultsBestSolution = new BinaryVector(tracker.BestSolution);
           ResultsBestQuality = tracker.BestQuality;
           ResultsBestFoundOnEvaluation = tracker.BestFoundOnEvaluation;
           ResultsQualitiesBest.Values.Add(tracker.BestQuality);
