@@ -277,7 +277,8 @@
     <Compile Include="Regression\Feynman\FeynmanBonus8.cs" />
     <Compile Include="Regression\Feynman\FeynmanBonus9.cs" />
     <Compile Include="Regression\Feynman\FeynmanDescriptor.cs" />
-    <Compile Include="Regression\Feynman\FeynmanInstanceProvider.cs" />
+    <Compile Include="Regression\Feynman\FeynmanLargeInstanceProvider.cs" />
+    <Compile Include="Regression\Feynman\FeynmanSmallInstanceProvider.cs" />
     <Compile Include="Regression\MibaFriction\CF3.cs" />
     <Compile Include="Regression\MibaFriction\Wear1.cs" />
     <Compile Include="Regression\MibaFriction\Wear2.cs" />
