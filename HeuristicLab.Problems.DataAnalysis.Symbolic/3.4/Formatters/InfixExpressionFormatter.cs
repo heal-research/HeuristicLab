@@ -28,6 +28,7 @@ using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
+using Microsoft.SqlServer.Server;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   public static class BaseInfixExpressionFormatter {
@@ -82,94 +83,78 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           var varNode = node as LaggedVariableTreeNode;
           if (!varNode.Weight.IsAlmost(1.0)) {
             strBuilder.Append("(");
-            if (constants != null) {
-              strBuilder.AppendFormat(CultureInfo.InvariantCulture, "{0}", varNode.Weight);
-            } else {
-              strBuilder.Append(varNode.Weight.ToString(formatString, numberFormat));
-            }
+            AppendConstant(strBuilder, constants, varNode.Weight, formatString, numberFormat);
             strBuilder.Append("*");
           }
 
           strBuilder.Append("LAG(");
-          if (varNode.VariableName.Contains("'"))
-            strBuilder.AppendFormat("\"{0}\"", varNode.VariableName);
-          else
-            strBuilder.AppendFormat("'{0}'", varNode.VariableName);
-
+          AppendVariableName(strBuilder, varNode.VariableName);
           strBuilder.Append(", ")
                     .AppendFormat(numberFormat, "{0}", varNode.Lag)
                     .Append(")");
+          if (!varNode.Weight.IsAlmost(1.0)) strBuilder.Append(")");
         } else if (node.Symbol is Variable) {
           var varNode = node as VariableTreeNode;
           if (!varNode.Weight.IsAlmost(1.0)) {
             strBuilder.Append("(");
-            if (constants != null) {
-              string constantKey = $"c_{constants.Count}";
-              strBuilder.AppendFormat(CultureInfo.InvariantCulture, "{0}", constantKey);
-              constants.Add(new KeyValuePair<string, double>(constantKey, varNode.Weight));
-            } else {
-              strBuilder.Append(varNode.Weight.ToString(formatString, numberFormat));
-            }
-
+            AppendConstant(strBuilder, constants, varNode.Weight, formatString, numberFormat);
             strBuilder.Append("*");
           }
 
-          if (varNode.VariableName.Contains("'"))
-            strBuilder.AppendFormat("\"{0}\"", varNode.VariableName);
-          else
-            strBuilder.AppendFormat("'{0}'", varNode.VariableName);
+          AppendVariableName(strBuilder, varNode.VariableName);
 
           if (!varNode.Weight.IsAlmost(1.0)) strBuilder.Append(")");
         } else if (node.Symbol is FactorVariable) {
           var factorNode = node as FactorVariableTreeNode;
-          if (factorNode.VariableName.Contains("'"))
-            strBuilder.AppendFormat("\"{0}\"", factorNode.VariableName);
-          else
-            strBuilder.AppendFormat("'{0}'", factorNode.VariableName);
+          AppendVariableName(strBuilder, factorNode.VariableName);
 
-          strBuilder.AppendFormat("[{0}]",
-            string.Join(", ", factorNode.Weights.Select(w => w.ToString(formatString, numberFormat))));
+          strBuilder.Append("[");
+          for (int i = 0; i < factorNode.Weights.Length; i++) {
+            if (i > 0) strBuilder.Append(", ");
+            AppendConstant(strBuilder, constants, factorNode.Weights[i], formatString, numberFormat);
+          }
+          strBuilder.Append("]");
         } else if (node.Symbol is BinaryFactorVariable) {
           var factorNode = node as BinaryFactorVariableTreeNode;
           if (!factorNode.Weight.IsAlmost(1.0)) {
             strBuilder.Append("(");
-            if (constants != null) {
-              strBuilder.AppendFormat(CultureInfo.InvariantCulture, "{0}", factorNode.Weight);
-            } else {
-              strBuilder.Append(factorNode.Weight.ToString(formatString, numberFormat));
-            }
+            AppendConstant(strBuilder, constants, factorNode.Weight, formatString, numberFormat);
 
             strBuilder.Append("*");
           }
 
-          if (factorNode.VariableName.Contains("'"))
-            strBuilder.AppendFormat("\"{0}\"", factorNode.VariableName);
-          else
-            strBuilder.AppendFormat("'{0}'", factorNode.VariableName);
-
+          AppendVariableName(strBuilder, factorNode.VariableName);
           strBuilder.Append(" = ");
-          if (factorNode.VariableValue.Contains("'"))
-            strBuilder.AppendFormat("\"{0}\"", factorNode.VariableValue);
-          else
-            strBuilder.AppendFormat("'{0}'", factorNode.VariableValue);
+          AppendVariableName(strBuilder, factorNode.VariableValue);
 
           if (!factorNode.Weight.IsAlmost(1.0)) strBuilder.Append(")");
         } else if (node.Symbol is Constant) {
           var constNode = node as ConstantTreeNode;
-          if (constants != null) {
-            string constantKey = $"c_{constants.Count}";
-
-            strBuilder.AppendFormat(CultureInfo.InvariantCulture, constantKey);
-            constants.Add(new KeyValuePair<string, double>(constantKey, constNode.Value));
+          if(constants==null && constNode.Value < 0) {
+            strBuilder.Append("(").Append(constNode.Value.ToString(formatString, numberFormat))
+                      .Append(")"); // (-1
           } else {
-            if (constNode.Value >= 0.0)
-              strBuilder.Append(constNode.Value.ToString(formatString, numberFormat));
-            else
-              strBuilder.Append("(").Append(constNode.Value.ToString(formatString, numberFormat))
-                        .Append(")"); // (-1
+            AppendConstant(strBuilder, constants, constNode.Value, formatString, numberFormat);
           }
         }
       }
+    }
+
+    private static void AppendConstant(StringBuilder strBuilder, List<KeyValuePair<string, double>> constants, double value, string formatString, NumberFormatInfo numberFormat) {
+      if (constants != null) {
+        string constantKey = $"c_{constants.Count}";
+        strBuilder.AppendFormat(CultureInfo.InvariantCulture, "{0}", constantKey);
+        constants.Add(new KeyValuePair<string, double>(constantKey, value));
+      } else {
+        strBuilder.Append(value.ToString(formatString, numberFormat));
+      }
+    }
+
+    private static void AppendVariableName(StringBuilder strBuilder, string name) {
+      if (name.Contains("'"))
+        strBuilder.AppendFormat("\"{0}\"", name);
+      else
+        strBuilder.AppendFormat("'{0}'", name);
     }
 
     private static string GetToken(ISymbol symbol) {
