@@ -3,6 +3,7 @@ using HeuristicLab.Optimization;
 using Newtonsoft.Json.Linq;
 using HEAL.Attic;
 using System.IO;
+using HeuristicLab.Core;
 
 namespace HeuristicLab.JsonInterface {
   /// <summary>
@@ -24,6 +25,9 @@ namespace HeuristicLab.JsonInterface {
       IList<IJsonItem> jsonItems = new List<IJsonItem>();
       string fullPath = Path.GetFullPath(path);
       #endregion
+
+      if(optimizer.ExecutionState == ExecutionState.Paused)
+        optimizer.Stop();
 
       // recursively filter items with values/ranges/actualNames
       PopulateJsonItems(rootItem, jsonItems);
