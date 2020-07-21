@@ -18,6 +18,7 @@
  * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
  */
 #endregion
+
 using System;
 using System.Threading;
 using HEAL.Attic;
@@ -74,6 +75,8 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
       Parameters.Add(new ValueParameter<IMultiObjectiveTestFunction>("TestFunction", "The function that is to be optimized.", new Fonseca()));
 
       BestKnownFrontParameter.Hidden = true;
+      BestKnownFrontParameter.ReadOnly = true;
+      ReferencePointParameter.ReadOnly = true;
 
       UpdateParameterValues();
       InitializeOperators();
@@ -81,8 +84,8 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
     }
 
     private void RegisterEventHandlers() {
-      TestFunctionParameter.ValueChanged += TestFunctionParameterOnValueChanged;
-      ObjectivesParameter.Value.ValueChanged += ObjectivesOnValueChanged;
+      IntValueParameterChangeHandler.Create(ObjectivesParameter, ObjectivesOnChanged);
+      ParameterChangeHandler<IMultiObjectiveTestFunction>.Create(TestFunctionParameter, TestFunctionOnChanged);
     }
 
 
@@ -112,53 +115,38 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
     }
 
     #region Events
-    private void UpdateParameterValues() {
-      Maximization = TestFunction.Maximization(Objectives);
-
-      Parameters.Remove(BestKnownFrontParameterName);
-      var front = TestFunction.OptimalParetoFront(Objectives);
-      var bkf = front != null ? (DoubleMatrix)Utilities.ToMatrix(front).AsReadOnly() : null;
-      Parameters.Add(new FixedValueParameter<DoubleMatrix>(BestKnownFrontParameterName, "A double matrix representing the best known qualities for this problem (aka points on the Pareto front). Points are to be given in a row-wise fashion.", bkf));
-
-      Parameters.Remove(ReferencePointParameterName);
-      Parameters.Add(new FixedValueParameter<DoubleArray>(ReferencePointParameterName, "The reference point for hypervolume calculations on this problem", new DoubleArray(TestFunction.ReferencePoint(Objectives))));
-
-      BoundsRefParameter.Value = new DoubleMatrix(TestFunction.Bounds(Objectives));
-    }
-
-    protected override void OnEncodingChanged() {
-      base.OnEncodingChanged();
-      UpdateParameterValues();
-    }
-
-    protected override void OnEvaluatorChanged() {
-      base.OnEvaluatorChanged();
-      UpdateParameterValues();
-    }
-
     protected override void DimensionOnChanged() {
       base.DimensionOnChanged();
       if (Dimension < TestFunction.MinimumSolutionLength || Dimension > TestFunction.MaximumSolutionLength)
         Dimension = Math.Min(TestFunction.MaximumSolutionLength, Math.Max(TestFunction.MinimumSolutionLength, Dimension));
       UpdateParameterValues();
+      OnReset();
     }
 
-    private void TestFunctionParameterOnValueChanged(object sender, EventArgs eventArgs) {
+    protected virtual void TestFunctionOnChanged() {
       Dimension = Math.Max(TestFunction.MinimumSolutionLength, Math.Min(Dimension, TestFunction.MaximumSolutionLength));
       Objectives = Math.Max(TestFunction.MinimumObjectives, Math.Min(Objectives, TestFunction.MaximumObjectives));
-      Parameters.Remove(ReferencePointParameterName);
-      Parameters.Add(new FixedValueParameter<DoubleArray>(ReferencePointParameterName, "The reference point for hypervolume calculations on this problem", new DoubleArray(TestFunction.ReferencePoint(Objectives))));
       UpdateParameterValues();
       OnReset();
     }
 
-    private void ObjectivesOnValueChanged(object sender, EventArgs eventArgs) {
+    protected virtual void ObjectivesOnChanged() {
       Objectives = Math.Min(TestFunction.MaximumObjectives, Math.Max(TestFunction.MinimumObjectives, Objectives));
       UpdateParameterValues();
+      OnReset();
     }
     #endregion
 
     #region Helpers
+    private void UpdateParameterValues() {
+      Maximization = TestFunction.Maximization(Objectives);
+
+      BestKnownFrontParameter.Value = DoubleMatrix.FromRows(TestFunction.OptimalParetoFront(Objectives));
+      ReferencePoint = TestFunction.ReferencePoint(Objectives);
+
+      BoundsRefParameter.Value = new DoubleMatrix(TestFunction.Bounds(Objectives));
+    }
+
     private void InitializeOperators() {
       Operators.Add(new CrowdingAnalyzer());
       Operators.Add(new GenerationalDistanceAnalyzer());

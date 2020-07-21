@@ -37,19 +37,11 @@ namespace HeuristicLab.Optimization {
     IMultiObjectiveProblemDefinition<TEncoding, TEncodedSolution>
     where TEncoding : class, IEncoding<TEncodedSolution>
     where TEncodedSolution : class, IEncodedSolution {
-    #region Parameter names
-    public const string BestKnownFrontParameterName = "BestKnownFront";
-    public const string ReferencePointParameterName = "ReferencePoint";
-    #endregion
 
     #region Parameter properties
     [Storable] public IValueParameter<BoolArray> MaximizationParameter { get; }
-    public IValueParameter<DoubleMatrix> BestKnownFrontParameter {
-      get { return (IValueParameter<DoubleMatrix>)Parameters[BestKnownFrontParameterName]; }
-    }
-    public IValueParameter<DoubleArray> ReferencePointParameter {
-      get { return (IValueParameter<DoubleArray>)Parameters[ReferencePointParameterName]; }
-    }
+    [Storable] public IValueParameter<DoubleMatrix> BestKnownFrontParameter { get; }
+    [Storable] public IValueParameter<DoubleArray> ReferencePointParameter { get; }
     #endregion
 
 
@@ -59,14 +51,15 @@ namespace HeuristicLab.Optimization {
     protected MultiObjectiveProblem(MultiObjectiveProblem<TEncoding, TEncodedSolution> original, Cloner cloner)
       : base(original, cloner) {
       MaximizationParameter = cloner.Clone(original.MaximizationParameter);
+      BestKnownFrontParameter = cloner.Clone(original.BestKnownFrontParameter);
+      ReferencePointParameter = cloner.Clone(original.ReferencePointParameter);
       ParameterizeOperators();
     }
 
     protected MultiObjectiveProblem(TEncoding encoding) : base(encoding) {
-      MaximizationParameter = new ValueParameter<BoolArray>("Maximization", "The dimensions correspond to the different objectives: False if the objective should be minimized, true if it should be maximized..", new BoolArray(new bool[] { }, @readonly: true));
-      Parameters.Add(MaximizationParameter);
-      Parameters.Add(new OptionalValueParameter<DoubleMatrix>(BestKnownFrontParameterName, "A double matrix representing the best known qualites for this problem (aka points on the Pareto front). Points are to be given in a row-wise fashion."));
-      Parameters.Add(new OptionalValueParameter<DoubleArray>(ReferencePointParameterName, "The reference point for hypervolume calculations on this problem"));
+      Parameters.Add(MaximizationParameter = new ValueParameter<BoolArray>("Maximization", "The dimensions correspond to the different objectives: False if the objective should be minimized, true if it should be maximized..", new BoolArray(new bool[] { }, @readonly: true)));
+      Parameters.Add(BestKnownFrontParameter = new OptionalValueParameter<DoubleMatrix>("Best Known Front", "A double matrix representing the best known qualites for this problem (aka points on the Pareto front). Points are to be given in a row-wise fashion."));
+      Parameters.Add(ReferencePointParameter = new OptionalValueParameter<DoubleArray>("Reference Point", "The reference point for hypervolume calculations on this problem"));
       Operators.Add(Evaluator);
       Operators.Add(new MultiObjectiveAnalyzer<TEncodedSolution>());
       ParameterizeOperators();
@@ -91,35 +84,20 @@ namespace HeuristicLab.Optimization {
 
     public virtual IReadOnlyList<double[]> BestKnownFront {
       get {
-        if (!Parameters.ContainsKey(BestKnownFrontParameterName)) return null;
         var mat = BestKnownFrontParameter.Value;
         if (mat == null) return null;
-        var v = new double[mat.Rows][];
-        for (var i = 0; i < mat.Rows; i++) {
-          var r = v[i] = new double[mat.Columns];
-          for (var j = 0; j < mat.Columns; j++) {
-            r[j] = mat[i, j];
-          }
-        }
-        return v;
-      }
-      set {
-        if (value == null || value.Count == 0) {
-          BestKnownFrontParameter.Value = new DoubleMatrix();
-          return;
-        }
-        var mat = new DoubleMatrix(value.Count, value[0].Length);
-        for (int i = 0; i < value.Count; i++) {
-          for (int j = 0; j < value[i].Length; j++) {
-            mat[i, j] = value[i][j];
-          }
-        }
-
-        BestKnownFrontParameter.Value = mat;
+        return mat.CloneByRows().ToList();
       }
     }
+    public virtual void SetBestKnownFront(IList<double[]> front) {
+      if (front == null || front.Count == 0) {
+        BestKnownFrontParameter.Value = null;
+        return;
+      }
+      BestKnownFrontParameter.Value = DoubleMatrix.FromRows(front);
+    }
     public virtual double[] ReferencePoint {
-      get { return ReferencePointParameter.Value != null ? ReferencePointParameter.Value.CloneAsArray() : null; }
+      get { return ReferencePointParameter.Value?.CloneAsArray(); }
       set { ReferencePointParameter.Value = new DoubleArray(value); }
     }
 

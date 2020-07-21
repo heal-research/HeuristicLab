@@ -41,6 +41,25 @@ namespace HeuristicLab.Data {
     public DoubleMatrix(double[,] elements, bool @readonly = false) : base(elements, @readonly) { }
     public DoubleMatrix(double[,] elements, IEnumerable<string> columnNames, bool @readonly = false) : base(elements, columnNames, @readonly) { }
     public DoubleMatrix(double[,] elements, IEnumerable<string> columnNames, IEnumerable<string> rowNames, bool @readonly = false) : base(elements, columnNames, rowNames, @readonly) { }
+    
+    public static DoubleMatrix FromRows(IList<double[]> elements, bool @readonly = false, IEnumerable<string> columnNames = null, IEnumerable<string> rowNames = null) {
+      if (elements.Count == 0) return new DoubleMatrix(0, 0);
+      var mat = new double[elements.Count, elements[0].Length];
+      for (var r = 0; r < mat.GetLength(0); r++)
+        for (var c = 0; c < mat.GetLength(1); c++)
+          mat[r, c] = elements[r][c];
+      // TODO: We should avoid the memory copy in this case
+      return new DoubleMatrix(mat, columnNames, rowNames, @readonly);
+    }
+    public static DoubleMatrix FromColumns(IList<double[]> elements, bool @readonly = false, IEnumerable<string> columnNames = null, IEnumerable<string> rowNames = null) {
+      if (elements.Count == 0) return new DoubleMatrix(0, 0);
+      var mat = new double[elements[0].Length, elements.Count];
+      for (var c = 0; c < mat.GetLength(1); c++)
+        for (var r = 0; r < mat.GetLength(0); r++)
+          mat[r, c] = elements[c][r];
+      // TODO: We should avoid the memory copy in this case
+      return new DoubleMatrix(mat, columnNames, rowNames, @readonly);
+    }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new DoubleMatrix(this, cloner);
