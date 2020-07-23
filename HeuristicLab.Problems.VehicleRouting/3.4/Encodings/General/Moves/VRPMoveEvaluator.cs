@@ -58,7 +58,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
     }
 
     //helper method to evaluate an updated individual
-    protected void UpdateEvaluation(IVRPEncoding updatedTours) {
+    protected void UpdateEvaluation(IVRPEncodedSolution updatedTours) {
       IVRPEvaluator evaluator = ProblemInstance.MoveEvaluator;
 
       try {

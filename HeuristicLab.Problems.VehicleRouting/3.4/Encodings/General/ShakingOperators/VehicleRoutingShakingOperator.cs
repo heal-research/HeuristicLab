@@ -38,8 +38,8 @@ namespace HeuristicLab.Problems.VehicleRouting {
   [StorableType("1D7EAC11-693C-4CE0-A4BB-A2C67F364A95")]
   public class VehicleRoutingShakingOperator : ShakingOperator<IVRPManipulator>, IVRPMultiNeighborhoodShakingOperator, IGeneralVRPOperator, IStochasticOperator {
     #region Parameters
-    public ILookupParameter<IVRPEncoding> VRPToursParameter {
-      get { return (ILookupParameter<IVRPEncoding>)Parameters["VRPTours"]; }
+    public ILookupParameter<IVRPEncodedSolution> VRPToursParameter {
+      get { return (ILookupParameter<IVRPEncodedSolution>)Parameters["VRPTours"]; }
     }
 
     public ILookupParameter<IRandom> RandomParameter {
@@ -64,7 +64,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
     }
     public VehicleRoutingShakingOperator()
       : base() {
-      Parameters.Add(new LookupParameter<IVRPEncoding>("VRPTours", "The vrp tour encoding to shake."));
+      Parameters.Add(new LookupParameter<IVRPEncodedSolution>("VRPTours", "The vrp tour encoding to shake."));
       Parameters.Add(new LookupParameter<IRandom>("Random", "The random number generator that will be used for stochastic shaking operators."));
       Parameters.Add(new LookupParameter<IVRPProblemInstance>("ProblemInstance", "The VRP problem instance"));
      

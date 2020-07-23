@@ -54,12 +54,12 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
       : base(original, cloner) {
     }
 
-    protected abstract PotvinTwoOptStarMove[] GenerateMoves(PotvinEncoding individual, IVRPProblemInstance problemInstance);
+    protected abstract PotvinTwoOptStarMove[] GenerateMoves(PotvinEncodedSolution individual, IVRPProblemInstance problemInstance);
 
     public override IOperation InstrumentedApply() {
       IOperation next = base.InstrumentedApply();
 
-      PotvinEncoding individual = VRPToursParameter.ActualValue as PotvinEncoding;
+      PotvinEncodedSolution individual = VRPToursParameter.ActualValue as PotvinEncodedSolution;
       PotvinTwoOptStarMove[] moves = GenerateMoves(individual, ProblemInstance);
       Scope[] moveScopes = new Scope[moves.Length];
       for (int i = 0; i < moveScopes.Length; i++) {

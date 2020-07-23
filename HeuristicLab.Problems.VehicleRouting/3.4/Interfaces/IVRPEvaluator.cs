@@ -27,11 +27,11 @@ using HEAL.Attic;
 namespace HeuristicLab.Problems.VehicleRouting.Interfaces {
   [StorableType("C3423687-3CBE-41E4-9227-FF4F1D6912E1")]
   public interface IVRPEvaluator : IVRPOperator, ISingleObjectiveEvaluator {
-    ILookupParameter<IVRPEncoding> VRPToursParameter { get; }
+    ILookupParameter<IVRPEncodedSolution> VRPToursParameter { get; }
 
-    VRPEvaluation Evaluate(IVRPProblemInstance instance, IVRPEncoding solution);
-    VRPEvaluation EvaluateTour(IVRPProblemInstance instance, Tour tour, IVRPEncoding solution);
+    VRPEvaluation Evaluate(IVRPProblemInstance instance, IVRPEncodedSolution solution);
+    VRPEvaluation EvaluateTour(IVRPProblemInstance instance, Tour tour, IVRPEncodedSolution solution);
     bool Feasible(VRPEvaluation evaluation);
-    double GetInsertionCosts(IVRPProblemInstance instance, IVRPEncoding solution, VRPEvaluation eval, int customer, int tour, int index, out bool feasible);
+    double GetInsertionCosts(IVRPProblemInstance instance, IVRPEncodedSolution solution, VRPEvaluation eval, int customer, int tour, int index, out bool feasible);
   }
 }

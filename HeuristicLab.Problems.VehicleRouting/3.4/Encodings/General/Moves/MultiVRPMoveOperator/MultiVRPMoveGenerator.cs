@@ -48,8 +48,8 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
       get { return (IValueLookupParameter<IntValue>)Parameters["SelectedOperators"]; }
     }
 
-    public ILookupParameter<IVRPEncoding> VRPToursParameter {
-      get { return (ILookupParameter<IVRPEncoding>)Parameters["VRPTours"]; }
+    public ILookupParameter<IVRPEncodedSolution> VRPToursParameter {
+      get { return (ILookupParameter<IVRPEncodedSolution>)Parameters["VRPTours"]; }
     }
 
     public ILookupParameter VRPMoveParameter {
@@ -85,7 +85,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
       Parameters.Add(new ValueLookupParameter<DoubleArray>("Probabilities", "The array of relative probabilities for each operator.", new DoubleArray()));
       Parameters.Add(new LookupParameter<IVRPProblemInstance>("ProblemInstance", "The VRP problem instance"));
 
-      Parameters.Add(new LookupParameter<IVRPEncoding>("VRPTours", "The VRP tours."));
+      Parameters.Add(new LookupParameter<IVRPEncodedSolution>("VRPTours", "The VRP tours."));
       Parameters.Add(new LookupParameter<IVRPMove>("VRPMove", "The generated moves."));
     }
 

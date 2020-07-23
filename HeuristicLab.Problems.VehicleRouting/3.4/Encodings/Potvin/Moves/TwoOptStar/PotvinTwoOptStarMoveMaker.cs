@@ -56,7 +56,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
     }
 
     public static void GetSegments(PotvinTwoOptStarMove move, out List<int> segmentX1, out List<int> segmentX2) {
-      PotvinEncoding solution = move.Individual as PotvinEncoding;
+      PotvinEncodedSolution solution = move.Individual as PotvinEncodedSolution;
 
       Tour route1 = solution.Tours[move.Tour1];
       Tour route2 = solution.Tours[move.Tour2];
@@ -77,7 +77,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
       }
     }
 
-    public static void Apply(PotvinEncoding solution, PotvinTwoOptStarMove move, IVRPProblemInstance problemInstance) {
+    public static void Apply(PotvinEncodedSolution solution, PotvinTwoOptStarMove move, IVRPProblemInstance problemInstance) {
       List<int> segmentX1;
       List<int> segmentX2;
       GetSegments(move, out segmentX1, out segmentX2);
@@ -97,7 +97,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
     protected override void PerformMove() {
       PotvinTwoOptStarMove move = TwoOptStarMoveParameter.ActualValue;
 
-      PotvinEncoding newSolution = move.Individual.Clone() as PotvinEncoding;
+      PotvinEncodedSolution newSolution = move.Individual.Clone() as PotvinEncodedSolution;
       Apply(newSolution, move, ProblemInstance);
       newSolution.Repair();
       VRPToursParameter.ActualValue = newSolution;

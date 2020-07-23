@@ -47,15 +47,15 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Prins {
       : base(original, cloner) {
     }
 
-    protected abstract void Manipulate(IRandom random, PrinsEncoding individual);
+    protected abstract void Manipulate(IRandom random, PrinsEncodedSolution individual);
 
     public override IOperation InstrumentedApply() {
-      IVRPEncoding solution = VRPToursParameter.ActualValue;
-      if (!(solution is PrinsEncoding)) {
-        VRPToursParameter.ActualValue = PrinsEncoding.ConvertFrom(solution, ProblemInstance);
+      IVRPEncodedSolution solution = VRPToursParameter.ActualValue;
+      if (!(solution is PrinsEncodedSolution)) {
+        VRPToursParameter.ActualValue = PrinsEncodedSolution.ConvertFrom(solution, ProblemInstance);
       }
 
-      Manipulate(RandomParameter.ActualValue, VRPToursParameter.ActualValue as PrinsEncoding);
+      Manipulate(RandomParameter.ActualValue, VRPToursParameter.ActualValue as PrinsEncodedSolution);
 
       return base.InstrumentedApply();
     }

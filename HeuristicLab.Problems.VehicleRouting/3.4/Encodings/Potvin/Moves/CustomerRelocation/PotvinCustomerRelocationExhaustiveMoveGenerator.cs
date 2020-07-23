@@ -45,7 +45,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
       : base(original, cloner) {
     }
 
-    protected override PotvinCustomerRelocationMove[] GenerateMoves(PotvinEncoding individual, IVRPProblemInstance problemInstance) {
+    protected override PotvinCustomerRelocationMove[] GenerateMoves(PotvinEncodedSolution individual, IVRPProblemInstance problemInstance) {
       List<PotvinCustomerRelocationMove> result = new List<PotvinCustomerRelocationMove>();
 
       int max = individual.Tours.Count;

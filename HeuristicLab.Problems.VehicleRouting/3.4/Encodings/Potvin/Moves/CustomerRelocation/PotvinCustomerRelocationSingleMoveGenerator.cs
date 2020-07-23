@@ -60,7 +60,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
       : base(original, cloner) {
     }
 
-    public static PotvinCustomerRelocationMove Apply(PotvinEncoding individual, IVRPProblemInstance problemInstance, IRandom rand) {
+    public static PotvinCustomerRelocationMove Apply(PotvinEncodedSolution individual, IVRPProblemInstance problemInstance, IRandom rand) {
       int city = 1 + rand.Next(individual.Cities);
       Tour oldTour = individual.Tours.Find(t => t.Stops.Contains(city));
       int oldTourIndex = individual.Tours.IndexOf(oldTour);
@@ -76,7 +76,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
       return new PotvinCustomerRelocationMove(city, oldTourIndex, newTourIndex, individual);
     }
 
-    protected override PotvinCustomerRelocationMove[] GenerateMoves(PotvinEncoding individual, IVRPProblemInstance problemInstance) {
+    protected override PotvinCustomerRelocationMove[] GenerateMoves(PotvinEncodedSolution individual, IVRPProblemInstance problemInstance) {
       List<PotvinCustomerRelocationMove> result = new List<PotvinCustomerRelocationMove>();
 
       PotvinCustomerRelocationMove move = Apply(individual, ProblemInstance, RandomParameter.ActualValue);

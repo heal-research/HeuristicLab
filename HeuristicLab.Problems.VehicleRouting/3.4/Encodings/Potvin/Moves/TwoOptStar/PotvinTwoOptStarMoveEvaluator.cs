@@ -54,7 +54,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
     protected override void EvaluateMove() {
       PotvinTwoOptStarMove move = TwoOptStarMoveParameter.ActualValue;
 
-      PotvinEncoding newSolution = TwoOptStarMoveParameter.ActualValue.Individual.Clone() as PotvinEncoding;
+      PotvinEncodedSolution newSolution = TwoOptStarMoveParameter.ActualValue.Individual.Clone() as PotvinEncodedSolution;
       PotvinTwoOptStarMoveMaker.Apply(newSolution, move, ProblemInstance);
 
       UpdateEvaluation(newSolution);

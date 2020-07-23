@@ -46,7 +46,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
       : base(original, cloner) {
     }
 
-    protected override PotvinPDRearrangeMove[] GenerateMoves(PotvinEncoding individual, IVRPProblemInstance problemInstance) {
+    protected override PotvinPDRearrangeMove[] GenerateMoves(PotvinEncodedSolution individual, IVRPProblemInstance problemInstance) {
       List<PotvinPDRearrangeMove> result = new List<PotvinPDRearrangeMove>();
       IPickupAndDeliveryProblemInstance pdp = problemInstance as IPickupAndDeliveryProblemInstance;
 

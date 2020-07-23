@@ -51,8 +51,8 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
     public IValueLookupParameter<BoolValue> MaximizationParameter {
       get { return (IValueLookupParameter<BoolValue>)Parameters["Maximization"]; }
     }
-    public ILookupParameter<IVRPEncoding> VRPToursParameter {
-      get { return (ILookupParameter<IVRPEncoding>)Parameters["VRPTours"]; }
+    public ILookupParameter<IVRPEncodedSolution> VRPToursParameter {
+      get { return (ILookupParameter<IVRPEncodedSolution>)Parameters["VRPTours"]; }
     }
     public ILookupParameter<IVRPProblemInstance> ProblemInstanceParameter {
       get { return (LookupParameter<IVRPProblemInstance>)Parameters["ProblemInstance"]; }
@@ -70,7 +70,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
       Parameters.Add(new LookupParameter<DoubleValue>("Quality", "The quality of the solution."));
       Parameters.Add(new ValueLookupParameter<BoolValue>("Maximization", "True if the problem is a maximization problem, else if it is a minimization problem."));
 
-      Parameters.Add(new LookupParameter<IVRPEncoding>("VRPTours", "The VRP tours considered in the move."));
+      Parameters.Add(new LookupParameter<IVRPEncodedSolution>("VRPTours", "The VRP tours considered in the move."));
       Parameters.Add(new LookupParameter<IVRPProblemInstance>("ProblemInstance", "The VRP problem instance"));
     }
 

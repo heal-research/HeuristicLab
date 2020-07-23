@@ -49,11 +49,11 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Zhu {
       : base(original, cloner) {
     }
 
-    protected override ZhuEncoding Crossover(IRandom random, ZhuEncoding parent1, ZhuEncoding parent2) {
+    protected override ZhuEncodedSolution Crossover(IRandom random, ZhuEncodedSolution parent1, ZhuEncodedSolution parent2) {
       //note - the inner crossover is called here and the result is converted to a prins representation
       //some refactoring should be done here in the future - the crossover operation should be called directly
       if (parent1.Length != parent2.Length)
-        return parent1.Clone() as ZhuEncoding;
+        return parent1.Clone() as ZhuEncodedSolution;
 
       InnerCrossoverParameter.ActualValue.ParentsParameter.ActualName = ParentsParameter.ActualName;
       IAtomicOperation op = this.ExecutionContext.CreateOperation(
@@ -65,7 +65,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Zhu {
         Permutation permutation = ExecutionContext.Scope.Variables[childName].Value as Permutation;
         ExecutionContext.Scope.Variables.Remove(childName);
 
-        return new ZhuEncoding(permutation, ProblemInstance);
+        return new ZhuEncodedSolution(permutation, ProblemInstance);
       } else
         return null;
     }

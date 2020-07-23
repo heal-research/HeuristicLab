@@ -44,7 +44,7 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
       return new CVRPTWEvaluation();
     }
 
-    protected override void EvaluateTour(VRPEvaluation eval, IVRPProblemInstance instance, Tour tour, IVRPEncoding solution) {
+    protected override void EvaluateTour(VRPEvaluation eval, IVRPProblemInstance instance, Tour tour, IVRPEncodedSolution solution) {
       TourInsertionInfo tourInfo = new TourInsertionInfo(solution.GetVehicleAssignment(solution.GetTourIndex(tour)));
       eval.InsertionInfo.AddTourInsertionInfo(tourInfo);
       double originalQuality = eval.Quality;
@@ -160,7 +160,7 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
       tourInfo.Quality = eval.Quality - originalQuality;
     }
 
-    protected override double GetTourInsertionCosts(IVRPProblemInstance instance, IVRPEncoding solution, TourInsertionInfo tourInsertionInfo, int index, int customer,
+    protected override double GetTourInsertionCosts(IVRPProblemInstance instance, IVRPEncodedSolution solution, TourInsertionInfo tourInsertionInfo, int index, int customer,
       out bool feasible) {
       CVRPTWInsertionInfo insertionInfo = tourInsertionInfo.GetStopInsertionInfo(index) as CVRPTWInsertionInfo;
 

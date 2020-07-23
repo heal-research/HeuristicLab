@@ -32,7 +32,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
   [StorableType("2C3CC022-8F2B-435C-BDAD-ABB9D568FC8E")]
   public class PotvinPDExchangeMove : Item, IVRPMove {
     [Storable]
-    public IVRPEncoding Individual { get; protected set; }
+    public IVRPEncodedSolution Individual { get; protected set; }
 
     [Storable]
     public int City { get; protected set; }
@@ -54,13 +54,13 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
       Individual = null;
     }
 
-    public PotvinPDExchangeMove(int city, int oldTour, int tour, int replaced, PotvinEncoding individual) {
+    public PotvinPDExchangeMove(int city, int oldTour, int tour, int replaced, PotvinEncodedSolution individual) {
       City = city;
       OldTour = oldTour;
       Tour = tour;
       Replaced = replaced;
 
-      this.Individual = individual.Clone() as PotvinEncoding;
+      this.Individual = individual.Clone() as PotvinEncodedSolution;
     }
 
     [StorableConstructor]
@@ -77,7 +77,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
       this.Tour = original.Tour;
       this.Replaced = original.Replaced;
 
-      this.Individual = cloner.Clone(Individual) as PotvinEncoding;
+      this.Individual = cloner.Clone(Individual) as PotvinEncodedSolution;
     }
 
     #region IVRPMove Members

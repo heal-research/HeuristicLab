@@ -29,8 +29,8 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
   [Item("VRPManipulator", "Manipulates a VRP solution.")]
   [StorableType("6A7616B7-0BA2-45DA-B89F-C4ECE93080BD")]
   public abstract class VRPManipulator : VRPOperator, IVRPManipulator {
-    public ILookupParameter<IVRPEncoding> VRPToursParameter {
-      get { return (ILookupParameter<IVRPEncoding>)Parameters["VRPTours"]; }
+    public ILookupParameter<IVRPEncodedSolution> VRPToursParameter {
+      get { return (ILookupParameter<IVRPEncodedSolution>)Parameters["VRPTours"]; }
     }
 
     [StorableConstructor]
@@ -38,7 +38,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
 
     public VRPManipulator()
       : base() {
-      Parameters.Add(new LookupParameter<IVRPEncoding>("VRPTours", "The VRP tours to be manipulated."));
+      Parameters.Add(new LookupParameter<IVRPEncodedSolution>("VRPTours", "The VRP tours to be manipulated."));
     }
 
     protected VRPManipulator(VRPManipulator original, Cloner cloner)

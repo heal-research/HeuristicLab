@@ -51,7 +51,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
       : base(original, cloner) {
     }
 
-    public static void Apply(AlbaEncoding individual, int tour1Index, int position1, int length1,
+    public static void Apply(AlbaEncodedSolution individual, int tour1Index, int position1, int length1,
       int tour2Index, int position2, int length2) {
       List<Tour> tours = individual.GetTours();
 
@@ -73,7 +73,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
         }
       }
 
-      AlbaEncoding original = individual.Clone() as AlbaEncoding;
+      AlbaEncodedSolution original = individual.Clone() as AlbaEncodedSolution;
       int index = 0;
 
       int start1 = tour1Start + position1;
@@ -105,7 +105,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
       }
     }
 
-    protected override void Manipulate(IRandom rand, AlbaEncoding individual) {
+    protected override void Manipulate(IRandom rand, AlbaEncodedSolution individual) {
       List<Tour> tours = individual.GetTours();
       if (tours.Count > 1) {
         int lambda = LambdaParameter.Value.Value;

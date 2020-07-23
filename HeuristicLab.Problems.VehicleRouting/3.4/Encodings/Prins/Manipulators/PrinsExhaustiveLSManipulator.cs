@@ -43,7 +43,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Prins {
       : base(original, cloner) {
     }
 
-    protected override void Manipulate(IRandom random, PrinsEncoding individual) {
+    protected override void Manipulate(IRandom random, PrinsEncodedSolution individual) {
       List<Tour> tours = individual.GetTours();
       bool improvement = false;
       int iterations = 0;
@@ -52,7 +52,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Prins {
         int u = depot;
         improvement = false;
         double originalQuality = GetQuality(individual);
-        PrinsEncoding child = null;
+        PrinsEncodedSolution child = null;
 
         while (!improvement && u < ProblemInstance.Cities.Value) {
           int v = depot;

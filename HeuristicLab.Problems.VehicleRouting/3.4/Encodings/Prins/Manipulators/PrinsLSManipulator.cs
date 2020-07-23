@@ -47,11 +47,11 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Prins {
       : base(original, cloner) {
     }
 
-    protected double GetQuality(PrinsEncoding individual) {
+    protected double GetQuality(PrinsEncodedSolution individual) {
       return ProblemInstance.Evaluate(individual).Quality;
     }
 
-    private int FindCity(PrinsEncoding individual, int city) {
+    private int FindCity(PrinsEncodedSolution individual, int city) {
       int index = -1;
 
       int i = 0;
@@ -67,7 +67,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Prins {
 
     protected const int depot = -1;
 
-    private Tour FindTour(PrinsEncoding individual, int city) {
+    private Tour FindTour(PrinsEncodedSolution individual, int city) {
       Tour found = null;
 
       List<Tour> tours = individual.GetTours();
@@ -84,7 +84,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Prins {
     }
 
     //inserts u after v in the child
-    private void InsertAfter(int u, int v, PrinsEncoding parent, PrinsEncoding child) {
+    private void InsertAfter(int u, int v, PrinsEncodedSolution parent, PrinsEncodedSolution child) {
       int pi = 0;
       int ci = 0;
 
@@ -103,7 +103,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Prins {
     }
 
     //inserts (u, x) after v in the child
-    private void InsertAfter(int u, int x, int v, PrinsEncoding parent, PrinsEncoding child) {
+    private void InsertAfter(int u, int x, int v, PrinsEncodedSolution parent, PrinsEncodedSolution child) {
       int pi = 0;
       int ci = 0;
 
@@ -125,7 +125,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Prins {
     }
 
     //inserts u before v in the child
-    private void InsertBefore(int u, int v, PrinsEncoding parent, PrinsEncoding child) {
+    private void InsertBefore(int u, int v, PrinsEncodedSolution parent, PrinsEncodedSolution child) {
       int pi = 0;
       int ci = 0;
 
@@ -144,7 +144,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Prins {
     }
 
     //inserts (u, x) before v in the child
-    private void InsertBefore(int u, int x, int v, PrinsEncoding parent, PrinsEncoding child) {
+    private void InsertBefore(int u, int x, int v, PrinsEncodedSolution parent, PrinsEncodedSolution child) {
       int pi = 0;
       int ci = 0;
 
@@ -166,7 +166,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Prins {
     }
 
     //swaps u and v
-    private void Swap(int u, int v, PrinsEncoding parent, PrinsEncoding child) {
+    private void Swap(int u, int v, PrinsEncodedSolution parent, PrinsEncodedSolution child) {
       for (int i = 0; i < child.Length; i++) {
         if (parent[i] == u)
           child[i] = v;
@@ -178,7 +178,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Prins {
     }
 
     //swaps (u, x) and v
-    private void Swap(int u, int x, int v, PrinsEncoding parent, PrinsEncoding child) {
+    private void Swap(int u, int x, int v, PrinsEncodedSolution parent, PrinsEncodedSolution child) {
       int childIndex = 0;
       int parentIndex = 0;
 
@@ -200,7 +200,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Prins {
     }
 
     //swaps (u, x) and (v, y)
-    private void Swap(int u, int x, int v, int y, PrinsEncoding parent, PrinsEncoding child) {
+    private void Swap(int u, int x, int v, int y, PrinsEncodedSolution parent, PrinsEncodedSolution child) {
       int i = 0;
 
       while (i < child.Length) {
@@ -221,7 +221,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Prins {
     }
 
     //swaps (u, x) and (v, y) by (u, y) and (x, v)
-    private void Swap2(int u, int x, int v, int y, PrinsEncoding parent, PrinsEncoding child) {
+    private void Swap2(int u, int x, int v, int y, PrinsEncodedSolution parent, PrinsEncodedSolution child) {
       int i = 0;
 
       while (i < child.Length) {
@@ -239,7 +239,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Prins {
       }
     }
 
-    private void M1(PrinsEncoding parent, PrinsEncoding child, int u, int v) {
+    private void M1(PrinsEncodedSolution parent, PrinsEncodedSolution child, int u, int v) {
       if (u != depot) {
         if (v == depot) {
           Tour tour = FindTour(child, u + 1);
@@ -251,7 +251,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Prins {
       }
     }
 
-    private void M2(PrinsEncoding parent, PrinsEncoding child, int u, int v) {
+    private void M2(PrinsEncodedSolution parent, PrinsEncodedSolution child, int u, int v) {
       if (u != depot) {
         Tour tour = FindTour(child, u + 1);
         int iu = tour.Stops.IndexOf(u + 1);
@@ -269,7 +269,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Prins {
       }
     }
 
-    private void M3(PrinsEncoding parent, PrinsEncoding child, int u, int v) {
+    private void M3(PrinsEncodedSolution parent, PrinsEncodedSolution child, int u, int v) {
       if (u != depot) {
         Tour tour = FindTour(child, u + 1);
         int iu = tour.Stops.IndexOf(u + 1);
@@ -287,13 +287,13 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Prins {
       }
     }
 
-    private void M4(PrinsEncoding parent, PrinsEncoding child, int u, int v) {
+    private void M4(PrinsEncodedSolution parent, PrinsEncodedSolution child, int u, int v) {
       if (u != depot && v != depot) {
         Swap(u, v, parent, child);
       }
     }
 
-    private void M5(PrinsEncoding parent, PrinsEncoding child, int u, int v) {
+    private void M5(PrinsEncodedSolution parent, PrinsEncodedSolution child, int u, int v) {
       if (u != depot && v != depot) {
         Tour tour = FindTour(child, u + 1);
         int iu = tour.Stops.IndexOf(u + 1);
@@ -306,7 +306,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Prins {
       }
     }
 
-    private void M6(PrinsEncoding parent, PrinsEncoding child, int u, int v) {
+    private void M6(PrinsEncodedSolution parent, PrinsEncodedSolution child, int u, int v) {
       if (u != depot && v != depot) {
         Tour tour = FindTour(child, u + 1);
         int iu = tour.Stops.IndexOf(u + 1);
@@ -325,7 +325,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Prins {
       }
     }
 
-    private void M7(PrinsEncoding parent, PrinsEncoding child, int u, int v) {
+    private void M7(PrinsEncodedSolution parent, PrinsEncodedSolution child, int u, int v) {
       if (u != depot && v != depot) {
         Tour tu = FindTour(child, u + 1);
         Tour tv = FindTour(child, v + 1);
@@ -347,7 +347,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Prins {
       }
     }
 
-    private void M8(PrinsEncoding parent, PrinsEncoding child, int u, int v) {
+    private void M8(PrinsEncodedSolution parent, PrinsEncodedSolution child, int u, int v) {
       if (u != depot && v != depot) {
         Tour tu = FindTour(child, u + 1);
         Tour tv = FindTour(child, v + 1);
@@ -369,7 +369,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Prins {
       }
     }
 
-    private void M9(PrinsEncoding parent, PrinsEncoding child, int u, int v) {
+    private void M9(PrinsEncodedSolution parent, PrinsEncodedSolution child, int u, int v) {
       if (u != depot && v != depot) {
         Tour tu = FindTour(child, u + 1);
         Tour tv = FindTour(child, v + 1);
@@ -391,60 +391,60 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Prins {
       }
     }
 
-    protected PrinsEncoding Manipulate(PrinsEncoding individual,
+    protected PrinsEncodedSolution Manipulate(PrinsEncodedSolution individual,
       double originalQuality, int u, int v) {
-      PrinsEncoding child = null;
+      PrinsEncodedSolution child = null;
       bool improvement = false;
 
       if (u != v) {
-        child = individual.Clone() as PrinsEncoding;
+        child = individual.Clone() as PrinsEncodedSolution;
         M1(individual, child, u, v);
         improvement = GetQuality(child) < originalQuality;
 
         if (!improvement) {
-          child = individual.Clone() as PrinsEncoding;
+          child = individual.Clone() as PrinsEncodedSolution;
           M2(individual, child, u, v);
           improvement = GetQuality(child) < originalQuality;
         }
 
         if (!improvement) {
-          child = individual.Clone() as PrinsEncoding;
+          child = individual.Clone() as PrinsEncodedSolution;
           M3(individual, child, u, v);
           improvement = GetQuality(child) < originalQuality;
         }
 
         if (!improvement) {
-          child = individual.Clone() as PrinsEncoding;
+          child = individual.Clone() as PrinsEncodedSolution;
           M4(individual, child, u, v);
           improvement = GetQuality(child) < originalQuality;
         }
 
         if (!improvement) {
-          child = individual.Clone() as PrinsEncoding;
+          child = individual.Clone() as PrinsEncodedSolution;
           M5(individual, child, u, v);
           improvement = GetQuality(child) < originalQuality;
         }
 
         if (!improvement) {
-          child = individual.Clone() as PrinsEncoding;
+          child = individual.Clone() as PrinsEncodedSolution;
           M6(individual, child, u, v);
           improvement = GetQuality(child) < originalQuality;
         }
 
         if (!improvement) {
-          child = individual.Clone() as PrinsEncoding;
+          child = individual.Clone() as PrinsEncodedSolution;
           M7(individual, child, u, v);
           improvement = GetQuality(child) < originalQuality;
         }
 
         if (!improvement) {
-          child = individual.Clone() as PrinsEncoding;
+          child = individual.Clone() as PrinsEncodedSolution;
           M8(individual, child, u, v);
           improvement = GetQuality(child) < originalQuality;
         }
 
         if (!improvement) {
-          child = individual.Clone() as PrinsEncoding;
+          child = individual.Clone() as PrinsEncodedSolution;
           M9(individual, child, u, v);
           improvement = GetQuality(child) < originalQuality;
         }

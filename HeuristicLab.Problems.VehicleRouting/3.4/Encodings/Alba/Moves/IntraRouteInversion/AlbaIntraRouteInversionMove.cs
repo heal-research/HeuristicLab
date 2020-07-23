@@ -31,7 +31,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
   [Item("AlbaIntraRouteInversionMove", "Item that describes an intra route inversion move on a VRP representation.  It is implemented as described in Alba, E. and Dorronsoro, B. (2004). Solving the Vehicle Routing Problem by Using Cellular Genetic Algorithms.")]
   [StorableType("F0A32074-2D3F-4236-A732-8C095FA5F64E")]
   public class AlbaIntraRouteInversionMove : TwoIndexMove, IVRPMove {
-    public IVRPEncoding Individual { get { return Permutation as AlbaEncoding; } }
+    public IVRPEncodedSolution Individual { get { return Permutation as AlbaEncodedSolution; } }
 
     [StorableConstructor]
     protected AlbaIntraRouteInversionMove(StorableConstructorFlag _) : base(_) { }
@@ -48,9 +48,9 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
       : base(index1, index2, null) {
     }
 
-    public AlbaIntraRouteInversionMove(int index1, int index2, AlbaEncoding permutation)
+    public AlbaIntraRouteInversionMove(int index1, int index2, AlbaEncodedSolution permutation)
       : base(index1, index2, null) {
-      this.Permutation = permutation.Clone() as AlbaEncoding;
+      this.Permutation = permutation.Clone() as AlbaEncodedSolution;
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {

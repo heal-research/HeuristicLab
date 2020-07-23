@@ -43,7 +43,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.GVR {
       : base(original, cloner) {
     }
 
-    protected override void Manipulate(IRandom random, GVREncoding individual) {
+    protected override void Manipulate(IRandom random, GVREncodedSolution individual) {
       Tour tour = individual.Tours[random.Next(individual.Tours.Count)];
       int breakPoint1 = random.Next(tour.Stops.Count);
       int length = random.Next(1, tour.Stops.Count - breakPoint1 + 1);

@@ -50,7 +50,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
       Parameters.Add(new ValueParameter<IntValue>("Length", "The maximum length of the replaced route.", new IntValue(1)));
     }
 
-    private static int SelectRandomTourBiasedByLength(IRandom random, PotvinEncoding individual) {
+    private static int SelectRandomTourBiasedByLength(IRandom random, PotvinEncodedSolution individual) {
       int tourIndex = -1;
 
       double sum = 0.0;
@@ -108,7 +108,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
       return sum / tours.Count;
     }
 
-    private int SelectCityBiasedByNeighborDistance(IRandom random, Tour tour, IVRPEncoding solution) {
+    private int SelectCityBiasedByNeighborDistance(IRandom random, Tour tour, IVRPEncodedSolution solution) {
       int cityIndex = -1;
 
       double sum = 0.0;
@@ -149,7 +149,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
     }
 
     private bool FindRouteInsertionPlace(
-      PotvinEncoding individual,
+      PotvinEncodedSolution individual,
       Tour tour,
       int city, bool allowInfeasible, out int place) {
       place = -1;
@@ -180,7 +180,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
       return place >= 0;
     }
 
-    private ICollection<int> GetUnrouted(PotvinEncoding solution, int cities) {
+    private ICollection<int> GetUnrouted(PotvinEncodedSolution solution, int cities) {
       HashSet<int> undiscovered = new HashSet<int>();
       for (int i = 1; i <= cities; i++) {
         undiscovered.Add(i);
@@ -194,14 +194,14 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
       return undiscovered;
     }
 
-    protected override PotvinEncoding Crossover(IRandom random, PotvinEncoding parent1, PotvinEncoding parent2) {
-      PotvinEncoding child = parent1.Clone() as PotvinEncoding;
+    protected override PotvinEncodedSolution Crossover(IRandom random, PotvinEncodedSolution parent1, PotvinEncodedSolution parent2) {
+      PotvinEncodedSolution child = parent1.Clone() as PotvinEncodedSolution;
       child.Tours.Clear();
 
       bool allowInfeasible = AllowInfeasibleSolutions.Value.Value;
 
       List<Tour> R1 = new List<Tour>();
-      PotvinEncoding p1Clone = parent1.Clone() as PotvinEncoding;
+      PotvinEncodedSolution p1Clone = parent1.Clone() as PotvinEncodedSolution;
 
       int length = Math.Min(Length.Value.Value, parent1.Tours.Count) + 1;
       int k = 1;
@@ -276,9 +276,9 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
         return child;
       else {
         if (random.NextDouble() < 0.5)
-          return parent1.Clone() as PotvinEncoding;
+          return parent1.Clone() as PotvinEncodedSolution;
         else
-          return parent2.Clone() as PotvinEncoding;
+          return parent2.Clone() as PotvinEncodedSolution;
       }
     }
   }

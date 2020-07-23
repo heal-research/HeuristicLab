@@ -72,7 +72,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
     protected override void EvaluateMove() {
       PotvinPDRearrangeMove move = PDRearrangeMoveParameter.ActualValue;
 
-      PotvinEncoding newSolution = PDRearrangeMoveParameter.ActualValue.Individual.Clone() as PotvinEncoding;
+      PotvinEncodedSolution newSolution = PDRearrangeMoveParameter.ActualValue.Individual.Clone() as PotvinEncodedSolution;
       PotvinPDRearrangeMoveMaker.Apply(newSolution, move, ProblemInstance);
 
       UpdateEvaluation(newSolution);

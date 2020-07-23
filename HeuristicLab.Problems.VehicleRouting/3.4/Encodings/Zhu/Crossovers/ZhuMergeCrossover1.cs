@@ -44,7 +44,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Zhu {
       : base(original, cloner) {
     }
 
-    private void Swap(ZhuEncoding individual, int city1, int city2) {
+    private void Swap(ZhuEncodedSolution individual, int city1, int city2) {
       int index1 = individual.IndexOf(city1);
       int index2 = individual.IndexOf(city2);
 
@@ -53,11 +53,11 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Zhu {
       individual[index2] = temp;
     }
 
-    protected override ZhuEncoding Crossover(IRandom random, ZhuEncoding parent1, ZhuEncoding parent2) {
-      parent1 = parent1.Clone() as ZhuEncoding;
-      parent2 = parent2.Clone() as ZhuEncoding;
+    protected override ZhuEncodedSolution Crossover(IRandom random, ZhuEncodedSolution parent1, ZhuEncodedSolution parent2) {
+      parent1 = parent1.Clone() as ZhuEncodedSolution;
+      parent2 = parent2.Clone() as ZhuEncodedSolution;
 
-      ZhuEncoding child = parent2.Clone() as ZhuEncoding;
+      ZhuEncodedSolution child = parent2.Clone() as ZhuEncodedSolution;
 
       if (parent1.Length != parent2.Length)
         return child;

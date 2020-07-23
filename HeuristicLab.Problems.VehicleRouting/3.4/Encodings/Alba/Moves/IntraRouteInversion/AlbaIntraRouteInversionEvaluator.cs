@@ -54,7 +54,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
     }
 
     protected override void EvaluateMove() {
-      AlbaEncoding newSolution = IntraRouteInversionMoveParameter.ActualValue.Permutation.Clone() as AlbaEncoding;
+      AlbaEncodedSolution newSolution = IntraRouteInversionMoveParameter.ActualValue.Permutation.Clone() as AlbaEncodedSolution;
       AlbaIntraRouteInversionMoveMaker.Apply(newSolution, IntraRouteInversionMoveParameter.ActualValue);
 
       UpdateEvaluation(newSolution);

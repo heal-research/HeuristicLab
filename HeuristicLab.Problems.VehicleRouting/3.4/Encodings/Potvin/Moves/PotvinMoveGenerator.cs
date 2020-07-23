@@ -41,9 +41,9 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
     }
 
     public override IOperation InstrumentedApply() {
-      IVRPEncoding solution = VRPToursParameter.ActualValue;
-      if (!(solution is PotvinEncoding)) {
-        VRPToursParameter.ActualValue = PotvinEncoding.ConvertFrom(solution, ProblemInstance);
+      IVRPEncodedSolution solution = VRPToursParameter.ActualValue;
+      if (!(solution is PotvinEncodedSolution)) {
+        VRPToursParameter.ActualValue = PotvinEncodedSolution.ConvertFrom(solution, ProblemInstance);
       }
 
       return base.InstrumentedApply();

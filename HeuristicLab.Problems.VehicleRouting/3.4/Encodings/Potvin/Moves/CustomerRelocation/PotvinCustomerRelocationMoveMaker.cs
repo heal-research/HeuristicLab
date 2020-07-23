@@ -67,7 +67,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
       : base(original, cloner) {
     }
 
-    public static void Apply(PotvinEncoding solution, PotvinCustomerRelocationMove move, IVRPProblemInstance problemInstance) {
+    public static void Apply(PotvinEncodedSolution solution, PotvinCustomerRelocationMove move, IVRPProblemInstance problemInstance) {
       if (move.Tour >= solution.Tours.Count)
         solution.Tours.Add(new Tour());
       Tour tour = solution.Tours[move.Tour];
@@ -86,7 +86,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
     protected override void PerformMove() {
       PotvinCustomerRelocationMove move = CustomerRelocationMoveParameter.ActualValue;
 
-      PotvinEncoding newSolution = move.Individual.Clone() as PotvinEncoding;
+      PotvinEncodedSolution newSolution = move.Individual.Clone() as PotvinEncodedSolution;
       Apply(newSolution, move, ProblemInstance);
       newSolution.Repair();
       VRPToursParameter.ActualValue = newSolution;

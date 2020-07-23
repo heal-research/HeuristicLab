@@ -19,16 +19,17 @@
  */
 #endregion
 
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HEAL.Attic;
+using HeuristicLab.Optimization;
 using HeuristicLab.Problems.VehicleRouting.Encodings.General;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
   [Item("AlbaCreator", "A VRP creator.")]
   [StorableType("95DC1B24-02C9-4AF0-8A00-21A47AFB9E39")]
-  public abstract class AlbaCreator : VRPCreator, IAlbaOperator, IVRPCreator {
+  public abstract class AlbaCreator : VRPCreator, IAlbaOperator, IVRPCreator, ISolutionCreator<AlbaEncodedSolution> {
     public override bool CanChangeName {
       get { return false; }
     }
@@ -45,7 +46,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
     }
 
     public override IOperation InstrumentedApply() {
-      (VRPToursParameter.ActualValue as AlbaEncoding).Repair();
+      (VRPToursParameter.ActualValue as AlbaEncodedSolution).Repair();
 
       return base.InstrumentedApply();
     }

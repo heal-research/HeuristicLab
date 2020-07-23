@@ -49,11 +49,11 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
       : base(original, cloner) {
     }
 
-    protected override AlbaEncoding Crossover(IRandom random, AlbaEncoding parent1, AlbaEncoding parent2) {
+    protected override AlbaEncodedSolution Crossover(IRandom random, AlbaEncodedSolution parent1, AlbaEncodedSolution parent2) {
       //note - the inner crossover is called here and the result is converted to an alba representation
       //some refactoring should be done here in the future - the crossover operation should be called directly
       if (parent1.Length != parent2.Length)
-        return parent1.Clone() as AlbaEncoding;
+        return parent1.Clone() as AlbaEncodedSolution;
 
       InnerCrossoverParameter.ActualValue.ParentsParameter.ActualName = ParentsParameter.ActualName;
       IAtomicOperation op = this.ExecutionContext.CreateOperation(
@@ -65,7 +65,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
         Permutation permutation = ExecutionContext.Scope.Variables[childName].Value as Permutation;
         ExecutionContext.Scope.Variables.Remove(childName);
 
-        return new AlbaEncoding(permutation, ProblemInstance);
+        return new AlbaEncodedSolution(permutation, ProblemInstance);
       } else
         return null;
     }

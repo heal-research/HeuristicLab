@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Threading;
 using HEAL.Attic;
 using HeuristicLab.Analysis;
 using HeuristicLab.Common;
@@ -43,37 +44,18 @@ namespace HeuristicLab.Problems.VehicleRouting {
   [Item("Vehicle Routing Problem (VRP)", "Represents a Vehicle Routing Problem.")]
   [Creatable(CreatableAttribute.Categories.CombinatorialProblems, Priority = 110)]
   [StorableType("95137523-AE3B-4638-958C-E86829D54CE3")]
-  public sealed class VehicleRoutingProblem : EncodedProblem, ISingleObjectiveHeuristicOptimizationProblem, IStorableContent, IProblemInstanceConsumer<IVRPData> {
-    public string Filename { get; set; }
+  public sealed class VehicleRoutingProblem : SingleObjectiveProblem<AlbaEncoding, AlbaEncodedSolution>, IProblemInstanceConsumer<IVRPData> {
 
     public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Type; }
     }
 
     #region Parameter Properties
-    public ValueParameter<BoolValue> MaximizationParameter {
-      get { return (ValueParameter<BoolValue>)Parameters["Maximization"]; }
-    }
-    IParameter ISingleObjectiveHeuristicOptimizationProblem.MaximizationParameter {
-      get { return MaximizationParameter; }
-    }
     public ValueParameter<IVRPProblemInstance> ProblemInstanceParameter {
       get { return (ValueParameter<IVRPProblemInstance>)Parameters["ProblemInstance"]; }
     }
-    public OptionalValueParameter<DoubleValue> BestKnownQualityParameter {
-      get { return (OptionalValueParameter<DoubleValue>)Parameters["BestKnownQuality"]; }
-    }
-    IParameter ISingleObjectiveHeuristicOptimizationProblem.BestKnownQualityParameter {
-      get { return BestKnownQualityParameter; }
-    }
     public OptionalValueParameter<VRPSolution> BestKnownSolutionParameter {
       get { return (OptionalValueParameter<VRPSolution>)Parameters["BestKnownSolution"]; }
-    }
-    public IValueParameter<IVRPEvaluator> EvaluatorParameter {
-      get { return (IValueParameter<IVRPEvaluator>)Parameters["Evaluator"]; }
-    }
-    IParameter IHeuristicOptimizationProblem.EvaluatorParameter {
-      get { return EvaluatorParameter; }
     }
     #endregion
 
@@ -87,41 +69,20 @@ namespace HeuristicLab.Problems.VehicleRouting {
       get { return BestKnownSolutionParameter.Value; }
       set { BestKnownSolutionParameter.Value = value; }
     }
-
-    public DoubleValue BestKnownQuality {
-      get { return BestKnownQualityParameter.Value; }
-      set { BestKnownQualityParameter.Value = value; }
-    }
-
-    public ISingleObjectiveEvaluator Evaluator {
-      get { return EvaluatorParameter.Value; }
-    }
-
-    IEvaluator IHeuristicOptimizationProblem.Evaluator {
-      get { return this.Evaluator; }
-    }
     #endregion
 
     [StorableConstructor]
     private VehicleRoutingProblem(StorableConstructorFlag _) : base(_) { }
     public VehicleRoutingProblem()
-      : base() {
-      Parameters.Add(new ValueParameter<BoolValue>("Maximization", "Set to false as the Vehicle Routing Problem is a minimization problem.", new BoolValue(false)));
+      : base(new AlbaEncoding()) {
       Parameters.Add(new ValueParameter<IVRPProblemInstance>("ProblemInstance", "The VRP problem instance"));
-      Parameters.Add(new OptionalValueParameter<DoubleValue>("BestKnownQuality", "The quality of the best known solution of this VRP instance."));
       Parameters.Add(new OptionalValueParameter<VRPSolution>("BestKnownSolution", "The best known solution of this VRP instance."));
-
-      Parameters.Add(new ValueParameter<IVRPEvaluator>("Evaluator", "The operator which should be used to evaluate VRP solutions."));
-
-      EvaluatorParameter.Hidden = true;
 
       InitializeRandomVRPInstance();
       InitializeOperators();
 
       AttachEventHandlers();
       AttachProblemInstanceEventHandlers();
-
-      EvaluatorParameter.Value = ProblemInstance.SolutionEvaluator;
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -133,25 +94,17 @@ namespace HeuristicLab.Problems.VehicleRouting {
       : base(original, cloner) {
       this.AttachEventHandlers();
       this.AttachProblemInstanceEventHandlers();
-
-      ProblemInstance.SolutionEvaluator = EvaluatorParameter.Value;
     }
 
-    #region Events
-    public event EventHandler EvaluatorChanged;
-    private void OnEvaluatorChanged() {
-      EventHandler handler = EvaluatorChanged;
-      if (handler != null) handler(this, EventArgs.Empty);
+    public override ISingleObjectiveEvaluationResult Evaluate(AlbaEncodedSolution solution, IRandom random, CancellationToken cancellationToken) {
+      return new SingleObjectiveEvaluationResult(ProblemInstance.Evaluate(solution).Quality);
     }
-    #endregion
 
     #region Helpers
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
       AttachEventHandlers();
       AttachProblemInstanceEventHandlers();
-
-      ProblemInstance.SolutionEvaluator = EvaluatorParameter.Value;
     }
 
     [Storable(OldName = "operators")]
@@ -162,7 +115,6 @@ namespace HeuristicLab.Problems.VehicleRouting {
     private void AttachEventHandlers() {
       ProblemInstanceParameter.ValueChanged += new EventHandler(ProblemInstanceParameter_ValueChanged);
       BestKnownSolutionParameter.ValueChanged += new EventHandler(BestKnownSolutionParameter_ValueChanged);
-      EvaluatorParameter.ValueChanged += new EventHandler(EvaluatorParameter_ValueChanged);
     }
 
     private void AttachProblemInstanceEventHandlers() {
@@ -175,10 +127,10 @@ namespace HeuristicLab.Problems.VehicleRouting {
       if (BestKnownSolution == null) return;
       try {
         //call evaluator
-        BestKnownQuality = new DoubleValue(ProblemInstance.Evaluate(BestKnownSolution.Solution).Quality);
-        BestKnownSolution.Quality = BestKnownQuality;
+        BestKnownQuality = ProblemInstance.Evaluate(BestKnownSolution.Solution).Quality;
+        BestKnownSolution.Quality = new DoubleValue(BestKnownQuality);
       } catch {
-        BestKnownQuality = null;
+        BestKnownQuality = double.NaN;
         BestKnownSolution = null;
       }
     }
@@ -188,7 +140,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
     }
 
     void ProblemInstance_EvaluationChanged(object sender, EventArgs e) {
-      BestKnownQuality = null;
+      BestKnownQuality = double.NaN;
       if (BestKnownSolution != null) {
         // the tour is not valid if there are more vehicles in it than allowed
         if (ProblemInstance.Vehicles.Value < BestKnownSolution.Solution.GetTours().Count) {
@@ -201,9 +153,6 @@ namespace HeuristicLab.Problems.VehicleRouting {
       InitializeOperators();
       AttachProblemInstanceEventHandlers();
 
-      EvaluatorParameter.Value = ProblemInstance.SolutionEvaluator;
-
-      OnEvaluatorChanged();
       OnOperatorsChanged();
     }
 
@@ -213,15 +162,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
       ProblemInstance = instance;
       AttachProblemInstanceEventHandlers();
 
-      OnEvaluatorChanged();
-
       ProblemInstanceParameter.ValueChanged += new EventHandler(ProblemInstanceParameter_ValueChanged);
-    }
-
-    private void EvaluatorParameter_ValueChanged(object sender, EventArgs e) {
-      if (ProblemInstance != null)
-        ProblemInstance.SolutionEvaluator = EvaluatorParameter.Value;
-      OnEvaluatorChanged();
     }
 
     private void InitializeOperators() {
@@ -246,16 +187,21 @@ namespace HeuristicLab.Problems.VehicleRouting {
           solutionCreatorParameter.Value = defaultCreator;*/
       }
 
-      ParameterizeOperators();
+      Parameterize();
     }
 
-    private void ParameterizeOperators() {
+    protected override void ParameterizeOperators() {
+      base.ParameterizeOperators();
+      Parameterize();
+    }
+
+    private void Parameterize() {
       foreach (IOperator op in Operators.OfType<IOperator>()) {
         if (op is IMultiVRPOperator) {
           (op as IMultiVRPOperator).SetOperators(Operators.OfType<IOperator>());
         }
       }
-      if (ProblemInstance != null) {
+      if (Parameters.ContainsKey("ProblemInstance") && ProblemInstance != null) {
         foreach (ISingleObjectiveImprovementOperator op in Operators.OfType<ISingleObjectiveImprovementOperator>()) {
           //op.SolutionParameter.ActualName = SolutionCreator.VRPToursParameter.ActualName;
           op.SolutionParameter.Hidden = true;
@@ -314,7 +260,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
       SolutionParser parser = new SolutionParser(solutionFileName);
       parser.Parse();
 
-      HeuristicLab.Problems.VehicleRouting.Encodings.Potvin.PotvinEncoding encoding = new Encodings.Potvin.PotvinEncoding(ProblemInstance);
+      HeuristicLab.Problems.VehicleRouting.Encodings.Potvin.PotvinEncodedSolution encoding = new Encodings.Potvin.PotvinEncodedSolution(ProblemInstance);
 
       int cities = 0;
       foreach (List<int> route in parser.Routes) {
@@ -340,7 +286,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
       Name = instance.Name;
       Description = instance.Description;
 
-      BestKnownQuality = null;
+      BestKnownQuality = double.NaN;
       BestKnownSolution = null;
 
       if (ProblemInstance != null && instance.ProblemInstance != null &&
@@ -352,7 +298,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
       OnReset();
 
       if (instance.BestKnownQuality != null) {
-        BestKnownQuality = new DoubleValue((double)instance.BestKnownQuality);
+        BestKnownQuality = instance.BestKnownQuality ?? double.NaN;
       }
 
       if (instance.BestKnownSolution != null) {
@@ -382,7 +328,6 @@ namespace HeuristicLab.Problems.VehicleRouting {
       var interpreterInterface = interfaces.Single(i => typeof(IVRPDataInterpreter).IsAssignableFrom(i));
       return interpreterInterface.GetGenericArguments()[0];
     }
-
     #endregion
   }
 }

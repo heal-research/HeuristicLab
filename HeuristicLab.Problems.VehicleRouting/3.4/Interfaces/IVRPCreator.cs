@@ -26,6 +26,6 @@ using HEAL.Attic;
 namespace HeuristicLab.Problems.VehicleRouting.Interfaces {
   [StorableType("36C4F904-7B59-4C09-81C4-BC07D9ABC496")]
   public interface IVRPCreator : IVRPOperator, ISolutionCreator {
-    ILookupParameter<IVRPEncoding> VRPToursParameter { get; }
+    ILookupParameter<IVRPEncodedSolution> VRPToursParameter { get; }
   }
 }

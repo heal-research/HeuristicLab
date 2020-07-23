@@ -43,8 +43,8 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
       get { return true; }
     }
 
-    public ILookupParameter<IVRPEncoding> VRPToursParameter {
-      get { return (ILookupParameter<IVRPEncoding>)Parameters["VRPTours"]; }
+    public ILookupParameter<IVRPEncodedSolution> VRPToursParameter {
+      get { return (ILookupParameter<IVRPEncodedSolution>)Parameters["VRPTours"]; }
     }
 
 
@@ -57,7 +57,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
     public MultiVRPSolutionManipulator()
       : base() {
       Parameters.Add(new LookupParameter<IVRPProblemInstance>("ProblemInstance", "The VRP problem instance"));
-      Parameters.Add(new LookupParameter<IVRPEncoding>("VRPTours", "The VRP tours to be manipulated."));
+      Parameters.Add(new LookupParameter<IVRPEncodedSolution>("VRPTours", "The VRP tours to be manipulated."));
 
       SelectedOperatorParameter.ActualName = "SelectedManipulationOperator";
     }

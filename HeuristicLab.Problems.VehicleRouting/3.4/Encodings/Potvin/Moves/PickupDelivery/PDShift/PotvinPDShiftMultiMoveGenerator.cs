@@ -58,7 +58,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
       : base(original, cloner) {
     }
 
-    protected override PotvinPDShiftMove[] GenerateMoves(PotvinEncoding individual, IVRPProblemInstance problemInstance) {
+    protected override PotvinPDShiftMove[] GenerateMoves(PotvinEncodedSolution individual, IVRPProblemInstance problemInstance) {
       List<PotvinPDShiftMove> result = new List<PotvinPDShiftMove>();
 
       for (int i = 0; i < SampleSizeParameter.ActualValue.Value; i++) {

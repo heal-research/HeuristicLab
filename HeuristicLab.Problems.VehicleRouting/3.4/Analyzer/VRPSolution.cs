@@ -52,8 +52,8 @@ namespace HeuristicLab.Problems.VehicleRouting {
       }
     }
     [Storable]
-    private IVRPEncoding solution;
-    public IVRPEncoding Solution {
+    private IVRPEncodedSolution solution;
+    public IVRPEncodedSolution Solution {
       get { return solution; }
       set {
         if (solution != value) {
@@ -80,7 +80,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
 
     public VRPSolution() : base() { }
 
-    public VRPSolution(IVRPProblemInstance problemInstance, IVRPEncoding solution, DoubleValue quality)
+    public VRPSolution(IVRPProblemInstance problemInstance, IVRPEncodedSolution solution, DoubleValue quality)
       : base() {
       this.problemInstance = problemInstance;
       this.solution = solution;
@@ -105,7 +105,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
 
     private VRPSolution(VRPSolution original, Cloner cloner)
       : base(original, cloner) {
-      this.solution = (IVRPEncoding)cloner.Clone(original.solution);
+      this.solution = (IVRPEncodedSolution)cloner.Clone(original.solution);
       this.quality = (DoubleValue)cloner.Clone(original.quality);
 
       if (original.ProblemInstance != null && cloner.ClonedObjectRegistered(original.ProblemInstance))

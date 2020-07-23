@@ -29,7 +29,7 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
   [Item("SingleDepotVRPEvaluator", "Represents a single depot VRP evaluator.")]
   [StorableType("1E0DECD9-54BF-4F69-A743-228C481749A0")]
   public class SingleDepotVRPEvaluator : VRPEvaluator {
-    protected override void EvaluateTour(VRPEvaluation eval, IVRPProblemInstance instance, Tour tour, IVRPEncoding solution) {
+    protected override void EvaluateTour(VRPEvaluation eval, IVRPProblemInstance instance, Tour tour, IVRPEncodedSolution solution) {
       TourInsertionInfo tourInfo = new TourInsertionInfo(solution.GetVehicleAssignment(solution.GetTourIndex(tour)));
       eval.InsertionInfo.AddTourInsertionInfo(tourInfo);
 
@@ -65,7 +65,7 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
       eval.Quality += quality;
     }
 
-    protected override double GetTourInsertionCosts(IVRPProblemInstance instance, IVRPEncoding solution, TourInsertionInfo tourInsertionInfo, int index, int customer,
+    protected override double GetTourInsertionCosts(IVRPProblemInstance instance, IVRPEncodedSolution solution, TourInsertionInfo tourInsertionInfo, int index, int customer,
       out bool feasible) {
       StopInsertionInfo insertionInfo = tourInsertionInfo.GetStopInsertionInfo(index);
 

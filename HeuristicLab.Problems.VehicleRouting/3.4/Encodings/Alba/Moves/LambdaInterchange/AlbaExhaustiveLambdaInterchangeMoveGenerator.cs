@@ -46,7 +46,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
       : base(original, cloner) {
     }
 
-    protected override AlbaLambdaInterchangeMove[] GenerateMoves(AlbaEncoding individual, IVRPProblemInstance problemInstance, int lambda) {
+    protected override AlbaLambdaInterchangeMove[] GenerateMoves(AlbaEncodedSolution individual, IVRPProblemInstance problemInstance, int lambda) {
       List<AlbaLambdaInterchangeMove> moves = new List<AlbaLambdaInterchangeMove>();
 
       List<Tour> tours = individual.GetTours();

@@ -75,8 +75,8 @@ namespace HeuristicLab.Problems.VehicleRouting {
     }
 
     public override IOperation InstrumentedApply() {
-      var solution = SolutionParameter.ActualValue as IVRPEncoding;
-      var potvinSolution = solution is PotvinEncoding ? solution as PotvinEncoding : PotvinEncoding.ConvertFrom(solution, ProblemInstance);
+      var solution = SolutionParameter.ActualValue as IVRPEncodedSolution;
+      var potvinSolution = solution is PotvinEncodedSolution ? solution as PotvinEncodedSolution : PotvinEncodedSolution.ConvertFrom(solution, ProblemInstance);
 
       if (solution == null)
         throw new ArgumentException("Cannot improve solution because it has the wrong type.");
@@ -89,6 +89,6 @@ namespace HeuristicLab.Problems.VehicleRouting {
       return base.InstrumentedApply();
     }
 
-    protected abstract int Improve(PotvinEncoding solution);
+    protected abstract int Improve(PotvinEncodedSolution solution);
   }
 }

@@ -20,18 +20,18 @@
 #endregion
 
 using System.Collections.Generic;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.PermutationEncoding;
-using HEAL.Attic;
 using HeuristicLab.Problems.VehicleRouting.Encodings.General;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 using HeuristicLab.Problems.VehicleRouting.ProblemInstances;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
-  [Item("PotvinEncoding", "Represents a potvin encoding of VRP solutions. It is implemented as described in Potvin, J.-Y. and Bengio, S. (1996). The Vehicle Routing Problem with Time Windows - Part II: Genetic Search. INFORMS Journal of Computing, 8:165–172.")]
+  [Item("PotvinEncodedSolution", "Represents a potvin encoded solution of the VRP. It is implemented as described in Potvin, J.-Y. and Bengio, S. (1996). The Vehicle Routing Problem with Time Windows - Part II: Genetic Search. INFORMS Journal of Computing, 8:165–172.")]
   [StorableType("A998C6C9-BCB3-46B7-B035-D7E76BE70184")]
-  public class PotvinEncoding : TourEncoding {
+  public class PotvinEncodedSolution : TourEncoding {
     [Storable]
     public List<int> Unrouted { get; set; }
 
@@ -39,21 +39,21 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
     [Storable]
     public Permutation VehicleAssignment { get; private set; }
 
-    public PotvinEncoding(IVRPProblemInstance instance)
+    public PotvinEncodedSolution(IVRPProblemInstance instance)
       : base(instance) {
       Unrouted = new List<int>();
       VehicleAssignment = new Permutation(PermutationTypes.Absolute, instance.Vehicles.Value);
     }
 
     [StorableConstructor]
-    protected PotvinEncoding(StorableConstructorFlag _) : base(_) {
+    protected PotvinEncodedSolution(StorableConstructorFlag _) : base(_) {
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new PotvinEncoding(this, cloner);
+      return new PotvinEncodedSolution(this, cloner);
     }
 
-    protected PotvinEncoding(PotvinEncoding original, Cloner cloner)
+    protected PotvinEncodedSolution(PotvinEncodedSolution original, Cloner cloner)
       : base(original, cloner) {
       this.Unrouted = new List<int>(original.Unrouted);
       this.VehicleAssignment = cloner.Clone<Permutation>(original.VehicleAssignment);
@@ -92,8 +92,8 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
       return VehicleAssignment[tour];
     }
 
-    public static PotvinEncoding ConvertFrom(IVRPEncoding encoding, IVRPProblemInstance instance) {
-      PotvinEncoding solution = new PotvinEncoding(instance);
+    public static PotvinEncodedSolution ConvertFrom(IVRPEncodedSolution encoding, IVRPProblemInstance instance) {
+      PotvinEncodedSolution solution = new PotvinEncodedSolution(instance);
 
       TourEncoding.ConvertFrom(encoding, solution, instance);
 
@@ -124,8 +124,8 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
       return solution;
     }
 
-    public static PotvinEncoding ConvertFrom(List<int> route, IVRPProblemInstance instance) {
-      PotvinEncoding solution = new PotvinEncoding(instance);
+    public static PotvinEncodedSolution ConvertFrom(List<int> route, IVRPProblemInstance instance) {
+      PotvinEncodedSolution solution = new PotvinEncodedSolution(instance);
 
       solution.Tours = new ItemList<Tour>();
 

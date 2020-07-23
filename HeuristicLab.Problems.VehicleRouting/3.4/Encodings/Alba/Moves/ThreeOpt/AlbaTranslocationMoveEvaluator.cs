@@ -58,7 +58,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
     protected override void EvaluateMove() {
       TranslocationMove move = TranslocationMoveParameter.ActualValue;
       //perform move
-      AlbaEncoding newSolution = move.Permutation.Clone() as AlbaEncoding;
+      AlbaEncodedSolution newSolution = move.Permutation.Clone() as AlbaEncodedSolution;
       TranslocationManipulator.Apply(newSolution, move.Index1, move.Index2, move.Index3);
 
       UpdateEvaluation(newSolution);

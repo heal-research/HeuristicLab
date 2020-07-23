@@ -49,7 +49,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Zhu {
       : base(original, cloner) {
     }
 
-    protected override void Manipulate(IRandom random, ZhuEncoding individual) {
+    protected override void Manipulate(IRandom random, ZhuEncodedSolution individual) {
       InnerManipulatorParameter.ActualValue.PermutationParameter.ActualName = VRPToursParameter.ActualName;
 
       IAtomicOperation op = this.ExecutionContext.CreateOperation(

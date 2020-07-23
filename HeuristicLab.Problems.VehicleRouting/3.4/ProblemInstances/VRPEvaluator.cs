@@ -31,8 +31,8 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
   [Item("VRPEvaluator", "Represents a VRP evaluator.")]
   [StorableType("164315D4-BCCF-4A79-B75B-11A49C56C5E1")]
   public abstract class VRPEvaluator : VRPOperator, IVRPEvaluator {
-    public ILookupParameter<IVRPEncoding> VRPToursParameter {
-      get { return (ILookupParameter<IVRPEncoding>)Parameters["VRPTours"]; }
+    public ILookupParameter<IVRPEncodedSolution> VRPToursParameter {
+      get { return (ILookupParameter<IVRPEncodedSolution>)Parameters["VRPTours"]; }
     }
 
     #region ISingleObjectiveEvaluator Members
@@ -56,7 +56,7 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
     protected VRPEvaluator(StorableConstructorFlag _) : base(_) { }
 
     public VRPEvaluator() {
-      Parameters.Add(new LookupParameter<IVRPEncoding>("VRPTours", "The VRP tours which should be evaluated."));
+      Parameters.Add(new LookupParameter<IVRPEncodedSolution>("VRPTours", "The VRP tours which should be evaluated."));
 
       Parameters.Add(new LookupParameter<DoubleValue>("Quality", "The evaluated quality of the VRP solution."));
       Parameters.Add(new LookupParameter<DoubleValue>("Distance", "The distance."));
@@ -73,7 +73,7 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
       return new VRPEvaluation();
     }
 
-    protected abstract void EvaluateTour(VRPEvaluation eval, IVRPProblemInstance instance, Tour tour, IVRPEncoding solution);
+    protected abstract void EvaluateTour(VRPEvaluation eval, IVRPProblemInstance instance, Tour tour, IVRPEncodedSolution solution);
 
     protected virtual void InitResultParameters() {
       QualityParameter.ActualValue = new DoubleValue(0);
@@ -95,9 +95,9 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
       return evaluation.Penalty < double.Epsilon;
     }
 
-    protected abstract double GetTourInsertionCosts(IVRPProblemInstance instance, IVRPEncoding solution, TourInsertionInfo tourInsertionInfo, int index, int customer, out bool feasible);
+    protected abstract double GetTourInsertionCosts(IVRPProblemInstance instance, IVRPEncodedSolution solution, TourInsertionInfo tourInsertionInfo, int index, int customer, out bool feasible);
 
-    public double GetInsertionCosts(IVRPProblemInstance instance, IVRPEncoding solution, VRPEvaluation eval, int customer, int tour, int index, out bool feasible) {
+    public double GetInsertionCosts(IVRPProblemInstance instance, IVRPEncodedSolution solution, VRPEvaluation eval, int customer, int tour, int index, out bool feasible) {
       bool tourFeasible;
       double costs = GetTourInsertionCosts(
         instance,
@@ -111,13 +111,13 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
       return costs;
     }
 
-    public VRPEvaluation EvaluateTour(IVRPProblemInstance instance, Tour tour, IVRPEncoding solution) {
+    public VRPEvaluation EvaluateTour(IVRPProblemInstance instance, Tour tour, IVRPEncodedSolution solution) {
       VRPEvaluation evaluation = CreateTourEvaluation();
       EvaluateTour(evaluation, instance, tour, solution);
       return evaluation;
     }
 
-    public virtual VRPEvaluation Evaluate(IVRPProblemInstance instance, IVRPEncoding solution) {
+    public virtual VRPEvaluation Evaluate(IVRPProblemInstance instance, IVRPEncodedSolution solution) {
       VRPEvaluation evaluation = CreateTourEvaluation();
 
       foreach (Tour tour in solution.GetTours()) {
@@ -131,7 +131,7 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
       InitResultParameters();
 
       VRPEvaluation evaluation = CreateTourEvaluation();
-      IVRPEncoding solution = VRPToursParameter.ActualValue;
+      IVRPEncodedSolution solution = VRPToursParameter.ActualValue;
       foreach (Tour tour in solution.GetTours()) {
         EvaluateTour(evaluation, ProblemInstance, tour, solution);
       }

@@ -45,7 +45,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
       : base(original, cloner) {
     }
 
-    protected override AlbaIntraRouteInversionMove[] GenerateMoves(AlbaEncoding individual, IVRPProblemInstance problemInstance) {
+    protected override AlbaIntraRouteInversionMove[] GenerateMoves(AlbaEncodedSolution individual, IVRPProblemInstance problemInstance) {
       List<AlbaIntraRouteInversionMove> moves = new List<AlbaIntraRouteInversionMove>();
 
       int currentTourStart = 0;

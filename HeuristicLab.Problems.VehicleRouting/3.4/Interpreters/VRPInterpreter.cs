@@ -28,9 +28,9 @@ namespace HeuristicLab.Problems.VehicleRouting.Interpreters {
   public abstract class VRPInterpreter : IVRPDataInterpreter<IVRPData> {
     protected abstract void Interpret(IVRPData data, IVRPProblemInstance problemInstance);
 
-    protected virtual IVRPEncoding GetBestKnowTour(IVRPData data, IVRPProblemInstance problemInstance) {
+    protected virtual IVRPEncodedSolution GetBestKnowTour(IVRPData data, IVRPProblemInstance problemInstance) {
       if (data.BestKnownTour != null) {
-        PotvinEncoding solution = new PotvinEncoding(problemInstance);
+        PotvinEncodedSolution solution = new PotvinEncodedSolution(problemInstance);
 
         for (int i = 0; i < data.BestKnownTour.GetLength(0); i++) {
           Tour tour = new Tour();

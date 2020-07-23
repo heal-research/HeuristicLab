@@ -29,8 +29,8 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
   [Item("VRPCreator", "Creates a VRP solution.")]
   [StorableType("E37923DB-8BA5-4FE3-956D-3D65AA18037C")]
   public abstract class VRPCreator : VRPOperator, IVRPCreator {
-    public ILookupParameter<IVRPEncoding> VRPToursParameter {
-      get { return (ILookupParameter<IVRPEncoding>)Parameters["VRPTours"]; }
+    public ILookupParameter<IVRPEncodedSolution> VRPToursParameter {
+      get { return (ILookupParameter<IVRPEncodedSolution>)Parameters["VRPTours"]; }
     }
 
     [StorableConstructor]
@@ -38,7 +38,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
 
     public VRPCreator()
       : base() {
-      Parameters.Add(new LookupParameter<IVRPEncoding>("VRPTours", "The VRP tours to be created."));
+      Parameters.Add(new LookupParameter<IVRPEncodedSolution>("VRPTours", "The VRP tours to be created."));
     }
 
     protected VRPCreator(VRPCreator original, Cloner cloner)

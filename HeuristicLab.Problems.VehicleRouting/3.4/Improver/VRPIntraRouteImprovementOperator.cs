@@ -41,7 +41,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
       return new VRPIntraRouteImprovementOperator(this, cloner);
     }
 
-    protected override int Improve(PotvinEncoding solution) {
+    protected override int Improve(PotvinEncodedSolution solution) {
       int evaluatedSolutions = 0;
 
       var rand = RandomParameter.ActualValue;

@@ -83,7 +83,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
     public override IOperation InstrumentedApply() {
       IOperation next = base.InstrumentedApply();
 
-      IVRPEncoding solution = VRPToursParameter.ActualValue;
+      IVRPEncodedSolution solution = VRPToursParameter.ActualValue;
 
       PermutationMoveOperatorParameter.PermutationParameter.ActualName = VRPToursParameter.ActualName;
       IAtomicOperation op = this.ExecutionContext.CreateChildOperation(PermutationMoveOperatorParameter);

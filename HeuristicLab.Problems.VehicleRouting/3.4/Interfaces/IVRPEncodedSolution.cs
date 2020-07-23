@@ -19,13 +19,16 @@
  */
 #endregion
 
+using System.Collections.Generic;
+using HEAL.Attic;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
-using HEAL.Attic;
 
 namespace HeuristicLab.Problems.VehicleRouting.Interfaces {
-  [StorableType("AC249F6E-B3A0-49C2-A582-811C132B4DAE")]
-  public interface IVRPManipulator : IVRPOperator, IManipulator {
-    ILookupParameter<IVRPEncodedSolution> VRPToursParameter { get; }
+  [StorableType("A8B95552-3A3D-43B3-95C3-B04602AEACF5")]
+  public interface IVRPEncodedSolution : IItem, IEncodedSolution {
+    List<Tour> GetTours();
+    int GetTourIndex(Tour tour);
+    int GetVehicleAssignment(int tour);
   }
 }

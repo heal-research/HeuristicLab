@@ -47,7 +47,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
     [StorableConstructor]
     protected Tour(StorableConstructorFlag _) : base(_) { }
 
-    public double GetTourLength(IVRPProblemInstance instance, IVRPEncoding solution) {
+    public double GetTourLength(IVRPProblemInstance instance, IVRPEncodedSolution solution) {
       double length = 0;
 
       if (Stops.Count > 0) {

@@ -53,7 +53,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
       : base(original, cloner) {
     }
 
-    public static PotvinPDExchangeMove Apply(PotvinEncoding individual, IVRPProblemInstance problemInstance, IRandom rand) {
+    public static PotvinPDExchangeMove Apply(PotvinEncodedSolution individual, IVRPProblemInstance problemInstance, IRandom rand) {
       List<int> cities = new List<int>();
 
       IPickupAndDeliveryProblemInstance pdp = problemInstance as IPickupAndDeliveryProblemInstance;
@@ -98,7 +98,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
       }
     }
 
-    protected override PotvinPDExchangeMove[] GenerateMoves(PotvinEncoding individual, IVRPProblemInstance problemInstance) {
+    protected override PotvinPDExchangeMove[] GenerateMoves(PotvinEncodedSolution individual, IVRPProblemInstance problemInstance) {
       List<PotvinPDExchangeMove> result = new List<PotvinPDExchangeMove>();
 
       PotvinPDExchangeMove move = Apply(individual, ProblemInstance, RandomParameter.ActualValue);

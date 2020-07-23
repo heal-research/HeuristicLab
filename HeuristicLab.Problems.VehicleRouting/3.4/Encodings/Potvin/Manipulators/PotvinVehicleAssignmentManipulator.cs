@@ -60,14 +60,14 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
     }
 
     public override IOperation InstrumentedApply() {
-      IVRPEncoding solution = VRPToursParameter.ActualValue;
-      if (!(solution is PotvinEncoding)) {
-        VRPToursParameter.ActualValue = PotvinEncoding.ConvertFrom(solution, ProblemInstance);
+      IVRPEncodedSolution solution = VRPToursParameter.ActualValue;
+      if (!(solution is PotvinEncodedSolution)) {
+        VRPToursParameter.ActualValue = PotvinEncodedSolution.ConvertFrom(solution, ProblemInstance);
       }
 
       OperationCollection next = new OperationCollection(base.InstrumentedApply());
 
-      VehicleAssignmentParameter.ActualValue = (VRPToursParameter.ActualValue as PotvinEncoding).VehicleAssignment;
+      VehicleAssignmentParameter.ActualValue = (VRPToursParameter.ActualValue as PotvinEncodedSolution).VehicleAssignment;
       VehicleAssignmentManipuator.Value.PermutationParameter.ActualName = VehicleAssignmentParameter.ActualName;
       next.Insert(0, ExecutionContext.CreateOperation(VehicleAssignmentManipuator.Value));
 

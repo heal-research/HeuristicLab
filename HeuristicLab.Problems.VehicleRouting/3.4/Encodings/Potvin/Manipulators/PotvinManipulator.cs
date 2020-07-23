@@ -52,9 +52,9 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
       : base(original, cloner) {
     }
 
-    protected abstract void Manipulate(IRandom random, PotvinEncoding individual);
+    protected abstract void Manipulate(IRandom random, PotvinEncodedSolution individual);
 
-    protected static int SelectRandomTourBiasedByLength(IRandom random, PotvinEncoding individual, IVRPProblemInstance instance) {
+    protected static int SelectRandomTourBiasedByLength(IRandom random, PotvinEncodedSolution individual, IVRPProblemInstance instance) {
       int tourIndex = -1;
 
       double sum = 0.0;
@@ -81,19 +81,19 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
       return tourIndex;
     }
 
-    protected static bool FindInsertionPlace(PotvinEncoding individual, int city, int routeToAvoid, bool allowInfeasible, out int route, out int place) {
+    protected static bool FindInsertionPlace(PotvinEncodedSolution individual, int city, int routeToAvoid, bool allowInfeasible, out int route, out int place) {
       return individual.FindInsertionPlace(
         city, routeToAvoid, allowInfeasible, out route, out place);
     }
 
     public override IOperation InstrumentedApply() {
-      IVRPEncoding solution = VRPToursParameter.ActualValue;
-      if (!(solution is PotvinEncoding)) {
-        VRPToursParameter.ActualValue = PotvinEncoding.ConvertFrom(solution, ProblemInstance);
+      IVRPEncodedSolution solution = VRPToursParameter.ActualValue;
+      if (!(solution is PotvinEncodedSolution)) {
+        VRPToursParameter.ActualValue = PotvinEncodedSolution.ConvertFrom(solution, ProblemInstance);
       }
 
-      Manipulate(RandomParameter.ActualValue, VRPToursParameter.ActualValue as PotvinEncoding);
-      (VRPToursParameter.ActualValue as PotvinEncoding).Repair();
+      Manipulate(RandomParameter.ActualValue, VRPToursParameter.ActualValue as PotvinEncodedSolution);
+      (VRPToursParameter.ActualValue as PotvinEncodedSolution).Repair();
 
       return base.InstrumentedApply();
     }

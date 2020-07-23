@@ -43,7 +43,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
       : base(original, cloner) {
     }
 
-    public static void Apply(AlbaEncoding individual, int index1, int index2) {
+    public static void Apply(AlbaEncodedSolution individual, int index1, int index2) {
       if (index1 != -1 && index2 != -1) {
         int breakPoint1 = index1 + 1;
         int breakPoint2 = index2;
@@ -55,7 +55,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
       }
     }
 
-    protected override void Manipulate(IRandom rand, AlbaEncoding individual) {
+    protected override void Manipulate(IRandom rand, AlbaEncodedSolution individual) {
       int index1 = -1;
       int index2 = -1;
 

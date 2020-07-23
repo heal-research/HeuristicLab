@@ -53,15 +53,15 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
       : base(original, cloner) {
     }
 
-    public static void Apply(AlbaEncoding solution, AlbaIntraRouteInversionMove move) {
+    public static void Apply(AlbaEncodedSolution solution, AlbaIntraRouteInversionMove move) {
       AlbaIntraRouteInversionManipulator.Apply(solution, move.Index1, move.Index2);
     }
 
     protected override void PerformMove() {
       AlbaIntraRouteInversionMove move = IntraRouteInversionMoveParameter.ActualValue;
 
-      Apply(move.Individual as AlbaEncoding, move);
-      VRPToursParameter.ActualValue = move.Individual as AlbaEncoding;
+      Apply(move.Individual as AlbaEncodedSolution, move);
+      VRPToursParameter.ActualValue = move.Individual as AlbaEncodedSolution;
     }
   }
 }

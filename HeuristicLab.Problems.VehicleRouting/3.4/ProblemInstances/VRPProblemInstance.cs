@@ -22,11 +22,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 using HeuristicLab.Problems.VehicleRouting.Encodings.General;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 
@@ -177,7 +177,6 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
       get {
         return evaluator;
       }
-
       set {
         lock (locker) {
           moveEvaluator = null;
@@ -187,7 +186,7 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
       }
     }
 
-    public virtual double GetDistance(int start, int end, IVRPEncoding solution) {
+    public virtual double GetDistance(int start, int end, IVRPEncodedSolution solution) {
       if (distanceMatrix == null && UseDistanceMatrix.Value) {
         distanceMatrix = DistanceMatrix ?? CreateDistanceMatrix();
       }
@@ -196,7 +195,7 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
       return CalculateDistance(start, end);
     }
 
-    public virtual double GetInsertionDistance(int start, int customer, int end, IVRPEncoding solution,
+    public virtual double GetInsertionDistance(int start, int customer, int end, IVRPEncodedSolution solution,
       out double startDistance, out double endDistance) {
       double distance = GetDistance(start, end, solution);
 
@@ -208,23 +207,23 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
       return newDistance - distance;
     }
 
-    public bool Feasible(IVRPEncoding solution) {
+    public bool Feasible(IVRPEncodedSolution solution) {
       return evaluator.Feasible(
         evaluator.Evaluate(
           this, solution));
     }
 
-    public bool TourFeasible(Tour tour, IVRPEncoding solution) {
+    public bool TourFeasible(Tour tour, IVRPEncodedSolution solution) {
       return evaluator.Feasible(
         evaluator.EvaluateTour(
         this, tour, solution));
     }
 
-    public VRPEvaluation Evaluate(IVRPEncoding solution) {
+    public VRPEvaluation Evaluate(IVRPEncodedSolution solution) {
       return evaluator.Evaluate(this, solution);
     }
 
-    public VRPEvaluation EvaluateTour(Tour tour, IVRPEncoding solution) {
+    public VRPEvaluation EvaluateTour(Tour tour, IVRPEncodedSolution solution) {
       return evaluator.EvaluateTour(this, tour, solution);
     }
 
@@ -232,7 +231,7 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
       return evaluator.Feasible(eval);
     }
 
-    public double GetInsertionCosts(VRPEvaluation eval, IVRPEncoding solution, int customer, int tour, int index, out bool feasible) {
+    public double GetInsertionCosts(VRPEvaluation eval, IVRPEncodedSolution solution, int customer, int tour, int index, out bool feasible) {
       return evaluator.GetInsertionCosts(this, solution, eval, customer, tour, index, out feasible);
     }
 

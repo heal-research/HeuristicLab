@@ -46,15 +46,15 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.GVR {
       : base(original, cloner) {
     }
 
-    protected abstract void Manipulate(IRandom random, GVREncoding individual);
+    protected abstract void Manipulate(IRandom random, GVREncodedSolution individual);
 
     public override IOperation InstrumentedApply() {
-      IVRPEncoding solution = VRPToursParameter.ActualValue;
-      if (!(solution is GVREncoding)) {
-        VRPToursParameter.ActualValue = GVREncoding.ConvertFrom(solution, ProblemInstance);
+      IVRPEncodedSolution solution = VRPToursParameter.ActualValue;
+      if (!(solution is GVREncodedSolution)) {
+        VRPToursParameter.ActualValue = GVREncodedSolution.ConvertFrom(solution, ProblemInstance);
       }
 
-      Manipulate(RandomParameter.ActualValue, VRPToursParameter.ActualValue as GVREncoding);
+      Manipulate(RandomParameter.ActualValue, VRPToursParameter.ActualValue as GVREncodedSolution);
 
       return base.InstrumentedApply();
     }

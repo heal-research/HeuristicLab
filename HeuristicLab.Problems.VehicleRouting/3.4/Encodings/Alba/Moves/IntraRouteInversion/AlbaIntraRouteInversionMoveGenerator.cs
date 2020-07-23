@@ -55,12 +55,12 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
       : base(original, cloner) {
     }
 
-    protected abstract AlbaIntraRouteInversionMove[] GenerateMoves(AlbaEncoding individual, IVRPProblemInstance problemInstance);
+    protected abstract AlbaIntraRouteInversionMove[] GenerateMoves(AlbaEncodedSolution individual, IVRPProblemInstance problemInstance);
 
     public override IOperation InstrumentedApply() {
       IOperation next = base.InstrumentedApply();
 
-      AlbaEncoding individual = VRPToursParameter.ActualValue as AlbaEncoding;
+      AlbaEncodedSolution individual = VRPToursParameter.ActualValue as AlbaEncodedSolution;
       AlbaIntraRouteInversionMove[] moves = GenerateMoves(individual, ProblemInstance);
       Scope[] moveScopes = new Scope[moves.Length];
       for (int i = 0; i < moveScopes.Length; i++) {

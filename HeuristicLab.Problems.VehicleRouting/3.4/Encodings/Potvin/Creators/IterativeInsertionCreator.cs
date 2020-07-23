@@ -80,8 +80,8 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
       return alpha;
     }
 
-    public static PotvinEncoding CreateSolution(IVRPProblemInstance instance, IRandom random, bool adhereTimeWindows) {
-      PotvinEncoding result = new PotvinEncoding(instance);
+    public static PotvinEncodedSolution CreateSolution(IVRPProblemInstance instance, IRandom random, bool adhereTimeWindows) {
+      PotvinEncodedSolution result = new PotvinEncodedSolution(instance);
 
       IPickupAndDeliveryProblemInstance pdp = instance as IPickupAndDeliveryProblemInstance;
 

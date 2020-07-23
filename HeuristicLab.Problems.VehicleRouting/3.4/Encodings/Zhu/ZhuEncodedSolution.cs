@@ -21,17 +21,16 @@
 
 using System;
 using System.Collections.Generic;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.PermutationEncoding;
-using HEAL.Attic;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
-using HeuristicLab.Problems.VehicleRouting.ProblemInstances;
 
-namespace HeuristicLab.Problems.VehicleRouting.Encodings.Prins {
-  [Item("PrinsEncoding", "Represents an Prins encoding of VRP solutions. It is implemented as described in Prins, C. (2004). A simple and effective evolutionary algorithm for the vehicle routing problem. Computers & Operations Research, 12:1985-2002.")]
-  [StorableType("A0E1EBC1-C0F5-4CD5-9279-1A669C6633CD")]
-  public class PrinsEncoding : General.PermutationEncoding {
+namespace HeuristicLab.Problems.VehicleRouting.Encodings.Zhu {
+  [Item("ZhuEncodedSolution", "Represents a Zhu encoded solution of the VRP. It is implemented as described in Zhu, K.Q. (2000). A New Genetic Algorithm For VRPTW. Proceedings of the International Conference on Artificial Intelligence.")]
+  [StorableType("1A5F5A1D-E4F5-4477-887E-45FC488BC459")]
+  public class ZhuEncodedSolution : General.PermutationEncoding {
     #region IVRPEncoding Members
     public override int GetTourIndex(Tour tour) {
       return 0;
@@ -40,61 +39,23 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Prins {
     public override List<Tour> GetTours() {
       List<Tour> result = new List<Tour>();
 
-      int cities = ProblemInstance.Cities.Value;
+      Tour newTour = new Tour();
 
-      //Split permutation into vector P
-      int[] P = new int[cities + 1];
-      for (int i = 0; i <= cities; i++)
-        P[i] = -1;
+      for (int i = 0; i < this.Length; i++) {
+        int city = this[i] + 1;
+        newTour.Stops.Add(city);
+        if (!ProblemInstance.TourFeasible(newTour, this)) {
+          newTour.Stops.Remove(city);
+          if (newTour.Stops.Count > 0)
+            result.Add(newTour);
 
-      double[] V = new double[cities + 1];
-      V[0] = 0;
-      for (int i = 1; i <= cities; i++) {
-        V[i] = double.MaxValue;
-      }
-
-      for (int i = 1; i <= cities; i++) {
-        int j = i;
-        Tour tour = new Tour();
-        bool feasible = true;
-
-        do {
-          tour.Stops.Add(this[j - 1] + 1);
-
-          VRPEvaluation eval =
-            ProblemInstance.EvaluateTour(tour, this);
-
-          double cost = eval.Quality;
-          feasible = ProblemInstance.Feasible(eval);
-
-          if (feasible || j == i) {
-            if (V[i - 1] + cost < V[j]) {
-              V[j] = V[i - 1] + cost;
-              P[j] = i - 1;
-            }
-            j++;
-          }
-
-        } while (j <= cities && feasible);
-      }
-
-      //extract VRP solution from vector P
-      int index = 0;
-      int index2 = cities;
-      Tour trip = null;
-      do {
-        index = P[index2];
-        trip = new Tour();
-
-        for (int k = index + 1; k <= index2; k++) {
-          trip.Stops.Add(this[k - 1] + 1);
+          newTour = new Tour();
+          newTour.Stops.Add(city);
         }
+      }
 
-        if (trip.Stops.Count > 0)
-          result.Add(trip);
-
-        index2 = index;
-      } while (index != 0);
+      if (newTour.Stops.Count > 0)
+        result.Add(newTour);
 
       //if there are too many vehicles - repair
       while (result.Count > ProblemInstance.Vehicles.Value) {
@@ -132,23 +93,24 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Prins {
       return result;
     }
     #endregion
-    public PrinsEncoding(Permutation permutation, IVRPProblemInstance problemInstance)
+
+    public ZhuEncodedSolution(Permutation permutation, IVRPProblemInstance problemInstance)
       : base(permutation, problemInstance) {
     }
 
-    [StorableConstructor]
-    protected PrinsEncoding(StorableConstructorFlag _) : base(_) {
-    }
-
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new PrinsEncoding(this, cloner);
+      return new ZhuEncodedSolution(this, cloner);
     }
 
-    protected PrinsEncoding(PrinsEncoding original, Cloner cloner)
+    protected ZhuEncodedSolution(ZhuEncodedSolution original, Cloner cloner)
       : base(original, cloner) {
     }
 
-    public static PrinsEncoding ConvertFrom(IVRPEncoding encoding, IVRPProblemInstance problemInstance) {
+    [StorableConstructor]
+    protected ZhuEncodedSolution(StorableConstructorFlag _) : base(_) {
+    }
+
+    public static ZhuEncodedSolution ConvertFrom(IVRPEncodedSolution encoding, IVRPProblemInstance problemInstance) {
       List<Tour> tours = encoding.GetTours();
       List<int> route = new List<int>();
 
@@ -157,11 +119,11 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Prins {
           route.Add(city - 1);
       }
 
-      return new PrinsEncoding(
+      return new ZhuEncodedSolution(
         new Permutation(PermutationTypes.RelativeUndirected, route.ToArray()), problemInstance);
     }
 
-    public static PrinsEncoding ConvertFrom(List<int> routeParam, IVRPProblemInstance problemInstance) {
+    public static ZhuEncodedSolution ConvertFrom(List<int> routeParam, IVRPProblemInstance problemInstance) {
       List<int> route = new List<int>(routeParam);
 
       while (route.Remove(0)) { //remove all delimiters (0)
@@ -170,7 +132,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Prins {
       for (int i = 0; i < route.Count; i++)
         route[i]--;
 
-      return new PrinsEncoding(
+      return new ZhuEncodedSolution(
         new Permutation(PermutationTypes.RelativeUndirected, route.ToArray()), problemInstance);
     }
   }

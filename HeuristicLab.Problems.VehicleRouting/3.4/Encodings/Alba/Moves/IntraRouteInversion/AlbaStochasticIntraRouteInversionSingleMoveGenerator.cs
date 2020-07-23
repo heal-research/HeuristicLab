@@ -60,7 +60,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
       : base(original, cloner) {
     }
 
-    public static AlbaIntraRouteInversionMove Apply(AlbaEncoding individual, int cities, IRandom rand) {
+    public static AlbaIntraRouteInversionMove Apply(AlbaEncodedSolution individual, int cities, IRandom rand) {
       int index1 = -1;
       int index2 = -1;
 
@@ -95,7 +95,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
       return new AlbaIntraRouteInversionMove(index1, index2, individual);
     }
 
-    protected override AlbaIntraRouteInversionMove[] GenerateMoves(AlbaEncoding individual, IVRPProblemInstance problemInstance) {
+    protected override AlbaIntraRouteInversionMove[] GenerateMoves(AlbaEncodedSolution individual, IVRPProblemInstance problemInstance) {
       List<AlbaIntraRouteInversionMove> moves = new List<AlbaIntraRouteInversionMove>();
 
       AlbaIntraRouteInversionMove move = Apply(individual, problemInstance.Cities.Value, RandomParameter.ActualValue);

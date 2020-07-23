@@ -41,7 +41,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
       : base(original, cloner) {
     }
 
-    public static void ApplyManipulation(IRandom random, PotvinEncoding individual, IVRPProblemInstance instance, bool allowInfeasible) {
+    public static void ApplyManipulation(IRandom random, PotvinEncodedSolution individual, IVRPProblemInstance instance, bool allowInfeasible) {
       int selectedIndex = SelectRandomTourBiasedByLength(random, individual, instance);
       if (selectedIndex >= 0) {
         Tour route1 =
@@ -67,7 +67,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
       }
     }
 
-    protected override void Manipulate(IRandom random, PotvinEncoding individual) {
+    protected override void Manipulate(IRandom random, PotvinEncodedSolution individual) {
       bool allowInfeasible = AllowInfeasibleSolutions.Value.Value;
       ApplyManipulation(random, individual, ProblemInstance, allowInfeasible);      
     }

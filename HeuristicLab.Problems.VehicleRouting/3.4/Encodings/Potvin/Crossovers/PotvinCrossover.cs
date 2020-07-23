@@ -53,16 +53,16 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
       : base(original, cloner) {
     }
 
-    protected abstract PotvinEncoding Crossover(IRandom random, PotvinEncoding parent1, PotvinEncoding parent2);
+    protected abstract PotvinEncodedSolution Crossover(IRandom random, PotvinEncodedSolution parent1, PotvinEncodedSolution parent2);
 
-    protected static bool FindInsertionPlace(PotvinEncoding individual, int city, bool allowInfeasible,
+    protected static bool FindInsertionPlace(PotvinEncodedSolution individual, int city, bool allowInfeasible,
         out int route, out int place) {
       return individual.FindInsertionPlace(
         city, -1, allowInfeasible,
         out route, out place);
     }
 
-    protected static Tour FindRoute(PotvinEncoding solution, int city) {
+    protected static Tour FindRoute(PotvinEncodedSolution solution, int city) {
       Tour found = null;
 
       foreach (Tour tour in solution.Tours) {
@@ -75,7 +75,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
       return found;
     }
 
-    protected static bool RouteUnrouted(PotvinEncoding solution, bool allowInfeasible) {
+    protected static bool RouteUnrouted(PotvinEncodedSolution solution, bool allowInfeasible) {
       bool success = true;
       int index = 0;
       while (index < solution.Unrouted.Count && success) {
@@ -98,7 +98,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
       return success;
     }
 
-    protected static bool Repair(IRandom random, PotvinEncoding solution, Tour newTour, IVRPProblemInstance instance, bool allowInfeasible) {
+    protected static bool Repair(IRandom random, PotvinEncodedSolution solution, Tour newTour, IVRPProblemInstance instance, bool allowInfeasible) {
       bool success = true;
 
       //remove duplicates from new tour      
@@ -144,20 +144,20 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
     }
 
     public override IOperation InstrumentedApply() {
-      ItemArray<IVRPEncoding> parents = new ItemArray<IVRPEncoding>(ParentsParameter.ActualValue.Length);
+      ItemArray<IVRPEncodedSolution> parents = new ItemArray<IVRPEncodedSolution>(ParentsParameter.ActualValue.Length);
       for (int i = 0; i < ParentsParameter.ActualValue.Length; i++) {
-        IVRPEncoding solution = ParentsParameter.ActualValue[i];
+        IVRPEncodedSolution solution = ParentsParameter.ActualValue[i];
 
-        if (!(solution is PotvinEncoding)) {
-          parents[i] = PotvinEncoding.ConvertFrom(solution, ProblemInstance);
+        if (!(solution is PotvinEncodedSolution)) {
+          parents[i] = PotvinEncodedSolution.ConvertFrom(solution, ProblemInstance);
         } else {
           parents[i] = solution;
         }
       }
       ParentsParameter.ActualValue = parents;
 
-      ChildParameter.ActualValue = Crossover(RandomParameter.ActualValue, parents[0] as PotvinEncoding, parents[1] as PotvinEncoding);
-      (ChildParameter.ActualValue as PotvinEncoding).Repair();
+      ChildParameter.ActualValue = Crossover(RandomParameter.ActualValue, parents[0] as PotvinEncodedSolution, parents[1] as PotvinEncodedSolution);
+      (ChildParameter.ActualValue as PotvinEncodedSolution).Repair();
 
       return base.InstrumentedApply();
     }

@@ -44,8 +44,8 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
       : base(original, cloner) {
     }
 
-    private static PotvinEncoding ReplacePair(PotvinEncoding individual, IVRPProblemInstance instance, int replaced, int replacing, bool allowInfeasible) {
-      individual = individual.Clone() as PotvinEncoding;
+    private static PotvinEncodedSolution ReplacePair(PotvinEncodedSolution individual, IVRPProblemInstance instance, int replaced, int replacing, bool allowInfeasible) {
+      individual = individual.Clone() as PotvinEncodedSolution;
       IPickupAndDeliveryProblemInstance pdp = instance as IPickupAndDeliveryProblemInstance;
 
       int replacedDest = pdp.GetPickupDeliveryLocation(replaced);
@@ -127,8 +127,8 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
       }
     }
 
-    public static PotvinEncoding ApplyManipulation(IRandom random, PotvinEncoding individual, IPickupAndDeliveryProblemInstance pdp, bool allowInfeasible) {
-      PotvinEncoding result = null;
+    public static PotvinEncodedSolution ApplyManipulation(IRandom random, PotvinEncodedSolution individual, IPickupAndDeliveryProblemInstance pdp, bool allowInfeasible) {
+      PotvinEncodedSolution result = null;
       
       int selectedIndex = SelectRandomTourBiasedByLength(random, individual, pdp);
       if (selectedIndex >= 0) {
@@ -181,12 +181,12 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
       return result;
     }
 
-    protected override void Manipulate(IRandom random, PotvinEncoding individual) {
+    protected override void Manipulate(IRandom random, PotvinEncodedSolution individual) {
       bool allowInfeasible = AllowInfeasibleSolutions.Value.Value;
       IPickupAndDeliveryProblemInstance pdp = ProblemInstance as IPickupAndDeliveryProblemInstance;
 
       if (pdp != null) {
-        PotvinEncoding result = ApplyManipulation(random, individual, pdp, allowInfeasible);
+        PotvinEncodedSolution result = ApplyManipulation(random, individual, pdp, allowInfeasible);
         if (result != null) {
           VRPToursParameter.ActualValue = result;
         }        

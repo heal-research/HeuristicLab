@@ -64,7 +64,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
       IVariable moveVariable = this.ExecutionContext.Scope.Variables[
         TranslocationMoveParameter.ActualName];
       TranslocationMove move = moveVariable.Value as TranslocationMove;
-      VRPToursParameter.ActualValue = move.Permutation as AlbaEncoding;
+      VRPToursParameter.ActualValue = move.Permutation as AlbaEncodedSolution;
 
       moveMaker.PermutationParameter.ActualName = VRPToursParameter.ActualName;
       IAtomicOperation op = this.ExecutionContext.CreateChildOperation(moveMaker);

@@ -45,11 +45,11 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Zhu {
       : base(original, cloner) {
     }
 
-    protected override ZhuEncoding Crossover(IRandom random, ZhuEncoding parent1, ZhuEncoding parent2) {
+    protected override ZhuEncodedSolution Crossover(IRandom random, ZhuEncodedSolution parent1, ZhuEncodedSolution parent2) {
       List<int> p1 = new List<int>(parent1);
       List<int> p2 = new List<int>(parent2);
 
-      ZhuEncoding child = parent2.Clone() as ZhuEncoding;
+      ZhuEncodedSolution child = parent2.Clone() as ZhuEncodedSolution;
 
       if (parent1.Length != parent2.Length)
         return child;

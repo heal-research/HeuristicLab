@@ -58,7 +58,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
       : base(original, cloner) {
     }
 
-    public static AlbaLambdaInterchangeMove[] GenerateAllMoves(AlbaEncoding individual, IVRPProblemInstance problemInstance, int lambda, int sampleSize, IRandom rand) {
+    public static AlbaLambdaInterchangeMove[] GenerateAllMoves(AlbaEncodedSolution individual, IVRPProblemInstance problemInstance, int lambda, int sampleSize, IRandom rand) {
       AlbaLambdaInterchangeMove[] moves = new AlbaLambdaInterchangeMove[sampleSize];
       for (int i = 0; i < sampleSize; i++) {
         moves[i] = AlbaStochasticLambdaInterchangeSingleMoveGenerator.Apply(
@@ -68,7 +68,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
       return moves;
     }
 
-    protected override AlbaLambdaInterchangeMove[] GenerateMoves(AlbaEncoding individual, IVRPProblemInstance problemInstance, int lambda) {
+    protected override AlbaLambdaInterchangeMove[] GenerateMoves(AlbaEncodedSolution individual, IVRPProblemInstance problemInstance, int lambda) {
       return GenerateAllMoves(individual, problemInstance, lambda, SampleSizeParameter.ActualValue.Value, RandomParameter.ActualValue);
     }
   }

@@ -49,9 +49,9 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Prins {
       : base(original, cloner) {
     }
 
-    protected override PrinsEncoding Crossover(IRandom random, PrinsEncoding parent1, PrinsEncoding parent2) {
+    protected override PrinsEncodedSolution Crossover(IRandom random, PrinsEncodedSolution parent1, PrinsEncodedSolution parent2) {
       if (parent1.Length != parent2.Length)
-        return parent1.Clone() as PrinsEncoding;
+        return parent1.Clone() as PrinsEncodedSolution;
 
       //note - the inner crossover is called here and the result is converted to a prins representation
       //some refactoring should be done here in the future - the crossover operation should be called directly
@@ -66,7 +66,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Prins {
         Permutation permutation = ExecutionContext.Scope.Variables[childName].Value as Permutation;
         ExecutionContext.Scope.Variables.Remove(childName);
 
-        return new PrinsEncoding(permutation, ProblemInstance);
+        return new PrinsEncodedSolution(permutation, ProblemInstance);
       } else
         return null;
     }

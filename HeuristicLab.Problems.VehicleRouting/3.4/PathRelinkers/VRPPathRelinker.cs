@@ -71,7 +71,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
       return new VRPPathRelinker(this, cloner);
     }
 
-    public static ItemArray<IItem> Apply(PotvinEncoding initiator, PotvinEncoding guide, PercentValue n, int sampleSize, int iterations, IRandom rand, IVRPProblemInstance problemInstance) {
+    public static ItemArray<IItem> Apply(PotvinEncodedSolution initiator, PotvinEncodedSolution guide, PercentValue n, int sampleSize, int iterations, IRandom rand, IVRPProblemInstance problemInstance) {
       if (initiator == null || guide == null)
         throw new ArgumentException("Cannot relink path because one of the provided solutions or both are null.");
 
@@ -86,10 +86,10 @@ namespace HeuristicLab.Problems.VehicleRouting {
       if (problemInstance is ITimeWindowedProblemInstance)
         originalTardinessPenalty.Value = (problemInstance as ITimeWindowedProblemInstance).TardinessPenalty.Value;
 
-      PotvinEncoding current = MatchTours(initiator, guide, problemInstance);
+      PotvinEncodedSolution current = MatchTours(initiator, guide, problemInstance);
       double currentSimilarity = VRPSimilarityCalculator.CalculateSimilarity(current, guide);
 
-      IList<PotvinEncoding> solutions = new List<PotvinEncoding>();
+      IList<PotvinEncodedSolution> solutions = new List<PotvinEncodedSolution>();
       int i = 0;
       while (i < iterations && !currentSimilarity.IsAlmost(1.0)) {
         var currentEval = problemInstance.Evaluate(current);
@@ -97,7 +97,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
 
         if (currentSimilarity < 1.0) {
           for (int sample = 0; sample < sampleSize; sample++) {
-            var next = current.Clone() as PotvinEncoding;
+            var next = current.Clone() as PotvinEncodedSolution;
 
             int neighborhood = rand.Next(3);
             switch (neighborhood) {
@@ -158,7 +158,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
       return new ItemArray<IItem>(ChooseSelection(solutions, n));
     }
 
-    private static IList<IItem> ChooseSelection(IList<PotvinEncoding> solutions, PercentValue n) {
+    private static IList<IItem> ChooseSelection(IList<PotvinEncodedSolution> solutions, PercentValue n) {
       IList<IItem> selection = new List<IItem>();
       if (solutions.Count > 0) {
         int noSol = (int)(solutions.Count * n.Value);
@@ -175,12 +175,12 @@ namespace HeuristicLab.Problems.VehicleRouting {
       if (parents.Length != 2)
         throw new ArgumentException("The number of parents is not equal to 2.");
 
-      if (!(parents[0] is PotvinEncoding))
-        parents[0] = PotvinEncoding.ConvertFrom(parents[0] as IVRPEncoding, ProblemInstanceParameter.ActualValue);
-      if (!(parents[1] is PotvinEncoding))
-        parents[1] = PotvinEncoding.ConvertFrom(parents[1] as IVRPEncoding, ProblemInstanceParameter.ActualValue);
+      if (!(parents[0] is PotvinEncodedSolution))
+        parents[0] = PotvinEncodedSolution.ConvertFrom(parents[0] as IVRPEncodedSolution, ProblemInstanceParameter.ActualValue);
+      if (!(parents[1] is PotvinEncodedSolution))
+        parents[1] = PotvinEncodedSolution.ConvertFrom(parents[1] as IVRPEncodedSolution, ProblemInstanceParameter.ActualValue);
 
-      return Apply(parents[0] as PotvinEncoding, parents[1] as PotvinEncoding, n,
+      return Apply(parents[0] as PotvinEncodedSolution, parents[1] as PotvinEncodedSolution, n,
         SampleSizeParameter.Value.Value, IterationsParameter.Value.Value, RandomParameter.ActualValue, ProblemInstanceParameter.ActualValue);
     }
 
@@ -188,8 +188,8 @@ namespace HeuristicLab.Problems.VehicleRouting {
       return tour1.Stops.Intersect(tour2.Stops).Count();
     }
 
-    private static PotvinEncoding MatchTours(PotvinEncoding initiator, PotvinEncoding guide, IVRPProblemInstance problemInstance) {
-      var result = new PotvinEncoding(problemInstance);
+    private static PotvinEncodedSolution MatchTours(PotvinEncodedSolution initiator, PotvinEncodedSolution guide, IVRPProblemInstance problemInstance) {
+      var result = new PotvinEncodedSolution(problemInstance);
 
       var used = new List<bool>();
       for (int i = 0; i < initiator.Tours.Count; i++) {
@@ -225,15 +225,15 @@ namespace HeuristicLab.Problems.VehicleRouting {
     }
 
     #region moves
-    public static PotvinEncoding RouteBasedXOver(PotvinEncoding initiator, PotvinEncoding guide, IRandom random, IVRPProblemInstance problemInstance) {
+    public static PotvinEncodedSolution RouteBasedXOver(PotvinEncodedSolution initiator, PotvinEncodedSolution guide, IRandom random, IVRPProblemInstance problemInstance) {
       return PotvinRouteBasedCrossover.Apply(random, initiator, guide, problemInstance, false);
     }
 
-    public static PotvinEncoding SequenceBasedXOver(PotvinEncoding initiator, PotvinEncoding guide, IRandom random, IVRPProblemInstance problemInstance) {
+    public static PotvinEncodedSolution SequenceBasedXOver(PotvinEncodedSolution initiator, PotvinEncodedSolution guide, IRandom random, IVRPProblemInstance problemInstance) {
       return PotvinSequenceBasedCrossover.Apply(random, initiator, guide, problemInstance, false);
     }
 
-    public static void GuidedRelocateMove(PotvinEncoding initiator, PotvinEncoding guide, IRandom random) {
+    public static void GuidedRelocateMove(PotvinEncodedSolution initiator, PotvinEncodedSolution guide, IRandom random) {
       List<int> cities = new List<int>();
       foreach (Tour tour in initiator.Tours) {
         foreach (int city in tour.Stops) {
@@ -290,7 +290,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
       }
     }
 
-    public static void RelocateMove(PotvinEncoding individual, IRandom random) {
+    public static void RelocateMove(PotvinEncodedSolution individual, IRandom random) {
       int cities = individual.Cities;
       int city = 1 + random.Next(cities);
       Tour originalTour = individual.Tours.Find(t => t.Stops.Contains(city));

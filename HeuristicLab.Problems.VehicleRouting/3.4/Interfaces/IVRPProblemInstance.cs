@@ -47,13 +47,13 @@ namespace HeuristicLab.Problems.VehicleRouting.Interfaces {
 
     double[] GetCoordinates(int city);
     double GetDemand(int city);
-    double GetDistance(int start, int end, IVRPEncoding solution);
-    double GetInsertionDistance(int start, int customer, int end, IVRPEncoding solution, out double startDistance, out double endDistance);
-    bool Feasible(IVRPEncoding solution);
-    bool TourFeasible(Tour tour, IVRPEncoding solution);
-    VRPEvaluation Evaluate(IVRPEncoding solution);
-    VRPEvaluation EvaluateTour(Tour tour, IVRPEncoding solution);
+    double GetDistance(int start, int end, IVRPEncodedSolution solution);
+    double GetInsertionDistance(int start, int customer, int end, IVRPEncodedSolution solution, out double startDistance, out double endDistance);
+    bool Feasible(IVRPEncodedSolution solution);
+    bool TourFeasible(Tour tour, IVRPEncodedSolution solution);
+    VRPEvaluation Evaluate(IVRPEncodedSolution solution);
+    VRPEvaluation EvaluateTour(Tour tour, IVRPEncodedSolution solution);
     bool Feasible(VRPEvaluation eval);
-    double GetInsertionCosts(VRPEvaluation eval, IVRPEncoding solution, int customer, int tour, int index, out bool feasible);
+    double GetInsertionCosts(VRPEvaluation eval, IVRPEncodedSolution solution, int customer, int tour, int index, out bool feasible);
   }
 }

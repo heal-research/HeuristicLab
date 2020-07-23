@@ -42,7 +42,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.GVR {
       : base(original, cloner) {
     }
 
-    protected override void Manipulate(IRandom random, GVREncoding individual) {
+    protected override void Manipulate(IRandom random, GVREncodedSolution individual) {
       int customer1 = random.Next(1, individual.Cities + 1);
       int customer2 = random.Next(1, individual.Cities + 1);
 

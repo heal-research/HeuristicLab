@@ -48,15 +48,15 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
       : base(original, cloner) {
     }
 
-    protected abstract AlbaEncoding Crossover(IRandom random, AlbaEncoding parent1, AlbaEncoding parent2);
+    protected abstract AlbaEncodedSolution Crossover(IRandom random, AlbaEncodedSolution parent1, AlbaEncodedSolution parent2);
 
     public override IOperation InstrumentedApply() {
-      ItemArray<IVRPEncoding> parents = new ItemArray<IVRPEncoding>(ParentsParameter.ActualValue.Length);
+      ItemArray<IVRPEncodedSolution> parents = new ItemArray<IVRPEncodedSolution>(ParentsParameter.ActualValue.Length);
       for (int i = 0; i < ParentsParameter.ActualValue.Length; i++) {
-        IVRPEncoding solution = ParentsParameter.ActualValue[i];
+        IVRPEncodedSolution solution = ParentsParameter.ActualValue[i];
 
-        if (!(solution is AlbaEncoding)) {
-          parents[i] = AlbaEncoding.ConvertFrom(solution, ProblemInstance);
+        if (!(solution is AlbaEncodedSolution)) {
+          parents[i] = AlbaEncodedSolution.ConvertFrom(solution, ProblemInstance);
         } else {
           parents[i] = solution;
         }
@@ -64,8 +64,8 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
       ParentsParameter.ActualValue = parents;
 
       ChildParameter.ActualValue =
-        Crossover(RandomParameter.ActualValue, parents[0] as AlbaEncoding, parents[1] as AlbaEncoding);
-      (ChildParameter.ActualValue as AlbaEncoding).Repair();
+        Crossover(RandomParameter.ActualValue, parents[0] as AlbaEncodedSolution, parents[1] as AlbaEncodedSolution);
+      (ChildParameter.ActualValue as AlbaEncodedSolution).Repair();
 
       return base.InstrumentedApply();
     }

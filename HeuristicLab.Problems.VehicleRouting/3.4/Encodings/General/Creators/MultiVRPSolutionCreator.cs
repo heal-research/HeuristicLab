@@ -47,15 +47,15 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
       get { return (LookupParameter<IVRPProblemInstance>)Parameters["ProblemInstance"]; }
     }
 
-    public ILookupParameter<IVRPEncoding> VRPToursParameter {
-      get { return (ILookupParameter<IVRPEncoding>)Parameters["VRPTours"]; }
+    public ILookupParameter<IVRPEncodedSolution> VRPToursParameter {
+      get { return (ILookupParameter<IVRPEncodedSolution>)Parameters["VRPTours"]; }
     }
 
     [StorableConstructor]
     protected MultiVRPSolutionCreator(StorableConstructorFlag _) : base(_) { }
     public MultiVRPSolutionCreator()
       : base() {
-      Parameters.Add(new LookupParameter<IVRPEncoding>("VRPTours", "The new VRP tours."));
+      Parameters.Add(new LookupParameter<IVRPEncodedSolution>("VRPTours", "The new VRP tours."));
 
       Parameters.Add(new LookupParameter<IVRPProblemInstance>("ProblemInstance", "The VRP problem instance"));
     }

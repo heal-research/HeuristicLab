@@ -30,7 +30,7 @@ using HeuristicLab.Problems.VehicleRouting.Interfaces;
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
   [Item("PermutationEncoding", "Represents a base class for permutation encodings of VRP solutions.")]
   [StorableType("070CEB2B-0A37-4EE1-87DA-1D80F6D88B4A")]
-  public abstract class PermutationEncoding : Permutation, IVRPEncoding {
+  public abstract class PermutationEncoding : Permutation, IVRPEncodedSolution {
     #region IVRPEncoding Members
     public abstract List<Tour> GetTours();
 

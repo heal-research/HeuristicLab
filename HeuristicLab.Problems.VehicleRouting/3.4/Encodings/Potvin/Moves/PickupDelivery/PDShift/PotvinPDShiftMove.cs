@@ -32,7 +32,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
   [StorableType("D71816CC-47C7-45C0-8474-8E4A94720B19")]
   public class PotvinPDShiftMove : Item, IVRPMove {
     [Storable]
-    public IVRPEncoding Individual { get; protected set; }
+    public IVRPEncodedSolution Individual { get; protected set; }
 
     [Storable]
     public int City { get; protected set; }
@@ -51,12 +51,12 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
       Individual = null;
     }
 
-    public PotvinPDShiftMove(int city, int oldTour, int tour, PotvinEncoding individual) {
+    public PotvinPDShiftMove(int city, int oldTour, int tour, PotvinEncodedSolution individual) {
       City = city;
       OldTour = oldTour;
       Tour = tour;
 
-      this.Individual = individual.Clone() as PotvinEncoding;
+      this.Individual = individual.Clone() as PotvinEncodedSolution;
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -69,7 +69,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
       this.OldTour = original.OldTour;
       this.Tour = original.Tour;
 
-      this.Individual = cloner.Clone(Individual) as PotvinEncoding;
+      this.Individual = cloner.Clone(Individual) as PotvinEncodedSolution;
     }
 
     [StorableConstructor]

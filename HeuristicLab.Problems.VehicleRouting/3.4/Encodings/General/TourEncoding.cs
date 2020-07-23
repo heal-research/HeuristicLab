@@ -29,7 +29,7 @@ using HeuristicLab.Problems.VehicleRouting.Interfaces;
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
   [Item("TourEncoding", "Represents a base class for tour encodings of VRP solutions.")]
   [StorableType("FC5DBAE6-05D9-4C55-AA85-6E3C2330700F")]
-  public abstract class TourEncoding : Item, IVRPEncoding {
+  public abstract class TourEncoding : Item, IVRPEncodedSolution {
     public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Class; }
     }
@@ -116,7 +116,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
         this.ProblemInstance = original.ProblemInstance;
     }
 
-    public static void ConvertFrom(IVRPEncoding encoding, TourEncoding solution, IVRPProblemInstance problemInstance) {
+    public static void ConvertFrom(IVRPEncodedSolution encoding, TourEncoding solution, IVRPProblemInstance problemInstance) {
       solution.Tours = new ItemList<Tour>(encoding.GetTours());
       solution.Repair();
     }

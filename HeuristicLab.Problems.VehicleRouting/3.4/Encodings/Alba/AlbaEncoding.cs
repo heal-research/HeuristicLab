@@ -19,160 +19,61 @@
  */
 #endregion
 
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Data;
-using HeuristicLab.Encodings.PermutationEncoding;
-using HEAL.Attic;
-using HeuristicLab.Problems.VehicleRouting.Interfaces;
+using HeuristicLab.Optimization;
+using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
-  [Item("AlbaEncoding", "Represents an Alba encoding of VRP solutions. It is implemented as described in Alba, E. and Dorronsoro, B. (2004). Solving the Vehicle Routing Problem by Using Cellular Genetic Algorithms.")]
-  [StorableType("8BB9735D-8371-46C1-B843-A6864B2ACDA5")]
-  public class AlbaEncoding : General.PermutationEncoding {
-    #region IVRPEncoding Members
-    public override List<Tour> GetTours() {
-      Repair();
-      List<Tour> result = new List<Tour>();
+  [Item("AlbaEncoding", "Represents the encoding for Alba encoded solutions.")]
+  [StorableType("9ff9f959-31d2-44e5-8a5e-b122220535c2")]
+  public class AlbaEncoding : Encoding<AlbaEncodedSolution>, IVRPEncoding<AlbaEncodedSolution> {
 
-      int cities = ProblemInstance.Cities.Value;
-
-      Tour tour = new Tour();
-      for (int i = 0; i < this.array.Length; i++) {
-        if (this.array[i] >= cities) {
-          if (tour.Stops.Count > 0) {
-            result.Add(tour);
-
-            tour = new Tour();
-          }
-        } else {
-          tour.Stops.Add(this.array[i] + 1);
-        }
-      }
-
-      if (tour.Stops.Count > 0) {
-        result.Add(tour);
-      }
-
-      return result;
+    [StorableConstructor]
+    private AlbaEncoding(StorableConstructorFlag _) : base(_) { }
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      DiscoverOperators();
     }
 
-    public override int GetVehicleAssignment(int tour) {
-      int vehicleAssignment = -1;
-      Tour currentTour = GetTours()[tour];
+    public override IDeepCloneable Clone(Cloner cloner) { return new AlbaEncoding(this, cloner); }
+    private AlbaEncoding(AlbaEncoding original, Cloner cloner) : base(original, cloner) { }
 
-      int lastStop = currentTour.Stops[
-        currentTour.Stops.Count - 1] - 1;
 
-      int lastStopIndex = this.IndexOf(lastStop);
+    public AlbaEncoding() : this("VRPTours") { }
+    public AlbaEncoding(string name) : base(name) {
+      DiscoverOperators();
+    }
 
-      if (lastStopIndex == this.Length - 1) {
-        int i = this.Length - 1;
+    #region Operator Discovery
+    private static readonly IEnumerable<Type> encodingSpecificOperatorTypes;
+    static AlbaEncoding() {
+      encodingSpecificOperatorTypes = new List<Type>() {
+          typeof (IAlbaOperator)
+      };
+    }
+    private void DiscoverOperators() {
+      var assembly = typeof(IAlbaOperator).Assembly;
+      var discoveredTypes = ApplicationManager.Manager.GetTypes(encodingSpecificOperatorTypes, assembly, true, false, false);
+      var operators = discoveredTypes.Select(t => (IOperator)Activator.CreateInstance(t));
+      var newOperators = operators.Except(Operators, new TypeEqualityComparer<IOperator>()).ToList();
 
-        while (vehicleAssignment == -1) {
-          if (this.array[i] >= ProblemInstance.Cities.Value) {
-            vehicleAssignment = this.array[i] - ProblemInstance.Cities.Value;
-          }
-
-          i--;
-        }
-      } else
-        vehicleAssignment = this[lastStopIndex + 1] - this.ProblemInstance.Cities.Value;
-
-      return vehicleAssignment;
+      ConfigureOperators(newOperators);
+      foreach (var @operator in newOperators)
+        AddOperator(@operator);
     }
     #endregion
 
-    public void Repair() {
-      int cities = ProblemInstance.Cities.Value;
-
-      if (this[this.Length - 1] < cities) {
-        int index = this.Length - 2;
-        while (this[index] < cities) {
-          index--;
-        }
-
-        int vehicle = this[index];
-        for (int i = index; i < this.Length - 1; i++)
-          this[i] = this[i + 1];
-        this[Length - 1] = vehicle;
-      }
+    public override void ConfigureOperators(IEnumerable<IItem> operators) {
+      base.ConfigureOperators(operators);
     }
 
-    public AlbaEncoding(Permutation permutation, IVRPProblemInstance instance)
-      : base(permutation, instance) {
-    }
+    #region specific operator wiring
 
-    [StorableConstructor]
-    protected AlbaEncoding(StorableConstructorFlag _) : base(_) {
-    }
-
-    public override IDeepCloneable Clone(Cloner cloner) {
-      return new AlbaEncoding(this, cloner);
-    }
-
-    protected AlbaEncoding(AlbaEncoding original, Cloner cloner)
-      : base(original, cloner) {
-    }
-
-    public static AlbaEncoding ConvertFrom(List<int> routeParam, IVRPProblemInstance instance) {
-      List<int> route = new List<int>(routeParam);
-
-      int cities = instance.Cities.Value;
-
-      for (int i = 0; i < route.Count; i++) {
-        if (route[i] <= 0) {
-          int vehicle = -route[i];
-          route[i] = cities + vehicle;
-        } else {
-          route[i] = route[i] - 1;
-        }
-      }
-
-      return new AlbaEncoding(
-        new Permutation(PermutationTypes.RelativeUndirected, route.ToArray()),
-        instance);
-    }
-
-    public static AlbaEncoding ConvertFrom(IVRPEncoding encoding, IVRPProblemInstance instance) {
-      List<Tour> tours = encoding.GetTours();
-
-      int cities = 0;
-      foreach (Tour tour in tours) {
-        cities += tour.Stops.Count;
-      }
-
-      int emptyVehicles = instance.Vehicles.Value - tours.Count;
-
-      int[] array = new int[cities + tours.Count + emptyVehicles];
-      int delimiter = 0;
-      int arrayIndex = 0;
-
-      foreach (Tour tour in tours) {
-        foreach (int city in tour.Stops) {
-          array[arrayIndex] = city - 1;
-          arrayIndex++;
-        }
-
-        if (arrayIndex != array.Length) {
-          array[arrayIndex] = cities + encoding.GetVehicleAssignment(delimiter);
-
-          delimiter++;
-          arrayIndex++;
-        }
-      }
-
-      for (int i = 0; i < emptyVehicles; i++) {
-        array[arrayIndex] = cities + encoding.GetVehicleAssignment(delimiter);
-
-        delimiter++;
-        arrayIndex++;
-      }
-
-      AlbaEncoding solution = new AlbaEncoding(new Permutation(PermutationTypes.RelativeUndirected, new IntArray(array)), instance);
-
-      return solution;
-    }
+    #endregion
   }
 }

@@ -60,7 +60,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
       : base(original, cloner) {
     }
 
-    public static PotvinVehicleAssignmentMove Apply(PotvinEncoding individual, IVRPProblemInstance problemInstance, IRandom rand) {
+    public static PotvinVehicleAssignmentMove Apply(PotvinEncodedSolution individual, IVRPProblemInstance problemInstance, IRandom rand) {
       if (individual.Tours.Count > 1) {
         int tour1 = rand.Next(individual.Tours.Count);
         int tour2 = rand.Next(problemInstance.Vehicles.Value);
@@ -74,7 +74,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
       }
     }
 
-    protected override PotvinVehicleAssignmentMove[] GenerateMoves(PotvinEncoding individual, IVRPProblemInstance problemInstance) {
+    protected override PotvinVehicleAssignmentMove[] GenerateMoves(PotvinEncodedSolution individual, IVRPProblemInstance problemInstance) {
       List<PotvinVehicleAssignmentMove> result = new List<PotvinVehicleAssignmentMove>();
 
       PotvinVehicleAssignmentMove move = Apply(individual, ProblemInstance, RandomParameter.ActualValue);

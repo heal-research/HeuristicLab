@@ -42,8 +42,8 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
       : base(original, cloner) {
     }
 
-    public static PotvinEncoding Apply(IRandom random, PotvinEncoding parent1, PotvinEncoding parent2, IVRPProblemInstance problemInstance, bool allowInfeasible) {
-      PotvinEncoding child = parent1.Clone() as PotvinEncoding;
+    public static PotvinEncodedSolution Apply(IRandom random, PotvinEncodedSolution parent1, PotvinEncodedSolution parent2, IVRPProblemInstance problemInstance, bool allowInfeasible) {
+      PotvinEncodedSolution child = parent1.Clone() as PotvinEncodedSolution;
       Tour newTour = new Tour();
 
       int cities = problemInstance.Cities.Value;
@@ -79,16 +79,16 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
           return child;
         } else {
           if (random.NextDouble() < 0.5)
-            return parent1.Clone() as PotvinEncoding;
+            return parent1.Clone() as PotvinEncodedSolution;
           else
-            return parent2.Clone() as PotvinEncoding;
+            return parent2.Clone() as PotvinEncodedSolution;
         }
       } else {
         return child;
       }
     }
 
-    protected override PotvinEncoding Crossover(IRandom random, PotvinEncoding parent1, PotvinEncoding parent2) {
+    protected override PotvinEncodedSolution Crossover(IRandom random, PotvinEncodedSolution parent1, PotvinEncodedSolution parent2) {
       return Apply(random, parent1, parent2, ProblemInstance, AllowInfeasibleSolutions.Value.Value);
     }
   }

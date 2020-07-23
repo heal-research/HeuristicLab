@@ -42,7 +42,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
       : base(original, cloner) {
     }
 
-    protected override void Manipulate(IRandom random, AlbaEncoding individual) {
+    protected override void Manipulate(IRandom random, AlbaEncodedSolution individual) {
       int index1, index2, temp;
 
       int customer1 = random.Next(ProblemInstance.Cities.Value);

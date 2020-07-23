@@ -115,7 +115,7 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
       return coordinates;
     }
 
-    public int GetDepot(int customer, IVRPEncoding solution) {
+    public int GetDepot(int customer, IVRPEncodedSolution solution) {
       int depot = -1;
 
       Tour tour =
@@ -130,7 +130,7 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
       return depot;
     }
 
-    public override double GetDistance(int start, int end, IVRPEncoding solution) {
+    public override double GetDistance(int start, int end, IVRPEncodedSolution solution) {
       if (start == 0 && end == 0)
         return 0;
 
@@ -148,7 +148,7 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
       return base.GetDistance(start, end, solution);
     }
 
-    public override double GetInsertionDistance(int start, int customer, int end, IVRPEncoding solution,
+    public override double GetInsertionDistance(int start, int customer, int end, IVRPEncodedSolution solution,
       out double startDistance, out double endDistance) {
       if (start == 0) {
         start = GetDepot(end, solution);

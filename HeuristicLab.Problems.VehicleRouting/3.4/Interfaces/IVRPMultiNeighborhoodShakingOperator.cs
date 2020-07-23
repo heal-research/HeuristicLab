@@ -26,6 +26,6 @@ using HEAL.Attic;
 namespace HeuristicLab.Problems.VehicleRouting.Interfaces {
   [StorableType("48732EFD-AB16-4C96-A720-FB6CAEA0133D")]
   public interface IVRPMultiNeighborhoodShakingOperator : IMultiNeighborhoodShakingOperator, IVRPOperator {
-    ILookupParameter<IVRPEncoding> VRPToursParameter { get; }
+    ILookupParameter<IVRPEncodedSolution> VRPToursParameter { get; }
   }
 }

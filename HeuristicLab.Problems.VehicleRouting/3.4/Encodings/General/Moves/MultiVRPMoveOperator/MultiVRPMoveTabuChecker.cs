@@ -37,8 +37,8 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
       get { return (ILookupParameter)Parameters["VRPMove"]; }
     }
 
-    public ILookupParameter<IVRPEncoding> VRPToursParameter {
-      get { return (ILookupParameter<IVRPEncoding>)Parameters["VRPTours"]; }
+    public ILookupParameter<IVRPEncodedSolution> VRPToursParameter {
+      get { return (ILookupParameter<IVRPEncodedSolution>)Parameters["VRPTours"]; }
     }
     public ILookupParameter<IVRPProblemInstance> ProblemInstanceParameter {
       get { return (LookupParameter<IVRPProblemInstance>)Parameters["ProblemInstance"]; }
@@ -71,7 +71,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
     public MultiVRPMoveTabuChecker()
       : base() {
       Parameters.Add(new LookupParameter<IVRPMove>("VRPMove", "The move."));
-      Parameters.Add(new LookupParameter<IVRPEncoding>("VRPTours", "The VRP tours considered in the move."));
+      Parameters.Add(new LookupParameter<IVRPEncodedSolution>("VRPTours", "The VRP tours considered in the move."));
       Parameters.Add(new LookupParameter<IVRPProblemInstance>("ProblemInstance", "The VRP problem instance"));
 
       Parameters.Add(new LookupParameter<BoolValue>("MoveTabu", "The variable to store if a move was tabu."));

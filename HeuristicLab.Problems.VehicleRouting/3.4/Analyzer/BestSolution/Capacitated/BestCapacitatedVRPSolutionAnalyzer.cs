@@ -41,8 +41,8 @@ namespace HeuristicLab.Problems.VehicleRouting {
     public ILookupParameter<IVRPProblemInstance> ProblemInstanceParameter {
       get { return (ILookupParameter<IVRPProblemInstance>)Parameters["ProblemInstance"]; }
     }
-    public ScopeTreeLookupParameter<IVRPEncoding> VRPToursParameter {
-      get { return (ScopeTreeLookupParameter<IVRPEncoding>)Parameters["VRPTours"]; }
+    public ScopeTreeLookupParameter<IVRPEncodedSolution> VRPToursParameter {
+      get { return (ScopeTreeLookupParameter<IVRPEncodedSolution>)Parameters["VRPTours"]; }
     }
     public ScopeTreeLookupParameter<DoubleValue> QualityParameter {
       get { return (ScopeTreeLookupParameter<DoubleValue>)Parameters["Quality"]; }
@@ -69,7 +69,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
     public BestCapacitatedVRPSolutionAnalyzer()
       : base() {
       Parameters.Add(new LookupParameter<IVRPProblemInstance>("ProblemInstance", "The problem instance."));
-      Parameters.Add(new ScopeTreeLookupParameter<IVRPEncoding>("VRPTours", "The VRP tours which should be evaluated."));
+      Parameters.Add(new ScopeTreeLookupParameter<IVRPEncodedSolution>("VRPTours", "The VRP tours which should be evaluated."));
       Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>("Quality", "The qualities of the VRP solutions which should be analyzed."));
 
       Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>("Overload", "The overloads of the VRP solutions which should be analyzed."));
@@ -88,7 +88,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
 
     public override IOperation Apply() {
       IVRPProblemInstance problemInstance = ProblemInstanceParameter.ActualValue;
-      ItemArray<IVRPEncoding> solutions = VRPToursParameter.ActualValue;
+      ItemArray<IVRPEncodedSolution> solutions = VRPToursParameter.ActualValue;
       ResultCollection results = ResultsParameter.ActualValue;
 
       ItemArray<DoubleValue> qualities = QualityParameter.ActualValue;

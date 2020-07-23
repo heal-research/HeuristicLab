@@ -31,7 +31,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
   [StorableType("81F387D5-917B-45FB-842A-2DD305B8E313")]
   public class AlbaLambdaInterchangeMove : Item, IVRPMove {
     [Storable]
-    public IVRPEncoding Individual { get; protected set; }
+    public IVRPEncodedSolution Individual { get; protected set; }
 
     [Storable]
     public int Tour1 { get; protected set; }
@@ -65,7 +65,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
     }
 
     public AlbaLambdaInterchangeMove(int tour1, int position1, int length1,
-      int tour2, int position2, int length2, AlbaEncoding permutation) {
+      int tour2, int position2, int length2, AlbaEncodedSolution permutation) {
       Tour1 = tour1;
       Position1 = position1;
       Length1 = length1;
@@ -74,7 +74,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
       Position2 = position2;
       Length2 = length2;
 
-      this.Individual = permutation.Clone() as AlbaEncoding;
+      this.Individual = permutation.Clone() as AlbaEncodedSolution;
     }
 
     [StorableConstructor]
@@ -94,7 +94,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
       this.Position2 = original.Position2;
       this.Length2 = original.Length2;
 
-      this.Individual = cloner.Clone(Individual) as AlbaEncoding;
+      this.Individual = cloner.Clone(Individual) as AlbaEncodedSolution;
     }
 
     #region IVRPMove Members

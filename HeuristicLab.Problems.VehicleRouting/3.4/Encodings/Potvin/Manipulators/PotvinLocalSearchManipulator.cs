@@ -52,7 +52,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
     }
 
     private static bool FindBetterInsertionPlace(
-      PotvinEncoding individual, IVRPProblemInstance instance, int tour, int city, int length,
+      PotvinEncodedSolution individual, IVRPProblemInstance instance, int tour, int city, int length,
       out int insertionTour, out int insertionPlace) {
       bool insertionFound = false;
       insertionTour = -1;
@@ -91,7 +91,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
       return insertionFound;
     }
 
-    public static void ApplyManipulation(IRandom random, PotvinEncoding individual, IVRPProblemInstance instance, int maxIterations) {
+    public static void ApplyManipulation(IRandom random, PotvinEncodedSolution individual, IVRPProblemInstance instance, int maxIterations) {
       //only apply to feasible individuals
       if (instance.Feasible(individual)) {
         bool insertionFound;
@@ -140,7 +140,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
     }
  
 
-    protected override void Manipulate(IRandom random, PotvinEncoding individual) {
+    protected override void Manipulate(IRandom random, PotvinEncodedSolution individual) {
       ApplyManipulation(random, individual, ProblemInstance, Iterations.Value.Value);     
     }
   }

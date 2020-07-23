@@ -44,8 +44,8 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
       get { return (ILookupParameter<ResultCollection>)Parameters["Results"]; }
     }
 
-    public ILookupParameter<IVRPEncoding> VRPToursParameter {
-      get { return (ILookupParameter<IVRPEncoding>)Parameters["VRPTours"]; }
+    public ILookupParameter<IVRPEncodedSolution> VRPToursParameter {
+      get { return (ILookupParameter<IVRPEncodedSolution>)Parameters["VRPTours"]; }
     }
 
     public ILookupParameter<DoubleValue> QualityParameter {
@@ -74,7 +74,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
       Parameters.Add(new ValueLookupParameter<IntValue>("MaximumIterations", "The maximum amount of iterations that should be performed (note that this operator will abort earlier when a local optimum is reached.", new IntValue(10000)));
       Parameters.Add(new LookupParameter<IntValue>("EvaluatedSolutions", "The amount of evaluated solutions (here a move is counted only as 4/n evaluated solutions with n being the length of the permutation)."));
       Parameters.Add(new LookupParameter<ResultCollection>("Results", "The collection where to store results."));
-      Parameters.Add(new LookupParameter<IVRPEncoding>("VRPTours", "The VRP tours to be manipulated."));
+      Parameters.Add(new LookupParameter<IVRPEncodedSolution>("VRPTours", "The VRP tours to be manipulated."));
       Parameters.Add(new LookupParameter<DoubleValue>("Quality", "The quality value of the assignment."));
       Parameters.Add(new ValueParameter<IntValue>("Lambda", "The lambda value.", new IntValue(1)));
       Parameters.Add(new ValueParameter<IntValue>("SampleSize", "The number of moves to generate.", new IntValue(2000)));
@@ -85,14 +85,14 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
       return new AlbaLambdaInterchangeLocalImprovementOperator(this, cloner);
     }
 
-    public static void Apply(AlbaEncoding solution, int maxIterations,
+    public static void Apply(AlbaEncodedSolution solution, int maxIterations,
       int lambda, int samples, IRandom random, IVRPProblemInstance problemInstance, ref double quality, out int evaluatedSolutions) {
       evaluatedSolutions = 0;
 
       for (int i = 0; i < maxIterations; i++) {
         AlbaLambdaInterchangeMove bestMove = null;
         foreach (AlbaLambdaInterchangeMove move in AlbaStochasticLambdaInterchangeMultiMoveGenerator.GenerateAllMoves(solution, problemInstance, lambda, samples, random)) {
-          AlbaEncoding newSolution = solution.Clone() as AlbaEncoding;
+          AlbaEncodedSolution newSolution = solution.Clone() as AlbaEncodedSolution;
           AlbaLambdaInterchangeMoveMaker.Apply(newSolution, move);
           double moveQuality =
             problemInstance.Evaluate(newSolution).Quality;
@@ -110,12 +110,12 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
 
     public override IOperation InstrumentedApply() {
       int maxIterations = MaximumIterationsParameter.ActualValue.Value;
-      AlbaEncoding solution = null;
+      AlbaEncodedSolution solution = null;
 
-      if (VRPToursParameter.ActualValue is AlbaEncoding)
-        solution = VRPToursParameter.ActualValue as AlbaEncoding;
+      if (VRPToursParameter.ActualValue is AlbaEncodedSolution)
+        solution = VRPToursParameter.ActualValue as AlbaEncodedSolution;
       else
-        VRPToursParameter.ActualValue = solution = AlbaEncoding.ConvertFrom(VRPToursParameter.ActualValue, ProblemInstance);
+        VRPToursParameter.ActualValue = solution = AlbaEncodedSolution.ConvertFrom(VRPToursParameter.ActualValue, ProblemInstance);
 
       int lambda = LambdaParameter.Value.Value;
       int samples = SampleSizeParameter.Value.Value;

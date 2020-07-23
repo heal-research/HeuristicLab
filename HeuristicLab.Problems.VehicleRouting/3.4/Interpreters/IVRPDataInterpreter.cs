@@ -28,7 +28,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Interpreters {
     public string Description { get; set; }
     public IVRPProblemInstance ProblemInstance { get; set; }
     public double? BestKnownQuality { get; set; }
-    public IVRPEncoding BestKnownSolution { get; set; }
+    public IVRPEncodedSolution BestKnownSolution { get; set; }
   }
 
   public interface IVRPDataInterpreter {

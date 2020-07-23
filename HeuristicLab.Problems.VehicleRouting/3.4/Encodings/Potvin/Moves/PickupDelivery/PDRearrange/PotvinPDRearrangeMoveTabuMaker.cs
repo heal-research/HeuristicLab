@@ -37,8 +37,8 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
     public ILookupParameter VRPMoveParameter {
       get { return PDRearrangeMoveParameter; }
     }
-    public ILookupParameter<IVRPEncoding> VRPToursParameter {
-      get { return (ILookupParameter<IVRPEncoding>)Parameters["VRPTours"]; }
+    public ILookupParameter<IVRPEncodedSolution> VRPToursParameter {
+      get { return (ILookupParameter<IVRPEncodedSolution>)Parameters["VRPTours"]; }
     }
     public ILookupParameter<IVRPProblemInstance> ProblemInstanceParameter {
       get { return (LookupParameter<IVRPProblemInstance>)Parameters["ProblemInstance"]; }
@@ -63,7 +63,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
     public PotvinPDRearrangeMoveTabuMaker()
       : base() {
       Parameters.Add(new LookupParameter<PotvinPDRearrangeMove>("PotvinPDRearrangeMove", "The moves that should be made."));
-      Parameters.Add(new LookupParameter<IVRPEncoding>("VRPTours", "The VRP tours considered in the move."));
+      Parameters.Add(new LookupParameter<IVRPEncodedSolution>("VRPTours", "The VRP tours considered in the move."));
       Parameters.Add(new LookupParameter<IVRPProblemInstance>("ProblemInstance", "The VRP problem instance"));
 
       Parameters.Add(new LookupParameter<DoubleValue>("Distance", "The distance of the individual"));

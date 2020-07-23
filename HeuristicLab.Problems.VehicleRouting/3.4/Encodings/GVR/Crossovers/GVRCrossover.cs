@@ -51,8 +51,8 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.GVR {
       : base(original, cloner) {
     }
 
-    private GVREncoding Crossover(IRandom random, GVREncoding parent1, GVREncoding parent2) {
-      GVREncoding child = parent1.Clone() as GVREncoding;
+    private GVREncodedSolution Crossover(IRandom random, GVREncodedSolution parent1, GVREncodedSolution parent2) {
+      GVREncodedSolution child = parent1.Clone() as GVREncodedSolution;
 
       Tour tour = parent2.Tours[random.Next(parent2.Tours.Count)];
       int breakPoint1 = random.Next(tour.Stops.Count);
@@ -96,25 +96,25 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.GVR {
         newTour.Stops.InsertRange(newPosition + 1, subroute);
       } else {
         //special case -> only one tour, whole tour has been chosen as subroute
-        child = parent1.Clone() as GVREncoding;
+        child = parent1.Clone() as GVREncodedSolution;
       }
 
       return child;
     }
 
     public override IOperation InstrumentedApply() {
-      ItemArray<IVRPEncoding> parents = new ItemArray<IVRPEncoding>(ParentsParameter.ActualValue.Length);
+      ItemArray<IVRPEncodedSolution> parents = new ItemArray<IVRPEncodedSolution>(ParentsParameter.ActualValue.Length);
       for (int i = 0; i < ParentsParameter.ActualValue.Length; i++) {
-        IVRPEncoding solution = ParentsParameter.ActualValue[i];
-        if (!(solution is GVREncoding)) {
-          parents[i] = GVREncoding.ConvertFrom(solution, ProblemInstance);
+        IVRPEncodedSolution solution = ParentsParameter.ActualValue[i];
+        if (!(solution is GVREncodedSolution)) {
+          parents[i] = GVREncodedSolution.ConvertFrom(solution, ProblemInstance);
         } else {
           parents[i] = solution;
         }
       }
       ParentsParameter.ActualValue = parents;
 
-      ChildParameter.ActualValue = Crossover(RandomParameter.ActualValue, parents[0] as GVREncoding, parents[1] as GVREncoding);
+      ChildParameter.ActualValue = Crossover(RandomParameter.ActualValue, parents[0] as GVREncodedSolution, parents[1] as GVREncodedSolution);
 
       return base.InstrumentedApply();
     }

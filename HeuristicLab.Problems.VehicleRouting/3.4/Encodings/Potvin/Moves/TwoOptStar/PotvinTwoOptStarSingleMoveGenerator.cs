@@ -60,7 +60,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
       : base(original, cloner) {
     }
 
-    public static PotvinTwoOptStarMove Apply(PotvinEncoding individual, IVRPProblemInstance problemInstance, IRandom rand) {
+    public static PotvinTwoOptStarMove Apply(PotvinEncodedSolution individual, IVRPProblemInstance problemInstance, IRandom rand) {
       int route1Idx = rand.Next(individual.Tours.Count);
       int route2Idx = rand.Next(individual.Tours.Count - 1);
       if (route2Idx >= route1Idx)
@@ -75,7 +75,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
       return new PotvinTwoOptStarMove(route1Idx, x1, route2Idx, x2, individual);
     }
 
-    protected override PotvinTwoOptStarMove[] GenerateMoves(PotvinEncoding individual, IVRPProblemInstance problemInstance) {
+    protected override PotvinTwoOptStarMove[] GenerateMoves(PotvinEncodedSolution individual, IVRPProblemInstance problemInstance) {
       List<PotvinTwoOptStarMove> result = new List<PotvinTwoOptStarMove>();
 
       PotvinTwoOptStarMove move = Apply(individual, ProblemInstance, RandomParameter.ActualValue);

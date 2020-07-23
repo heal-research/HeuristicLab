@@ -47,15 +47,15 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Zhu {
       : base(original, cloner) {
     }
 
-    protected abstract ZhuEncoding Crossover(IRandom random, ZhuEncoding parent1, ZhuEncoding parent2);
+    protected abstract ZhuEncodedSolution Crossover(IRandom random, ZhuEncodedSolution parent1, ZhuEncodedSolution parent2);
 
     public override IOperation InstrumentedApply() {
-      ItemArray<IVRPEncoding> parents = new ItemArray<IVRPEncoding>(ParentsParameter.ActualValue.Length);
+      ItemArray<IVRPEncodedSolution> parents = new ItemArray<IVRPEncodedSolution>(ParentsParameter.ActualValue.Length);
       for (int i = 0; i < ParentsParameter.ActualValue.Length; i++) {
-        IVRPEncoding solution = ParentsParameter.ActualValue[i];
+        IVRPEncodedSolution solution = ParentsParameter.ActualValue[i];
 
-        if (!(solution is ZhuEncoding)) {
-          parents[i] = ZhuEncoding.ConvertFrom(solution, ProblemInstance);
+        if (!(solution is ZhuEncodedSolution)) {
+          parents[i] = ZhuEncodedSolution.ConvertFrom(solution, ProblemInstance);
         } else {
           parents[i] = solution;
         }
@@ -63,7 +63,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Zhu {
       ParentsParameter.ActualValue = parents;
 
       ChildParameter.ActualValue =
-        Crossover(RandomParameter.ActualValue, parents[0] as ZhuEncoding, parents[1] as ZhuEncoding);
+        Crossover(RandomParameter.ActualValue, parents[0] as ZhuEncodedSolution, parents[1] as ZhuEncodedSolution);
 
       return base.InstrumentedApply();
     }

@@ -48,15 +48,15 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Prins {
       : base(original, cloner) {
     }
 
-    protected abstract PrinsEncoding Crossover(IRandom random, PrinsEncoding parent1, PrinsEncoding parent2);
+    protected abstract PrinsEncodedSolution Crossover(IRandom random, PrinsEncodedSolution parent1, PrinsEncodedSolution parent2);
 
     public override IOperation InstrumentedApply() {
-      ItemArray<IVRPEncoding> parents = new ItemArray<IVRPEncoding>(ParentsParameter.ActualValue.Length);
+      ItemArray<IVRPEncodedSolution> parents = new ItemArray<IVRPEncodedSolution>(ParentsParameter.ActualValue.Length);
       for (int i = 0; i < ParentsParameter.ActualValue.Length; i++) {
-        IVRPEncoding solution = ParentsParameter.ActualValue[i];
+        IVRPEncodedSolution solution = ParentsParameter.ActualValue[i];
 
-        if (!(solution is PrinsEncoding)) {
-          parents[i] = PrinsEncoding.ConvertFrom(solution, ProblemInstance);
+        if (!(solution is PrinsEncodedSolution)) {
+          parents[i] = PrinsEncodedSolution.ConvertFrom(solution, ProblemInstance);
         } else {
           parents[i] = solution;
         }
@@ -64,7 +64,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Prins {
       ParentsParameter.ActualValue = parents;
 
       ChildParameter.ActualValue =
-        Crossover(RandomParameter.ActualValue, parents[0] as PrinsEncoding, parents[1] as PrinsEncoding);
+        Crossover(RandomParameter.ActualValue, parents[0] as PrinsEncodedSolution, parents[1] as PrinsEncodedSolution);
 
       return base.InstrumentedApply();
     }

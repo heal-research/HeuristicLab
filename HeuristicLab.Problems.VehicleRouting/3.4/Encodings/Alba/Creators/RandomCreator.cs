@@ -87,7 +87,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
 
     public override IOperation InstrumentedApply() {
       //choose default encoding here
-      VRPToursParameter.ActualValue = AlbaEncoding.ConvertFrom(CreateSolution(), ProblemInstance);
+      VRPToursParameter.ActualValue = AlbaEncodedSolution.ConvertFrom(CreateSolution(), ProblemInstance);
 
       return base.InstrumentedApply();
     }

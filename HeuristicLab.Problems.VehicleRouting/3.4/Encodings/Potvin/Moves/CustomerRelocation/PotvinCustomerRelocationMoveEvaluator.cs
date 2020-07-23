@@ -72,7 +72,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
     protected override void EvaluateMove() {
       PotvinCustomerRelocationMove move = CustomerRelocationMoveParameter.ActualValue;
 
-      PotvinEncoding newSolution = CustomerRelocationMoveParameter.ActualValue.Individual.Clone() as PotvinEncoding;
+      PotvinEncodedSolution newSolution = CustomerRelocationMoveParameter.ActualValue.Individual.Clone() as PotvinEncodedSolution;
       PotvinCustomerRelocationMoveMaker.Apply(newSolution, move, ProblemInstance);
 
       UpdateEvaluation(newSolution);

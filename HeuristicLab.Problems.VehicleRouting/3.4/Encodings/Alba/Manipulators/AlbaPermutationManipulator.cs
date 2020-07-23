@@ -49,7 +49,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
       : base(original, cloner) {
     }
 
-    protected override void Manipulate(IRandom random, AlbaEncoding individual) {
+    protected override void Manipulate(IRandom random, AlbaEncodedSolution individual) {
       InnerManipulatorParameter.ActualValue.PermutationParameter.ActualName = VRPToursParameter.ActualName;
 
       IAtomicOperation op = this.ExecutionContext.CreateOperation(

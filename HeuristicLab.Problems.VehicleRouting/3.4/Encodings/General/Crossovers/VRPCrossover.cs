@@ -29,12 +29,12 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
   [Item("VRPCrossover", "Crosses VRP solutions.")]
   [StorableType("E26BAD0A-49E6-477C-AEA0-CB41552F0B2B")]
   public abstract class VRPCrossover : VRPOperator, IVRPCrossover {
-    public ILookupParameter<ItemArray<IVRPEncoding>> ParentsParameter {
-      get { return (ScopeTreeLookupParameter<IVRPEncoding>)Parameters["Parents"]; }
+    public ILookupParameter<ItemArray<IVRPEncodedSolution>> ParentsParameter {
+      get { return (ScopeTreeLookupParameter<IVRPEncodedSolution>)Parameters["Parents"]; }
     }
 
-    public ILookupParameter<IVRPEncoding> ChildParameter {
-      get { return (ILookupParameter<IVRPEncoding>)Parameters["Child"]; }
+    public ILookupParameter<IVRPEncodedSolution> ChildParameter {
+      get { return (ILookupParameter<IVRPEncodedSolution>)Parameters["Child"]; }
     }
 
     [StorableConstructor]
@@ -42,9 +42,9 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
 
     public VRPCrossover()
       : base() {
-      Parameters.Add(new ScopeTreeLookupParameter<IVRPEncoding>("Parents", "The parent permutations which should be crossed."));
+      Parameters.Add(new ScopeTreeLookupParameter<IVRPEncodedSolution>("Parents", "The parent permutations which should be crossed."));
       ParentsParameter.ActualName = "VRPTours";
-      Parameters.Add(new LookupParameter<IVRPEncoding>("Child", "The child permutation resulting from the crossover."));
+      Parameters.Add(new LookupParameter<IVRPEncodedSolution>("Child", "The child permutation resulting from the crossover."));
       ChildParameter.ActualName = "VRPTours";
     }
 

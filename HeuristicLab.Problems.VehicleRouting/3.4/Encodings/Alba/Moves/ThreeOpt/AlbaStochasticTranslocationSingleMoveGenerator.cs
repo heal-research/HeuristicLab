@@ -71,7 +71,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
     public override IOperation InstrumentedApply() {
       IOperation next = base.InstrumentedApply();
 
-      IVRPEncoding solution = VRPToursParameter.ActualValue;
+      IVRPEncodedSolution solution = VRPToursParameter.ActualValue;
 
       generator.PermutationParameter.ActualName = VRPToursParameter.ActualName;
       IAtomicOperation op = this.ExecutionContext.CreateChildOperation(generator);
@@ -86,7 +86,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
           TranslocationMove move = moveVariable.Value as TranslocationMove;
           moveVariable.Value =
             new AlbaTranslocationMove(
-              move.Index1, move.Index2, move.Index3, solution as AlbaEncoding);
+              move.Index1, move.Index2, move.Index3, solution as AlbaEncodedSolution);
         }
       }
 

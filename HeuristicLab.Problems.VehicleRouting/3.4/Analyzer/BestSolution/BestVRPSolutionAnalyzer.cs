@@ -41,8 +41,8 @@ namespace HeuristicLab.Problems.VehicleRouting {
     public ILookupParameter<IVRPProblemInstance> ProblemInstanceParameter {
       get { return (ILookupParameter<IVRPProblemInstance>)Parameters["ProblemInstance"]; }
     }
-    public ScopeTreeLookupParameter<IVRPEncoding> VRPToursParameter {
-      get { return (ScopeTreeLookupParameter<IVRPEncoding>)Parameters["VRPTours"]; }
+    public ScopeTreeLookupParameter<IVRPEncodedSolution> VRPToursParameter {
+      get { return (ScopeTreeLookupParameter<IVRPEncodedSolution>)Parameters["VRPTours"]; }
     }
 
     public ScopeTreeLookupParameter<DoubleValue> QualityParameter {
@@ -82,7 +82,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
     public BestVRPSolutionAnalyzer()
       : base() {
       Parameters.Add(new LookupParameter<IVRPProblemInstance>("ProblemInstance", "The problem instance."));
-      Parameters.Add(new ScopeTreeLookupParameter<IVRPEncoding>("VRPTours", "The VRP tours which should be evaluated."));
+      Parameters.Add(new ScopeTreeLookupParameter<IVRPEncodedSolution>("VRPTours", "The VRP tours which should be evaluated."));
 
       Parameters.Add(new LookupParameter<DoubleValue>("BestKnownQuality", "The quality of the best known solution of this VRP instance."));
       Parameters.Add(new LookupParameter<VRPSolution>("BestKnownSolution", "The best known solution of this VRP instance."));
@@ -118,7 +118,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
 
     public override IOperation Apply() {
       IVRPProblemInstance problemInstance = ProblemInstanceParameter.ActualValue;
-      ItemArray<IVRPEncoding> solutions = VRPToursParameter.ActualValue;
+      ItemArray<IVRPEncodedSolution> solutions = VRPToursParameter.ActualValue;
       ResultCollection results = ResultsParameter.ActualValue;
 
       ItemArray<DoubleValue> qualities = QualityParameter.ActualValue;
@@ -126,10 +126,10 @@ namespace HeuristicLab.Problems.VehicleRouting {
       ItemArray<DoubleValue> vehiclesUtilizations = VehiclesUtilizedParameter.ActualValue;
 
       int i = qualities.Select((x, index) => new { index, x.Value }).OrderBy(x => x.Value).First().index;
-      IVRPEncoding best = solutions[i].Clone() as IVRPEncoding;
+      IVRPEncodedSolution best = solutions[i].Clone() as IVRPEncodedSolution;
       VRPSolution solution = BestSolutionParameter.ActualValue;
       if (solution == null) {
-        solution = new VRPSolution(problemInstance, best.Clone() as IVRPEncoding, new DoubleValue(qualities[i].Value));
+        solution = new VRPSolution(problemInstance, best.Clone() as IVRPEncodedSolution, new DoubleValue(qualities[i].Value));
         BestSolutionParameter.ActualValue = solution;
         results.Add(new Result("Best VRP Solution", solution));
 
@@ -139,7 +139,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
         VRPEvaluation eval = problemInstance.Evaluate(solution.Solution);
         if (qualities[i].Value <= eval.Quality) {
           solution.ProblemInstance = problemInstance;
-          solution.Solution = best.Clone() as IVRPEncoding;
+          solution.Solution = best.Clone() as IVRPEncodedSolution;
           solution.Quality.Value = qualities[i].Value;
           (results["Best VRP Solution Distance"].Value as DoubleValue).Value = distances[i].Value;
           (results["Best VRP Solution VehicleUtilization"].Value as DoubleValue).Value = vehiclesUtilizations[i].Value;
@@ -149,10 +149,10 @@ namespace HeuristicLab.Problems.VehicleRouting {
       var idx = qualities.Select((x, index) => new { index, x.Value }).Where(index => problemInstance.Feasible(solutions[index.index])).OrderBy(x => x.Value).FirstOrDefault();
       if (idx != null) {
         int j = idx.index;
-        IVRPEncoding bestFeasible = solutions[j].Clone() as IVRPEncoding;
+        IVRPEncodedSolution bestFeasible = solutions[j].Clone() as IVRPEncodedSolution;
         VRPSolution validSolution = BestValidSolutionParameter.ActualValue;
         if (validSolution == null) {
-          validSolution = new VRPSolution(problemInstance, best.Clone() as IVRPEncoding, new DoubleValue(qualities[j].Value));
+          validSolution = new VRPSolution(problemInstance, best.Clone() as IVRPEncodedSolution, new DoubleValue(qualities[j].Value));
           BestValidSolutionParameter.ActualValue = validSolution;
           if (results.ContainsKey("Best valid VRP Solution"))
             results["Best valid VRP Solution"].Value = validSolution;
@@ -165,7 +165,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
           if (qualities[j].Value <= validSolution.Quality.Value) {
             if (ProblemInstanceParameter.ActualValue.Feasible(best)) {
               validSolution.ProblemInstance = problemInstance;
-              validSolution.Solution = best.Clone() as IVRPEncoding;
+              validSolution.Solution = best.Clone() as IVRPEncodedSolution;
               validSolution.Quality.Value = qualities[j].Value;
               (results["Best valid VRP Solution Distance"].Value as DoubleValue).Value = distances[j].Value;
               (results["Best valid VRP Solution VehicleUtilization"].Value as DoubleValue).Value = vehiclesUtilizations[j].Value;

@@ -43,7 +43,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
       : base(original, cloner) {
     }
 
-    public static bool PairwiseMove(PotvinEncoding individual, IVRPProblemInstance instance, int city, bool allowInfeasible) {
+    public static bool PairwiseMove(PotvinEncodedSolution individual, IVRPProblemInstance instance, int city, bool allowInfeasible) {
       bool success;
 
       IPickupAndDeliveryProblemInstance pdp = instance as IPickupAndDeliveryProblemInstance;
@@ -127,7 +127,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
       return success;
     }
 
-    public static void ApplyManipulation(IRandom random, PotvinEncoding individual, IPickupAndDeliveryProblemInstance pdp, bool allowInfeasible) {
+    public static void ApplyManipulation(IRandom random, PotvinEncodedSolution individual, IPickupAndDeliveryProblemInstance pdp, bool allowInfeasible) {
       int selectedIndex = SelectRandomTourBiasedByLength(random, individual, pdp);
       if (selectedIndex >= 0) {
         Tour route1 =
@@ -148,7 +148,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
     }
 
 
-    protected override void Manipulate(IRandom random, PotvinEncoding individual) {
+    protected override void Manipulate(IRandom random, PotvinEncodedSolution individual) {
       bool allowInfeasible = AllowInfeasibleSolutions.Value.Value;
 
       IPickupAndDeliveryProblemInstance pdp = ProblemInstance as IPickupAndDeliveryProblemInstance;

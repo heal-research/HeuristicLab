@@ -31,14 +31,14 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
   [Item("AlbaTranslocationMove", "Item that describes a translocation move on a VRP representation.  It is implemented as described in Alba, E. and Dorronsoro, B. (2004). Solving the Vehicle Routing Problem by Using Cellular Genetic Algorithms.")]
   [StorableType("C9BA8BFE-712F-4575-82E6-B94C604C001B")]
   public class AlbaTranslocationMove : TranslocationMove, IVRPMove {
-    public IVRPEncoding Individual { get { return Permutation as AlbaEncoding; } }
+    public IVRPEncodedSolution Individual { get { return Permutation as AlbaEncodedSolution; } }
 
     public AlbaTranslocationMove(int index1, int index2, int index3) :
       base(index1, index2, index3) {
     }
 
-    public AlbaTranslocationMove(int index1, int index2, int index3, AlbaEncoding individual) :
-      base(index1, index2, index3, individual.Clone() as AlbaEncoding) {
+    public AlbaTranslocationMove(int index1, int index2, int index3, AlbaEncodedSolution individual) :
+      base(index1, index2, index3, individual.Clone() as AlbaEncodedSolution) {
     }
 
     [StorableConstructor]
@@ -54,7 +54,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
       this.Index2 = original.Index2;
       this.Index3 = original.Index3;
 
-      this.Permutation = cloner.Clone(Permutation) as AlbaEncoding;
+      this.Permutation = cloner.Clone(Permutation) as AlbaEncodedSolution;
     }
 
     #region IVRPMove Members

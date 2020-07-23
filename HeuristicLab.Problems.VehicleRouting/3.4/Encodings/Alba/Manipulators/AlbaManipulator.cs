@@ -47,9 +47,9 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
       : base(original, cloner) {
     }
 
-    protected abstract void Manipulate(IRandom random, AlbaEncoding individual);
+    protected abstract void Manipulate(IRandom random, AlbaEncodedSolution individual);
 
-    protected int FindCustomerLocation(int customer, AlbaEncoding individual) {
+    protected int FindCustomerLocation(int customer, AlbaEncodedSolution individual) {
       int pos = -1;
       for (int i = 0; i < individual.Length; i++) {
         if (individual[i] == customer) {
@@ -62,13 +62,13 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
     }
 
     public override IOperation InstrumentedApply() {
-      IVRPEncoding solution = VRPToursParameter.ActualValue;
-      if (!(solution is AlbaEncoding)) {
-        VRPToursParameter.ActualValue = AlbaEncoding.ConvertFrom(solution, ProblemInstance);
+      IVRPEncodedSolution solution = VRPToursParameter.ActualValue;
+      if (!(solution is AlbaEncodedSolution)) {
+        VRPToursParameter.ActualValue = AlbaEncodedSolution.ConvertFrom(solution, ProblemInstance);
       }
 
-      Manipulate(RandomParameter.ActualValue, VRPToursParameter.ActualValue as AlbaEncoding);
-      (VRPToursParameter.ActualValue as AlbaEncoding).Repair();
+      Manipulate(RandomParameter.ActualValue, VRPToursParameter.ActualValue as AlbaEncodedSolution);
+      (VRPToursParameter.ActualValue as AlbaEncodedSolution).Repair();
 
       return base.InstrumentedApply();
     }

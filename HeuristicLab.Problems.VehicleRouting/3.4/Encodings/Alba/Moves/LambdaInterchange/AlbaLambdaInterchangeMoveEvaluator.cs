@@ -54,7 +54,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
     }
 
     protected override void EvaluateMove() {
-      AlbaEncoding newSolution = LambdaInterchangeMoveParameter.ActualValue.Individual.Clone() as AlbaEncoding;
+      AlbaEncodedSolution newSolution = LambdaInterchangeMoveParameter.ActualValue.Individual.Clone() as AlbaEncodedSolution;
       AlbaLambdaInterchangeMoveMaker.Apply(newSolution, LambdaInterchangeMoveParameter.ActualValue);
 
       UpdateEvaluation(newSolution);

@@ -193,10 +193,10 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
       return toBeRemoved.Count > 0;
     }
 
-    public static PotvinEncoding CreateSolution(IVRPProblemInstance problemInstance, IRandom random,
+    public static PotvinEncodedSolution CreateSolution(IVRPProblemInstance problemInstance, IRandom random,
       double alphaValue = 0.7, double betaValue = 0.1, double gammaValue = 0.2,
       double alphaVariance = 0.5, double betaVariance = 0.07, double gammaVariance = 0.14) {
-      PotvinEncoding result = new PotvinEncoding(problemInstance);
+      PotvinEncodedSolution result = new PotvinEncodedSolution(problemInstance);
 
       IPickupAndDeliveryProblemInstance pdp = problemInstance as IPickupAndDeliveryProblemInstance;
       IMultiDepotProblemInstance mdp = problemInstance as IMultiDepotProblemInstance;

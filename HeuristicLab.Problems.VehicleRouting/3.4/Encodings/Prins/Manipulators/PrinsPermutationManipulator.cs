@@ -49,7 +49,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Prins {
       : base(original, cloner) {
     }
 
-    protected override void Manipulate(IRandom random, PrinsEncoding individual) {
+    protected override void Manipulate(IRandom random, PrinsEncodedSolution individual) {
       InnerManipulatorParameter.ActualValue.PermutationParameter.ActualName = VRPToursParameter.ActualName;
 
       IAtomicOperation op = this.ExecutionContext.CreateOperation(

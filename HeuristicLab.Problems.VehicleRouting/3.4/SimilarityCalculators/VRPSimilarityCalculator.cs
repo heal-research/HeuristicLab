@@ -56,7 +56,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
       return new VRPSimilarityCalculator(this, cloner);
     }
 
-    public static double CalculateSimilarity(PotvinEncoding left, PotvinEncoding right) {
+    public static double CalculateSimilarity(PotvinEncodedSolution left, PotvinEncodedSolution right) {
       if (left == null || right == null)
         throw new ArgumentException("Cannot calculate similarity because one of the provided solutions or both are null.");
       if (left == right) return 1.0;
@@ -92,11 +92,11 @@ namespace HeuristicLab.Problems.VehicleRouting {
     }
 
     public override double CalculateSolutionSimilarity(IScope leftSolution, IScope rightSolution) {
-      var sol1 = leftSolution.Variables[SolutionVariableName].Value as IVRPEncoding;
-      var sol2 = rightSolution.Variables[SolutionVariableName].Value as IVRPEncoding;
+      var sol1 = leftSolution.Variables[SolutionVariableName].Value as IVRPEncodedSolution;
+      var sol2 = rightSolution.Variables[SolutionVariableName].Value as IVRPEncodedSolution;
 
-      var potvinSol1 = sol1 is PotvinEncoding ? sol1 as PotvinEncoding : PotvinEncoding.ConvertFrom(sol1, ProblemInstance);
-      var potvinSol2 = sol2 is PotvinEncoding ? sol2 as PotvinEncoding : PotvinEncoding.ConvertFrom(sol2, ProblemInstance);
+      var potvinSol1 = sol1 is PotvinEncodedSolution ? sol1 as PotvinEncodedSolution : PotvinEncodedSolution.ConvertFrom(sol1, ProblemInstance);
+      var potvinSol2 = sol2 is PotvinEncodedSolution ? sol2 as PotvinEncodedSolution : PotvinEncodedSolution.ConvertFrom(sol2, ProblemInstance);
 
       return CalculateSimilarity(potvinSol1, potvinSol2);
     }

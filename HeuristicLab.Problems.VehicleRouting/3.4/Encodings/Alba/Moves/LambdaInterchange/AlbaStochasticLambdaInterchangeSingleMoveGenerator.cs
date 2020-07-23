@@ -61,7 +61,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
       : base(original, cloner) {
     }
 
-    public static AlbaLambdaInterchangeMove Apply(AlbaEncoding individual, int cities, int lambda, IRandom rand) {
+    public static AlbaLambdaInterchangeMove Apply(AlbaEncodedSolution individual, int cities, int lambda, IRandom rand) {
       List<Tour> tours = individual.GetTours();
 
       if (tours.Count > 1) {
@@ -89,7 +89,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
       }
     }
 
-    protected override AlbaLambdaInterchangeMove[] GenerateMoves(AlbaEncoding individual, IVRPProblemInstance problemInstance, int lambda) {
+    protected override AlbaLambdaInterchangeMove[] GenerateMoves(AlbaEncodedSolution individual, IVRPProblemInstance problemInstance, int lambda) {
       List<AlbaLambdaInterchangeMove> moves = new List<AlbaLambdaInterchangeMove>();
 
       AlbaLambdaInterchangeMove move = Apply(individual, problemInstance.Cities.Value, lambda, RandomParameter.ActualValue);

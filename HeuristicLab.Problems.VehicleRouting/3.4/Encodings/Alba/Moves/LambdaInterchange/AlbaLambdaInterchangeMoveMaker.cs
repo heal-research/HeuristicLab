@@ -56,7 +56,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
       : base(original, cloner) {
     }
 
-    public static void Apply(AlbaEncoding solution, AlbaLambdaInterchangeMove move) {
+    public static void Apply(AlbaEncodedSolution solution, AlbaLambdaInterchangeMove move) {
       AlbaLambdaInterchangeManipulator.Apply(
         solution,
         move.Tour1, move.Position1, move.Length1,
@@ -66,7 +66,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
     protected override void PerformMove() {
       AlbaLambdaInterchangeMove move = LambdaInterchangeMoveParameter.ActualValue;
 
-      Apply(move.Individual as AlbaEncoding, move);
+      Apply(move.Individual as AlbaEncodedSolution, move);
       VRPToursParameter.ActualValue = move.Individual;
     }
   }

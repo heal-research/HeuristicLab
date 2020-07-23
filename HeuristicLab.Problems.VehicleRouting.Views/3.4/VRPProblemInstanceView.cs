@@ -36,8 +36,8 @@ namespace HeuristicLab.Problems.VehicleRouting.Views {
       set { base.Content = value; }
     }
 
-    private IVRPEncoding solution;
-    public IVRPEncoding Solution {
+    private IVRPEncodedSolution solution;
+    public IVRPEncodedSolution Solution {
       get {
         return solution;
       }
