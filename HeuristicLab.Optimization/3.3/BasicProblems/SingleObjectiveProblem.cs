@@ -198,6 +198,14 @@ namespace HeuristicLab.Optimization {
         op.SolutionVariableName = Encoding.Name;
         op.QualityVariableName = Evaluator.QualityParameter.ActualName;
       }
+      foreach (var op in Operators.OfType<ISingleObjectiveImprovementOperator>()) {
+        op.SolutionParameter.ActualName = Encoding.Name;
+        op.SolutionParameter.Hidden = true;
+      }
+      foreach (var op in Operators.OfType<ISingleObjectivePathRelinker>()) {
+        op.ParentsParameter.ActualName = Encoding.Name;
+        op.ParentsParameter.Hidden = true;
+      }
     }
 
     private void RegisterEventHandlers() {

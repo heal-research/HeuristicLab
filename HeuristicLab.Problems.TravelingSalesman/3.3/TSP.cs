@@ -162,7 +162,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
     }
 
     public static ITSPData GetDataFromInstance(TSPData input) {
-      ITSPData tspData = null;
+      ITSPData tspData;
       if (input.Dimension <= DistanceMatrixSizeLimit) {
         tspData = new MatrixTSPData(input.Name, input.GetDistanceMatrix(), input.Coordinates) { Description = input.Description };
       } else if (input.DistanceMeasure == DistanceMeasure.Direct && input.Distances != null) {
@@ -207,20 +207,21 @@ namespace HeuristicLab.Problems.TravelingSalesman {
     }
 
     private void InitializeOperators() {
-      Operators.Add(new TSPImprovementOperator());
-      Operators.Add(new TSPMultipleGuidesPathRelinker());
-      Operators.Add(new TSPPathRelinker());
-      Operators.Add(new TSPSimultaneousPathRelinker());
-
-      Operators.Add(new TSPAlleleFrequencyAnalyzer());
+      var ops = new List<IItem>() { new TSPImprovementOperator(), new TSPMultipleGuidesPathRelinker(),
+        new TSPPathRelinker(), new TSPSimultaneousPathRelinker(), new TSPAlleleFrequencyAnalyzer() };
       foreach (var op in ApplicationManager.Manager.GetInstances<ITSPMoveEvaluator>()) {
-        Encoding.ConfigureOperator(op);
-        Operators.Add(op);
+        ops.Add(op);
       }
-      ParameterizeOperators();
+      Encoding.ConfigureOperators(ops);
+      Operators.AddRange(ops);
     }
 
-    private void ParameterizeOperators() {
+    protected override void ParameterizeOperators() {
+      base.ParameterizeOperators();
+      Parameterize();
+    }
+
+    private void Parameterize() {
       foreach (var op in Operators.OfType<TSPAlleleFrequencyAnalyzer>()) {
         op.MaximizationParameter.ActualName = MaximizationParameter.Name;
         op.TSPDataParameter.ActualName = TSPDataParameter.Name;
@@ -236,18 +237,6 @@ namespace HeuristicLab.Problems.TravelingSalesman {
         op.TourLengthParameter.Hidden = true;
         op.TSPTourParameter.ActualName = Encoding.Name;
         op.TSPTourParameter.Hidden = true;
-      }
-      foreach (var op in Operators.OfType<ISingleObjectiveImprovementOperator>()) {
-        op.SolutionParameter.ActualName = Encoding.Name;
-        op.SolutionParameter.Hidden = true;
-      }
-      foreach (ISingleObjectivePathRelinker op in Operators.OfType<ISingleObjectivePathRelinker>()) {
-        op.ParentsParameter.ActualName = Encoding.Name;
-        op.ParentsParameter.Hidden = true;
-      }
-      foreach (ISolutionSimilarityCalculator op in Operators.OfType<ISolutionSimilarityCalculator>()) {
-        op.SolutionVariableName = Encoding.Name;
-        op.QualityVariableName = Evaluator.QualityParameter.ActualName;
       }
     }
   }
