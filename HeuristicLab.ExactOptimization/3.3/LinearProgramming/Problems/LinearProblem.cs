@@ -42,7 +42,6 @@ namespace HeuristicLab.ExactOptimization.LinearProgramming {
     private readonly IValueParameter<ILinearProblemDefinition> problemDefinitionParam;
 
     public LinearProblem() {
-      Parameters.Remove(Parameters["Operators"]);
       Parameters.Add(problemDefinitionParam = new ValueParameter<ILinearProblemDefinition>("Model", "The linear programming problem",
         new ProgrammableLinearProblemDefinition()) { GetsCollected = false });
     }

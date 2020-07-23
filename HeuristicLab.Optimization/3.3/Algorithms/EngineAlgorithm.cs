@@ -51,7 +51,7 @@ namespace HeuristicLab.Optimization {
 
     public new IEncodedProblem Problem {
       get { return (IEncodedProblem)base.Problem; }
-      set { base.Problem = Problem; }
+      set { base.Problem = value; }
     }
 
     [Storable]

@@ -24,15 +24,12 @@ using System.Drawing;
 using System.Linq;
 using System.Threading;
 using HEAL.Attic;
-using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Optimization;
-using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Problems.LinearAssignment {
   [Item("Linear Assignment Problem (LAP)", "In the linear assignment problem (LAP) an assignment of workers to jobs has to be found such that each worker is assigned to exactly one job, each job is assigned to exactly one worker and the sum of the resulting costs is minimal (or maximal).")]
@@ -118,8 +115,7 @@ namespace HeuristicLab.Problems.LinearAssignment {
       Costs[1, 0] = 6; Costs[1, 1] = 6; Costs[1, 2] = 4;
       Costs[2, 0] = 5; Costs[2, 1] = 5; Costs[2, 2] = 1;
 
-      InitializeOperators();
-      Parameterize();
+      Operators.RemoveAll(x => x is IMoveOperator);
       AttachEventHandlers();
     }
 
@@ -193,27 +189,20 @@ namespace HeuristicLab.Problems.LinearAssignment {
     }
 
     #region Events
-    protected override void OnOperatorsChanged() {
-      base.OnOperatorsChanged();
-      Parameterize();
-    }
     private void Costs_RowsChanged(object sender, EventArgs e) {
       if (Costs.Rows != Costs.Columns) {
         ((IStringConvertibleMatrix)Costs).Columns = Costs.Rows;
-        Parameterize();
+        Dimension = Costs.Rows;
       }
     }
     private void Costs_ColumnsChanged(object sender, EventArgs e) {
       if (Costs.Rows != Costs.Columns) {
         ((IStringConvertibleMatrix)Costs).Rows = Costs.Columns;
-        Parameterize();
+        Dimension = Costs.Rows;
       }
     }
     private void Costs_Reset(object sender, EventArgs e) {
-      Parameterize();
-    }
-    private void SolutionCreator_PermutationParameter_ActualNameChanged(object sender, EventArgs e) {
-      Parameterize();
+      Dimension = Costs.Rows;
     }
     #endregion
 
@@ -227,23 +216,6 @@ namespace HeuristicLab.Problems.LinearAssignment {
       Costs.RowsChanged += new EventHandler(Costs_RowsChanged);
       Costs.ColumnsChanged += new EventHandler(Costs_ColumnsChanged);
       Costs.Reset += new EventHandler(Costs_Reset);
-    }
-
-    private void InitializeOperators() {
-      Operators.AddRange(ApplicationManager.Manager.GetInstances<IPermutationOperator>());
-      Operators.RemoveAll(x => x is IMoveOperator);
-
-      Operators.Add(new HammingSimilarityCalculator());
-      Operators.Add(new QualitySimilarityCalculator());
-      Operators.Add(new PopulationSimilarityAnalyzer(Operators.OfType<ISolutionSimilarityCalculator>()));
-    }
-
-    private void Parameterize() {
-      if (Costs.Rows != Dimension) Dimension = Costs.Rows;
-      foreach (var similarityCalculator in Operators.OfType<ISolutionSimilarityCalculator>()) {
-        similarityCalculator.SolutionVariableName = Encoding.Name;
-        similarityCalculator.QualityVariableName = Evaluator.QualityParameter.ActualName;
-      }
     }
     #endregion
   }
