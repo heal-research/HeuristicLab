@@ -20,18 +20,18 @@
 #endregion
 
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
   [Item("Symbolic Regression Problem (multi-objective)", "Represents a multi objective symbolic regression problem.")]
   [StorableType("4A8D3658-66B3-48B4-B983-D46409045DBE")]
   [Creatable(CreatableAttribute.Categories.GeneticProgrammingProblems, Priority = 110)]
-  public class SymbolicRegressionMultiObjectiveProblem : SymbolicDataAnalysisMultiObjectiveProblem<IRegressionProblemData, ISymbolicRegressionMultiObjectiveEvaluator, ISymbolicDataAnalysisSolutionCreator>, IRegressionProblem {
+  public class SymbolicRegressionMultiObjectiveProblem : SymbolicDataAnalysisMultiObjectiveProblem<IRegressionProblemData, ISymbolicRegressionMultiObjectiveEvaluator>, IRegressionProblem {
     private const double PunishmentFactor = 10;
     private const int InitialMaximumTreeDepth = 8;
     private const int InitialMaximumTreeLength = 25;
@@ -60,7 +60,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     public override IDeepCloneable Clone(Cloner cloner) { return new SymbolicRegressionMultiObjectiveProblem(this, cloner); }
 
     public SymbolicRegressionMultiObjectiveProblem()
-      : base(new RegressionProblemData(), new SymbolicRegressionMultiObjectivePearsonRSquaredTreeSizeEvaluator(), new SymbolicDataAnalysisExpressionTreeCreator()) {
+      : base(new RegressionProblemData(), new SymbolicRegressionMultiObjectivePearsonRSquaredTreeSizeEvaluator()) {
       Parameters.Add(new FixedValueParameter<DoubleLimit>(EstimationLimitsParameterName, EstimationLimitsParameterDescription));
 
       EstimationLimitsParameter.Hidden = true;
@@ -126,7 +126,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       }
 
       foreach (var op in Operators.OfType<ISolutionSimilarityCalculator>()) {
-        op.SolutionVariableName = SolutionCreator.SymbolicExpressionTreeParameter.ActualName;
+        //op.SolutionVariableName = SolutionCreator.SymbolicExpressionTreeParameter.ActualName;
         op.QualityVariableName = Evaluator.QualitiesParameter.ActualName;
 
         if (op is SymbolicExpressionTreePhenotypicSimilarityCalculator) {

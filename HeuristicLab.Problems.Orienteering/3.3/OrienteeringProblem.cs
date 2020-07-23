@@ -82,7 +82,6 @@ namespace HeuristicLab.Problems.Orienteering {
 
       var creator = new GreedyOrienteeringTourCreator();
       Operators.AddRange(new IItem[] { creator, new OrienteeringLocalImprovementOperator(), new OrienteeringShakingOperator() });
-      SolutionCreatorParameter.Value = creator;
 
       Parameterize();
       RegisterEventHandlers();

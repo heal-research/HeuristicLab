@@ -21,6 +21,7 @@
 
 #endregion
 
+using System;
 using System.Linq;
 using HEAL.Attic;
 using HeuristicLab.Analysis;
@@ -66,6 +67,7 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
     protected IntegerVectorProblem() : this(new IntegerVectorEncoding() { Length = 10 }) { }
     protected IntegerVectorProblem(IntegerVectorEncoding encoding) : base(encoding) {
       EncodingParameter.ReadOnly = true;
+      EvaluatorParameter.ReadOnly = true;
       Parameters.Add(BestResultParameter = new ResultParameter<IntegerVector>("Best Solution", "The best solution."));
       Parameters.Add(DimensionRefParameter = new ReferenceParameter<IntValue>("Dimension", "The dimension of the integer vector problem.", Encoding.LengthParameter));
       Parameters.Add(BoundsRefParameter = new ReferenceParameter<IntMatrix>("Bounds", "The bounding box and step sizes of the values.", Encoding.BoundsParameter));
@@ -84,6 +86,14 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
       var best = GetBestSolution(vectors, qualities);
 
       results.AddOrUpdateResult("Best Solution", (IItem)best.Item1.Clone());
+    }
+
+    protected override sealed void OnEvaluatorChanged() {
+      throw new InvalidOperationException("Evaluator may not change!");
+    }
+
+    protected override sealed void OnEncodingChanged() {
+      throw new InvalidOperationException("Encoding may not change!");
     }
 
     protected override void ParameterizeOperators() {

@@ -21,6 +21,7 @@
 
 using System;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -30,7 +31,6 @@ using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Random;
 
@@ -381,7 +381,7 @@ namespace HeuristicLab.Algorithms.CMAEvolutionStrategy {
     #region Events
     protected override void OnProblemChanged() {
       Problem.Evaluator.QualityParameter.ActualNameChanged += Evaluator_QualityParameter_ActualNameChanged;
-      var creator = Problem.SolutionCreator as IRealVectorCreator;
+      var creator = SolutionCreator as IRealVectorCreator;
       if (creator != null) {
         creator.RealVectorParameter.ActualNameChanged += RealVectorCreator_Changed;
         creator.LengthParameter.ActualNameChanged += RealVectorCreator_Changed;
@@ -394,8 +394,8 @@ namespace HeuristicLab.Algorithms.CMAEvolutionStrategy {
       Parameterize();
       base.OnProblemChanged();
     }
-    protected override void Problem_SolutionCreatorChanged(object sender, EventArgs e) {
-      var creator = Problem.SolutionCreator as IRealVectorCreator;
+    protected override void SolutionCreatorOnChanged() {
+      var creator = SolutionCreator as IRealVectorCreator;
       if (creator != null) {
         creator.RealVectorParameter.ActualNameChanged += RealVectorCreator_Changed;
         creator.LengthParameter.ActualNameChanged += RealVectorCreator_Changed;
@@ -404,7 +404,7 @@ namespace HeuristicLab.Algorithms.CMAEvolutionStrategy {
         creator.BoundsParameter.ValueChanged += RealVectorCreator_Changed;
       }
       Parameterize();
-      base.Problem_SolutionCreatorChanged(sender, e);
+      base.SolutionCreatorOnChanged();
     }
     protected override void Problem_EvaluatorChanged(object sender, EventArgs e) {
       Problem.Evaluator.QualityParameter.ActualNameChanged += Evaluator_QualityParameter_ActualNameChanged;
@@ -436,7 +436,7 @@ namespace HeuristicLab.Algorithms.CMAEvolutionStrategy {
       CMAInitializerParameter.ValueChanged += CMAESInitializerParameter_ValueChanged;
       if (Problem != null) {
         Problem.Evaluator.QualityParameter.ActualNameChanged += Evaluator_QualityParameter_ActualNameChanged;
-        var creator = Problem.SolutionCreator as IRealVectorCreator;
+        var creator = SolutionCreator as IRealVectorCreator;
         if (creator != null) {
           creator.RealVectorParameter.ActualNameChanged += RealVectorCreator_Changed;
           creator.LengthParameter.ActualNameChanged += RealVectorCreator_Changed;
@@ -568,14 +568,14 @@ namespace HeuristicLab.Algorithms.CMAEvolutionStrategy {
       if (CMAUpdater != null)
         terminator.DegenerateStateParameter.ActualName = CMAUpdater.DegenerateStateParameter.ActualName;
 
-      var creator = Problem != null ? (Problem.SolutionCreator as IRealVectorCreator) : null;
+      var creator = Problem != null ? (SolutionCreator as IRealVectorCreator) : null;
       if (Problem != null && creator != null) {
 
-        solutionCreator.OperatorParameter.ActualName = Problem.SolutionCreatorParameter.Name;
+        solutionCreator.OperatorParameter.ActualName = SolutionCreatorParameter.Name;
         #region Backwards compatible code, remove with 3.4
         if (populationSolutionCreator != null) // BackwardsCompatibility3.3
           // ONLY REMOVE THE CONDITION
-          populationSolutionCreator.OperatorParameter.ActualName = Problem.SolutionCreatorParameter.Name;
+          populationSolutionCreator.OperatorParameter.ActualName = SolutionCreatorParameter.Name;
         #endregion
         evaluator.OperatorParameter.ActualName = Problem.EvaluatorParameter.Name;
         sorter.DescendingParameter.ActualName = Problem.MaximizationParameter.Name;

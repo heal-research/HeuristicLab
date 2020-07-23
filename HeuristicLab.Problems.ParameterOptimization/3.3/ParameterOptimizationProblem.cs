@@ -21,6 +21,7 @@
 
 using System;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -29,13 +30,12 @@ using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Problems.ParameterOptimization {
   [Item("Parameter Optimization Problem", "A base class for other problems for the optimization of a parameter vector.")]
   [StorableType("B1F529FE-483C-4EF2-9306-2F6A0833EEAC")]
-  public abstract class ParameterOptimizationProblem : SingleObjectiveHeuristicOptimizationProblem<IParameterVectorEvaluator, IRealVectorCreator>, IStorableContent {
+  public abstract class ParameterOptimizationProblem : SingleObjectiveHeuristicOptimizationProblem<IParameterVectorEvaluator>, IStorableContent {
     public string Filename { get; set; }
     private const string ProblemSizeParameterName = "ProblemSize";
     private const string BoundsParameterName = "Bounds";
@@ -93,12 +93,13 @@ namespace HeuristicLab.Problems.ParameterOptimization {
     }
 
     protected ParameterOptimizationProblem(IParameterVectorEvaluator evaluator)
-      : base(evaluator, new UniformRandomRealVectorCreator()) {
+      : base(evaluator) {
       Parameters.Add(new FixedValueParameter<IntValue>(ProblemSizeParameterName, "The dimension of the parameter vector that is to be optimized.", new IntValue(1)));
       Parameters.Add(new ValueParameter<DoubleMatrix>(BoundsParameterName, "The bounds for each dimension of the parameter vector. If the number of bounds is smaller than the problem size then the bounds are reused in a cyclic manner.", new DoubleMatrix(new double[,] { { 0, 100 } }, new string[] { "LowerBound", "UpperBound" })));
       Parameters.Add(new ValueParameter<StringArray>(ParameterNamesParameterName, "The element names which are used to calculate the quality of a parameter vector.", new StringArray(new string[] { "Parameter0" })));
 
-      SolutionCreator.LengthParameter.ActualName = "ProblemSize";
+      // TODO
+      //SolutionCreator.LengthParameter.ActualName = "ProblemSize";
 
       Operators.AddRange(ApplicationManager.Manager.GetInstances<IRealVectorOperator>());
 
@@ -138,11 +139,12 @@ namespace HeuristicLab.Problems.ParameterOptimization {
     }
 
     private void UpdateParameters() {
-      Evaluator.ParameterVectorParameter.ActualName = SolutionCreator.RealVectorParameter.ActualName;
+      // TODO: This method wired solution creator -> should be done by encoding
+      //Evaluator.ParameterVectorParameter.ActualName = SolutionCreator.RealVectorParameter.ActualName;
       Evaluator.ParameterNamesParameter.ActualName = ParameterNamesParameter.Name;
 
       foreach (var bestSolutionAnalyzer in Operators.OfType<BestSolutionAnalyzer>()) {
-        bestSolutionAnalyzer.ParameterVectorParameter.ActualName = SolutionCreator.RealVectorParameter.ActualName;
+        //bestSolutionAnalyzer.ParameterVectorParameter.ActualName = SolutionCreator.RealVectorParameter.ActualName;
         bestSolutionAnalyzer.ParameterNamesParameter.ActualName = ParameterNamesParameter.Name;
       }
       Bounds = new DoubleMatrix(ProblemSize, 2);
@@ -151,7 +153,7 @@ namespace HeuristicLab.Problems.ParameterOptimization {
         Bounds[i, 0] = 0.0;
         Bounds[i, 1] = 100.0;
       }
-
+      /* TODO
       foreach (var op in Operators.OfType<IRealVectorManipulator>())
         op.RealVectorParameter.ActualName = SolutionCreator.RealVectorParameter.ActualName;
 
@@ -159,6 +161,7 @@ namespace HeuristicLab.Problems.ParameterOptimization {
         similarityCalculator.SolutionVariableName = SolutionCreator.RealVectorParameter.ActualName;
         similarityCalculator.QualityVariableName = Evaluator.QualityParameter.ActualName;
       }
+      */
     }
 
     private void Bounds_ToStringChanged(object sender, EventArgs e) {

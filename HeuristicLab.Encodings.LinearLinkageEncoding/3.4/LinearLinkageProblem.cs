@@ -21,6 +21,7 @@
 
 #endregion
 
+using System;
 using System.Linq;
 using HEAL.Attic;
 using HeuristicLab.Analysis;
@@ -57,6 +58,7 @@ namespace HeuristicLab.Encodings.LinearLinkageEncoding {
     protected LinearLinkageProblem() : this(new LinearLinkageEncoding() { Length = 10 }) { }
     protected LinearLinkageProblem(LinearLinkageEncoding encoding) : base(encoding) {
       EncodingParameter.ReadOnly = true;
+      EvaluatorParameter.ReadOnly = true;
       Parameters.Add(DimensionRefParameter = new ReferenceParameter<IntValue>("Dimension", "The dimension of the linear linkage problem.", Encoding.LengthParameter));
 
       Operators.Add(new HammingSimilarityCalculator());
@@ -73,6 +75,14 @@ namespace HeuristicLab.Encodings.LinearLinkageEncoding {
       var best = GetBestSolution(vectors, qualities);
 
       results.AddOrUpdateResult("Best Solution", (Item)best.Item1.Clone());
+    }
+
+    protected override sealed void OnEvaluatorChanged() {
+      throw new InvalidOperationException("Evaluator may not change!");
+    }
+
+    protected override sealed void OnEncodingChanged() {
+      throw new InvalidOperationException("Encoding may not change!");
     }
 
     protected override void ParameterizeOperators() {

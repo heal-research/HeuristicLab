@@ -20,9 +20,10 @@
 #endregion
 
 using System;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HEAL.Attic;
+using HeuristicLab.Parameters;
 
 namespace HeuristicLab.Optimization {
   /// <summary>
@@ -36,30 +37,79 @@ namespace HeuristicLab.Optimization {
       set { base.Problem = value; }
     }
 
-    protected HeuristicOptimizationEngineAlgorithm() : base() { }
-    protected HeuristicOptimizationEngineAlgorithm(string name) : base(name) { }
-    protected HeuristicOptimizationEngineAlgorithm(string name, ParameterCollection parameters) : base(name, parameters) { }
-    protected HeuristicOptimizationEngineAlgorithm(string name, string description) : base(name, description) { }
-    protected HeuristicOptimizationEngineAlgorithm(string name, string description, ParameterCollection parameters) : base(name, description, parameters) { }
+    [Storable] public IConstrainedValueParameter<ISolutionCreator> SolutionCreatorParameter { get; private set; }
+    public ISolutionCreator SolutionCreator {
+      get => SolutionCreatorParameter.Value;
+      set {
+        if (!SolutionCreatorParameter.ValidValues.Contains(value))
+          SolutionCreatorParameter.ValidValues.Add(value);
+        SolutionCreatorParameter.Value = value;
+      }
+    }
+
+    protected HeuristicOptimizationEngineAlgorithm() : base() {
+      Parameters.Add(SolutionCreatorParameter = new ConstrainedValueParameter<ISolutionCreator>("SolutionCreator", "An operator that creates a solution for a given problem."));
+
+      RegisterEventHandlers();
+    }
+    protected HeuristicOptimizationEngineAlgorithm(string name) : base(name) {
+      Parameters.Add(SolutionCreatorParameter = new ConstrainedValueParameter<ISolutionCreator>("SolutionCreator", "An operator that creates a solution for a given problem."));
+
+      RegisterEventHandlers();
+    }
+    protected HeuristicOptimizationEngineAlgorithm(string name, ParameterCollection parameters) : base(name, parameters) {
+      Parameters.Add(SolutionCreatorParameter = new ConstrainedValueParameter<ISolutionCreator>("SolutionCreator", "An operator that creates a solution for a given problem."));
+
+      RegisterEventHandlers();
+    }
+    protected HeuristicOptimizationEngineAlgorithm(string name, string description) : base(name, description) {
+      Parameters.Add(SolutionCreatorParameter = new ConstrainedValueParameter<ISolutionCreator>("SolutionCreator", "An operator that creates a solution for a given problem."));
+
+      RegisterEventHandlers();
+    }
+    protected HeuristicOptimizationEngineAlgorithm(string name, string description, ParameterCollection parameters) : base(name, description, parameters) {
+      Parameters.Add(SolutionCreatorParameter = new ConstrainedValueParameter<ISolutionCreator>("SolutionCreator", "An operator that creates a solution for a given problem."));
+
+      RegisterEventHandlers();
+    }
 
     [StorableConstructor]
     protected HeuristicOptimizationEngineAlgorithm(StorableConstructorFlag _) : base(_) { }
-    protected HeuristicOptimizationEngineAlgorithm(HeuristicOptimizationEngineAlgorithm original, Cloner cloner) : base(original, cloner) { }
+    protected HeuristicOptimizationEngineAlgorithm(HeuristicOptimizationEngineAlgorithm original, Cloner cloner) : base(original, cloner) {
+      SolutionCreatorParameter = cloner.Clone(original.SolutionCreatorParameter);
+
+      RegisterEventHandlers();
+    }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      RegisterEventHandlers();
+    }
 
     #region Events
+    private void RegisterEventHandlers() {
+      ParameterChangeHandler<ISolutionCreator>.Create(SolutionCreatorParameter, SolutionCreatorOnChanged);
+    }
     protected override void DeregisterProblemEvents() {
-      Problem.SolutionCreatorChanged -= new EventHandler(Problem_SolutionCreatorChanged);
-      Problem.EvaluatorChanged -= new EventHandler(Problem_EvaluatorChanged);
+      Problem.EvaluatorChanged -= Problem_EvaluatorChanged;
       base.DeregisterProblemEvents();
     }
     protected override void RegisterProblemEvents() {
       base.RegisterProblemEvents();
-      Problem.SolutionCreatorChanged += new EventHandler(Problem_SolutionCreatorChanged);
-      Problem.EvaluatorChanged += new EventHandler(Problem_EvaluatorChanged);
+      Problem.EvaluatorChanged += Problem_EvaluatorChanged;
+    }
+    protected override void OnProblemChanged() {
+      base.OnProblemChanged();
+      SolutionCreatorParameter.Repopulate(Problem.Operators);
     }
 
-    protected virtual void Problem_SolutionCreatorChanged(object sender, EventArgs e) { }
+    protected virtual void SolutionCreatorOnChanged() { }
     protected virtual void Problem_EvaluatorChanged(object sender, EventArgs e) { }
+
+    protected override void Problem_OperatorsChanged(object sender, EventArgs e) {
+      base.Problem_OperatorsChanged(sender, e);
+      SolutionCreatorParameter.Repopulate(Problem.Operators);
+    }
     #endregion
   }
 }

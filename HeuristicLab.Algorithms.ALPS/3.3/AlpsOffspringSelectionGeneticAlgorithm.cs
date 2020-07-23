@@ -506,7 +506,7 @@ namespace HeuristicLab.Algorithms.ALPS {
     }
     protected override void OnProblemChanged() {
       base.OnProblemChanged();
-      ParameterizeStochasticOperator(Problem.SolutionCreator);
+      ParameterizeStochasticOperator(SolutionCreator);
       foreach (var @operator in Problem.Operators.OfType<IOperator>())
         ParameterizeStochasticOperator(@operator);
       ParameterizeStochasticOperatorForLayer(Problem.Evaluator);
@@ -538,9 +538,9 @@ namespace HeuristicLab.Algorithms.ALPS {
       base.DeregisterProblemEvents();
     }
 
-    protected override void Problem_SolutionCreatorChanged(object sender, EventArgs e) {
-      base.Problem_SolutionCreatorChanged(sender, e);
-      ParameterizeStochasticOperator(Problem.SolutionCreator);
+    protected override void SolutionCreatorOnChanged() {
+      base.SolutionCreatorOnChanged();
+      ParameterizeStochasticOperator(SolutionCreator);
 
       Problem.Evaluator.QualityParameter.ActualNameChanged += Evaluator_QualityParameter_ActualNameChanged;
 
@@ -627,7 +627,7 @@ namespace HeuristicLab.Algorithms.ALPS {
     }
     private void ParameterizeSolutionsCreator() {
       SolutionsCreator.EvaluatorParameter.ActualName = Problem.EvaluatorParameter.Name;
-      SolutionsCreator.SolutionCreatorParameter.ActualName = Problem.SolutionCreatorParameter.Name;
+      SolutionsCreator.SolutionCreatorParameter.ActualName = SolutionCreatorParameter.Name;
     }
     private void ParameterizeMainLoop() {
       MainLoop.EvaluatorParameter.ActualName = Problem.EvaluatorParameter.Name;

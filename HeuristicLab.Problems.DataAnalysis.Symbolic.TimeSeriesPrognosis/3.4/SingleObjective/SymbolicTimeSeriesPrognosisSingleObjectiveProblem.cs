@@ -21,16 +21,16 @@
 
 using System;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis {
   [Item("Symbolic Time-Series Prognosis Problem (single-objective)", "Represents a single-objective symbolic time-series prognosis problem.")]
   [StorableType("E62C12A5-A086-4BA6-9A4B-FB9AE8B655FB")]
   [Creatable(CreatableAttribute.Categories.GeneticProgrammingProblems, Priority = 140)]
-  public class SymbolicTimeSeriesPrognosisSingleObjectiveProblem : SymbolicDataAnalysisSingleObjectiveProblem<ITimeSeriesPrognosisProblemData, ISymbolicTimeSeriesPrognosisSingleObjectiveEvaluator, ISymbolicDataAnalysisSolutionCreator>, ITimeSeriesPrognosisProblem {
+  public class SymbolicTimeSeriesPrognosisSingleObjectiveProblem : SymbolicDataAnalysisSingleObjectiveProblem<ITimeSeriesPrognosisProblemData, ISymbolicTimeSeriesPrognosisSingleObjectiveEvaluator>, ITimeSeriesPrognosisProblem {
     private const double PunishmentFactor = 10;
     private const int InitialMaximumTreeDepth = 8;
     private const int InitialMaximumTreeLength = 25;
@@ -53,7 +53,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis {
     public override IDeepCloneable Clone(Cloner cloner) { return new SymbolicTimeSeriesPrognosisSingleObjectiveProblem(this, cloner); }
 
     public SymbolicTimeSeriesPrognosisSingleObjectiveProblem()
-      : base(new TimeSeriesPrognosisProblemData(), new SymbolicTimeSeriesPrognosisSingleObjectiveMeanSquaredErrorEvaluator(), new SymbolicDataAnalysisExpressionTreeCreator()) {
+      : base(new TimeSeriesPrognosisProblemData(), new SymbolicTimeSeriesPrognosisSingleObjectiveMeanSquaredErrorEvaluator()) {
       Parameters.Add(new FixedValueParameter<DoubleLimit>(EstimationLimitsParameterName, EstimationLimitsParameterDescription));
       EstimationLimitsParameter.Hidden = true;
 
@@ -126,7 +126,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis {
           op.ProblemDataParameter.ActualName = ProblemDataParameter.Name;
           op.QualityParameter.ActualName = Evaluator.QualityParameter.ActualName;
           op.SymbolicDataAnalysisTreeInterpreterParameter.ActualName = SymbolicExpressionTreeInterpreterParameter.Name;
-          op.SymbolicExpressionTreeParameter.ActualName = SolutionCreator.SymbolicExpressionTreeParameter.ActualName;
+          //op.SymbolicExpressionTreeParameter.ActualName = SolutionCreator.SymbolicExpressionTreeParameter.ActualName;
         }
       }
     }

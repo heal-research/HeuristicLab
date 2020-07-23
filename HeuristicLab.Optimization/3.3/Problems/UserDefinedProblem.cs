@@ -61,12 +61,6 @@ namespace HeuristicLab.Optimization {
     IParameter ISingleObjectiveHeuristicOptimizationProblem.MaximizationParameter {
       get { return MaximizationParameter; }
     }
-    public ValueParameter<ISolutionCreator> SolutionCreatorParameter {
-      get { return (ValueParameter<ISolutionCreator>)Parameters["SolutionCreator"]; }
-    }
-    IParameter IHeuristicOptimizationProblem.SolutionCreatorParameter {
-      get { return SolutionCreatorParameter; }
-    }
     IParameter IHeuristicOptimizationProblem.EvaluatorParameter {
       get { return EvaluatorParameter; }
     }
@@ -88,13 +82,6 @@ namespace HeuristicLab.Optimization {
     public BoolValue Maximization {
       get { return MaximizationParameter.Value; }
       set { MaximizationParameter.Value = value; }
-    }
-    public ISolutionCreator SolutionCreator {
-      get { return SolutionCreatorParameter.Value; }
-      set { SolutionCreatorParameter.Value = value; }
-    }
-    ISolutionCreator IHeuristicOptimizationProblem.SolutionCreator {
-      get { return SolutionCreatorParameter.Value; }
     }
     public ISingleObjectiveEvaluator Evaluator {
       get { return EvaluatorParameter.Value; }
@@ -137,7 +124,6 @@ namespace HeuristicLab.Optimization {
     public UserDefinedProblem()
       : base() {
       Parameters.Add(new ValueParameter<ISingleObjectiveEvaluator>("Evaluator", "The evaluator that collects the values to exchange.", new EmptyUserDefinedProblemEvaluator()));
-      Parameters.Add(new ValueParameter<ISolutionCreator>("SolutionCreator", "An operator to create the solution components."));
       Parameters.Add(new ValueParameter<BoolValue>("Maximization", "Set to false as most test functions are minimization problems.", new BoolValue(false)));
       Parameters.Add(new OptionalValueParameter<DoubleValue>("BestKnownQuality", "The quality of the best known solution of this problem."));
       Parameters.Add(new OptionalValueParameter<IScope>("BestKnownSolution", "The best known solution for this external evaluation problem."));
@@ -155,11 +141,6 @@ namespace HeuristicLab.Optimization {
     }
 
     #region Events
-    public event EventHandler SolutionCreatorChanged;
-    private void OnSolutionCreatorChanged() {
-      EventHandler handler = SolutionCreatorChanged;
-      if (handler != null) handler(this, EventArgs.Empty);
-    }
     public event EventHandler EvaluatorChanged;
     private void OnEvaluatorChanged() {
       EventHandler handler = EvaluatorChanged;
@@ -173,9 +154,6 @@ namespace HeuristicLab.Optimization {
     #endregion
 
     #region Event handlers
-    private void SolutionCreatorParameter_ValueChanged(object sender, EventArgs e) {
-      OnSolutionCreatorChanged();
-    }
     private void EvaluatorParameter_ValueChanged(object sender, EventArgs e) {
       if (Evaluator != null)
         Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
@@ -201,7 +179,6 @@ namespace HeuristicLab.Optimization {
 
     #region Helpers
     private void RegisterEventHandlers() {
-      SolutionCreatorParameter.ValueChanged += new EventHandler(SolutionCreatorParameter_ValueChanged);
       EvaluatorParameter.ValueChanged += new EventHandler(EvaluatorParameter_ValueChanged);
       if (Evaluator != null)
         Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);

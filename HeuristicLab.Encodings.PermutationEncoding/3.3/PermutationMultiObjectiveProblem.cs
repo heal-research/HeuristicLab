@@ -21,6 +21,7 @@
 
 #endregion
 
+using System;
 using System.Linq;
 using HEAL.Attic;
 using HeuristicLab.Analysis;
@@ -63,6 +64,7 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
     protected PermutationMultiObjectiveProblem() : this(new PermutationEncoding() { Length = 10, Type = PermutationTypes.Absolute }) { }
     protected PermutationMultiObjectiveProblem(PermutationEncoding encoding) : base(encoding) {
       EncodingParameter.ReadOnly = true;
+      EvaluatorParameter.ReadOnly = true;
       Parameters.Add(DimensionRefParameter = new ReferenceParameter<IntValue>("Dimension", "The dimension of the permutation problem.", Encoding.LengthParameter));
       Parameters.Add(PermutationTypeRefParameter = new ReferenceParameter<EnumValue<PermutationTypes>>("Type", "The type of the permutation.", Encoding.PermutationTypeParameter));
 
@@ -79,6 +81,14 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
       var fronts = DominationCalculator.CalculateAllParetoFrontsIndices(individuals, qualities, Maximization);
       var plot = new ParetoFrontScatterPlot<Permutation>(fronts, individuals, qualities, Objectives, BestKnownFront);
       results.AddOrUpdateResult("Pareto Front Scatter Plot", plot);
+    }
+
+    protected override sealed void OnEvaluatorChanged() {
+      throw new InvalidOperationException("Evaluator may not change!");
+    }
+
+    protected override sealed void OnEncodingChanged() {
+      throw new InvalidOperationException("Encoding may not change!");
     }
 
     protected override void ParameterizeOperators() {

@@ -21,6 +21,7 @@
 
 #endregion
 
+using System;
 using System.Linq;
 using HEAL.Attic;
 using HeuristicLab.Analysis;
@@ -73,6 +74,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     protected SymbolicExpressionTreeMultiObjectiveProblem(SymbolicExpressionTreeEncoding encoding)
       : base(encoding) {
       EncodingParameter.ReadOnly = true;
+      EvaluatorParameter.ReadOnly = true;
       Parameters.Add(TreeLengthRefParameter = new ReferenceParameter<IntValue>("TreeLength", "The maximum amount of nodes.", Encoding.TreeLengthParameter));
       Parameters.Add(TreeDepthRefParameter = new ReferenceParameter<IntValue>("TreeDepth", "The maximum depth of the tree.", Encoding.TreeDepthParameter));
       Parameters.Add(GrammarRefParameter = new ReferenceParameter<ISymbolicExpressionGrammar>("Grammar", "The grammar that describes a valid tree.", Encoding.GrammarParameter));
@@ -88,6 +90,14 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       var fronts = DominationCalculator.CalculateAllParetoFrontsIndices(trees, qualities, Maximization);
       var plot = new ParetoFrontScatterPlot<ISymbolicExpressionTree>(fronts, trees, qualities, Objectives, BestKnownFront);
       results.AddOrUpdateResult("Pareto Front Scatter Plot", plot);
+    }
+
+    protected override sealed void OnEvaluatorChanged() {
+      throw new InvalidOperationException("Evaluator may not change!");
+    }
+
+    protected override sealed void OnEncodingChanged() {
+      throw new InvalidOperationException("Encoding may not change!");
     }
 
     protected override void ParameterizeOperators() {

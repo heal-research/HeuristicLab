@@ -60,7 +60,6 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
             OnNameChanged();
             OnDescriptionChanged();
             OnProblemChanged();
-            OnSolutionCreatorChanged();
             OnEvaluatorChanged();
             OnOperatorsChanged();
             OnReset();
@@ -104,13 +103,6 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
 
     public IKeyedItemCollection<string, IParameter> Parameters {
       get { return Problem.Parameters; }
-    }
-
-    public IParameter SolutionCreatorParameter {
-      get { return Problem.SolutionCreatorParameter; }
-    }
-    public ISolutionCreator SolutionCreator {
-      get { return Problem.SolutionCreator; }
     }
     public IParameter EvaluatorParameter {
       get { return Problem.EvaluatorParameter; }
@@ -209,11 +201,6 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
       var handler = DescriptionChanged;
       if (handler != null) handler(this, EventArgs.Empty);
     }
-    public event EventHandler SolutionCreatorChanged;
-    protected virtual void OnSolutionCreatorChanged() {
-      var handler = SolutionCreatorChanged;
-      if (handler != null) handler(this, EventArgs.Empty);
-    }
     public event EventHandler EvaluatorChanged;
     protected virtual void OnEvaluatorChanged() {
       var handler = EvaluatorChanged;
@@ -237,7 +224,6 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
         Problem.NameChanging += new EventHandler<CancelEventArgs<string>>(Problem_NameChanging);
         Problem.NameChanged += new EventHandler(Problem_NameChanged);
         Problem.DescriptionChanged += new EventHandler(Problem_DescriptionChanged);
-        Problem.SolutionCreatorChanged += new EventHandler(Problem_SolutionCreatorChanged);
         Problem.EvaluatorChanged += new EventHandler(Problem_EvaluatorChanged);
         Problem.OperatorsChanged += new EventHandler(Problem_OperatorsChanged);
         Problem.Reset += new EventHandler(Problem_Reset);
@@ -250,7 +236,6 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
         Problem.NameChanging -= new EventHandler<CancelEventArgs<string>>(Problem_NameChanging);
         Problem.NameChanged -= new EventHandler(Problem_NameChanged);
         Problem.DescriptionChanged -= new EventHandler(Problem_DescriptionChanged);
-        Problem.SolutionCreatorChanged -= new EventHandler(Problem_SolutionCreatorChanged);
         Problem.EvaluatorChanged -= new EventHandler(Problem_EvaluatorChanged);
         Problem.OperatorsChanged -= new EventHandler(Problem_OperatorsChanged);
         Problem.Reset -= new EventHandler(Problem_Reset);
@@ -271,9 +256,6 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
     }
     private void Problem_DescriptionChanged(object sender, EventArgs e) {
       OnDescriptionChanged();
-    }
-    private void Problem_SolutionCreatorChanged(object sender, EventArgs e) {
-      OnSolutionCreatorChanged();
     }
     private void Problem_EvaluatorChanged(object sender, EventArgs e) {
       OnEvaluatorChanged();

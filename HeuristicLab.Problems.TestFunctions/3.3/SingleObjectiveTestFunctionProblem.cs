@@ -80,8 +80,6 @@ namespace HeuristicLab.Problems.TestFunctions {
         new EuclideanSimilarityCalculator(),
         new AdditiveMoveEvaluator() });
 
-      SolutionCreatorParameter.SetValueToFirstOf(typeof(UniformRandomRealVectorCreator));
-
       Parameterize();
       RegisterEventHandlers();
     }

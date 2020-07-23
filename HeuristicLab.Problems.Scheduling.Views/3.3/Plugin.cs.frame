@@ -32,6 +32,7 @@ namespace HeuristicLab.Problems.Scheduling.Views {
   [PluginDependency("HeuristicLab.MainForm", "3.3")]
   [PluginDependency("HeuristicLab.Optimization", "3.3")]
   [PluginDependency("HeuristicLab.Optimization.Views", "3.3")]
+  [PluginDependency("HeuristicLab.Parameters", "3.3")]
   [PluginDependency("HeuristicLab.Problems.Scheduling", "3.3")]
   public class HeuristicLabProblemsSchedulingViewsPlugin : PluginBase {
   }

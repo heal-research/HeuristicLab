@@ -30,10 +30,9 @@ using HeuristicLab.Parameters;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableType("E9876DF8-ACFA-41C8-93B7-FA40C57CE459")]
-  public abstract class SymbolicDataAnalysisMultiObjectiveProblem<T, U, V> : SymbolicDataAnalysisProblem<T, U, V>, ISymbolicDataAnalysisMultiObjectiveProblem
+  public abstract class SymbolicDataAnalysisMultiObjectiveProblem<T, U> : SymbolicDataAnalysisProblem<T, U>, ISymbolicDataAnalysisMultiObjectiveProblem
     where T : class,IDataAnalysisProblemData
-    where U : class, ISymbolicDataAnalysisMultiObjectiveEvaluator<T>
-    where V : class, ISymbolicDataAnalysisSolutionCreator {
+    where U : class, ISymbolicDataAnalysisMultiObjectiveEvaluator<T> {
     private const string MaximizationParameterName = "Maximization";
     private const string BestKnownQualityParameterName = "BestKnownQuality";
 
@@ -58,13 +57,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
     [StorableConstructor]
     protected SymbolicDataAnalysisMultiObjectiveProblem(StorableConstructorFlag _) : base(_) { }
-    protected SymbolicDataAnalysisMultiObjectiveProblem(SymbolicDataAnalysisMultiObjectiveProblem<T, U, V> original, Cloner cloner)
+    protected SymbolicDataAnalysisMultiObjectiveProblem(SymbolicDataAnalysisMultiObjectiveProblem<T, U> original, Cloner cloner)
       : base(original, cloner) {
       RegisterEventHandler();
     }
 
-    public SymbolicDataAnalysisMultiObjectiveProblem(T problemData, U evaluator, V solutionCreator)
-      : base(problemData, evaluator, solutionCreator) {
+    public SymbolicDataAnalysisMultiObjectiveProblem(T problemData, U evaluator)
+      : base(problemData, evaluator) {
       Parameters.Add(new ValueParameter<BoolArray>(MaximizationParameterName, "Set to false if the problem should be minimized."));
 
       ParameterizeOperators();

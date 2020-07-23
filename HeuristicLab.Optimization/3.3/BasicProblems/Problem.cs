@@ -36,8 +36,6 @@ namespace HeuristicLab.Optimization {
     where TEncodedSolution : class, IEncodedSolution
     where TEvaluator : class, IEvaluator {
 
-    [Storable] protected ConstrainedValueParameter<ISolutionCreator> SolutionCreatorParameter { get; private set; }
-
     //TODO remove parameter for encoding?
     protected IValueParameter<TEncoding> EncodingParameter {
       get { return (IValueParameter<TEncoding>)Parameters["Encoding"]; }
@@ -49,18 +47,6 @@ namespace HeuristicLab.Optimization {
       protected set {
         if (value == null) throw new ArgumentNullException("Encoding must not be null.");
         EncodingParameter.Value = value;
-      }
-    }
-
-    ISolutionCreator IHeuristicOptimizationProblem.SolutionCreator { get => SolutionCreatorParameter.Value; }
-    IParameter IHeuristicOptimizationProblem.SolutionCreatorParameter { get => SolutionCreatorParameter; }
-
-    event EventHandler IHeuristicOptimizationProblem.SolutionCreatorChanged {
-      add {
-        SolutionCreatorParameter.ValueChanged += value;
-      }
-      remove {
-        SolutionCreatorParameter.ValueChanged -= value;
       }
     }
 
@@ -102,8 +88,7 @@ namespace HeuristicLab.Optimization {
       if (encoding == null) throw new ArgumentNullException("encoding");
       Parameters.Add(new ValueParameter<TEncoding>("Encoding", "Describes the configuration of the encoding, what the variables are called, what type they are and their bounds if any.", encoding) { Hidden = true });
       Parameters.Add(new ValueParameter<TEvaluator>("Evaluator", "The operator used to evaluate a solution.") { Hidden = true });
-      Parameters.Add(SolutionCreatorParameter = new ConstrainedValueParameter<ISolutionCreator>("SolutionCreator", "The operator used to create a solution."));
-
+      
       oldEncoding = Encoding;
       Parameterize();
 
@@ -113,7 +98,6 @@ namespace HeuristicLab.Optimization {
     protected Problem(Problem<TEncoding, TEncodedSolution, TEvaluator> original, Cloner cloner)
       : base(original, cloner) {
       oldEncoding = cloner.Clone(original.oldEncoding);
-      SolutionCreatorParameter = cloner.Clone(original.SolutionCreatorParameter);
       RegisterEvents();
     }
 
@@ -122,9 +106,6 @@ namespace HeuristicLab.Optimization {
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
       oldEncoding = Encoding;
-      // TODO: remove below
-      if (SolutionCreatorParameter == null) Parameters.Add(SolutionCreatorParameter = new ConstrainedValueParameter<ISolutionCreator>("SolutionCreator", "The operator used to create a solution."));
-
       RegisterEvents();
     }
 
@@ -159,7 +140,6 @@ namespace HeuristicLab.Optimization {
 
       Encoding.ConfigureOperators(Operators);
 
-      SolutionCreatorParameter.Repopulate(GetOperators());
       //var multiEncoding = Encoding as MultiEncoding;
       //if (multiEncoding != null) multiEncoding.EncodingsChanged += MultiEncodingOnEncodingsChanged;
     }

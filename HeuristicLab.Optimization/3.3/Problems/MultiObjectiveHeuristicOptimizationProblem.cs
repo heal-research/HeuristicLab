@@ -29,14 +29,13 @@ using HeuristicLab.Parameters;
 namespace HeuristicLab.Optimization {
   [Item("Multi-Objective Heuristic Optimization Problem", "A base class for multi-objective heuristic optimization problems.")]
   [StorableType("C46643E3-7144-4884-A30A-5329BD80DC4E")]
-  public abstract class MultiObjectiveHeuristicOptimizationProblem<T, U> : HeuristicOptimizationProblem<T, U>, IMultiObjectiveHeuristicOptimizationProblem
-    where T : class, IMultiObjectiveEvaluator
-    where U : class, ISolutionCreator {
+  public abstract class MultiObjectiveHeuristicOptimizationProblem<T> : HeuristicOptimizationProblem<T>, IMultiObjectiveHeuristicOptimizationProblem
+    where T : class, IMultiObjectiveEvaluator {
     private const string MaximizationParameterName = "Maximization";
 
     [StorableConstructor]
     protected MultiObjectiveHeuristicOptimizationProblem(StorableConstructorFlag _) : base(_) { }
-    protected MultiObjectiveHeuristicOptimizationProblem(MultiObjectiveHeuristicOptimizationProblem<T, U> original, Cloner cloner)
+    protected MultiObjectiveHeuristicOptimizationProblem(MultiObjectiveHeuristicOptimizationProblem<T> original, Cloner cloner)
       : base(original, cloner) {
       RegisterEventHandlers();
     }
@@ -47,8 +46,8 @@ namespace HeuristicLab.Optimization {
       RegisterEventHandlers();
     }
 
-    protected MultiObjectiveHeuristicOptimizationProblem(T evaluator, U solutionCreator)
-      : base(evaluator, solutionCreator) {
+    protected MultiObjectiveHeuristicOptimizationProblem(T evaluator)
+      : base(evaluator) {
       Parameters.Add(new ValueParameter<BoolArray>(MaximizationParameterName, "Determines for each objective whether it should be maximized or minimized."));
 
       RegisterEventHandlers();

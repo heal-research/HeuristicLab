@@ -41,8 +41,7 @@ namespace HeuristicLab.Parameters {
       set => SetActualValue(value);
     }
 
-    [Storable]
-    public IValueParameter ReferencedParameter { get; }
+    [Storable] public IValueParameter ReferencedParameter { get; private set; }
 
     [Storable(DefaultValue = true)]
     private bool readOnly;

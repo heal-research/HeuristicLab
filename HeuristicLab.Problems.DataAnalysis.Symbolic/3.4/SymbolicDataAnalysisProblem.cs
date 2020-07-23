@@ -36,11 +36,10 @@ using HeuristicLab.Problems.Instances;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableType("59935E69-C4A5-480E-8FFB-D9669DE9BFD4")]
-  public abstract class SymbolicDataAnalysisProblem<T, U, V> : HeuristicOptimizationProblem<U, V>, IDataAnalysisProblem<T>, ISymbolicDataAnalysisProblem, IStorableContent,
+  public abstract class SymbolicDataAnalysisProblem<T, U> : HeuristicOptimizationProblem<U>, IDataAnalysisProblem<T>, ISymbolicDataAnalysisProblem, IStorableContent,
     IProblemInstanceConsumer<T>, IProblemInstanceExporter<T>
     where T : class, IDataAnalysisProblemData
-    where U : class, ISymbolicDataAnalysisEvaluator<T>
-    where V : class, ISymbolicDataAnalysisSolutionCreator {
+    where U : class, ISymbolicDataAnalysisEvaluator<T> {
 
     #region parameter names & descriptions
     private const string ProblemDataParameterName = "ProblemData";
@@ -168,13 +167,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
       RegisterEventHandlers();
     }
-    protected SymbolicDataAnalysisProblem(SymbolicDataAnalysisProblem<T, U, V> original, Cloner cloner)
+    protected SymbolicDataAnalysisProblem(SymbolicDataAnalysisProblem<T, U> original, Cloner cloner)
       : base(original, cloner) {
       RegisterEventHandlers();
     }
 
-    protected SymbolicDataAnalysisProblem(T problemData, U evaluator, V solutionCreator)
-      : base(evaluator, solutionCreator) {
+    protected SymbolicDataAnalysisProblem(T problemData, U evaluator)
+      : base(evaluator) {
       Parameters.Add(new ValueParameter<T>(ProblemDataParameterName, ProblemDataParameterDescription, problemData));
       Parameters.Add(new ValueParameter<ISymbolicDataAnalysisGrammar>(SymbolicExpressionTreeGrammarParameterName, SymbolicExpressionTreeGrammarParameterDescription));
       Parameters.Add(new ValueParameter<ISymbolicDataAnalysisExpressionTreeInterpreter>(SymbolicExpressionTreeInterpreterParameterName, SymoblicExpressionTreeInterpreterParameterDescription));
@@ -267,16 +266,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         MaximumSymbolicExpressionTreeDepth.Value = 3;
     }
 
-    protected override void OnSolutionCreatorChanged() {
-      base.OnSolutionCreatorChanged();
-      SolutionCreator.SymbolicExpressionTreeParameter.ActualNameChanged += new EventHandler(SolutionCreator_SymbolicExpressionTreeParameter_ActualNameChanged);
-      ParameterizeOperators();
-    }
-
-    private void SolutionCreator_SymbolicExpressionTreeParameter_ActualNameChanged(object sender, EventArgs e) {
-      ParameterizeOperators();
-    }
-
     protected override void OnEvaluatorChanged() {
       base.OnEvaluatorChanged();
       ParameterizeOperators();
@@ -313,20 +302,20 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       }
       foreach (var op in operators.OfType<ISymbolicDataAnalysisEvaluator<T>>()) {
         op.ProblemDataParameter.ActualName = ProblemDataParameterName;
-        op.SymbolicExpressionTreeParameter.ActualName = SolutionCreator.SymbolicExpressionTreeParameter.ActualName;
+        //op.SymbolicExpressionTreeParameter.ActualName = SolutionCreator.SymbolicExpressionTreeParameter.ActualName;
         op.EvaluationPartitionParameter.ActualName = FitnessCalculationPartitionParameter.Name;
         op.RelativeNumberOfEvaluatedSamplesParameter.ActualName = RelativeNumberOfEvaluatedSamplesParameter.Name;
         op.ApplyLinearScalingParameter.ActualName = ApplyLinearScalingParameter.Name;
       }
       foreach (var op in operators.OfType<ISymbolicExpressionTreeCrossover>()) {
-        op.ParentsParameter.ActualName = SolutionCreator.SymbolicExpressionTreeParameter.ActualName;
-        op.SymbolicExpressionTreeParameter.ActualName = SolutionCreator.SymbolicExpressionTreeParameter.ActualName;
+        //op.ParentsParameter.ActualName = SolutionCreator.SymbolicExpressionTreeParameter.ActualName;
+        //op.SymbolicExpressionTreeParameter.ActualName = SolutionCreator.SymbolicExpressionTreeParameter.ActualName;
       }
       foreach (var op in operators.OfType<ISymbolicExpressionTreeManipulator>()) {
-        op.SymbolicExpressionTreeParameter.ActualName = SolutionCreator.SymbolicExpressionTreeParameter.ActualName;
+        //op.SymbolicExpressionTreeParameter.ActualName = SolutionCreator.SymbolicExpressionTreeParameter.ActualName;
       }
       foreach (var op in operators.OfType<ISymbolicExpressionTreeAnalyzer>()) {
-        op.SymbolicExpressionTreeParameter.ActualName = SolutionCreator.SymbolicExpressionTreeParameter.ActualName;
+        //op.SymbolicExpressionTreeParameter.ActualName = SolutionCreator.SymbolicExpressionTreeParameter.ActualName;
       }
       foreach (var op in operators.OfType<ISymbolicDataAnalysisSingleObjectiveAnalyzer>()) {
         op.ApplyLinearScalingParameter.ActualName = ApplyLinearScalingParameter.Name;
@@ -335,7 +324,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         op.ApplyLinearScalingParameter.ActualName = ApplyLinearScalingParameter.Name;
       }
       foreach (var op in operators.OfType<ISymbolicDataAnalysisAnalyzer>()) {
-        op.SymbolicExpressionTreeParameter.ActualName = SolutionCreator.SymbolicExpressionTreeParameter.ActualName;
+        //op.SymbolicExpressionTreeParameter.ActualName = SolutionCreator.SymbolicExpressionTreeParameter.ActualName;
       }
       foreach (var op in operators.OfType<ISymbolicDataAnalysisValidationAnalyzer<U, T>>()) {
         op.RelativeNumberOfEvaluatedSamplesParameter.ActualName = RelativeNumberOfEvaluatedSamplesParameter.Name;

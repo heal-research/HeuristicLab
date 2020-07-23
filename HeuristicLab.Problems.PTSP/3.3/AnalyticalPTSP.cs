@@ -55,11 +55,6 @@ namespace HeuristicLab.Problems.PTSP {
       return new AnalyticalPTSP(this, cloner);
     }
 
-    protected override void OnEncodingChanged() {
-      base.OnEncodingChanged();
-      Encoding.ConfigureOperators(Operators);
-    }
-
     public override ISingleObjectiveEvaluationResult Evaluate(Permutation tour, IRandom random, CancellationToken cancellationToken) {
       var quality = Evaluate(tour, ProbabilisticTSPData, cancellationToken);
       return new SingleObjectiveEvaluationResult(quality);

@@ -30,7 +30,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
   [Item("Symbolic Regression Problem (single-objective)", "Represents a single objective symbolic regression problem.")]
   [StorableType("7DDCF683-96FC-4F70-BF4F-FE3A0B0DE6E0")]
   [Creatable(CreatableAttribute.Categories.GeneticProgrammingProblems, Priority = 100)]
-  public class SymbolicRegressionSingleObjectiveProblem : SymbolicDataAnalysisSingleObjectiveProblem<IRegressionProblemData, ISymbolicRegressionSingleObjectiveEvaluator, ISymbolicDataAnalysisSolutionCreator>, IRegressionProblem {
+  public class SymbolicRegressionSingleObjectiveProblem : SymbolicDataAnalysisSingleObjectiveProblem<IRegressionProblemData, ISymbolicRegressionSingleObjectiveEvaluator>, IRegressionProblem {
     private const double PunishmentFactor = 10;
     private const int InitialMaximumTreeDepth = 8;
     private const int InitialMaximumTreeLength = 25;
@@ -56,7 +56,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     public override IDeepCloneable Clone(Cloner cloner) { return new SymbolicRegressionSingleObjectiveProblem(this, cloner); }
 
     public SymbolicRegressionSingleObjectiveProblem()
-      : base(new RegressionProblemData(), new SymbolicRegressionSingleObjectivePearsonRSquaredEvaluator(), new SymbolicDataAnalysisExpressionTreeCreator()) {
+      : base(new RegressionProblemData(), new SymbolicRegressionSingleObjectivePearsonRSquaredEvaluator()) {
       Parameters.Add(new FixedValueParameter<DoubleLimit>(EstimationLimitsParameterName, EstimationLimitsParameterDescription));
 
       EstimationLimitsParameter.Hidden = true;
@@ -144,7 +144,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       }
 
       foreach (var op in Operators.OfType<ISolutionSimilarityCalculator>()) {
-        op.SolutionVariableName = SolutionCreator.SymbolicExpressionTreeParameter.ActualName;
+        //op.SolutionVariableName = SolutionCreator.SymbolicExpressionTreeParameter.ActualName;
         op.QualityVariableName = Evaluator.QualityParameter.ActualName;
 
         if (op is SymbolicExpressionTreePhenotypicSimilarityCalculator) {

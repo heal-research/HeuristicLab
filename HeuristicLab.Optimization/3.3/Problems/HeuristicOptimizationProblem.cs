@@ -28,15 +28,13 @@ using HeuristicLab.Parameters;
 namespace HeuristicLab.Optimization {
   [Item("Heuristic Optimization Problem", "Represents the base class for a heuristic optimization problem.")]
   [StorableType("DE0478BA-3797-4AC3-9A89-3734D2643823")]
-  public abstract class HeuristicOptimizationProblem<T, U> : EncodedProblem, IHeuristicOptimizationProblem
-    where T : class, IEvaluator
-    where U : class, ISolutionCreator {
+  public abstract class HeuristicOptimizationProblem<T> : EncodedProblem, IHeuristicOptimizationProblem
+    where T : class, IEvaluator {
     private const string EvaluatorParameterName = "Evaluator";
-    private const string SolutionCreateParameterName = "SolutionCreator";
 
     [StorableConstructor]
     protected HeuristicOptimizationProblem(StorableConstructorFlag _) : base(_) { }
-    protected HeuristicOptimizationProblem(HeuristicOptimizationProblem<T, U> original, Cloner cloner)
+    protected HeuristicOptimizationProblem(HeuristicOptimizationProblem<T> original, Cloner cloner)
       : base(original, cloner) {
       RegisterEventHandlers();
     }
@@ -44,14 +42,12 @@ namespace HeuristicLab.Optimization {
     protected HeuristicOptimizationProblem()
       : base() {
       Parameters.Add(new ValueParameter<T>(EvaluatorParameterName, "The operator used to evaluate a solution."));
-      Parameters.Add(new ValueParameter<U>(SolutionCreateParameterName, "The operator to create a solution."));
       RegisterEventHandlers();
     }
 
-    protected HeuristicOptimizationProblem(T evaluator, U solutionCreator)
+    protected HeuristicOptimizationProblem(T evaluator)
       : base() {
       Parameters.Add(new ValueParameter<T>(EvaluatorParameterName, "The operator used to evaluate a solution.", evaluator));
-      Parameters.Add(new ValueParameter<U>(SolutionCreateParameterName, "The operator to create a solution.", solutionCreator));
       RegisterEventHandlers();
     }
 
@@ -62,7 +58,6 @@ namespace HeuristicLab.Optimization {
 
     private void RegisterEventHandlers() {
       EvaluatorParameter.ValueChanged += new EventHandler(EvaluatorParameter_ValueChanged);
-      SolutionCreatorParameter.ValueChanged += new EventHandler(SolutionCreatorParameter_ValueChanged);
     }
 
     #region properties
@@ -75,16 +70,6 @@ namespace HeuristicLab.Optimization {
     }
     IEvaluator IHeuristicOptimizationProblem.Evaluator { get { return Evaluator; } }
     IParameter IHeuristicOptimizationProblem.EvaluatorParameter { get { return EvaluatorParameter; } }
-
-    public U SolutionCreator {
-      get { return (U)SolutionCreatorParameter.Value; }
-      protected set { SolutionCreatorParameter.Value = value; }
-    }
-    public IValueParameter SolutionCreatorParameter {
-      get { return (IValueParameter)Parameters[SolutionCreateParameterName]; }
-    }
-    ISolutionCreator IHeuristicOptimizationProblem.SolutionCreator { get { return SolutionCreator; } }
-    IParameter IHeuristicOptimizationProblem.SolutionCreatorParameter { get { return SolutionCreatorParameter; } }
     #endregion
 
     #region events
@@ -94,16 +79,6 @@ namespace HeuristicLab.Optimization {
     public event EventHandler EvaluatorChanged;
     protected virtual void OnEvaluatorChanged() {
       EventHandler handler = EvaluatorChanged;
-      if (handler != null)
-        handler(this, EventArgs.Empty);
-    }
-
-    private void SolutionCreatorParameter_ValueChanged(object sender, EventArgs e) {
-      OnSolutionCreatorChanged();
-    }
-    public event EventHandler SolutionCreatorChanged;
-    protected virtual void OnSolutionCreatorChanged() {
-      EventHandler handler = SolutionCreatorChanged;
       if (handler != null)
         handler(this, EventArgs.Empty);
     }

@@ -22,6 +22,7 @@
 
 using System;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -30,7 +31,6 @@ using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.Algorithms.GradientDescent {
@@ -198,7 +198,7 @@ namespace HeuristicLab.Algorithms.GradientDescent {
       base.OnProblemChanged();
       if (Problem != null) {
         RegisterEvents();
-        solutionCreator.OperatorParameter.ActualName = Problem.SolutionCreatorParameter.Name;
+        solutionCreator.OperatorParameter.ActualName = SolutionCreatorParameter.Name;
         solutionCreator.OperatorParameter.Hidden = true;
         evaluator.OperatorParameter.ActualName = Problem.EvaluatorParameter.Name;
         evaluator.OperatorParameter.Hidden = true;
@@ -207,8 +207,8 @@ namespace HeuristicLab.Algorithms.GradientDescent {
       }
     }
 
-    protected override void Problem_SolutionCreatorChanged(object sender, EventArgs e) {
-      base.Problem_SolutionCreatorChanged(sender, e);
+    protected override void SolutionCreatorOnChanged() {
+      base.SolutionCreatorOnChanged();
       RegisterSolutionCreatorEvents();
       ParameterizeOperators();
     }
@@ -222,7 +222,7 @@ namespace HeuristicLab.Algorithms.GradientDescent {
     protected override void Problem_OperatorsChanged(object sender, EventArgs e) {
       base.Problem_OperatorsChanged(sender, e);
       RegisterEvents();
-      solutionCreator.OperatorParameter.ActualName = Problem.SolutionCreatorParameter.Name;
+      solutionCreator.OperatorParameter.ActualName = SolutionCreatorParameter.Name;
       solutionCreator.OperatorParameter.Hidden = true;
       evaluator.OperatorParameter.ActualName = Problem.EvaluatorParameter.Name;
       evaluator.OperatorParameter.Hidden = true;
@@ -231,7 +231,7 @@ namespace HeuristicLab.Algorithms.GradientDescent {
     }
 
     private void RegisterSolutionCreatorEvents() {
-      var realVectorCreator = Problem.SolutionCreator as IRealVectorCreator;
+      var realVectorCreator = SolutionCreator as IRealVectorCreator;
       // ignore if we have a different kind of problem
       if (realVectorCreator != null) {
         realVectorCreator.RealVectorParameter.ActualNameChanged += (sender, args) => ParameterizeOperators();
@@ -244,7 +244,7 @@ namespace HeuristicLab.Algorithms.GradientDescent {
     #endregion
 
     protected override void OnStarted() {
-      var realVectorCreator = Problem.SolutionCreator as IRealVectorCreator;
+      var realVectorCreator = SolutionCreator as IRealVectorCreator;
       // must catch the case that user loaded an unsupported problem
       if (realVectorCreator == null)
         throw new InvalidOperationException("LM-BFGS only works with problems using a real-value encoding.");
@@ -268,7 +268,7 @@ namespace HeuristicLab.Algorithms.GradientDescent {
     }
 
     private void ParameterizeOperators() {
-      var realVectorCreator = Problem.SolutionCreator as IRealVectorCreator;
+      var realVectorCreator = SolutionCreator as IRealVectorCreator;
       // ignore if we have a different kind of problem
       if (realVectorCreator != null) {
         var realVectorParameterName = realVectorCreator.RealVectorParameter.ActualName;

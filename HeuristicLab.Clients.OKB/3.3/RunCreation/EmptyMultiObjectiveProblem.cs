@@ -19,17 +19,17 @@
  */
 #endregion
 
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
-using HEAL.Attic;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Clients.OKB.RunCreation {
   [Item("Empty Multi-Objective Problem", "A dummy multi-objective problem which serves as a placeholder and cannot be solved.")]
   [StorableType("1AD8A6B9-1B3E-40BA-BAE2-8EAD31793B7D")]
   [NonDiscoverableType]
-  public sealed class EmptyMultiObjectiveProblem : MultiObjectiveHeuristicOptimizationProblem<EmptyMultiObjectiveEvaluator, EmptySolutionCreator> {
+  public sealed class EmptyMultiObjectiveProblem : MultiObjectiveHeuristicOptimizationProblem<EmptyMultiObjectiveEvaluator> {
     public override bool CanChangeName {
       get { return false; }
     }
@@ -40,8 +40,8 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
     [StorableConstructor]
     private EmptyMultiObjectiveProblem(StorableConstructorFlag _) : base(_) { }
     private EmptyMultiObjectiveProblem(EmptyMultiObjectiveProblem original, Cloner cloner) : base(original, cloner) { }
-    public EmptyMultiObjectiveProblem() : base(new EmptyMultiObjectiveEvaluator(), new EmptySolutionCreator()) { }
-    public EmptyMultiObjectiveProblem(string exceptionMessage) : base(new EmptyMultiObjectiveEvaluator(exceptionMessage), new EmptySolutionCreator(exceptionMessage)) { }
+    public EmptyMultiObjectiveProblem() : base(new EmptyMultiObjectiveEvaluator()) { }
+    public EmptyMultiObjectiveProblem(string exceptionMessage) : base(new EmptyMultiObjectiveEvaluator(exceptionMessage)) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new EmptyMultiObjectiveProblem(this, cloner);

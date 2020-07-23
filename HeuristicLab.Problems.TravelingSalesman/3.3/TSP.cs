@@ -69,6 +69,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
 
     public TSP() : base(new PermutationEncoding("Tour", 16, PermutationTypes.RelativeUndirected)) {
       Maximization = false;
+      DimensionRefParameter.ReadOnly = Encoding.LengthParameter.ReadOnly = true;
       Parameters.Add(TSPDataParameter = new ValueParameter<ITSPData>("TSPData", "The main parameters of the TSP."));
       Parameters.Add(BestKnownSolutionParameter = new OptionalValueParameter<ITSPSolution>("BestKnownSolution", "The best known solution."));
       Parameters.Add(BestTSPSolutionParameter = new ResultParameter<ITSPSolution>("Best TSP Solution", "The best so far solution found."));
@@ -78,8 +79,6 @@ namespace HeuristicLab.Problems.TravelingSalesman {
 
       InitializeOperators();
     }
-
-    // TODO: encoding length should not be changeable
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new TSP(this, cloner);
@@ -205,18 +204,6 @@ namespace HeuristicLab.Problems.TravelingSalesman {
       if (BestKnownSolution?.Tour != null)
         instance.BestKnownTour = BestKnownSolution.Tour.ToArray();
       return instance;
-    }
-
-
-    protected override void OnEncodingChanged() {
-      base.OnEncodingChanged();
-      Dimension = TSPData.Cities;
-      ParameterizeOperators();
-    }
-
-    protected override void OnEvaluatorChanged() {
-      base.OnEvaluatorChanged();
-      ParameterizeOperators();
     }
 
     private void InitializeOperators() {

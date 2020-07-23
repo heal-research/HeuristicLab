@@ -69,12 +69,6 @@ namespace HeuristicLab.Problems.VehicleRouting {
     public OptionalValueParameter<VRPSolution> BestKnownSolutionParameter {
       get { return (OptionalValueParameter<VRPSolution>)Parameters["BestKnownSolution"]; }
     }
-    public IConstrainedValueParameter<IVRPCreator> SolutionCreatorParameter {
-      get { return (IConstrainedValueParameter<IVRPCreator>)Parameters["SolutionCreator"]; }
-    }
-    IParameter IHeuristicOptimizationProblem.SolutionCreatorParameter {
-      get { return SolutionCreatorParameter; }
-    }
     public IValueParameter<IVRPEvaluator> EvaluatorParameter {
       get { return (IValueParameter<IVRPEvaluator>)Parameters["Evaluator"]; }
     }
@@ -106,14 +100,6 @@ namespace HeuristicLab.Problems.VehicleRouting {
     IEvaluator IHeuristicOptimizationProblem.Evaluator {
       get { return this.Evaluator; }
     }
-
-    ISolutionCreator IHeuristicOptimizationProblem.SolutionCreator {
-      get { return SolutionCreatorParameter.Value; }
-    }
-    public IVRPCreator SolutionCreator {
-      get { return SolutionCreatorParameter.Value; }
-      set { SolutionCreatorParameter.Value = value; }
-    }
     #endregion
 
     [StorableConstructor]
@@ -125,7 +111,6 @@ namespace HeuristicLab.Problems.VehicleRouting {
       Parameters.Add(new OptionalValueParameter<DoubleValue>("BestKnownQuality", "The quality of the best known solution of this VRP instance."));
       Parameters.Add(new OptionalValueParameter<VRPSolution>("BestKnownSolution", "The best known solution of this VRP instance."));
 
-      Parameters.Add(new ConstrainedValueParameter<IVRPCreator>("SolutionCreator", "The operator which should be used to create new VRP solutions."));
       Parameters.Add(new ValueParameter<IVRPEvaluator>("Evaluator", "The operator which should be used to evaluate VRP solutions."));
 
       EvaluatorParameter.Hidden = true;
@@ -153,11 +138,6 @@ namespace HeuristicLab.Problems.VehicleRouting {
     }
 
     #region Events
-    public event EventHandler SolutionCreatorChanged;
-    private void OnSolutionCreatorChanged() {
-      EventHandler handler = SolutionCreatorChanged;
-      if (handler != null) handler(this, EventArgs.Empty);
-    }
     public event EventHandler EvaluatorChanged;
     private void OnEvaluatorChanged() {
       EventHandler handler = EvaluatorChanged;
@@ -183,7 +163,6 @@ namespace HeuristicLab.Problems.VehicleRouting {
       ProblemInstanceParameter.ValueChanged += new EventHandler(ProblemInstanceParameter_ValueChanged);
       BestKnownSolutionParameter.ValueChanged += new EventHandler(BestKnownSolutionParameter_ValueChanged);
       EvaluatorParameter.ValueChanged += new EventHandler(EvaluatorParameter_ValueChanged);
-      SolutionCreatorParameter.ValueChanged += new EventHandler(SolutionCreatorParameter_ValueChanged);
     }
 
     private void AttachProblemInstanceEventHandlers() {
@@ -224,7 +203,6 @@ namespace HeuristicLab.Problems.VehicleRouting {
 
       EvaluatorParameter.Value = ProblemInstance.SolutionEvaluator;
 
-      OnSolutionCreatorChanged();
       OnEvaluatorChanged();
       OnOperatorsChanged();
     }
@@ -235,15 +213,11 @@ namespace HeuristicLab.Problems.VehicleRouting {
       ProblemInstance = instance;
       AttachProblemInstanceEventHandlers();
 
-      OnSolutionCreatorChanged();
       OnEvaluatorChanged();
 
       ProblemInstanceParameter.ValueChanged += new EventHandler(ProblemInstanceParameter_ValueChanged);
     }
 
-    private void SolutionCreatorParameter_ValueChanged(object sender, EventArgs e) {
-      OnSolutionCreatorChanged();
-    }
     private void EvaluatorParameter_ValueChanged(object sender, EventArgs e) {
       if (ProblemInstance != null)
         ProblemInstance.SolutionEvaluator = EvaluatorParameter.Value;
@@ -251,9 +225,6 @@ namespace HeuristicLab.Problems.VehicleRouting {
     }
 
     private void InitializeOperators() {
-      var solutionCreatorParameter = SolutionCreatorParameter as ConstrainedValueParameter<IVRPCreator>;
-      solutionCreatorParameter.ValidValues.Clear();
-
       Operators.Clear();
 
       if (ProblemInstance != null) {
@@ -265,14 +236,14 @@ namespace HeuristicLab.Problems.VehicleRouting {
         Operators.Add(new PopulationSimilarityAnalyzer(Operators.OfType<ISolutionSimilarityCalculator>()));
 
         IVRPCreator defaultCreator = null;
-        foreach (IVRPCreator creator in Operators.Where(o => o is IVRPCreator)) {
+        /*foreach (IVRPCreator creator in Operators.Where(o => o is IVRPCreator)) {
           solutionCreatorParameter.ValidValues.Add(creator);
           if (creator is Encodings.Alba.RandomCreator)
             defaultCreator = creator;
-        }
+        }*/
         Operators.Add(new AlbaLambdaInterchangeLocalImprovementOperator());
-        if (defaultCreator != null)
-          solutionCreatorParameter.Value = defaultCreator;
+        /*if (defaultCreator != null)
+          solutionCreatorParameter.Value = defaultCreator;*/
       }
 
       ParameterizeOperators();
@@ -286,15 +257,15 @@ namespace HeuristicLab.Problems.VehicleRouting {
       }
       if (ProblemInstance != null) {
         foreach (ISingleObjectiveImprovementOperator op in Operators.OfType<ISingleObjectiveImprovementOperator>()) {
-          op.SolutionParameter.ActualName = SolutionCreator.VRPToursParameter.ActualName;
+          //op.SolutionParameter.ActualName = SolutionCreator.VRPToursParameter.ActualName;
           op.SolutionParameter.Hidden = true;
         }
         foreach (ISingleObjectivePathRelinker op in Operators.OfType<ISingleObjectivePathRelinker>()) {
-          op.ParentsParameter.ActualName = SolutionCreator.VRPToursParameter.ActualName;
+          //op.ParentsParameter.ActualName = SolutionCreator.VRPToursParameter.ActualName;
           op.ParentsParameter.Hidden = true;
         }
         foreach (ISolutionSimilarityCalculator op in Operators.OfType<ISolutionSimilarityCalculator>()) {
-          op.SolutionVariableName = SolutionCreator.VRPToursParameter.ActualName;
+          //op.SolutionVariableName = SolutionCreator.VRPToursParameter.ActualName;
           op.QualityVariableName = ProblemInstance.SolutionEvaluator.QualityParameter.ActualName;
           var calc = op as VRPSimilarityCalculator;
           if (calc != null) calc.ProblemInstance = ProblemInstance;

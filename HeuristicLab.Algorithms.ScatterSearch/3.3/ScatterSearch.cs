@@ -21,6 +21,7 @@
 
 using System;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -29,7 +30,6 @@ using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 using HeuristicLab.Random;
 using HeuristicLab.Selection;
 
@@ -282,7 +282,7 @@ namespace HeuristicLab.Algorithms.ScatterSearch {
 
     #region Events
     protected override void OnProblemChanged() {
-      ParameterizeStochasticOperator(Problem.SolutionCreator);
+      ParameterizeStochasticOperator(SolutionCreator);
       ParameterizeStochasticOperator(Problem.Evaluator);
       foreach (IOperator op in Problem.Operators.OfType<IOperator>()) ParameterizeStochasticOperator(op);
       ParameterizeAnalyzers();
@@ -297,10 +297,10 @@ namespace HeuristicLab.Algorithms.ScatterSearch {
       Problem.Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
       base.OnProblemChanged();
     }
-    protected override void Problem_SolutionCreatorChanged(object sender, EventArgs e) {
-      ParameterizeStochasticOperator(Problem.SolutionCreator);
+    protected override void SolutionCreatorOnChanged() {
+      ParameterizeStochasticOperator(SolutionCreator);
       ParameterizeSolutionsCreator();
-      base.Problem_SolutionCreatorChanged(sender, e);
+      base.SolutionCreatorOnChanged();
     }
     protected override void Problem_EvaluatorChanged(object sender, EventArgs e) {
       ParameterizeStochasticOperator(Problem.Evaluator);
@@ -430,7 +430,7 @@ namespace HeuristicLab.Algorithms.ScatterSearch {
     }
     private void ParameterizeSolutionsCreator() {
       SolutionsCreator.EvaluatorParameter.ActualName = Problem.EvaluatorParameter.Name;
-      SolutionsCreator.SolutionCreatorParameter.ActualName = Problem.SolutionCreatorParameter.Name;
+      SolutionsCreator.SolutionCreatorParameter.ActualName = SolutionCreatorParameter.Name;
     }
     private void ParameterizeMainLoop() {
       if (Problem != null && Improver != null) {

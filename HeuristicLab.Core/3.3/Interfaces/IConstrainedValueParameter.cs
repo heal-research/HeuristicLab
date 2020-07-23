@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using HEAL.Attic;
 #region License Information
@@ -27,6 +28,7 @@ namespace HeuristicLab.Core {
   public interface IConstrainedValueParameter<T> : IValueParameter<T> where T : class, IItem {
     IItemSet<T> ValidValues { get; }
 
+    IItem SetValueToFirstOf(Type itemType);
     void Populate(IEnumerable<IItem> items);
     void Repopulate(IEnumerable<IItem> items);
   }

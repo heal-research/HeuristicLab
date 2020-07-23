@@ -187,7 +187,6 @@ namespace HeuristicLab.Tests {
       evaluator.ConstantOptimizationIterations.Value = 5;
       problem.EvaluatorParameter.Value = evaluator;
       problem.RelativeNumberOfEvaluatedSamplesParameter.Hidden = true;
-      problem.SolutionCreatorParameter.Hidden = true;
       #endregion
 
       #region Algorithm Configuration

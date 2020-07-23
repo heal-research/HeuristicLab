@@ -25,6 +25,7 @@
 using System;
 using System.Drawing;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Common.Resources;
 using HeuristicLab.Core;
@@ -33,7 +34,6 @@ using HeuristicLab.Encodings.IntegerVectorEncoding;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Problems.DataAnalysis;
 using HeuristicLab.Problems.DataAnalysis.Symbolic;
@@ -42,12 +42,11 @@ using HeuristicLab.Problems.Instances;
 
 namespace HeuristicLab.Problems.GrammaticalEvolution {
   [StorableType("E31AC1E8-590D-4D65-883F-3113544B6C91")]
-  public abstract class GESymbolicDataAnalysisProblem<T, U, V> : HeuristicOptimizationProblem<U, V>, IDataAnalysisProblem<T>,
+  public abstract class GESymbolicDataAnalysisProblem<T, U> : HeuristicOptimizationProblem<U>, IDataAnalysisProblem<T>,
                                                                  IGESymbolicDataAnalysisProblem, IStorableContent,
                                                                  IProblemInstanceConsumer<T>, IProblemInstanceExporter<T>
     where T : class, IDataAnalysisProblemData
-    where U : class, IGESymbolicDataAnalysisEvaluator<T>
-    where V : class, IIntegerVectorCreator {
+    where U : class, IGESymbolicDataAnalysisEvaluator<T> {
 
     #region parameter names & descriptions
     private const string ProblemDataParameterName = "ProblemData";
@@ -151,13 +150,13 @@ namespace HeuristicLab.Problems.GrammaticalEvolution {
     private void AfterDeserialization() {
       RegisterEventHandlers();
     }
-    protected GESymbolicDataAnalysisProblem(GESymbolicDataAnalysisProblem<T, U, V> original, Cloner cloner)
+    protected GESymbolicDataAnalysisProblem(GESymbolicDataAnalysisProblem<T, U> original, Cloner cloner)
       : base(original, cloner) {
       RegisterEventHandlers();
     }
 
-    protected GESymbolicDataAnalysisProblem(T problemData, U evaluator, V solutionCreator)
-      : base(evaluator, solutionCreator) {
+    protected GESymbolicDataAnalysisProblem(T problemData, U evaluator)
+      : base(evaluator) {
       Parameters.Add(new ValueParameter<T>(ProblemDataParameterName, ProblemDataParameterDescription, problemData));
       Parameters.Add(new ValueParameter<ISymbolicDataAnalysisGrammar>(SymbolicExpressionTreeGrammarParameterName, SymbolicExpressionTreeGrammarParameterDescription));
       Parameters.Add(new ValueParameter<ISymbolicDataAnalysisExpressionTreeInterpreter>(SymbolicExpressionTreeInterpreterParameterName, SymbolicExpressionTreeInterpreterParameterDescription));
@@ -266,16 +265,16 @@ namespace HeuristicLab.Problems.GrammaticalEvolution {
         op.EvaluationPartitionParameter.ActualName = FitnessCalculationPartitionParameter.Name;
         op.RelativeNumberOfEvaluatedSamplesParameter.ActualName = RelativeNumberOfEvaluatedSamplesParameter.Name;
         op.ApplyLinearScalingParameter.ActualName = ApplyLinearScalingParameter.Name;
-        op.IntegerVectorParameter.ActualName = SolutionCreator.IntegerVectorParameter.Name;
+        //op.IntegerVectorParameter.ActualName = SolutionCreator.IntegerVectorParameter.Name;
         op.GenotypeToPhenotypeMapperParameter.ActualName = GenotypeToPhenotypeMapperParameter.Name;
         op.SymbolicExpressionTreeGrammarParameter.ActualName = SymbolicExpressionTreeGrammarParameter.Name;
       }
       foreach (var op in operators.OfType<IIntegerVectorCrossover>()) {
-        op.ParentsParameter.ActualName = SolutionCreator.IntegerVectorParameter.ActualName;
-        op.ChildParameter.ActualName = SolutionCreator.IntegerVectorParameter.ActualName;
+        //op.ParentsParameter.ActualName = SolutionCreator.IntegerVectorParameter.ActualName;
+        //op.ChildParameter.ActualName = SolutionCreator.IntegerVectorParameter.ActualName;
       }
       foreach (var op in operators.OfType<IIntegerVectorManipulator>()) {
-        op.IntegerVectorParameter.ActualName = SolutionCreator.IntegerVectorParameter.ActualName;
+        //op.IntegerVectorParameter.ActualName = SolutionCreator.IntegerVectorParameter.ActualName;
       }
       foreach (var op in operators.OfType<IIntegerVectorCreator>()) {
         op.BoundsParameter.ActualName = BoundsParameter.Name;

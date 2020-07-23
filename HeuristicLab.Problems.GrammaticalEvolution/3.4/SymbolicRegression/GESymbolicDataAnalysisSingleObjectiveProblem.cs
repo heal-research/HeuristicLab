@@ -23,23 +23,21 @@
 
 using System;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Encodings.IntegerVectorEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 using HeuristicLab.Problems.DataAnalysis;
 using HeuristicLab.Problems.DataAnalysis.Symbolic;
 
 namespace HeuristicLab.Problems.GrammaticalEvolution {
   [StorableType("27E01C21-6772-4CE5-8301-EF3102D1BB28")]
-  public abstract class GESymbolicDataAnalysisSingleObjectiveProblem<T, U, V> : GESymbolicDataAnalysisProblem<T, U, V>,
+  public abstract class GESymbolicDataAnalysisSingleObjectiveProblem<T, U> : GESymbolicDataAnalysisProblem<T, U>,
                                                                                 IGESymbolicDataAnalysisSingleObjectiveProblem
     where T : class, IDataAnalysisProblemData
-    where U : class, IGESymbolicDataAnalysisSingleObjectiveEvaluator<T>
-    where V : class, IIntegerVectorCreator {
+    where U : class, IGESymbolicDataAnalysisSingleObjectiveEvaluator<T> {
     private const string MaximizationParameterName = "Maximization";
     private const string BestKnownQualityParameterName = "BestKnownQuality";
 
@@ -72,14 +70,14 @@ namespace HeuristicLab.Problems.GrammaticalEvolution {
 
     [StorableConstructor]
     protected GESymbolicDataAnalysisSingleObjectiveProblem(StorableConstructorFlag _) : base(_) { }
-    protected GESymbolicDataAnalysisSingleObjectiveProblem(GESymbolicDataAnalysisSingleObjectiveProblem<T, U, V> original, Cloner cloner)
+    protected GESymbolicDataAnalysisSingleObjectiveProblem(GESymbolicDataAnalysisSingleObjectiveProblem<T, U> original, Cloner cloner)
       : base(original, cloner) {
       RegisterEventHandler();
       MaximizationParameter.Hidden = true;
     }
 
-    public GESymbolicDataAnalysisSingleObjectiveProblem(T problemData, U evaluator, V solutionCreator)
-      : base(problemData, evaluator, solutionCreator) {
+    public GESymbolicDataAnalysisSingleObjectiveProblem(T problemData, U evaluator)
+      : base(problemData, evaluator) {
       Parameters.Add(new FixedValueParameter<BoolValue>(MaximizationParameterName, "Set to false if the problem should be minimized."));
       Parameters.Add(new FixedValueParameter<DoubleValue>(BestKnownQualityParameterName, "The quality of the best known solution of this problem."));
 

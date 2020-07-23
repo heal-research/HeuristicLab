@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -30,7 +31,6 @@ using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.Algorithms.RandomSearch {
@@ -235,7 +235,7 @@ namespace HeuristicLab.Algorithms.RandomSearch {
     }
     protected override void OnProblemChanged() {
       base.OnProblemChanged();
-      ParameterizeStochasticOperator(Problem.SolutionCreator);
+      ParameterizeStochasticOperator(SolutionCreator);
       foreach (var @operator in Problem.Operators.OfType<IOperator>())
         ParameterizeStochasticOperator(@operator);
 
@@ -267,9 +267,9 @@ namespace HeuristicLab.Algorithms.RandomSearch {
       base.DeregisterProblemEvents();
     }
 
-    protected override void Problem_SolutionCreatorChanged(object sender, EventArgs e) {
-      base.Problem_SolutionCreatorChanged(sender, e);
-      ParameterizeStochasticOperator(Problem.SolutionCreator);
+    protected override void SolutionCreatorOnChanged() {
+      base.SolutionCreatorOnChanged();
+      ParameterizeStochasticOperator(SolutionCreator);
 
       if (SingleObjectiveProblem != null)
         SingleObjectiveProblem.Evaluator.QualityParameter.ActualNameChanged += Evaluator_QualityParameter_ActualNameChanged;
@@ -315,7 +315,7 @@ namespace HeuristicLab.Algorithms.RandomSearch {
     }
     private void ParameterizeSolutionsCreator() {
       SolutionsCreator.EvaluatorParameter.ActualName = Problem.EvaluatorParameter.Name;
-      SolutionsCreator.SolutionCreatorParameter.ActualName = Problem.SolutionCreatorParameter.Name;
+      SolutionsCreator.SolutionCreatorParameter.ActualName = SolutionCreatorParameter.Name;
     }
     private void ParameterizeAnalyzers() {
       singleObjectiveQualityAnalyzer.ResultsParameter.ActualName = "Results";

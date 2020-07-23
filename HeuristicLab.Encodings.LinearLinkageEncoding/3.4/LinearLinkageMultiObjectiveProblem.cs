@@ -21,6 +21,7 @@
 
 #endregion
 
+using System;
 using System.Linq;
 using HEAL.Attic;
 using HeuristicLab.Analysis;
@@ -57,6 +58,7 @@ namespace HeuristicLab.Encodings.LinearLinkageEncoding {
     protected LinearLinkageMultiObjectiveProblem() : this(new LinearLinkageEncoding() { Length = 10 }) { }
     protected LinearLinkageMultiObjectiveProblem(LinearLinkageEncoding encoding) : base(new LinearLinkageEncoding()) {
       EncodingParameter.ReadOnly = true;
+      EvaluatorParameter.ReadOnly = true;
       Parameters.Add(DimensionRefParameter = new ReferenceParameter<IntValue>("Dimension", "The dimension of the linear linkage problem.", Encoding.LengthParameter));
 
 
@@ -73,6 +75,14 @@ namespace HeuristicLab.Encodings.LinearLinkageEncoding {
       var fronts = DominationCalculator.CalculateAllParetoFrontsIndices(individuals, qualities, Maximization);
       var plot = new ParetoFrontScatterPlot<LinearLinkage>(fronts, individuals, qualities, Objectives, BestKnownFront);
       results.AddOrUpdateResult("Pareto Front Scatter Plot", plot);
+    }
+
+    protected override sealed void OnEvaluatorChanged() {
+      throw new InvalidOperationException("Evaluator may not change!");
+    }
+
+    protected override sealed void OnEncodingChanged() {
+      throw new InvalidOperationException("Encoding may not change!");
     }
 
     protected override void ParameterizeOperators() {

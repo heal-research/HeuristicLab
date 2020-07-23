@@ -19,17 +19,17 @@
  */
 #endregion
 
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
-using HEAL.Attic;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Clients.OKB.RunCreation {
   [Item("Empty Problem", "A dummy problem which serves as a placeholder and cannot be solved.")]
   [StorableType("10132D57-7177-42A2-97B9-B77D89AADE6A")]
   [NonDiscoverableType]
-  public sealed class EmptyProblem : HeuristicOptimizationProblem<EmptyEvaluator, EmptySolutionCreator> {
+  public sealed class EmptyProblem : HeuristicOptimizationProblem<EmptyEvaluator> {
     public override bool CanChangeName {
       get { return false; }
     }
@@ -42,12 +42,10 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
     private EmptyProblem(EmptyProblem original, Cloner cloner) : base(original, cloner) { }
     public EmptyProblem()
       : base() {
-      SolutionCreator = new EmptySolutionCreator();
       Evaluator = new EmptyEvaluator();
     }
     public EmptyProblem(string exceptionMessage)
       : base() {
-      SolutionCreator = new EmptySolutionCreator(exceptionMessage);
       Evaluator = new EmptyEvaluator(exceptionMessage);
     }
 

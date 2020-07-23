@@ -372,7 +372,7 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
 
     #region Events
     protected override void OnProblemChanged() {
-      ParameterizeStochasticOperator(Problem.SolutionCreator);
+      ParameterizeStochasticOperator(SolutionCreator);
       foreach (IOperator op in Problem.Operators.OfType<IOperator>()) ParameterizeStochasticOperator(op);
       ParameterizeStochasticOperatorForIsland(Problem.Evaluator);
       ParameterizeSolutionsCreator();
@@ -387,10 +387,10 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       base.OnProblemChanged();
     }
 
-    protected override void Problem_SolutionCreatorChanged(object sender, EventArgs e) {
-      ParameterizeStochasticOperator(Problem.SolutionCreator);
+    protected override void SolutionCreatorOnChanged() {
+      ParameterizeStochasticOperator(SolutionCreator);
       ParameterizeSolutionsCreator();
-      base.Problem_SolutionCreatorChanged(sender, e);
+      base.SolutionCreatorOnChanged();
     }
     protected override void Problem_EvaluatorChanged(object sender, EventArgs e) {
       ParameterizeStochasticOperatorForIsland(Problem.Evaluator);
@@ -452,7 +452,7 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
     }
     private void ParameterizeSolutionsCreator() {
       SolutionsCreator.EvaluatorParameter.ActualName = Problem.EvaluatorParameter.Name;
-      SolutionsCreator.SolutionCreatorParameter.ActualName = Problem.SolutionCreatorParameter.Name;
+      SolutionsCreator.SolutionCreatorParameter.ActualName = SolutionCreatorParameter.Name;
     }
     private void ParameterizeMainLoop() {
       MainLoop.BestKnownQualityParameter.ActualName = Problem.BestKnownQualityParameter.Name;

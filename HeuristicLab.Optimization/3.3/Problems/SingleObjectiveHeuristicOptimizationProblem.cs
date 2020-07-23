@@ -29,15 +29,14 @@ using HeuristicLab.Parameters;
 namespace HeuristicLab.Optimization {
   [Item("Single-Objective Heuristic OptimizationProblem", "A base class for single-objective heuristic optimization problems.")]
   [StorableType("DFD5588E-6AB2-4712-9083-A405EF21226F")]
-  public abstract class SingleObjectiveHeuristicOptimizationProblem<T, U> : HeuristicOptimizationProblem<T, U>, ISingleObjectiveHeuristicOptimizationProblem
-    where T : class, ISingleObjectiveEvaluator
-    where U : class, ISolutionCreator {
+  public abstract class SingleObjectiveHeuristicOptimizationProblem<T> : HeuristicOptimizationProblem<T>, ISingleObjectiveHeuristicOptimizationProblem
+    where T : class, ISingleObjectiveEvaluator {
     private const string MaximizationParameterName = "Maximization";
     private const string BestKnownQualityParameterName = "BestKnownQuality";
 
     [StorableConstructor]
     protected SingleObjectiveHeuristicOptimizationProblem(StorableConstructorFlag _) : base(_) { }
-    protected SingleObjectiveHeuristicOptimizationProblem(SingleObjectiveHeuristicOptimizationProblem<T, U> original, Cloner cloner)
+    protected SingleObjectiveHeuristicOptimizationProblem(SingleObjectiveHeuristicOptimizationProblem<T> original, Cloner cloner)
       : base(original, cloner) {
       RegisterEventHandlers();
     }
@@ -49,8 +48,8 @@ namespace HeuristicLab.Optimization {
       RegisterEventHandlers();
     }
 
-    protected SingleObjectiveHeuristicOptimizationProblem(T evaluator, U solutionCreator)
-      : base(evaluator, solutionCreator) {
+    protected SingleObjectiveHeuristicOptimizationProblem(T evaluator)
+      : base(evaluator) {
       Parameters.Add(new ValueParameter<BoolValue>(MaximizationParameterName, "Set to false if the problem should be minimized.", new BoolValue()));
       Parameters.Add(new OptionalValueParameter<DoubleValue>(BestKnownQualityParameterName, "The quality of the best known solution of this problem."));
 

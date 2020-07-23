@@ -202,7 +202,6 @@
     <Compile Include="Interfaces\IDiscreteDoubleMatrixModifier.cs" />
     <Compile Include="Algorithms\HeuristicOptimizationEngineAlgorithm.cs" />
     <Compile Include="Interfaces\ILocalImprovementOperator.cs" />
-    <Compile Include="Algorithms\HeuristicOptimizationAlgorithm.cs" />
     <Compile Include="Interfaces\IMultiNeighborhoodShakingOperator.cs" />
     <Compile Include="MoveHelper.cs" />
     <Compile Include="Problems\MultiObjectiveHeuristicOptimizationProblem.cs" />

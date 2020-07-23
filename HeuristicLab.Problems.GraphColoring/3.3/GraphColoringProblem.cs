@@ -96,11 +96,6 @@ namespace HeuristicLab.Problems.GraphColoring {
       return new GraphColoringProblem(this, cloner);
     }
 
-    protected override void OnEncodingChanged() {
-      base.OnEncodingChanged();
-
-      Parameterize();
-    }
 
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {

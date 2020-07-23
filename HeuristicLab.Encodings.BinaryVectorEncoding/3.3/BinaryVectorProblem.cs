@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System;
 using System.Linq;
 using HEAL.Attic;
 using HeuristicLab.Analysis;
@@ -62,6 +63,7 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
     protected BinaryVectorProblem() : this(new BinaryVectorEncoding() { Length = 10 }) { }
     protected BinaryVectorProblem(BinaryVectorEncoding encoding) : base(encoding) {
       EncodingParameter.ReadOnly = true;
+      EvaluatorParameter.ReadOnly = true;
       Parameters.Add(DimensionRefParameter = new ReferenceParameter<IntValue>("Dimension", "The dimension of the binary vector problem.", Encoding.LengthParameter));
       Results.Add(BestSolutionResult = new Result<ISingleObjectiveSolutionContext<BinaryVector>>("Best Solution"));
 
@@ -79,6 +81,14 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
       var best = GetBest(solutionContexts);
       if (BestSolution == null || IsBetter(best, BestSolution))
         BestSolution = best.Clone() as SingleObjectiveSolutionContext<BinaryVector>;
+    }
+
+    protected override sealed void OnEvaluatorChanged() {
+      throw new InvalidOperationException("Evaluator may not change!");
+    }
+
+    protected override sealed void OnEncodingChanged() {
+      throw new InvalidOperationException("Encoding may not change!");
     }
 
     protected override void ParameterizeOperators() {

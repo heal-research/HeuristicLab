@@ -23,11 +23,10 @@
 #endregion
 
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Encodings.IntegerVectorEncoding;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 using HeuristicLab.Problems.DataAnalysis;
 using HeuristicLab.Problems.DataAnalysis.Symbolic;
 using HeuristicLab.Problems.DataAnalysis.Symbolic.Regression;
@@ -37,7 +36,7 @@ namespace HeuristicLab.Problems.GrammaticalEvolution {
         "Represents grammatical evolution for single objective symbolic regression problems.")]
   [StorableType("65208F51-3181-4765-BA04-33CADBCE0826")]
   [Creatable(CreatableAttribute.Categories.GeneticProgrammingProblems, Priority = 180)]
-  public class GESymbolicRegressionSingleObjectiveProblem : GESymbolicDataAnalysisSingleObjectiveProblem<IRegressionProblemData, IGESymbolicRegressionSingleObjectiveEvaluator, IIntegerVectorCreator>,
+  public class GESymbolicRegressionSingleObjectiveProblem : GESymbolicDataAnalysisSingleObjectiveProblem<IRegressionProblemData, IGESymbolicRegressionSingleObjectiveEvaluator>,
                                                             IRegressionProblem {
     private const double PunishmentFactor = 10;
     private const int InitialMaximumTreeLength = 30;
@@ -64,7 +63,7 @@ namespace HeuristicLab.Problems.GrammaticalEvolution {
     public override IDeepCloneable Clone(Cloner cloner) { return new GESymbolicRegressionSingleObjectiveProblem(this, cloner); }
 
     public GESymbolicRegressionSingleObjectiveProblem()
-      : base(new RegressionProblemData(), new GESymbolicRegressionSingleObjectiveEvaluator(), new UniformRandomIntegerVectorCreator()) {
+      : base(new RegressionProblemData(), new GESymbolicRegressionSingleObjectiveEvaluator()) {
       Parameters.Add(new FixedValueParameter<DoubleLimit>(EstimationLimitsParameterName, EstimationLimitsParameterDescription));
 
       EstimationLimitsParameter.Hidden = true;

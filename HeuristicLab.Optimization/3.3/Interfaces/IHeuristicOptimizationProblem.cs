@@ -29,12 +29,9 @@ namespace HeuristicLab.Optimization {
   /// Interface to represent a heuristic optimization problem.
   /// </summary>
   public interface IHeuristicOptimizationProblem : IEncodedProblem {
-    IParameter SolutionCreatorParameter { get; }
-    ISolutionCreator SolutionCreator { get; }
     IParameter EvaluatorParameter { get; }
     IEvaluator Evaluator { get; }
 
-    event EventHandler SolutionCreatorChanged;
     event EventHandler EvaluatorChanged;
   }
 }

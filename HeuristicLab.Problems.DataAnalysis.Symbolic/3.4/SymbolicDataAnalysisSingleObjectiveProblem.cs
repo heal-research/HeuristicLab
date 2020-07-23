@@ -30,10 +30,9 @@ using HeuristicLab.Parameters;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableType("BC7E7414-64B5-4428-AA89-270F8EF6E35E")]
-  public abstract class SymbolicDataAnalysisSingleObjectiveProblem<T, U, V> : SymbolicDataAnalysisProblem<T, U, V>, ISymbolicDataAnalysisSingleObjectiveProblem
+  public abstract class SymbolicDataAnalysisSingleObjectiveProblem<T, U> : SymbolicDataAnalysisProblem<T, U>, ISymbolicDataAnalysisSingleObjectiveProblem
     where T : class,IDataAnalysisProblemData
-    where U : class, ISymbolicDataAnalysisSingleObjectiveEvaluator<T>
-    where V : class, ISymbolicDataAnalysisSolutionCreator {
+    where U : class, ISymbolicDataAnalysisSingleObjectiveEvaluator<T> {
     private const string MaximizationParameterName = "Maximization";
     private const string BestKnownQualityParameterName = "BestKnownQuality";
 
@@ -66,14 +65,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
     [StorableConstructor]
     protected SymbolicDataAnalysisSingleObjectiveProblem(StorableConstructorFlag _) : base(_) { }
-    protected SymbolicDataAnalysisSingleObjectiveProblem(SymbolicDataAnalysisSingleObjectiveProblem<T, U, V> original, Cloner cloner)
+    protected SymbolicDataAnalysisSingleObjectiveProblem(SymbolicDataAnalysisSingleObjectiveProblem<T, U> original, Cloner cloner)
       : base(original, cloner) {
       RegisterEventHandler();
       MaximizationParameter.Hidden = true;
     }
 
-    protected SymbolicDataAnalysisSingleObjectiveProblem(T problemData, U evaluator, V solutionCreator)
-      : base(problemData, evaluator, solutionCreator) {
+    protected SymbolicDataAnalysisSingleObjectiveProblem(T problemData, U evaluator)
+      : base(problemData, evaluator) {
       Parameters.Add(new FixedValueParameter<BoolValue>(MaximizationParameterName, "Set to false if the problem should be minimized."));
       Parameters.Add(new FixedValueParameter<DoubleValue>(BestKnownQualityParameterName, "The quality of the best known solution of this problem."));
 

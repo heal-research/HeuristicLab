@@ -22,6 +22,7 @@
 using System;
 using System.Linq;
 using System.Threading;
+using HEAL.Attic;
 using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -30,7 +31,6 @@ using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.Problems.QuadraticAssignment.Algorithms {
@@ -395,7 +395,7 @@ Please note that the MinimumTabuTenure parameter has no effect in the new versio
 
     private void ParameterizeOperators() {
       if (Problem != null) {
-        solutionsCreator.SolutionCreatorParameter.ActualName = base.Problem.SolutionCreatorParameter.Name;
+        solutionsCreator.SolutionCreatorParameter.ActualName = SolutionCreatorParameter.Name;
         solutionsCreator.EvaluatorParameter.ActualName = Problem.EvaluatorParameter.Name;
 
         qualityAnalyzer.QualityParameter.ActualName = Problem.Evaluator.QualityParameter.Name;

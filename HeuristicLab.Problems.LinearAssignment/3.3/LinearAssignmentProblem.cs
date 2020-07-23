@@ -193,10 +193,6 @@ namespace HeuristicLab.Problems.LinearAssignment {
     }
 
     #region Events
-    protected override void OnEvaluatorChanged() {
-      base.OnEvaluatorChanged();
-      Parameterize();
-    }
     protected override void OnOperatorsChanged() {
       base.OnOperatorsChanged();
       Parameterize();

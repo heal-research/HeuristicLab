@@ -19,16 +19,16 @@
  */
 #endregion
 
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HEAL.Attic;
 using HeuristicLab.Problems.DataAnalysis.Symbolic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Trading.Symbolic {
   [Item("Symbolic Trading Problem (single-objective)", "Represents a single-objective symbolic trading problem.")]
   [StorableType("4E1FFD34-5720-4578-8D9E-AF657E157109")]
   [Creatable(CreatableAttribute.Categories.GeneticProgrammingProblems, Priority = 150)]
-  public class SingleObjectiveProblem : SymbolicDataAnalysisSingleObjectiveProblem<IProblemData, ISingleObjectiveEvaluator, ISymbolicDataAnalysisSolutionCreator>, IProblem {
+  public class SingleObjectiveProblem : SymbolicDataAnalysisSingleObjectiveProblem<IProblemData, ISingleObjectiveEvaluator>, IProblem {
     private const int InitialMaximumTreeDepth = 8;
     private const int InitialMaximumTreeLength = 25;
 
@@ -38,7 +38,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Trading.Symbolic {
     public override IDeepCloneable Clone(Cloner cloner) { return new SingleObjectiveProblem(this, cloner); }
 
     public SingleObjectiveProblem()
-      : base(new ProblemData(), new SharpeRatioEvaluator(), new SymbolicDataAnalysisExpressionTreeCreator()) {
+      : base(new ProblemData(), new SharpeRatioEvaluator()) {
       Maximization.Value = true;
       MaximumSymbolicExpressionTreeDepth.Value = InitialMaximumTreeDepth;
       MaximumSymbolicExpressionTreeLength.Value = InitialMaximumTreeLength;

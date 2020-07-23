@@ -446,7 +446,7 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
 
     #region Events
     protected override void OnProblemChanged() {
-      ParameterizeStochasticOperator(Problem.SolutionCreator);
+      ParameterizeStochasticOperator(SolutionCreator);
       ParameterizeStochasticOperator(Problem.Evaluator);
       foreach (IOperator op in Problem.Operators.OfType<IOperator>()) ParameterizeStochasticOperator(op);
       ParameterizeSolutionsCreator();
@@ -461,10 +461,10 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       base.OnProblemChanged();
     }
 
-    protected override void Problem_SolutionCreatorChanged(object sender, EventArgs e) {
-      ParameterizeStochasticOperator(Problem.SolutionCreator);
+    protected override void SolutionCreatorOnChanged() {
+      ParameterizeStochasticOperator(SolutionCreator);
       ParameterizeSolutionsCreator();
-      base.Problem_SolutionCreatorChanged(sender, e);
+      base.SolutionCreatorOnChanged();
     }
     protected override void Problem_EvaluatorChanged(object sender, EventArgs e) {
       ParameterizeStochasticOperator(Problem.Evaluator);
@@ -543,7 +543,7 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
     }
     private void ParameterizeSolutionsCreator() {
       SolutionsCreator.EvaluatorParameter.ActualName = Problem.EvaluatorParameter.Name;
-      SolutionsCreator.SolutionCreatorParameter.ActualName = Problem.SolutionCreatorParameter.Name;
+      SolutionsCreator.SolutionCreatorParameter.ActualName = SolutionCreatorParameter.Name;
     }
     private void ParameterizeMainLoop() {
       MainLoop.BestKnownQualityParameter.ActualName = Problem.BestKnownQualityParameter.Name;

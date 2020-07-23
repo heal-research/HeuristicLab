@@ -19,17 +19,17 @@
  */
 #endregion
 
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
-using HEAL.Attic;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Clients.OKB.RunCreation {
   [Item("Empty Single-Objective Problem", "A dummy single-objective problem which serves as a placeholder and cannot be solved.")]
   [StorableType("12D022A4-6DC4-4840-9EE7-F1EEB7A408F6")]
   [NonDiscoverableType]
-  public sealed class EmptySingleObjectiveProblem : SingleObjectiveHeuristicOptimizationProblem<EmptySingleObjectiveEvaluator, EmptySolutionCreator> {
+  public sealed class EmptySingleObjectiveProblem : SingleObjectiveHeuristicOptimizationProblem<EmptySingleObjectiveEvaluator> {
     public override bool CanChangeName {
       get { return false; }
     }
@@ -40,8 +40,8 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
     [StorableConstructor]
     private EmptySingleObjectiveProblem(StorableConstructorFlag _) : base(_) { }
     private EmptySingleObjectiveProblem(EmptySingleObjectiveProblem original, Cloner cloner) : base(original, cloner) { }
-    public EmptySingleObjectiveProblem() : base(new EmptySingleObjectiveEvaluator(), new EmptySolutionCreator()) { }
-    public EmptySingleObjectiveProblem(string exceptionMessage) : base(new EmptySingleObjectiveEvaluator(exceptionMessage), new EmptySolutionCreator(exceptionMessage)) { }
+    public EmptySingleObjectiveProblem() : base(new EmptySingleObjectiveEvaluator()) { }
+    public EmptySingleObjectiveProblem(string exceptionMessage) : base(new EmptySingleObjectiveEvaluator(exceptionMessage)) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new EmptySingleObjectiveProblem(this, cloner);

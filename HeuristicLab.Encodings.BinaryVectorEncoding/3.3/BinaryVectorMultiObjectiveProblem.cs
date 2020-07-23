@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System;
 using System.Linq;
 using HEAL.Attic;
 using HeuristicLab.Analysis;
@@ -56,6 +57,7 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
     protected BinaryVectorMultiObjectiveProblem() : this(new BinaryVectorEncoding() { Length = 10 }) { }
     protected BinaryVectorMultiObjectiveProblem(BinaryVectorEncoding encoding) : base(encoding) {
       EncodingParameter.ReadOnly = true;
+      EvaluatorParameter.ReadOnly = true;
       Parameters.Add(BestResultParameter = new ResultParameter<ParetoFrontScatterPlot<BinaryVector>>("Best Pareto Front", "The best Pareto front found."));
       Parameters.Add(DimensionRefParameter = new ReferenceParameter<IntValue>("Dimension", "The dimension of the binary vector problem.", Encoding.LengthParameter));
 
@@ -73,6 +75,14 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
       var plot = new ParetoFrontScatterPlot<BinaryVector>(fronts, individuals, qualities, Objectives, BestKnownFront);
 
       BestResultParameter.ActualValue = plot;
+    }
+
+    protected override sealed void OnEvaluatorChanged() {
+      throw new InvalidOperationException("Evaluator may not change!");
+    }
+
+    protected override sealed void OnEncodingChanged() {
+      throw new InvalidOperationException("Encoding may not change!");
     }
 
     protected override void ParameterizeOperators() {

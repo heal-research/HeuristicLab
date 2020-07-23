@@ -19,18 +19,18 @@
  */
 #endregion
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
   [Item("Symbolic Classification Problem (multi-objective)", "Represents a multi objective symbolic classfication problem.")]
   [StorableType("3CD66D22-59F2-43BA-A357-AA84C403EE61")]
   [Creatable(CreatableAttribute.Categories.GeneticProgrammingProblems, Priority = 130)]
-  public class SymbolicClassificationMultiObjectiveProblem : SymbolicDataAnalysisMultiObjectiveProblem<IClassificationProblemData, ISymbolicClassificationMultiObjectiveEvaluator, ISymbolicDataAnalysisSolutionCreator>, IClassificationProblem {
+  public class SymbolicClassificationMultiObjectiveProblem : SymbolicDataAnalysisMultiObjectiveProblem<IClassificationProblemData, ISymbolicClassificationMultiObjectiveEvaluator>, IClassificationProblem {
     private const double PunishmentFactor = 10;
     private const int InitialMaximumTreeDepth = 8;
     private const int InitialMaximumTreeLength = 25;
@@ -64,7 +64,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
     public override IDeepCloneable Clone(Cloner cloner) { return new SymbolicClassificationMultiObjectiveProblem(this, cloner); }
 
     public SymbolicClassificationMultiObjectiveProblem()
-      : base(new ClassificationProblemData(), new SymbolicClassificationMultiObjectiveMeanSquaredErrorTreeSizeEvaluator(), new SymbolicDataAnalysisExpressionTreeCreator()) {
+      : base(new ClassificationProblemData(), new SymbolicClassificationMultiObjectiveMeanSquaredErrorTreeSizeEvaluator()) {
       Parameters.Add(new FixedValueParameter<DoubleLimit>(EstimationLimitsParameterName, EstimationLimitsParameterDescription));
       Parameters.Add(new ValueParameter<ISymbolicClassificationModelCreator>(ModelCreatorParameterName, "", new AccuracyMaximizingThresholdsModelCreator()));
 
@@ -139,7 +139,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
       }
 
       foreach (var op in Operators.OfType<ISolutionSimilarityCalculator>()) {
-        op.SolutionVariableName = SolutionCreator.SymbolicExpressionTreeParameter.ActualName;
+        //op.SolutionVariableName = SolutionCreator.SymbolicExpressionTreeParameter.ActualName;
         op.QualityVariableName = Evaluator.QualitiesParameter.ActualName;
 
         if (op is SymbolicExpressionTreePhenotypicSimilarityCalculator) {

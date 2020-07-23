@@ -21,6 +21,7 @@
 
 #endregion
 
+using System;
 using System.Linq;
 using HEAL.Attic;
 using HeuristicLab.Analysis;
@@ -63,6 +64,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     protected RealVectorMultiObjectiveProblem() : this(new RealVectorEncoding() { Length = 10 }) { }
     protected RealVectorMultiObjectiveProblem(RealVectorEncoding encoding) : base(encoding) {
       EncodingParameter.ReadOnly = true;
+      EvaluatorParameter.ReadOnly = true;
       Parameters.Add(DimensionRefParameter = new ReferenceParameter<IntValue>("Dimension", "The dimension of the real vector problem.", Encoding.LengthParameter));
       Parameters.Add(BoundsRefParameter = new ReferenceParameter<DoubleMatrix>("Bounds", "The bounding box of the values.", Encoding.BoundsParameter));
 
@@ -80,6 +82,14 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       var fronts = DominationCalculator.CalculateAllParetoFrontsIndices(individuals, qualities, Maximization);
       var plot = new ParetoFrontScatterPlot<RealVector>(fronts, individuals, qualities, Objectives, BestKnownFront);
       results.AddOrUpdateResult("Pareto Front Scatter Plot", plot);
+    }
+
+    protected override sealed void OnEvaluatorChanged() {
+      throw new InvalidOperationException("Evaluator may not change!");
+    }
+
+    protected override sealed void OnEncodingChanged() {
+      throw new InvalidOperationException("Encoding may not change!");
     }
 
     protected override void ParameterizeOperators() {

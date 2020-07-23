@@ -157,16 +157,6 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
     }
 
     #region Events
-    protected override void OnEncodingChanged() {
-      base.OnEncodingChanged();
-      Dimension = Weights.Rows;
-      Parameterize();
-    }
-    protected override void OnEvaluatorChanged() {
-      Evaluator.QualityParameter.ActualNameChanged += Evaluator_QualityParameter_ActualNameChanged;
-      Parameterize();
-      base.OnEvaluatorChanged();
-    }
     private void Evaluator_QualityParameter_ActualNameChanged(object sender, EventArgs e) {
       Parameterize();
     }

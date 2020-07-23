@@ -21,6 +21,7 @@
 
 #endregion
 
+using System;
 using System.Linq;
 using HEAL.Attic;
 using HeuristicLab.Analysis;
@@ -64,6 +65,7 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
     protected PermutationProblem() : this(new PermutationEncoding() { Length = 10, Type = PermutationTypes.Absolute }) { }
     protected PermutationProblem(PermutationEncoding encoding) : base(encoding) {
       EncodingParameter.ReadOnly = true;
+      EvaluatorParameter.ReadOnly = true;
       Parameters.Add(DimensionRefParameter = new ReferenceParameter<IntValue>("Dimension", "The dimension of the permutation problem.", Encoding.LengthParameter));
       Parameters.Add(PermutationTypeRefParameter = new ReferenceParameter<EnumValue<PermutationTypes>>("Type", "The type of the permutation.", Encoding.PermutationTypeParameter));
       
@@ -80,6 +82,14 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
       base.Analyze(permutations, qualities, results, random);
       var best = GetBestSolution(permutations, qualities);
       results.AddOrUpdateResult("Best Solution", (IItem)best.Item1.Clone());
+    }
+
+    protected override sealed void OnEvaluatorChanged() {
+      throw new InvalidOperationException("Evaluator may not change!");
+    }
+
+    protected override sealed void OnEncodingChanged() {
+      throw new InvalidOperationException("Encoding may not change!");
     }
 
     protected override void ParameterizeOperators() {

@@ -21,6 +21,7 @@
 
 using System;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -29,7 +30,6 @@ using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Random;
 
@@ -404,7 +404,7 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
         if (ParticleCreatorParameter.Value != null)
           solutionsCreator.SolutionCreatorParameter.ActualName = ParticleCreatorParameter.Name;
         else
-          solutionsCreator.SolutionCreatorParameter.ActualName = Problem.SolutionCreatorParameter.Name;
+          solutionsCreator.SolutionCreatorParameter.ActualName = SolutionCreatorParameter.Name;
       }
     }
 
