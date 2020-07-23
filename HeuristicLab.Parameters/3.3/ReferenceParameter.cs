@@ -109,6 +109,21 @@ namespace HeuristicLab.Parameters {
       return Name + ": " + (Value != null ? Value.ToString() : "null");
     }
 
+    // TODO: Remove
+    //protected void ChangeReference(IValueParameter newReference, bool retainData) {
+    //  IItem oldValue = Value;
+    //  var oldRef = ReferencedParameter;
+    //  oldRef.ToStringChanged -= (o, e) => OnToStringChanged();
+    //  oldRef.ItemImageChanged -= (o, e) => OnItemImageChanged();
+    //  if (valueChanged != null) oldRef.ValueChanged -= OnReferencedParameterValueChanged;
+    //  newReference.ToStringChanged += (o, e) => OnToStringChanged();
+    //  newReference.ItemImageChanged += (o, e) => OnItemImageChanged();
+    //  if (valueChanged != null) newReference.ValueChanged += OnReferencedParameterValueChanged;
+    //  ReferencedParameter = newReference;
+    //  oldRef.Value = (IItem)oldValue.Clone(); // This is problematic, e.g. FixedValueParameter !!! But necessary, otherwise the value holds reference to the old parameter
+    //  if (retainData) Value = oldValue;
+    //}
+
 
     #region event handlers
     // code for forwarding of events adapted from https://stackoverflow.com/questions/1065355/forwarding-events-in-c-sharp
@@ -127,6 +142,8 @@ namespace HeuristicLab.Parameters {
     }
     private void OnReferencedParameterValueChanged(object sender, EventArgs args) {
       valueChanged?.Invoke(this, args); // note "this", not "sender" as sender would be the referenced parameter
+      OnItemImageChanged();
+      OnToStringChanged();
     }
 
     public event EventHandler ReadOnlyChanged;
@@ -165,6 +182,11 @@ namespace HeuristicLab.Parameters {
     public override IDeepCloneable Clone(Cloner cloner) {
       return new ReferenceParameter<T>(this, cloner);
     }
+
+    // TODO: Remove
+    //public void ChangeReference(IValueParameter<T> newParameter, bool retainData) {
+    //  base.ChangeReference(newParameter, retainData);
+    //}
   }
 
 
@@ -192,5 +214,10 @@ namespace HeuristicLab.Parameters {
     public override IDeepCloneable Clone(Cloner cloner) {
       return new ReferenceParameter<T, U>(this, cloner);
     }
+
+    // TODO: Remove
+    //public void ChangeReference(IValueParameter<U> newParameter, bool retainData) {
+    //  base.ChangeReference(newParameter, retainData);
+    //}
   }
 }

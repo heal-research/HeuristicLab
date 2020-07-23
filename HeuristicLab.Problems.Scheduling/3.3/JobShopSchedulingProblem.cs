@@ -20,7 +20,6 @@
 #endregion
 
 using System;
-using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Threading;
@@ -186,30 +185,32 @@ namespace HeuristicLab.Problems.Scheduling {
 
     protected override void OnEncodingChanged() {
       base.OnEncodingChanged();
+      var jobData = (ItemList<Job>)JobData.Clone();
+      var jobs = Jobs;
+      var resources = Resources;
       Parameters.Remove(JobDataParameter);
       Parameters.Add(JobDataParameter = new ReferenceParameter<ItemList<Job>>("JobData", "Jobdata defining the precedence relationships and the duration of the tasks in this JSSP-Instance.", Encoding.JobDataParameter));
       Parameters.Remove(JobsParameter);
       Parameters.Add(JobsParameter = new ReferenceParameter<IntValue>("Jobs", "The number of jobs used in this JSSP instance.", Encoding.JobsParameter));
       Parameters.Remove(ResourcesParameter);
       Parameters.Add(ResourcesParameter = new ReferenceParameter<IntValue>("Resources", "The number of resources used in this JSSP instance.", Encoding.ResourcesParameter));
+      JobData = jobData;
+      Jobs = jobs;
+      Resources = resources;
+
+      RegisterEventHandlers();
     }
 
 
     private void RegisterEventHandlers() {
-      JobDataParameter.ValueChanged += JobDataParameterOnValueChanged;
-      JobData.PropertyChanged += JobDataOnPropertyChanged;
+      ItemListParameterChangeHandler<Job>.Create(JobDataParameter, JobDataOnChanged);
     }
 
-    private void JobDataParameterOnValueChanged(object sender, EventArgs e) {
-      JobData.PropertyChanged += JobDataOnPropertyChanged;
+    private void JobDataOnChanged() {
       Jobs = JobData.Count;
+      Resources = JobData.SelectMany(x => x.Tasks).Select(x => x.ResourceNr).Distinct().Count();
     }
 
-    private void JobDataOnPropertyChanged(object sender, PropertyChangedEventArgs e) {
-      if (e.PropertyName == nameof(JobData.Count)) {
-        Jobs = JobData.Count;
-      }
-    }
 
     #region Problem Instance Handling
     public void Load(JSSPData data) {
