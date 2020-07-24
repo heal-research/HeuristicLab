@@ -29,13 +29,13 @@ using HeuristicLab.Parameters;
 
 namespace HeuristicLab.Optimization {
   [StorableType("43619638-9D00-4951-8138-8CCD0786E784")]
-  internal abstract class MultiEncodingOperator<T> : InstrumentedOperator, IEncodingOperator<CombinedSolution>, IMultiEncodingOperator where T : class, IOperator {
+  internal abstract class MultiEncodingOperator<T> : InstrumentedOperator, IEncodingOperator, IMultiEncodingOperator where T : class, IOperator {
     public ILookupParameter<CombinedSolution> SolutionParameter {
       get { return (ILookupParameter<CombinedSolution>)Parameters["Solution"]; }
     }
 
-    public ILookupParameter<IEncoding<CombinedSolution>> EncodingParameter {
-      get { return (ILookupParameter<IEncoding<CombinedSolution>>)Parameters["Encoding"]; }
+    public ILookupParameter<IEncoding> EncodingParameter {
+      get { return (ILookupParameter<IEncoding>)Parameters["Encoding"]; }
     }
 
     public abstract string OperatorPrefix { get; }
@@ -46,7 +46,7 @@ namespace HeuristicLab.Optimization {
     protected MultiEncodingOperator()
       : base() {
       Parameters.Add(new LookupParameter<CombinedSolution>("Solution", "The solution that gets created."));
-      Parameters.Add(new LookupParameter<IEncoding<CombinedSolution>>("Encoding", "The encoding."));
+      Parameters.Add(new LookupParameter<IEncoding>("Encoding", "The encoding."));
     }
 
     public override IOperation InstrumentedApply() {

@@ -33,7 +33,7 @@ namespace HeuristicLab.Optimization {
 
   [StorableType("7ec7bf7e-aaa7-4681-828b-3401cf67e2b3")]
   public interface ISingleObjectiveProblemDefinition<TEncoding, TEncodedSolution> : ISingleObjectiveProblemDefinition, IProblemDefinition<TEncoding, TEncodedSolution>
-    where TEncoding : class, IEncoding<TEncodedSolution>
+    where TEncoding : class, IEncoding
     where TEncodedSolution : class, IEncodedSolution {
 
     ISingleObjectiveEvaluationResult Evaluate(TEncodedSolution solution, IRandom random);

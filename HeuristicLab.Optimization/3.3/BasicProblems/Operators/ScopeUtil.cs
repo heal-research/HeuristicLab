@@ -30,7 +30,7 @@ namespace HeuristicLab.Optimization {
     private const string EvaluationResultName = "EvaluationResult";
 
     // TODO: Create SolutionContexts that derive from IScope to have a unified datastructure (e.g. #1614)
-    public static TEncodedSolution CopyEncodedSolutionToScope<TEncodedSolution>(IScope scope, IEncoding<TEncodedSolution> encoding, TEncodedSolution solution)
+    public static TEncodedSolution CopyEncodedSolutionToScope<TEncodedSolution>(IScope scope, IEncoding encoding, TEncodedSolution solution)
       where TEncodedSolution : class, IEncodedSolution {
       return CopyEncodedSolutionToScope(scope, encoding.Name, solution);
     }
@@ -43,17 +43,12 @@ namespace HeuristicLab.Optimization {
       return copy;
     }
 
-    public static TEncodedSolution GetEncodedSolution<TEncodedSolution>(IScope scope, IEncoding<TEncodedSolution> encoding)
-      where TEncodedSolution : class, IEncodedSolution {
+    public static IEncodedSolution GetEncodedSolution(IScope scope, IEncoding encoding) {
       var name = encoding.Name;
       if (!scope.Variables.ContainsKey(name)) throw new ArgumentException(string.Format(" {0} cannot be found in the provided scope.", name));
-      var value = scope.Variables[name].Value as TEncodedSolution;
-      if (value == null) throw new InvalidOperationException(string.Format("Value of {0} is null or not of type {1}.", name, typeof(TEncodedSolution).GetPrettyName()));
-      return value;
-    }
-
-    public static IEncodedSolution GetEncodedSolution(IScope scope, IEncoding encoding) {
-      return GetEncodedSolution(scope, encoding.Name);
+      if (scope.Variables[name].Value is IEncodedSolution value)
+        return value;
+      throw new InvalidOperationException(string.Format("Value of {0} is null or not of type {1}.", name, typeof(IEncodedSolution).GetPrettyName()));
     }
 
     public static IEncodedSolution GetEncodedSolution(IScope scope, string name) {
@@ -64,9 +59,9 @@ namespace HeuristicLab.Optimization {
       return solution;
     }
 
-    public static ISingleObjectiveSolutionContext<TEncodedSolution> CreateSolutionContext<TEncodedSolution>(IScope scope, IEncoding<TEncodedSolution> encoding)
+    public static ISingleObjectiveSolutionContext<TEncodedSolution> CreateSolutionContext<TEncodedSolution>(IScope scope, IEncoding encoding)
       where TEncodedSolution : class, IEncodedSolution {
-      var solution = GetEncodedSolution(scope, encoding);
+      var solution = (TEncodedSolution)GetEncodedSolution(scope, encoding);
       var context = new SingleObjectiveSolutionContext<TEncodedSolution>(solution);
       foreach (var variable in scope.Variables) {
         if (variable.Name != encoding.Name)

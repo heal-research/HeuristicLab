@@ -32,7 +32,7 @@ namespace HeuristicLab.Optimization {
   [StorableType("D877082E-9E77-4CB1-ABDB-35F63878E116")]
   public abstract class Problem<TEncoding, TEncodedSolution, TEvaluator> : EncodedProblem,
     IHeuristicOptimizationProblem, IProblemDefinition<TEncoding, TEncodedSolution>, IStorableContent
-    where TEncoding : class, IEncoding<TEncodedSolution>
+    where TEncoding : class, IEncoding
     where TEncodedSolution : class, IEncodedSolution
     where TEvaluator : class, IEvaluator {
 
@@ -135,7 +135,7 @@ namespace HeuristicLab.Optimization {
       }
       oldEncoding = Encoding;
 
-      foreach (var op in Operators.OfType<IEncodingOperator<TEncodedSolution>>())
+      foreach (var op in Operators.OfType<IEncodingOperator>())
         op.EncodingParameter.ActualName = EncodingParameter.Name;
 
       Encoding.ConfigureOperators(Operators);

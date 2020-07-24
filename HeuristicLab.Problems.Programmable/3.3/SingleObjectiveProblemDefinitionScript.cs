@@ -30,7 +30,7 @@ namespace HeuristicLab.Problems.Programmable {
   [Item("Single-objective Problem Definition Script", "Script that defines the parameter vector and evaluates the solution for a programmable problem.")]
   [StorableType("D0B2A649-EDDE-4A6E-A3B5-F40F5FD1B2C0")]
   public sealed class SingleObjectiveProblemDefinitionScript<TEncoding, TEncodedSolution> : ProblemDefinitionScript<TEncoding, TEncodedSolution>, ISingleObjectiveProblemDefinition<TEncoding, TEncodedSolution>, IStorableContent
-    where TEncoding : class, IEncoding<TEncodedSolution>
+    where TEncoding : class, IEncoding
     where TEncodedSolution : class, IEncodedSolution {
     public string Filename { get; set; }
 

@@ -31,7 +31,7 @@ using HeuristicLab.PluginInfrastructure;
 namespace HeuristicLab.Encodings.LinearLinkageEncoding {
   [Item("Linear Linkage Encoding", "Describes a linear linkage (LLE) encoding.")]
   [StorableType("7AE11F39-E6BD-4FC7-8112-0A5EDCBFBDB6")]
-  public sealed class LinearLinkageEncoding : VectorEncoding<LinearLinkage> {
+  public sealed class LinearLinkageEncoding : VectorEncoding {
 
     [StorableConstructor]
     private LinearLinkageEncoding(StorableConstructorFlag _) : base(_) { }

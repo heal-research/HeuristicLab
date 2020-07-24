@@ -43,8 +43,8 @@ namespace HeuristicLab.Optimization {
       get { return (IValueLookupParameter<IntValue>)Parameters["SampleSize"]; }
     }
 
-    public ILookupParameter<IEncoding<TEncodedSolution>> EncodingParameter {
-      get { return (ILookupParameter<IEncoding<TEncodedSolution>>)Parameters["Encoding"]; }
+    public ILookupParameter<IEncoding> EncodingParameter {
+      get { return (ILookupParameter<IEncoding>)Parameters["Encoding"]; }
     }
 
     public Func<ISingleObjectiveSolutionContext<TEncodedSolution>, IRandom, IEnumerable<ISingleObjectiveSolutionContext<TEncodedSolution>>> GetNeighbors { get; set; }
@@ -56,7 +56,7 @@ namespace HeuristicLab.Optimization {
     public SingleObjectiveMoveGenerator() {
       Parameters.Add(new LookupParameter<IRandom>("Random", "The random number generator to use."));
       Parameters.Add(new ValueLookupParameter<IntValue>("SampleSize", "The number of moves to sample."));
-      Parameters.Add(new LookupParameter<IEncoding<TEncodedSolution>>("Encoding", "An item that holds the problem's encoding."));
+      Parameters.Add(new LookupParameter<IEncoding>("Encoding", "An item that holds the problem's encoding."));
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -67,7 +67,7 @@ namespace HeuristicLab.Optimization {
       var random = RandomParameter.ActualValue;
       var sampleSize = SampleSizeParameter.ActualValue.Value;
       var encoding = EncodingParameter.ActualValue;
-      var solutionContext = ScopeUtil.CreateSolutionContext(ExecutionContext.Scope, encoding);
+      var solutionContext = ScopeUtil.CreateSolutionContext<TEncodedSolution>(ExecutionContext.Scope, encoding);
 
       var nbhood = GetNeighbors(solutionContext, random).Take(sampleSize).ToList();
       var moveScopes = new Scope[nbhood.Count];

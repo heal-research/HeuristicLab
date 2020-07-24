@@ -28,7 +28,7 @@ using HeuristicLab.Optimization;
 
 namespace HeuristicLab.Problems.Programmable {
   public abstract class CompiledProblemDefinition<TEncoding, TEncodedSolution> : IProblemDefinition<TEncoding, TEncodedSolution>
-    where TEncoding : class, IEncoding<TEncodedSolution>
+    where TEncoding : class, IEncoding
     where TEncodedSolution : class, IEncodedSolution {
     private TEncoding encoding;
     public TEncoding Encoding {
@@ -50,7 +50,7 @@ namespace HeuristicLab.Problems.Programmable {
   }
 
   public abstract class CompiledSingleObjectiveProblemDefinition<TEncoding, TEncodedSolution> : CompiledProblemDefinition<TEncoding, TEncodedSolution>, ISingleObjectiveProblemDefinition<TEncoding, TEncodedSolution>
-    where TEncoding : class, IEncoding<TEncodedSolution>
+    where TEncoding : class, IEncoding
     where TEncodedSolution : class, IEncodedSolution {
     protected CompiledSingleObjectiveProblemDefinition() : base() { }
 
@@ -94,7 +94,7 @@ namespace HeuristicLab.Problems.Programmable {
   }
 
   public abstract class CompiledMultiObjectiveProblemDefinition<TEncoding, TEncodedSolution> : CompiledProblemDefinition<TEncoding, TEncodedSolution>, IMultiObjectiveProblemDefinition<TEncoding, TEncodedSolution>
-    where TEncoding : class, IEncoding<TEncodedSolution>
+    where TEncoding : class, IEncoding
     where TEncodedSolution : class, IEncodedSolution {
     protected CompiledMultiObjectiveProblemDefinition() : base() { }
 

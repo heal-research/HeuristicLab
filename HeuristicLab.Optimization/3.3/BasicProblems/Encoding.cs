@@ -30,8 +30,7 @@ using HeuristicLab.Parameters;
 namespace HeuristicLab.Optimization {
   [Item("Encoding", "Base class for describing different encodings.")]
   [StorableType("395B1372-FA54-4649-9EBE-5402A0AA9494")]
-  public abstract class Encoding<TEncodedSolution> : ParameterizedNamedItem, IEncoding<TEncodedSolution>
-    where TEncodedSolution : class, IEncodedSolution {
+  public abstract class Encoding : ParameterizedNamedItem, IEncoding {
     public sealed override bool CanChangeName {
       get { return false; }
     }
@@ -47,8 +46,9 @@ namespace HeuristicLab.Optimization {
     public IEnumerable<IOperator> Operators {
       get { return encodingOperators; }
       set {
-        if (!value.OfType<ISolutionCreator<TEncodedSolution>>().Any())
-          throw new ArgumentException("The provided operators contain no suitable solution creator");
+        // SolutionCreator is now a parameter of the algorithm, we don't care!
+        //if (!value.OfType<ISolutionCreator<TEncodedSolution>>().Any())
+        //  throw new ArgumentException("The provided operators contain no suitable solution creator");
         encodingOperators.Clear();
         foreach (var op in value) encodingOperators.Add(op);
         OnOperatorsChanged();
@@ -61,7 +61,7 @@ namespace HeuristicLab.Optimization {
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() { }
 
-    protected Encoding(Encoding<TEncodedSolution> original, Cloner cloner)
+    protected Encoding(Encoding original, Cloner cloner)
       : base(original, cloner) {
       encodingOperators = cloner.Clone(original.encodingOperators);
     }

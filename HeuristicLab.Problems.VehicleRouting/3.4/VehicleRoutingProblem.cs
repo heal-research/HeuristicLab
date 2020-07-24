@@ -44,7 +44,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
   [Item("Vehicle Routing Problem (VRP)", "Represents a Vehicle Routing Problem.")]
   [Creatable(CreatableAttribute.Categories.CombinatorialProblems, Priority = 110)]
   [StorableType("95137523-AE3B-4638-958C-E86829D54CE3")]
-  public sealed class VehicleRoutingProblem : SingleObjectiveProblem<AlbaEncoding, AlbaEncodedSolution>, IProblemInstanceConsumer<IVRPData> {
+  public sealed class VehicleRoutingProblem : SingleObjectiveProblem<IVRPEncoding, IVRPEncodedSolution>, IProblemInstanceConsumer<IVRPData> {
 
     public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Type; }
@@ -96,7 +96,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
       this.AttachProblemInstanceEventHandlers();
     }
 
-    public override ISingleObjectiveEvaluationResult Evaluate(AlbaEncodedSolution solution, IRandom random, CancellationToken cancellationToken) {
+    public override ISingleObjectiveEvaluationResult Evaluate(IVRPEncodedSolution solution, IRandom random, CancellationToken cancellationToken) {
       return new SingleObjectiveEvaluationResult(ProblemInstance.Evaluate(solution).Quality);
     }
 

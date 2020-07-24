@@ -24,7 +24,7 @@ using HeuristicLab.Core;
 
 namespace HeuristicLab.Optimization {
   [StorableType("20faaf8b-dd4f-4f0e-a772-4c4dec7fcccb")]
-  public interface IEncodingOperator<TEncodedSolution> : IOperator where TEncodedSolution : class, IEncodedSolution {
-    ILookupParameter<IEncoding<TEncodedSolution>> EncodingParameter { get; }
+  public interface IEncodingOperator : IOperator {
+    ILookupParameter<IEncoding> EncodingParameter { get; }
   }
 }

@@ -26,7 +26,7 @@ using HeuristicLab.Core;
 
 namespace HeuristicLab.Optimization {
   [StorableType("fda56e0b-9392-4711-9af1-55211bfa24ac")]
-  internal interface INeighborBasedOperator<TEncodedSolution> : IEncodingOperator<TEncodedSolution>
+  internal interface INeighborBasedOperator<TEncodedSolution> : IEncodingOperator
   where TEncodedSolution : class, IEncodedSolution {
     Func<ISingleObjectiveSolutionContext<TEncodedSolution>, IRandom, IEnumerable<ISingleObjectiveSolutionContext<TEncodedSolution>>> GetNeighbors { get; set; }
   }

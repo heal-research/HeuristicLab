@@ -21,13 +21,9 @@
 
 using HEAL.Attic;
 using HeuristicLab.Optimization;
-using HeuristicLab.Problems.VehicleRouting.Interfaces;
 
 namespace HeuristicLab.Problems.VehicleRouting {
 
   [StorableType("b6674651-cc95-48d8-a2c3-83ee9325def3")]
   public interface IVRPEncoding : IEncoding { }
-
-  [StorableType("7d010ab3-2e01-4383-bb6c-7c47ef9d803f")]
-  public interface IVRPEncoding<T> : IVRPEncoding, IEncoding<T> where T : class, IVRPEncodedSolution { }
 }

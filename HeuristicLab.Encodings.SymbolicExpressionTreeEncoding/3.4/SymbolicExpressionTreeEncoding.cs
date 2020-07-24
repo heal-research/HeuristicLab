@@ -35,7 +35,7 @@ using HeuristicLab.PluginInfrastructure;
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   [Item("SymbolicExpressionTreeEncoding", "Describes a symbolic expression tree encoding.")]
   [StorableType("3FDE530B-771F-4280-921F-20DA50A139BA")]
-  public sealed class SymbolicExpressionTreeEncoding : Encoding<ISymbolicExpressionTree> {
+  public sealed class SymbolicExpressionTreeEncoding : Encoding {
     #region Encoding Parameters
     [Storable]
     private IFixedValueParameter<IntValue> treeLengthParameter;

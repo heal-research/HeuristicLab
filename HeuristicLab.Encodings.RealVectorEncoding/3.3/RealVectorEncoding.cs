@@ -33,7 +33,7 @@ using HeuristicLab.PluginInfrastructure;
 namespace HeuristicLab.Encodings.RealVectorEncoding {
   [Item("RealVectorEncoding", "Describes a real vector encoding.")]
   [StorableType("155FFE02-931F-457D-AC95-A0389B0BFECD")]
-  public sealed class RealVectorEncoding : VectorEncoding<RealVector> {
+  public sealed class RealVectorEncoding : VectorEncoding {
     [Storable] public IValueParameter<DoubleMatrix> BoundsParameter { get; private set; }
 
     public DoubleMatrix Bounds {

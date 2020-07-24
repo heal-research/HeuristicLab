@@ -25,7 +25,7 @@ using HeuristicLab.Core;
 
 namespace HeuristicLab.Optimization {
   [StorableType("c9325602-3262-48a4-8985-03657fb0b34f")]
-  internal interface IMultiObjectiveAnalysisOperator<TEncodedSolution> : IEncodingOperator<TEncodedSolution>, IAnalyzer, IMultiObjectiveOperator
+  internal interface IMultiObjectiveAnalysisOperator<TEncodedSolution> : IEncodingOperator, IAnalyzer, IMultiObjectiveOperator
   where TEncodedSolution : class, IEncodedSolution {
     Action<TEncodedSolution[], double[][], ResultCollection, IRandom> AnalyzeAction { get; set; }
   }

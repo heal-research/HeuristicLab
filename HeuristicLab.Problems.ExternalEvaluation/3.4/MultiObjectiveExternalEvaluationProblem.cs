@@ -37,7 +37,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
   [Creatable(CreatableAttribute.Categories.ExternalEvaluationProblems, Priority = 200)]
   [StorableType("CCA50199-A6AB-4C84-B4FA-0262CAF416EC")]
   public class MultiObjectiveExternalEvaluationProblem<TEncoding, TEncodedSolution> : MultiObjectiveProblem<TEncoding, TEncodedSolution>, IExternalEvaluationProblem
-    where TEncoding : class, IEncoding<TEncodedSolution>
+    where TEncoding : class, IEncoding
     where TEncodedSolution : class, IEncodedSolution {
 
     public static new Image StaticItemImage {

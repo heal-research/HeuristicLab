@@ -28,7 +28,7 @@ using HeuristicLab.Optimization;
 
 namespace HeuristicLab.Encodings.ScheduleEncoding {
   [StorableType("09b9d24c-2576-495a-b06c-338d095cba0d")]
-  public interface IScheduleEncoding : IEncoding<IScheduleSolution> {
+  public interface IScheduleEncoding : IEncoding {
     IValueParameter<ItemList<Job>> JobDataParameter { get; }
     IFixedValueParameter<IntValue> JobsParameter { get; }
     IFixedValueParameter<IntValue> ResourcesParameter { get; }
@@ -39,10 +39,5 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
 
 
     Schedule Decode(IScheduleSolution schedule, ItemList<Job> jobData);
-  }
-
-  public interface IScheduleEncoding<TSchedule> : IEncoding<TSchedule>
-    where TSchedule : class, IScheduleSolution {
-
   }
 }

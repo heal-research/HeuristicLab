@@ -39,8 +39,8 @@ namespace HeuristicLab.Optimization {
       get { return (ILookupParameter<IRandom>)Parameters["Random"]; }
     }
 
-    public ILookupParameter<IEncoding<TEncodedSolution>> EncodingParameter {
-      get { return (ILookupParameter<IEncoding<TEncodedSolution>>)Parameters["Encoding"]; }
+    public ILookupParameter<IEncoding> EncodingParameter {
+      get { return (ILookupParameter<IEncoding>)Parameters["Encoding"]; }
     }
 
     public ILookupParameter<DoubleValue> QualityParameter {
@@ -71,7 +71,7 @@ namespace HeuristicLab.Optimization {
     private SingleObjectiveImprover(SingleObjectiveImprover<TEncodedSolution> original, Cloner cloner) : base(original, cloner) { }
     public SingleObjectiveImprover() {
       Parameters.Add(new LookupParameter<IRandom>("Random", "The random number generator to use."));
-      Parameters.Add(new LookupParameter<IEncoding<TEncodedSolution>>("Encoding", "An item that holds the problem's encoding."));
+      Parameters.Add(new LookupParameter<IEncoding>("Encoding", "An item that holds the problem's encoding."));
       Parameters.Add(new LookupParameter<DoubleValue>("Quality", "The quality of the parameter vector."));
       Parameters.Add(new LookupParameter<BoolValue>("Maximization", "Whether the problem should be minimized or maximized."));
       Parameters.Add(new ValueLookupParameter<IntValue>("ImprovementAttempts", "The number of improvement attempts the operator should perform.", new IntValue(100)));
@@ -89,7 +89,7 @@ namespace HeuristicLab.Optimization {
       var maximize = MaximizationParameter.ActualValue.Value;
       var maxAttempts = ImprovementAttemptsParameter.ActualValue.Value;
       var sampleSize = SampleSizeParameter.ActualValue.Value;
-      var solutionContext = ScopeUtil.CreateSolutionContext(ExecutionContext.Scope, encoding);
+      var solutionContext = ScopeUtil.CreateSolutionContext<TEncodedSolution>(ExecutionContext.Scope, encoding);
 
       double quality;
       if (QualityParameter.ActualValue == null) {

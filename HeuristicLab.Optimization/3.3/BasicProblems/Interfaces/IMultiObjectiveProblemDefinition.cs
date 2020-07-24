@@ -35,7 +35,7 @@ namespace HeuristicLab.Optimization {
 
   [StorableType("39eacdb5-80a0-425d-902a-00eb3e1d6610")]
   public interface IMultiObjectiveProblemDefinition<TEncoding, TEncodedSolution> : IMultiObjectiveProblemDefinition, IProblemDefinition<TEncoding, TEncodedSolution>
-    where TEncoding : class, IEncoding<TEncodedSolution>
+    where TEncoding : class, IEncoding
     where TEncodedSolution : class, IEncodedSolution {
     double[] Evaluate(TEncodedSolution solution, IRandom random);
     double[] Evaluate(TEncodedSolution solution, IRandom random, CancellationToken cancellationToken);

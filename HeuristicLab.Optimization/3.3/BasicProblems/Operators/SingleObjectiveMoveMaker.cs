@@ -30,10 +30,9 @@ using HeuristicLab.Parameters;
 namespace HeuristicLab.Optimization {
   [Item("Single-objective MoveMaker", "Applies a move.")]
   [StorableType("C0ABF392-C825-4B98-8FB9-5749A9091FD6")]
-  internal sealed class SingleObjectiveMoveMaker<TEncodedSolution> : InstrumentedOperator, IMoveMaker, ISingleObjectiveMoveOperator
-  where TEncodedSolution : class, IEncodedSolution {
-    public ILookupParameter<IEncoding<TEncodedSolution>> EncodingParameter {
-      get { return (ILookupParameter<IEncoding<TEncodedSolution>>)Parameters["Encoding"]; }
+  internal sealed class SingleObjectiveMoveMaker : InstrumentedOperator, IMoveMaker, ISingleObjectiveMoveOperator {
+    public ILookupParameter<IEncoding> EncodingParameter {
+      get { return (ILookupParameter<IEncoding>)Parameters["Encoding"]; }
     }
 
     public ILookupParameter<DoubleValue> QualityParameter {
@@ -46,15 +45,15 @@ namespace HeuristicLab.Optimization {
 
     [StorableConstructor]
     private SingleObjectiveMoveMaker(StorableConstructorFlag _) : base(_) { }
-    private SingleObjectiveMoveMaker(SingleObjectiveMoveMaker<TEncodedSolution> original, Cloner cloner) : base(original, cloner) { }
+    private SingleObjectiveMoveMaker(SingleObjectiveMoveMaker original, Cloner cloner) : base(original, cloner) { }
     public SingleObjectiveMoveMaker() {
-      Parameters.Add(new LookupParameter<IEncoding<TEncodedSolution>>("Encoding", "An item that holds the problem's encoding."));
+      Parameters.Add(new LookupParameter<IEncoding>("Encoding", "An item that holds the problem's encoding."));
       Parameters.Add(new LookupParameter<DoubleValue>("Quality", "The quality of the parameter vector."));
       Parameters.Add(new LookupParameter<DoubleValue>("MoveQuality", "The quality of the move."));
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new SingleObjectiveMoveMaker<TEncodedSolution>(this, cloner);
+      return new SingleObjectiveMoveMaker(this, cloner);
     }
 
     public override IOperation InstrumentedApply() {

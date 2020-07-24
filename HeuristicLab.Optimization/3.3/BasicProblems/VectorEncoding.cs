@@ -29,8 +29,7 @@ using HeuristicLab.Parameters;
 namespace HeuristicLab.Optimization {
   [Item("VectorEncoding", "Represents a vector-based encoding.")]
   [StorableType("fed1e058-6e47-4e0f-af0a-ff646a9a778b")]
-  public abstract class VectorEncoding<TEncodedSolution> : Encoding<TEncodedSolution>
-    where TEncodedSolution : class, IEncodedSolution {
+  public abstract class VectorEncoding : Encoding {
     [Storable] public IFixedValueParameter<IntValue> LengthParameter { get; private set; }
 
     public int Length {
@@ -48,7 +47,7 @@ namespace HeuristicLab.Optimization {
     private void AfterDeserialization() {
       RegisterEventHandlers();
     }
-    protected VectorEncoding(VectorEncoding<TEncodedSolution> original, Cloner cloner)
+    protected VectorEncoding(VectorEncoding original, Cloner cloner)
       : base(original, cloner) {
       LengthParameter = cloner.Clone(original.LengthParameter);
       RegisterEventHandlers();

@@ -35,7 +35,7 @@ namespace HeuristicLab.Problems.Programmable {
   [Item("Programmable Problem (single-objective)", "Represents a single-objective problem that can be programmed with a script.")]
   [StorableType("44944E6B-E95E-4805-8F0A-0C0F7D761DB9")]
   public abstract class SingleObjectiveProgrammableProblem<TEncoding, TEncodedSolution> : SingleObjectiveProblem<TEncoding, TEncodedSolution>, IProgrammableItem, IProgrammableProblem
-    where TEncoding : class, IEncoding<TEncodedSolution>
+    where TEncoding : class, IEncoding
     where TEncodedSolution : class, IEncodedSolution {
     protected static readonly string ENCODING_NAMESPACE = "ENCODING_NAMESPACE";
     protected static readonly string ENCODING_CLASS = "ENCODING_CLASS";

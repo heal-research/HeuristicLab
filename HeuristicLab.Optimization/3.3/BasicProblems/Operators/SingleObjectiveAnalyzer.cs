@@ -36,8 +36,8 @@ namespace HeuristicLab.Optimization {
   where TEncodedSolution : class, IEncodedSolution {
     public bool EnabledByDefault { get { return true; } }
 
-    public ILookupParameter<IEncoding<TEncodedSolution>> EncodingParameter {
-      get { return (ILookupParameter<IEncoding<TEncodedSolution>>)Parameters["Encoding"]; }
+    public ILookupParameter<IEncoding> EncodingParameter {
+      get { return (ILookupParameter<IEncoding>)Parameters["Encoding"]; }
     }
 
     public IScopeTreeLookupParameter<DoubleValue> QualityParameter {
@@ -58,7 +58,7 @@ namespace HeuristicLab.Optimization {
     private SingleObjectiveAnalyzer(StorableConstructorFlag _) : base(_) { }
     private SingleObjectiveAnalyzer(SingleObjectiveAnalyzer<TEncodedSolution> original, Cloner cloner) : base(original, cloner) { }
     public SingleObjectiveAnalyzer() {
-      Parameters.Add(new LookupParameter<IEncoding<TEncodedSolution>>("Encoding", "An item that holds the problem's encoding."));
+      Parameters.Add(new LookupParameter<IEncoding>("Encoding", "An item that holds the problem's encoding."));
       Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>("Quality", "The quality of the parameter vector."));
       Parameters.Add(new LookupParameter<ResultCollection>("Results", "The results collection to write to."));
       Parameters.Add(new LookupParameter<IRandom>("Random", "The random number generator to use."));
@@ -78,7 +78,7 @@ namespace HeuristicLab.Optimization {
         scopes = scopes.Select(x => (IEnumerable<IScope>)x.SubScopes).Aggregate((a, b) => a.Concat(b));
 
       var solutionContexts = scopes.Select(scope => {
-        return ScopeUtil.CreateSolutionContext(scope, encoding);
+        return ScopeUtil.CreateSolutionContext<TEncodedSolution>(scope, encoding);
       }).ToArray();
 
       Analyze(solutionContexts, results, random);

@@ -35,7 +35,7 @@ namespace HeuristicLab.Optimization {
     Problem<TEncoding, TEncodedSolution, SingleObjectiveEvaluator<TEncodedSolution>>,
     ISingleObjectiveProblem<TEncoding, TEncodedSolution>,
     ISingleObjectiveProblemDefinition<TEncoding, TEncodedSolution>
-    where TEncoding : class, IEncoding<TEncodedSolution>
+    where TEncoding : class, IEncoding
     where TEncodedSolution : class, IEncodedSolution {
 
     [Storable] protected IValueParameter<DoubleValue> BestKnownQualityParameter { get; private set; }
@@ -84,7 +84,7 @@ namespace HeuristicLab.Optimization {
       Operators.Add(new SingleObjectiveImprover<TEncodedSolution>());
       Operators.Add(new SingleObjectiveMoveEvaluator<TEncodedSolution>());
       Operators.Add(new SingleObjectiveMoveGenerator<TEncodedSolution>());
-      Operators.Add(new SingleObjectiveMoveMaker<TEncodedSolution>());
+      Operators.Add(new SingleObjectiveMoveMaker());
 
       Parameterize();
       RegisterEventHandlers();

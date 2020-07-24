@@ -31,7 +31,7 @@ using HeuristicLab.PluginInfrastructure;
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
   [Item("AlbaEncoding", "Represents the encoding for Alba encoded solutions.")]
   [StorableType("9ff9f959-31d2-44e5-8a5e-b122220535c2")]
-  public class AlbaEncoding : Encoding<AlbaEncodedSolution>, IVRPEncoding<AlbaEncodedSolution> {
+  public class AlbaEncoding : Encoding, IVRPEncoding {
 
     [StorableConstructor]
     private AlbaEncoding(StorableConstructorFlag _) : base(_) { }

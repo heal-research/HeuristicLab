@@ -38,8 +38,8 @@ namespace HeuristicLab.Optimization {
       get { return (ILookupParameter<IRandom>)Parameters["Random"]; }
     }
 
-    public ILookupParameter<IEncoding<TEncodedSolution>> EncodingParameter {
-      get { return (ILookupParameter<IEncoding<TEncodedSolution>>)Parameters["Encoding"]; }
+    public ILookupParameter<IEncoding> EncodingParameter {
+      get { return (ILookupParameter<IEncoding>)Parameters["Encoding"]; }
     }
 
     public ILookupParameter<DoubleValue> QualityParameter {
@@ -57,7 +57,7 @@ namespace HeuristicLab.Optimization {
     private SingleObjectiveMoveEvaluator(SingleObjectiveMoveEvaluator<TEncodedSolution> original, Cloner cloner) : base(original, cloner) { }
     public SingleObjectiveMoveEvaluator() {
       Parameters.Add(new LookupParameter<IRandom>("Random", "The random number generator to use."));
-      Parameters.Add(new LookupParameter<IEncoding<TEncodedSolution>>("Encoding", "An item that holds the problem's encoding."));
+      Parameters.Add(new LookupParameter<IEncoding>("Encoding", "An item that holds the problem's encoding."));
       Parameters.Add(new LookupParameter<DoubleValue>("Quality", "The quality of the parameter vector."));
       Parameters.Add(new LookupParameter<DoubleValue>("MoveQuality", "The quality of the move."));
     }
@@ -69,7 +69,7 @@ namespace HeuristicLab.Optimization {
     public override IOperation Apply() {
       var random = RandomParameter.ActualValue;
       var encoding = EncodingParameter.ActualValue;
-      var solutionContext = ScopeUtil.CreateSolutionContext(ExecutionContext.Scope, encoding);
+      var solutionContext = ScopeUtil.CreateSolutionContext<TEncodedSolution>(ExecutionContext.Scope, encoding);
 
       if (!solutionContext.IsEvaluated)
         Evaluate(solutionContext, random, CancellationToken.None);

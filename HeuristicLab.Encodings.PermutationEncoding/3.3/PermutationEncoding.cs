@@ -33,7 +33,7 @@ using HeuristicLab.PluginInfrastructure;
 namespace HeuristicLab.Encodings.PermutationEncoding {
   [Item("PermutationEncoding", "Describes a permutation encoding.")]
   [StorableType("E30E7507-44BA-4021-8F56-C3FC5569A6FE")]
-  public sealed class PermutationEncoding : VectorEncoding<Permutation> {
+  public sealed class PermutationEncoding : VectorEncoding {
     #region encoding parameters
     [Storable] public IValueParameter<EnumValue<PermutationTypes>> PermutationTypeParameter { get; private set; }
     public PermutationTypes Type {

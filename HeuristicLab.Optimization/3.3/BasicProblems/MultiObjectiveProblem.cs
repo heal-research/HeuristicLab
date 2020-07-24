@@ -35,7 +35,7 @@ namespace HeuristicLab.Optimization {
     Problem<TEncoding, TEncodedSolution, MultiObjectiveEvaluator<TEncodedSolution>>,
     IMultiObjectiveProblem<TEncoding, TEncodedSolution>,
     IMultiObjectiveProblemDefinition<TEncoding, TEncodedSolution>
-    where TEncoding : class, IEncoding<TEncodedSolution>
+    where TEncoding : class, IEncoding
     where TEncodedSolution : class, IEncodedSolution {
 
     #region Parameter properties

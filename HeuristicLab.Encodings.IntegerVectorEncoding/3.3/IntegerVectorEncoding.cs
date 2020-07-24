@@ -33,7 +33,7 @@ using HeuristicLab.PluginInfrastructure;
 namespace HeuristicLab.Encodings.IntegerVectorEncoding {
   [Item("IntegerVectorEncoding", "Describes an integer vector encoding.")]
   [StorableType("15D6E55E-C39F-4784-8350-14A0FD47CF0E")]
-  public sealed class IntegerVectorEncoding : VectorEncoding<IntegerVector> {
+  public sealed class IntegerVectorEncoding : VectorEncoding {
     [Storable] public IValueParameter<IntMatrix> BoundsParameter { get; private set; }
 
     public IntMatrix Bounds {

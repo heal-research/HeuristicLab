@@ -31,7 +31,7 @@ using HeuristicLab.Parameters;
 
 namespace HeuristicLab.Encodings.ScheduleEncoding {
   [StorableType("D2FB1AF9-EF13-4ED2-B3E9-D5BE4E5772EA")]
-  public abstract class ScheduleEncoding<TSchedule> : Encoding<TSchedule>, IScheduleEncoding
+  public abstract class ScheduleEncoding<TSchedule> : Encoding, IScheduleEncoding
   where TSchedule : class, IScheduleSolution {
     [Storable] public IValueParameter<ItemList<Job>> JobDataParameter { get; private set; }
     [Storable] public IFixedValueParameter<IntValue> JobsParameter { get; private set; }

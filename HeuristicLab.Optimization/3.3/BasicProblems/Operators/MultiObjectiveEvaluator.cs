@@ -37,8 +37,8 @@ namespace HeuristicLab.Optimization {
       get { return (ILookupParameter<IRandom>)Parameters["Random"]; }
     }
 
-    public ILookupParameter<IEncoding<TEncodedSolution>> EncodingParameter {
-      get { return (ILookupParameter<IEncoding<TEncodedSolution>>)Parameters["Encoding"]; }
+    public ILookupParameter<IEncoding> EncodingParameter {
+      get { return (ILookupParameter<IEncoding>)Parameters["Encoding"]; }
     }
 
     public ILookupParameter<DoubleArray> QualitiesParameter {
@@ -52,7 +52,7 @@ namespace HeuristicLab.Optimization {
     private MultiObjectiveEvaluator(MultiObjectiveEvaluator<TEncodedSolution> original, Cloner cloner) : base(original, cloner) { }
     public MultiObjectiveEvaluator() {
       Parameters.Add(new LookupParameter<IRandom>("Random", "The random number generator to use."));
-      Parameters.Add(new LookupParameter<IEncoding<TEncodedSolution>>("Encoding", "An item that holds the problem's encoding."));
+      Parameters.Add(new LookupParameter<IEncoding>("Encoding", "An item that holds the problem's encoding."));
       Parameters.Add(new LookupParameter<DoubleArray>("Qualities", "The qualities of the parameter vector."));
     }
 
@@ -63,7 +63,7 @@ namespace HeuristicLab.Optimization {
     public override IOperation InstrumentedApply() {
       var random = RandomParameter.ActualValue;
       var encoding = EncodingParameter.ActualValue;
-      var solution = ScopeUtil.GetEncodedSolution(ExecutionContext.Scope, encoding);
+      var solution = (TEncodedSolution)ScopeUtil.GetEncodedSolution(ExecutionContext.Scope, encoding);
       QualitiesParameter.ActualValue = new DoubleArray(EvaluateFunc(solution, random));
       return base.InstrumentedApply();
     }

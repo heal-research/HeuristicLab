@@ -40,7 +40,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
   // BackwardsCompatibility3.3
   // Rename class to SingleObjectiveExternalEvaluationProblem
   public class ExternalEvaluationProblem<TEncoding, TEncodedSolution> : SingleObjectiveProblem<TEncoding, TEncodedSolution>, IExternalEvaluationProblem
-    where TEncoding : class, IEncoding<TEncodedSolution>
+    where TEncoding : class, IEncoding
     where TEncodedSolution : class, IEncodedSolution {
 
     public static new Image StaticItemImage {

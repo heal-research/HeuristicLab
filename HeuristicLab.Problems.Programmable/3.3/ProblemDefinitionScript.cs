@@ -56,7 +56,7 @@ namespace HeuristicLab.Problems.Programmable {
   [Item("ProblemDefinitionScript", "Script that defines the parameter vector and evaluates the solution for a programmable problem.")]
   [StorableType("0B3AF22C-4744-4860-BBCF-A92046000847")]
   public abstract class ProblemDefinitionScript<TEncoding, TEncodedSolution> : ProblemDefinitionScript, IProblemDefinition<TEncoding, TEncodedSolution>
-    where TEncoding : class, IEncoding<TEncodedSolution>
+    where TEncoding : class, IEncoding
     where TEncodedSolution : class, IEncodedSolution {
 
     [Storable]

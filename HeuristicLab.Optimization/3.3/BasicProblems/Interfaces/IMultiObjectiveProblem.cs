@@ -30,7 +30,7 @@ namespace HeuristicLab.Optimization {
 
   [StorableType("806fb361-1469-4903-9f54-f8678b0717b9")]
   public interface IMultiObjectiveProblem<TEncoding, TEncodedSolution> : IMultiObjectiveProblem, IProblem<TEncoding, TEncodedSolution>
-    where TEncoding : class, IEncoding<TEncodedSolution>
+    where TEncoding : class, IEncoding
     where TEncodedSolution : class, IEncodedSolution { }
 
   //TODO derive IMutliObjectiveProblem from IMultiObjectiveProblemDefinition?
