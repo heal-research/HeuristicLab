@@ -19,18 +19,18 @@
  */
 #endregion
 
-using HeuristicLab.Optimization;
-using HeuristicLab.Core;
 using HEAL.Attic;
-using HeuristicLab.Data;
 using HeuristicLab.Common;
+using HeuristicLab.Core;
+using HeuristicLab.Data;
+using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
   [Item("AlbaLambdaInterchangeLocalImprovementOperator", "Takes a solution and finds the local optimum with respect to the lambda interchange neighborhood by decending along the steepest gradient.")]
   [StorableType("84981F03-B886-4ADD-8DB5-C12628404335")]
-  public class AlbaLambdaInterchangeLocalImprovementOperator : VRPOperator, IStochasticOperator, ILocalImprovementOperator, ISingleObjectiveOperator {
+  public class AlbaLambdaInterchangeLocalImprovementOperator : VRPOperator, IStochasticOperator, ILocalImprovementOperator, ISingleObjectiveOperator, IAlbaOperator {
 
     public IValueLookupParameter<IntValue> MaximumIterationsParameter {
       get { return (IValueLookupParameter<IntValue>)Parameters["MaximumIterations"]; }

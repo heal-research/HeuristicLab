@@ -27,6 +27,7 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
 using HeuristicLab.PluginInfrastructure;
+using HeuristicLab.Problems.VehicleRouting.Interfaces;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
   [Item("AlbaEncoding", "Represents the encoding for Alba encoded solutions.")]
@@ -53,7 +54,9 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
     private static readonly IEnumerable<Type> encodingSpecificOperatorTypes;
     static AlbaEncoding() {
       encodingSpecificOperatorTypes = new List<Type>() {
-          typeof (IAlbaOperator)
+          typeof (IAlbaOperator),
+          typeof (IVRPCreator),
+          typeof (IMultiVRPOperator)
       };
     }
     private void DiscoverOperators() {
@@ -62,6 +65,13 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
       var operators = discoveredTypes.Select(t => (IOperator)Activator.CreateInstance(t));
       var newOperators = operators.Except(Operators, new TypeEqualityComparer<IOperator>()).ToList();
 
+      foreach (var op in newOperators.OfType<IMultiVRPOperator>().ToList()) {
+        op.SetOperators(Operators.Concat(newOperators));
+        if (!op.Operators.Any()) newOperators.Remove(op);
+      }
+      foreach (var op in Operators.OfType<IMultiVRPOperator>()) {
+        op.SetOperators(newOperators);
+      }
       ConfigureOperators(newOperators);
       foreach (var @operator in newOperators)
         AddOperator(@operator);

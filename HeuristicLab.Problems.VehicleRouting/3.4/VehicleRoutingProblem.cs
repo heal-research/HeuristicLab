@@ -38,7 +38,6 @@ using HeuristicLab.Problems.VehicleRouting.Encodings.Alba;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 using HeuristicLab.Problems.VehicleRouting.Interpreters;
 using HeuristicLab.Problems.VehicleRouting.ProblemInstances;
-using HeuristicLab.Problems.VehicleRouting.Variants;
 
 namespace HeuristicLab.Problems.VehicleRouting {
   [Item("Vehicle Routing Problem (VRP)", "Represents a Vehicle Routing Problem.")]
@@ -150,10 +149,10 @@ namespace HeuristicLab.Problems.VehicleRouting {
     }
 
     void ProblemInstanceParameter_ValueChanged(object sender, EventArgs e) {
-      InitializeOperators();
+      //InitializeOperators();
       AttachProblemInstanceEventHandlers();
 
-      OnOperatorsChanged();
+      //OnOperatorsChanged();
     }
 
     public void SetProblemInstance(IVRPProblemInstance instance) {
@@ -166,28 +165,9 @@ namespace HeuristicLab.Problems.VehicleRouting {
     }
 
     private void InitializeOperators() {
-      Operators.Clear();
-
-      if (ProblemInstance != null) {
-        Operators.AddRange(
-        ProblemInstance.Operators.Concat(
-          ApplicationManager.Manager.GetInstances<IGeneralVRPOperator>().Cast<IOperator>()).OrderBy(op => op.Name));
-        Operators.Add(new VRPSimilarityCalculator());
-        Operators.Add(new QualitySimilarityCalculator());
-        Operators.Add(new PopulationSimilarityAnalyzer(Operators.OfType<ISolutionSimilarityCalculator>()));
-
-        IVRPCreator defaultCreator = null;
-        /*foreach (IVRPCreator creator in Operators.Where(o => o is IVRPCreator)) {
-          solutionCreatorParameter.ValidValues.Add(creator);
-          if (creator is Encodings.Alba.RandomCreator)
-            defaultCreator = creator;
-        }*/
-        Operators.Add(new AlbaLambdaInterchangeLocalImprovementOperator());
-        /*if (defaultCreator != null)
-          solutionCreatorParameter.Value = defaultCreator;*/
-      }
-
-      Parameterize();
+      Operators.Add(new VRPSimilarityCalculator());
+      Operators.Add(new QualitySimilarityCalculator());
+      Operators.Add(new PopulationSimilarityAnalyzer(Operators.OfType<ISolutionSimilarityCalculator>()));
     }
 
     protected override void ParameterizeOperators() {
@@ -196,26 +176,11 @@ namespace HeuristicLab.Problems.VehicleRouting {
     }
 
     private void Parameterize() {
-      foreach (IOperator op in Operators.OfType<IOperator>()) {
-        if (op is IMultiVRPOperator) {
-          (op as IMultiVRPOperator).SetOperators(Operators.OfType<IOperator>());
-        }
-      }
-      if (Parameters.ContainsKey("ProblemInstance") && ProblemInstance != null) {
-        foreach (ISingleObjectiveImprovementOperator op in Operators.OfType<ISingleObjectiveImprovementOperator>()) {
-          //op.SolutionParameter.ActualName = SolutionCreator.VRPToursParameter.ActualName;
-          op.SolutionParameter.Hidden = true;
-        }
-        foreach (ISingleObjectivePathRelinker op in Operators.OfType<ISingleObjectivePathRelinker>()) {
-          //op.ParentsParameter.ActualName = SolutionCreator.VRPToursParameter.ActualName;
-          op.ParentsParameter.Hidden = true;
-        }
-        foreach (ISolutionSimilarityCalculator op in Operators.OfType<ISolutionSimilarityCalculator>()) {
-          //op.SolutionVariableName = SolutionCreator.VRPToursParameter.ActualName;
-          op.QualityVariableName = ProblemInstance.SolutionEvaluator.QualityParameter.ActualName;
-          var calc = op as VRPSimilarityCalculator;
-          if (calc != null) calc.ProblemInstance = ProblemInstance;
-        }
+      foreach (ISolutionSimilarityCalculator op in Operators.OfType<ISolutionSimilarityCalculator>()) {
+        op.SolutionVariableName = Encoding.Name;
+        op.QualityVariableName = Evaluator.QualityParameter.ActualName;
+        var calc = op as VRPSimilarityCalculator;
+        if (calc != null) calc.ProblemInstance = ProblemInstance;
       }
     }
 
