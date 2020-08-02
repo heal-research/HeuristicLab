@@ -34,7 +34,7 @@ using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
 using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Problems.Instances;
-using HeuristicLab.Problems.VehicleRouting.Encodings.Alba;
+using HeuristicLab.Problems.VehicleRouting.Encodings.Potvin;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 using HeuristicLab.Problems.VehicleRouting.Interpreters;
 using HeuristicLab.Problems.VehicleRouting.ProblemInstances;
@@ -73,7 +73,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
     [StorableConstructor]
     private VehicleRoutingProblem(StorableConstructorFlag _) : base(_) { }
     public VehicleRoutingProblem()
-      : base(new AlbaEncoding()) {
+      : base(new PotvinEncoding()) {
       Parameters.Add(new ValueParameter<IVRPProblemInstance>("ProblemInstance", "The VRP problem instance"));
       Parameters.Add(new OptionalValueParameter<VRPSolution>("BestKnownSolution", "The best known solution of this VRP instance."));
 
