@@ -118,6 +118,24 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CVRPPDTWEvaluationView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="CVRPPDTWEvaluationView.Designer.cs">
+      <DependentUpon>CVRPPDTWEvaluationView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CVRPTWEvaluationView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="CVRPTWEvaluationView.Designer.cs">
+      <DependentUpon>CVRPTWEvaluationView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CVRPEvaluationView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="CVRPEvaluationView.Designer.cs">
+      <DependentUpon>CVRPEvaluationView.cs</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="MDCVRPPDTWView.cs">
       <SubType>UserControl</SubType>
@@ -155,6 +173,12 @@
     </Compile>
     <Compile Include="SingleDepotVRPView.Designer.cs">
       <DependentUpon>SingleDepotVRPView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="VRPEvaluationView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="VRPEvaluationView.Designer.cs">
+      <DependentUpon>VRPEvaluationView.cs</DependentUpon>
     </Compile>
     <Compile Include="VRPImportDialog.cs">
       <SubType>Form</SubType>
@@ -296,6 +320,20 @@
       <HintPath>..\..\bin\HEAL.Attic.dll</HintPath>
       <Private>False</Private>
     </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="CVRPEvaluationView.resx">
+      <DependentUpon>CVRPEvaluationView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CVRPPDTWEvaluationView.resx">
+      <DependentUpon>CVRPPDTWEvaluationView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CVRPTWEvaluationView.resx">
+      <DependentUpon>CVRPTWEvaluationView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="VRPEvaluationView.resx">
+      <DependentUpon>VRPEvaluationView.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

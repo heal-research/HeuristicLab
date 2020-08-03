@@ -68,7 +68,6 @@ namespace HeuristicLab.Optimization {
       
       ScopeUtil.CopyToScope(ExecutionContext.Scope, solutionContext);
       QualityParameter.ActualValue = new DoubleValue(solutionContext.EvaluationResult.Quality);
-
       return base.InstrumentedApply();
     }
   }

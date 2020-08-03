@@ -34,6 +34,7 @@ namespace HeuristicLab.Optimization {
 
     [Storable]
     private readonly Dictionary<string, object> data = new Dictionary<string, object>();
+    public IEnumerable<KeyValuePair<string, object>> AdditionalData => data.AsEnumerable();
 
     protected EvaluationResult() : base() { }
 

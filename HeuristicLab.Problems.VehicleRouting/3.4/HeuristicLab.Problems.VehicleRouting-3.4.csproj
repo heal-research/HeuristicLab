@@ -127,9 +127,6 @@
     <Compile Include="Analyzer\BestAverageWorstTours\TimeWindowed\BestAverageWorstTimeWindowedVRPToursCalculator.cs" />
     <Compile Include="Analyzer\BestAverageWorstTours\TimeWindowed\BestTimeWindowedVRPToursMemorizer.cs" />
     <Compile Include="Analyzer\BestSolution\BestVRPSolutionAnalyzer.cs" />
-    <Compile Include="Analyzer\BestSolution\Capacitated\BestCapacitatedVRPSolutionAnalyzer.cs" />
-    <Compile Include="Analyzer\BestSolution\PickupAndDelivery\BestPickupAndDeliveryVRPSolutionAnalyzer.cs" />
-    <Compile Include="Analyzer\BestSolution\TimeWindowed\BestTimeWindowedVRPSolutionAnalyzer.cs" />
     <Compile Include="Analyzer\ConstraintRelaxation\Capacitated\CapacityRelaxationVRPAnalyzer.cs" />
     <Compile Include="Analyzer\ConstraintRelaxation\PickupAndDelivery\PickupViolationsRelaxationVRPAnalyzer.cs" />
     <Compile Include="Analyzer\ConstraintRelaxation\TimeWindowed\TimeWindowRelaxationVRPAnalyzer.cs" />
@@ -489,6 +486,7 @@
       <Private>False</Private>
     </Reference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

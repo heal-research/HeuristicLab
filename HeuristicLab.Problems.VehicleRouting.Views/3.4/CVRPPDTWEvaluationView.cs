@@ -1,4 +1,4 @@
-#region License Information
+﻿#region License Information
 /* HeuristicLab
  * Copyright (C) Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
@@ -19,18 +19,26 @@
  */
 #endregion
 
-using System.Collections.Generic;
-using HEAL.Attic;
+using HeuristicLab.MainForm;
+using HeuristicLab.Problems.VehicleRouting.ProblemInstances;
 
-namespace HeuristicLab.Core {
-  [StorableType("5d65ecdc-1659-488c-8a6f-0f630a2deeef")]
-  /// <summary>
-  /// An interface which represents an item which contains parameters.
-  /// </summary>
-  public interface IParameterizedItem : IItem {
-    IKeyedItemCollection<string, IParameter> Parameters { get; }
-    // TODO: Move the following to separate interface, not only paramterized items
-    // could be collected for run. Mabe ICollectible
-    void CollectParameterValues(IDictionary<string, IItem> values);
+namespace HeuristicLab.Problems.VehicleRouting.Views {
+  [View("CVRPPDTW Evaluation")]
+  [Content(typeof(CVRPPDTWEvaluation), IsDefaultView = true)]
+  public partial class CVRPPDTWEvaluationView : CVRPTWEvaluationView {
+
+    public new CVRPPDTWEvaluation Content {
+      get => (CVRPPDTWEvaluation)base.Content;
+      set => base.Content = value;
+    }
+
+    public CVRPPDTWEvaluationView() {
+      InitializeComponent();
+    }
+
+    protected override void OnContentChanged() {
+      base.OnContentChanged();
+      pickupViolationsTextBox.Text = Content?.PickupViolations.ToString() ?? string.Empty;
+    }
   }
 }

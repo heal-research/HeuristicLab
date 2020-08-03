@@ -123,13 +123,14 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
 
   [Item("VRPEvaluation", "")]
   [StorableType("0c4dfa78-8e41-4558-b2dd-4a22954c35ba")]
-  public class VRPEvaluation : EvaluationResult {
+  public class VRPEvaluation : EvaluationResult, ISingleObjectiveEvaluationResult {
+    // TODO: Would be nice to collect these, into individual results in a run
     [Storable] public double Quality { get; set; }
     [Storable] public double Distance { get; set; }
     [Storable] public int VehicleUtilization { get; set; }
     [Storable] public InsertionInfo InsertionInfo { get; set; }
     [Storable] public double Penalty { get; set; }
-
+    [Storable] public bool IsFeasible { get; set; }
 
     [StorableConstructor]
     protected VRPEvaluation(StorableConstructorFlag _) : base(_) { }
@@ -140,6 +141,7 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
       VehicleUtilization = original.VehicleUtilization;
       InsertionInfo = cloner.Clone(original.InsertionInfo);
       Penalty = original.Penalty;
+      IsFeasible = original.IsFeasible;
     }
     public VRPEvaluation() : base() {
       InsertionInfo = new InsertionInfo();

@@ -96,7 +96,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
     }
 
     public override ISingleObjectiveEvaluationResult Evaluate(IVRPEncodedSolution solution, IRandom random, CancellationToken cancellationToken) {
-      return new SingleObjectiveEvaluationResult(ProblemInstance.Evaluate(solution).Quality);
+      return ProblemInstance.Evaluate(solution);
     }
 
     #region Helpers
@@ -149,10 +149,10 @@ namespace HeuristicLab.Problems.VehicleRouting {
     }
 
     void ProblemInstanceParameter_ValueChanged(object sender, EventArgs e) {
-      //InitializeOperators();
+      InitializeOperators();
       AttachProblemInstanceEventHandlers();
 
-      //OnOperatorsChanged();
+      OnOperatorsChanged();
     }
 
     public void SetProblemInstance(IVRPProblemInstance instance) {
@@ -168,6 +168,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
       Operators.Add(new VRPSimilarityCalculator());
       Operators.Add(new QualitySimilarityCalculator());
       Operators.Add(new PopulationSimilarityAnalyzer(Operators.OfType<ISolutionSimilarityCalculator>()));
+      Operators.AddRange(ProblemInstance.Operators.OfType<IAnalyzer>());
     }
 
     protected override void ParameterizeOperators() {

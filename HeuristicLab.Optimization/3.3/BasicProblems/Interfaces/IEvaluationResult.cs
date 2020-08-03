@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System.Collections.Generic;
 using HEAL.Attic;
 using HeuristicLab.Core;
 
@@ -27,6 +28,7 @@ namespace HeuristicLab.Optimization {
   public interface IEvaluationResult : IItem {
 
     //TODO: make methods generic for get/set additional data
+    IEnumerable<KeyValuePair<string, object>> AdditionalData { get; }
     void SetAdditionalData(string identifier, object o);
     object GetAdditionalData(string identifier);
   }

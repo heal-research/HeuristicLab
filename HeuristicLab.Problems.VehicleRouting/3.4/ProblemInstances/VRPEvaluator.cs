@@ -19,11 +19,11 @@
  */
 #endregion
 
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 using HeuristicLab.Problems.VehicleRouting.Encodings;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 
@@ -123,7 +123,7 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
       foreach (Tour tour in solution.GetTours()) {
         EvaluateTour(evaluation, instance, tour, solution);
       }
-
+      evaluation.IsFeasible = Feasible(evaluation);
       return evaluation;
     }
 

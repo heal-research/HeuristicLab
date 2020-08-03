@@ -85,6 +85,15 @@ namespace HeuristicLab.Optimization {
       if (!scope.Variables.TryGetValue(EvaluationResultName, out var variable2)) {
         scope.Variables.Add(new Variable(EvaluationResultName, solutionContext.EvaluationResult));
       } else variable2.Value = solutionContext.EvaluationResult;
+      if (solutionContext.EvaluationResult != null) {
+        foreach (var item in solutionContext.EvaluationResult.AdditionalData) {
+          if (item.Value is IItem i) {
+            if (!scope.Variables.TryGetValue(item.Key, out var variable))
+              scope.Variables.Add(new Variable(item.Key, i));
+            else variable.Value = i;
+          }
+        }
+      }
     }
   }
 }
