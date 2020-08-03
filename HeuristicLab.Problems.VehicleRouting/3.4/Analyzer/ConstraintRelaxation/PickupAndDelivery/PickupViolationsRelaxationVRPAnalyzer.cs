@@ -19,14 +19,15 @@
  */
 #endregion
 
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
+using HeuristicLab.Problems.VehicleRouting.ProblemInstances;
 using HeuristicLab.Problems.VehicleRouting.Variants;
 
 namespace HeuristicLab.Problems.VehicleRouting {
@@ -42,12 +43,8 @@ namespace HeuristicLab.Problems.VehicleRouting {
     public ScopeTreeLookupParameter<IVRPEncodedSolution> VRPToursParameter {
       get { return (ScopeTreeLookupParameter<IVRPEncodedSolution>)Parameters["VRPTours"]; }
     }
-    public ScopeTreeLookupParameter<DoubleValue> QualityParameter {
-      get { return (ScopeTreeLookupParameter<DoubleValue>)Parameters["Quality"]; }
-    }
-
-    public ScopeTreeLookupParameter<IntValue> PickupViolationsParameter {
-      get { return (ScopeTreeLookupParameter<IntValue>)Parameters["PickupViolations"]; }
+    public ScopeTreeLookupParameter<CVRPPDTWEvaluation> EvaluationParameter {
+      get { return (ScopeTreeLookupParameter<CVRPPDTWEvaluation>)Parameters["EvaluationResult"]; }
     }
 
     public IValueParameter<DoubleValue> SigmaParameter {
@@ -78,9 +75,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
       : base() {
       Parameters.Add(new LookupParameter<IVRPProblemInstance>("ProblemInstance", "The problem instance."));
       Parameters.Add(new ScopeTreeLookupParameter<IVRPEncodedSolution>("VRPTours", "The VRP tours which should be evaluated."));
-      Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>("Quality", "The qualities of the VRP solutions which should be analyzed."));
-
-      Parameters.Add(new ScopeTreeLookupParameter<IntValue>("PickupViolations", "The pickup violation of the VRP solutions which should be analyzed."));
+      Parameters.Add(new ScopeTreeLookupParameter<CVRPPDTWEvaluation>("EvaluationResult", "The evaluations of the VRP solutions which should be analyzed."));
 
       Parameters.Add(new ValueParameter<DoubleValue>("Sigma", "The sigma applied to the penalty factor.", new DoubleValue(0.5)));
       Parameters.Add(new ValueParameter<DoubleValue>("Phi", "The phi applied to the penalty factor.", new DoubleValue(0.5)));
@@ -112,25 +107,24 @@ namespace HeuristicLab.Problems.VehicleRouting {
       IPickupAndDeliveryProblemInstance pdp = ProblemInstanceParameter.ActualValue as IPickupAndDeliveryProblemInstance;
       ResultCollection results = ResultsParameter.ActualValue;
 
-      ItemArray<DoubleValue> qualities = QualityParameter.ActualValue;
-      ItemArray<IntValue> pickupViolations = PickupViolationsParameter.ActualValue;
+      ItemArray<CVRPPDTWEvaluation> evaluations = EvaluationParameter.ActualValue;
 
       double sigma = SigmaParameter.Value.Value;
       double phi = PhiParameter.Value.Value;
       double minPenalty = MinPenaltyFactorParameter.Value.Value;
       double maxPenalty = MaxPenaltyFactorParameter.Value.Value;
 
-      for (int j = 0; j < qualities.Length; j++) {
-        qualities[j].Value -= pickupViolations[j].Value * pdp.PickupViolationPenalty.Value;
+      for (int j = 0; j < evaluations.Length; j++) {
+        evaluations[j].Quality -= evaluations[j].PickupViolations * pdp.PickupViolationPenalty.Value;
       }
 
       int validCount = 0;
-      for (int j = 0; j < qualities.Length; j++) {
-        if (pickupViolations[j].Value == 0)
+      for (int j = 0; j < evaluations.Length; j++) {
+        if (evaluations[j].PickupViolations == 0)
           validCount++;
       }
 
-      double factor = 1.0 - ((double)validCount / (double)qualities.Length);
+      double factor = 1.0 - ((double)validCount / (double)evaluations.Length);
 
       double min = pdp.PickupViolationPenalty.Value / (1 + sigma);
       double max = pdp.PickupViolationPenalty.Value * (1 + phi);
@@ -141,14 +135,14 @@ namespace HeuristicLab.Problems.VehicleRouting {
       if (pdp.CurrentPickupViolationPenalty.Value > maxPenalty)
         pdp.CurrentPickupViolationPenalty.Value = maxPenalty;
 
-      for (int j = 0; j < qualities.Length; j++) {
-        qualities[j].Value += pickupViolations[j].Value * pdp.CurrentPickupViolationPenalty.Value;
+      for (int j = 0; j < evaluations.Length; j++) {
+        evaluations[j].Quality += evaluations[j].PickupViolations * pdp.CurrentPickupViolationPenalty.Value;
       }
 
-      if (!results.ContainsKey("Current Pickup Violation Penalty")) {
-        results.Add(new Result("Current Pickup Violation Penalty", new DoubleValue(pdp.CurrentPickupViolationPenalty.Value)));
+      if (!results.TryGetValue("Current Pickup Violation Penalty", out IResult res) || !(res.Value is DoubleValue)) {
+        results.AddOrUpdateResult("Current Pickup Violation Penalty", new DoubleValue(pdp.CurrentPickupViolationPenalty.Value));
       } else {
-        (results["Current Pickup Violation Penalty"].Value as DoubleValue).Value = pdp.CurrentPickupViolationPenalty.Value;
+        (res.Value as DoubleValue).Value = pdp.CurrentPickupViolationPenalty.Value;
       }
 
       return base.Apply();

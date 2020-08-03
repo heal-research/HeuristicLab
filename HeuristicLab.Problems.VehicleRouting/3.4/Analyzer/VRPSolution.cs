@@ -21,11 +21,11 @@
 
 using System;
 using System.Drawing;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Data;
-using HEAL.Attic;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
+using HeuristicLab.Problems.VehicleRouting.ProblemInstances;
 
 namespace HeuristicLab.Problems.VehicleRouting {
   /// <summary>
@@ -65,26 +65,26 @@ namespace HeuristicLab.Problems.VehicleRouting {
       }
     }
     [Storable]
-    private DoubleValue quality;
-    public DoubleValue Quality {
-      get { return quality; }
+    private VRPEvaluation evaluation;
+    public VRPEvaluation Evaluation {
+      get { return evaluation; }
       set {
-        if (quality != value) {
-          if (quality != null) DeregisterQualityEvents();
-          quality = value;
-          if (quality != null) RegisterQualityEvents();
-          OnQualityChanged();
+        if (evaluation != value) {
+          //if (evaluation != null) DeregisterQualityEvents();
+          evaluation = value;
+          //if (evaluation != null) RegisterQualityEvents();
+          OnEvaluationChanged();
         }
       }
     }
 
     public VRPSolution() : base() { }
 
-    public VRPSolution(IVRPProblemInstance problemInstance, IVRPEncodedSolution solution, DoubleValue quality)
+    public VRPSolution(IVRPProblemInstance problemInstance, IVRPEncodedSolution solution, VRPEvaluation evaluation)
       : base() {
       this.problemInstance = problemInstance;
       this.solution = solution;
-      this.quality = quality;
+      this.evaluation = evaluation;
 
       Initialize();
     }
@@ -95,7 +95,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
     private void Initialize() {
       if (problemInstance != null) RegisterProblemInstanceEvents();
       if (solution != null) RegisterSolutionEvents();
-      if (quality != null) RegisterQualityEvents();
+      // TODO if (evaluation != null) RegisterQualityEvents();
     }
 
 
@@ -105,11 +105,12 @@ namespace HeuristicLab.Problems.VehicleRouting {
 
     private VRPSolution(VRPSolution original, Cloner cloner)
       : base(original, cloner) {
-      this.solution = (IVRPEncodedSolution)cloner.Clone(original.solution);
-      this.quality = (DoubleValue)cloner.Clone(original.quality);
+      this.solution = cloner.Clone(original.solution);
+      this.evaluation = cloner.Clone(original.evaluation);
 
+      // TODO: this seems very strange
       if (original.ProblemInstance != null && cloner.ClonedObjectRegistered(original.ProblemInstance))
-        this.ProblemInstance = (IVRPProblemInstance)cloner.Clone(original.ProblemInstance);
+        this.ProblemInstance = cloner.Clone(original.ProblemInstance);
       else
         this.ProblemInstance = original.ProblemInstance;
 
@@ -129,9 +130,9 @@ namespace HeuristicLab.Problems.VehicleRouting {
       if (changed != null)
         changed(this, EventArgs.Empty);
     }
-    public event EventHandler QualityChanged;
-    private void OnQualityChanged() {
-      var changed = QualityChanged;
+    public event EventHandler EvaluationChanged;
+    private void OnEvaluationChanged() {
+      var changed = EvaluationChanged;
       if (changed != null)
         changed(this, EventArgs.Empty);
     }
@@ -148,12 +149,12 @@ namespace HeuristicLab.Problems.VehicleRouting {
     private void DeregisterSolutionEvents() {
       Solution.ToStringChanged -= new EventHandler(Solution_ToStringChanged);
     }
-    private void RegisterQualityEvents() {
-      Quality.ValueChanged += new EventHandler(Quality_ValueChanged);
-    }
-    private void DeregisterQualityEvents() {
-      Quality.ValueChanged -= new EventHandler(Quality_ValueChanged);
-    }
+    //private void RegisterQualityEvents() {
+    //  Quality.ValueChanged += new EventHandler(Quality_ValueChanged);
+    //}
+    //private void DeregisterQualityEvents() {
+    //  Quality.ValueChanged -= new EventHandler(Quality_ValueChanged);
+    //}
 
     private void ProblemInstance_ToStringChanged(object sender, EventArgs e) {
       OnProblemInstanceChanged();
@@ -161,9 +162,9 @@ namespace HeuristicLab.Problems.VehicleRouting {
     private void Solution_ToStringChanged(object sender, EventArgs e) {
       OnSolutionChanged();
     }
-    private void Quality_ValueChanged(object sender, EventArgs e) {
-      OnQualityChanged();
-    }
+    //private void Quality_ValueChanged(object sender, EventArgs e) {
+    //  OnQualityChanged();
+    //}
     #endregion
   }
 }

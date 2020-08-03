@@ -45,50 +45,32 @@ namespace HeuristicLab.Problems.VehicleRouting.Views {
     /// </summary>
     private void InitializeComponent() {
       this.tabControl1 = new HeuristicLab.MainForm.WindowsForms.DragOverTabControl();
-      this.tabPage1 = new System.Windows.Forms.TabPage();
-      this.problemInstanceView = new HeuristicLab.MainForm.WindowsForms.ViewHost();
       this.tabPage2 = new System.Windows.Forms.TabPage();
       this.tourGroupBox = new System.Windows.Forms.GroupBox();
       this.valueTextBox = new System.Windows.Forms.TextBox();
+      this.tabPage3 = new System.Windows.Forms.TabPage();
+      this.problemInstanceView = new HeuristicLab.MainForm.WindowsForms.ViewHost();
+      this.tabPage1 = new System.Windows.Forms.TabPage();
+      this.evaluationViewHost = new HeuristicLab.MainForm.WindowsForms.ViewHost();
       this.tabControl1.SuspendLayout();
-      this.tabPage1.SuspendLayout();
       this.tabPage2.SuspendLayout();
       this.tourGroupBox.SuspendLayout();
+      this.tabPage3.SuspendLayout();
+      this.tabPage1.SuspendLayout();
       this.SuspendLayout();
       // 
       // tabControl1
       // 
+      this.tabControl1.AllowDrop = true;
       this.tabControl1.Controls.Add(this.tabPage1);
       this.tabControl1.Controls.Add(this.tabPage2);
+      this.tabControl1.Controls.Add(this.tabPage3);
       this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
       this.tabControl1.Location = new System.Drawing.Point(0, 0);
       this.tabControl1.Name = "tabControl1";
       this.tabControl1.SelectedIndex = 0;
       this.tabControl1.Size = new System.Drawing.Size(468, 415);
       this.tabControl1.TabIndex = 0;
-      // 
-      // tabPage1
-      // 
-      this.tabPage1.BackColor = System.Drawing.SystemColors.Window;
-      this.tabPage1.Controls.Add(this.problemInstanceView);
-      this.tabPage1.Location = new System.Drawing.Point(4, 22);
-      this.tabPage1.Name = "tabPage1";
-      this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-      this.tabPage1.Size = new System.Drawing.Size(460, 389);
-      this.tabPage1.TabIndex = 0;
-      this.tabPage1.Text = "ProblemInstance";
-      // 
-      // problemInstanceView
-      // 
-      this.problemInstanceView.Caption = "View";
-      this.problemInstanceView.Content = null;
-      this.problemInstanceView.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.problemInstanceView.Location = new System.Drawing.Point(3, 3);
-      this.problemInstanceView.Name = "problemInstanceView";
-      this.problemInstanceView.ReadOnly = false;
-      this.problemInstanceView.Size = new System.Drawing.Size(454, 383);
-      this.problemInstanceView.TabIndex = 0;
-      this.problemInstanceView.ViewType = null;
       // 
       // tabPage2
       // 
@@ -118,20 +100,71 @@ namespace HeuristicLab.Problems.VehicleRouting.Views {
       this.valueTextBox.Location = new System.Drawing.Point(3, 16);
       this.valueTextBox.Multiline = true;
       this.valueTextBox.Name = "valueTextBox";
-      this.valueTextBox.Size = new System.Drawing.Size(403, 507);
-      this.valueTextBox.TabIndex = 0;
       this.valueTextBox.ReadOnly = true;
+      this.valueTextBox.Size = new System.Drawing.Size(448, 364);
+      this.valueTextBox.TabIndex = 0;
+      // 
+      // tabPage3
+      // 
+      this.tabPage3.Controls.Add(this.evaluationViewHost);
+      this.tabPage3.Location = new System.Drawing.Point(4, 22);
+      this.tabPage3.Name = "tabPage3";
+      this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
+      this.tabPage3.Size = new System.Drawing.Size(460, 389);
+      this.tabPage3.TabIndex = 2;
+      this.tabPage3.Text = "Evaluation";
+      this.tabPage3.UseVisualStyleBackColor = true;
+      // 
+      // problemInstanceView
+      // 
+      this.problemInstanceView.Caption = "View";
+      this.problemInstanceView.Content = null;
+      this.problemInstanceView.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.problemInstanceView.Enabled = false;
+      this.problemInstanceView.Location = new System.Drawing.Point(3, 3);
+      this.problemInstanceView.Name = "problemInstanceView";
+      this.problemInstanceView.ReadOnly = false;
+      this.problemInstanceView.Size = new System.Drawing.Size(454, 383);
+      this.problemInstanceView.TabIndex = 0;
+      this.problemInstanceView.ViewsLabelVisible = true;
+      this.problemInstanceView.ViewType = null;
+      // 
+      // tabPage1
+      // 
+      this.tabPage1.BackColor = System.Drawing.SystemColors.Window;
+      this.tabPage1.Controls.Add(this.problemInstanceView);
+      this.tabPage1.Location = new System.Drawing.Point(4, 22);
+      this.tabPage1.Name = "tabPage1";
+      this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
+      this.tabPage1.Size = new System.Drawing.Size(460, 389);
+      this.tabPage1.TabIndex = 0;
+      this.tabPage1.Text = "ProblemInstance";
+      // 
+      // evaluationViewHost
+      // 
+      this.evaluationViewHost.Caption = "View";
+      this.evaluationViewHost.Content = null;
+      this.evaluationViewHost.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.evaluationViewHost.Enabled = false;
+      this.evaluationViewHost.Location = new System.Drawing.Point(3, 3);
+      this.evaluationViewHost.Name = "evaluationViewHost";
+      this.evaluationViewHost.ReadOnly = false;
+      this.evaluationViewHost.Size = new System.Drawing.Size(454, 383);
+      this.evaluationViewHost.TabIndex = 2;
+      this.evaluationViewHost.ViewsLabelVisible = true;
+      this.evaluationViewHost.ViewType = null;
       // 
       // VRPSolutionView
       // 
-      this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.Controls.Add(this.tabControl1);
       this.Name = "VRPSolutionView";
       this.Size = new System.Drawing.Size(468, 415);
       this.tabControl1.ResumeLayout(false);
-      this.tabPage1.ResumeLayout(false);
       this.tabPage2.ResumeLayout(false);
       this.tourGroupBox.ResumeLayout(false);
+      this.tourGroupBox.PerformLayout();
+      this.tabPage3.ResumeLayout(false);
+      this.tabPage1.ResumeLayout(false);
       this.ResumeLayout(false);
 
     }
@@ -139,10 +172,12 @@ namespace HeuristicLab.Problems.VehicleRouting.Views {
     #endregion
 
     private HeuristicLab.MainForm.WindowsForms.DragOverTabControl tabControl1;
-    private System.Windows.Forms.TabPage tabPage1;
-    private MainForm.WindowsForms.ViewHost problemInstanceView;
     private System.Windows.Forms.TabPage tabPage2;
     private System.Windows.Forms.GroupBox tourGroupBox;
     private System.Windows.Forms.TextBox valueTextBox;
+    private System.Windows.Forms.TabPage tabPage3;
+    private System.Windows.Forms.TabPage tabPage1;
+    private MainForm.WindowsForms.ViewHost problemInstanceView;
+    private MainForm.WindowsForms.ViewHost evaluationViewHost;
   }
 }

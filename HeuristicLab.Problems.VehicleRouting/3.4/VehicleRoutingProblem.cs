@@ -95,8 +95,52 @@ namespace HeuristicLab.Problems.VehicleRouting {
       this.AttachProblemInstanceEventHandlers();
     }
 
+    public override void Evaluate(ISingleObjectiveSolutionContext<IVRPEncodedSolution> solutionContext, IRandom random, CancellationToken cancellationToken) {
+      solutionContext.EvaluationResult = ProblemInstance.Evaluate(solutionContext.EncodedSolution);
+    }
     public override ISingleObjectiveEvaluationResult Evaluate(IVRPEncodedSolution solution, IRandom random, CancellationToken cancellationToken) {
       return ProblemInstance.Evaluate(solution);
+    }
+
+    public override void Analyze(ISingleObjectiveSolutionContext<IVRPEncodedSolution>[] solutionContexts, ResultCollection results, IRandom random) {
+      base.Analyze(solutionContexts, results, random);
+      var evaluations = solutionContexts.Select(x => (VRPEvaluation)x.EvaluationResult);
+
+      var bestInPop = evaluations.Select((x, index) => new { index, Eval = x }).OrderBy(x => x.Eval.Quality).First();
+      IResult bestSolutionResult;
+      if (!results.TryGetValue("Best VRP Solution", out bestSolutionResult) || !(bestSolutionResult.Value is VRPSolution)) {
+        var best = new VRPSolution(ProblemInstance, solutionContexts[bestInPop.index].EncodedSolution, (VRPEvaluation)bestInPop.Eval.Clone());
+        if (bestSolutionResult != null)
+          bestSolutionResult.Value = best;
+        else results.Add(bestSolutionResult = new Result("Best VRP Solution", best));
+      }
+
+      var bestSolution = (VRPSolution)bestSolutionResult.Value;
+      if (bestSolution == null || bestInPop.Eval.Quality < bestSolution.Evaluation.Quality) {
+        var best = new VRPSolution(ProblemInstance,
+          (IVRPEncodedSolution)solutionContexts[bestInPop.index].EncodedSolution.Clone(),
+          (VRPEvaluation)bestInPop.Eval.Clone());
+        bestSolutionResult.Value = best;
+      };
+
+      var bestValidInPop = evaluations.Select((x, index) => new { index, Eval = x }).Where(x => x.Eval.IsFeasible).OrderBy(x => x.Eval.Quality).FirstOrDefault();
+      IResult bestValidSolutionResult;
+      if (!results.TryGetValue("Best Valid VRP Solution", out bestValidSolutionResult) || !(bestValidSolutionResult.Value is VRPSolution)) {
+        var bestValid = new VRPSolution(ProblemInstance, solutionContexts[bestValidInPop.index].EncodedSolution, (VRPEvaluation)bestValidInPop.Eval.Clone());
+        if (bestValidSolutionResult != null)
+          bestValidSolutionResult.Value = bestValid;
+        else results.Add(bestValidSolutionResult = new Result("Best Valid VRP Solution", bestValid));
+      }
+
+      if (bestValidInPop != null) {
+        var bestValidSolution = (VRPSolution)bestValidSolutionResult.Value;
+        if (bestValidSolution == null || bestValidInPop.Eval.Quality < bestValidSolution.Evaluation.Quality) {
+          var best = new VRPSolution(ProblemInstance,
+            (IVRPEncodedSolution)solutionContexts[bestValidInPop.index].EncodedSolution.Clone(),
+            (VRPEvaluation)bestValidInPop.Eval.Clone());
+          bestValidSolutionResult.Value = best;
+        };
+      }
     }
 
     #region Helpers
@@ -126,8 +170,9 @@ namespace HeuristicLab.Problems.VehicleRouting {
       if (BestKnownSolution == null) return;
       try {
         //call evaluator
-        BestKnownQuality = ProblemInstance.Evaluate(BestKnownSolution.Solution).Quality;
-        BestKnownSolution.Quality = new DoubleValue(BestKnownQuality);
+        var evaluation = ProblemInstance.Evaluate(BestKnownSolution.Solution);
+        BestKnownQuality = evaluation.Quality;
+        BestKnownSolution.Evaluation = evaluation;
       } catch {
         BestKnownQuality = double.NaN;
         BestKnownSolution = null;
@@ -168,7 +213,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
       Operators.Add(new VRPSimilarityCalculator());
       Operators.Add(new QualitySimilarityCalculator());
       Operators.Add(new PopulationSimilarityAnalyzer(Operators.OfType<ISolutionSimilarityCalculator>()));
-      Operators.AddRange(ProblemInstance.Operators.OfType<IAnalyzer>());
+      //Operators.AddRange(ProblemInstance.Operators.OfType<IAnalyzer>());
     }
 
     protected override void ParameterizeOperators() {
@@ -240,7 +285,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
       if (cities != ProblemInstance.Coordinates.Rows - 1)
         ErrorHandling.ShowErrorDialog(new Exception("The optimal solution does not seem to correspond with the problem data"));
       else {
-        VRPSolution solution = new VRPSolution(ProblemInstance, encoding, new DoubleValue(0));
+        VRPSolution solution = new VRPSolution(ProblemInstance, encoding, ProblemInstance.Evaluate(encoding));
         BestKnownSolutionParameter.Value = solution;
       }
     }
@@ -268,7 +313,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
       }
 
       if (instance.BestKnownSolution != null) {
-        VRPSolution solution = new VRPSolution(ProblemInstance, instance.BestKnownSolution, new DoubleValue(0));
+        VRPSolution solution = new VRPSolution(ProblemInstance, instance.BestKnownSolution, ProblemInstance.Evaluate(instance.BestKnownSolution));
         BestKnownSolution = solution;
       }
     }

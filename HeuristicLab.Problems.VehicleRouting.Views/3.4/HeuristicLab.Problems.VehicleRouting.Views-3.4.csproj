@@ -334,6 +334,9 @@
     <EmbeddedResource Include="VRPEvaluationView.resx">
       <DependentUpon>VRPEvaluationView.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="VRPSolutionView.resx">
+      <DependentUpon>VRPSolutionView.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

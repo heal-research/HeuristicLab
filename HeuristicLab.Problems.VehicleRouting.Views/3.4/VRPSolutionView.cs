@@ -57,12 +57,16 @@ namespace HeuristicLab.Problems.VehicleRouting.Views {
       if (view != null) view.Solution = Content.Solution;
 
       UpdateTourView();
+
+      evaluationViewHost.Content = Content.Evaluation;
     }
 
     protected override void OnContentChanged() {
       base.OnContentChanged();
       if (Content == null) {
         problemInstanceView.Content = null;
+        evaluationViewHost.Content = null;
+        valueTextBox.Text = string.Empty;
       } else {
         UpdateContent();
       }

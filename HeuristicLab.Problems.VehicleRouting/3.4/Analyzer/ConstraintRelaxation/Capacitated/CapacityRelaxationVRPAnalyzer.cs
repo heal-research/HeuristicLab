@@ -19,14 +19,15 @@
  */
 #endregion
 
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
+using HeuristicLab.Problems.VehicleRouting.ProblemInstances;
 using HeuristicLab.Problems.VehicleRouting.Variants;
 
 namespace HeuristicLab.Problems.VehicleRouting {
@@ -42,12 +43,8 @@ namespace HeuristicLab.Problems.VehicleRouting {
     public ScopeTreeLookupParameter<IVRPEncodedSolution> VRPToursParameter {
       get { return (ScopeTreeLookupParameter<IVRPEncodedSolution>)Parameters["VRPTours"]; }
     }
-    public ScopeTreeLookupParameter<DoubleValue> QualityParameter {
-      get { return (ScopeTreeLookupParameter<DoubleValue>)Parameters["Quality"]; }
-    }
-
-    public ScopeTreeLookupParameter<DoubleValue> OverloadParameter {
-      get { return (ScopeTreeLookupParameter<DoubleValue>)Parameters["Overload"]; }
+    public ScopeTreeLookupParameter<CVRPEvaluation> EvaluationParameter {
+      get { return (ScopeTreeLookupParameter<CVRPEvaluation>)Parameters["EvaluationResult"]; }
     }
 
     public IValueParameter<DoubleValue> SigmaParameter {
@@ -78,9 +75,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
       : base() {
       Parameters.Add(new LookupParameter<IVRPProblemInstance>("ProblemInstance", "The problem instance."));
       Parameters.Add(new ScopeTreeLookupParameter<IVRPEncodedSolution>("VRPTours", "The VRP tours which should be evaluated."));
-      Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>("Quality", "The qualities of the VRP solutions which should be analyzed."));
-
-      Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>("Overload", "The overloads of the VRP solutions which should be analyzed."));
+      Parameters.Add(new ScopeTreeLookupParameter<CVRPEvaluation>("EvaluationResult", "The evaluations of the VRP solutions which should be analyzed."));
 
       Parameters.Add(new ValueParameter<DoubleValue>("Sigma", "The sigma applied to the penalty factor.", new DoubleValue(0.5)));
       Parameters.Add(new ValueParameter<DoubleValue>("Phi", "The phi applied to the penalty factor.", new DoubleValue(0.5)));
@@ -112,25 +107,24 @@ namespace HeuristicLab.Problems.VehicleRouting {
       ICapacitatedProblemInstance cvrp = ProblemInstanceParameter.ActualValue as ICapacitatedProblemInstance;
       ResultCollection results = ResultsParameter.ActualValue;
 
-      ItemArray<DoubleValue> qualities = QualityParameter.ActualValue;
-      ItemArray<DoubleValue> overloads = OverloadParameter.ActualValue;
+      ItemArray<CVRPEvaluation> evaluations = EvaluationParameter.ActualValue;
 
       double sigma = SigmaParameter.Value.Value;
       double phi = PhiParameter.Value.Value;
       double minPenalty = MinPenaltyFactorParameter.Value.Value;
       double maxPenalty = MaxPenaltyFactorParameter.Value.Value;
 
-      for (int j = 0; j < qualities.Length; j++) {
-        qualities[j].Value -= overloads[j].Value * cvrp.OverloadPenalty.Value;
+      for (int j = 0; j < evaluations.Length; j++) {
+        evaluations[j].Quality -= evaluations[j].Overload * cvrp.OverloadPenalty.Value;
       }
 
       int validCount = 0;
-      for (int j = 0; j < qualities.Length; j++) {
-        if (overloads[j].Value == 0)
+      for (int j = 0; j < evaluations.Length; j++) {
+        if (evaluations[j].Overload == 0)
           validCount++;
       }
 
-      double factor = 1.0 - ((double)validCount / (double)qualities.Length);
+      double factor = 1.0 - ((double)validCount / (double)evaluations.Length);
 
       double min = cvrp.OverloadPenalty.Value / (1 + sigma);
       double max = cvrp.OverloadPenalty.Value * (1 + phi);
@@ -141,14 +135,14 @@ namespace HeuristicLab.Problems.VehicleRouting {
       if (cvrp.CurrentOverloadPenalty.Value > maxPenalty)
         cvrp.CurrentOverloadPenalty.Value = maxPenalty;
 
-      for (int j = 0; j < qualities.Length; j++) {
-        qualities[j].Value += overloads[j].Value * cvrp.CurrentOverloadPenalty.Value;
+      for (int j = 0; j < evaluations.Length; j++) {
+        evaluations[j].Quality += evaluations[j].Overload * cvrp.CurrentOverloadPenalty.Value;
       }
 
-      if (!results.ContainsKey("Current Overload Penalty")) {
-        results.Add(new Result("Current Overload Penalty", new DoubleValue(cvrp.CurrentOverloadPenalty.Value)));
+      if (!results.TryGetValue("Current Overload Penalty", out IResult res) || !(res.Value is DoubleValue)) {
+        results.AddOrUpdateResult("Current Overload Penalty", new DoubleValue(cvrp.CurrentOverloadPenalty.Value));
       } else {
-        (results["Current Overload Penalty"].Value as DoubleValue).Value = cvrp.CurrentOverloadPenalty.Value;
+        (res.Value as DoubleValue).Value = cvrp.CurrentOverloadPenalty.Value;
       }
 
       return base.Apply();
