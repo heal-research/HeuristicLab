@@ -20,30 +20,52 @@
 #endregion
 
 using System.Collections.Generic;
+using System.Linq;
+using HEAL.Attic;
+using HeuristicLab.Common;
+using HeuristicLab.Core;
 
 namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
+  [Item("CVRPPDTWInsertionInfo", "")]
+  [StorableType("acb4ecf2-70a5-42ec-a2a5-68b11bd033e2")]
   public class CVRPPDTWInsertionInfo : CVRPTWInsertionInfo {
-    private List<int> visited;
+    [Storable] public List<int> Visited { get; private set; }
+    [Storable] public double ArrivalSpareCapacity { get; private set; }
 
-    public List<int> Visited {
-      get { return visited; }
+    [StorableConstructor]
+    protected CVRPPDTWInsertionInfo(StorableConstructorFlag _) : base(_) { }
+    protected CVRPPDTWInsertionInfo(CVRPPDTWInsertionInfo original, Cloner cloner)
+      : base(original, cloner) {
+      Visited = original.Visited.ToList();
+      ArrivalSpareCapacity = original.ArrivalSpareCapacity;
     }
-
-    private double arrivalSpareCapacity;
-
-    public double ArrivalSpareCapacity {
-      get { return arrivalSpareCapacity; }
-    }
-
     public CVRPPDTWInsertionInfo(int start, int end, double spareCapacity, double tourStartTime,
       double arrivalTime, double leaveTime, double spareTime, double waitingTime, List<int> visited, double arrivalSpareCapacity)
       : base(start, end, spareCapacity, tourStartTime, arrivalTime, leaveTime, spareTime, waitingTime) {
-      this.visited = visited;
-      this.arrivalSpareCapacity = arrivalSpareCapacity;
+      Visited = visited;
+      ArrivalSpareCapacity = arrivalSpareCapacity;
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new CVRPPDTWInsertionInfo(this, cloner);
     }
   }
 
+  [Item("CVRPPDTWEvaluation", "")]
+  [StorableType("877ae91a-708f-4b32-95f3-d790e0efc018")]
   public class CVRPPDTWEvaluation : CVRPTWEvaluation {
-    public int PickupViolations { get; set; }
+    [Storable] public int PickupViolations { get; set; }
+
+    [StorableConstructor]
+    protected CVRPPDTWEvaluation(StorableConstructorFlag _) : base(_) { }
+    protected CVRPPDTWEvaluation(CVRPPDTWEvaluation original, Cloner cloner)
+      : base(original, cloner) {
+      PickupViolations = original.PickupViolations;
+    }
+    public CVRPPDTWEvaluation() { }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new CVRPPDTWEvaluation(this, cloner);
+    }
   }
 }

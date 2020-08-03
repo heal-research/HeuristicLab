@@ -20,21 +20,48 @@
 #endregion
 
 
+using HEAL.Attic;
+using HeuristicLab.Common;
+using HeuristicLab.Core;
+
 namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
+  [Item("CVRPInsertionInfo", "")]
+  [StorableType("f951554e-dbe1-4dfb-a6b2-b477b9f79fcd")]
   public class CVRPInsertionInfo : StopInsertionInfo {
-    private double spareCapacity;
+    [Storable] public double SpareCapacity { get; private set; }
 
-    public double SpareCapacity {
-      get { return spareCapacity; }
+    [StorableConstructor]
+    protected CVRPInsertionInfo(StorableConstructorFlag _) : base(_) { }
+    protected CVRPInsertionInfo(CVRPInsertionInfo original, Cloner cloner)
+      : base(original, cloner) {
+      SpareCapacity = original.SpareCapacity;
     }
-
     public CVRPInsertionInfo(int start, int end, double spareCapacity)
       : base(start, end) {
-      this.spareCapacity = spareCapacity;
+      SpareCapacity = spareCapacity;
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new CVRPInsertionInfo(this, cloner);
     }
   }
 
+  [Item("CVRPEvaluation", "")]
+  [StorableType("e3d4c547-3028-4c95-8ea8-1fe234d54ed3")]
   public class CVRPEvaluation : VRPEvaluation {
-    public double Overload { get; set; }
+    [Storable] public double Overload { get; set; }
+
+    [StorableConstructor]
+    protected CVRPEvaluation(StorableConstructorFlag _) : base(_) { }
+    protected CVRPEvaluation(CVRPEvaluation original, Cloner cloner)
+      : base(original, cloner) {
+      Overload = original.Overload;
+    }
+    public CVRPEvaluation() { }
+
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new CVRPEvaluation(this, cloner);
+    }
   }
 }

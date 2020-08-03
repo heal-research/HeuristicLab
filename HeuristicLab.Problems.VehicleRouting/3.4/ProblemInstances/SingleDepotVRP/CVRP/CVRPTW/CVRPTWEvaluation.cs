@@ -20,50 +20,59 @@
 #endregion
 
 
+using HEAL.Attic;
+using HeuristicLab.Common;
+using HeuristicLab.Core;
+
 namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
+  [Item("CVRPTWInsertionInfo", "")]
+  [StorableType("487635b5-2682-42a2-9ec2-1a210e6ce88c")]
   public class CVRPTWInsertionInfo : CVRPInsertionInfo {
-    private double tourStartTime;
 
-    public double TourStartTime {
-      get { return tourStartTime; }
+    [Storable] public double TourStartTime { get; private set; }
+    [Storable] public double ArrivalTime { get; private set; }
+    [Storable] public double LeaveTime { get; private set; }
+    [Storable] public double SpareTime { get; private set; }
+    [Storable] public double WaitingTime { get; private set; }
+
+
+    [StorableConstructor]
+    protected CVRPTWInsertionInfo(StorableConstructorFlag _) : base(_) { }
+    protected CVRPTWInsertionInfo(CVRPTWInsertionInfo original, Cloner cloner)
+      : base(original, cloner) {
+      TourStartTime = original.TourStartTime;
+      ArrivalTime = original.ArrivalTime;
+      LeaveTime = original.LeaveTime;
+      SpareTime = original.SpareTime;
+      WaitingTime = original.WaitingTime;
     }
-
-    private double arrivalTime;
-
-    public double ArrivalTime {
-      get { return arrivalTime; }
-    }
-
-    private double leaveTime;
-
-    public double LeaveTime {
-      get { return leaveTime; }
-    }
-
-    private double spareTime;
-
-    public double SpareTime {
-      get { return spareTime; }
-    }
-
-    private double waitingTime;
-
-    public double WaitingTime {
-      get { return waitingTime; }
-    }
-
     public CVRPTWInsertionInfo(int start, int end, double spareCapacity, double tourStartTime, double arrivalTime, double leaveTime, double spareTime, double waitingTime)
       : base(start, end, spareCapacity) {
-      this.tourStartTime = tourStartTime;
-      this.arrivalTime = arrivalTime;
-      this.leaveTime = leaveTime;
-      this.spareTime = spareTime;
-      this.waitingTime = waitingTime;
+      TourStartTime = tourStartTime;
+      ArrivalTime = arrivalTime;
+      LeaveTime = leaveTime;
+      SpareTime = spareTime;
+      WaitingTime = waitingTime;
     }
   }
 
+  [Item("CVRPTWEvaluation", "")]
+  [StorableType("b3b31244-5ac8-4007-9ae6-249e2a7d5321")]
   public class CVRPTWEvaluation : CVRPEvaluation {
-    public double Tardiness { get; set; }
-    public double TravelTime { get; set; }
+    [Storable] public double Tardiness { get; set; }
+    [Storable] public double TravelTime { get; set; }
+
+    [StorableConstructor]
+    protected CVRPTWEvaluation(StorableConstructorFlag _) : base(_) { }
+    protected CVRPTWEvaluation(CVRPTWEvaluation original, Cloner cloner)
+      : base(original, cloner) {
+      Tardiness = original.Tardiness;
+      TravelTime = original.TravelTime;
+    }
+    public CVRPTWEvaluation() { }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new CVRPTWEvaluation(this, cloner);
+    }
   }
 }

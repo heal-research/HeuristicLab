@@ -134,7 +134,10 @@
     <Compile Include="Analyzer\ConstraintRelaxation\PickupAndDelivery\PickupViolationsRelaxationVRPAnalyzer.cs" />
     <Compile Include="Analyzer\ConstraintRelaxation\TimeWindowed\TimeWindowRelaxationVRPAnalyzer.cs" />
     <Compile Include="Analyzer\VRPSolution.cs" />
+    <Compile Include="Encodings\MultiVRPEncoding.cs" />
     <Compile Include="Encodings\Alba\AlbaEncoding.cs" />
+    <Compile Include="Encodings\GVR\GVREncoding.cs" />
+    <Compile Include="Encodings\Potvin\PotvinEncoding.cs" />
     <Compile Include="Encodings\Potvin\Moves\TwoOptStar\IPotvinTwoOptStarMoveOperator.cs" />
     <Compile Include="Encodings\Potvin\Moves\TwoOptStar\PotvinTwoOptStarExhaustiveMoveGenerator.cs" />
     <Compile Include="Encodings\Potvin\Moves\TwoOptStar\PotvinTwoOptStarMove.cs" />
@@ -146,6 +149,8 @@
     <Compile Include="Encodings\Potvin\Moves\TwoOptStar\PotvinTwoOptStarMoveTabuMaker.cs" />
     <Compile Include="Encodings\Potvin\Moves\TwoOptStar\PotvinTwoOptStarMultiMoveGenerator.cs" />
     <Compile Include="Encodings\Potvin\Moves\TwoOptStar\PotvinTwoOptStarSingleMoveGenerator.cs" />
+    <Compile Include="Encodings\Prins\PrinsEncoding.cs" />
+    <Compile Include="Encodings\Zhu\ZhuEncoding.cs" />
     <Compile Include="Improver\VRPImprovementOperator.cs" />
     <Compile Include="Improver\VRPIntraRouteImprovementOperator.cs" />
     <Compile Include="Interfaces\IVRPEncoding.cs" />

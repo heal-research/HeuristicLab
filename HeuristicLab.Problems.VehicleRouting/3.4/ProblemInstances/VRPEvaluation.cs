@@ -20,40 +20,63 @@
 #endregion
 
 using System.Collections.Generic;
+using System.Linq;
+using HEAL.Attic;
+using HeuristicLab.Common;
+using HeuristicLab.Core;
+using HeuristicLab.Optimization;
 
 namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
-  public class StopInsertionInfo {
-    private int start;
+  [Item("StopInsertionInfo", "")]
+  [StorableType("e4e2657a-0af9-4f1c-b396-887ad5b6f459")]
+  public class StopInsertionInfo : Item {
+    [Storable] public int Start { get; private set; }
+    [Storable] public int End { get; private set; }
 
-    public int Start {
-      get { return start; }
+
+    [StorableConstructor]
+    protected StopInsertionInfo(StorableConstructorFlag _) : base(_) { }
+    protected StopInsertionInfo(StopInsertionInfo original, Cloner cloner)
+      : base(original, cloner) {
+      Start = original.Start;
+      End = original.End;
     }
-
-    private int end;
-
-    public int End {
-      get { return end; }
-    }
-
     public StopInsertionInfo(int start, int end)
       : base() {
-      this.start = start;
-      this.end = end;
+      Start = start;
+      End = end;
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new StopInsertionInfo(this, cloner);
     }
   }
 
-  public class TourInsertionInfo {
-    public double Penalty { get; set; }
-    public double Quality { get; set; }
+  [Item("TourInsertionInfo", "")]
+  [StorableType("25a61cca-120b-43e2-845a-d290352ca1e9")]
+  public class TourInsertionInfo : Item {
+    [Storable] public double Penalty { get; set; }
+    [Storable] public double Quality { get; set; }
+    [Storable] public int Vehicle { get; set; }
+    [Storable] private List<StopInsertionInfo> stopInsertionInfos;
 
-    public int Vehicle { get; set; }
-
-    private List<StopInsertionInfo> stopInsertionInfos;
-
+    [StorableConstructor]
+    protected TourInsertionInfo(StorableConstructorFlag _) : base(_) { }
+    protected TourInsertionInfo(TourInsertionInfo original, Cloner cloner)
+      : base(original, cloner) {
+      Penalty = original.Penalty;
+      Quality = original.Quality;
+      Vehicle = original.Vehicle;
+      stopInsertionInfos = original.stopInsertionInfos.Select(cloner.Clone).ToList();
+    }
     public TourInsertionInfo(int vehicle)
       : base() {
       stopInsertionInfos = new List<StopInsertionInfo>();
       Vehicle = vehicle;
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new TourInsertionInfo(this, cloner);
     }
 
     public void AddStopInsertionInfo(StopInsertionInfo info) {
@@ -69,12 +92,24 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
     }
   }
 
-  public class InsertionInfo {
-    private List<TourInsertionInfo> tourInsertionInfos;
+  [Item("InsertionInfo", "")]
+  [StorableType("ba569eb3-df25-4f73-bfa0-246b38c1d520")]
+  public class InsertionInfo : Item {
+    [Storable] private List<TourInsertionInfo> tourInsertionInfos;
 
+    [StorableConstructor]
+    protected InsertionInfo(StorableConstructorFlag _) : base(_) { }
+    protected InsertionInfo(InsertionInfo original, Cloner cloner)
+      : base(original, cloner) {
+      tourInsertionInfos = original.tourInsertionInfos.Select(cloner.Clone).ToList();
+    }
     public InsertionInfo()
       : base() {
       tourInsertionInfos = new List<TourInsertionInfo>();
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new InsertionInfo(this, cloner);
     }
 
     public void AddTourInsertionInfo(TourInsertionInfo info) {
@@ -86,16 +121,32 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
     }
   }
 
-  public class VRPEvaluation {
-    public double Quality { get; set; }
-    public double Distance { get; set; }
-    public int VehicleUtilization { get; set; }
-    public InsertionInfo InsertionInfo { get; set; }
+  [Item("VRPEvaluation", "")]
+  [StorableType("0c4dfa78-8e41-4558-b2dd-4a22954c35ba")]
+  public class VRPEvaluation : EvaluationResult {
+    [Storable] public double Quality { get; set; }
+    [Storable] public double Distance { get; set; }
+    [Storable] public int VehicleUtilization { get; set; }
+    [Storable] public InsertionInfo InsertionInfo { get; set; }
+    [Storable] public double Penalty { get; set; }
 
-    public double Penalty { get; set; }
 
-    public VRPEvaluation() {
+    [StorableConstructor]
+    protected VRPEvaluation(StorableConstructorFlag _) : base(_) { }
+    protected VRPEvaluation(VRPEvaluation original, Cloner cloner)
+      : base(original, cloner) {
+      Quality = original.Quality;
+      Distance = original.Distance;
+      VehicleUtilization = original.VehicleUtilization;
+      InsertionInfo = cloner.Clone(original.InsertionInfo);
+      Penalty = original.Penalty;
+    }
+    public VRPEvaluation() : base() {
       InsertionInfo = new InsertionInfo();
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new VRPEvaluation(this, cloner);
     }
   }
 }
