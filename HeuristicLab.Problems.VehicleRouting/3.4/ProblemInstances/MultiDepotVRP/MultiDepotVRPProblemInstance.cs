@@ -22,13 +22,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
-using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 using HeuristicLab.Problems.VehicleRouting.Variants;
 
@@ -59,33 +57,12 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
       }
     }
 
-    protected override IEnumerable<IOperator> GetOperators() {
-      return ApplicationManager.Manager.GetInstances<IMultiDepotOperator>().Cast<IOperator>();
+    public override IEnumerable<IOperator> FilterOperators(IEnumerable<IOperator> operators) {
+      return base.FilterOperators(operators).Where(x => x is IMultiDepotOperator);
     }
 
-    protected override IEnumerable<IOperator> GetAnalyzers() {
-      return ApplicationManager.Manager.GetInstances<IMultiDepotOperator>()
-        .Where(o => o is IAnalyzer)
-        .Cast<IOperator>();
-    }
+    public override IntValue Cities => new IntValue(Demand.Length);
 
-    public override IntValue Cities {
-      get {
-        return new IntValue(Demand.Length);
-      }
-    }
-
-    protected override IVRPEvaluator Evaluator {
-      get {
-        return new MultiDepotVRPEvaluator();
-      }
-    }
-
-    protected override IVRPCreator Creator {
-      get {
-        return new HeuristicLab.Problems.VehicleRouting.Encodings.Alba.RandomCreator();
-      }
-    }
 
     public override double GetDemand(int city) {
       return base.GetDemand(city - 1);
@@ -170,6 +147,54 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
       double newDistance = startDistance + endDistance;
 
       return newDistance - distance;
+    }
+    protected override void EvaluateTour(VRPEvaluation eval, Tour tour, IVRPEncodedSolution solution) {
+      TourInsertionInfo tourInfo = new TourInsertionInfo(solution.GetVehicleAssignment(solution.GetTourIndex(tour)));
+      eval.InsertionInfo.AddTourInsertionInfo(tourInfo);
+
+      double distance = 0.0;
+      double quality = 0.0;
+
+      //simulate a tour, start and end at depot
+      for (int i = 0; i <= tour.Stops.Count; i++) {
+        int start = 0;
+        if (i > 0)
+          start = tour.Stops[i - 1];
+        int end = 0;
+        if (i < tour.Stops.Count)
+          end = tour.Stops[i];
+
+        //drive there
+        double currentDistace = GetDistance(start, end, solution);
+        distance += currentDistace;
+
+        StopInsertionInfo stopInfo = new StopInsertionInfo(start, end);
+        tourInfo.AddStopInsertionInfo(stopInfo);
+      }
+
+      //Fleet usage
+      quality += FleetUsageFactor.Value;
+      //Distance
+      quality += DistanceFactor.Value * distance;
+
+      eval.Distance += distance;
+      eval.VehicleUtilization += 1;
+
+      eval.Quality += quality;
+      tourInfo.Quality = quality;
+    }
+
+    protected override double GetTourInsertionCosts(IVRPEncodedSolution solution, TourInsertionInfo tourInsertionInfo, int index, int customer,
+      out bool feasible) {
+      StopInsertionInfo insertionInfo = tourInsertionInfo.GetStopInsertionInfo(index);
+
+      double costs = 0;
+      feasible = true;
+      double startDistance, endDistance;
+
+      costs += GetInsertionDistance(insertionInfo.Start, customer, insertionInfo.End, solution, out startDistance, out endDistance);
+
+      return costs;
     }
 
     [StorableConstructor]

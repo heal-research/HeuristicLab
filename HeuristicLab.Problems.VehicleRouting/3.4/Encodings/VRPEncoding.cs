@@ -19,14 +19,31 @@
  */
 #endregion
 
+using System.Linq;
 using HEAL.Attic;
+using HeuristicLab.Common;
+using HeuristicLab.Core;
 using HeuristicLab.Optimization;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 
-namespace HeuristicLab.Problems.VehicleRouting {
+namespace HeuristicLab.Problems.VehicleRouting.Encodings {
+  [Item("VRPEncoding", "")]
+  [StorableType("2bb0d7d5-d842-4cf7-8242-1d49940aa4b6")]
+  public abstract class VRPEncoding : Encoding, IVRPEncoding {
 
-  [StorableType("b6674651-cc95-48d8-a2c3-83ee9325def3")]
-  public interface IVRPEncoding : IEncoding {
-    void FilterOperators(IVRPProblemInstance instance);
+    [StorableConstructor]
+    protected VRPEncoding(StorableConstructorFlag _) : base(_) { }
+    protected VRPEncoding(VRPEncoding original, Cloner cloner) : base(original, cloner) { }
+    protected VRPEncoding(string name) : base(name) { }
+
+    public void FilterOperators(IVRPProblemInstance instance) {
+      DiscoverOperators();
+      var operators = instance.FilterOperators(Operators);
+      foreach (var op in Operators.Except(operators).ToList()) {
+        RemoveOperator(op);
+      }
+    }
+
+    protected abstract void DiscoverOperators();
   }
 }

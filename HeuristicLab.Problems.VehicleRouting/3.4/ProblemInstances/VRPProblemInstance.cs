@@ -27,51 +27,12 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Problems.VehicleRouting.Encodings.General;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 
 namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
   [Item("VRPProblemInstance", "Represents a VRP instance.")]
   [StorableType("9A6CCE89-A4B6-4FA3-A150-181FC315B713")]
   public abstract class VRPProblemInstance : ParameterizedNamedItem, IVRPProblemInstance, IStatefulItem {
-    IVRPEvaluator moveEvaluator;
-
-    private object locker = new object();
-
-    public IVRPEvaluator MoveEvaluator {
-      get {
-        lock (locker) {
-          if (evaluator == null)
-            return null;
-          else {
-            if (moveEvaluator == null) {
-              moveEvaluator = evaluator.Clone() as IVRPEvaluator;
-
-              foreach (IParameter parameter in moveEvaluator.Parameters) {
-                if (parameter is ILookupParameter
-                  && parameter != moveEvaluator.ProblemInstanceParameter
-                  && parameter != moveEvaluator.VRPToursParameter) {
-                  (parameter as ILookupParameter).ActualName =
-                    VRPMoveEvaluator.MovePrefix +
-                    (parameter as ILookupParameter).ActualName;
-                }
-              }
-            }
-
-            return moveEvaluator;
-          }
-        }
-      }
-    }
-
-    protected abstract IEnumerable<IOperator> GetOperators();
-    protected abstract IEnumerable<IOperator> GetAnalyzers();
-
-    public IEnumerable<IOperator> Operators {
-      get {
-        return GetOperators().Union(GetAnalyzers());
-      }
-    }
 
     protected ValueParameter<DoubleMatrix> CoordinatesParameter {
       get { return (ValueParameter<DoubleMatrix>)Parameters["Coordinates"]; }
@@ -130,10 +91,12 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
       set { DistanceFactorParameter.Value = value; }
     }
 
-    protected virtual double CalculateDistance(int start, int end) {
-      double distance = 0.0;
+    public virtual IEnumerable<IOperator> FilterOperators(IEnumerable<IOperator> operators) {
+      return operators.Where(x => x is IVRPOperator);
+    }
 
-      distance =
+    protected virtual double CalculateDistance(int start, int end) {
+      var distance =
           Math.Sqrt(
             Math.Pow(Coordinates[start, 0] - Coordinates[end, 0], 2) +
             Math.Pow(Coordinates[start, 1] - Coordinates[end, 1], 2));
@@ -171,20 +134,7 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
 
     //cache for performance improvement
     private DoubleMatrix distanceMatrix = null;
-    private IVRPEvaluator evaluator = null;
-
-    public IVRPEvaluator SolutionEvaluator {
-      get {
-        return evaluator;
-      }
-      set {
-        lock (locker) {
-          moveEvaluator = null;
-          evaluator = value;
-          EvalBestKnownSolution();
-        }
-      }
-    }
+    
 
     public virtual double GetDistance(int start, int end, IVRPEncodedSolution solution) {
       if (distanceMatrix == null && UseDistanceMatrix.Value) {
@@ -207,45 +157,49 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
       return newDistance - distance;
     }
 
-    public bool Feasible(IVRPEncodedSolution solution) {
-      return evaluator.Feasible(
-        evaluator.Evaluate(
-          this, solution));
-    }
-
-    public bool TourFeasible(Tour tour, IVRPEncodedSolution solution) {
-      return evaluator.Feasible(
-        evaluator.EvaluateTour(
-        this, tour, solution));
+    protected virtual VRPEvaluation CreateTourEvaluation() {
+      return new VRPEvaluation();
     }
 
     public VRPEvaluation Evaluate(IVRPEncodedSolution solution) {
-      return evaluator.Evaluate(this, solution);
+      VRPEvaluation evaluation = CreateTourEvaluation();
+      evaluation.IsFeasible = true;
+      foreach (Tour tour in solution.GetTours()) {
+        EvaluateTour(evaluation, tour, solution);
+      }
+      return evaluation;
     }
 
     public VRPEvaluation EvaluateTour(Tour tour, IVRPEncodedSolution solution) {
-      return evaluator.EvaluateTour(this, tour, solution);
-    }
-
-    public bool Feasible(VRPEvaluation eval) {
-      return evaluator.Feasible(eval);
+      VRPEvaluation evaluation = CreateTourEvaluation();
+      evaluation.IsFeasible = true;
+      EvaluateTour(evaluation, tour, solution);
+      return evaluation;
     }
 
     public double GetInsertionCosts(VRPEvaluation eval, IVRPEncodedSolution solution, int customer, int tour, int index, out bool feasible) {
-      return evaluator.GetInsertionCosts(this, solution, eval, customer, tour, index, out feasible);
+      bool tourFeasible;
+      double costs = GetTourInsertionCosts(
+        solution,
+        eval.InsertionInfo.GetTourInsertionInfo(tour),
+        index,
+        customer, out tourFeasible);
+
+      feasible = tourFeasible;
+
+      return costs;
     }
+    protected abstract double GetTourInsertionCosts(IVRPEncodedSolution solution, TourInsertionInfo tourInsertionInfo, int index, int customer, out bool feasible);
+
+    protected abstract void EvaluateTour(VRPEvaluation eval, Tour tour, IVRPEncodedSolution solution);
 
 
     public event EventHandler EvaluationChanged;
 
     protected void EvalBestKnownSolution() {
       EventHandler tmp = EvaluationChanged;
-      if (tmp != null)
-        tmp(this, null);
+      if (tmp != null) tmp(this, null);
     }
-
-    protected abstract IVRPEvaluator Evaluator { get; }
-    protected abstract IVRPCreator Creator { get; }
 
     [StorableConstructor]
     protected VRPProblemInstance(StorableConstructorFlag _) : base(_) { }
@@ -261,19 +215,16 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
       Parameters.Add(new ValueParameter<DoubleValue>("EvalFleetUsageFactor", "The fleet usage factor considered in the evaluation.", new DoubleValue(0)));
       Parameters.Add(new ValueParameter<DoubleValue>("EvalDistanceFactor", "The distance factor considered in the evaluation.", new DoubleValue(1)));
 
-      evaluator = Evaluator;
       AttachEventHandlers();
     }
 
     protected VRPProblemInstance(VRPProblemInstance original, Cloner cloner)
       : base(original, cloner) {
-      evaluator = Evaluator;
       AttachEventHandlers();
     }
 
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
-      evaluator = Evaluator;
       AttachEventHandlers();
     }
 

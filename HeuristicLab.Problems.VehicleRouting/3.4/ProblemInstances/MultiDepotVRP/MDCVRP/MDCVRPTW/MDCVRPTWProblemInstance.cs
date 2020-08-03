@@ -22,13 +22,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
-using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 using HeuristicLab.Problems.VehicleRouting.Variants;
 
@@ -88,21 +86,211 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
       set { CurrentTardinessPenaltyParameter.Value = value; }
     }
 
-    protected override IEnumerable<IOperator> GetOperators() {
-      return base.GetOperators()
-        .Where(o => o is ITimeWindowedOperator).Cast<IOperator>();
+    public override IEnumerable<IOperator> FilterOperators(IEnumerable<IOperator> operators) {
+      return base.FilterOperators(operators).Where(x => x is ITimeWindowedOperator);
     }
 
-    protected override IEnumerable<IOperator> GetAnalyzers() {
-      return ApplicationManager.Manager.GetInstances<ITimeWindowedOperator>()
-        .Where(o => o is IAnalyzer)
-        .Cast<IOperator>().Union(base.GetAnalyzers());
+    protected override VRPEvaluation CreateTourEvaluation() {
+      return new CVRPTWEvaluation();
     }
 
-    protected override IVRPEvaluator Evaluator {
-      get {
-        return new MDCVRPTWEvaluator();
+    protected override void EvaluateTour(VRPEvaluation eval, Tour tour, IVRPEncodedSolution solution) {
+      TourInsertionInfo tourInfo = new TourInsertionInfo(solution.GetVehicleAssignment(solution.GetTourIndex(tour)));
+      eval.InsertionInfo.AddTourInsertionInfo(tourInfo);
+      double originalQuality = eval.Quality;
+
+      int depots = Depots.Value;
+
+      double time = 0.0;
+      double waitingTime = 0.0;
+      double serviceTime = 0.0;
+      double tardiness = 0.0;
+      double delivered = 0.0;
+      double overweight = 0.0;
+      double distance = 0.0;
+
+      int tourIndex = solution.GetTourIndex(tour);
+      int vehicle = solution.GetVehicleAssignment(tourIndex);
+      int depot = VehicleDepotAssignment[vehicle];
+
+      double capacity = Capacity[vehicle];
+      for (int i = 0; i < tour.Stops.Count; i++) {
+        delivered += GetDemand(tour.Stops[i]);
       }
+
+      double spareCapacity = capacity - delivered;
+
+      double tourStartTime = ReadyTime[depot];
+      time = tourStartTime;
+
+      //simulate a tour, start and end at depot
+      for (int i = 0; i <= tour.Stops.Count; i++) {
+        int start = 0;
+        if (i > 0)
+          start = tour.Stops[i - 1];
+        int end = 0;
+        if (i < tour.Stops.Count)
+          end = tour.Stops[i];
+
+        //drive there
+        double currentDistace = GetDistance(start, end, solution);
+        time += currentDistace;
+        distance += currentDistace;
+
+        double arrivalTime = time;
+
+        int endIndex;
+        if (end == 0)
+          endIndex = depot;
+        else
+          endIndex = end + depots - 1;
+
+        //check if it was serviced on time
+        if (time > DueTime[endIndex])
+          tardiness += time - DueTime[endIndex];
+
+        //wait
+        double currentWaitingTime = 0.0;
+        if (time < ReadyTime[endIndex])
+          currentWaitingTime = ReadyTime[endIndex] - time;
+
+        double waitTime = ReadyTime[endIndex] - time;
+
+        waitingTime += currentWaitingTime;
+        time += currentWaitingTime;
+
+        double spareTime = DueTime[endIndex] - time;
+
+        //service
+        double currentServiceTime = 0;
+        if (end > 0)
+          currentServiceTime = ServiceTime[end - 1];
+        serviceTime += currentServiceTime;
+        time += currentServiceTime;
+
+        CVRPTWInsertionInfo stopInfo = new CVRPTWInsertionInfo(start, end, spareCapacity, tourStartTime, arrivalTime, time, spareTime, waitTime);
+        tourInfo.AddStopInsertionInfo(stopInfo);
+      }
+
+      eval.Quality += FleetUsageFactor.Value;
+      eval.Quality += DistanceFactor.Value * distance;
+      eval.Distance += distance;
+      eval.VehicleUtilization += 1;
+
+      if (delivered > capacity) {
+        overweight = delivered - capacity;
+      }
+
+      (eval as CVRPEvaluation).Overload += overweight;
+      double tourPenalty = 0;
+      double penalty = overweight * OverloadPenalty.Value;
+      eval.Penalty += penalty;
+      eval.Quality += penalty;
+      tourPenalty += penalty;
+
+      (eval as CVRPTWEvaluation).Tardiness += tardiness;
+      (eval as CVRPTWEvaluation).TravelTime += time;
+
+      penalty = tardiness * TardinessPenalty.Value;
+      eval.Penalty += penalty;
+      eval.Quality += penalty;
+      tourPenalty += penalty;
+      eval.Quality += time * TimeFactor.Value;
+      tourInfo.Penalty = tourPenalty;
+      tourInfo.Quality = eval.Quality - originalQuality;
+
+      eval.IsFeasible = overweight == 0 && tardiness == 0;
+    }
+
+    protected override double GetTourInsertionCosts(IVRPEncodedSolution solution, TourInsertionInfo tourInsertionInfo, int index, int customer,
+      out bool feasible) {
+      CVRPTWInsertionInfo insertionInfo = tourInsertionInfo.GetStopInsertionInfo(index) as CVRPTWInsertionInfo;
+
+      double costs = 0;
+      feasible = tourInsertionInfo.Penalty < double.Epsilon;
+
+      double overloadPenalty = OverloadPenalty.Value;
+      double tardinessPenalty = TardinessPenalty.Value;
+      int depots = Depots.Value;
+
+      double startDistance, endDistance;
+      costs += GetInsertionDistance(insertionInfo.Start, customer, insertionInfo.End, solution, out startDistance, out endDistance);
+
+      double demand = GetDemand(customer);
+      if (demand > insertionInfo.SpareCapacity) {
+        feasible = false;
+
+        if (insertionInfo.SpareCapacity >= 0)
+          costs += (demand - insertionInfo.SpareCapacity) * overloadPenalty;
+        else
+          costs += demand * overloadPenalty;
+      }
+
+      double time = 0;
+      double tardiness = 0;
+
+      if (index > 0)
+        time = (tourInsertionInfo.GetStopInsertionInfo(index - 1) as CVRPTWInsertionInfo).LeaveTime;
+      else
+        time = insertionInfo.TourStartTime;
+
+      time += startDistance;
+
+      int customerIndex = customer + depots - 1;
+
+      if (time > DueTime[customerIndex]) {
+        tardiness += time - DueTime[customerIndex];
+      }
+      if (time < ReadyTime[customerIndex])
+        time += ReadyTime[customerIndex] - time;
+      time += ServiceTime[customer - 1];
+      time += endDistance;
+
+      double additionalTime = time - (tourInsertionInfo.GetStopInsertionInfo(index) as CVRPTWInsertionInfo).ArrivalTime;
+      for (int i = index; i < tourInsertionInfo.GetStopCount(); i++) {
+        CVRPTWInsertionInfo nextStop = tourInsertionInfo.GetStopInsertionInfo(i) as CVRPTWInsertionInfo;
+
+        if (additionalTime < 0) {
+          //arrive earlier than before
+          //wait probably
+          if (nextStop.WaitingTime < 0) {
+            double wait = nextStop.WaitingTime - additionalTime;
+            if (wait > 0)
+              additionalTime += wait;
+          } else {
+            additionalTime = 0;
+          }
+
+          //check due date, decrease tardiness
+          if (nextStop.SpareTime < 0) {
+            costs += Math.Max(nextStop.SpareTime, additionalTime) * tardinessPenalty;
+          }
+        } else {
+          //arrive later than before, probably don't have to wait
+          if (nextStop.WaitingTime > 0) {
+            additionalTime -= Math.Min(additionalTime, nextStop.WaitingTime);
+          }
+
+          //check due date
+          if (nextStop.SpareTime > 0) {
+            double spare = nextStop.SpareTime - additionalTime;
+            if (spare < 0)
+              tardiness += -spare;
+          } else {
+            tardiness += additionalTime;
+          }
+        }
+      }
+
+      costs += additionalTime * TimeFactor.Value;
+
+      if (tardiness > 0) {
+        feasible = false;
+      }
+
+      costs += tardiness * tardinessPenalty;
+
+      return costs;
     }
 
     [StorableConstructor]

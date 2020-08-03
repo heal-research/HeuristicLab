@@ -74,6 +74,8 @@ namespace HeuristicLab.Problems.VehicleRouting {
     private VehicleRoutingProblem(StorableConstructorFlag _) : base(_) { }
     public VehicleRoutingProblem()
       : base(new PotvinEncoding()) {
+      EncodingParameter.Hidden = false;
+
       Parameters.Add(new ValueParameter<IVRPProblemInstance>("ProblemInstance", "The VRP problem instance"));
       Parameters.Add(new OptionalValueParameter<VRPSolution>("BestKnownSolution", "The best known solution of this VRP instance."));
 
@@ -210,6 +212,8 @@ namespace HeuristicLab.Problems.VehicleRouting {
     }
 
     private void InitializeOperators() {
+      Encoding.FilterOperators(ProblemInstance);
+
       Operators.Add(new VRPSimilarityCalculator());
       Operators.Add(new QualitySimilarityCalculator());
       Operators.Add(new PopulationSimilarityAnalyzer(Operators.OfType<ISolutionSimilarityCalculator>()));

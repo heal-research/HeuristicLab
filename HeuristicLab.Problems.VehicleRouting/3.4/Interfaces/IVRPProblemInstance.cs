@@ -21,17 +21,15 @@
 
 using System;
 using System.Collections.Generic;
+using HEAL.Attic;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Problems.VehicleRouting.ProblemInstances;
-using HEAL.Attic;
 
 namespace HeuristicLab.Problems.VehicleRouting.Interfaces {
   [StorableType("B8E231D0-6BA9-4DCF-9585-95E46B280B47")]
   public interface IVRPProblemInstance : IParameterizedNamedItem {
-    IVRPEvaluator SolutionEvaluator { get; set; }
-    IVRPEvaluator MoveEvaluator { get; }
-    IEnumerable<IOperator> Operators { get; }
+    IEnumerable<IOperator> FilterOperators(IEnumerable<IOperator> operators);
 
     event EventHandler EvaluationChanged;
 
@@ -49,11 +47,8 @@ namespace HeuristicLab.Problems.VehicleRouting.Interfaces {
     double GetDemand(int city);
     double GetDistance(int start, int end, IVRPEncodedSolution solution);
     double GetInsertionDistance(int start, int customer, int end, IVRPEncodedSolution solution, out double startDistance, out double endDistance);
-    bool Feasible(IVRPEncodedSolution solution);
-    bool TourFeasible(Tour tour, IVRPEncodedSolution solution);
     VRPEvaluation Evaluate(IVRPEncodedSolution solution);
     VRPEvaluation EvaluateTour(Tour tour, IVRPEncodedSolution solution);
-    bool Feasible(VRPEvaluation eval);
     double GetInsertionCosts(VRPEvaluation eval, IVRPEncodedSolution solution, int customer, int tour, int index, out bool feasible);
   }
 }

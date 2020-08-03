@@ -147,6 +147,7 @@
     <Compile Include="Encodings\Potvin\Moves\TwoOptStar\PotvinTwoOptStarMultiMoveGenerator.cs" />
     <Compile Include="Encodings\Potvin\Moves\TwoOptStar\PotvinTwoOptStarSingleMoveGenerator.cs" />
     <Compile Include="Encodings\Prins\PrinsEncoding.cs" />
+    <Compile Include="Encodings\VRPEncoding.cs" />
     <Compile Include="Encodings\Zhu\ZhuEncoding.cs" />
     <Compile Include="Improver\VRPImprovementOperator.cs" />
     <Compile Include="Improver\VRPIntraRouteImprovementOperator.cs" />
@@ -339,18 +340,12 @@
     <Compile Include="Interfaces\IVRPEncodedSolution.cs" />
     <Compile Include="Interfaces\IVRPProblemInstance.cs" />
     <Compile Include="Plugin.cs" />
-    <Compile Include="ProblemInstances\MultiDepotVRP\MDCVRP\MDCVRPEvaluator.cs" />
     <Compile Include="ProblemInstances\MultiDepotVRP\MDCVRP\MDCVRPProblemInstance.cs" />
-    <Compile Include="ProblemInstances\MultiDepotVRP\MDCVRP\MDCVRPTW\MDCVRPPDTW\MDCVRPPDTWEvaluator.cs" />
     <Compile Include="ProblemInstances\MultiDepotVRP\MDCVRP\MDCVRPTW\MDCVRPPDTW\MDCVRPPDTWProblemInstance.cs" />
-    <Compile Include="ProblemInstances\MultiDepotVRP\MDCVRP\MDCVRPTW\MDCVRPTWEvaluator.cs" />
     <Compile Include="ProblemInstances\MultiDepotVRP\MDCVRP\MDCVRPTW\MDCVRPTWProblemInstance.cs" />
     <Compile Include="ProblemInstances\MultiDepotVRP\MultiDepotVRPProblemInstance.cs" />
-    <Compile Include="ProblemInstances\MultiDepotVRP\MultiDepotVRPEvaluator.cs" />
     <Compile Include="ProblemInstances\SingleDepotVRP\CVRP\CVRPTW\CVRPPDTW\CVRPPDTWProblemInstance.cs" />
     <Compile Include="ProblemInstances\SingleDepotVRP\CVRP\CVRPTW\CVRPPDTW\CVRPPDTWEvaluation.cs" />
-    <Compile Include="ProblemInstances\SingleDepotVRP\CVRP\CVRPTW\CVRPPDTW\CVRPPDTWEvaluator.cs" />
-    <Compile Include="ProblemInstances\SingleDepotVRP\SingleDepotVRPEvaluator.cs" />
     <Compile Include="SimilarityCalculators\VRPSimilarityCalculator.cs" />
     <Compile Include="SolutionParser.cs" />
     <Compile Include="Variants\Capacitated\Heterogenous\IHeterogenousCapacitatedProblemInstance.cs" />
@@ -372,9 +367,6 @@
     <Compile Include="ProblemInstances\SingleDepotVRP\CVRP\CVRPProblemInstance.cs" />
     <Compile Include="ProblemInstances\SingleDepotVRP\CVRP\CVRPTW\CVRPTWEvaluation.cs" />
     <Compile Include="ProblemInstances\SingleDepotVRP\CVRP\CVRPEvaluation.cs" />
-    <Compile Include="ProblemInstances\SingleDepotVRP\CVRP\CVRPTW\CVRPTWEvaluator.cs" />
-    <Compile Include="ProblemInstances\SingleDepotVRP\CVRP\CVRPEvaluator.cs" />
-    <Compile Include="ProblemInstances\VRPEvaluator.cs" />
     <Compile Include="ProblemInstances\VRPEvaluation.cs" />
     <Compile Include="ProblemInstances\SingleDepotVRP\SingleDepotVRPProblemInstance.cs" />
     <Compile Include="ProblemInstances\VRPProblemInstance.cs" />

@@ -25,14 +25,13 @@ using System.Linq;
 using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Optimization;
 using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
   [Item("MultiVRPEncoding", "Represents the combination of all encodings from the VRP.")]
   [StorableType("9ff9f959-31d2-44e5-8a5e-b122220535c2")]
-  public class MultiVRPEncoding : Encoding, IVRPEncoding {
+  public class MultiVRPEncoding : VRPEncoding {
 
     [StorableConstructor]
     private MultiVRPEncoding(StorableConstructorFlag _) : base(_) { }
@@ -57,7 +56,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
           typeof (IVRPOperator)
       };
     }
-    private void DiscoverOperators() {
+    protected override void DiscoverOperators() {
       var assembly = typeof(IAlbaOperator).Assembly;
       var discoveredTypes = ApplicationManager.Manager.GetTypes(encodingSpecificOperatorTypes, assembly, true, false, false);
       var operators = discoveredTypes.Select(t => (IOperator)Activator.CreateInstance(t));

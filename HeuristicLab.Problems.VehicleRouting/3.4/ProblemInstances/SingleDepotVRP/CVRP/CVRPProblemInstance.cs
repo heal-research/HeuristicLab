@@ -22,13 +22,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
-using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 using HeuristicLab.Problems.VehicleRouting.Variants;
 
@@ -66,21 +64,96 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
       set { CurrentOverloadPenaltyParameter.Value = value; }
     }
 
-    protected override IEnumerable<IOperator> GetOperators() {
-      return base.GetOperators()
-        .Where(o => o is IHomogenousCapacitatedOperator).Cast<IOperator>();
+    public override IEnumerable<IOperator> FilterOperators(IEnumerable<IOperator> operators) {
+      return base.FilterOperators(operators).Where(x => x is IHomogenousCapacitatedOperator);
+    }
+    protected override VRPEvaluation CreateTourEvaluation() {
+      return new CVRPEvaluation();
     }
 
-    protected override IEnumerable<IOperator> GetAnalyzers() {
-      return ApplicationManager.Manager.GetInstances<ICapacitatedOperator>()
-        .Where(o => o is IAnalyzer)
-        .Cast<IOperator>().Union(base.GetAnalyzers());
-    }
+    protected override void EvaluateTour(VRPEvaluation eval, Tour tour, IVRPEncodedSolution solution) {
+      TourInsertionInfo tourInfo = new TourInsertionInfo(solution.GetVehicleAssignment(solution.GetTourIndex(tour))); ;
+      eval.InsertionInfo.AddTourInsertionInfo(tourInfo);
+      double originalQuality = eval.Quality;
 
-    protected override IVRPEvaluator Evaluator {
-      get {
-        return new CVRPEvaluator();
+      double delivered = 0.0;
+      double overweight = 0.0;
+      double distance = 0.0;
+
+      double capacity = Capacity.Value;
+      for (int i = 0; i <= tour.Stops.Count; i++) {
+        int end = 0;
+        if (i < tour.Stops.Count)
+          end = tour.Stops[i];
+
+        delivered += Demand[end];
       }
+
+      double spareCapacity = capacity - delivered;
+
+      //simulate a tour, start and end at depot
+      for (int i = 0; i <= tour.Stops.Count; i++) {
+        int start = 0;
+        if (i > 0)
+          start = tour.Stops[i - 1];
+        int end = 0;
+        if (i < tour.Stops.Count)
+          end = tour.Stops[i];
+
+        //drive there
+        double currentDistace = GetDistance(start, end, solution);
+        distance += currentDistace;
+
+        CVRPInsertionInfo stopInfo = new CVRPInsertionInfo(start, end, spareCapacity);
+        tourInfo.AddStopInsertionInfo(stopInfo);
+      }
+
+      eval.Quality += FleetUsageFactor.Value;
+      eval.Quality += DistanceFactor.Value * distance;
+
+      eval.Distance += distance;
+      eval.VehicleUtilization += 1;
+
+      if (delivered > capacity) {
+        overweight = delivered - capacity;
+      }
+
+      (eval as CVRPEvaluation).Overload += overweight;
+      double penalty = overweight * OverloadPenalty.Value;
+      eval.Penalty += penalty;
+      eval.Quality += penalty;
+      tourInfo.Penalty = penalty;
+      tourInfo.Quality = eval.Quality - originalQuality;
+
+      eval.IsFeasible = overweight == 0;
+    }
+
+    protected override double GetTourInsertionCosts(IVRPEncodedSolution solution, TourInsertionInfo tourInsertionInfo, int index, int customer,
+      out bool feasible) {
+      CVRPInsertionInfo insertionInfo = tourInsertionInfo.GetStopInsertionInfo(index) as CVRPInsertionInfo;
+
+      double costs = 0;
+      feasible = tourInsertionInfo.Penalty < double.Epsilon;
+
+      double overloadPenalty = OverloadPenalty.Value;
+
+      double distance = GetDistance(insertionInfo.Start, insertionInfo.End, solution);
+      double newDistance =
+        GetDistance(insertionInfo.Start, customer, solution) +
+        GetDistance(customer, insertionInfo.End, solution);
+      costs += DistanceFactor.Value * (newDistance - distance);
+
+      double demand = Demand[customer];
+      if (demand > insertionInfo.SpareCapacity) {
+        feasible = false;
+
+        if (insertionInfo.SpareCapacity >= 0)
+          costs += (demand - insertionInfo.SpareCapacity) * overloadPenalty;
+        else
+          costs += demand * overloadPenalty;
+      }
+
+      return costs;
     }
 
     [StorableConstructor]
