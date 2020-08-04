@@ -85,6 +85,7 @@ namespace HeuristicLab.Optimization {
       this.resultCollectionName = resultCollectionName;
       Hidden = false;
     }
+    public ResultParameter(string name, string description, T defaultValue) : this(name, description, "Results", defaultValue) { }
     public ResultParameter(string name, string description, string resultCollectionName, T defaultValue)
       : base(name, description, string.Empty) {
       if (string.IsNullOrEmpty(resultCollectionName)) throw new ArgumentException("resultCollectionName");
