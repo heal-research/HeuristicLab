@@ -19,13 +19,13 @@
  */
 #endregion
 
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.PermutationEncoding;
-using HEAL.Attic;
+using HeuristicLab.Problems.VehicleRouting.Interfaces;
 using HeuristicLab.Problems.VehicleRouting.ProblemInstances;
 using HeuristicLab.Problems.VehicleRouting.Variants;
-using HeuristicLab.Problems.VehicleRouting.Interfaces;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
   [Item("PotvinPairwiseTwoLevelExchangeManipulator", "The 2M operator which manipulates a VRP representation.   It has been adapted to pickup and delivery from Potvin, J.-Y. and Bengio, S. (1996). The Vehicle Routing Problem with Time Windows - Part II: Genetic Search. INFORMS Journal of Computing, 8:165–172.  It was adapted to the PDP formulation.")]
@@ -76,11 +76,13 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
       replacingTargetTour.Stops.Remove(replacingTarget);
 
       replacedSourceTour.Stops[replacedSourceTour.Stops.IndexOf(replacedSource)] = replacingSource;
-      if (!allowInfeasible && !instance.TourFeasible(replacedSourceTour, individual))
+      var evalSourceTour = instance.EvaluateTour(replacedSourceTour, individual);
+      if (!allowInfeasible && !evalSourceTour.IsFeasible)
         return null;
 
+      var evalTargetTour = instance.EvaluateTour(replacedTargetTour, individual);
       replacedTargetTour.Stops[replacedTargetTour.Stops.IndexOf(replacedTarget)] = replacingTarget;
-      if (!allowInfeasible && !instance.TourFeasible(replacedTargetTour, individual))
+      if (!allowInfeasible && !evalTargetTour.IsFeasible)
         return null;
 
       double bestQuality = double.MaxValue;
@@ -100,7 +102,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
           double delta = evalNew.Quality - eval.Quality;
 
           if (delta < bestQuality &&
-              (instance.Feasible(evalNew) || allowInfeasible)) {
+              (evalNew.IsFeasible || allowInfeasible)) {
             bestQuality = delta;
             bestTour = tourIdx;
             bestPositionSource = tour.Stops.IndexOf(replacedSource);

@@ -20,12 +20,12 @@
 #endregion
 
 using System.Collections.Generic;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 using HeuristicLab.Problems.VehicleRouting.Encodings.General;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 
@@ -133,8 +133,8 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
       foreach (Tour tour in toBeDeleted) {
         solution.Tours.Remove(tour);
       }
-
-      if (newTour.Stops.Count > 0 && !allowInfeasible && !instance.TourFeasible(newTour, solution))
+      var tourEval = instance.EvaluateTour(newTour, solution);
+      if (newTour.Stops.Count > 0 && !allowInfeasible && !tourEval.IsFeasible)
         return false;
 
       //route unrouted vehicles

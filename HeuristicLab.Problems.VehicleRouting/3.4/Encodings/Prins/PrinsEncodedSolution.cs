@@ -65,7 +65,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Prins {
             ProblemInstance.EvaluateTour(tour, this);
 
           double cost = eval.Quality;
-          feasible = ProblemInstance.Feasible(eval);
+          feasible = eval.IsFeasible;
 
           if (feasible || j == i) {
             if (V[i - 1] + cost < V[j]) {

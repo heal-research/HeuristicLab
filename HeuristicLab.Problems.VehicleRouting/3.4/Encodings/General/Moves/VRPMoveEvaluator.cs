@@ -19,13 +19,14 @@
  */
 #endregion
 
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
+using HeuristicLab.Problems.VehicleRouting.ProblemInstances;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
   [Item("VRPMoveEvaluator", "Evaluates a VRP move.")]
@@ -42,6 +43,9 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
     public ILookupParameter<DoubleValue> MovePenaltyParameter {
       get { return (ILookupParameter<DoubleValue>)Parameters["MovePenalty"]; }
     }
+    public ILookupParameter<VRPEvaluation> MoveEvaluationResultParameter {
+      get { return (ILookupParameter<VRPEvaluation>)Parameters["MoveEvaluationResult"]; }
+    }
 
     [StorableConstructor]
     protected VRPMoveEvaluator(StorableConstructorFlag _) : base(_) { }
@@ -51,6 +55,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
       Parameters.Add(new LookupParameter<DoubleValue>("Quality", "The quality of the solution."));
       Parameters.Add(new LookupParameter<DoubleValue>("MoveQuality", "The relative quality of the move."));
       Parameters.Add(new LookupParameter<DoubleValue>("MovePenalty", "The penalty applied to the move."));
+      Parameters.Add(new LookupParameter<VRPEvaluation>("MoveEvaluationResult", "The evaluation result of the move."));
     }
 
     protected VRPMoveEvaluator(VRPMoveEvaluator original, Cloner cloner)
@@ -59,18 +64,10 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
 
     //helper method to evaluate an updated individual
     protected void UpdateEvaluation(IVRPEncodedSolution updatedTours) {
-      IVRPEvaluator evaluator = ProblemInstance.MoveEvaluator;
-
-      try {
-        this.ExecutionContext.Scope.Variables.Add(new Variable(evaluator.VRPToursParameter.ActualName,
-          updatedTours));
-
-        IAtomicOperation op = this.ExecutionContext.CreateChildOperation(evaluator);
-        op.Operator.Execute((IExecutionContext)op, CancellationToken);
-      }
-      finally {
-        this.ExecutionContext.Scope.Variables.Remove(evaluator.VRPToursParameter.ActualName);
-      }
+      var evaluation = ProblemInstance.Evaluate(updatedTours);
+      MoveEvaluationResultParameter.ActualValue = evaluation;
+      MoveQualityParameter.ActualValue = new DoubleValue(evaluation.Quality);
+      MovePenaltyParameter.ActualValue = new DoubleValue(evaluation.Penalty);
     }
 
     protected abstract void EvaluateMove();

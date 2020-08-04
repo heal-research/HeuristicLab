@@ -21,12 +21,12 @@
 
 using System;
 using System.Collections.Generic;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 using HeuristicLab.Problems.VehicleRouting.ProblemInstances;
 using HeuristicLab.Problems.VehicleRouting.Variants;
@@ -298,8 +298,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
               }
             } else {
               double cost = tourCost;
-              bool feasible = problemInstance.Feasible(eval);
-              if (cost < minimumCost && feasible) {
+              if (cost < minimumCost && eval.IsFeasible) {
                 customer = unrouted;
                 minimumCost = cost;
                 indexOfMinimumCost = i;

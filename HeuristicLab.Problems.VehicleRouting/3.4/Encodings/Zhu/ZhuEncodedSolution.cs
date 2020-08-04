@@ -44,7 +44,8 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Zhu {
       for (int i = 0; i < this.Length; i++) {
         int city = this[i] + 1;
         newTour.Stops.Add(city);
-        if (!ProblemInstance.TourFeasible(newTour, this)) {
+        var evalNewTour = ProblemInstance.EvaluateTour(newTour, this);
+        if (!evalNewTour.IsFeasible) {
           newTour.Stops.Remove(city);
           if (newTour.Stops.Count > 0)
             result.Add(newTour);

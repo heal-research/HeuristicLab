@@ -218,7 +218,6 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
       double minDetour = double.MaxValue;
 
       VRPEvaluation eval = ProblemInstance.Evaluate(this);
-      bool originalFeasible = ProblemInstance.Feasible(eval);
 
       for (int tour = 0; tour < Tours.Count; tour++) {
         if (tour != routeToAvoid) {

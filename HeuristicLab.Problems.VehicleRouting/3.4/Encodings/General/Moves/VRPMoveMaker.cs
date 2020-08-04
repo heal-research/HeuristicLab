@@ -19,14 +19,13 @@
  */
 #endregion
 
-using System.Collections.Generic;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
-using HeuristicLab.Problems.VehicleRouting.Interfaces;
+using HeuristicLab.Problems.VehicleRouting.ProblemInstances;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
   [Item("VRPMoveMaker", "Performs a VRP move.")]
@@ -35,11 +34,17 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
     public ILookupParameter<DoubleValue> QualityParameter {
       get { return (ILookupParameter<DoubleValue>)Parameters["Quality"]; }
     }
+    public ILookupParameter<VRPEvaluation> EvaluationResultParameter {
+      get { return (ILookupParameter<VRPEvaluation>)Parameters["EvaluationResult"]; }
+    }
     public ILookupParameter<DoubleValue> MoveQualityParameter {
       get { return (ILookupParameter<DoubleValue>)Parameters["MoveQuality"]; }
     }
     public ILookupParameter<DoubleValue> MovePenaltyParameter {
       get { return (ILookupParameter<DoubleValue>)Parameters["MovePenalty"]; }
+    }
+    public ILookupParameter<VRPEvaluation> MoveEvaluationResultParameter {
+      get { return (ILookupParameter<VRPEvaluation>)Parameters["MoveEvaluationResult"]; }
     }
 
     [StorableConstructor]
@@ -48,8 +53,10 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
     public VRPMoveMaker()
       : base() {
       Parameters.Add(new LookupParameter<DoubleValue>("Quality", "The quality of the solution."));
+      Parameters.Add(new LookupParameter<VRPEvaluation>("EvaluationResult", "The evaluation of the solution."));
       Parameters.Add(new LookupParameter<DoubleValue>("MoveQuality", "The relative quality of the move."));
       Parameters.Add(new LookupParameter<DoubleValue>("MovePenalty", "The penalty applied to the move."));
+      Parameters.Add(new LookupParameter<VRPEvaluation>("MoveEvaluationResult", "The move evaluation."));
     }
 
     protected VRPMoveMaker(VRPMoveMaker original, Cloner cloner)
@@ -59,42 +66,8 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
     protected abstract void PerformMove();
 
     private void UpdateMoveEvaluation() {
-      IVRPEvaluator evaluator = ProblemInstance.SolutionEvaluator;
-      ICollection<IParameter> addedParameters = new List<IParameter>();
-
-      try {
-        foreach (IParameter parameter in evaluator.Parameters) {
-          if (parameter is ILookupParameter
-            && parameter != evaluator.VRPToursParameter
-            && parameter != evaluator.ProblemInstanceParameter) {
-            ILookupParameter evaluatorParameter = parameter as ILookupParameter;
-
-            string resultName = evaluatorParameter.ActualName;
-            if (!this.Parameters.ContainsKey(resultName)) {
-              ILookupParameter resultParameter = new LookupParameter<IItem>(resultName);
-              resultParameter.ExecutionContext = ExecutionContext;
-              this.Parameters.Add(resultParameter);
-              addedParameters.Add(resultParameter);
-            }
-
-            string moveResultName = VRPMoveEvaluator.MovePrefix + resultName;
-            if (!this.Parameters.ContainsKey(moveResultName)) {
-              ILookupParameter moveResultParameter = new LookupParameter<IItem>(moveResultName);
-              moveResultParameter.ExecutionContext = ExecutionContext;
-              this.Parameters.Add(moveResultParameter);
-              addedParameters.Add(moveResultParameter);
-            }
-
-            ILookupParameter result = Parameters[resultName] as ILookupParameter;
-            ILookupParameter moveResult = Parameters[moveResultName] as ILookupParameter;
-            result.ActualValue = moveResult.ActualValue;
-          }
-        }
-      } finally {
-        foreach (IParameter parameter in addedParameters) {
-          this.Parameters.Remove(parameter);
-        }
-      }
+      EvaluationResultParameter.ActualValue = MoveEvaluationResultParameter.ActualValue;
+      QualityParameter.ActualValue = MoveQualityParameter.ActualValue;
     }
 
     public override IOperation InstrumentedApply() {

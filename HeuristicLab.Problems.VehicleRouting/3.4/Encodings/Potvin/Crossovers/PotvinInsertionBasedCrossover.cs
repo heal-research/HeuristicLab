@@ -19,15 +19,15 @@
  */
 #endregion
 
+using System;
+using System.Collections.Generic;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HEAL.Attic;
-using System.Collections.Generic;
 using HeuristicLab.Data;
-using System;
 using HeuristicLab.Parameters;
-using HeuristicLab.Problems.VehicleRouting.ProblemInstances;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
+using HeuristicLab.Problems.VehicleRouting.ProblemInstances;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
   [Item("PotvinInsertionBasedCrossover", "The IBX crossover for VRP representations. It is implemented as described in Berger, J and Solois, M and Begin, R (1998). A hybrid genetic algorithm for the vehicle routing problem with time windows. LNCS 1418. Springer, London 114-127.")]
@@ -164,7 +164,6 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
 
       double minDetour = 0;
       VRPEvaluation eval = ProblemInstance.EvaluateTour(tour, individual);
-      bool originalFeasible = ProblemInstance.Feasible(eval);
 
       for (int i = 0; i <= tour.Stops.Count; i++) {
         bool feasible;

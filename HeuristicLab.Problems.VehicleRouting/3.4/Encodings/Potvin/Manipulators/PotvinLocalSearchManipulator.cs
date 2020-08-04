@@ -20,11 +20,11 @@
 #endregion
 
 using System.Collections.Generic;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
@@ -69,7 +69,8 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
         while (currentCity <= individual.Tours[currentTour].Stops.Count && !insertionFound) {
           distance = individual.GetTourLength(individual.Tours[currentTour]);
           individual.Tours[currentTour].Stops.InsertRange(currentCity, toBeDeleted);
-          if (instance.TourFeasible(individual.Tours[currentTour], individual)) {
+          var tourEval = instance.EvaluateTour(individual.Tours[currentTour], individual);
+          if (tourEval.IsFeasible) {
             double lengthIncrease =
               individual.GetTourLength(individual.Tours[currentTour]) - distance;
             if (removalBenefit > lengthIncrease) {
@@ -93,7 +94,8 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
 
     public static void ApplyManipulation(IRandom random, PotvinEncodedSolution individual, IVRPProblemInstance instance, int maxIterations) {
       //only apply to feasible individuals
-      if (instance.Feasible(individual)) {
+      var eval = instance.Evaluate(individual);
+      if (eval.IsFeasible) {
         bool insertionFound;
         int iterations = 0;
 

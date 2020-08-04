@@ -19,12 +19,12 @@
  */
 #endregion
 
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HEAL.Attic;
+using HeuristicLab.Problems.VehicleRouting.Interfaces;
 using HeuristicLab.Problems.VehicleRouting.ProblemInstances;
 using HeuristicLab.Problems.VehicleRouting.Variants;
-using HeuristicLab.Problems.VehicleRouting.Interfaces;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
   [Item("PotvinPairwiseOneLevelExchangeMainpulator", "The 1M operator which manipulates a PDP representation. It has been adapted to pickup and delivery from Potvin, J.-Y. and Bengio, S. (1996). The Vehicle Routing Problem with Time Windows - Part II: Genetic Search. INFORMS Journal of Computing, 8:165–172. It was adapted to the PDP formulation.")]
@@ -87,7 +87,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
             double delta = evalNew.Quality - eval.Quality;
 
             if (delta < bestQuality &&
-               (instance.Feasible(evalNew) || allowInfeasible)) {
+               (evalNew.IsFeasible || allowInfeasible)) {
               bestQuality = delta;
               bestTour = tourIdx;
               bestPositionSource = tour.Stops.IndexOf(source);

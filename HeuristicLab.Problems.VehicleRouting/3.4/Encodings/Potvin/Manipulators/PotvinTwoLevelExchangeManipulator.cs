@@ -19,9 +19,9 @@
  */
 #endregion
 
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HEAL.Attic;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
@@ -61,7 +61,8 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
                 tour.Stops[customer2Position] = customer1;
                 route1.Stops.RemoveAt(customer1Position);
 
-                if (instance.TourFeasible(tour, individual)) {
+                var tourEval = instance.EvaluateTour(tour, individual);
+                if (tourEval.IsFeasible) {
                   int routeIdx, place;
                   if (FindInsertionPlace(individual,
                     customer2, selectedIndex, allowInfeasible, out routeIdx, out place)) {

@@ -78,7 +78,6 @@ namespace HeuristicLab.Tests {
       instance.OverloadPenalty.Value = 100;
       instance.TardinessPenalty.Value = 100;
       instance.TimeFactor.Value = 0;
-      vrpProblem.MaximizationParameter.Value.Value = false;
       instance.UseDistanceMatrix.Value = true;
       instance.Vehicles.Value = 25;
       #endregion
