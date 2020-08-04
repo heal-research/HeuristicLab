@@ -36,7 +36,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
   /// An operator which analyzes the best, average and worst quality of solutions in the scope tree.
   /// </summary>
   [Item("Capacitated Tour Analyzer", "An operator which analyzes the best, average and worst properties of the VRP tours in the scope tree.")]
-  [StorableType("5DF1280C-5FEB-451E-8132-168E515CF47D")]
+  [StorableType("72fdaf0a-4ac7-4ac5-a563-3efb0e3fae9e")]
   public sealed class CapacitatedTourAnalyzer : InstrumentedOperator, IAnalyzer, ICapacitatedOperator {
     [Storable] public ILookupParameter<IVRPProblemInstance> ProblemInstanceParameter { get; private set; }
     [Storable] public IScopeTreeLookupParameter<CVRPEvaluation> EvaluationResultParameter { get; private set; }

@@ -36,7 +36,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
   /// An operator which analyzes the best, average and worst quality of solutions in the scope tree.
   /// </summary>
   [Item("Time Window Tour Analyzer", "An operator which analyzes the best, average and worst properties of the VRP tours in the scope tree.")]
-  [StorableType("5DF1280C-5FEB-451E-8132-168E515CF47D")]
+  [StorableType("abc472b6-ee21-4b67-8ad9-f82811b2919e")]
   public sealed class TimeWindowTourAnalyzer : InstrumentedOperator, IAnalyzer, ITimeWindowedOperator {
     [Storable] public ILookupParameter<IVRPProblemInstance> ProblemInstanceParameter { get; private set; }
     [Storable] public IScopeTreeLookupParameter<CVRPTWEvaluation> EvaluationResultParameter { get; private set; }

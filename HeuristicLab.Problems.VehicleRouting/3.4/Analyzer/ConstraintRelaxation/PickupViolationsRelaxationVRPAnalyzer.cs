@@ -35,7 +35,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
   /// An operator for adaptive constraint relaxation.
   /// </summary>
   [Item("PickupViolationsRelaxationVRPAnalyzer", "An operator for adaptively relaxing the pickup constraints.")]
-  [StorableType("86D541AB-5E65-432B-A8C4-F012A6B46275")]
+  [StorableType("bcf16a7c-5e16-4d96-8b6b-9d5a2ddc0420")]
   public class PickupViolationsRelaxationVRPAnalyzer : SingleSuccessorOperator, IAnalyzer, IPickupAndDeliveryOperator, ISingleObjectiveOperator {
     [Storable] public ILookupParameter<IVRPProblemInstance> ProblemInstanceParameter { get; private set; }
     [Storable] public IScopeTreeLookupParameter<IVRPEncodedSolution> VRPToursParameter { get; private set; }
