@@ -31,7 +31,7 @@ using HeuristicLab.Problems.VehicleRouting.Variants;
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.GVR {
   [Item("GVREncodedSolution", "Represents a genetic vehicle routing encoded solution of the VRP. It is implemented as described in Pereira, F.B. et al (2002). GVR: a New Genetic Representation for the Vehicle Routing Problem. AICS 2002, LNAI 2464, pp. 95-102.")]
   [StorableType("27A8F267-9865-4AEA-9ECF-88D950D81D74")]
-  public class GVREncodedSolution : TourEncoding {
+  public class GVREncodedSolution : TourEncodedSolutions {
     public override List<Tour> GetTours() {
       List<Tour> tours = new List<Tour>();
 
@@ -94,7 +94,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.GVR {
     public static GVREncodedSolution ConvertFrom(IVRPEncodedSolution encoding, IVRPProblemInstance problemInstance) {
       GVREncodedSolution solution = new GVREncodedSolution(problemInstance);
 
-      TourEncoding.ConvertFrom(encoding, solution, problemInstance);
+      TourEncodedSolutions.ConvertFrom(encoding, solution, problemInstance);
 
       return solution;
     }
@@ -102,7 +102,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.GVR {
     public static GVREncodedSolution ConvertFrom(List<int> route, IVRPProblemInstance problemInstance) {
       GVREncodedSolution solution = new GVREncodedSolution(problemInstance);
 
-      TourEncoding.ConvertFrom(route, solution);
+      TourEncodedSolutions.ConvertFrom(route, solution);
 
       return solution;
     }

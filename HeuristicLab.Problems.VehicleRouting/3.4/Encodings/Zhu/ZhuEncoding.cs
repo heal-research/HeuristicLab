@@ -30,8 +30,8 @@ using HeuristicLab.Problems.VehicleRouting.Interfaces;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Zhu {
   [Item("Zhu Encoding", "Represents the Zhu encoding for Zhu encoded solutions.")]
-  [StorableType("9ff9f959-31d2-44e5-8a5e-b122220535c2")]
-  public class ZhuEncoding : VRPEncoding {
+  [StorableType("d02d7532-4a99-41e9-9a97-455792404507")]
+  public sealed class ZhuEncoding : VRPEncoding {
 
     [StorableConstructor]
     private ZhuEncoding(StorableConstructorFlag _) : base(_) { }

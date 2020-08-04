@@ -227,9 +227,9 @@
     <Compile Include="Encodings\General\Moves\VRPMoveOperator.cs" />
     <Compile Include="Encodings\General\Moves\VRPMoveMaker.cs" />
     <Compile Include="Encodings\General\Moves\VRPMoveEvaluator.cs" />
-    <Compile Include="Encodings\General\PermutationEncoding.cs" />
+    <Compile Include="Encodings\General\PermutationEncodedSolution.cs" />
     <Compile Include="Encodings\General\ShakingOperators\VehicleRoutingShakingOperator.cs" />
-    <Compile Include="Encodings\General\TourEncoding.cs" />
+    <Compile Include="Encodings\General\TourEncodedSolutions.cs" />
     <Compile Include="Encodings\GVR\Crossovers\GVRCrossover.cs" />
     <Compile Include="Encodings\GVR\GVREncodedSolution.cs" />
     <Compile Include="Encodings\GVR\IGVROperator.cs" />

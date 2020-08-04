@@ -31,7 +31,7 @@ using HeuristicLab.Problems.VehicleRouting.ProblemInstances;
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
   [Item("PotvinEncodedSolution", "Represents a potvin encoded solution of the VRP. It is implemented as described in Potvin, J.-Y. and Bengio, S. (1996). The Vehicle Routing Problem with Time Windows - Part II: Genetic Search. INFORMS Journal of Computing, 8:165–172.")]
   [StorableType("A998C6C9-BCB3-46B7-B035-D7E76BE70184")]
-  public class PotvinEncodedSolution : TourEncoding {
+  public class PotvinEncodedSolution : TourEncodedSolutions {
     [Storable]
     public List<int> Unrouted { get; set; }
 
@@ -95,7 +95,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
     public static PotvinEncodedSolution ConvertFrom(IVRPEncodedSolution encoding, IVRPProblemInstance instance) {
       PotvinEncodedSolution solution = new PotvinEncodedSolution(instance);
 
-      TourEncoding.ConvertFrom(encoding, solution, instance);
+      TourEncodedSolutions.ConvertFrom(encoding, solution, instance);
 
       List<int> vehicles = new List<int>();
       for (int i = 0; i < instance.Vehicles.Value; i++)

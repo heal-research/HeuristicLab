@@ -31,7 +31,7 @@ using HeuristicLab.Problems.VehicleRouting.ProblemInstances;
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Prins {
   [Item("PrinsEncodedSolution", "Represents a Prins encoded solution of the VRP. It is implemented as described in Prins, C. (2004). A simple and effective evolutionary algorithm for the vehicle routing problem. Computers & Operations Research, 12:1985-2002.")]
   [StorableType("A0E1EBC1-C0F5-4CD5-9279-1A669C6633CD")]
-  public class PrinsEncodedSolution : General.PermutationEncoding {
+  public class PrinsEncodedSolution : General.PermutationEncodedSolution {
     #region IVRPEncoding Members
     public override int GetTourIndex(Tour tour) {
       return 0;

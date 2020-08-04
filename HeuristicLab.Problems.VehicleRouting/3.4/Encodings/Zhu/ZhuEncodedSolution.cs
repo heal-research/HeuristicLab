@@ -30,7 +30,7 @@ using HeuristicLab.Problems.VehicleRouting.Interfaces;
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Zhu {
   [Item("ZhuEncodedSolution", "Represents a Zhu encoded solution of the VRP. It is implemented as described in Zhu, K.Q. (2000). A New Genetic Algorithm For VRPTW. Proceedings of the International Conference on Artificial Intelligence.")]
   [StorableType("1A5F5A1D-E4F5-4477-887E-45FC488BC459")]
-  public class ZhuEncodedSolution : General.PermutationEncoding {
+  public class ZhuEncodedSolution : General.PermutationEncodedSolution {
     #region IVRPEncoding Members
     public override int GetTourIndex(Tour tour) {
       return 0;

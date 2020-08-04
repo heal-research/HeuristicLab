@@ -30,7 +30,7 @@ using HeuristicLab.Problems.VehicleRouting.Interfaces;
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
   [Item("AlbaEncodedSolution", "Represents an Alba encoded solution for the VRP. It is implemented as described in Alba, E. and Dorronsoro, B. (2004). Solving the Vehicle Routing Problem by Using Cellular Genetic Algorithms.")]
   [StorableType("8BB9735D-8371-46C1-B843-A6864B2ACDA5")]
-  public class AlbaEncodedSolution : General.PermutationEncoding {
+  public class AlbaEncodedSolution : General.PermutationEncodedSolution {
     #region IVRPEncoding Members
     public override List<Tour> GetTours() {
       Repair();

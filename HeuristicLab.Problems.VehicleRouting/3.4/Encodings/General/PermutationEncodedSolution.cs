@@ -21,16 +21,16 @@
 
 using System;
 using System.Collections.Generic;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.PermutationEncoding;
-using HEAL.Attic;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
-  [Item("PermutationEncoding", "Represents a base class for permutation encodings of VRP solutions.")]
+  [Item("PermutationEncodedSolution", "Represents a base class for permutation encoded solutions of VRP.")]
   [StorableType("070CEB2B-0A37-4EE1-87DA-1D80F6D88B4A")]
-  public abstract class PermutationEncoding : Permutation, IVRPEncodedSolution {
+  public abstract class PermutationEncodedSolution : Permutation, IVRPEncodedSolution {
     #region IVRPEncoding Members
     public abstract List<Tour> GetTours();
 
@@ -56,7 +56,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
     [Storable]
     protected IVRPProblemInstance ProblemInstance { get; set; }
 
-    protected PermutationEncoding(PermutationEncoding original, Cloner cloner)
+    protected PermutationEncodedSolution(PermutationEncodedSolution original, Cloner cloner)
       : base(original, cloner) {
       this.readOnly = original.readOnly;
 
@@ -66,7 +66,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
         this.ProblemInstance = original.ProblemInstance;
     }
 
-    public PermutationEncoding(Permutation permutation, IVRPProblemInstance problemInstance)
+    public PermutationEncodedSolution(Permutation permutation, IVRPProblemInstance problemInstance)
       : base(PermutationTypes.RelativeUndirected) {
       this.array = new int[permutation.Length];
       for (int i = 0; i < array.Length; i++)
@@ -76,7 +76,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
     }
 
     [StorableConstructor]
-    protected PermutationEncoding(StorableConstructorFlag _) : base(_) {
+    protected PermutationEncodedSolution(StorableConstructorFlag _) : base(_) {
     }
 
     public int IndexOf(int city) {

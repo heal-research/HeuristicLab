@@ -30,7 +30,7 @@ using HeuristicLab.Problems.VehicleRouting.Interfaces;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
   [Item("AlbaEncoding", "Represents the encoding for Alba encoded solutions.")]
-  [StorableType("9ff9f959-31d2-44e5-8a5e-b122220535c2")]
+  [StorableType("42763c6b-358f-48a2-b134-075ed987d88c")]
   public sealed class AlbaEncoding : VRPEncoding {
 
     [StorableConstructor]

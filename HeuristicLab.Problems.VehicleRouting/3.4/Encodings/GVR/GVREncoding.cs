@@ -30,8 +30,8 @@ using HeuristicLab.Problems.VehicleRouting.Interfaces;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.GVR {
   [Item("GVR Encoding", "Represents the genetic vehicle representation encoding for GVR encoded solutions.")]
-  [StorableType("9ff9f959-31d2-44e5-8a5e-b122220535c2")]
-  public class GVREncoding : VRPEncoding {
+  [StorableType("e868041e-0c91-4734-940a-e339ec9dca89")]
+  public sealed class GVREncoding : VRPEncoding {
 
     [StorableConstructor]
     private GVREncoding(StorableConstructorFlag _) : base(_) { }

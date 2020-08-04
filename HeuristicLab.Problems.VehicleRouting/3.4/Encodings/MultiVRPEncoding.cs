@@ -28,10 +28,10 @@ using HeuristicLab.Core;
 using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 
-namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
+namespace HeuristicLab.Problems.VehicleRouting.Encodings {
   [Item("MultiVRPEncoding", "Represents the combination of all encodings from the VRP.")]
-  [StorableType("9ff9f959-31d2-44e5-8a5e-b122220535c2")]
-  public class MultiVRPEncoding : VRPEncoding {
+  [StorableType("1ca6f16c-ea69-4a69-b03c-168d7285f1b7")]
+  public sealed class MultiVRPEncoding : VRPEncoding {
 
     [StorableConstructor]
     private MultiVRPEncoding(StorableConstructorFlag _) : base(_) { }
@@ -57,7 +57,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
       };
     }
     protected override void DiscoverOperators() {
-      var assembly = typeof(IAlbaOperator).Assembly;
+      var assembly = typeof(IVRPOperator).Assembly;
       var discoveredTypes = ApplicationManager.Manager.GetTypes(encodingSpecificOperatorTypes, assembly, true, false, false);
       var operators = discoveredTypes.Select(t => (IOperator)Activator.CreateInstance(t));
       var newOperators = operators.Except(Operators, new TypeEqualityComparer<IOperator>()).ToList();

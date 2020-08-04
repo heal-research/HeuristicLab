@@ -30,8 +30,8 @@ using HeuristicLab.Problems.VehicleRouting.Interfaces;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Prins {
   [Item("Prins Encoding", "Represents the Prins encoding for Prins encoded solutions.")]
-  [StorableType("9ff9f959-31d2-44e5-8a5e-b122220535c2")]
-  public class PrinsEncoding : VRPEncoding {
+  [StorableType("f2482ee3-e6b3-434e-a921-ed130200470f")]
+  public sealed class PrinsEncoding : VRPEncoding {
 
     [StorableConstructor]
     private PrinsEncoding(StorableConstructorFlag _) : base(_) { }

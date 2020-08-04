@@ -21,15 +21,15 @@
 
 using System.Collections.Generic;
 using System.Drawing;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HEAL.Attic;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
-  [Item("TourEncoding", "Represents a base class for tour encodings of VRP solutions.")]
+  [Item("TourEncodedSolutions", "Represents a base class for tour encoded solutions of VRP.")]
   [StorableType("FC5DBAE6-05D9-4C55-AA85-6E3C2330700F")]
-  public abstract class TourEncoding : Item, IVRPEncodedSolution {
+  public abstract class TourEncodedSolutions : Item, IVRPEncodedSolution {
     public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Class; }
     }
@@ -97,17 +97,17 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
     [Storable]
     protected IVRPProblemInstance ProblemInstance { get; set; }
 
-    public TourEncoding(IVRPProblemInstance problemInstance) {
+    public TourEncodedSolutions(IVRPProblemInstance problemInstance) {
       Tours = new ItemList<Tour>();
 
       ProblemInstance = problemInstance;
     }
 
     [StorableConstructor]
-    protected TourEncoding(StorableConstructorFlag _) : base(_) {
+    protected TourEncodedSolutions(StorableConstructorFlag _) : base(_) {
     }
 
-    protected TourEncoding(TourEncoding original, Cloner cloner)
+    protected TourEncodedSolutions(TourEncodedSolutions original, Cloner cloner)
       : base(original, cloner) {
       this.Tours = (ItemList<Tour>)cloner.Clone(original.Tours);
       if (original.ProblemInstance != null && cloner.ClonedObjectRegistered(original.ProblemInstance))
@@ -116,12 +116,12 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
         this.ProblemInstance = original.ProblemInstance;
     }
 
-    public static void ConvertFrom(IVRPEncodedSolution encoding, TourEncoding solution, IVRPProblemInstance problemInstance) {
+    public static void ConvertFrom(IVRPEncodedSolution encoding, TourEncodedSolutions solution, IVRPProblemInstance problemInstance) {
       solution.Tours = new ItemList<Tour>(encoding.GetTours());
       solution.Repair();
     }
 
-    public static void ConvertFrom(List<int> route, TourEncoding solution) {
+    public static void ConvertFrom(List<int> route, TourEncodedSolutions solution) {
       solution.Tours = new ItemList<Tour>();
 
       Tour tour = new Tour();

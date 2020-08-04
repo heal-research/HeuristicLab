@@ -30,8 +30,8 @@ using HeuristicLab.Problems.VehicleRouting.Interfaces;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
   [Item("Potvin Encoding", "Represents the Potvin encoding for Potvin encoded solutions.")]
-  [StorableType("9ff9f959-31d2-44e5-8a5e-b122220535c2")]
-  public class PotvinEncoding : VRPEncoding {
+  [StorableType("4a586a73-7ca9-4abd-b017-d5c22af8cff5")]
+  public sealed class PotvinEncoding : VRPEncoding {
 
     [StorableConstructor]
     private PotvinEncoding(StorableConstructorFlag _) : base(_) { }
