@@ -116,7 +116,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
 
         CVRPEvaluation evaluation = instance.EvaluateTour(currentTour, result) as CVRPEvaluation;
         if (result.Tours.Count < instance.Vehicles.Value &&
-          ((adhereTimeWindows && !instance.Feasible(evaluation)) || ((!adhereTimeWindows) && evaluation.Overload > double.Epsilon))) {
+          ((adhereTimeWindows && !evaluation.IsFeasible) || ((!adhereTimeWindows) && evaluation.Overload > double.Epsilon))) {
           currentTour.Stops.Remove(customers[index]);
           if (pdp != null)
             currentTour.Stops.Remove(pdp.GetPickupDeliveryLocation(customers[index]));
