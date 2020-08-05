@@ -28,7 +28,6 @@ using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 using HeuristicLab.Problems.VehicleRouting.ProblemInstances;
-using HeuristicLab.Problems.VehicleRouting.Variants;
 
 namespace HeuristicLab.Problems.VehicleRouting {
   /// <summary>
@@ -36,7 +35,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
   /// </summary>
   [Item("TimeWindowRelaxationVRPAnalyzer", "An operator for adaptively relaxing the time window constraints.")]
   [StorableType("e782fe43-c77f-445a-a676-7b03db53ca99")]
-  public class TimeWindowRelaxationVRPAnalyzer : SingleSuccessorOperator, IAnalyzer, ITimeWindowedOperator, ISingleObjectiveOperator {
+  public class TimeWindowRelaxationVRPAnalyzer : SingleSuccessorOperator, IAnalyzer, ITimeWindowedOperator {
     [Storable] public ILookupParameter<IVRPProblemInstance> ProblemInstanceParameter { get; private set; }
     [Storable] public IScopeTreeLookupParameter<IVRPEncodedSolution> VRPToursParameter { get; private set; }
     [Storable] public IScopeTreeLookupParameter<CVRPTWEvaluation> EvaluationResultParameter { get; private set; }

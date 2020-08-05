@@ -19,11 +19,11 @@
  */
 #endregion
 
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
-using HeuristicLab.Problems.VehicleRouting.Variants;
+using HeuristicLab.Problems.VehicleRouting.Interfaces;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
   [Item("MultiVRPMoveMaker", "Peforms a lambda interchange moves on a given VRP encoding and updates the quality.")]

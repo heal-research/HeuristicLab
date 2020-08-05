@@ -19,12 +19,12 @@
  */
 #endregion
 
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 using HeuristicLab.Problems.VehicleRouting.Encodings.General;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 

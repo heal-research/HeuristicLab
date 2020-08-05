@@ -92,7 +92,7 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
     }
 
     public virtual IEnumerable<IOperator> FilterOperators(IEnumerable<IOperator> operators) {
-      return operators.Where(x => x is IVRPOperator);
+      return operators.Where(x => x is IGeneralVRPOperator);
     }
 
     protected virtual double CalculateDistance(int start, int end) {

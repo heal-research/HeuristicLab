@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -113,28 +114,24 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Zhu {
 
     public static ZhuEncodedSolution ConvertFrom(IVRPEncodedSolution encoding, IVRPProblemInstance problemInstance) {
       List<Tour> tours = encoding.GetTours();
-      List<int> route = new List<int>();
+      var count = tours.Sum(x => x.Stops.Count);
+      var route = new int[count];
 
+      var i = 0;
       foreach (Tour tour in tours) {
         foreach (int city in tour.Stops)
-          route.Add(city - 1);
+          route[i++] = city - 1;
       }
 
       return new ZhuEncodedSolution(
-        new Permutation(PermutationTypes.RelativeUndirected, route.ToArray()), problemInstance);
+        new Permutation(PermutationTypes.RelativeUndirected, route), problemInstance);
     }
 
     public static ZhuEncodedSolution ConvertFrom(List<int> routeParam, IVRPProblemInstance problemInstance) {
-      List<int> route = new List<int>(routeParam);
-
-      while (route.Remove(0)) { //remove all delimiters (0)
-      }
-
-      for (int i = 0; i < route.Count; i++)
-        route[i]--;
+      var route = routeParam.Where(x => x != 0).Select(x => x - 1).ToArray();
 
       return new ZhuEncodedSolution(
-        new Permutation(PermutationTypes.RelativeUndirected, route.ToArray()), problemInstance);
+        new Permutation(PermutationTypes.RelativeUndirected, route), problemInstance);
     }
   }
 }

@@ -19,11 +19,11 @@
  */
 #endregion
 
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HEAL.Attic;
-using HeuristicLab.Problems.VehicleRouting.Variants;
+using HeuristicLab.Problems.VehicleRouting.Interfaces;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Zhu {
   [Item("ZhuMergeCrossover1", "The Zhu Merge Crossover (Version 1). It is implemented as described in Zhu, K.Q. (2000). A New Genetic Algorithm For VRPTW. Proceedings of the International Conference on Artificial Intelligence.")]

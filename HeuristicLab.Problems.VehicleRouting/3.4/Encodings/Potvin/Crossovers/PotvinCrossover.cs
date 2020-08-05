@@ -32,7 +32,7 @@ using HeuristicLab.Problems.VehicleRouting.Interfaces;
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
   [Item("PotvinCrossover", "A VRP crossover operation.")]
   [StorableType("B2E9AC24-C689-45AD-BEDE-2F226E044BDE")]
-  public abstract class PotvinCrossover : VRPCrossover, IStochasticOperator, IPotvinOperator {
+  public abstract class PotvinCrossover : VRPCrossover, IStochasticOperator, IPotvinOperator, IGeneralVRPOperator {
     public ILookupParameter<IRandom> RandomParameter {
       get { return (LookupParameter<IRandom>)Parameters["Random"]; }
     }

@@ -26,7 +26,6 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
-using HeuristicLab.Problems.VehicleRouting.Variants;
 
 namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
   [Item("SingleDepotVRPProblemInstance", "Represents a single depot VRP instance.")]
@@ -34,7 +33,9 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
   public class SingleDepotVRPProblemInstance : VRPProblemInstance, ISingleDepotProblemInstance {
 
     public override IEnumerable<IOperator> FilterOperators(IEnumerable<IOperator> operators) {
-      return base.FilterOperators(operators).Where(x => x is ISingleDepotOperator);
+      return base.FilterOperators(operators)
+        .Where(x => !(x is INotSingleDepotOperator))
+        .Union(operators.Where(x => x is ISingleDepotOperator));
     }
 
     public override IntValue Cities {

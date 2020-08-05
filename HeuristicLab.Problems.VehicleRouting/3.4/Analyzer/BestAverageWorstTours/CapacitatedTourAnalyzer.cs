@@ -29,7 +29,6 @@ using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 using HeuristicLab.Problems.VehicleRouting.ProblemInstances;
-using HeuristicLab.Problems.VehicleRouting.Variants;
 
 namespace HeuristicLab.Problems.VehicleRouting {
   /// <summary>

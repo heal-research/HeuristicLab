@@ -24,12 +24,11 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 using HeuristicLab.Problems.VehicleRouting.ProblemInstances;
-using HeuristicLab.Problems.VehicleRouting.Variants;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
   [Item("PotvinPairwiseOneLevelExchangeMainpulator", "The 1M operator which manipulates a PDP representation. It has been adapted to pickup and delivery from Potvin, J.-Y. and Bengio, S. (1996). The Vehicle Routing Problem with Time Windows - Part II: Genetic Search. INFORMS Journal of Computing, 8:165–172. It was adapted to the PDP formulation.")]
   [StorableType("BF040F90-535E-4F3D-9420-0123565A252D")]
-  public sealed class PotvinPairwiseOneLevelExchangeMainpulator : PotvinManipulator {
+  public sealed class PotvinPairwiseOneLevelExchangeMainpulator : PotvinManipulator, IGeneralVRPOperator {
     [StorableConstructor]
     private PotvinPairwiseOneLevelExchangeMainpulator(StorableConstructorFlag _) : base(_) { }
 

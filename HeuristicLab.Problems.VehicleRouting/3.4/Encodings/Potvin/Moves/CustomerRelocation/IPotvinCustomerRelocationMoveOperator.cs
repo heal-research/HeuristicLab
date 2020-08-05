@@ -19,13 +19,13 @@
  */
 #endregion
 
+using HEAL.Attic;
 using HeuristicLab.Core;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
-using HEAL.Attic;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
   [StorableType("6F70F50C-411C-4AF9-A373-E2BCDFA66F56")]
-  public interface IPotvinCustomerRelocationMoveOperator : IVRPMoveOperator {
+  public interface IPotvinCustomerRelocationMoveOperator : IVRPMoveOperator, IGeneralVRPOperator {
     ILookupParameter<PotvinCustomerRelocationMove> CustomerRelocationMoveParameter { get; }
   }
 }

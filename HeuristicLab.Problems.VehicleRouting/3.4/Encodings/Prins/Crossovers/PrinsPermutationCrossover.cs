@@ -19,16 +19,16 @@
  */
 #endregion
 
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Prins {
   [Item("PrinsPermutationCrossover", "An operator which crosses two VRP representations using a standard permutation operator.  It is implemented as described in Prins, C. (2004). A simple and effective evolutionary algorithm for the vehicle routing problem. Computers & Operations Research, 12:1985-2002.")]
   [StorableType("F61C494E-4958-4B89-893B-7485A72A1C80")]
-  public sealed class PrinsPermutationCrossover : PrinsCrossover, IPrinsOperator {
+  public sealed class PrinsPermutationCrossover : PrinsCrossover {
     public IValueLookupParameter<IPermutationCrossover> InnerCrossoverParameter {
       get { return (IValueLookupParameter<IPermutationCrossover>)Parameters["InnerCrossover"]; }
     }

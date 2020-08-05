@@ -28,7 +28,6 @@ using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 using HeuristicLab.Problems.VehicleRouting.ProblemInstances;
-using HeuristicLab.Problems.VehicleRouting.Variants;
 
 namespace HeuristicLab.Problems.VehicleRouting {
   /// <summary>
@@ -36,7 +35,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
   /// </summary>
   [Item("PickupViolationsRelaxationVRPAnalyzer", "An operator for adaptively relaxing the pickup constraints.")]
   [StorableType("bcf16a7c-5e16-4d96-8b6b-9d5a2ddc0420")]
-  public class PickupViolationsRelaxationVRPAnalyzer : SingleSuccessorOperator, IAnalyzer, IPickupAndDeliveryOperator, ISingleObjectiveOperator {
+  public class PickupViolationsRelaxationVRPAnalyzer : SingleSuccessorOperator, IAnalyzer, IPickupAndDeliveryOperator {
     [Storable] public ILookupParameter<IVRPProblemInstance> ProblemInstanceParameter { get; private set; }
     [Storable] public IScopeTreeLookupParameter<IVRPEncodedSolution> VRPToursParameter { get; private set; }
     [Storable] public IScopeTreeLookupParameter<CVRPPDTWEvaluation> EvaluationResultParameter { get; private set; }

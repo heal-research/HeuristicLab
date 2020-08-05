@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -162,16 +163,10 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Prins {
     }
 
     public static PrinsEncodedSolution ConvertFrom(List<int> routeParam, IVRPProblemInstance problemInstance) {
-      List<int> route = new List<int>(routeParam);
-
-      while (route.Remove(0)) { //remove all delimiters (0)
-      }
-
-      for (int i = 0; i < route.Count; i++)
-        route[i]--;
+      var route = routeParam.Where(x => x != 0).Select(x => x - 1).ToArray();
 
       return new PrinsEncodedSolution(
-        new Permutation(PermutationTypes.RelativeUndirected, route.ToArray()), problemInstance);
+        new Permutation(PermutationTypes.RelativeUndirected, route), problemInstance);
     }
   }
 }

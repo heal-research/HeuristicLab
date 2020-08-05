@@ -26,7 +26,6 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Problems.VehicleRouting.Encodings.General;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
-using HeuristicLab.Problems.VehicleRouting.Variants;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.GVR {
   [Item("GVREncodedSolution", "Represents a genetic vehicle routing encoded solution of the VRP. It is implemented as described in Pereira, F.B. et al (2002). GVR: a New Genetic Representation for the Vehicle Routing Problem. AICS 2002, LNAI 2464, pp. 95-102.")]

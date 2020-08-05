@@ -25,12 +25,11 @@ using HeuristicLab.Core;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 using HeuristicLab.Problems.VehicleRouting.ProblemInstances;
-using HeuristicLab.Problems.VehicleRouting.Variants;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
   [Item("PotvinPairwiseTwoLevelExchangeManipulator", "The 2M operator which manipulates a VRP representation.   It has been adapted to pickup and delivery from Potvin, J.-Y. and Bengio, S. (1996). The Vehicle Routing Problem with Time Windows - Part II: Genetic Search. INFORMS Journal of Computing, 8:165–172.  It was adapted to the PDP formulation.")]
   [StorableType("8E4D8A17-1204-45CC-8ED7-375FCE0355E8")]
-  public sealed class PotvinPairwiseTwoLevelExchangeManipulator : PotvinManipulator {
+  public sealed class PotvinPairwiseTwoLevelExchangeManipulator : PotvinManipulator, IGeneralVRPOperator {
     [StorableConstructor]
     private PotvinPairwiseTwoLevelExchangeManipulator(StorableConstructorFlag _) : base(_) { }
 

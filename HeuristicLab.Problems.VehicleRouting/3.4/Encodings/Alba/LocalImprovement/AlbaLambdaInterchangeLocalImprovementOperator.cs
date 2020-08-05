@@ -110,11 +110,9 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
 
     public override IOperation InstrumentedApply() {
       int maxIterations = MaximumIterationsParameter.ActualValue.Value;
-      AlbaEncodedSolution solution = null;
+      var solution = VRPToursParameter.ActualValue as AlbaEncodedSolution;
 
-      if (VRPToursParameter.ActualValue is AlbaEncodedSolution)
-        solution = VRPToursParameter.ActualValue as AlbaEncodedSolution;
-      else
+      if (solution == null)
         VRPToursParameter.ActualValue = solution = AlbaEncodedSolution.ConvertFrom(VRPToursParameter.ActualValue, ProblemInstance);
 
       int lambda = LambdaParameter.Value.Value;

@@ -28,7 +28,6 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
-using HeuristicLab.Problems.VehicleRouting.Variants;
 
 namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
   [Item("CVRPProblemInstance", "Represents a single depot CVRP instance.")]
@@ -65,7 +64,10 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
     }
 
     public override IEnumerable<IOperator> FilterOperators(IEnumerable<IOperator> operators) {
-      return base.FilterOperators(operators).Where(x => x is IHomogenousCapacitatedOperator);
+      return base.FilterOperators(operators)
+        .Where(x => !(x is INotCapacitatedOperaor))
+        .Union(operators.Where(x => x is IHomogenousCapacitatedOperator
+                                 || x is ICapacitatedOperator && !(x is IHeterogenousCapacitatedOperator)));
     }
     protected override VRPEvaluation CreateTourEvaluation() {
       return new CVRPEvaluation();

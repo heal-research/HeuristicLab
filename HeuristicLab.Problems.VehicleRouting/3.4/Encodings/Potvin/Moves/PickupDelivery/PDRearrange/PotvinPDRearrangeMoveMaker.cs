@@ -19,13 +19,12 @@
  */
 #endregion
 
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
-using HeuristicLab.Problems.VehicleRouting.Variants;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
   [Item("PotvinPDRearrangeMoveMaker", "Peforms the rearrange move on a given PDP encoding and updates the quality.")]

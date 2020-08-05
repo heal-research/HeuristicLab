@@ -29,7 +29,6 @@ using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 using HeuristicLab.Problems.VehicleRouting.ProblemInstances;
-using HeuristicLab.Problems.VehicleRouting.Variants;
 
 namespace HeuristicLab.Problems.VehicleRouting {
   /// <summary>
@@ -37,7 +36,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
   /// </summary>
   [Item("Pickup & Delivery Tour Analyzer", "An operator which analyzes the best, average and worst properties of the VRP tours in the scope tree.")]
   [StorableType("0a108965-fb1a-47a3-a5d4-11d1bfa51b0d")]
-  public sealed class PickupAndDeliveryTourAnalyzer : InstrumentedOperator, IAnalyzer, ICapacitatedOperator {
+  public sealed class PickupAndDeliveryTourAnalyzer : InstrumentedOperator, IAnalyzer, IPickupAndDeliveryOperator {
     [Storable] public ILookupParameter<IVRPProblemInstance> ProblemInstanceParameter { get; private set; }
     [Storable] public IScopeTreeLookupParameter<CVRPPDTWEvaluation> EvaluationResultParameter { get; private set; }
 

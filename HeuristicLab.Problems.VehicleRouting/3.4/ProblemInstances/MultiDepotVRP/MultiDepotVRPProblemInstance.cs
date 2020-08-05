@@ -28,7 +28,6 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
-using HeuristicLab.Problems.VehicleRouting.Variants;
 
 namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
   [Item("MultiDepotVRPProblemInstance", "Represents a multi depot VRP instance.")]
@@ -58,7 +57,9 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
     }
 
     public override IEnumerable<IOperator> FilterOperators(IEnumerable<IOperator> operators) {
-      return base.FilterOperators(operators).Where(x => x is IMultiDepotOperator);
+      return base.FilterOperators(operators)
+        .Where(x => !(x is INotMultiDepotOperator))
+        .Union(operators.Where(x => x is IMultiDepotOperator));
     }
 
     public override IntValue Cities => new IntValue(Demand.Length);

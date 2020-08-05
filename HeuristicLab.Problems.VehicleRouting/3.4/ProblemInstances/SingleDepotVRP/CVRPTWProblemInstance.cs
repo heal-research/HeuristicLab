@@ -28,7 +28,6 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
-using HeuristicLab.Problems.VehicleRouting.Variants;
 
 namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
   [Item("CVRPTWProblemInstance", "Represents a single depot CVRPTW instance.")]
@@ -87,7 +86,9 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
     }
 
     public override IEnumerable<IOperator> FilterOperators(IEnumerable<IOperator> operators) {
-      return base.FilterOperators(operators).Where(x => x is ITimeWindowedOperator);
+      return base.FilterOperators(operators)
+        .Where(x => !(x is INotTimeWindowedOperator))
+        .Union(operators.Where(x => x is ITimeWindowedOperator));
     }
 
     protected override VRPEvaluation CreateTourEvaluation() {

@@ -152,11 +152,6 @@ namespace HeuristicLab.Problems.VehicleRouting {
       AttachProblemInstanceEventHandlers();
     }
 
-    [Storable(OldName = "operators")]
-    private List<IOperator> StorableOperators {
-      set { Operators.AddRange(value); }
-    }
-
     private void AttachEventHandlers() {
       ProblemInstanceParameter.ValueChanged += new EventHandler(ProblemInstanceParameter_ValueChanged);
       BestKnownSolutionParameter.ValueChanged += new EventHandler(BestKnownSolutionParameter_ValueChanged);
@@ -165,19 +160,6 @@ namespace HeuristicLab.Problems.VehicleRouting {
     private void AttachProblemInstanceEventHandlers() {
       if (ProblemInstance != null) {
         ProblemInstance.EvaluationChanged += new EventHandler(ProblemInstance_EvaluationChanged);
-      }
-    }
-
-    private void EvalBestKnownSolution() {
-      if (BestKnownSolution == null) return;
-      try {
-        //call evaluator
-        var evaluation = ProblemInstance.Evaluate(BestKnownSolution.Solution);
-        BestKnownQuality = evaluation.Quality;
-        BestKnownSolution.Evaluation = evaluation;
-      } catch {
-        BestKnownQuality = double.NaN;
-        BestKnownSolution = null;
       }
     }
 
@@ -195,29 +177,47 @@ namespace HeuristicLab.Problems.VehicleRouting {
       }
     }
 
+    private void EvalBestKnownSolution() {
+      if (BestKnownSolution == null) return;
+      try {
+        //call evaluator
+        var evaluation = ProblemInstance.Evaluate(BestKnownSolution.Solution);
+        BestKnownQuality = evaluation.Quality;
+        BestKnownSolution.Evaluation = evaluation;
+      } catch {
+        BestKnownQuality = double.NaN;
+        BestKnownSolution = null;
+      }
+    }
+
     void ProblemInstanceParameter_ValueChanged(object sender, EventArgs e) {
       InitializeOperators();
       AttachProblemInstanceEventHandlers();
-
-      OnOperatorsChanged();
     }
 
-    public void SetProblemInstance(IVRPProblemInstance instance) {
-      ProblemInstanceParameter.ValueChanged -= new EventHandler(ProblemInstanceParameter_ValueChanged);
-
-      ProblemInstance = instance;
-      AttachProblemInstanceEventHandlers();
-
-      ProblemInstanceParameter.ValueChanged += new EventHandler(ProblemInstanceParameter_ValueChanged);
+    protected override void OnEncodingChanged() {
+      base.OnEncodingChanged();
+      InitializeOperators();
     }
 
     private void InitializeOperators() {
       Encoding.FilterOperators(ProblemInstance);
 
-      Operators.Add(new VRPSimilarityCalculator());
-      Operators.Add(new QualitySimilarityCalculator());
-      Operators.Add(new PopulationSimilarityAnalyzer(Operators.OfType<ISolutionSimilarityCalculator>()));
-      //Operators.AddRange(ProblemInstance.Operators.OfType<IAnalyzer>());
+      var newOps = new List<IItem>();
+      var operatorTypes = new HashSet<Type>(Operators.Select(x => x.GetType()));
+      if (operatorTypes.Add(typeof(VRPSimilarityCalculator)))
+        newOps.Add(new VRPSimilarityCalculator());
+      if (operatorTypes.Add(typeof(QualitySimilarityCalculator)))
+        newOps.Add(new QualitySimilarityCalculator());
+      if (operatorTypes.Add(typeof(PopulationSimilarityAnalyzer)))
+        newOps.Add(new PopulationSimilarityAnalyzer(Operators.OfType<ISolutionSimilarityCalculator>()));
+
+      var assembly = typeof(VehicleRoutingProblem).Assembly;
+      var operators = ApplicationManager.Manager.GetTypes(new[] { typeof(IAnalyzer) }, assembly, true, false, false)
+        .Where(x => operatorTypes.Add(x)).Select(t => (IOperator)Activator.CreateInstance(t)).ToList();
+      newOps.AddRange(ProblemInstance.FilterOperators(operators));
+
+      Operators.AddRange(newOps);
     }
 
     protected override void ParameterizeOperators() {
@@ -304,11 +304,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
       BestKnownQuality = double.NaN;
       BestKnownSolution = null;
 
-      if (ProblemInstance != null && instance.ProblemInstance != null &&
-        instance.ProblemInstance.GetType() == ProblemInstance.GetType())
-        SetProblemInstance(instance.ProblemInstance);
-      else
-        ProblemInstance = instance.ProblemInstance;
+      ProblemInstance = instance.ProblemInstance;
 
       OnReset();
 

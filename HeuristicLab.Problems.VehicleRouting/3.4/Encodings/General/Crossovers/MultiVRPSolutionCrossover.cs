@@ -22,15 +22,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
-using HeuristicLab.Problems.VehicleRouting.Variants;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
   [Item("MultiVRPSolutionCrossover", "Randomly selects and applies one of its crossovers every time it is called.")]

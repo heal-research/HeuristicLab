@@ -28,7 +28,6 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
-using HeuristicLab.Problems.VehicleRouting.Variants;
 
 namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
   [Item("MDCVRPPDTWProblemInstance", "Represents a multi depot CVRPPDTW instance.")]
@@ -69,7 +68,9 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
     }
 
     public override IEnumerable<IOperator> FilterOperators(IEnumerable<IOperator> operators) {
-      return base.FilterOperators(operators).Where(x => x is IPickupAndDeliveryOperator);
+      return base.FilterOperators(operators)
+        .Where(x => !(x is INotPickupAndDeliveryOperator))
+        .Union(operators.Where(x => x is IPickupAndDeliveryOperator));
     }
 
     protected override VRPEvaluation CreateTourEvaluation() {

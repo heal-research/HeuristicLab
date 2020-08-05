@@ -22,17 +22,16 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 using HeuristicLab.Problems.VehicleRouting.Encodings.Potvin;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 using HeuristicLab.Problems.VehicleRouting.ProblemInstances;
-using HeuristicLab.Problems.VehicleRouting.Variants;
 
 namespace HeuristicLab.Problems.VehicleRouting {
   /// <summary>

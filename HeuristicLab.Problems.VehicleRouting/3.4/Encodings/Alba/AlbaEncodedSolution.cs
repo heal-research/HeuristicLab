@@ -20,6 +20,7 @@
 #endregion
 
 using System.Collections.Generic;
+using System.Linq;
 using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -137,11 +138,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
 
     public static AlbaEncodedSolution ConvertFrom(IVRPEncodedSolution encoding, IVRPProblemInstance instance) {
       List<Tour> tours = encoding.GetTours();
-
-      int cities = 0;
-      foreach (Tour tour in tours) {
-        cities += tour.Stops.Count;
-      }
+      var cities = tours.Sum(x => x.Stops.Count);
 
       int emptyVehicles = instance.Vehicles.Value - tours.Count;
 
@@ -170,9 +167,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
         arrayIndex++;
       }
 
-      AlbaEncodedSolution solution = new AlbaEncodedSolution(new Permutation(PermutationTypes.RelativeUndirected, new IntArray(array)), instance);
-
-      return solution;
+      return new AlbaEncodedSolution(new Permutation(PermutationTypes.RelativeUndirected, new IntArray(array)), instance);
     }
   }
 }

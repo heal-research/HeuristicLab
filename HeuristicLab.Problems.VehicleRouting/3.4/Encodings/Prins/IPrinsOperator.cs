@@ -19,12 +19,11 @@
  */
 #endregion
 
-using HeuristicLab.Problems.VehicleRouting.Variants;
 using HEAL.Attic;
+using HeuristicLab.Problems.VehicleRouting.Interfaces;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Prins {
   [StorableType("02783182-5F42-45F8-A57A-E63459E22C6A")]
-  public interface IPrinsOperator :
-    ISingleDepotOperator, IHomogenousCapacitatedOperator, ITimeWindowedOperator {
+  public interface IPrinsOperator : IGeneralVRPOperator {
   }
 }

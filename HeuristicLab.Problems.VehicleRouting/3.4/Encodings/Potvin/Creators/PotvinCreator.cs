@@ -19,16 +19,16 @@
  */
 #endregion
 
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HEAL.Attic;
 using HeuristicLab.Problems.VehicleRouting.Encodings.General;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
   [Item("PotvinCreator", "A VRP creator.")]
   [StorableType("9007B8EE-61F5-45D7-A853-951E2435E308")]
-  public abstract class PotvinCreator : VRPCreator, IPotvinOperator, IVRPCreator {
+  public abstract class PotvinCreator : VRPCreator, IPotvinOperator, IVRPCreator, IGeneralVRPOperator {
     public override bool CanChangeName {
       get { return false; }
     }

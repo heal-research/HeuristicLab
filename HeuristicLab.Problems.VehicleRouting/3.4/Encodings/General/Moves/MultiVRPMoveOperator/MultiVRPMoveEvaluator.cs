@@ -19,12 +19,12 @@
  */
 #endregion
 
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 using HeuristicLab.Problems.VehicleRouting.Encodings.General;
-using HeuristicLab.Problems.VehicleRouting.Variants;
+using HeuristicLab.Problems.VehicleRouting.Interfaces;
 
 namespace HeuristicLab.Problems.VehicleRouting {
   [Item("MultiVRPMoveEvaluator", "Evaluates a move for the VRP representation.")]

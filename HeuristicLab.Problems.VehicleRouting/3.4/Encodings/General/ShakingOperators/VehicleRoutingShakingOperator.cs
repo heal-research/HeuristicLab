@@ -21,17 +21,16 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
 using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Problems.VehicleRouting.Encodings.General;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
-using HeuristicLab.Problems.VehicleRouting.Variants;
 
 namespace HeuristicLab.Problems.VehicleRouting {
   [Item("VRPShakingOperator", "A shaking operator for VNS that applies available mutation operators.")]

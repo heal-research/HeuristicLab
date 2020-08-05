@@ -19,12 +19,12 @@
  */
 #endregion
 
-using HeuristicLab.Problems.VehicleRouting.Variants;
 using HEAL.Attic;
+using HeuristicLab.Problems.VehicleRouting.Interfaces;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
   [StorableType("E4EADC47-5FEC-429D-B713-795171F8C85B")]
-  public interface IAlbaOperator :
-    ISingleDepotOperator, IHeterogenousCapacitatedOperator, IMultiDepotOperator, ITimeWindowedOperator {
+  public interface IAlbaOperator : IGeneralVRPOperator {
+    // the Alba encoding is agnostic to constraints of the VRP
   }
 }

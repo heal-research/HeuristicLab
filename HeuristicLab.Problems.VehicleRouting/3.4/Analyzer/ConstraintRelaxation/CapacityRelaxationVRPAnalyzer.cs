@@ -28,7 +28,6 @@ using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 using HeuristicLab.Problems.VehicleRouting.ProblemInstances;
-using HeuristicLab.Problems.VehicleRouting.Variants;
 
 namespace HeuristicLab.Problems.VehicleRouting {
   /// <summary>
@@ -36,7 +35,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
   /// </summary>
   [Item("CapacityRelaxationVRPAnalyzer", "An operator for adaptively relaxing the capacity constraints.")]
   [StorableType("0e244bff-3d76-4af1-95b8-4316c25096be")]
-  public class CapacityRelaxationVRPAnalyzer : SingleSuccessorOperator, IAnalyzer, ICapacitatedOperator, ISingleObjectiveOperator {
+  public class CapacityRelaxationVRPAnalyzer : SingleSuccessorOperator, IAnalyzer, ICapacitatedOperator {
     [Storable] public ILookupParameter<IVRPProblemInstance> ProblemInstanceParameter { get; private set; }
     [Storable] public IScopeTreeLookupParameter<IVRPEncodedSolution> VRPToursParameter { get; private set; }
     [Storable] public IScopeTreeLookupParameter<CVRPEvaluation> EvaluationResultParameter { get; private set; }

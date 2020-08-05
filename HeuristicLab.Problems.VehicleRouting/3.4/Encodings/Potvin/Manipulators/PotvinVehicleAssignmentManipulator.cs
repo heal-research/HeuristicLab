@@ -19,20 +19,18 @@
  */
 #endregion
 
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 using HeuristicLab.Problems.VehicleRouting.Encodings.General;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
-using HeuristicLab.Problems.VehicleRouting.Variants;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
   [Item("PotvinVehicleAssignmentMainpulator", "A manipulator that changes the vehicle assignment")]
   [StorableType("57755DA2-B9CB-4A9F-B32C-988BFC06365A")]
-  public sealed class PotvinVehicleAssignmentMainpulator : VRPManipulator, ITimeWindowedOperator,
-    IMultiDepotOperator, IHeterogenousCapacitatedOperator {
+  public sealed class PotvinVehicleAssignmentMainpulator : VRPManipulator, IHeterogenousCapacitatedOperator {
     public IValueParameter<IPermutationManipulator> VehicleAssignmentManipuator {
       get { return (IValueParameter<IPermutationManipulator>)Parameters["VehicleAssignmentManipuator"]; }
     }
