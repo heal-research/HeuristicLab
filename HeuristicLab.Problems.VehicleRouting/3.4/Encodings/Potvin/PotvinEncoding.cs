@@ -26,6 +26,7 @@ using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.PluginInfrastructure;
+using HeuristicLab.Problems.VehicleRouting.Encodings.General;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
@@ -55,7 +56,8 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
       encodingSpecificOperatorTypes = new List<Type>() {
           typeof (IPotvinOperator),
           typeof (IVRPCreator),
-          typeof (IMultiVRPOperator)
+          typeof (IMultiVRPOperator),
+          typeof (IMultiVRPMoveOperator)
       };
     }
     protected override void DiscoverOperators() {

@@ -102,9 +102,30 @@ namespace HeuristicLab.Collections {
         OnItemsAdded(items);
         if (list.Capacity != capacity)
           OnPropertyChanged("Capacity");
-        OnPropertyChanged("Item[]");
         OnPropertyChanged("Count");
       }
+    }
+
+    /// <summary>
+    /// Performs a Clear and an AddRange, but does not fire separate events for those operations
+    /// </summary>
+    /// <param name="collection"></param>
+    public void Replace(IEnumerable<T> collection) {
+      List<T> oldItems = null;
+      if (list.Any()) oldItems = new List<T>(list);
+      else oldItems = new List<T>();
+
+      int oldCapacity = list.Capacity;
+      list.Clear();
+      list.AddRange(collection);
+
+      List<T> items = null;
+      if (list.Any()) items = new List<T>(list);
+      else items = new List<T>();
+
+      OnCollectionReset(items, oldItems);
+      if (oldCapacity != list.Capacity) OnPropertyChanged("Capacity");
+      if (oldItems.Count != items.Count) OnPropertyChanged("Count");
     }
 
     public bool Remove(T item) {

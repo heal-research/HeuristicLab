@@ -120,7 +120,9 @@ namespace HeuristicLab.Optimization {
       var resultValue = result.Value as T;
       if (result.Value != null && resultValue == null)
         throw new InvalidOperationException(string.Format("Type mismatch. Result \"{0}\" does not contain a \"{1}\".", ActualName, typeof(T).GetPrettyName()));
-
+      else if (result.Value == null && DefaultValue != null) {
+        result.Value = resultValue = (T)DefaultValue.Clone();
+      }
       return resultValue;
     }
 

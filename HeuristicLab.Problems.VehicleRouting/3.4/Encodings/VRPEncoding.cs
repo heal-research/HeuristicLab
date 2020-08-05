@@ -38,10 +38,16 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings {
 
     public void FilterOperators(IVRPProblemInstance instance) {
       DiscoverOperators();
-      var operators = instance.FilterOperators(Operators);
-      foreach (var op in Operators.Except(operators).ToList()) {
-        RemoveOperator(op);
+      var operators = instance.FilterOperators(Operators).ToList();
+      foreach (var op in operators.OfType<IMultiVRPOperator>().ToList()) {
+        var subOps = instance.FilterOperators(op.Operators).ToList();
+        if (subOps.Count == 0) operators.Remove(op);
+        else {
+          foreach (var dm in op.Operators.Except(subOps).ToList())
+            op.RemoveOperator(dm);
+        }
       }
+      ReplaceOperators(operators);
     }
 
     protected abstract void DiscoverOperators();

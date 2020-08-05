@@ -81,6 +81,10 @@ namespace HeuristicLab.Optimization {
       return encodingOperators.Remove(@operator);
     }
 
+    protected void ReplaceOperators(IEnumerable<IOperator> operators) {
+      encodingOperators.Replace(operators);
+    }
+
     public void ConfigureOperator(IItem @operator) { ConfigureOperators(new[] { @operator }); }
     public virtual void ConfigureOperators(IEnumerable<IItem> operators) {
       ConfigureSingleObjectiveImprovementOperators(operators.OfType<ISingleObjectiveImprovementOperator>());

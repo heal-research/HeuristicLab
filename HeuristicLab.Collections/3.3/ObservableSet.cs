@@ -129,6 +129,26 @@ namespace HeuristicLab.Collections {
       }
     }
 
+    /// <summary>
+    /// Performs a Clear and an Add, but does not fire separate events for those operations
+    /// </summary>
+    /// <param name="other"></param>
+    public void Replace(IEnumerable<T> other) {
+      List<T> oldItems = null;
+      if (set.Any()) oldItems = new List<T>(set);
+      else oldItems = new List<T>();
+
+      set.Clear();
+      set.UnionWith(other);
+
+      List<T> items = null;
+      if (set.Any()) items = new List<T>(set);
+      else items = new List<T>();
+
+      OnCollectionReset(items, oldItems);
+      if (oldItems.Count != items.Count) OnPropertyChanged("Count");
+    }
+
     public bool Remove(T item) {
       if (set.Remove(item)) {
         OnPropertyChanged("Count");

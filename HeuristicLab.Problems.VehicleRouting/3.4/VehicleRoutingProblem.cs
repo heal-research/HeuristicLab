@@ -203,8 +203,10 @@ namespace HeuristicLab.Problems.VehicleRouting {
     private void InitializeOperators() {
       Encoding.FilterOperators(ProblemInstance);
 
-      var newOps = new List<IItem>();
-      var operatorTypes = new HashSet<Type>(Operators.Select(x => x.GetType()));
+      var newOps = ProblemInstance.FilterOperators(Operators.OfType<IOperator>())
+        .Union(Operators.Where(x => !(x is IOperator) || x.GetType().Namespace.StartsWith("HeuristicLab.Optimization")))
+        .ToList();
+      var operatorTypes = new HashSet<Type>(newOps.Select(x => x.GetType()));
       if (operatorTypes.Add(typeof(VRPSimilarityCalculator)))
         newOps.Add(new VRPSimilarityCalculator());
       if (operatorTypes.Add(typeof(QualitySimilarityCalculator)))
@@ -213,11 +215,11 @@ namespace HeuristicLab.Problems.VehicleRouting {
         newOps.Add(new PopulationSimilarityAnalyzer(Operators.OfType<ISolutionSimilarityCalculator>()));
 
       var assembly = typeof(VehicleRoutingProblem).Assembly;
-      var operators = ApplicationManager.Manager.GetTypes(new[] { typeof(IAnalyzer) }, assembly, true, false, false)
+      var analyzers = ApplicationManager.Manager.GetTypes(new[] { typeof(IAnalyzer) }, assembly, true, false, false)
         .Where(x => operatorTypes.Add(x)).Select(t => (IOperator)Activator.CreateInstance(t)).ToList();
-      newOps.AddRange(ProblemInstance.FilterOperators(operators));
-
-      Operators.AddRange(newOps);
+      newOps.AddRange(ProblemInstance.FilterOperators(analyzers));
+      
+      Operators.Replace(newOps);
     }
 
     protected override void ParameterizeOperators() {
