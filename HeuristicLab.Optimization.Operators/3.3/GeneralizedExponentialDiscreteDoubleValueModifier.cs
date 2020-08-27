@@ -57,6 +57,10 @@ If you use `base`=1 you will get a linear interpolation.")]
       return new GeneralizedExponentialDiscreteDoubleValueModifier(this, cloner);
     }
 
+    protected override double Modify(double value, double startValue, double endValue, int index, int startIndex, int endIndex) {
+      return Apply(value, startValue, endValue, index, startIndex, endIndex, Base);
+    }
+
     /// <summary>
     /// Calculates a new value based on exponential decay or growth.
     /// </summary>
@@ -68,11 +72,7 @@ If you use `base`=1 you will get a linear interpolation.")]
     /// <param name="startIndex">The initial index.</param>
     /// <param name="endIndex">The final index.</param>
     /// <returns>The new value.</returns>
-    protected override double Modify(double value, double startValue, double endValue, int index, int startIndex, int endIndex) {
-      return Calculate(value, startValue, endValue, index, startIndex, endIndex, Base);
-    }
-
-    public static double Calculate(double value, double startValue, double endValue, int index, int startIndex, int endIndex, double @base) {
+    public static double Apply(double value, double startValue, double endValue, int index, int startIndex, int endIndex, double @base) {
       if (@base <= 0)
         throw new ArgumentException("Base must be > 0.");
       if (@base == 1.0)

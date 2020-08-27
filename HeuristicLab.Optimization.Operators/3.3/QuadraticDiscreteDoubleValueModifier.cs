@@ -40,10 +40,20 @@ namespace HeuristicLab.Optimization.Operators {
     }
 
     protected override double Modify(double value, double startValue, double endValue, int index, int startIndex, int endIndex) {
-      return Calculate(value, startValue, endValue, index, startIndex, endIndex);
+      return Apply(value, startValue, endValue, index, startIndex, endIndex);
     }
 
-    public static double Calculate(double value, double startValue, double endValue, int index, int startIndex, int endIndex) {
+    /// <summary>
+    /// Calculates a new value based on quadratic decay or growth.
+    /// </summary>
+    /// <param name="value">The previous value.</param>
+    /// <param name="startValue">The initial value.</param>
+    /// <param name="endValue">The final value.</param>
+    /// <param name="index">The current index.</param>
+    /// <param name="startIndex">The initial index.</param>
+    /// <param name="endIndex">The final index.</param>
+    /// <returns>The new value.</returns>
+    public static double Apply(double value, double startValue, double endValue, int index, int startIndex, int endIndex) {
       double a = (endValue - startValue) / ((endIndex - startIndex) * (endIndex - startIndex));
       return a * (index - startIndex) * (index - startIndex) + startValue;
     }
