@@ -41,6 +41,20 @@ namespace HeuristicLab.Optimization.Operators {
     }
 
     protected override double Modify(double value, double startValue, double endValue, int index, int startIndex, int endIndex) {
+      return Apply(value, startValue, endValue, index, startIndex, endIndex);
+    }
+
+    /// <summary>
+    /// Calculates a new value based on sqrt decay or growth.
+    /// </summary>
+    /// <param name="value">The previous value.</param>
+    /// <param name="startValue">The initial value.</param>
+    /// <param name="endValue">The final value.</param>
+    /// <param name="index">The current index.</param>
+    /// <param name="startIndex">The initial index.</param>
+    /// <param name="endIndex">The final index.</param>
+    /// <returns>The new value.</returns>
+    public static double Apply(double value, double startValue, double endValue, int index, int startIndex, int endIndex) {
       double a = (endValue - startValue) / Math.Sqrt(endIndex - startIndex);
       return a * Math.Sqrt(index - startIndex) + startValue;
     }
