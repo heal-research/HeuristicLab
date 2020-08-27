@@ -54,6 +54,10 @@ This uses a standard exponential distribution and yields a base which is implici
     /// <param name="endIndex">The end index.</param>
     /// <returns>The new value.</returns>
     protected override double Modify(double value, double startValue, double endValue, int index, int startIndex, int endIndex) {
+      return Calculate(value, startValue, endValue, index, startIndex, endIndex);
+    }
+
+    public static double Calculate(double value, double startValue, double endValue, int index, int startIndex, int endIndex) {
       if (endValue <= 0 || startValue <= 0) throw new ArgumentException("startValue and endValue must be greater than 0.");
       double b = Math.Pow(endValue / startValue, 1.0 / (endIndex - startIndex));
       return startValue * Math.Pow(b, index - startIndex);

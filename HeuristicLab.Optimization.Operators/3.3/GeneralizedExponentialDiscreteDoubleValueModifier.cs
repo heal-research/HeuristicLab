@@ -69,11 +69,15 @@ If you use `base`=1 you will get a linear interpolation.")]
     /// <param name="endIndex">The final index.</param>
     /// <returns>The new value.</returns>
     protected override double Modify(double value, double startValue, double endValue, int index, int startIndex, int endIndex) {
-      if (Base <= 0)
+      return Calculate(value, startValue, endValue, index, startIndex, endIndex, Base);
+    }
+
+    public static double Calculate(double value, double startValue, double endValue, int index, int startIndex, int endIndex, double @base) {
+      if (@base <= 0)
         throw new ArgumentException("Base must be > 0.");
-      if (Base == 1.0)
-        return startValue + (endValue - startValue)*(index - startIndex)/(endIndex - startIndex);
-      return startValue + (endValue - startValue)*(Math.Pow(Base, 1.0*(index-startIndex)/(endIndex-startIndex)) - 1)/(Base - 1);
+      if (@base == 1.0)
+        return startValue + (endValue - startValue) * (index - startIndex) / (endIndex - startIndex);
+      return startValue + (endValue - startValue) * (Math.Pow(@base, 1.0 * (index - startIndex) / (endIndex - startIndex)) - 1) / (@base - 1);
     }
   }
 }

@@ -41,6 +41,10 @@ namespace HeuristicLab.Optimization.Operators {
     }
 
     protected override double Modify(double value, double startValue, double endValue, int index, int startIndex, int endIndex) {
+      return Calculate(value, startValue, endValue, index, startIndex, endIndex);
+    }
+
+    public static double Calculate(double value, double startValue, double endValue, int index, int startIndex, int endIndex) {
       double a = (endValue - startValue) / Math.Sqrt(endIndex - startIndex);
       return a * Math.Sqrt(index - startIndex) + startValue;
     }
