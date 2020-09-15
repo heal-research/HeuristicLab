@@ -52,7 +52,7 @@ namespace HeuristicLab.Optimization {
       get { return (ILookupParameter<IRandom>)Parameters["Random"]; }
     }
 
-    public Action<ISingleObjectiveSolutionContext<TEncodedSolution>[], ResultCollection, IRandom> Analyze { get; set; }
+    public Action<ISingleObjectiveSolutionContext<TEncodedSolution>[], IRandom> Analyze { get; set; }
 
     [StorableConstructor]
     private SingleObjectiveAnalyzer(StorableConstructorFlag _) : base(_) { }
@@ -81,7 +81,7 @@ namespace HeuristicLab.Optimization {
         return ScopeUtil.CreateSolutionContext<TEncodedSolution>(scope, encoding);
       }).ToArray();
 
-      Analyze(solutionContexts, results, random);
+      Analyze(solutionContexts, random);
       foreach (var s in solutionContexts.Zip(scopes, Tuple.Create)) {
         ScopeUtil.CopyToScope(s.Item2, s.Item1);
       }

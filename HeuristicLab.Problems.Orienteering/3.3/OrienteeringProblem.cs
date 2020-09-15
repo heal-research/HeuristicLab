@@ -120,25 +120,28 @@ namespace HeuristicLab.Problems.Orienteering {
       return distance;
     }
 
-    public override void Analyze(IntegerVector[] vectors, double[] qualities, ResultCollection results, IRandom random) {
-      base.Analyze(vectors, qualities, results, random);
-      var data = OrienteeringProblemData;
+    public override void Analyze(ISingleObjectiveSolutionContext<IntegerVector>[] solutionContexts, IRandom random) {
+      base.Analyze(solutionContexts, random);
 
-      var best = GetBestSolution(vectors, qualities).Item1;
-      var score = CalculateScore(OrienteeringProblemData, best);
-      var travelCosts = CalculateTravelCosts(OrienteeringProblemData, best);
-      var quality = CalculateQuality(OrienteeringProblemData, score, travelCosts);
+      //TODO reimplement code below using results directly
 
-      if (double.IsNaN(BestKnownQuality) || IsBetter(quality, BestKnownQuality)) {
-        BestKnownQuality = quality;
-        BestKnownSolutionParameter.ActualValue = data.GetSolution((IntegerVector)best.Clone(), quality, score, travelCosts);
-      }
-      var bestSoFar = BestOrienteeringSolutionParameter.ActualValue;
+      //var data = OrienteeringProblemData;
 
-      if (bestSoFar == null || IsBetter(quality, bestSoFar.Quality.Value)) {
-        bestSoFar = data.GetSolution((IntegerVector)best.Clone(), quality, score, travelCosts);
-        BestOrienteeringSolutionParameter.ActualValue = bestSoFar;
-      }
+      //var best = GetBestSolution(vectors, qualities).Item1;
+      //var score = CalculateScore(OrienteeringProblemData, best);
+      //var travelCosts = CalculateTravelCosts(OrienteeringProblemData, best);
+      //var quality = CalculateQuality(OrienteeringProblemData, score, travelCosts);
+
+      //if (double.IsNaN(BestKnownQuality) || IsBetter(quality, BestKnownQuality)) {
+      //  BestKnownQuality = quality;
+      //  BestKnownSolutionParameter.ActualValue = data.GetSolution((IntegerVector)best.Clone(), quality, score, travelCosts);
+      //}
+      //var bestSoFar = BestOrienteeringSolutionParameter.ActualValue;
+
+      //if (bestSoFar == null || IsBetter(quality, bestSoFar.Quality.Value)) {
+      //  bestSoFar = data.GetSolution((IntegerVector)best.Clone(), quality, score, travelCosts);
+      //  BestOrienteeringSolutionParameter.ActualValue = bestSoFar;
+      //}
     }
     public static double CalculateInsertionCosts(IOrienteeringProblemData data, IList<int> path, int insertPosition, int point) {
       double detour = data.GetDistance(path[insertPosition - 1], point) + data.GetDistance(point, path[insertPosition]);
@@ -172,7 +175,7 @@ namespace HeuristicLab.Problems.Orienteering {
       base.DimensionOnChanged();
       if (Dimension != OrienteeringProblemData.Cities) {
         Dimension = OrienteeringProblemData.Cities;
-        Bounds = new Data.IntMatrix(new [,] { { 0, Dimension } }, @readonly: true);
+        Bounds = new Data.IntMatrix(new[,] { { 0, Dimension } }, @readonly: true);
       }
     }
 

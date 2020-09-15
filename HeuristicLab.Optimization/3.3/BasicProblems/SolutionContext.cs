@@ -84,8 +84,7 @@ namespace HeuristicLab.Optimization {
 
     public SingleObjectiveSolutionContext(TEncodedSolution encodedSolution) : base(encodedSolution) { }
 
-
-    public SingleObjectiveSolutionContext(TEncodedSolution encodedSolution, IEvaluationResult evaluationResult) : base(encodedSolution, evaluationResult) { }
+    public SingleObjectiveSolutionContext(TEncodedSolution encodedSolution, ISingleObjectiveEvaluationResult evaluationResult) : base(encodedSolution, evaluationResult) { }
 
     [StorableConstructor]
     public SingleObjectiveSolutionContext(StorableConstructorFlag _) : base(_) { }
@@ -109,7 +108,7 @@ namespace HeuristicLab.Optimization {
     public MultiObjectiveSolutionContext(TEncodedSolution encodedSolution) : base(encodedSolution) { }
 
 
-    public MultiObjectiveSolutionContext(TEncodedSolution encodedSolution, IEvaluationResult evaluationResult) : base(encodedSolution, evaluationResult) { }
+    public MultiObjectiveSolutionContext(TEncodedSolution encodedSolution, IMultiObjectiveEvaluationResult evaluationResult) : base(encodedSolution, evaluationResult) { }
 
     [StorableConstructor]
     public MultiObjectiveSolutionContext(StorableConstructorFlag _) : base(_) { }

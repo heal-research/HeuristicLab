@@ -19,9 +19,7 @@
  */
 #endregion
 
-using System;
 using System.Diagnostics.Contracts;
-using System.Linq;
 using System.Threading;
 using HEAL.Attic;
 using HeuristicLab.Common;
@@ -140,16 +138,20 @@ namespace HeuristicLab.Problems.GeneticProgramming.ArtificialAnt {
       return new SingleObjectiveEvaluationResult(quality);
     }
 
-    public override void Analyze(ISymbolicExpressionTree[] trees, double[] qualities, ResultCollection results, IRandom random) {
-      const string bestSolutionResultName = "Best Solution";
-      var bestQuality = Maximization ? qualities.Max() : qualities.Min();
-      var bestIdx = Array.IndexOf(qualities, bestQuality);
+    //TODO: change to new analyze interface
+    public override void Analyze(ISingleObjectiveSolutionContext<ISymbolicExpressionTree>[] solutionContexts, IRandom random) {
+      base.Analyze(solutionContexts, random);
 
-      if (!results.ContainsKey(bestSolutionResultName)) {
-        results.Add(new Result(bestSolutionResultName, new Solution(World, trees[bestIdx], MaxTimeSteps, qualities[bestIdx])));
-      } else if (((Solution)(results[bestSolutionResultName].Value)).Quality < qualities[bestIdx]) {
-        results[bestSolutionResultName].Value = new Solution(World, trees[bestIdx], MaxTimeSteps, qualities[bestIdx]);
-      }
+      //TODO reimplement code below using results directly
+      //  const string bestSolutionResultName = "Best Solution";
+      //  var bestQuality = Maximization ? qualities.Max() : qualities.Min();
+      //  var bestIdx = Array.IndexOf(qualities, bestQuality);
+
+      //  if (!results.ContainsKey(bestSolutionResultName)) {
+      //    results.Add(new Result(bestSolutionResultName, new Solution(World, trees[bestIdx], MaxTimeSteps, qualities[bestIdx])));
+      //  } else if (((Solution)(results[bestSolutionResultName].Value)).Quality < qualities[bestIdx]) {
+      //    results[bestSolutionResultName].Value = new Solution(World, trees[bestIdx], MaxTimeSteps, qualities[bestIdx]);
+      //  }
     }
 
     #region helpers

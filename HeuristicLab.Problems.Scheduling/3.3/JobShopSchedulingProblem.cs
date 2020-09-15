@@ -75,7 +75,7 @@ namespace HeuristicLab.Problems.Scheduling {
     public override Image ItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Type; }
     }
-    
+
     #region Parameter Properties
     [Storable] public ReferenceParameter<ItemList<Job>> JobDataParameter { get; private set; }
     [Storable] public OptionalValueParameter<Schedule> BestKnownSolutionParameter { get; private set; }
@@ -158,29 +158,31 @@ namespace HeuristicLab.Problems.Scheduling {
       }
     }
 
-    public override void Analyze(IScheduleSolution[] solutions, double[] qualities, ResultCollection results, IRandom random) {
-      base.Analyze(solutions, qualities, results, random);
+    public override void Analyze(ISingleObjectiveSolutionContext<IScheduleSolution>[] solutionContexts, IRandom random) {
+      base.Analyze(solutionContexts, random);
 
-      bool max = Maximization;
+      //TODO: reimplement code below using results directly
 
-      int i = -1;
-      if (!max)
-        i = qualities.Select((x, index) => new { index, x }).OrderBy(x => x.x).First().index;
-      else i = qualities.Select((x, index) => new { index, x }).OrderByDescending(x => x.x).First().index;
+      //bool max = Maximization;
 
-      if (double.IsNaN(BestKnownQuality) ||
-          max && qualities[i] > BestKnownQuality ||
-          !max && qualities[i] < BestKnownQuality) {
-        BestKnownQuality = qualities[i];
-        BestKnownSolution = Encoding.Decode(solutions[i], JobData);
-      }
-      Schedule bestSolution;
-      if (results.TryGetValue("Best Scheduling Solution", out var result)) {
-        bestSolution = result.Value as Schedule;
-      } else bestSolution = null;
+      //int i = -1;
+      //if (!max)
+      //  i = qualities.Select((x, index) => new { index, x }).OrderBy(x => x.x).First().index;
+      //else i = qualities.Select((x, index) => new { index, x }).OrderByDescending(x => x.x).First().index;
 
-      if (bestSolution == null || IsBetter(bestSolution.Quality, qualities[i]))
-        results.AddOrUpdateResult("Best Scheduling Solution", Encoding.Decode(solutions[i], JobData));
+      //if (double.IsNaN(BestKnownQuality) ||
+      //    max && qualities[i] > BestKnownQuality ||
+      //    !max && qualities[i] < BestKnownQuality) {
+      //  BestKnownQuality = qualities[i];
+      //  BestKnownSolution = Encoding.Decode(solutions[i], JobData);
+      //}
+      //Schedule bestSolution;
+      //if (results.TryGetValue("Best Scheduling Solution", out var result)) {
+      //  bestSolution = result.Value as Schedule;
+      //} else bestSolution = null;
+
+      //if (bestSolution == null || IsBetter(bestSolution.Quality, qualities[i]))
+      //  results.AddOrUpdateResult("Best Scheduling Solution", Encoding.Decode(solutions[i], JobData));
     }
 
     protected override void OnEncodingChanged() {

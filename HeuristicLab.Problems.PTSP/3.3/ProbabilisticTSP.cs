@@ -20,7 +20,6 @@
 #endregion
 
 using System;
-using System.Linq;
 using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -76,28 +75,31 @@ namespace HeuristicLab.Problems.PTSP {
       Dimension = ProbabilisticTSPData.Cities;
     }
 
-    public override void Analyze(Permutation[] solutions, double[] qualities, ResultCollection results, IRandom random) {
-      base.Analyze(solutions, qualities, results, random);
-      var max = Maximization;
+    public override void Analyze(ISingleObjectiveSolutionContext<Permutation>[] solutionContexts, IRandom random) {
+      base.Analyze(solutionContexts, random);
 
-      var i = !max ? qualities.Select((x, index) => new { index, Quality = x }).OrderBy(x => x.Quality).First().index
-                   : qualities.Select((x, index) => new { index, Quality = x }).OrderByDescending(x => x.Quality).First().index;
+      //TODO reimplement code below using results directly
 
-      if (double.IsNaN(BestKnownQuality) ||
-          max && qualities[i] > BestKnownQuality ||
-          !max && qualities[i] < BestKnownQuality) {
-        BestKnownQuality = qualities[i];
-        BestKnownSolution = ProbabilisticTSPData.GetSolution((Permutation)solutions[i].Clone(), qualities[i]);
-      }
+      //var max = Maximization;
 
-      IResult bestSolutionResult;
-      if (results.TryGetValue("Best pTSP Solution", out bestSolutionResult)) {
-        var bestSolution = bestSolutionResult.Value as ITSPSolution;
-        if (bestSolution == null || Maximization && bestSolution.TourLength.Value < qualities[i]
-          || !Maximization && bestSolution.TourLength.Value > qualities[i]) {
-          bestSolutionResult.Value = ProbabilisticTSPData.GetSolution(solutions[i], qualities[i]);
-        }
-      } else results.Add(new Result("Best pTSP Solution", ProbabilisticTSPData.GetSolution(solutions[i], qualities[i])));
+      //var i = !max ? qualities.Select((x, index) => new { index, Quality = x }).OrderBy(x => x.Quality).First().index
+      //             : qualities.Select((x, index) => new { index, Quality = x }).OrderByDescending(x => x.Quality).First().index;
+
+      //if (double.IsNaN(BestKnownQuality) ||
+      //    max && qualities[i] > BestKnownQuality ||
+      //    !max && qualities[i] < BestKnownQuality) {
+      //  BestKnownQuality = qualities[i];
+      //  BestKnownSolution = ProbabilisticTSPData.GetSolution((Permutation)solutions[i].Clone(), qualities[i]);
+      //}
+
+      //IResult bestSolutionResult;
+      //if (results.TryGetValue("Best pTSP Solution", out bestSolutionResult)) {
+      //  var bestSolution = bestSolutionResult.Value as ITSPSolution;
+      //  if (bestSolution == null || Maximization && bestSolution.TourLength.Value < qualities[i]
+      //    || !Maximization && bestSolution.TourLength.Value > qualities[i]) {
+      //    bestSolutionResult.Value = ProbabilisticTSPData.GetSolution(solutions[i], qualities[i]);
+      //  }
+      //} else results.Add(new Result("Best pTSP Solution", ProbabilisticTSPData.GetSolution(solutions[i], qualities[i])));
     }
 
     public virtual void Load(PTSPData data) {

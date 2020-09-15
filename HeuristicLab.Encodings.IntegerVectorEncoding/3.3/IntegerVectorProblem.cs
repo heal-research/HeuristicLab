@@ -81,11 +81,13 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
       RegisterEventHandlers();
     }
 
-    public override void Analyze(IntegerVector[] vectors, double[] qualities, ResultCollection results, IRandom random) {
-      base.Analyze(vectors, qualities, results, random);
-      var best = GetBestSolution(vectors, qualities);
+    public override void Analyze(ISingleObjectiveSolutionContext<IntegerVector>[] solutionContext, IRandom random) {
+      base.Analyze(solutionContext, random);
 
-      results.AddOrUpdateResult("Best Solution", (IItem)best.Item1.Clone());
+      var best = GetBest(solutionContext);
+
+      //TODO reimplement code below using results directly
+      //results.AddOrUpdateResult("Best Solution", (IntegerVector)best.EncodedSolution.Clone());
     }
 
     protected override sealed void OnEvaluatorChanged() {

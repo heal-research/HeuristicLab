@@ -116,8 +116,8 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
         : Cache.GetValue(solutionMessage, EvaluateOnNextAvailableClient, GetQualityMessageExtensions(), cancellationToken);
     }
 
-    public override void Analyze(TEncodedSolution[] solutions, double[] qualities, ResultCollection results, IRandom random) {
-      OptimizationSupport.Analyze(solutions, qualities, results, random);
+    public override void Analyze(ISingleObjectiveSolutionContext<TEncodedSolution>[] solutions,  IRandom random) {
+      OptimizationSupport.Analyze(solutions, random);
     }
     public override IEnumerable<TEncodedSolution> GetNeighbors(TEncodedSolution solutions, IRandom random) {
       return OptimizationSupport.GetNeighbors(solutions, random);

@@ -19,8 +19,6 @@
  */
 #endregion
 
-using System;
-using System.Linq;
 using System.Threading;
 using HEAL.Attic;
 using HeuristicLab.Common;
@@ -79,16 +77,20 @@ namespace HeuristicLab.Problems.GeneticProgramming.LawnMower {
       Encoding.GrammarParameter.ReadOnly = GrammarRefParameter.ReadOnly = true;
     }
 
-    public override void Analyze(ISymbolicExpressionTree[] trees, double[] qualities, ResultCollection results, IRandom random) {
-      const string bestSolutionResultName = "Best Solution";
-      var bestQuality = Maximization ? qualities.Max() : qualities.Min();
-      var bestIdx = Array.IndexOf(qualities, bestQuality);
+    public override void Analyze(ISingleObjectiveSolutionContext<ISymbolicExpressionTree>[] solutionContexts, IRandom random) {
+      base.Analyze(solutionContexts, random);
 
-      if (!results.ContainsKey(bestSolutionResultName)) {
-        results.Add(new Result(bestSolutionResultName, new Solution(trees[bestIdx], LawnLengthParameter.Value.Value, LawnWidthParameter.Value.Value, bestQuality)));
-      } else if (((Solution)(results[bestSolutionResultName].Value)).Quality < qualities[bestIdx]) {
-        results[bestSolutionResultName].Value = new Solution(trees[bestIdx], LawnLengthParameter.Value.Value, LawnWidthParameter.Value.Value, bestQuality);
-      }
+      //TODO: reimplement code below using results directly
+
+      //const string bestSolutionResultName = "Best Solution";
+      //var bestQuality = Maximization ? qualities.Max() : qualities.Min();
+      //var bestIdx = Array.IndexOf(qualities, bestQuality);
+
+      //if (!results.ContainsKey(bestSolutionResultName)) {
+      //  results.Add(new Result(bestSolutionResultName, new Solution(trees[bestIdx], LawnLengthParameter.Value.Value, LawnWidthParameter.Value.Value, bestQuality)));
+      //} else if (((Solution)(results[bestSolutionResultName].Value)).Quality < qualities[bestIdx]) {
+      //  results[bestSolutionResultName].Value = new Solution(trees[bestIdx], LawnLengthParameter.Value.Value, LawnWidthParameter.Value.Value, bestQuality);
+      //}
     }
 
     public override ISingleObjectiveEvaluationResult Evaluate(ISymbolicExpressionTree tree, IRandom random, CancellationToken cancellationToken) {

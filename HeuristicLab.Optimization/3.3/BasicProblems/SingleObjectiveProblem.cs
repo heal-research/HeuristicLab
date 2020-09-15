@@ -109,12 +109,7 @@ namespace HeuristicLab.Optimization {
       solutionContext.EvaluationResult = evaluationResult;
     }
 
-    public virtual void Analyze(TEncodedSolution[] solutions, double[] qualities, ResultCollection results, IRandom random) { }
-    public virtual void Analyze(ISingleObjectiveSolutionContext<TEncodedSolution>[] solutionContexts, ResultCollection results, IRandom random) {
-      var solutions = solutionContexts.Select(c => c.EncodedSolution).ToArray();
-      var qualities = solutionContexts.Select(c => c.EvaluationResult.Quality).ToArray();
-      Analyze(solutions, qualities, results, random);
-    }
+    public virtual void Analyze(ISingleObjectiveSolutionContext<TEncodedSolution>[] solutionContexts, IRandom random) { }
 
     public virtual IEnumerable<TEncodedSolution> GetNeighbors(TEncodedSolution solutions, IRandom random) {
       return Enumerable.Empty<TEncodedSolution>();

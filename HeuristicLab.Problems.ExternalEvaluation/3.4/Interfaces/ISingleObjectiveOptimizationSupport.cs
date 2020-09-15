@@ -21,16 +21,15 @@
 
 using System.Collections.Generic;
 using HEAL.Attic;
-using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
 
 namespace HeuristicLab.Problems.ExternalEvaluation {
   [StorableType("09d522e0-c10f-474c-b7c0-7d7f98e63f44")]
   public interface ISingleObjectiveOptimizationSupport<TEncodedSolution>
-    where TEncodedSolution : IDeepCloneable {
+    where TEncodedSolution : class, IEncodedSolution {
 
-    void Analyze(TEncodedSolution[] individuals, double[] qualities, ResultCollection results, IRandom random);
+    void Analyze(ISingleObjectiveSolutionContext<TEncodedSolution>[] solutionContexts, IRandom random);
     IEnumerable<TEncodedSolution> GetNeighbors(TEncodedSolution individual, IRandom random);
   }
 }

@@ -21,7 +21,6 @@
  */
 #endregion
 
-using System.Linq;
 using System.Threading;
 using HEAL.Attic;
 using HeuristicLab.Common;
@@ -116,17 +115,18 @@ namespace HeuristicLab.Problems.GrammaticalEvolution {
       return new SingleObjectiveEvaluationResult(quality);
     }
 
-    public override void Analyze(IntegerVector[] solutions, double[] qualities, ResultCollection results, IRandom random) {
-      var bounds = Encoding.Bounds;
-      var len = Encoding.Length;
-      var grammar = wrappedAntProblem.Encoding.Grammar;
-      var mapper = GenotypeToPhenotypeMapperParameter.Value;
+    //TODO: Use SolutionContext wrapper to translate between integer and tree encoded solution
+    public override void Analyze(ISingleObjectiveSolutionContext<IntegerVector>[] solutionContexts, IRandom random) {
+      //var bounds = Encoding.Bounds;
+      //var len = Encoding.Length;
+      //var grammar = wrappedAntProblem.Encoding.Grammar;
+      //var mapper = GenotypeToPhenotypeMapperParameter.Value;
 
-      var trees = solutions
-        .Select(ind => mapper.Map(random, bounds, len, grammar, ind))
-        .ToArray();
+      //var trees = solutionContexts
+      //  .Select(context => mapper.Map(random, bounds, len, grammar, context.EncodedSolution))
+      //  .ToArray();
 
-      wrappedAntProblem.Analyze(trees, qualities, results, random);
+      //wrappedAntProblem.Analyze(solutionContexts, random);
     }
   }
 }

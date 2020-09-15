@@ -131,14 +131,8 @@ namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
       return problem.IsBetter(quality, bestQuality);
     }
 
-    public void Analyze(BinaryVector[] individuals, double[] qualities, ResultCollection results, IRandom random) {
-      problem.Analyze(individuals, qualities, results, random);
-    }
-
-    public void Analyze(ISingleObjectiveSolutionContext<BinaryVector>[] solutionContexts, ResultCollection results, IRandom random) {
-      var solutions = solutionContexts.Select(c => c.EncodedSolution).ToArray();
-      var qualities = solutionContexts.Select(c => c.EvaluationResult.Quality).ToArray();
-      Analyze(solutions, qualities, results, random);
+    public void Analyze(ISingleObjectiveSolutionContext<BinaryVector>[] solutionContexts, IRandom random) {
+      problem.Analyze(solutionContexts, random);
     }
 
     public IEnumerable<BinaryVector> GetNeighbors(BinaryVector individual, IRandom random) {

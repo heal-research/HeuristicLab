@@ -98,25 +98,27 @@ namespace HeuristicLab.Problems.TravelingSalesman {
       return tourLength;
     }
 
-    public override void Analyze(Permutation[] solutions, double[] qualities, ResultCollection results, IRandom random) {
-      base.Analyze(solutions, qualities, results, random);
-      int i = -1;
-      if (!Maximization)
-        i = qualities.Select((x, index) => new { index, Fitness = x }).OrderBy(x => x.Fitness).First().index;
-      else i = qualities.Select((x, index) => new { index, Fitness = x }).OrderByDescending(x => x.Fitness).First().index;
+    public override void Analyze(ISingleObjectiveSolutionContext<Permutation>[] solutionContexts, IRandom random) {
+      base.Analyze(solutionContexts, random);
 
-      if (double.IsNaN(BestKnownQuality) ||
-          Maximization && qualities[i] > BestKnownQuality ||
-          !Maximization && qualities[i] < BestKnownQuality) {
-        var bestKnown = TSPData.GetSolution(solutions[i], qualities[i]);
-        BestKnownQualityParameter.Value = new DoubleValue(qualities[i]);
-        BestKnownSolutionParameter.Value = bestKnown;
-      }
+      //TODO reimplement code below using results directly
+      //int i = -1;
+      //if (!Maximization)
+      //  i = qualities.Select((x, index) => new { index, Fitness = x }).OrderBy(x => x.Fitness).First().index;
+      //else i = qualities.Select((x, index) => new { index, Fitness = x }).OrderByDescending(x => x.Fitness).First().index;
 
-      var bestSolution = BestTSPSolutionParameter.ActualValue;
-      if (bestSolution == null || IsBetter(qualities[i], bestSolution.TourLength.Value)) {
-        BestTSPSolutionParameter.ActualValue = TSPData.GetSolution(solutions[i], qualities[i]);
-      }
+      //if (double.IsNaN(BestKnownQuality) ||
+      //    Maximization && qualities[i] > BestKnownQuality ||
+      //    !Maximization && qualities[i] < BestKnownQuality) {
+      //  var bestKnown = TSPData.GetSolution(solutions[i], qualities[i]);
+      //  BestKnownQualityParameter.Value = new DoubleValue(qualities[i]);
+      //  BestKnownSolutionParameter.Value = bestKnown;
+      //}
+
+      //var bestSolution = BestTSPSolutionParameter.ActualValue;
+      //if (bestSolution == null || IsBetter(qualities[i], bestSolution.TourLength.Value)) {
+      //  BestTSPSolutionParameter.ActualValue = TSPData.GetSolution(solutions[i], qualities[i]);
+      //}
     }
 
     public override IEnumerable<Permutation> GetNeighbors(Permutation solution, IRandom random) {

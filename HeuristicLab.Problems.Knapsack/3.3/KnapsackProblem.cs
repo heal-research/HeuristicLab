@@ -102,34 +102,36 @@ namespace HeuristicLab.Problems.Knapsack {
       return new SingleObjectiveEvaluationResult(quality);
     }
 
-    public override void Analyze(BinaryVector[] solutions, double[] qualities, ResultCollection results, IRandom random) {
-      base.Analyze(solutions, qualities, results, random);
+    public override void Analyze(ISingleObjectiveSolutionContext<BinaryVector>[] solutionContexts, IRandom random) {
+      base.Analyze(solutionContexts, random);
 
-      var best = GetBestSolution(solutions, qualities);
+      //TODO reimplement code below using results directly
 
-      if (double.IsNaN(BestKnownQuality) || IsBetter(best.Item2, BestKnownQuality)) {
-        BestKnownQuality = best.Item2;
-        BestKnownSolution = (BinaryVector)best.Item1.Clone();
-      }
+      //var best = GetBestSolution(solutions, qualities);
 
-      IResult result;
-      if (!results.TryGetValue("Best Knapsack Solution", out result)) {
-        results.Add(result = new Result("Best Knapsack Solution", typeof(KnapsackSolution)));
-      }
-      var solution = (KnapsackSolution)result.Value;
-      if (solution == null) {
-        solution = new KnapsackSolution((BinaryVector)best.Item1.Clone(), new DoubleValue(best.Item2),
-          KnapsackCapacityParameter.Value, WeightsParameter.Value, ValuesParameter.Value);
-        result.Value = solution;
-      } else {
-        if (IsBetter(best.Item2, solution.Quality.Value)) {
-          solution.BinaryVector = (BinaryVector)best.Item1.Clone();
-          solution.Quality = new DoubleValue(best.Item2);
-          solution.Capacity = KnapsackCapacityParameter.Value;
-          solution.Weights = WeightsParameter.Value;
-          solution.Values = ValuesParameter.Value;
-        }
-      }
+      //if (double.IsNaN(BestKnownQuality) || IsBetter(best.Item2, BestKnownQuality)) {
+      //  BestKnownQuality = best.Item2;
+      //  BestKnownSolution = (BinaryVector)best.Item1.Clone();
+      //}
+
+      //IResult result;
+      //if (!results.TryGetValue("Best Knapsack Solution", out result)) {
+      //  results.Add(result = new Result("Best Knapsack Solution", typeof(KnapsackSolution)));
+      //}
+      //var solution = (KnapsackSolution)result.Value;
+      //if (solution == null) {
+      //  solution = new KnapsackSolution((BinaryVector)best.Item1.Clone(), new DoubleValue(best.Item2),
+      //    KnapsackCapacityParameter.Value, WeightsParameter.Value, ValuesParameter.Value);
+      //  result.Value = solution;
+      //} else {
+      //  if (IsBetter(best.Item2, solution.Quality.Value)) {
+      //    solution.BinaryVector = (BinaryVector)best.Item1.Clone();
+      //    solution.Quality = new DoubleValue(best.Item2);
+      //    solution.Capacity = KnapsackCapacityParameter.Value;
+      //    solution.Weights = WeightsParameter.Value;
+      //    solution.Values = ValuesParameter.Value;
+      //  }
+      //}
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {

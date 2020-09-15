@@ -135,56 +135,57 @@ namespace HeuristicLab.Problems.LinearAssignment {
       return new SingleObjectiveEvaluationResult(quality);
     }
 
-    public override void Analyze(Permutation[] permutations, double[] qualities, ResultCollection results, IRandom random) {
-      base.Analyze(permutations, qualities, results, random);
+    public override void Analyze(ISingleObjectiveSolutionContext<Permutation>[] solutionContexts, IRandom random) {
+      base.Analyze(solutionContexts, random);
 
-      var costs = Costs;
-      var rowNames = RowNames;
-      var columnNames = ColumnNames;
-      bool max = Maximization;
+      //TODO reimplement code below using results directly
+      //var costs = Costs;
+      //var rowNames = RowNames;
+      //var columnNames = ColumnNames;
+      //bool max = Maximization;
 
-      var sorted = qualities.Select((x, index) => new { Index = index, Quality = x }).OrderBy(x => x.Quality).ToArray();
-      if (max) Array.Reverse(sorted);
-      int i = sorted[0].Index;
-      var best = Tuple.Create(permutations[i], qualities[i]);
+      //var sorted = qualities.Select((x, index) => new { Index = index, Quality = x }).OrderBy(x => x.Quality).ToArray();
+      //if (max) Array.Reverse(sorted);
+      //int i = sorted[0].Index;
+      //var best = Tuple.Create(permutations[i], qualities[i]);
 
-      if (double.IsNaN(BestKnownQuality) || IsBetter(best.Item2, BestKnownQuality)) {
-        // if there isn't a best-known quality or we improved the best-known quality we'll add the current solution as best-known
-        BestKnownQuality = best.Item2;
-        BestKnownSolution = (Permutation)best.Item1.Clone();
-        BestKnownSolutions = new ItemSet<Permutation>(new PermutationEqualityComparer());
-        BestKnownSolutions.Add((Permutation)best.Item1.Clone());
-      } else if (BestKnownQuality == best.Item2) {
-        // if we matched the best-known quality we'll try to set the best-known solution if it isn't null
-        // and try to add it to the pool of best solutions if it is different
-        if (BestKnownSolution == null) BestKnownSolution = (Permutation)best.Item1.Clone();
-        if (BestKnownSolutions == null) BestKnownSolutions = new ItemSet<Permutation>(new PermutationEqualityComparer());
+      //if (double.IsNaN(BestKnownQuality) || IsBetter(best.Item2, BestKnownQuality)) {
+      //  // if there isn't a best-known quality or we improved the best-known quality we'll add the current solution as best-known
+      //  BestKnownQuality = best.Item2;
+      //  BestKnownSolution = (Permutation)best.Item1.Clone();
+      //  BestKnownSolutions = new ItemSet<Permutation>(new PermutationEqualityComparer());
+      //  BestKnownSolutions.Add((Permutation)best.Item1.Clone());
+      //} else if (BestKnownQuality == best.Item2) {
+      //  // if we matched the best-known quality we'll try to set the best-known solution if it isn't null
+      //  // and try to add it to the pool of best solutions if it is different
+      //  if (BestKnownSolution == null) BestKnownSolution = (Permutation)best.Item1.Clone();
+      //  if (BestKnownSolutions == null) BestKnownSolutions = new ItemSet<Permutation>(new PermutationEqualityComparer());
 
-        foreach (var k in sorted) { // for each solution that we found check if it is in the pool of best-knowns
-          if (IsBetter(best.Item2, k.Quality)) break; // stop when we reached a solution worse than the best-known quality
-          var p = permutations[k.Index];
-          if (!BestKnownSolutions.Contains(p))
-            BestKnownSolutions.Add((Permutation)permutations[k.Index].Clone());
-        }
-      }
+      //  foreach (var k in sorted) { // for each solution that we found check if it is in the pool of best-knowns
+      //    if (IsBetter(best.Item2, k.Quality)) break; // stop when we reached a solution worse than the best-known quality
+      //    var p = permutations[k.Index];
+      //    if (!BestKnownSolutions.Contains(p))
+      //      BestKnownSolutions.Add((Permutation)permutations[k.Index].Clone());
+      //  }
+      //}
 
-      LAPAssignment solution = BestLAPSolutionParameter.ActualValue;
-      if (solution == null) {
-        solution = new LAPAssignment(costs, rowNames, columnNames, (Permutation)best.Item1.Clone(), new DoubleValue(best.Item2));
-        BestLAPSolutionParameter.ActualValue = solution;
-      } else {
-        if (IsBetter(best.Item2, solution.Quality.Value)) {
-          solution.Costs = costs;
-          solution.Assignment = (Permutation)best.Item1.Clone();
-          solution.Quality.Value = best.Item2;
-          if (rowNames != null)
-            solution.RowNames = rowNames;
-          else solution.RowNames = null;
-          if (columnNames != null)
-            solution.ColumnNames = columnNames;
-          else solution.ColumnNames = null;
-        }
-      }
+      //LAPAssignment solution = BestLAPSolutionParameter.ActualValue;
+      //if (solution == null) {
+      //  solution = new LAPAssignment(costs, rowNames, columnNames, (Permutation)best.Item1.Clone(), new DoubleValue(best.Item2));
+      //  BestLAPSolutionParameter.ActualValue = solution;
+      //} else {
+      //  if (IsBetter(best.Item2, solution.Quality.Value)) {
+      //    solution.Costs = costs;
+      //    solution.Assignment = (Permutation)best.Item1.Clone();
+      //    solution.Quality.Value = best.Item2;
+      //    if (rowNames != null)
+      //      solution.RowNames = rowNames;
+      //    else solution.RowNames = null;
+      //    if (columnNames != null)
+      //      solution.ColumnNames = columnNames;
+      //    else solution.ColumnNames = null;
+      //  }
+      //}
 
     }
 

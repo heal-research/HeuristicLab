@@ -124,6 +124,10 @@ namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
           BestQuality = fitness;
         }
 
+        var context = new SingleObjectiveSolutionContext<BinaryVector>(solution);
+        context.EvaluationResult = new SingleObjectiveEvaluationResult(fitness);
+        Problem.Analyze(new[] { context }, random);
+
         Iterations++;
       }
     }

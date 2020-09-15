@@ -76,8 +76,8 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
       RegisterEventHandlers();
     }
 
-    public override void Analyze(ISingleObjectiveSolutionContext<BinaryVector>[] solutionContexts, ResultCollection results, IRandom random) {
-      base.Analyze(solutionContexts, results, random);
+    public override void Analyze(ISingleObjectiveSolutionContext<BinaryVector>[] solutionContexts, IRandom random) {
+      base.Analyze(solutionContexts, random);
       var best = GetBest(solutionContexts);
       if (BestSolution == null || IsBetter(best, BestSolution))
         BestSolution = best.Clone() as SingleObjectiveSolutionContext<BinaryVector>;

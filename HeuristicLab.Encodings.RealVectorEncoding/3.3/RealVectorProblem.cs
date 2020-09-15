@@ -79,11 +79,14 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       RegisterEventHandlers();
     }
 
-    public override void Analyze(RealVector[] vectors, double[] qualities, ResultCollection results, IRandom random) {
-      base.Analyze(vectors, qualities, results, random);
-      var best = GetBestSolution(vectors, qualities);
+    public override void Analyze(ISingleObjectiveSolutionContext<RealVector>[] solutionContexts, IRandom random) {
+      base.Analyze(solutionContexts, random);
 
-      results.AddOrUpdateResult("Best Solution", (IItem)best.Item1.Clone());
+      //TODO: reimplement code below using results directly
+
+      //var best = GetBestSolution(vectors, qualities);
+
+      //results.AddOrUpdateResult("Best Solution", (IItem)best.Item1.Clone());
     }
 
     protected override sealed void OnEvaluatorChanged() {

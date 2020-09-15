@@ -30,8 +30,8 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
   [Item("ProblemDefinitionScript", "Script that defines the parameter vector and evaluates the solution for a programmable problem.")]
   [StorableType("3EB74171-6ECB-4479-861E-DA4EB39FE70C")]
   public sealed class SingleObjectiveOptimizationSupportScript<TEncodedSolution> : OptimizationSupportScript<ISingleObjectiveOptimizationSupport<TEncodedSolution>>, ISingleObjectiveOptimizationSupport<TEncodedSolution>
-    where TEncodedSolution : IDeepCloneable {
-    
+    where TEncodedSolution : class, IEncodedSolution {
+
     [StorableConstructor]
     private SingleObjectiveOptimizationSupportScript(StorableConstructorFlag _) : base(_) { }
     private SingleObjectiveOptimizationSupportScript(SingleObjectiveOptimizationSupportScript<TEncodedSolution> original, Cloner cloner) : base(original, cloner) { }
@@ -46,8 +46,8 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
       return new SingleObjectiveOptimizationSupportScript<TEncodedSolution>(this, cloner);
     }
 
-    void ISingleObjectiveOptimizationSupport<TEncodedSolution>.Analyze(TEncodedSolution[] individuals, double[] qualities, ResultCollection results, IRandom random) {
-      CompiledInstance.Analyze(individuals, qualities, results, random);
+    void ISingleObjectiveOptimizationSupport<TEncodedSolution>.Analyze(ISingleObjectiveSolutionContext<TEncodedSolution>[] solutionContexts, IRandom random) {
+      CompiledInstance.Analyze(solutionContexts, random);
     }
 
     IEnumerable<TEncodedSolution> ISingleObjectiveOptimizationSupport<TEncodedSolution>.GetNeighbors(TEncodedSolution individual, IRandom random) {

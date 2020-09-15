@@ -104,28 +104,29 @@ namespace HeuristicLab.Problems.GeneticProgramming.Robocode {
       return new SingleObjectiveEvaluationResult(quality);
     }
 
-    public override void Analyze(ISymbolicExpressionTree[] trees, double[] qualities, ResultCollection results, IRandom random) {
-      // find the tree with the best quality
-      double maxQuality = double.NegativeInfinity;
-      ISymbolicExpressionTree bestTree = null;
-      for (int i = 0; i < qualities.Length; i++) {
-        if (qualities[i] > maxQuality) {
-          maxQuality = qualities[i];
-          bestTree = trees[i];
-        }
-      }
+    //TODO: change to new analyze interface//TODO: change to new analyze interface
+    //public override void Analyze(ISymbolicExpressionTree[] trees, double[] qualities, ResultCollection results, IRandom random) {
+    //  // find the tree with the best quality
+    //  double maxQuality = double.NegativeInfinity;
+    //  ISymbolicExpressionTree bestTree = null;
+    //  for (int i = 0; i < qualities.Length; i++) {
+    //    if (qualities[i] > maxQuality) {
+    //      maxQuality = qualities[i];
+    //      bestTree = trees[i];
+    //    }
+    //  }
 
-      // create a solution instance
-      var bestSolution = new Solution(bestTree, RobocodePath, NrOfRounds, Enemies);
+    //  // create a solution instance
+    //  var bestSolution = new Solution(bestTree, RobocodePath, NrOfRounds, Enemies);
 
-      // also add the best solution as a result to the result collection
-      // or alternatively update the existing result
-      if (!results.ContainsKey("BestSolution")) {
-        results.Add(new Result("BestSolution", "The best tank program", bestSolution));
-      } else {
-        results["BestSolution"].Value = bestSolution;
-      }
-    }
+    //  // also add the best solution as a result to the result collection
+    //  // or alternatively update the existing result
+    //  if (!results.ContainsKey("BestSolution")) {
+    //    results.Add(new Result("BestSolution", "The best tank program", bestSolution));
+    //  } else {
+    //    results["BestSolution"].Value = bestSolution;
+    //  }
+    //}
 
     private void RegisterEventHandlers() {
       RobocodePathParameter.Value.StringValue.ValueChanged += RobocodePathParameter_ValueChanged;

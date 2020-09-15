@@ -114,8 +114,8 @@ namespace HeuristicLab.Problems.Programmable {
       return ProblemDefinition.Evaluate(individual, random, cancellationToken);
     }
 
-    public override void Analyze(ISingleObjectiveSolutionContext<TEncodedSolution>[] solutionContexts, ResultCollection results, IRandom random) {
-      ProblemDefinition.Analyze(solutionContexts, results, random);
+    public override void Analyze(ISingleObjectiveSolutionContext<TEncodedSolution>[] solutionContexts, IRandom random) {
+      ProblemDefinition.Analyze(solutionContexts, random);
     }
 
     public override IEnumerable<ISingleObjectiveSolutionContext<TEncodedSolution>> GetNeighbors(ISingleObjectiveSolutionContext<TEncodedSolution> solutionContext, IRandom random) {

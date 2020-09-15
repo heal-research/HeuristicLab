@@ -71,7 +71,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       RegisterEventHandlers();
     }
 
-    protected SymbolicExpressionTreeProblem() : this(new SymbolicExpressionTreeEncoding()) { }    
+    protected SymbolicExpressionTreeProblem() : this(new SymbolicExpressionTreeEncoding()) { }
     protected SymbolicExpressionTreeProblem(SymbolicExpressionTreeEncoding encoding)
       : base(encoding) {
       EncodingParameter.ReadOnly = true;
@@ -79,7 +79,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       Parameters.Add(TreeLengthRefParameter = new ReferenceParameter<IntValue>("TreeLength", "The maximum amount of nodes.", Encoding.TreeLengthParameter));
       Parameters.Add(TreeDepthRefParameter = new ReferenceParameter<IntValue>("TreeDepth", "The maximum depth of the tree.", Encoding.TreeDepthParameter));
       Parameters.Add(GrammarRefParameter = new ReferenceParameter<ISymbolicExpressionGrammar>("Grammar", "The grammar that describes a valid tree.", Encoding.GrammarParameter));
-      
+
       // TODO: These should be added in the SingleObjectiveProblem base class (if they were accessible from there)
       Operators.Add(new QualitySimilarityCalculator());
       Operators.Add(new PopulationSimilarityAnalyzer(Operators.OfType<ISolutionSimilarityCalculator>()));
@@ -88,32 +88,33 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       RegisterEventHandlers();
     }
 
-    public override void Analyze(ISymbolicExpressionTree[] trees, double[] qualities, ResultCollection results,
-      IRandom random) {
-      if (!results.ContainsKey("Best Solution Quality")) {
-        results.Add(new Result("Best Solution Quality", typeof(DoubleValue)));
-      }
-      if (!results.ContainsKey("Best Solution")) {
-        results.Add(new Result("Best Solution", typeof(ISymbolicExpressionTree)));
-      }
+    public override void Analyze(ISingleObjectiveSolutionContext<ISymbolicExpressionTree>[] solutionContexts, IRandom random) {
+      //TODO reimplement code below using results directly
 
-      var bestQuality = Maximization ? qualities.Max() : qualities.Min();
+      //if (!results.ContainsKey("Best Solution Quality")) {
+      //  results.Add(new Result("Best Solution Quality", typeof(DoubleValue)));
+      //}
+      //if (!results.ContainsKey("Best Solution")) {
+      //  results.Add(new Result("Best Solution", typeof(ISymbolicExpressionTree)));
+      //}
 
-      if (results["Best Solution Quality"].Value == null ||
-          IsBetter(bestQuality, ((DoubleValue)results["Best Solution Quality"].Value).Value)) {
-        var bestIdx = Array.IndexOf(qualities, bestQuality);
-        var bestClone = (IItem)trees[bestIdx].Clone();
+      //var bestQuality = Maximization ? qualities.Max() : qualities.Min();
 
-        results["Best Solution"].Value = bestClone;
-        results["Best Solution Quality"].Value = new DoubleValue(bestQuality);
-      }
+      //if (results["Best Solution Quality"].Value == null ||
+      //    IsBetter(bestQuality, ((DoubleValue)results["Best Solution Quality"].Value).Value)) {
+      //  var bestIdx = Array.IndexOf(qualities, bestQuality);
+      //  var bestClone = (IItem)trees[bestIdx].Clone();
+
+      //  results["Best Solution"].Value = bestClone;
+      //  results["Best Solution Quality"].Value = new DoubleValue(bestQuality);
+      //}
     }
 
-    protected override sealed void OnEvaluatorChanged() {
+    protected sealed override void OnEvaluatorChanged() {
       throw new InvalidOperationException("Evaluator may not change!");
     }
 
-    protected override sealed void OnEncodingChanged() {
+    protected sealed override void OnEncodingChanged() {
       throw new InvalidOperationException("Encoding may not change!");
     }
 

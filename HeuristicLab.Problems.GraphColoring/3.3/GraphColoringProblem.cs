@@ -169,54 +169,60 @@ namespace HeuristicLab.Problems.GraphColoring {
       public int ConflictCount { get; set; }
     }
 
-    public override void Analyze(LinearLinkage[] lles, double[] qualities, ResultCollection results, IRandom random) {
-      var orderedIndividuals = lles.Zip(qualities, (i, q) => new { LLE = i, Quality = q }).OrderBy(z => z.Quality);
-      var best = Maximization ? orderedIndividuals.Last().LLE : orderedIndividuals.First().LLE;
+    public override void Analyze(ISingleObjectiveSolutionContext<LinearLinkage>[] solutionContexts, IRandom random) {
+      base.Analyze(solutionContexts, random);
 
-      var llee = best.ToEndLinks();
-      var colors = llee.Distinct().Count();
-      var conflicts = CalculateConflicts(llee);
+      var lles = solutionContexts.Select(context => context.EncodedSolution).ToArray();
 
-      IResult res;
-      int bestColors = int.MaxValue, bestConflicts = int.MaxValue;
-      var improvement = false;
-      if (!results.TryGetValue("Best Solution Conflicts", out res)) {
-        bestConflicts = conflicts;
-        res = new Result("Best Solution Conflicts", new IntValue(bestConflicts));
-        results.Add(res);
-      } else {
-        bestConflicts = ((IntValue)res.Value).Value;
-        improvement = conflicts < bestConflicts;
-        if (improvement) ((IntValue)res.Value).Value = bestConflicts = conflicts;
-      }
-      if (!results.TryGetValue("Best Solution Colors", out res)) {
-        bestColors = colors;
-        res = new Result("Best Solution Colors", new IntValue(bestColors));
-        results.Add(res);
-      } else {
-        bestColors = ((IntValue)res.Value).Value;
-        improvement = improvement || conflicts == bestConflicts && colors < bestColors;
-        if (improvement)
-          ((IntValue)res.Value).Value = bestColors = colors;
-      }
-      if (!results.ContainsKey("Best Encoded Solution") || improvement)
-        results.AddOrUpdateResult("Best Encoded Solution", (LinearLinkage)best.Clone());
+      //TODO: reimplement code below using results directly
 
-      if (!results.TryGetValue("Best Solution", out res) || !(res.Value is IntMatrix)) {
-        var matrix = new IntMatrix(llee.Length, 2) { ColumnNames = new[] { "Node", "Color" } };
-        UpdateMatrix(llee, matrix);
-        res = new Result("Best Solution", matrix);
-        results.AddOrUpdateResult("Best Solution", matrix);
-      } else {
-        if (improvement) {
-          UpdateMatrix(llee, (IntMatrix)res.Value);
-        }
-      }
+      //var orderedIndividuals = lles.Zip(qualities, (i, q) => new { LLE = i, Quality = q }).OrderBy(z => z.Quality);
+      //var best = Maximization ? orderedIndividuals.Last().LLE : orderedIndividuals.First().LLE;
 
-      if (conflicts == 0) {
-        if (BestKnownColorsParameter.Value == null || BestKnownColorsParameter.Value.Value > colors)
-          BestKnownColorsParameter.Value = new IntValue(colors);
-      }
+      //var llee = best.ToEndLinks();
+      //var colors = llee.Distinct().Count();
+      //var conflicts = CalculateConflicts(llee);
+
+      //IResult res;
+      //int bestColors = int.MaxValue, bestConflicts = int.MaxValue;
+      //var improvement = false;
+      //if (!results.TryGetValue("Best Solution Conflicts", out res)) {
+      //  bestConflicts = conflicts;
+      //  res = new Result("Best Solution Conflicts", new IntValue(bestConflicts));
+      //  results.Add(res);
+      //} else {
+      //  bestConflicts = ((IntValue)res.Value).Value;
+      //  improvement = conflicts < bestConflicts;
+      //  if (improvement) ((IntValue)res.Value).Value = bestConflicts = conflicts;
+      //}
+      //if (!results.TryGetValue("Best Solution Colors", out res)) {
+      //  bestColors = colors;
+      //  res = new Result("Best Solution Colors", new IntValue(bestColors));
+      //  results.Add(res);
+      //} else {
+      //  bestColors = ((IntValue)res.Value).Value;
+      //  improvement = improvement || conflicts == bestConflicts && colors < bestColors;
+      //  if (improvement)
+      //    ((IntValue)res.Value).Value = bestColors = colors;
+      //}
+      //if (!results.ContainsKey("Best Encoded Solution") || improvement)
+      //  results.AddOrUpdateResult("Best Encoded Solution", (LinearLinkage)best.Clone());
+
+      //if (!results.TryGetValue("Best Solution", out res) || !(res.Value is IntMatrix)) {
+      //  var matrix = new IntMatrix(llee.Length, 2) { ColumnNames = new[] { "Node", "Color" } };
+      //  UpdateMatrix(llee, matrix);
+      //  res = new Result("Best Solution", matrix);
+      //  results.AddOrUpdateResult("Best Solution", matrix);
+      //} else {
+      //  if (improvement) {
+      //    UpdateMatrix(llee, (IntMatrix)res.Value);
+      //  }
+      //}
+
+      //if (conflicts == 0) {
+      //  if (BestKnownColorsParameter.Value == null || BestKnownColorsParameter.Value.Value > colors)
+      //    BestKnownColorsParameter.Value = new IntValue(colors);
+      //}
     }
 
     private static void UpdateMatrix(int[] llee, IntMatrix matrix) {

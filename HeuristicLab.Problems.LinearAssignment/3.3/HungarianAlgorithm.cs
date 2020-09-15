@@ -26,6 +26,7 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Optimization;
+using HeuristicLab.Random;
 
 namespace HeuristicLab.Problems.LinearAssignment {
   /// <summary>
@@ -62,8 +63,11 @@ namespace HeuristicLab.Problems.LinearAssignment {
     protected override void Run(CancellationToken cancellationToken) {
       var assignment = LinearAssignmentProblemSolver.Solve(Problem.Costs, out double quality);
 
-      Problem.Analyze(new[] { new Permutation(PermutationTypes.Absolute, assignment) },
-        new[] { quality }, Results, null);
+      var context = new SingleObjectiveSolutionContext<Permutation>(new Permutation(PermutationTypes.Absolute, assignment));
+      context.EvaluationResult = new SingleObjectiveEvaluationResult(quality);
+
+      var random = new FastRandom(42);
+      Problem.Analyze(new[] { context }, random);
     }
   }
 }

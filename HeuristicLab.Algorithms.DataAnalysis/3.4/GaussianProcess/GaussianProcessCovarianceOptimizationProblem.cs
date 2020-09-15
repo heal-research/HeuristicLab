@@ -273,26 +273,29 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       }
     }
 
-    public override void Analyze(ISymbolicExpressionTree[] trees, double[] qualities, ResultCollection results, IRandom random) {
-      if (!results.ContainsKey("Best Solution Quality")) {
-        results.Add(new Result("Best Solution Quality", typeof(DoubleValue)));
-      }
-      if (!results.ContainsKey("Best Tree")) {
-        results.Add(new Result("Best Tree", typeof(ISymbolicExpressionTree)));
-      }
-      if (!results.ContainsKey("Best Solution")) {
-        results.Add(new Result("Best Solution", typeof(GaussianProcessRegressionSolution)));
-      }
 
-      var bestQuality = qualities.Max();
+    public override void Analyze(ISingleObjectiveSolutionContext<ISymbolicExpressionTree>[] solutionContexts, IRandom random) {
+      //TODO: reimplement code below with results parameter
 
-      if (results["Best Solution Quality"].Value == null || bestQuality > ((DoubleValue)results["Best Solution Quality"].Value).Value) {
-        var bestIdx = Array.IndexOf(qualities, bestQuality);
-        var bestClone = (ISymbolicExpressionTree)trees[bestIdx].Clone();
-        results["Best Tree"].Value = bestClone;
-        results["Best Solution Quality"].Value = new DoubleValue(bestQuality);
-        results["Best Solution"].Value = CreateSolution();
-      }
+      //if (!results.ContainsKey("Best Solution Quality")) {
+      //  results.Add(new Result("Best Solution Quality", typeof(DoubleValue)));
+      //}
+      //if (!results.ContainsKey("Best Tree")) {
+      //  results.Add(new Result("Best Tree", typeof(ISymbolicExpressionTree)));
+      //}
+      //if (!results.ContainsKey("Best Solution")) {
+      //  results.Add(new Result("Best Solution", typeof(GaussianProcessRegressionSolution)));
+      //}
+
+      //var bestQuality = qualities.Max();
+
+      //if (results["Best Solution Quality"].Value == null || bestQuality > ((DoubleValue)results["Best Solution Quality"].Value).Value) {
+      //  var bestIdx = Array.IndexOf(qualities, bestQuality);
+      //  var bestClone = (ISymbolicExpressionTree)trees[bestIdx].Clone();
+      //  results["Best Tree"].Value = bestClone;
+      //  results["Best Solution Quality"].Value = new DoubleValue(bestQuality);
+      //  results["Best Solution"].Value = CreateSolution();
+      //}
     }
 
     private IItem CreateSolution() {

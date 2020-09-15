@@ -27,6 +27,6 @@ namespace HeuristicLab.Optimization {
   [StorableType("9731981c-10c6-4850-9308-a4720ac07da7")]
   internal interface ISingleObjectiveAnalysisOperator<TEncodedSolution> : IEncodingOperator, ISingleObjectiveOperator
   where TEncodedSolution : class, IEncodedSolution {
-    Action<ISingleObjectiveSolutionContext<TEncodedSolution>[], ResultCollection, IRandom> Analyze { get; set; }
+    Action<ISingleObjectiveSolutionContext<TEncodedSolution>[], IRandom> Analyze { get; set; }
   }
 }
