@@ -100,7 +100,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       grammar.ConfigureAsDefaultRegressionGrammar();
       Grammar = grammar;
 
-      Parameters.Add(GrammarParameter);
+      //Parameters.Add(GrammarParameter);
       Parameters.Add(ProblemDataParameter);
       Parameters.Add(MaximumTreeLengthParameter);
       Parameters.Add(MaximumTreeDepthParameter);
