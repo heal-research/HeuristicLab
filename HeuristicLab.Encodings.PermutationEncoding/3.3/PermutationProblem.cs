@@ -37,6 +37,7 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
   public abstract class PermutationProblem : SingleObjectiveProblem<PermutationEncoding, Permutation> {
     [Storable] protected ReferenceParameter<IntValue> DimensionRefParameter { get; private set; }
     [Storable] protected ReferenceParameter<EnumValue<PermutationTypes>> PermutationTypeRefParameter { get; private set; }
+    [Storable] public IResult<ISingleObjectiveSolutionContext<Permutation>> BestSolutionResult { get; private set; }
 
     public int Dimension {
       get { return DimensionRefParameter.Value.Value; }
@@ -46,6 +47,11 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
     public PermutationTypes Type {
       get { return PermutationTypeRefParameter.Value.Value; }
       set { PermutationTypeRefParameter.Value.Value = value; }
+    }
+
+    protected ISingleObjectiveSolutionContext<Permutation> BestSolution {
+      get => BestSolutionResult.Value;
+      set => BestSolutionResult.Value = value;
     }
 
     [StorableConstructor]
@@ -59,6 +65,7 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
       : base(original, cloner) {
       DimensionRefParameter = cloner.Clone(original.DimensionRefParameter);
       PermutationTypeRefParameter = cloner.Clone(original.PermutationTypeRefParameter);
+      BestSolutionResult = cloner.Clone(original.BestSolutionResult);
       RegisterEventHandlers();
     }
 
@@ -68,6 +75,7 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
       EvaluatorParameter.ReadOnly = true;
       Parameters.Add(DimensionRefParameter = new ReferenceParameter<IntValue>("Dimension", "The dimension of the permutation problem.", Encoding.LengthParameter));
       Parameters.Add(PermutationTypeRefParameter = new ReferenceParameter<EnumValue<PermutationTypes>>("Type", "The type of the permutation.", Encoding.PermutationTypeParameter));
+      Results.Add(BestSolutionResult = new Result<ISingleObjectiveSolutionContext<Permutation>>("Best Solution", "The best solution found so far."));
 
       Operators.Add(new HammingSimilarityCalculator());
       // TODO: These should be added in the SingleObjectiveProblem base class (if they were accessible from there)
@@ -80,10 +88,9 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
 
     public override void Analyze(ISingleObjectiveSolutionContext<Permutation>[] solutionContexts, IRandom random) {
       base.Analyze(solutionContexts, random);
-
-      //TODO reimplement code below using results directly                                                                       solutionContexts
-      //var best = GetBestSolution(permutations, qualities);
-      //results.AddOrUpdateResult("Best Solution", (IItem)best.Item1.Clone());
+      var best = GetBest(solutionContexts);
+      if (BestSolution == null || IsBetter(best, BestSolution))
+        BestSolution = best.Clone() as SingleObjectiveSolutionContext<Permutation>;
     }
 
     protected override sealed void OnEvaluatorChanged() {

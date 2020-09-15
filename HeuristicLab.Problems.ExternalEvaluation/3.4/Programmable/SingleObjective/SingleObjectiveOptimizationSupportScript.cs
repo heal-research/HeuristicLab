@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System;
 using System.Collections.Generic;
 using HEAL.Attic;
 using HeuristicLab.Common;
@@ -35,7 +36,9 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
     [StorableConstructor]
     private SingleObjectiveOptimizationSupportScript(StorableConstructorFlag _) : base(_) { }
     private SingleObjectiveOptimizationSupportScript(SingleObjectiveOptimizationSupportScript<TEncodedSolution> original, Cloner cloner) : base(original, cloner) { }
-    public SingleObjectiveOptimizationSupportScript() : base() {
+    [Obsolete("Do not use this constructor.")]
+    public SingleObjectiveOptimizationSupportScript() : this(null) { }
+    public SingleObjectiveOptimizationSupportScript(ResultCollection results) : base(results) {
       var codeTemplate = Templates.CompiledSingleObjectiveOptimizationSupport;
       codeTemplate = codeTemplate.Replace("ENCODING_NAMESPACE", typeof(TEncodedSolution).Namespace);
       codeTemplate = codeTemplate.Replace("SOLUTION_CLASS", typeof(TEncodedSolution).Name);
@@ -44,6 +47,10 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new SingleObjectiveOptimizationSupportScript<TEncodedSolution>(this, cloner);
+    }
+
+    void ISingleObjectiveOptimizationSupport<TEncodedSolution>.InitializeResults() {
+      CompiledInstance.InitializeResults();
     }
 
     void ISingleObjectiveOptimizationSupport<TEncodedSolution>.Analyze(ISingleObjectiveSolutionContext<TEncodedSolution>[] solutionContexts, IRandom random) {

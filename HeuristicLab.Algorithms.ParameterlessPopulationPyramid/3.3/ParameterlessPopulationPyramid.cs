@@ -228,35 +228,35 @@ namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
 
       // Set up the results display
       if (!Results.TryGetValue("Iterations", out var result))
-        Results.Add(new Result("Iterations", resultsIterations = new IntValue(0)));
+        Results.Add(new Result("Iterations", "The current iteration.", resultsIterations = new IntValue(0)));
       else result.Value = resultsIterations = new IntValue(0);
       if (!Results.TryGetValue("Evaluations", out var result2))
-        Results.Add(new Result("Evaluations", resultsEvaluations = new IntValue(0)));
+        Results.Add(new Result("Evaluations", "The number of evaluations that have been performed.", resultsEvaluations = new IntValue(0)));
       else result2.Value = resultsEvaluations = new IntValue(0);
       if (!Results.TryGetValue("Best Quality", out var result4))
-        Results.Add(new Result("Best Quality", resultsBestQuality = new DoubleValue(tracker.BestQuality)));
+        Results.Add(new Result("Best Quality", "The best quality that has been observed so far.", resultsBestQuality = new DoubleValue(tracker.BestQuality)));
       else result4.Value = resultsBestQuality = new DoubleValue(tracker.BestQuality);
       if (!Results.TryGetValue("Evaluation Best Solution Was Found", out var result5))
-        Results.Add(new Result("Evaluation Best Solution Was Found", resultsBestFoundOnEvaluation = new IntValue(tracker.BestFoundOnEvaluation)));
+        Results.Add(new Result("Evaluation Best Solution Was Found", "The number of evaluations at which the best solution was found.", resultsBestFoundOnEvaluation = new IntValue(tracker.BestFoundOnEvaluation)));
       else result5.Value = resultsBestFoundOnEvaluation = new IntValue(tracker.BestFoundOnEvaluation);
       var table = new DataTable("Qualities");
       table.Rows.Add(ResultsQualitiesBest = new DataRow("Best Quality"));
       table.Rows.Add(ResultsQualitiesIteration = new DataRow("Iteration Quality"));
       ResultsQualitiesIteration.VisualProperties.LineStyle = DataRowVisualProperties.DataRowLineStyle.Dot;
       if (!Results.TryGetValue("Qualities", out var result6))
-        Results.Add(new Result("Qualities", table));
+        Results.Add(new Result("Qualities", "An analysis of the quality progress over time.", table));
       else result6.Value = table;
 
       table = new DataTable("Pyramid Levels");
       table.Rows.Add(ResultsLevels = new DataRow("Levels"));
       if (!Results.TryGetValue("Pyramid Levels", out var result7))
-        Results.Add(new Result("Pyramid Levels", table));
+        Results.Add(new Result("Pyramid Levels", "The number of levels of the pyramid.", table));
       else result7.Value = table;
 
       table = new DataTable("Stored Solutions");
       table.Rows.Add(ResultsSolutions = new DataRow("Solutions"));
       if (!Results.TryGetValue("Stored Solutions", out var result8))
-        Results.Add(new Result("Stored Solutions", table));
+        Results.Add(new Result("Stored Solutions", "The number of solutions that are found over time.", table));
       else result8.Value = table;
 
       base.Initialize(cancellationToken);

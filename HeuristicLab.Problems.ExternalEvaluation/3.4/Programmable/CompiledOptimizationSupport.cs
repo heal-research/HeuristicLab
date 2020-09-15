@@ -19,9 +19,12 @@
  */
 #endregion
 
+using HeuristicLab.Optimization;
+
 namespace HeuristicLab.Problems.ExternalEvaluation {
   public abstract class CompiledOptimizationSupport {
 
     public dynamic vars { get; set; }
+    public ResultCollection Results { get; set; }
   }
 }

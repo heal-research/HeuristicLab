@@ -74,10 +74,10 @@ namespace HeuristicLab.Optimization {
       }
     }
 
-    public void AddOrUpdateResult(string name, IItem value) {
+    public void AddOrUpdateResult(string name, IItem value, string description = null) {
       IResult res;
       if (!TryGetValue(name, out res)) {
-        res = new Result(name, value);
+        res = new Result(name, description ?? string.Empty, value);
         Add(res);
       } else res.Value = value;
     }

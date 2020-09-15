@@ -93,8 +93,8 @@ namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
       random = new MersenneTwister();
       Parameters.Add(MaximumIterationsParameter = new FixedValueParameter<IntValue>("Maximum Iterations", "", new IntValue(100)));
 
-      Results.Add(BestQualityResult = new Result<DoubleValue>("Best Quality"));
-      Results.Add(IterationsResult = new Result<IntValue>("Iterations"));
+      Results.Add(BestQualityResult = new Result<DoubleValue>("Best Quality", "The best quality found so far."));
+      Results.Add(IterationsResult = new Result<IntValue>("Iterations", "The current iteration."));
     }
 
     protected override void Initialize(CancellationToken cancellationToken) {

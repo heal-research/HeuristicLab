@@ -21,12 +21,12 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 
 namespace HeuristicLab.Analysis {
   [Item("RankBasedParetoFrontAnalyzer", "Uses the rank value that is computed by e.g. the NSGA2's fast non dominated sort operator to collect all solutions and their qualities of front 0 (the current Pareto front).")]
@@ -71,12 +71,12 @@ namespace HeuristicLab.Analysis {
 
       if (results.ContainsKey("Pareto Front"))
         results["Pareto Front"].Value = front;
-      else results.Add(new Result("Pareto Front", front));
+      else results.Add(new Result("Pareto Front", "A tabular presentation of the current Pareto front.", front));
 
       if (populationLevel) {
         if (results.ContainsKey("Pareto Archive"))
           results["Pareto Archive"].Value = paretoArchive;
-        else results.Add(new Result("Pareto Archive", paretoArchive));
+        else results.Add(new Result("Pareto Archive", "The individual solutions on the Pareto front.", paretoArchive));
       }
     }
 

@@ -36,14 +36,14 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
     [Storable] protected ReferenceParameter<IntValue> DimensionRefParameter { get; private set; }
     [Storable] public IResult<ISingleObjectiveSolutionContext<BinaryVector>> BestSolutionResult { get; private set; }
 
-    private ISingleObjectiveSolutionContext<BinaryVector> BestSolution {
-      get => BestSolutionResult.Value;
-      set => BestSolutionResult.Value = value;
-    }
-
     public int Dimension {
       get { return DimensionRefParameter.Value.Value; }
       protected set { DimensionRefParameter.Value.Value = value; }
+    }
+
+    protected ISingleObjectiveSolutionContext<BinaryVector> BestSolution {
+      get => BestSolutionResult.Value;
+      set => BestSolutionResult.Value = value;
     }
 
     [StorableConstructor]
@@ -65,7 +65,7 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
       EncodingParameter.ReadOnly = true;
       EvaluatorParameter.ReadOnly = true;
       Parameters.Add(DimensionRefParameter = new ReferenceParameter<IntValue>("Dimension", "The dimension of the binary vector problem.", Encoding.LengthParameter));
-      Results.Add(BestSolutionResult = new Result<ISingleObjectiveSolutionContext<BinaryVector>>("Best Solution"));
+      Results.Add(BestSolutionResult = new Result<ISingleObjectiveSolutionContext<BinaryVector>>("Best Solution", "The best solution found so far."));
 
       Operators.Add(new HammingSimilarityCalculator());
       // TODO: These should be added in the SingleObjectiveProblem base class (if they were accessible from there)

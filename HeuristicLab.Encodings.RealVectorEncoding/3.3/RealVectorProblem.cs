@@ -37,6 +37,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
   public abstract class RealVectorProblem : SingleObjectiveProblem<RealVectorEncoding, RealVector> {
     [Storable] protected ReferenceParameter<IntValue> DimensionRefParameter { get; private set; }
     [Storable] protected ReferenceParameter<DoubleMatrix> BoundsRefParameter { get; private set; }
+    [Storable] public IResult<ISingleObjectiveSolutionContext<RealVector>> BestSolutionResult { get; private set; }
 
     public int Dimension {
       get { return DimensionRefParameter.Value.Value; }
@@ -46,6 +47,11 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     public DoubleMatrix Bounds {
       get { return BoundsRefParameter.Value; }
       set { BoundsRefParameter.Value = value; }
+    }
+
+    protected ISingleObjectiveSolutionContext<RealVector> BestSolution {
+      get => BestSolutionResult.Value;
+      set => BestSolutionResult.Value = value;
     }
 
     [StorableConstructor]
@@ -59,6 +65,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       : base(original, cloner) {
       DimensionRefParameter = cloner.Clone(original.DimensionRefParameter);
       BoundsRefParameter = cloner.Clone(original.BoundsRefParameter);
+      BestSolutionResult = cloner.Clone(original.BestSolutionResult);
       RegisterEventHandlers();
     }
 
@@ -68,6 +75,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       EvaluatorParameter.ReadOnly = true;
       Parameters.Add(DimensionRefParameter = new ReferenceParameter<IntValue>("Dimension", "The dimension of the real vector problem.", Encoding.LengthParameter));
       Parameters.Add(BoundsRefParameter = new ReferenceParameter<DoubleMatrix>("Bounds", "The bounding box of the values.", Encoding.BoundsParameter));
+      Results.Add(BestSolutionResult = new Result<ISingleObjectiveSolutionContext<RealVector>>("Best Solution", "The best solution found so far."));
 
       Operators.Add(new HammingSimilarityCalculator());
 
@@ -81,12 +89,9 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
 
     public override void Analyze(ISingleObjectiveSolutionContext<RealVector>[] solutionContexts, IRandom random) {
       base.Analyze(solutionContexts, random);
-
-      //TODO: reimplement code below using results directly
-
-      //var best = GetBestSolution(vectors, qualities);
-
-      //results.AddOrUpdateResult("Best Solution", (IItem)best.Item1.Clone());
+      var best = GetBest(solutionContexts);
+      if (BestSolution == null || IsBetter(best, BestSolution))
+        BestSolution = best.Clone() as SingleObjectiveSolutionContext<RealVector>;
     }
 
     protected override sealed void OnEvaluatorChanged() {

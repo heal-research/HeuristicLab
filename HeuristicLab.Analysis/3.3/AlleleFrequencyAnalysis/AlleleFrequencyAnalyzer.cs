@@ -22,13 +22,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 
 namespace HeuristicLab.Analysis {
   /// <summary>
@@ -164,7 +164,7 @@ namespace HeuristicLab.Analysis {
         ResultCollection results;
         if (!ResultsParameter.ActualValue.ContainsKey(Name + " Results")) {
           results = new ResultCollection();
-          ResultsParameter.ActualValue.Add(new Result(Name + " Results", results));
+          ResultsParameter.ActualValue.Add(new Result(Name + " Results", "Collection of allele frequency analysis results", results));
         } else {
           results = (ResultCollection)ResultsParameter.ActualValue[Name + " Results"].Value;
         }
@@ -172,7 +172,7 @@ namespace HeuristicLab.Analysis {
         // store allele frequencies
         AlleleFrequencyCollection frequenciesCollection = new AlleleFrequencyCollection(frequencies);
         if (!results.ContainsKey("Allele Frequencies"))
-          results.Add(new Result("Allele Frequencies", frequenciesCollection));
+          results.Add(new Result("Allele Frequencies", "Displays for all alleles in the population the frequencies with which these occur.", frequenciesCollection));
         else
           results["Allele Frequencies"].Value = frequenciesCollection;
 
@@ -181,7 +181,7 @@ namespace HeuristicLab.Analysis {
           if (!results.ContainsKey("Allele Frequencies History")) {
             AlleleFrequencyCollectionHistory history = new AlleleFrequencyCollectionHistory();
             history.Add(frequenciesCollection);
-            results.Add(new Result("Allele Frequencies History", history));
+            results.Add(new Result("Allele Frequencies History", "Snapshots of the allele frequency of each generation.", history));
           } else {
             ((AlleleFrequencyCollectionHistory)results["Allele Frequencies History"].Value).Add(frequenciesCollection);
           }
@@ -214,7 +214,7 @@ namespace HeuristicLab.Analysis {
           allelesTable.Rows["Lost Alleles of Best Known Solution"].VisualProperties.SecondYAxis = true;
           allelesTable.Rows["Lost Alleles of Best Known Solution"].VisualProperties.StartIndexZero = true;
 
-          results.Add(new Result("Alleles", allelesTable));
+          results.Add(new Result("Alleles", "Tabular summary of the allele frequency analysis", allelesTable));
         } else {
           allelesTable = (DataTable)results["Alleles"].Value;
         }
@@ -233,27 +233,27 @@ namespace HeuristicLab.Analysis {
 
         // store alleles values
         if (!results.ContainsKey("Unique Alleles"))
-          results.Add(new Result("Unique Alleles", new DoubleValue(frequenciesCollection.Count)));
+          results.Add(new Result("Unique Alleles", "The number of unique alleles currently in the population.", new DoubleValue(frequenciesCollection.Count)));
         else
           ((DoubleValue)results["Unique Alleles"].Value).Value = frequenciesCollection.Count;
 
         if (!results.ContainsKey("Unique Alleles of Best Known Solution"))
-          results.Add(new Result("Unique Alleles of Best Known Solution", new DoubleValue(uniqueRelevantAllelesCount)));
+          results.Add(new Result("Unique Alleles of Best Known Solution", "The number of alleles from the best-known solution that are currently present in the population.", new DoubleValue(uniqueRelevantAllelesCount)));
         else
           ((DoubleValue)results["Unique Alleles of Best Known Solution"].Value).Value = uniqueRelevantAllelesCount;
 
         if (!results.ContainsKey("Fixed Alleles"))
-          results.Add(new Result("Fixed Alleles", new DoubleValue(fixedAllelesCount)));
+          results.Add(new Result("Fixed Alleles", "The number of alleles, that are present in every individual of the population.", new DoubleValue(fixedAllelesCount)));
         else
           ((DoubleValue)results["Fixed Alleles"].Value).Value = fixedAllelesCount;
 
         if (!results.ContainsKey("Fixed Alleles of Best Known Solution"))
-          results.Add(new Result("Fixed Alleles of Best Known Solution", new DoubleValue(fixedRelevantAllelesCount)));
+          results.Add(new Result("Fixed Alleles of Best Known Solution", "The number of alles from the best-known solution that are present in every individual of the population.", new DoubleValue(fixedRelevantAllelesCount)));
         else
           ((DoubleValue)results["Fixed Alleles of Best Known Solution"].Value).Value = fixedRelevantAllelesCount;
 
         if (!results.ContainsKey("Lost Alleles of Best Known Solution"))
-          results.Add(new Result("Lost Alleles of Best Known Solution", new DoubleValue(lostRelevantAllelesCount)));
+          results.Add(new Result("Lost Alleles of Best Known Solution", "The number of alles from the best-known solution that are currently not present in the population.", new DoubleValue(lostRelevantAllelesCount)));
         else
           ((DoubleValue)results["Lost Alleles of Best Known Solution"].Value).Value = lostRelevantAllelesCount;
 
@@ -281,12 +281,12 @@ namespace HeuristicLab.Analysis {
           plot.Rows.Add(row);
 
           if (!results.ContainsKey("Scatter Plot"))
-            results.Add(new Result("Scatter Plot", plot));
+            results.Add(new Result("Scatter Plot", "A plot that shows the correlation between number of unique alleles that an individual shares with the best-known solution and its relative quality.", plot));
           else
             results["Scatter Plot"].Value = plot;
           if (storeHistory) {
             if (!results.ContainsKey("Scatter Plot History")) {
-              results.Add(new Result("Scatter Plot History", new ScatterPlotHistory()));
+              results.Add(new Result("Scatter Plot History", "Snapshots of the scatter plot that show correlation between shared alleles with best-known solution and relative solution quality.", new ScatterPlotHistory()));
             }
             ((ScatterPlotHistory)results["Scatter Plot History"].Value).Add(plot);
           }
@@ -299,7 +299,7 @@ namespace HeuristicLab.Analysis {
           allelesTable.Rows["Average Contained Alleles of Best Known Solution"].Values.Add(avgContainedReleventAlleles);
 
           if (!results.ContainsKey("Average Contained Alleles of Best Known Solution"))
-            results.Add(new Result("Average Contained Alleles of Best Known Solution", new DoubleValue(avgContainedReleventAlleles)));
+            results.Add(new Result("Average Contained Alleles of Best Known Solution", "Average number of alleles that individuals share with the best-known solution.", new DoubleValue(avgContainedReleventAlleles)));
           else
             ((DoubleValue)results["Average Contained Alleles of Best Known Solution"].Value).Value = avgContainedReleventAlleles;
         }

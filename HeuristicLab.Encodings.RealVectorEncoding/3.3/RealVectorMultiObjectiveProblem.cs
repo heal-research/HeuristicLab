@@ -36,6 +36,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
   public abstract class RealVectorMultiObjectiveProblem : MultiObjectiveProblem<RealVectorEncoding, RealVector> {
     [Storable] protected ReferenceParameter<IntValue> DimensionRefParameter { get; private set; }
     [Storable] protected ReferenceParameter<DoubleMatrix> BoundsRefParameter { get; private set; }
+    [Storable] public IResult<ParetoFrontScatterPlot<RealVector>> BestParetoFrontResult { get; private set; }
 
     public int Dimension {
       get { return DimensionRefParameter.Value.Value; }
@@ -45,6 +46,11 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     public DoubleMatrix Bounds {
       get { return BoundsRefParameter.Value; }
       set { BoundsRefParameter.Value = value; }
+    }
+
+    protected ParetoFrontScatterPlot<RealVector> BestParetoFront {
+      get => BestParetoFrontResult.Value;
+      set => BestParetoFrontResult.Value = value;
     }
 
     [StorableConstructor]
@@ -58,6 +64,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       : base(original, cloner) {
       DimensionRefParameter = cloner.Clone(original.DimensionRefParameter);
       BoundsRefParameter = cloner.Clone(original.BoundsRefParameter);
+      BestParetoFrontResult = cloner.Clone(original.BestParetoFrontResult);
       RegisterEventHandlers();
     }
 
@@ -67,7 +74,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       EvaluatorParameter.ReadOnly = true;
       Parameters.Add(DimensionRefParameter = new ReferenceParameter<IntValue>("Dimension", "The dimension of the real vector problem.", Encoding.LengthParameter));
       Parameters.Add(BoundsRefParameter = new ReferenceParameter<DoubleMatrix>("Bounds", "The bounding box of the values.", Encoding.BoundsParameter));
-
+      Results.Add(BestParetoFrontResult = new Result<ParetoFrontScatterPlot<RealVector>>("Best Pareto Front", "The best Pareto front found so far."));
 
       Operators.Add(new HammingSimilarityCalculator());
       Operators.Add(new PopulationSimilarityAnalyzer(Operators.OfType<ISolutionSimilarityCalculator>()));
@@ -81,7 +88,8 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
 
       var fronts = DominationCalculator.CalculateAllParetoFrontsIndices(individuals, qualities, Maximization);
       var plot = new ParetoFrontScatterPlot<RealVector>(fronts, individuals, qualities, Objectives, BestKnownFront);
-      results.AddOrUpdateResult("Pareto Front Scatter Plot", plot);
+
+      BestParetoFront = plot;
     }
 
     protected override sealed void OnEvaluatorChanged() {

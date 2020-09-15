@@ -113,7 +113,7 @@ namespace HeuristicLab.Optimization {
       IResult result;
       if (!results.TryGetValue(ActualName, out result)) {
         if (DefaultValue == null) return null;
-        result = ItemDescription == Description ? new Result(ActualName, (T)DefaultValue.Clone()) : new Result(ActualName, Description, (T)DefaultValue.Clone());
+        result = new Result(ActualName, Description, (T)DefaultValue.Clone());
         results.Add(result);
       }
 
@@ -142,7 +142,7 @@ namespace HeuristicLab.Optimization {
 
       IResult result;
       if (!results.TryGetValue(ActualName, out result)) {
-        result = ItemDescription == Description ? new Result(ActualName, value) : new Result(ActualName, Description, value);
+        result = new Result(ActualName, Description, value);
         results.Add(result);
       } else result.Value = value;
     }

@@ -36,6 +36,7 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
   public abstract class PermutationMultiObjectiveProblem : MultiObjectiveProblem<PermutationEncoding, Permutation> {
     [Storable] protected ReferenceParameter<IntValue> DimensionRefParameter { get; private set; }
     [Storable] protected ReferenceParameter<EnumValue<PermutationTypes>> PermutationTypeRefParameter { get; private set; }
+    [Storable] public IResult<ParetoFrontScatterPlot<Permutation>> BestParetoFrontResult { get; private set; }
 
     public int Dimension {
       get { return DimensionRefParameter.Value.Value; }
@@ -45,6 +46,11 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
     public PermutationTypes Type {
       get { return PermutationTypeRefParameter.Value.Value; }
       set { PermutationTypeRefParameter.Value.Value = value; }
+    }
+
+    protected ParetoFrontScatterPlot<Permutation> BestParetoFront {
+      get => BestParetoFrontResult.Value;
+      set => BestParetoFrontResult.Value = value;
     }
 
     [StorableConstructor]
@@ -58,6 +64,8 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
       : base(original, cloner) {
       DimensionRefParameter = cloner.Clone(original.DimensionRefParameter);
       PermutationTypeRefParameter = cloner.Clone(original.PermutationTypeRefParameter);
+      BestParetoFrontResult = cloner.Clone(original.BestParetoFrontResult);
+
       RegisterEventHandlers();
     }
 
@@ -67,6 +75,7 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
       EvaluatorParameter.ReadOnly = true;
       Parameters.Add(DimensionRefParameter = new ReferenceParameter<IntValue>("Dimension", "The dimension of the permutation problem.", Encoding.LengthParameter));
       Parameters.Add(PermutationTypeRefParameter = new ReferenceParameter<EnumValue<PermutationTypes>>("Type", "The type of the permutation.", Encoding.PermutationTypeParameter));
+      Results.Add(BestParetoFrontResult = new Result<ParetoFrontScatterPlot<Permutation>>("Best Pareto Front", "The best Pareto front found so far."));
 
       Operators.Add(new HammingSimilarityCalculator());
       Operators.Add(new PopulationSimilarityAnalyzer(Operators.OfType<ISolutionSimilarityCalculator>()));
@@ -80,7 +89,8 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
 
       var fronts = DominationCalculator.CalculateAllParetoFrontsIndices(individuals, qualities, Maximization);
       var plot = new ParetoFrontScatterPlot<Permutation>(fronts, individuals, qualities, Objectives, BestKnownFront);
-      results.AddOrUpdateResult("Pareto Front Scatter Plot", plot);
+
+      BestParetoFront = plot;
     }
 
     protected override sealed void OnEvaluatorChanged() {

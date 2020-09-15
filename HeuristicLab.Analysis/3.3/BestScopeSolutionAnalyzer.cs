@@ -123,7 +123,7 @@ namespace HeuristicLab.Analysis {
         cloner.RegisterClonedObject(currentBestScope.SubScopes, new ScopeList());
         var solution = cloner.Clone(currentBestScope);
 
-        results.Add(new Result(BestSolutionResultName, solution));
+        results.Add(new Result(BestSolutionResultName, "The best solution found so far.", solution));
       } else {
         var bestSolution = (IScope)results[BestSolutionResultName].Value;
         string qualityName = QualityParameter.TranslatedName;

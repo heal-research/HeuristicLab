@@ -35,11 +35,16 @@ namespace HeuristicLab.Encodings.LinearLinkageEncoding {
   [StorableType("ad8b6097-a26b-440c-bfd4-92e5ecf17894")]
   public abstract class LinearLinkageMultiObjectiveProblem : MultiObjectiveProblem<LinearLinkageEncoding, LinearLinkage> {
     [Storable] protected ReferenceParameter<IntValue> DimensionRefParameter { get; private set; }
-    public IValueParameter<IntValue> DimensionParameter => DimensionRefParameter;
+    [Storable] public IResult<ParetoFrontScatterPlot<LinearLinkage>> BestParetoFrontResult { get; private set; }
 
     public int Dimension {
       get { return DimensionRefParameter.Value.Value; }
       set { DimensionRefParameter.Value.Value = value; }
+    }
+
+    protected ParetoFrontScatterPlot<LinearLinkage> BestParetoFront {
+      get => BestParetoFrontResult.Value;
+      set => BestParetoFrontResult.Value = value;
     }
 
     [StorableConstructor]
@@ -52,6 +57,8 @@ namespace HeuristicLab.Encodings.LinearLinkageEncoding {
     protected LinearLinkageMultiObjectiveProblem(LinearLinkageMultiObjectiveProblem original, Cloner cloner)
       : base(original, cloner) {
       DimensionRefParameter = cloner.Clone(original.DimensionRefParameter);
+      BestParetoFrontResult = cloner.Clone(original.BestParetoFrontResult);
+
       RegisterEventHandlers();
     }
 
@@ -60,7 +67,7 @@ namespace HeuristicLab.Encodings.LinearLinkageEncoding {
       EncodingParameter.ReadOnly = true;
       EvaluatorParameter.ReadOnly = true;
       Parameters.Add(DimensionRefParameter = new ReferenceParameter<IntValue>("Dimension", "The dimension of the linear linkage problem.", Encoding.LengthParameter));
-
+      Results.Add(BestParetoFrontResult = new Result<ParetoFrontScatterPlot<LinearLinkage>>("Best Pareto Front", "The best Pareto front found so far."));
 
       Operators.Add(new HammingSimilarityCalculator());
       Operators.Add(new PopulationSimilarityAnalyzer(Operators.OfType<ISolutionSimilarityCalculator>()));
@@ -74,7 +81,8 @@ namespace HeuristicLab.Encodings.LinearLinkageEncoding {
 
       var fronts = DominationCalculator.CalculateAllParetoFrontsIndices(individuals, qualities, Maximization);
       var plot = new ParetoFrontScatterPlot<LinearLinkage>(fronts, individuals, qualities, Objectives, BestKnownFront);
-      results.AddOrUpdateResult("Pareto Front Scatter Plot", plot);
+
+      BestParetoFront = plot;
     }
 
     protected override sealed void OnEvaluatorChanged() {

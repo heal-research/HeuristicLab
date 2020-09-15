@@ -7,15 +7,25 @@ using ENCODING_NAMESPACE;
 namespace HeuristicLab.Problems.ExternalEvaluation {
   public class CompiledSingleObjectiveOptimizationSupport : CompiledOptimizationSupport, ISingleObjectiveOptimizationSupport<SOLUTION_CLASS> {
 
-    public void Analyze(SOLUTION_CLASS[] solutions, double[] qualities, ResultCollection results, IRandom random) {
+    // private Result<StringValue> myResult;
+
+    public void InitializeResults() {
+      // Initialize the results that you intend to produce
+      // Uncomment the field above and the code below to add to the problem's results
+      // if (!Results.TryGetValue("My Result", out myResult))
+      //   Results.Add(myResult = new Result<StringValue>("My Result", "My result description."));
+    }
+
+    public void Analyze(ISingleObjectiveSolutionContext<SOLUTION_CLASS>[] solutionContexts, IRandom random) {
       // Use vars.yourVariable to access variables in the variable store i.e. yourVariable
       // Write or update results given the range of vectors and resulting qualities
-      // Uncomment the following lines if you want to retrieve the best individual
+      // Uncomment the following lines if you want to retrieve the current best individual
       // Maximization:
-      // var bestIndex = qualities.Select((v, i) => Tuple.Create(i, v)).OrderByDescending(x => x.Item2).First().Item1;
+      // var best = solutionContexts.OrderByDescending(x => x.EvaluationResult.Quality).First();
       // Minimization:
-      // var bestIndex = qualities.Select((v, i) => Tuple.Create(i, v)).OrderBy(x => x.Item2).First().Item1;
-      // var best = solutions[bestIndex];
+      // var best = solutionContexts.OrderBy(x => x.EvaluationResult.Quality).First();
+      // 
+      // myResult.Value = new StringValue("Custom result");
     }
 
     public IEnumerable<SOLUTION_CLASS> GetNeighbors(SOLUTION_CLASS solution, IRandom random) {

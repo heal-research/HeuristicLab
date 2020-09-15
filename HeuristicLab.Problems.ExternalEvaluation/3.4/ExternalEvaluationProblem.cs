@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,13 +25,13 @@ using System.Drawing;
 using System.Linq;
 using System.Threading;
 using Google.ProtocolBuffers;
+using HEAL.Attic;
 using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 
 namespace HeuristicLab.Problems.ExternalEvaluation {
   [Item("External Evaluation Problem (single-objective)", "A problem that is evaluated in a different process.")]
@@ -39,7 +39,9 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
   [StorableType("115EB3A5-A8A8-4A2E-9799-9485FE896DEC")]
   // BackwardsCompatibility3.3
   // Rename class to SingleObjectiveExternalEvaluationProblem
-  public class ExternalEvaluationProblem : SingleObjectiveProblem<IEncoding<IEncodedSolution>, IEncodedSolution>, IExternalEvaluationProblem {
+  public class ExternalEvaluationProblem<TEncoding, TEncodedSolution> : SingleObjectiveProblem<TEncoding, TEncodedSolution>, IExternalEvaluationProblem
+    where TEncoding : class, IEncoding
+    where TEncodedSolution : class, IEncodedSolution {
 
     public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Type; }
@@ -55,17 +57,13 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
     public IValueParameter<SolutionMessageBuilder> MessageBuilderParameter {
       get { return (IValueParameter<SolutionMessageBuilder>)Parameters["MessageBuilder"]; }
     }
-    public IFixedValueParameter<SingleObjectiveOptimizationSupportScript> SupportScriptParameter {
-      get { return (IFixedValueParameter<SingleObjectiveOptimizationSupportScript>)Parameters["SupportScript"]; }
-    }
-
-    private IFixedValueParameter<BoolValue> MaximizationParameter {
-      get { return (IFixedValueParameter<BoolValue>)Parameters["Maximization"]; }
+    public IFixedValueParameter<SingleObjectiveOptimizationSupportScript<TEncodedSolution>> SupportScriptParameter {
+      get { return (IFixedValueParameter<SingleObjectiveOptimizationSupportScript<TEncodedSolution>>)Parameters["SupportScript"]; }
     }
     #endregion
 
     #region Properties
-    public new IEncoding<IEncodedSolution> Encoding {
+    public new TEncoding Encoding {
       get { return base.Encoding; }
       set { base.Encoding = value; }
     }
@@ -78,59 +76,52 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
     public SolutionMessageBuilder MessageBuilder {
       get { return MessageBuilderParameter.Value; }
     }
-    public SingleObjectiveOptimizationSupportScript OptimizationSupportScript {
+    public SingleObjectiveOptimizationSupportScript<TEncodedSolution> OptimizationSupportScript {
       get { return SupportScriptParameter.Value; }
     }
-    private ISingleObjectiveOptimizationSupport OptimizationSupport {
+    private ISingleObjectiveOptimizationSupport<TEncodedSolution> OptimizationSupport {
       get { return SupportScriptParameter.Value; }
     }
     #endregion
 
     [StorableConstructor]
     protected ExternalEvaluationProblem(StorableConstructorFlag _) : base(_) { }
-    protected ExternalEvaluationProblem(ExternalEvaluationProblem original, Cloner cloner) : base(original, cloner) { }
+    protected ExternalEvaluationProblem(ExternalEvaluationProblem<TEncoding, TEncodedSolution> original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new ExternalEvaluationProblem(this, cloner);
+      return new ExternalEvaluationProblem<TEncoding, TEncodedSolution>(this, cloner);
     }
-    public ExternalEvaluationProblem()
-      : base() {
-      Parameters.Remove("Maximization"); // readonly in base class
-      Parameters.Add(new FixedValueParameter<BoolValue>("Maximization", "Set to false if the problem should be minimized.", new BoolValue()));
+    public ExternalEvaluationProblem(TEncoding encoding)
+      : base(encoding) {
+      MaximizationParameter.ReadOnly = false;
+      MaximizationParameter.Value = new BoolValue(); // is a read-only bool value in base class
       Parameters.Add(new OptionalValueParameter<EvaluationCache>("Cache", "Cache of previously evaluated solutions."));
       Parameters.Add(new ValueParameter<CheckedItemCollection<IEvaluationServiceClient>>("Clients", "The clients that are used to communicate with the external application.", new CheckedItemCollection<IEvaluationServiceClient>() { new EvaluationServiceClient() }));
       Parameters.Add(new ValueParameter<SolutionMessageBuilder>("MessageBuilder", "The message builder that converts from HeuristicLab objects to SolutionMessage representation.", new SolutionMessageBuilder()) { Hidden = true });
-      Parameters.Add(new FixedValueParameter<SingleObjectiveOptimizationSupportScript>("SupportScript", "A script that can provide neighborhood and analyze the results of the optimization.", new SingleObjectiveOptimizationSupportScript()));
+      Parameters.Add(new FixedValueParameter<SingleObjectiveOptimizationSupportScript<TEncodedSolution>>("SupportScript", "A script that can provide neighborhood and analyze the results of the optimization.", new SingleObjectiveOptimizationSupportScript<TEncodedSolution>(Results)));
 
       Operators.Add(new BestScopeSolutionAnalyzer());
     }
 
     #region Single Objective Problem Overrides
-    public override bool Maximization {
-      get { return Parameters.ContainsKey("Maximization") && ((IValueParameter<BoolValue>)Parameters["Maximization"]).Value.Value; }
-    }
-
-    public virtual void SetMaximization(bool maximization) {
-      MaximizationParameter.Value.Value = maximization;
-    }
-
-    public override double Evaluate(IEncodedSolution individual, IRandom random) {
-      var qualityMessage = Evaluate(BuildSolutionMessage(individual));
+    public override ISingleObjectiveEvaluationResult Evaluate(TEncodedSolution solution, IRandom random, CancellationToken cancellationToken) {
+      var qualityMessage = Evaluate(BuildSolutionMessage(solution), cancellationToken);
       if (!qualityMessage.HasExtension(SingleObjectiveQualityMessage.QualityMessage_))
         throw new InvalidOperationException("The received message is not a SingleObjectiveQualityMessage.");
-      return qualityMessage.GetExtension(SingleObjectiveQualityMessage.QualityMessage_).Quality;
+      var quality = qualityMessage.GetExtension(SingleObjectiveQualityMessage.QualityMessage_).Quality;
+      return new SingleObjectiveEvaluationResult(quality);
+
     }
-    public virtual QualityMessage Evaluate(SolutionMessage solutionMessage) {
+    public virtual QualityMessage Evaluate(SolutionMessage solutionMessage, CancellationToken cancellationToken) {
       return Cache == null
-        ? EvaluateOnNextAvailableClient(solutionMessage)
-        : Cache.GetValue(solutionMessage, EvaluateOnNextAvailableClient, GetQualityMessageExtensions());
+        ? EvaluateOnNextAvailableClient(solutionMessage, cancellationToken)
+        : Cache.GetValue(solutionMessage, EvaluateOnNextAvailableClient, GetQualityMessageExtensions(), cancellationToken);
     }
 
-    public override void Analyze(IEncodedSolution[] individuals, double[] qualities, ResultCollection results, IRandom random) {
-      OptimizationSupport.Analyze(individuals, qualities, results, random);
+    public override void Analyze(ISingleObjectiveSolutionContext<TEncodedSolution>[] solutions,  IRandom random) {
+      OptimizationSupport.Analyze(solutions, random);
     }
-
-    public override IEnumerable<IEncodedSolution> GetNeighbors(IEncodedSolution individual, IRandom random) {
-      return OptimizationSupport.GetNeighbors(individual, random);
+    public override IEnumerable<TEncodedSolution> GetNeighbors(TEncodedSolution solutions, IRandom random) {
+      return OptimizationSupport.GetNeighbors(solutions, random);
     }
     #endregion
 
@@ -142,9 +133,9 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
 
     #region Evaluation
     private HashSet<IEvaluationServiceClient> activeClients = new HashSet<IEvaluationServiceClient>();
-    private object clientLock = new object();
+    private readonly object clientLock = new object();
 
-    private QualityMessage EvaluateOnNextAvailableClient(SolutionMessage message) {
+    private QualityMessage EvaluateOnNextAvailableClient(SolutionMessage message, CancellationToken cancellationToken) {
       IEvaluationServiceClient client = null;
       lock (clientLock) {
         client = Clients.CheckedItems.FirstOrDefault(c => !activeClients.Contains(c));
@@ -157,8 +148,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
       }
       try {
         return client.Evaluate(message, GetQualityMessageExtensions());
-      }
-      finally {
+      } finally {
         lock (clientLock) {
           activeClients.Remove(client);
           Monitor.PulseAll(clientLock);
@@ -166,7 +156,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
       }
     }
 
-    private SolutionMessage BuildSolutionMessage(IEncodedSolution solution, int solutionId = 0) {
+    private SolutionMessage BuildSolutionMessage(TEncodedSolution solution, int solutionId = 0) {
       lock (clientLock) {
         SolutionMessage.Builder protobufBuilder = SolutionMessage.CreateBuilder();
         protobufBuilder.SolutionId = solutionId;
@@ -175,8 +165,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
         foreach (var variable in scope.Variables) {
           try {
             MessageBuilder.AddToMessage(variable.Value, variable.Name, protobufBuilder);
-          }
-          catch (ArgumentException ex) {
+          } catch (ArgumentException ex) {
             throw new InvalidOperationException(string.Format("ERROR while building solution message: Parameter {0} cannot be added to the message", Name), ex);
           }
         }

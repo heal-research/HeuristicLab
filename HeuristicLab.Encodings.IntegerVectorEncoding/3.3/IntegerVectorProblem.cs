@@ -35,9 +35,9 @@ using HeuristicLab.Parameters;
 namespace HeuristicLab.Encodings.IntegerVectorEncoding {
   [StorableType("c6081457-a3de-45ce-9f47-e0eb1c851bd2")]
   public abstract class IntegerVectorProblem : SingleObjectiveProblem<IntegerVectorEncoding, IntegerVector> {
-    [Storable] protected IResultParameter<IntegerVector> BestResultParameter { get; private set; }
     [Storable] protected ReferenceParameter<IntValue> DimensionRefParameter { get; private set; }
     [Storable] protected ReferenceParameter<IntMatrix> BoundsRefParameter { get; private set; }
+    [Storable] public IResult<ISingleObjectiveSolutionContext<IntegerVector>> BestSolutionResult { get; private set; }
 
     public int Dimension {
       get { return DimensionRefParameter.Value.Value; }
@@ -49,6 +49,11 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
       protected set { BoundsRefParameter.Value = value; }
     }
 
+    protected ISingleObjectiveSolutionContext<IntegerVector> BestSolution {
+      get => BestSolutionResult.Value;
+      set => BestSolutionResult.Value = value;
+    }
+
     [StorableConstructor]
     protected IntegerVectorProblem(StorableConstructorFlag _) : base(_) { }
     [StorableHook(HookType.AfterDeserialization)]
@@ -58,9 +63,9 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
 
     protected IntegerVectorProblem(IntegerVectorProblem original, Cloner cloner)
       : base(original, cloner) {
-      BestResultParameter = cloner.Clone(original.BestResultParameter);
       DimensionRefParameter = cloner.Clone(original.DimensionRefParameter);
       BoundsRefParameter = cloner.Clone(original.BoundsRefParameter);
+      BestSolutionResult = cloner.Clone(original.BestSolutionResult);
       RegisterEventHandlers();
     }
 
@@ -68,9 +73,9 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
     protected IntegerVectorProblem(IntegerVectorEncoding encoding) : base(encoding) {
       EncodingParameter.ReadOnly = true;
       EvaluatorParameter.ReadOnly = true;
-      Parameters.Add(BestResultParameter = new ResultParameter<IntegerVector>("Best Solution", "The best solution."));
       Parameters.Add(DimensionRefParameter = new ReferenceParameter<IntValue>("Dimension", "The dimension of the integer vector problem.", Encoding.LengthParameter));
       Parameters.Add(BoundsRefParameter = new ReferenceParameter<IntMatrix>("Bounds", "The bounding box and step sizes of the values.", Encoding.BoundsParameter));
+      Results.Add(BestSolutionResult = new Result<ISingleObjectiveSolutionContext<IntegerVector>>("Best Solution", "The best solution found so far."));
 
       Operators.Add(new HammingSimilarityCalculator());
       // TODO: These should be added in the SingleObjectiveProblem base class (if they were accessible from there)
@@ -81,13 +86,11 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
       RegisterEventHandlers();
     }
 
-    public override void Analyze(ISingleObjectiveSolutionContext<IntegerVector>[] solutionContext, IRandom random) {
-      base.Analyze(solutionContext, random);
-
-      var best = GetBest(solutionContext);
-
-      //TODO reimplement code below using results directly
-      //results.AddOrUpdateResult("Best Solution", (IntegerVector)best.EncodedSolution.Clone());
+    public override void Analyze(ISingleObjectiveSolutionContext<IntegerVector>[] solutionContexts, IRandom random) {
+      base.Analyze(solutionContexts, random);
+      var best = GetBest(solutionContexts);
+      if (BestSolution == null || IsBetter(best, BestSolution))
+        BestSolution = best.Clone() as SingleObjectiveSolutionContext<IntegerVector>;
     }
 
     protected override sealed void OnEvaluatorChanged() {

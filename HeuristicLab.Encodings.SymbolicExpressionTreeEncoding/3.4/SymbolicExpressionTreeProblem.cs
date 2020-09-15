@@ -38,6 +38,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     [Storable] protected ReferenceParameter<IntValue> TreeLengthRefParameter { get; private set; }
     [Storable] protected ReferenceParameter<IntValue> TreeDepthRefParameter { get; private set; }
     [Storable] protected ReferenceParameter<ISymbolicExpressionGrammar> GrammarRefParameter { get; private set; }
+    [Storable] public IResult<ISingleObjectiveSolutionContext<ISymbolicExpressionTree>> BestSolutionResult { get; private set; }
 
     public int TreeLength {
       get => TreeLengthRefParameter.Value.Value;
@@ -54,6 +55,11 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       set => GrammarRefParameter.Value = value;
     }
 
+    protected ISingleObjectiveSolutionContext<ISymbolicExpressionTree> BestSolution {
+      get => BestSolutionResult.Value;
+      set => BestSolutionResult.Value = value;
+    }
+
     // persistence
     [StorableConstructor]
     protected SymbolicExpressionTreeProblem(StorableConstructorFlag _) : base(_) { }
@@ -68,6 +74,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       TreeLengthRefParameter = cloner.Clone(original.TreeLengthRefParameter);
       TreeDepthRefParameter = cloner.Clone(original.TreeDepthRefParameter);
       GrammarRefParameter = cloner.Clone(original.GrammarRefParameter);
+      BestSolutionResult = cloner.Clone(original.BestSolutionResult);
       RegisterEventHandlers();
     }
 
@@ -79,6 +86,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       Parameters.Add(TreeLengthRefParameter = new ReferenceParameter<IntValue>("TreeLength", "The maximum amount of nodes.", Encoding.TreeLengthParameter));
       Parameters.Add(TreeDepthRefParameter = new ReferenceParameter<IntValue>("TreeDepth", "The maximum depth of the tree.", Encoding.TreeDepthParameter));
       Parameters.Add(GrammarRefParameter = new ReferenceParameter<ISymbolicExpressionGrammar>("Grammar", "The grammar that describes a valid tree.", Encoding.GrammarParameter));
+      Results.Add(BestSolutionResult = new Result<ISingleObjectiveSolutionContext<ISymbolicExpressionTree>>("Best Solution", "The best solution found so far."));
 
       // TODO: These should be added in the SingleObjectiveProblem base class (if they were accessible from there)
       Operators.Add(new QualitySimilarityCalculator());
@@ -89,25 +97,10 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     }
 
     public override void Analyze(ISingleObjectiveSolutionContext<ISymbolicExpressionTree>[] solutionContexts, IRandom random) {
-      //TODO reimplement code below using results directly
-
-      //if (!results.ContainsKey("Best Solution Quality")) {
-      //  results.Add(new Result("Best Solution Quality", typeof(DoubleValue)));
-      //}
-      //if (!results.ContainsKey("Best Solution")) {
-      //  results.Add(new Result("Best Solution", typeof(ISymbolicExpressionTree)));
-      //}
-
-      //var bestQuality = Maximization ? qualities.Max() : qualities.Min();
-
-      //if (results["Best Solution Quality"].Value == null ||
-      //    IsBetter(bestQuality, ((DoubleValue)results["Best Solution Quality"].Value).Value)) {
-      //  var bestIdx = Array.IndexOf(qualities, bestQuality);
-      //  var bestClone = (IItem)trees[bestIdx].Clone();
-
-      //  results["Best Solution"].Value = bestClone;
-      //  results["Best Solution Quality"].Value = new DoubleValue(bestQuality);
-      //}
+      base.Analyze(solutionContexts, random);
+      var best = GetBest(solutionContexts);
+      if (BestSolution == null || IsBetter(best, BestSolution))
+        BestSolution = best.Clone() as SingleObjectiveSolutionContext<ISymbolicExpressionTree>;
     }
 
     protected sealed override void OnEvaluatorChanged() {

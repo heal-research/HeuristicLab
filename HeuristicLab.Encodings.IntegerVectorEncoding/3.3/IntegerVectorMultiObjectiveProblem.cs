@@ -34,9 +34,9 @@ using HeuristicLab.Parameters;
 namespace HeuristicLab.Encodings.IntegerVectorEncoding {
   [StorableType("11916b0f-4c34-4ece-acae-e28d11211b43")]
   public abstract class IntegerVectorMultiObjectiveProblem : MultiObjectiveProblem<IntegerVectorEncoding, IntegerVector> {
-    [Storable] protected IResultParameter<ParetoFrontScatterPlot<IntegerVector>> BestResultParameter { get; private set; }
     [Storable] protected ReferenceParameter<IntValue> DimensionRefParameter { get; private set; }
     [Storable] protected ReferenceParameter<IntMatrix> BoundsRefParameter { get; private set; }
+    [Storable] public IResult<ParetoFrontScatterPlot<IntegerVector>> BestParetoFrontResult { get; private set; }
 
     public int Dimension {
       get { return DimensionRefParameter.Value.Value; }
@@ -48,6 +48,11 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
       set { BoundsRefParameter.Value = value; }
     }
 
+    protected ParetoFrontScatterPlot<IntegerVector> BestParetoFront {
+      get => BestParetoFrontResult.Value;
+      set => BestParetoFrontResult.Value = value;
+    }
+
     [StorableConstructor]
     protected IntegerVectorMultiObjectiveProblem(StorableConstructorFlag _) : base(_) { }
     [StorableHook(HookType.AfterDeserialization)]
@@ -57,9 +62,9 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
 
     protected IntegerVectorMultiObjectiveProblem(IntegerVectorMultiObjectiveProblem original, Cloner cloner)
       : base(original, cloner) {
-      BestResultParameter = cloner.Clone(original.BestResultParameter);
       DimensionRefParameter = cloner.Clone(original.DimensionRefParameter);
       BoundsRefParameter = cloner.Clone(original.BoundsRefParameter);
+      BestParetoFrontResult = cloner.Clone(original.BestParetoFrontResult);
       RegisterEventHandlers();
     }
 
@@ -67,9 +72,9 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
     protected IntegerVectorMultiObjectiveProblem(IntegerVectorEncoding encoding) : base(encoding) {
       EncodingParameter.ReadOnly = true;
       EvaluatorParameter.ReadOnly = true;
-      Parameters.Add(BestResultParameter = new ResultParameter<ParetoFrontScatterPlot<IntegerVector>>("Best Pareto Front", "The best Pareto front found."));
       Parameters.Add(DimensionRefParameter = new ReferenceParameter<IntValue>("Dimension", "The dimension of the integer vector problem.", Encoding.LengthParameter));
       Parameters.Add(BoundsRefParameter = new ReferenceParameter<IntMatrix>("Bounds", "The bounds of the integer vector problem.", Encoding.BoundsParameter));
+      Results.Add(BestParetoFrontResult = new Result<ParetoFrontScatterPlot<IntegerVector>>("Best Pareto Front", "The best Pareto front found so far."));
 
       Operators.Add(new HammingSimilarityCalculator());
       Operators.Add(new PopulationSimilarityAnalyzer(Operators.OfType<ISolutionSimilarityCalculator>()));
@@ -84,7 +89,7 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
       var fronts = DominationCalculator.CalculateAllParetoFrontsIndices(individuals, qualities, Maximization);
       var plot = new ParetoFrontScatterPlot<IntegerVector>(fronts, individuals, qualities, Objectives, BestKnownFront);
 
-      BestResultParameter.ActualValue = plot;
+      BestParetoFront = plot;
     }
 
     protected override sealed void OnEvaluatorChanged() {

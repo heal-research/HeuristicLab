@@ -29,6 +29,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
   public interface ISingleObjectiveOptimizationSupport<TEncodedSolution>
     where TEncodedSolution : class, IEncodedSolution {
 
+    void InitializeResults();
     void Analyze(ISingleObjectiveSolutionContext<TEncodedSolution>[] solutionContexts, IRandom random);
     IEnumerable<TEncodedSolution> GetNeighbors(TEncodedSolution individual, IRandom random);
   }

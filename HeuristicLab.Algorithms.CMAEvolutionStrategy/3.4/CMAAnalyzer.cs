@@ -21,6 +21,7 @@
 
 using System;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -29,7 +30,6 @@ using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 
 namespace HeuristicLab.Algorithms.CMAEvolutionStrategy {
   [Item("CMAAnalyzer", "Analyzes the development of strategy parameters and visualizes the performance of CMA-ES.")]
@@ -97,7 +97,7 @@ namespace HeuristicLab.Algorithms.CMAEvolutionStrategy {
         progress.Rows.Add(new DataRow("Max Quality"));
         progress.Rows.Add(new DataRow("Avg Quality"));
         progress.VisualProperties.YAxisLogScale = true;
-        results.Add(new Result("Progress", progress));
+        results.Add(new Result("Progress", "The quality progress over time on a log scale.", progress));
       }
       progress.Rows["AxisRatio"].Values.Add(sp.AxisRatio);
       progress.Rows["Sigma"].Values.Add(sp.Sigma);
@@ -113,7 +113,7 @@ namespace HeuristicLab.Algorithms.CMAEvolutionStrategy {
         scaling.VisualProperties.YAxisLogScale = true;
         for (int i = 0; i < sp.C.GetLength(0); i++)
           scaling.Rows.Add(new DataRow("Axis" + i.ToString()));
-        results.Add(new Result("Scaling", scaling));
+        results.Add(new Result("Scaling", "The extent to which the individual dimensions are scaled by the mutation.", scaling));
       }
       for (int i = 0; i < sp.C.GetLength(0); i++)
         scaling.Rows["Axis" + i.ToString()].Values.Add(sp.D[i]);
@@ -125,7 +125,7 @@ namespace HeuristicLab.Algorithms.CMAEvolutionStrategy {
         realVector = new DataTable("Object Variables");
         for (int i = 0; i < vector.Length; i++)
           realVector.Rows.Add(new DataRow("Axis" + i.ToString()));
-        results.Add(new Result("Object Variables", realVector));
+        results.Add(new Result("Object Variables", "The value of the centroid point.", realVector));
       }
       for (int i = 0; i < vector.Length; i++)
         realVector.Rows["Axis" + i.ToString()].Values.Add(vector[i]);
@@ -140,7 +140,7 @@ namespace HeuristicLab.Algorithms.CMAEvolutionStrategy {
         stdDevs.Rows.Add(new DataRow("MaxStdDev"));
         for (int i = 0; i < vector.Length; i++)
           stdDevs.Rows.Add(new DataRow("Axis" + i.ToString()));
-        results.Add(new Result("Standard Deviations", stdDevs));
+        results.Add(new Result("Standard Deviations", "The standard deviations of the various axis, as well as the minimum and maximum standard deviation.", stdDevs));
       }
       for (int i = 0; i < vector.Length; i++)
         stdDevs.Rows["Axis" + i.ToString()].Values.Add(Math.Sqrt(sp.C[i, i]));

@@ -36,10 +36,16 @@ namespace HeuristicLab.Encodings.LinearLinkageEncoding {
   [StorableType("fb4cfc7c-dc7c-4da6-843f-0dad7d3d7981")]
   public abstract class LinearLinkageProblem : SingleObjectiveProblem<LinearLinkageEncoding, LinearLinkage> {
     [Storable] protected ReferenceParameter<IntValue> DimensionRefParameter { get; private set; }
+    [Storable] public IResult<ISingleObjectiveSolutionContext<LinearLinkage>> BestSolutionResult { get; private set; }
 
     public int Dimension {
       get { return DimensionRefParameter.Value.Value; }
       set { DimensionRefParameter.Value.Value = value; }
+    }
+
+    protected ISingleObjectiveSolutionContext<LinearLinkage> BestSolution {
+      get => BestSolutionResult.Value;
+      set => BestSolutionResult.Value = value;
     }
 
     [StorableConstructor]
@@ -52,6 +58,7 @@ namespace HeuristicLab.Encodings.LinearLinkageEncoding {
     protected LinearLinkageProblem(LinearLinkageProblem original, Cloner cloner)
       : base(original, cloner) {
       DimensionRefParameter = cloner.Clone(original.DimensionRefParameter);
+      BestSolutionResult = cloner.Clone(original.BestSolutionResult);
       RegisterEventHandlers();
     }
 
@@ -60,6 +67,7 @@ namespace HeuristicLab.Encodings.LinearLinkageEncoding {
       EncodingParameter.ReadOnly = true;
       EvaluatorParameter.ReadOnly = true;
       Parameters.Add(DimensionRefParameter = new ReferenceParameter<IntValue>("Dimension", "The dimension of the linear linkage problem.", Encoding.LengthParameter));
+      Results.Add(BestSolutionResult = new Result<ISingleObjectiveSolutionContext<LinearLinkage>>("Best Solution", "The best solution found so far."));
 
       Operators.Add(new HammingSimilarityCalculator());
       // TODO: These should be added in the SingleObjectiveProblem base class (if they were accessible from there)
@@ -72,12 +80,9 @@ namespace HeuristicLab.Encodings.LinearLinkageEncoding {
 
     public override void Analyze(ISingleObjectiveSolutionContext<LinearLinkage>[] solutionContexts, IRandom random) {
       base.Analyze(solutionContexts, random);
-
-      //TODO: reimplement code below using results directly
-
-      //var best = GetBestSolution(vectors, qualities);
-
-      //results.AddOrUpdateResult("Best Solution", (Item)best.Item1.Clone());
+      var best = GetBest(solutionContexts);
+      if (BestSolution == null || IsBetter(best, BestSolution))
+        BestSolution = best.Clone() as SingleObjectiveSolutionContext<LinearLinkage>;
     }
 
     protected override sealed void OnEvaluatorChanged() {

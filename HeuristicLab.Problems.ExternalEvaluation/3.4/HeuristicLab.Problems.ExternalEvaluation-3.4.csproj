@@ -137,7 +137,7 @@
     <Compile Include="Interfaces\IMultiObjectiveOptimizationSupport.cs" />
     <Compile Include="MultiObjectiveExternalEvaluationProblem.cs" />
     <Compile Include="ExternalEvaluationProblemInstances.cs" />
-    <Compile Include="SingleObjectiveExternalEvaluationProblem.cs" />
+    <Compile Include="ExternalEvaluationProblem.cs" />
     <Compile Include="Interfaces\IEvaluationServiceClient.cs" />
     <Compile Include="Interfaces\IEvaluationChannel.cs" />
     <Compile Include="Interfaces\IItemToSolutionMessageConverter.cs" />

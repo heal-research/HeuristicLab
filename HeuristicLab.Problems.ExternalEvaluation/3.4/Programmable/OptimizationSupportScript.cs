@@ -22,8 +22,9 @@
 using System;
 using System.Linq;
 using System.Reflection;
-using HeuristicLab.Common;
 using HEAL.Attic;
+using HeuristicLab.Common;
+using HeuristicLab.Optimization;
 using HeuristicLab.Scripting;
 
 namespace HeuristicLab.Problems.ExternalEvaluation {
@@ -37,21 +38,29 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
       get { return variableStore; }
     }
 
+    [Storable]
+    private ResultCollection results;
+    public ResultCollection Results {
+      get { return results; }
+    }
+
     [StorableConstructor]
     protected OptimizationSupportScript(StorableConstructorFlag _) : base(_) { }
     protected OptimizationSupportScript(OptimizationSupportScript<T> original, Cloner cloner)
       : base(original, cloner) {
       variableStore = cloner.Clone(original.variableStore);
+      results = cloner.Clone(original.results);
+    }
+    
+    [Obsolete("Do not use this constructor.")]
+    protected OptimizationSupportScript() : base() {
+      variableStore = new VariableStore();
     }
 
-    protected OptimizationSupportScript()
+    protected OptimizationSupportScript(ResultCollection results)
       : base() {
       variableStore = new VariableStore();
-    }
-
-    protected OptimizationSupportScript(string code)
-      : base(code) {
-      variableStore = new VariableStore();
+      this.results = results;
     }
 
     private readonly object compileLock = new object();
@@ -85,6 +94,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
       try {
         inst = (CompiledOptimizationSupport)Activator.CreateInstance(types.Single(x => typeof(CompiledOptimizationSupport).IsAssignableFrom(x)));
         inst.vars = new Variables(VariableStore);
+        inst.Results = results;
       } catch (Exception e) {
         compiledInstance = null;
         throw new OptimizationSupportException("Instantiating the optimization support class failed." + Environment.NewLine + "Check your default constructor.", e);
@@ -92,7 +102,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
 
       var concreteInst = inst as T;
       if (concreteInst == null)
-        throw new OptimizationSupportException("The optimization support class does not implement ISingleObjectiveOptimizationSupport." + Environment.NewLine + "Please implement that interface in the subclass of CompiledOptimizationSupport.");
+        throw new OptimizationSupportException($"The optimization support class does not implement {typeof(T).FullName}." + Environment.NewLine + "Please implement that interface in the subclass of CompiledOptimizationSupport.");
 
       CompiledInstance = concreteInst;
 

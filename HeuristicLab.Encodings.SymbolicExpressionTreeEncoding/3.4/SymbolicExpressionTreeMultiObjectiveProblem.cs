@@ -37,6 +37,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     [Storable] private ReferenceParameter<IntValue> TreeLengthRefParameter { get; set; }
     [Storable] private ReferenceParameter<IntValue> TreeDepthRefParameter { get; set; }
     [Storable] private ReferenceParameter<ISymbolicExpressionGrammar> GrammarRefParameter { get; set; }
+    [Storable] public IResult<ParetoFrontScatterPlot<ISymbolicExpressionTree>> BestParetoFrontResult { get; private set; }
 
     public int TreeLength {
       get => TreeLengthRefParameter.Value.Value;
@@ -53,7 +54,11 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       set => GrammarRefParameter.Value = value;
     }
 
-    // persistence
+    protected ParetoFrontScatterPlot<ISymbolicExpressionTree> BestParetoFront {
+      get => BestParetoFrontResult.Value;
+      set => BestParetoFrontResult.Value = value;
+    }
+
     [StorableConstructor]
     protected SymbolicExpressionTreeMultiObjectiveProblem(StorableConstructorFlag _) : base(_) { }
     [StorableHook(HookType.AfterDeserialization)]
@@ -61,13 +66,12 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       RegisterEventHandlers();
     }
 
-
-    // cloning
     protected SymbolicExpressionTreeMultiObjectiveProblem(SymbolicExpressionTreeMultiObjectiveProblem original, Cloner cloner)
       : base(original, cloner) {
       TreeLengthRefParameter = cloner.Clone(original.TreeLengthRefParameter);
       TreeDepthRefParameter = cloner.Clone(original.TreeDepthRefParameter);
       GrammarRefParameter = cloner.Clone(original.GrammarRefParameter);
+      BestParetoFrontResult = cloner.Clone(original.BestParetoFrontResult);
       RegisterEventHandlers();
     }
 
@@ -78,6 +82,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       Parameters.Add(TreeLengthRefParameter = new ReferenceParameter<IntValue>("TreeLength", "The maximum amount of nodes.", Encoding.TreeLengthParameter));
       Parameters.Add(TreeDepthRefParameter = new ReferenceParameter<IntValue>("TreeDepth", "The maximum depth of the tree.", Encoding.TreeDepthParameter));
       Parameters.Add(GrammarRefParameter = new ReferenceParameter<ISymbolicExpressionGrammar>("Grammar", "The grammar that describes a valid tree.", Encoding.GrammarParameter));
+      Results.Add(BestParetoFrontResult = new Result<ParetoFrontScatterPlot<ISymbolicExpressionTree>>("Best Pareto Front", "The best Pareto front found so far."));
 
       Parameterize();
       RegisterEventHandlers();
@@ -89,7 +94,8 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
 
       var fronts = DominationCalculator.CalculateAllParetoFrontsIndices(trees, qualities, Maximization);
       var plot = new ParetoFrontScatterPlot<ISymbolicExpressionTree>(fronts, trees, qualities, Objectives, BestKnownFront);
-      results.AddOrUpdateResult("Pareto Front Scatter Plot", plot);
+
+      BestParetoFront = plot;
     }
 
     protected override sealed void OnEvaluatorChanged() {

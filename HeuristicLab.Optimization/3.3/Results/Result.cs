@@ -150,12 +150,10 @@ namespace HeuristicLab.Optimization {
       return new Result<T>(this, cloner);
     }
 
-    public Result(string name) : this(name, typeof(T)) { }
-    public Result(string name, Type dataType) : this(name, string.Empty, dataType) { }
-    public Result(string name, string description, Type dataType) : base(name, description, dataType) { }
-
-    public Result(string name, T value) : this(name, string.Empty, value.GetType(), value) { }
-    public Result(string name, string description, T value) : this(name, description, value.GetType(), value) { }
-    public Result(string name, string description, Type dataType, IItem value) : base(name, description, dataType, value) { }
+    //public Result(string name) : this(name, string.Empty) { }
+    public Result(string name, string description) : base(name, description, typeof(T)) { }
+    
+    //public Result(string name, T value) : this(name, string.Empty, value) { }
+    public Result(string name, string description, T value) : base(name, description, typeof(T), value) { }
   }
 }
