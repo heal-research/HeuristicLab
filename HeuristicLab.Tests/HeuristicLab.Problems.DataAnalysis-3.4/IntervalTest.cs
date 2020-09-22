@@ -311,6 +311,53 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
     [TestMethod]
     [TestCategory("Problems.DataAnalysis")]
     [TestProperty("Time", "short")]
+    public void GeometricTest() {
+      Assert.AreEqual(new Interval(-1, -0.936456687290796), Interval.Cosine(new Interval(3, 3.5)));
+      Assert.AreEqual(new Interval(-1, -0.936456687290796), Interval.Cosine(new Interval(-3.5, -3)));
+      Assert.AreEqual(new Interval(-1, 1), Interval.Cosine(new Interval(-3.5, 3)));
+      Assert.AreEqual(new Interval(-0.839071529076452, 0.843853958732493), Interval.Cosine(new Interval(10, 12)));
+      Assert.AreEqual(new Interval(0.136737218207833, 0.907446781450197), Interval.Cosine(new Interval(13, 14)));
+      Assert.AreEqual(new Interval(-0.839071529076452, 1), Interval.Cosine(new Interval(10, 14)));
+      Assert.AreEqual(new Interval(-1, 0.136737218207833), Interval.Cosine(new Interval(14, 16)));
+      Assert.AreEqual(new Interval(-0.839071529076452, 0.004425697988051), Interval.Cosine(new Interval(-11, -10)));
+      Assert.AreEqual(new Interval(0.136737218207833, 0.907446781450197), Interval.Cosine(new Interval(-14, -13)));
+      Assert.AreEqual(new Interval(-1, 0.136737218207833), Interval.Cosine(new Interval(-16, -14)));
+      Assert.AreEqual(new Interval(0.101585703696621, 1), Interval.Cosine(new Interval(-102, -100)));
+      Assert.AreEqual(new Interval(-1, 1), Interval.Cosine(new Interval(4.6e15, 4.7e15)));
+      Assert.AreEqual(new Interval(0.87758256189037265, 0.87758256189037276), Interval.Cosine(new Interval(0.5, 0.5)));
+      Assert.AreEqual(new Interval(-0.09904103659872825, 0.8775825618903728), Interval.Cosine(new Interval(0.5, 1.67)));
+      Assert.AreEqual(new Interval(-1.0, 0.77556587851025016), Interval.Cosine(new Interval(2.1, 5.6)));
+      Assert.AreEqual(new Interval(-1.0, 1.0), Interval.Cosine(new Interval(0.5, 8.5)));
+      Assert.AreEqual(new Interval(-1.0, -0.09904103659872801), Interval.Cosine(new Interval(1.67, 3.2)));
+
+
+      Assert.AreEqual(new Interval(double.NegativeInfinity, double.PositiveInfinity), Interval.Tangens(new Interval(double.NegativeInfinity, double.PositiveInfinity)));
+      Assert.AreEqual(new Interval(0, 1.55740772465490223051), Interval.Tangens(new Interval(0, 1)));
+      Assert.AreEqual(new Interval(-1.55740772465490223051, 0), Interval.Tangens(new Interval(-1, 0)));
+      Assert.AreEqual(new Interval(double.NegativeInfinity, double.PositiveInfinity), Interval.Tangens(new Interval(-2, -1)));
+      Assert.AreEqual(new Interval(double.NegativeInfinity, double.PositiveInfinity), Interval.Tangens(new Interval(202, 203)));
+      Assert.AreEqual(new Interval(0.54630248984379048, 0.5463024898437906), Interval.Tangens(new Interval(0.5, 0.5)));
+      Assert.AreEqual(new Interval(double.NegativeInfinity, double.PositiveInfinity), Interval.Tangens(new Interval(0.5,
+        1.67)));
+      //Assert.AreEqual(new Interval(-10.047182299210307, 0.5847385445957865), Interval.Tangens(new Interval(1.67, 3.2)));
+      Assert.AreEqual(new Interval(double.NegativeInfinity, double.PositiveInfinity), Interval.Tangens(new Interval(
+        6.638314112824137, 8.38263151220128)));
+
+
+
+      Assert.AreEqual(new Interval(0.47942553860420295, 0.47942553860420301), Interval.Sine(new Interval(0.5, 0.5)));
+      Assert.AreEqual(new Interval(4.7942553860420295e-01, 1.0), Interval.Sine(new Interval(0.5, 1.67)));
+      Assert.AreEqual(new Interval(-5.8374143427580093e-02, 9.9508334981018021e-01), Interval.Sine(new Interval(1.67,
+        3.2)));
+      Assert.AreEqual(new Interval(-1.0, 0.863209366648874), Interval.Sine(new Interval(2.1, 5.6)));
+      Assert.AreEqual(new Interval(-1.0, 1.0), Interval.Sine(new Interval(0.5, 8.5)));
+      Assert.AreEqual(new Interval(-1.0, 0.9775301176650971), Interval.Sine(new Interval(-4.5, 0.1)));
+      Assert.AreEqual(new Interval(-1.0, 1.0), Interval.Sine(new Interval(1.3, 6.3)));
+    }
+
+    [TestMethod]
+    [TestCategory("Problems.DataAnalysis")]
+    [TestProperty("Time", "short")]
     public void EqualsTest() {
       var interval1 = new Interval(0, 12);
       var interval2 = new Interval(-12, 8);
