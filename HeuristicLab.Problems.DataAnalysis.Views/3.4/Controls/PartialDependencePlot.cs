@@ -645,9 +645,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     }
 
     private void sharedFixedVariables_Reset(object sender, EventArgs e) {
+      RecalculateInternalDataset();
       var newValue = sharedFixedVariables.GetDoubleValue(FreeVariable, 0);
       VerticalLineAnnotation.X = newValue;
-      UpdateCursor(); // triggers update of InternalDataset
+      UpdateCursor();
     }
 
     private void chart_AnnotationPositionChanging(object sender, AnnotationPositionChangingEventArgs e) {
