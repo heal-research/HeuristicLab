@@ -34,15 +34,8 @@ namespace HeuristicLab.Problems.GeneticProgramming.LawnMower {
   [Creatable(CreatableAttribute.Categories.GeneticProgrammingProblems, Priority = 160)]
   [Item("Lawn Mower Problem", "The lawn mower demo problem for genetic programming.")]
   public class Problem : SymbolicExpressionTreeProblem {
-    private const string LawnWidthParameterName = "LawnWidth";
-    private const string LawnLengthParameterName = "LawnLength";
-
-    public IFixedValueParameter<IntValue> LawnWidthParameter {
-      get { return (IFixedValueParameter<IntValue>)Parameters[LawnWidthParameterName]; }
-    }
-    public IFixedValueParameter<IntValue> LawnLengthParameter {
-      get { return (IFixedValueParameter<IntValue>)Parameters[LawnLengthParameterName]; }
-    }
+    [Storable] public IFixedValueParameter<IntValue> LawnWidthParameter { get; private set; }
+    [Storable] public IFixedValueParameter<IntValue> LawnLengthParameter { get; private set; }
 
     #region item cloning and persistence
     [StorableConstructor]
@@ -50,7 +43,10 @@ namespace HeuristicLab.Problems.GeneticProgramming.LawnMower {
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() { }
 
-    protected Problem(Problem original, Cloner cloner) : base(original, cloner) { }
+    protected Problem(Problem original, Cloner cloner) : base(original, cloner) {
+      LawnWidthParameter = cloner.Clone(original.LawnWidthParameter);
+      LawnLengthParameter = cloner.Clone(original.LawnLengthParameter);
+    }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new Problem(this, cloner);
     }
@@ -58,8 +54,8 @@ namespace HeuristicLab.Problems.GeneticProgramming.LawnMower {
 
     public Problem() : base(new SymbolicExpressionTreeEncoding()) {
       Maximization = true;
-      Parameters.Add(new FixedValueParameter<IntValue>(LawnWidthParameterName, "Width of the lawn.", new IntValue(8)));
-      Parameters.Add(new FixedValueParameter<IntValue>(LawnLengthParameterName, "Length of the lawn.", new IntValue(8)));
+      Parameters.Add(LawnWidthParameter = new FixedValueParameter<IntValue>("LawnWidth", "Width of the lawn.", new IntValue(8)));
+      Parameters.Add(LawnLengthParameter = new FixedValueParameter<IntValue>("LawnLength", "Length of the lawn.", new IntValue(8)));
 
       var g = new SimpleSymbolicExpressionGrammar();
       g.AddSymbols(new string[] { "Sum", "Prog" }, 2, 2);

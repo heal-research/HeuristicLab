@@ -33,22 +33,11 @@ namespace HeuristicLab.Problems.GeneticProgramming.Robocode {
   [Creatable(CreatableAttribute.Categories.GeneticProgrammingProblems, Priority = 360)]
   [Item("Robocode Problem", "Evolution of a robocode program in java using genetic programming.")]
   public class Problem : SymbolicExpressionTreeProblem {
-    #region Parameter Names
-    private const string RobocodePathParamaterName = "RobocodePath";
-    private const string NrOfRoundsParameterName = "NrOfRounds";
-    private const string EnemiesParameterName = "Enemies";
-    #endregion
-
+    
     #region Parameters
-    public IFixedValueParameter<DirectoryValue> RobocodePathParameter {
-      get { return (IFixedValueParameter<DirectoryValue>)Parameters[RobocodePathParamaterName]; }
-    }
-    public IFixedValueParameter<IntValue> NrOfRoundsParameter {
-      get { return (IFixedValueParameter<IntValue>)Parameters[NrOfRoundsParameterName]; }
-    }
-    public IValueParameter<EnemyCollection> EnemiesParameter {
-      get { return (IValueParameter<EnemyCollection>)Parameters[EnemiesParameterName]; }
-    }
+    [Storable] public IFixedValueParameter<DirectoryValue> RobocodePathParameter { get; private set; }
+    [Storable] public IFixedValueParameter<IntValue> NrOfRoundsParameter { get; private set; }
+    [Storable] public IValueParameter<EnemyCollection> EnemiesParameter { get; private set; }
 
     public string RobocodePath {
       get { return RobocodePathParameter.Value.Value; }
@@ -70,6 +59,10 @@ namespace HeuristicLab.Problems.GeneticProgramming.Robocode {
     protected Problem(StorableConstructorFlag _) : base(_) { }
     protected Problem(Problem original, Cloner cloner)
       : base(original, cloner) {
+      RobocodePathParameter = cloner.Clone(original.RobocodePathParameter);
+      NrOfRoundsParameter = cloner.Clone(original.NrOfRoundsParameter);
+      EnemiesParameter = cloner.Clone(original.EnemiesParameter);
+
       RegisterEventHandlers();
     }
 
@@ -81,9 +74,9 @@ namespace HeuristicLab.Problems.GeneticProgramming.Robocode {
       robotList.RobocodePath = robocodeDir.Value;
 
 
-      Parameters.Add(new FixedValueParameter<DirectoryValue>(RobocodePathParamaterName, "Path of the Robocode installation.", robocodeDir));
-      Parameters.Add(new FixedValueParameter<IntValue>(NrOfRoundsParameterName, "Number of rounds a robot has to fight against each opponent.", new IntValue(3)));
-      Parameters.Add(new ValueParameter<EnemyCollection>(EnemiesParameterName, "The enemies that should be battled.", robotList));
+      Parameters.Add(RobocodePathParameter = new FixedValueParameter<DirectoryValue>("RobocodePath", "Path of the Robocode installation.", robocodeDir));
+      Parameters.Add(NrOfRoundsParameter = new FixedValueParameter<IntValue>("NrOfRounds", "Number of rounds a robot has to fight against each opponent.", new IntValue(3)));
+      Parameters.Add(EnemiesParameter = new ValueParameter<EnemyCollection>("Enemies", "The enemies that should be battled.", robotList));
 
       Encoding.FunctionArguments = 0;
       Encoding.FunctionDefinitions = 0;

@@ -40,14 +40,8 @@ namespace HeuristicLab.Problems.GeneticProgramming.Boolean {
   [StorableType("6DFE64E4-3968-446F-AE3D-FAF13C18930C")]
   public sealed class MultiplexerProblem : SymbolicExpressionTreeProblem {
 
-    #region parameter names
-    private const string NumberOfBitsParameterName = "NumberOfBits";
-    #endregion
-
     #region Parameter Properties
-    public IFixedValueParameter<IntValue> NumberOfBitsParameter {
-      get { return (IFixedValueParameter<IntValue>)Parameters[NumberOfBitsParameterName]; }
-    }
+    [Storable] public IFixedValueParameter<IntValue> NumberOfBitsParameter { get; private set; }
     #endregion
 
     #region Properties
@@ -69,6 +63,7 @@ namespace HeuristicLab.Problems.GeneticProgramming.Boolean {
     // cloning 
     private MultiplexerProblem(MultiplexerProblem original, Cloner cloner)
       : base(original, cloner) {
+      NumberOfBitsParameter = cloner.Clone(original.NumberOfBitsParameter);
       RegisterEventHandlers();
     }
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -80,7 +75,7 @@ namespace HeuristicLab.Problems.GeneticProgramming.Boolean {
     public MultiplexerProblem()
       : base(new SymbolicExpressionTreeEncoding()) {
       Maximization = true;
-      Parameters.Add(new FixedValueParameter<IntValue>(NumberOfBitsParameterName,
+      Parameters.Add(NumberOfBitsParameter = new FixedValueParameter<IntValue>("NumberOfBits",
         "The number of bits for the input parameter for the multiplexer function. This is the sum of the number of address bits and the number of input lines. E.g. the 11-MUX has 3 address bits and 8 input lines",
         new IntValue(11)));
 

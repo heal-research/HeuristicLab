@@ -38,14 +38,8 @@ namespace HeuristicLab.Problems.GeneticProgramming.Boolean {
   [StorableType("76D6001D-135F-45FB-BC79-061EDAEE33A9")]
   public sealed class EvenParityProblem : SymbolicExpressionTreeProblem {
 
-    #region parameter names
-    private const string NumberOfBitsParameterName = "NumberOfBits";
-    #endregion
-
     #region Parameter Properties
-    public IFixedValueParameter<IntValue> NumberOfBitsParameter {
-      get { return (IFixedValueParameter<IntValue>)Parameters[NumberOfBitsParameterName]; }
-    }
+    [Storable] public IFixedValueParameter<IntValue> NumberOfBitsParameter { get; private set; }
     #endregion
 
     #region Properties
@@ -67,6 +61,7 @@ namespace HeuristicLab.Problems.GeneticProgramming.Boolean {
     // cloning 
     private EvenParityProblem(EvenParityProblem original, Cloner cloner)
       : base(original, cloner) {
+      NumberOfBitsParameter = cloner.Clone(original.NumberOfBitsParameter);
       RegisterEventHandlers();
     }
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -77,7 +72,7 @@ namespace HeuristicLab.Problems.GeneticProgramming.Boolean {
     public EvenParityProblem()
       : base(new SymbolicExpressionTreeEncoding()) {
       Maximization = true;
-      Parameters.Add(new FixedValueParameter<IntValue>(NumberOfBitsParameterName, "The number of bits for the input parameter for the even parity function", new IntValue(4)));
+      Parameters.Add(NumberOfBitsParameter = new FixedValueParameter<IntValue>("NumberOfBits", "The number of bits for the input parameter for the even parity function", new IntValue(4)));
 
       Encoding.TreeLength = 100;
       Encoding.TreeDepth = 17;

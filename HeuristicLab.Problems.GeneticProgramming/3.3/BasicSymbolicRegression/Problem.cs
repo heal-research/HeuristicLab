@@ -38,15 +38,9 @@ namespace HeuristicLab.Problems.GeneticProgramming.BasicSymbolicRegression {
   [Creatable(CreatableAttribute.Categories.GeneticProgrammingProblems, Priority = 900)]
   [StorableType("72011B73-28C6-4D5E-BEDF-27425BC87B9C")]
   public sealed class Problem : SymbolicExpressionTreeProblem, IRegressionProblem, IProblemInstanceConsumer<IRegressionProblemData>, IProblemInstanceExporter<IRegressionProblemData> {
-
-    #region parameter names
-    private const string ProblemDataParameterName = "ProblemData";
-    #endregion
-
+    
     #region Parameter Properties
-    public IValueParameter<IRegressionProblemData> ProblemDataParameter {
-      get { return (IValueParameter<IRegressionProblemData>)Parameters[ProblemDataParameterName]; }
-    }
+    [Storable] public IValueParameter<IRegressionProblemData> ProblemDataParameter { get; private set; }
     #endregion
 
     #region Properties
@@ -71,6 +65,7 @@ namespace HeuristicLab.Problems.GeneticProgramming.BasicSymbolicRegression {
     // cloning 
     private Problem(Problem original, Cloner cloner)
       : base(original, cloner) {
+      ProblemDataParameter = cloner.Clone(original.ProblemDataParameter);
       RegisterEventHandlers();
     }
     public override IDeepCloneable Clone(Cloner cloner) { return new Problem(this, cloner); }
@@ -78,7 +73,7 @@ namespace HeuristicLab.Problems.GeneticProgramming.BasicSymbolicRegression {
 
     public Problem() : base(new SymbolicExpressionTreeEncoding()) {
       Maximization = true;
-      Parameters.Add(new ValueParameter<IRegressionProblemData>(ProblemDataParameterName, "The data for the regression problem", new RegressionProblemData()));
+      Parameters.Add(ProblemDataParameter = new ValueParameter<IRegressionProblemData>("ProblemData", "The data for the regression problem", new RegressionProblemData()));
 
       Encoding.TreeLength = 100;
       Encoding.TreeDepth = 17;

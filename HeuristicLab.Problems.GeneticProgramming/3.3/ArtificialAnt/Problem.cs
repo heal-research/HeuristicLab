@@ -77,12 +77,8 @@ namespace HeuristicLab.Problems.GeneticProgramming.ArtificialAnt {
     #endregion
 
     #region Parameter Properties
-    public IValueParameter<BoolMatrix> WorldParameter {
-      get { return (IValueParameter<BoolMatrix>)Parameters["World"]; }
-    }
-    public IFixedValueParameter<IntValue> MaxTimeStepsParameter {
-      get { return (IFixedValueParameter<IntValue>)Parameters["MaximumTimeSteps"]; }
-    }
+    [Storable] public IValueParameter<BoolMatrix> WorldParameter { get; private set; }
+    [Storable] public IFixedValueParameter<IntValue> MaxTimeStepsParameter { get; private set; }
     #endregion
 
     #region Properties
@@ -104,7 +100,10 @@ namespace HeuristicLab.Problems.GeneticProgramming.ArtificialAnt {
     private void AfterDeserialization() { }
 
     // cloning 
-    private Problem(Problem original, Cloner cloner) : base(original, cloner) { }
+    private Problem(Problem original, Cloner cloner) : base(original, cloner) {
+      WorldParameter = cloner.Clone(original.WorldParameter);
+      MaxTimeStepsParameter = cloner.Clone(original.MaxTimeStepsParameter);
+    }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new Problem(this, cloner);
     }
@@ -113,8 +112,8 @@ namespace HeuristicLab.Problems.GeneticProgramming.ArtificialAnt {
     public Problem() : base(new SymbolicExpressionTreeEncoding()) {
       Maximization = true;
       BoolMatrix world = new BoolMatrix(ToBoolMatrix(santaFeAntTrail));
-      Parameters.Add(new ValueParameter<BoolMatrix>("World", "The world for the artificial ant with scattered food items.", world));
-      Parameters.Add(new FixedValueParameter<IntValue>("MaximumTimeSteps", "The number of time steps the artificial ant has available to collect all food items.", new IntValue(600)));
+      Parameters.Add(WorldParameter = new ValueParameter<BoolMatrix>("World", "The world for the artificial ant with scattered food items.", world));
+      Parameters.Add(MaxTimeStepsParameter = new FixedValueParameter<IntValue>("MaximumTimeSteps", "The number of time steps the artificial ant has available to collect all food items.", new IntValue(600)));
 
       var g = new SimpleSymbolicExpressionGrammar();
       g.AddSymbols(new string[] { "IfFoodAhead", "Prog2" }, 2, 2);

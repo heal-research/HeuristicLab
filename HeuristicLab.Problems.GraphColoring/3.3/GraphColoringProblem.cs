@@ -42,40 +42,32 @@ namespace HeuristicLab.Problems.GraphColoring {
   public sealed class GraphColoringProblem : LinearLinkageProblem,
     IProblemInstanceConsumer<GCPData>, IProblemInstanceExporter<GCPData> {
 
-    [Storable]
-    private IValueParameter<IntMatrix> adjacencyListParameter;
-    public IValueParameter<IntMatrix> AdjacencyListParameter {
-      get { return adjacencyListParameter; }
-    }
-    [Storable]
-    private IValueParameter<EnumValue<FitnessFunction>> fitnessFunctionParameter;
-    public IValueParameter<EnumValue<FitnessFunction>> FitnessFunctionParameter {
-      get { return fitnessFunctionParameter; }
-    }
+    [Storable] public IValueParameter<IntMatrix> AdjacencyListParameter { get; private set; }
+    [Storable] public IValueParameter<EnumValue<FitnessFunction>> FitnessFunctionParameter { get; private set; }
+    [Storable] public IValueParameter<IntValue> BestKnownColorsParameter { get; private set; }
+    [Storable] public IResult<IntValue> BestSolutionColorsResult { get; private set; }
+    [Storable] public IResult<IntValue> BestSolutionConflicts { get; private set; }
+
     public FitnessFunction FitnessFunction {
-      get { return fitnessFunctionParameter.Value.Value; }
-      set { fitnessFunctionParameter.Value.Value = value; }
-    }
-    [Storable]
-    private IValueParameter<IntValue> bestKnownColorsParameter;
-    public IValueParameter<IntValue> BestKnownColorsParameter {
-      get { return bestKnownColorsParameter; }
+      get { return FitnessFunctionParameter.Value.Value; }
+      set { FitnessFunctionParameter.Value.Value = value; }
     }
 
     [StorableConstructor]
     private GraphColoringProblem(StorableConstructorFlag _) : base(_) { }
     private GraphColoringProblem(GraphColoringProblem original, Cloner cloner)
       : base(original, cloner) {
-      adjacencyListParameter = cloner.Clone(original.adjacencyListParameter);
-      fitnessFunctionParameter = cloner.Clone(original.fitnessFunctionParameter);
-      bestKnownColorsParameter = cloner.Clone(original.bestKnownColorsParameter);
+      AdjacencyListParameter = cloner.Clone(original.AdjacencyListParameter);
+      FitnessFunctionParameter = cloner.Clone(original.FitnessFunctionParameter);
+      BestKnownColorsParameter = cloner.Clone(original.BestKnownColorsParameter);
       RegisterEventHandlers();
     }
     public GraphColoringProblem() {
       Maximization = false;
-      Parameters.Add(adjacencyListParameter = new ValueParameter<IntMatrix>("Adjacency List", "The adjacency list that describes the (symmetric) edges in the graph with nodes from 0 to N-1.") { ReadOnly = true });
-      Parameters.Add(fitnessFunctionParameter = new ValueParameter<EnumValue<FitnessFunction>>("Fitness Function", "The function to use for evaluating the quality of a solution.", new EnumValue<FitnessFunction>(FitnessFunction.Penalized)));
-      Parameters.Add(bestKnownColorsParameter = new OptionalValueParameter<IntValue>("BestKnownColors", "The least amount of colors in a valid coloring.") { ReadOnly = true });
+      Parameters.Add(AdjacencyListParameter = new ValueParameter<IntMatrix>("Adjacency List", "The adjacency list that describes the (symmetric) edges in the graph with nodes from 0 to N-1.") { ReadOnly = true });
+      Parameters.Add(FitnessFunctionParameter = new ValueParameter<EnumValue<FitnessFunction>>("Fitness Function", "The function to use for evaluating the quality of a solution.", new EnumValue<FitnessFunction>(FitnessFunction.Penalized)));
+      Parameters.Add(BestKnownColorsParameter = new OptionalValueParameter<IntValue>("BestKnownColors", "The least amount of colors in a valid coloring.") { ReadOnly = true });
+      Results.Add(BestSolutionColorsResult = new Result<IntValue>("Best Solution Colors", "The number of best solution found so far."));
 
       var imat = new IntMatrix(defaultInstance.Length, 2);
       for (var i = 0; i < defaultInstance.Length; i++) {
@@ -103,12 +95,12 @@ namespace HeuristicLab.Problems.GraphColoring {
     }
 
     private void RegisterEventHandlers() {
-      fitnessFunctionParameter.ValueChanged += FitnessFunctionParameterOnValueChanged;
-      fitnessFunctionParameter.Value.ValueChanged += FitnessFunctionOnValueChanged;
+      FitnessFunctionParameter.ValueChanged += FitnessFunctionParameterOnValueChanged;
+      FitnessFunctionParameter.Value.ValueChanged += FitnessFunctionOnValueChanged;
     }
 
     private void FitnessFunctionParameterOnValueChanged(object sender, EventArgs eventArgs) {
-      fitnessFunctionParameter.Value.ValueChanged += FitnessFunctionOnValueChanged;
+      FitnessFunctionParameter.Value.ValueChanged += FitnessFunctionOnValueChanged;
       FitnessFunctionOnValueChanged(sender, eventArgs);
     }
 
@@ -125,7 +117,7 @@ namespace HeuristicLab.Problems.GraphColoring {
     }
 
     public override ISingleObjectiveEvaluationResult Evaluate(LinearLinkage lle, IRandom random, CancellationToken cancellationToken) {
-      var adjList = adjacencyListParameter.Value;
+      var adjList = AdjacencyListParameter.Value;
       var llee = lle.ToEndLinks(); // LLE-e encoding uses the highest indexed member as group number
 
       double quality = double.NaN;
