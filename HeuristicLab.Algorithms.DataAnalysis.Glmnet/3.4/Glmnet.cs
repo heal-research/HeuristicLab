@@ -30,7 +30,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Glmnet {
     ///  ka = algorithm flag
     ///       ka=1 => covariance updating algorithm
     ///       ka=2 => naive algorithm
-    ///  parm = penalty member index(0&lt;= parm &lt;= 1)
+    ///  parm = penalty member index(0 <= parm <= 1)
     ///         = 0.0 => ridge
     ///  = 1.0 => lasso
     ///    no = number of observations
@@ -47,11 +47,11 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Glmnet {
     ///  cl(2, j) = upper bound for jth coefficient value(>= 0.0)
     ///  ne = maximum number of variables allowed to enter largest model
     /// (stopping criterion)
-    ///  nx = maximum number of variables allowed to enter all modesl
+    ///  nx = maximum number of variables allowed to enter all models
     ///  along path(memory allocation, nx > ne).
     ///  nlam = (maximum)number of lamda values
     ///    flmin = user control of lamda values(>=0)
-    ///  flmin&lt; 1.0 => minimum lamda = flmin * (largest lamda value)
+    ///  flmin < 1.0 => minimum lamda = flmin * (largest lamda value)
     ///  flmin >= 1.0 => use supplied lamda values(see below)
     ///  ulam(nlam) = user supplied lamda values(ignored if flmin&lt; 1.0)
     ///  thr = convergence threshold for each lamda solution.
