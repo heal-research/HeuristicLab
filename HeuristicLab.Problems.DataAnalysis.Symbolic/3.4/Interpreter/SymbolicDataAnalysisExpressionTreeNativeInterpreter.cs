@@ -126,7 +126,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     public IEnumerable<double> GetSymbolicExpressionTreeValues(ISymbolicExpressionTree tree, IDataset dataset, IEnumerable<int> rows) {
       if (!rows.Any()) return Enumerable.Empty<double>();
 
-      if (cachedData == null || cachedDataset != dataset) {
+      if (cachedData == null || cachedDataset != dataset || cachedDataset is ModifiableDataset) {
         InitCache(dataset);
       }
 
