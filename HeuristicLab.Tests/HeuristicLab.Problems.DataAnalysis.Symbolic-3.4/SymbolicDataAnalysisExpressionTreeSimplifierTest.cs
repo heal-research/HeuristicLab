@@ -271,13 +271,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
 
       #region do not drop subtrees with small weights
       AssertEqualAfterSimplification("(* 1e-14 (variable 1.0 a))", "(variable 1e-14 a)");
-      AssertEqualAfterSimplification("(+ 1e-14 (variable 1.0 a))", "(+ 1e-14 (variable 1.0 a))");
+      AssertEqualAfterSimplification("(+ (variable 1.0 a) 1e-14)", 
+                                     "(+ (variable 1.0 a) 1e-14)");
       // a scenario where a term with small weight can have large effect
-      AssertEqualAfterSimplification("(+ (* 1e-14 (pow (variable 1.0 a) 10)) 1.0)", 
-                                     "(+ (* 1e-14 (pow (variable 1.0 a) 10)) 1.0)");
+      AssertEqualAfterSimplification("(+ (* (pow (variable 1.0 a) 10) 1e-14) 1.0)",
+                                     "(+ (* (pow (variable 1.0 a) 10) 1e-14) 1.0)");
       // a test case (from ticket #2985)
-      AssertEqualAfterSimplification("(+ 5.9323E-002 (* 5.5606E-016 (exp (variable 3.5861E+001 a))))",
-                                     "(+ 5.9323E-002 (* 5.5606E-016 (exp (variable 3.5861E+001 a))))");
+      AssertEqualAfterSimplification("(+ (* (exp (variable 3.5861E+001 a)) 5.5606E-016) 5.9323E-002)",
+                                     "(+ (* (exp (variable 3.5861E+001 a)) 5.5606E-016) 5.9323E-002)");
       #endregion
     }
 
