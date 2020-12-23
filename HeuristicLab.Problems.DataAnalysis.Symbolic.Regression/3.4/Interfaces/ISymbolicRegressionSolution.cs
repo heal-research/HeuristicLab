@@ -21,6 +21,7 @@
 #endregion
 
 
+
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
   [StorableType("dff1a450-e958-454f-bf8e-6b763fdcaff3")]
   public interface ISymbolicRegressionSolution : IRegressionSolution, ISymbolicDataAnalysisSolution {

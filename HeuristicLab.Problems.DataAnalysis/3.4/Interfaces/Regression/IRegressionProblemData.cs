@@ -27,6 +27,8 @@ namespace HeuristicLab.Problems.DataAnalysis {
   public interface IRegressionProblemData : IDataAnalysisProblemData {
     string TargetVariable { get; set; }
 
+    IntervalCollection VariableRanges { get;}
+
     IEnumerable<double> TargetVariableValues { get; }
     IEnumerable<double> TargetVariableTrainingValues { get; }
     IEnumerable<double> TargetVariableTestValues { get; }

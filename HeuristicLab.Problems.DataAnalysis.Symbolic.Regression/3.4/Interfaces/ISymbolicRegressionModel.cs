@@ -1,5 +1,4 @@
-﻿using HEAL.Attic;
-#region License Information
+﻿#region License Information
 /* HeuristicLab
  * Copyright (C) Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
@@ -19,6 +18,8 @@
  * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
  */
 #endregion
+
+using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
   [StorableType("a411e2b5-f926-41a6-b55b-1aef862db2fb")]

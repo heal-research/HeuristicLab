@@ -24,11 +24,11 @@ using HeuristicLab.Core;
 using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis {
-  [StorableType("f85ccf7a-7df5-431e-bc4d-be6f3c4c2338")]
   /// <summary>
   /// Interface for all data-analysis models (regression/classification/clustering).
   /// <remarks>All methods and properties in in this interface must be implemented thread safely</remarks>
   /// </summary>
+  [StorableType("f85ccf7a-7df5-431e-bc4d-be6f3c4c2338")]
   public interface IDataAnalysisModel : INamedItem {
     IEnumerable<string> VariablesUsedForPrediction { get; }
     bool IsDatasetCompatible(IDataset dataset, out string errorMessage);
