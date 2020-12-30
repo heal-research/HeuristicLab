@@ -25,16 +25,14 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
 using HEAL.Attic;
-using System;
 
 namespace HeuristicLab.Random {
   /// <summary>
-  /// Normally distributed random number generator.
+  /// Normally distributed random number generator using the Marsaglia's polar method.
   /// </summary>
-  [StorableType("0EAF4184-6C98-4C9D-80A1-09A42E03450E")]
-  [Item("NormalRandomizer", "Initializes the value of variable 'Value' to a random value normally distributed with parameters 'Mu' and 'Sigma'")]
-  [Obsolete("Use NormalRandomizerPolar instead.")]
-  public class NormalRandomizer : SingleSuccessorOperator {
+  [Item("NormalRandomizerPolar", "Initializes the value of variable 'Value' to a random value normally distributed with parameters 'Mu' and 'Sigma'")]
+  [StorableType("24927018-F729-449C-97BB-D41184F64A61")]
+  public class NormalRandomizerPolar : SingleSuccessorOperator {
     #region Parameter Properties
     public ILookupParameter<IRandom> RandomParameter {
       get { return (ILookupParameter<IRandom>)Parameters["Random"]; }
@@ -62,13 +60,13 @@ namespace HeuristicLab.Random {
     #endregion
 
     [StorableConstructor]
-    protected NormalRandomizer(StorableConstructorFlag _) : base(_) { }
-    protected NormalRandomizer(NormalRandomizer original, Cloner cloner) : base(original, cloner) { }
+    protected NormalRandomizerPolar(StorableConstructorFlag _) : base(_) { }
+    protected NormalRandomizerPolar(NormalRandomizerPolar original, Cloner cloner) : base(original, cloner) { }
     /// <summary>
-    /// Initializes a new instance of <see cref="NormalRandomizer"/> with four variable infos
+    /// Initializes a new instance of <see cref="NormalRandomizerPolar"/> with four variable infos
     /// (<c>Mu</c>, <c>Sigma</c>, <c>Value</c> and <c>Random</c>).
     /// </summary>
-    public NormalRandomizer() {
+    public NormalRandomizerPolar() {
       Parameters.Add(new LookupParameter<IRandom>("Random", "A random generator that supplies uniformly distributed values."));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("Mu", "Mu parameter of the normal distribution (N(mu,sigma))."));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("Sigma", "Sigma parameter of the normal distribution (N(mu,sigma))."));
@@ -76,7 +74,7 @@ namespace HeuristicLab.Random {
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new NormalRandomizer(this, cloner);
+      return new NormalRandomizerPolar(this, cloner);
     }
 
     /// <summary>
@@ -87,7 +85,7 @@ namespace HeuristicLab.Random {
       double mu = MuParameter.ActualValue.Value;
       double sigma = SigmaParameter.ActualValue.Value;
 
-      NormalDistributedRandom normalRandom = new NormalDistributedRandom(random, mu, sigma);
+      NormalDistributedRandomPolar normalRandom = new NormalDistributedRandomPolar(random, mu, sigma);
       ValueParameter.ActualValue = new DoubleValue(normalRandom.NextDouble());
       return base.Apply();
     }
