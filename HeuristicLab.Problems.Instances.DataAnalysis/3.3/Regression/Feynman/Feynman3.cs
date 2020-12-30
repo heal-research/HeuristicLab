@@ -28,8 +28,8 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     public override string Name {
       get {
         return string.Format(
-          "I.6.20b exp(-((theta-theta1)/sigma)**2/2)/(sqrt(2*pi)*sigma) | {0} samples | {1}",
-          trainingSamples, noiseRatio == null ? "no noise" : string.Format(System.Globalization.CultureInfo.InvariantCulture, "noise={0:g}",noiseRatio));
+          "I.6.20b exp(-((theta-theta1)/sigma)**2/2)/(sqrt(2*pi)*sigma) | {0}",
+          noiseRatio == null ? "no noise" : string.Format(System.Globalization.CultureInfo.InvariantCulture, "noise={0:g}",noiseRatio));
       }
     }
 
@@ -70,7 +70,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
 
       if (noiseRatio != null) {
         var f_noise     = new List<double>();
-        var sigma_noise = (double) noiseRatio * f.StandardDeviationPop();
+        var sigma_noise = (double) Math.Sqrt(noiseRatio.Value) * f.StandardDeviationPop();
         f_noise.AddRange(f.Select(md => md + NormalDistributedRandom.NextDouble(rand, 0, sigma_noise)));
         data.Remove(f);
         data.Add(f_noise);

@@ -27,7 +27,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
 
     public override string Name {
       get {
-        return string.Format("I.14.4 1/2*k_spring*x**2 | {0} samples | {1}", trainingSamples,
+        return string.Format("I.14.4 1/2*k_spring*x**2 | {0}",
           noiseRatio == null ? "no noise" : string.Format(System.Globalization.CultureInfo.InvariantCulture, "noise={0:g}",noiseRatio));
       }
     }
@@ -67,7 +67,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
 
       if (noiseRatio != null) {
         var U_noise     = new List<double>();
-        var sigma_noise = (double) noiseRatio * U.StandardDeviationPop();
+        var sigma_noise = (double) Math.Sqrt(noiseRatio.Value) * U.StandardDeviationPop();
         U_noise.AddRange(U.Select(md => md + NormalDistributedRandom.NextDouble(rand, 0, sigma_noise)));
         data.Remove(U);
         data.Add(U_noise);

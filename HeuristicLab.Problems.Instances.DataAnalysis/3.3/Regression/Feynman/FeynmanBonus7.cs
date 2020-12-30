@@ -27,8 +27,8 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
 
     public override string Name {
       get {
-        return string.Format("Goldstein 3.16: sqrt(2/m*(E_n-U-L**2/(2*m*r**2))) | {0} samples | {1}",
-          trainingSamples, noiseRatio == null ? "no noise" : string.Format(System.Globalization.CultureInfo.InvariantCulture, "noise={0:g}",noiseRatio));
+        return string.Format("Goldstein 3.16: sqrt(2/m*(E_n-U-L**2/(2*m*r**2))) | {0}",
+          noiseRatio == null ? "no noise" : string.Format(System.Globalization.CultureInfo.InvariantCulture, "noise={0:g}",noiseRatio));
       }
     }
 
@@ -73,7 +73,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
 
       if (noiseRatio != null) {
         var v_noise     = new List<double>();
-        var sigma_noise = (double) noiseRatio * v.StandardDeviationPop();
+        var sigma_noise = (double) Math.Sqrt(noiseRatio.Value) * v.StandardDeviationPop();
         v_noise.AddRange(v.Select(md => md + NormalDistributedRandom.NextDouble(rand, 0, sigma_noise)));
         data.Remove(v);
         data.Add(v_noise);

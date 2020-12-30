@@ -28,7 +28,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     public override string Name {
       get {
         return string.Format(
-          "Compton Scattering: E_n/(1+E_n/(m*c**2)*(1-cos(theta))) | {0} samples | {1}", trainingSamples,
+          "Compton Scattering: E_n/(1+E_n/(m*c**2)*(1-cos(theta))) | {0}",
           noiseRatio == null ? "no noise" : string.Format(System.Globalization.CultureInfo.InvariantCulture, "noise={0:g}",noiseRatio));
       }
     }
@@ -72,7 +72,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
 
       if (noiseRatio != null) {
         var K_noise     = new List<double>();
-        var sigma_noise = (double) noiseRatio * K.StandardDeviationPop();
+        var sigma_noise = (double) Math.Sqrt(noiseRatio.Value) * K.StandardDeviationPop();
         K_noise.AddRange(K.Select(md => md + NormalDistributedRandom.NextDouble(rand, 0, sigma_noise)));
         data.Remove(K);
         data.Add(K_noise);

@@ -28,8 +28,8 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     public override string Name {
       get {
         return string.Format(
-          "Weinberg 15.2.2: -1/(8*pi*G)*(c**4*k_f/r**2 + c**2*H_G**2*(1-2*alpha)) | {0} samples | {1}",
-          trainingSamples, noiseRatio == null ? "no noise" : string.Format(System.Globalization.CultureInfo.InvariantCulture, "noise={0:g}",noiseRatio));
+          "Weinberg 15.2.2: -1/(8*pi*G)*(c**4*k_f/r**2 + c**2*H_G**2*(1-2*alpha)) | {0}",
+          noiseRatio == null ? "no noise" : string.Format(System.Globalization.CultureInfo.InvariantCulture, "noise={0:g}",noiseRatio));
       }
     }
 
@@ -77,7 +77,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
 
       if (noiseRatio != null) {
         var pr_noise    = new List<double>();
-        var sigma_noise = (double) noiseRatio * pr.StandardDeviationPop();
+        var sigma_noise = (double) Math.Sqrt(noiseRatio.Value) * pr.StandardDeviationPop();
         pr_noise.AddRange(pr.Select(md => md + NormalDistributedRandom.NextDouble(rand, 0, sigma_noise)));
         data.Remove(pr);
         data.Add(pr_noise);

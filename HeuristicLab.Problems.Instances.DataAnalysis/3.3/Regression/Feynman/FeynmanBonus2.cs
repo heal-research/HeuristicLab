@@ -27,8 +27,8 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
 
     public override string Name {
       get {
-        return string.Format("Friedman Equation: sqrt(8*pi*G*rho/3-alpha*c**2/d**2) | {0} samples | {1}",
-          trainingSamples, noiseRatio == null ? "no noise" : string.Format(System.Globalization.CultureInfo.InvariantCulture, "noise={0:g}",noiseRatio));
+        return string.Format("Friedman Equation: sqrt(8*pi*G*rho/3-alpha*c**2/d**2) | {0}",
+          noiseRatio == null ? "no noise" : string.Format(System.Globalization.CultureInfo.InvariantCulture, "noise={0:g}",noiseRatio));
       }
     }
 
@@ -73,7 +73,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
 
       if (noiseRatio != null) {
         var H_G_noise   = new List<double>();
-        var sigma_noise = (double) noiseRatio * H_G.StandardDeviationPop();
+        var sigma_noise = (double) Math.Sqrt(noiseRatio.Value) * H_G.StandardDeviationPop();
         H_G_noise.AddRange(H_G.Select(md => md + NormalDistributedRandom.NextDouble(rand, 0, sigma_noise)));
         data.Remove(H_G);
         data.Add(H_G_noise);

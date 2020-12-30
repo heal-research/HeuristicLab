@@ -34,7 +34,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
       var rand = new MersenneTwister((uint)Seed);
 
 
-      var noiseRatio = new double?[] { null, 1, 10E-2, 10E-4 };
+      var noiseRatio = new double?[] { null, 0.1, 0.3, 1 };
 
       #region types
       var descriptorTypes = new Type[] {
@@ -162,8 +162,8 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
       #endregion
 
 
-      foreach (var n in noiseRatio) {
-        foreach (var type in descriptorTypes) {
+      foreach (var type in descriptorTypes) {
+        foreach (var n in noiseRatio) {
           descriptorList.Add((IDataDescriptor)Activator.CreateInstance(type, rand.Next(), 10000, 10000, n));
         }
       }
