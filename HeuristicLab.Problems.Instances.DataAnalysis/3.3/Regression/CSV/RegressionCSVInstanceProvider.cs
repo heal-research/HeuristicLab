@@ -30,7 +30,7 @@ using HeuristicLab.Problems.DataAnalysis;
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
   public class RegressionCSVInstanceProvider : RegressionInstanceProvider {
     public override string Name {
-      get { return "CSV File"; }
+      get { return " CSV File"; } // space at the beginning is on purpose to make sure this provider is always ordered first
     }
     public override string Description {
       get {
