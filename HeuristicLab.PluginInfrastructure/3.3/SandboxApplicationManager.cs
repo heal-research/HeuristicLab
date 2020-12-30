@@ -226,6 +226,7 @@ namespace HeuristicLab.PluginInfrastructure {
     /// <returns>Enumerable of the discovered types.</returns>
     internal static IEnumerable<Type> GetTypes(Type type, bool onlyInstantiable, bool includeGenericTypeDefinitions) {
       return from asm in AppDomain.CurrentDomain.GetAssemblies()
+             where !asm.IsDynamic && !string.IsNullOrEmpty(asm.Location)
              from t in GetTypes(type, asm, onlyInstantiable, includeGenericTypeDefinitions)
              select t;
     }
