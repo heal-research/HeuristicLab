@@ -31,6 +31,7 @@ namespace HeuristicLab.Random {
   /// Uses Marsaglia's polar method
   /// </summary>
   [Item("NormalDistributedRandomPolar", "A pseudo random number generator which uses Marsaglia's polar method to create normally distributed random numbers.")]
+  [StorableType("B17E35DB-1DC6-434A-8F08-4AD4AB224C59")]
   public sealed class NormalDistributedRandomPolar : Item, IRandom {
     [Storable]
     private double mu;
