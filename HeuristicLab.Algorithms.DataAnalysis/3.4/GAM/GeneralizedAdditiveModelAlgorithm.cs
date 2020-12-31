@@ -1,8 +1,7 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2018 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
- * and the BEACON Center for the Study of Evolution in Action.
- * 
+ * Copyright (C) Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ *
  * This file is part of HeuristicLab.
  *
  * HeuristicLab is free software: you can redistribute it and/or modify
