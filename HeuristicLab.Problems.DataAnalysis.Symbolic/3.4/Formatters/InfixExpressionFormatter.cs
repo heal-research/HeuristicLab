@@ -28,7 +28,6 @@ using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using Microsoft.SqlServer.Server;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   public static class BaseInfixExpressionFormatter {
@@ -38,14 +37,27 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         var token = GetToken(node.Symbol);
         // operators
         if (token == "+" || token == "-" || token == "OR" || token == "XOR" ||
-            token == "*" || token == "/" || token == "AND" ||
-            token == "^") {
+            token == "*" || token == "/" || token == "AND") {
           strBuilder.Append("(");
           FormatRecursively(node.Subtrees.First(), strBuilder, numberFormat, formatString, constants);
 
           foreach (var subtree in node.Subtrees.Skip(1)) {
             strBuilder.Append(" ").Append(token).Append(" ");
             FormatRecursively(subtree, strBuilder, numberFormat, formatString, constants);
+          }
+
+          strBuilder.Append(")");
+        } else if (token == "^") {
+          // handle integer powers directly
+          strBuilder.Append("(");
+          FormatRecursively(node.Subtrees.First(), strBuilder, numberFormat, formatString, constants);
+
+          var power = node.GetSubtree(1);
+          if(power is ConstantTreeNode constNode && Math.Truncate(constNode.Value) == constNode.Value) {
+            strBuilder.Append(" ").Append(token).Append(" ").Append(constNode.Value.ToString(formatString, numberFormat));
+          } else {
+            strBuilder.Append(" ").Append(token).Append(" ");
+            FormatRecursively(power, strBuilder, numberFormat, formatString, constants);
           }
 
           strBuilder.Append(")");
@@ -130,7 +142,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           if (!factorNode.Weight.IsAlmost(1.0)) strBuilder.Append(")");
         } else if (node.Symbol is Constant) {
           var constNode = node as ConstantTreeNode;
-          if(constants==null && constNode.Value < 0) {
+          if (constants == null && constNode.Value < 0) {
             strBuilder.Append("(").Append(constNode.Value.ToString(formatString, numberFormat))
                       .Append(")"); // (-1
           } else {
