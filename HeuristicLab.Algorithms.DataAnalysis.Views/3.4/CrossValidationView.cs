@@ -201,7 +201,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
 
     #region GUI events
     private void shuffleSamplesCheckBox_CheckedChanged(object sender, EventArgs e) {
-      Content.ShuffleSamples.Value = shuffleSamplesCheckBox.Checked;
+      if (Content != null)
+        Content.ShuffleSamples.Value = shuffleSamplesCheckBox.Checked;
     }
     private void foldsNumericUpDown_Validated(object sender, EventArgs e) {
       if (foldsNumericUpDown.Text == string.Empty)
