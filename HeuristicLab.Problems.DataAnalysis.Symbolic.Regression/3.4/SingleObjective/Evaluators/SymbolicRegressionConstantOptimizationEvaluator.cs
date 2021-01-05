@@ -208,9 +208,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       double lowerEstimationLimit = double.MinValue, double upperEstimationLimit = double.MaxValue,
       bool updateConstantsInTree = true, Action<double[], double, object> iterationCallback = null, EvaluationsCounter counter = null) {
 
-      // numeric constants in the tree become variables for constant opt
-      // variables in the tree become parameters (fixed values) for constant opt
-      // for each parameter (variable in the original tree) we store the 
+      // Numeric constants in the tree become variables for parameter optimization.
+      // Variables in the tree become parameters (fixed values) for parameter optimization.
+      // For each parameter (variable in the original tree) we store the 
       // variable name, variable value (for factor vars) and lag as a DataForVariable object.
       // A dictionary is used to find parameters
       double[] initialConstants;
@@ -220,10 +220,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       TreeToAutoDiffTermConverter.ParametricFunctionGradient func_grad;
       if (!TreeToAutoDiffTermConverter.TryConvertToAutoDiff(tree, updateVariableWeights, applyLinearScaling, out parameters, out initialConstants, out func, out func_grad))
         throw new NotSupportedException("Could not optimize constants of symbolic expression tree due to not supported symbols used in the tree.");
-      if (parameters.Count == 0) return 0.0; // gkronber: constant expressions always have a R² of 0.0 
+      if (parameters.Count == 0) return 0.0; // constant expressions always have a R² of 0.0 
       var parameterEntries = parameters.ToArray(); // order of entries must be the same for x
 
-      //extract inital constants
+      // extract inital constants
       double[] c;
       if (applyLinearScaling) {
         c = new double[initialConstants.Length + 2];
@@ -308,9 +308,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
         ConstantTreeNode constantTreeNode = node as ConstantTreeNode;
         VariableTreeNodeBase variableTreeNodeBase = node as VariableTreeNodeBase;
         FactorVariableTreeNode factorVarTreeNode = node as FactorVariableTreeNode;
-        if (constantTreeNode != null)
+        if (constantTreeNode != null) {
+          if (constantTreeNode.Parent.Symbol is Power 
+              && constantTreeNode.Parent.GetSubtree(1) == constantTreeNode) continue; // exponents in powers are not optimizated (see TreeToAutoDiffTermConverter)
           constantTreeNode.Value = constants[i++];
-        else if (updateVariableWeights && variableTreeNodeBase != null)
+        } else if (updateVariableWeights && variableTreeNodeBase != null)
           variableTreeNodeBase.Weight = constants[i++];
         else if (factorVarTreeNode != null) {
           for (int j = 0; j < factorVarTreeNode.Weights.Length; j++)
