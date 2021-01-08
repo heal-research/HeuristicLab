@@ -98,7 +98,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
 
       #region root rules
       // cancellation
-      AssertEqualAfterSimplification("(root (variable 2.0 a) 0.0)", "1.0");
+      AssertEqualAfterSimplification("(root (variable 2.0 a) 0.0)", "NaN");
       // fixed point
       AssertEqualAfterSimplification("(root (variable 2.0 a) 1.0)", "(variable 2.0 a)");
       // inversion fixed point

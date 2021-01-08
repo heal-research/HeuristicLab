@@ -933,12 +933,17 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         var constB = b as ConstantTreeNode;
         var constBValue = Math.Round(constB.Value);
         if (constBValue == 1.0) {
+          // root(a, 1) => a
           return a;
         } else if (constBValue == 0.0) {
-          return MakeConstant(1.0);
+          // root(a, 0) is not defined 
+          //return MakeConstant(1.0);
+          return MakeConstant(double.NaN);
         } else if (constBValue == -1.0) {
+          // root(a, -1) => a^(-1/1) => 1/a
           return MakeFraction(MakeConstant(1.0), a);
         } else if (constBValue < 0) {
+          // root(a, -b) => a^(-1/b) => (1/a)^(1/b) => root(1, b) / root(a, b) => 1 / root(a, b)
           var rootNode = rootSymbol.CreateTreeNode();
           rootNode.AddSubtree(a);
           rootNode.AddSubtree(MakeConstant(-1.0 * constBValue));
@@ -987,12 +992,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         var constB = b as ConstantTreeNode;
         double exponent = Math.Round(constB.Value);
         if (exponent == 0.0) {
+          // a^0 => 1
           return MakeConstant(1.0);
         } else if (exponent == 1.0) {
+          // a^1 => a
           return a;
         } else if (exponent == -1.0) {
+          // a^-1 => 1/a
           return MakeFraction(MakeConstant(1.0), a);
         } else if (exponent < 0) {
+          // a^-b => (1/a)^b => 1/(a^b)
           var powNode = powSymbol.CreateTreeNode();
           powNode.AddSubtree(a);
           powNode.AddSubtree(MakeConstant(-1.0 * exponent));
@@ -1018,6 +1027,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         // fold constants
         return MakeConstant(((ConstantTreeNode)a).Value / ((ConstantTreeNode)b).Value);
       } else if ((IsConstant(a) && ((ConstantTreeNode)a).Value != 1.0)) {
+        // a / x => (a * 1/a) / (x * 1/a) => 1 / (x * 1/a)
         return MakeFraction(MakeConstant(1.0), MakeProduct(b, Invert(a)));
       } else if (IsVariableBase(a) && IsConstant(b)) {
         // merge constant values into variable weights
