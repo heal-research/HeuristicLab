@@ -20,7 +20,6 @@
 #endregion
 
 using System.Linq;
-using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Problems.DataAnalysis;
 using HeuristicLab.Problems.Instances.DataAnalysis;
@@ -57,7 +56,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Tests {
       Assert.AreEqual(Core.ExecutionState.Stopped, cv.ExecutionState);
       IResult cvFoldsResult;
       Assert.IsTrue(cv.Results.TryGetValue("CrossValidation Folds", out cvFoldsResult));
-      var runs = ((RunCollection)cvFoldsResult.Value);
+      var runs = (RunCollection)cvFoldsResult.Value;
       var foldEstimationLimits = (DoubleLimit)runs.First().Parameters["EstimationLimits"];
 
       Assert.AreEqual(symRegProb.EstimationLimits.Lower, foldEstimationLimits.Lower); // -1
