@@ -516,7 +516,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     private void FormatStartSymbol(StringBuilder strBuilder) {
-      strBuilder.Append(EscapeLatexString(targetVariable) ?? "target_{" + targetCount++ + "}");
+      strBuilder.Append(targetVariable != null ? EscapeLatexString(targetVariable) : "\\text{target}_{" + targetCount++ + "}");
       if (containsTimeSeriesSymbol)
         strBuilder.Append("(t)");
       strBuilder.Append(" & = ");
