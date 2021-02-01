@@ -94,34 +94,34 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Shared\ArrayJsonItemControl.cs">
+    <Compile Include="Views\ArrayJsonItemControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Shared\ArrayJsonItemControl.Designer.cs">
+    <Compile Include="Views\ArrayJsonItemControl.Designer.cs">
       <DependentUpon>ArrayJsonItemControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Shared\CompoundControl.cs">
+    <Compile Include="Views\CompoundControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Shared\CompoundControl.Designer.cs">
+    <Compile Include="Views\CompoundControl.Designer.cs">
       <DependentUpon>CompoundControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Shared\JsonItemBaseControl.cs">
+    <Compile Include="Views\JsonItemBaseControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Shared\JsonItemBaseControl.Designer.cs">
+    <Compile Include="Views\JsonItemBaseControl.Designer.cs">
       <DependentUpon>JsonItemBaseControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Shared\MatrixJsonItemControl.cs">
+    <Compile Include="Views\MatrixJsonItemControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Shared\MatrixJsonItemControl.Designer.cs">
+    <Compile Include="Views\MatrixJsonItemControl.Designer.cs">
       <DependentUpon>MatrixJsonItemControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Shared\NumericRangeControl.cs">
+    <Compile Include="Views\NumericRangeControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Shared\NumericRangeControl.Designer.cs">
+    <Compile Include="Views\NumericRangeControl.Designer.cs">
       <DependentUpon>NumericRangeControl.cs</DependentUpon>
     </Compile>
     <Compile Include="ViewModels\ArrayValueVM.cs" />
@@ -137,10 +137,10 @@
     <Compile Include="ViewModels\SingleValueVM.cs" />
     <Compile Include="ViewModels\StringValueVM.cs" />
     <Compile Include="ViewModels\ValueLookupJsonItemVM.cs" />
-    <Compile Include="Shared\ConcreteItemsRestrictor.cs">
+    <Compile Include="Views\ConcreteItemsRestrictor.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Shared\ConcreteItemsRestrictor.Designer.cs">
+    <Compile Include="Views\ConcreteItemsRestrictor.Designer.cs">
       <DependentUpon>ConcreteItemsRestrictor.cs</DependentUpon>
     </Compile>
     <Compile Include="Views\ExportJsonDialog.cs">
@@ -208,22 +208,22 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="Shared\ArrayJsonItemControl.resx">
+    <EmbeddedResource Include="Views\ArrayJsonItemControl.resx">
       <DependentUpon>ArrayJsonItemControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Shared\CompoundControl.resx">
+    <EmbeddedResource Include="Views\CompoundControl.resx">
       <DependentUpon>CompoundControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Shared\JsonItemBaseControl.resx">
+    <EmbeddedResource Include="Views\JsonItemBaseControl.resx">
       <DependentUpon>JsonItemBaseControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Shared\MatrixJsonItemControl.resx">
+    <EmbeddedResource Include="Views\MatrixJsonItemControl.resx">
       <DependentUpon>MatrixJsonItemControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Shared\NumericRangeControl.resx">
+    <EmbeddedResource Include="Views\NumericRangeControl.resx">
       <DependentUpon>NumericRangeControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Shared\ConcreteItemsRestrictor.resx">
+    <EmbeddedResource Include="Views\ConcreteItemsRestrictor.resx">
       <DependentUpon>ConcreteItemsRestrictor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\ExportJsonDialog.resx">
