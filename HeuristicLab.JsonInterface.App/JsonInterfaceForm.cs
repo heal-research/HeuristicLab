@@ -36,6 +36,7 @@ namespace HeuristicLab.JsonInterface.App {
       this.templateOpenButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Open;
       this.configOpenButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Open;
       this.outputOpenButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Save;
+      this.Icon = HeuristicLab.Common.Resources.HeuristicLab.Icon;
     }
 
     private void OpenTemplate(object sender, EventArgs e) {

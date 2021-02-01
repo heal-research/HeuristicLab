@@ -10,10 +10,10 @@ using System.Windows.Forms;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.JsonInterface.OptimizerIntegration {
-  public partial class ValueLookupJsonItemControl : LookupJsonItemControl {
+  public partial class ValueLookupJsonItemControl : UserControl {
     private static IDictionary<Type, Type> JI2VM { get; set; }
 
-    public ValueLookupJsonItemControl(IValueLookupJsonItemVM vm) : base(vm) {
+    public ValueLookupJsonItemControl(IValueLookupJsonItemVM vm) {
       InitializeComponent();
       InitCache();
       if (vm.JsonItemReference != null && JI2VM.TryGetValue(vm.JsonItemReference.GetType(), out Type vmType)) {
@@ -21,9 +21,10 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
         tmp.Item = vm.JsonItemReference;
         content.Controls.Clear();
         UserControl control = tmp.Control;
-        content.Controls.Add(control);
-        control.Dock = DockStyle.Fill;
-        
+        if(control != null) {
+          content.Controls.Add(control);
+          control.Dock = DockStyle.Fill;
+        }
       }
     }
 

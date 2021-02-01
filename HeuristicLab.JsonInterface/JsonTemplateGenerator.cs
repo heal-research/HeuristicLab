@@ -11,19 +11,29 @@ namespace HeuristicLab.JsonInterface {
   /// </summary>
   public class JsonTemplateGenerator {
 
-    public static void GenerateTemplate(string path, IOptimizer optimizer) =>
-      GenerateTemplate(path, optimizer.Name, optimizer);
+    /// <summary>
+    /// static Function to generate a template.
+    /// </summary>
+    /// <param name="templatePath">the path for the template files</param>
+    /// <param name="optimizer">the optimizer object to serialize</param>
+    /// <param name="rootItem">Root JsonItem for serialization, considers only active JsonItems for serialization</param>
+    public static void GenerateTemplate(string templatePath, IOptimizer optimizer, IJsonItem rootItem) {
+      // clear all runs
+      optimizer.Runs.Clear();
 
-    public static void GenerateTemplate(string path, string templateName, IOptimizer optimizer) =>
-      GenerateTemplate(path, templateName, optimizer, JsonItemConverter.Extract(optimizer));
+      // validation
+      ValidationResult validationResult = rootItem.GetValidator().Validate();
+      if (!validationResult.Success)
+        throw validationResult.GenerateException();
 
-    public static void GenerateTemplate(string path, string templateName, IOptimizer optimizer, IJsonItem rootItem) {
       #region Init
       JObject template = JObject.Parse(Constants.Template);
       JArray parameterItems = new JArray();
       JArray resultItems = new JArray();
       IList<IJsonItem> jsonItems = new List<IJsonItem>();
-      string fullPath = Path.GetFullPath(path);
+      string templateName = Path.GetFileName(templatePath);
+      string templateDirectory = Path.GetDirectoryName(templatePath);
+
       #endregion
 
       if(optimizer.ExecutionState == ExecutionState.Paused)
@@ -34,7 +44,7 @@ namespace HeuristicLab.JsonInterface {
 
       #region Serialize HL File
       ProtoBufSerializer serializer = new ProtoBufSerializer();
-      string hlFilePath = Path.Combine(fullPath, templateName + ".hl");
+      string hlFilePath = Path.Combine(templateDirectory, $"{templateName}.hl");
       serializer.Serialize(optimizer, hlFilePath);
       #endregion
 
@@ -55,7 +65,7 @@ namespace HeuristicLab.JsonInterface {
       #endregion
 
       #region Serialize and write to file
-      File.WriteAllText(fullPath + @"\" + templateName + ".json", SingleLineArrayJsonWriter.Serialize(template));
+      File.WriteAllText(Path.Combine(templateDirectory, $"{templateName}.json"), SingleLineArrayJsonWriter.Serialize(template));
       #endregion
     }
 

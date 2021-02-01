@@ -28,6 +28,13 @@ namespace HeuristicLab.JsonInterface {
     /// A given priority, higher numbers are prior.
     /// </summary>
     int Priority { get; }
+
+    /// <summary>
+    /// Checks if the given type can be converted.
+    /// </summary>
+    /// <param name="t"></param>
+    /// <returns></returns>
+    bool CanConvertType(Type t);
   }
 }
 

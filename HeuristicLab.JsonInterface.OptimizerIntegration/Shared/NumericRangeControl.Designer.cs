@@ -25,15 +25,17 @@
     private void InitializeComponent() {
       this.components = new System.ComponentModel.Container();
       this.groupBox2 = new System.Windows.Forms.GroupBox();
-      this.checkBoxTo = new System.Windows.Forms.CheckBox();
+      this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
       this.textBoxTo = new System.Windows.Forms.TextBox();
-      this.errorProvider = new System.Windows.Forms.ErrorProvider(this.components);
       this.textBoxFrom = new System.Windows.Forms.TextBox();
       this.checkBoxFrom = new System.Windows.Forms.CheckBox();
-      this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
+      this.checkBoxTo = new System.Windows.Forms.CheckBox();
+      this.errorProvider = new System.Windows.Forms.ErrorProvider(this.components);
+      this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
       this.groupBox2.SuspendLayout();
-      ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
       this.tableLayoutPanel2.SuspendLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
+      this.tableLayoutPanel1.SuspendLayout();
       this.SuspendLayout();
       // 
       // groupBox2
@@ -48,17 +50,25 @@
       this.groupBox2.TabStop = false;
       this.groupBox2.Text = "Range";
       // 
-      // checkBoxTo
+      // tableLayoutPanel2
       // 
-      this.checkBoxTo.AutoSize = true;
-      this.checkBoxTo.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.checkBoxTo.Location = new System.Drawing.Point(0, 22);
-      this.checkBoxTo.Margin = new System.Windows.Forms.Padding(0);
-      this.checkBoxTo.Name = "checkBoxTo";
-      this.checkBoxTo.Size = new System.Drawing.Size(100, 22);
-      this.checkBoxTo.TabIndex = 7;
-      this.checkBoxTo.Text = "To:";
-      this.checkBoxTo.UseVisualStyleBackColor = true;
+      this.tableLayoutPanel2.ColumnCount = 2;
+      this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 100F));
+      this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+      this.tableLayoutPanel2.Controls.Add(this.textBoxTo, 1, 1);
+      this.tableLayoutPanel2.Controls.Add(this.textBoxFrom, 1, 0);
+      this.tableLayoutPanel2.Controls.Add(this.checkBoxFrom, 0, 0);
+      this.tableLayoutPanel2.Controls.Add(this.checkBoxTo, 0, 1);
+      this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.tableLayoutPanel2.Location = new System.Drawing.Point(3, 16);
+      this.tableLayoutPanel2.Margin = new System.Windows.Forms.Padding(0);
+      this.tableLayoutPanel2.Name = "tableLayoutPanel2";
+      this.tableLayoutPanel2.RowCount = 2;
+      this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+      this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+      this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+      this.tableLayoutPanel2.Size = new System.Drawing.Size(520, 44);
+      this.tableLayoutPanel2.TabIndex = 22;
       // 
       // textBoxTo
       // 
@@ -71,11 +81,6 @@
       this.textBoxTo.Size = new System.Drawing.Size(420, 20);
       this.textBoxTo.TabIndex = 6;
       this.textBoxTo.Validating += new System.ComponentModel.CancelEventHandler(this.textBoxTo_Validating);
-      // 
-      // errorProvider
-      // 
-      this.errorProvider.BlinkStyle = System.Windows.Forms.ErrorBlinkStyle.NeverBlink;
-      this.errorProvider.ContainerControl = this;
       // 
       // textBoxFrom
       // 
@@ -101,36 +106,49 @@
       this.checkBoxFrom.Text = "From:";
       this.checkBoxFrom.UseVisualStyleBackColor = true;
       // 
-      // tableLayoutPanel2
+      // checkBoxTo
       // 
-      this.tableLayoutPanel2.ColumnCount = 2;
-      this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 100F));
-      this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-      this.tableLayoutPanel2.Controls.Add(this.textBoxTo, 1, 1);
-      this.tableLayoutPanel2.Controls.Add(this.textBoxFrom, 1, 0);
-      this.tableLayoutPanel2.Controls.Add(this.checkBoxFrom, 0, 0);
-      this.tableLayoutPanel2.Controls.Add(this.checkBoxTo, 0, 1);
-      this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.tableLayoutPanel2.Location = new System.Drawing.Point(3, 16);
-      this.tableLayoutPanel2.Margin = new System.Windows.Forms.Padding(0);
-      this.tableLayoutPanel2.Name = "tableLayoutPanel2";
-      this.tableLayoutPanel2.RowCount = 2;
-      this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-      this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-      this.tableLayoutPanel2.Size = new System.Drawing.Size(520, 44);
-      this.tableLayoutPanel2.TabIndex = 22;
+      this.checkBoxTo.AutoSize = true;
+      this.checkBoxTo.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.checkBoxTo.Location = new System.Drawing.Point(0, 22);
+      this.checkBoxTo.Margin = new System.Windows.Forms.Padding(0);
+      this.checkBoxTo.Name = "checkBoxTo";
+      this.checkBoxTo.Size = new System.Drawing.Size(100, 22);
+      this.checkBoxTo.TabIndex = 7;
+      this.checkBoxTo.Text = "To:";
+      this.checkBoxTo.UseVisualStyleBackColor = true;
+      // 
+      // errorProvider
+      // 
+      this.errorProvider.BlinkStyle = System.Windows.Forms.ErrorBlinkStyle.NeverBlink;
+      this.errorProvider.ContainerControl = this;
+      // 
+      // tableLayoutPanel1
+      // 
+      this.tableLayoutPanel1.ColumnCount = 1;
+      this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+      this.tableLayoutPanel1.Controls.Add(this.groupBox2, 0, 0);
+      this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
+      this.tableLayoutPanel1.Name = "tableLayoutPanel1";
+      this.tableLayoutPanel1.RowCount = 2;
+      this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 63F));
+      this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+      this.tableLayoutPanel1.Size = new System.Drawing.Size(526, 63);
+      this.tableLayoutPanel1.TabIndex = 23;
       // 
       // NumericRangeControl
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.Controls.Add(this.groupBox2);
+      this.Controls.Add(this.tableLayoutPanel1);
       this.Name = "NumericRangeControl";
       this.Size = new System.Drawing.Size(526, 63);
       this.groupBox2.ResumeLayout(false);
-      ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
       this.tableLayoutPanel2.ResumeLayout(false);
       this.tableLayoutPanel2.PerformLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
+      this.tableLayoutPanel1.ResumeLayout(false);
       this.ResumeLayout(false);
 
     }
@@ -143,5 +161,6 @@
     private System.Windows.Forms.CheckBox checkBoxFrom;
     private System.Windows.Forms.TextBox textBoxFrom;
     private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
+    private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
   }
 }

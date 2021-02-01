@@ -39,15 +39,17 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
         #endregion
 
         Optimizer = content as IOptimizer;
-        Root = JsonItemConverter.Extract(Optimizer);
-        TreeNode parent = new TreeNode(Root.Name);
-        treeView.AfterCheck += TreeView_AfterCheck;
-        BuildTreeNode(parent, Root);
-        treeView.Nodes.Add(parent);
-        treeView.ExpandAll();
-        panelParameterDetails.Controls.Clear();
-        panelResultDetails.Controls.Clear();
-
+        if(Optimizer != null) {
+          Optimizer = (IOptimizer)Optimizer.Clone(); // clone the optimizer
+          Root = JsonItemConverter.Extract(Optimizer);
+          TreeNode parent = new TreeNode(Root.Name);
+          treeView.AfterCheck += TreeView_AfterCheck;
+          BuildTreeNode(parent, Root);
+          treeView.Nodes.Add(parent);
+          treeView.ExpandAll();
+          panelParameterDetails.Controls.Clear();
+          panelResultDetails.Controls.Clear();
+        }
       } 
     }
 
@@ -61,33 +63,24 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
 
     public ExportJsonDialog() {
       InitializeComponent();
+      this.Icon = HeuristicLab.Common.Resources.HeuristicLab.Icon;
       InitCache();
     }
 
     private void exportButton_Click(object sender, EventArgs e) {
-      // to set default value for disabled items
-      JsonItemConverter.Inject(Optimizer, Root);
+      if (FolderBrowserDialog == null) {
+        FolderBrowserDialog = new FolderBrowserDialog();
+        FolderBrowserDialog.Description = "Select .json-Template Directory";
+      }
 
-      // clear all runs
-      Optimizer.Runs.Clear();
-
-      var validationResult = Root.GetValidator().Validate();
-      if (!validationResult.Success) {
-        IList<Exception> list = new List<Exception>();
-        //print faultyItems
-        foreach (var x in validationResult.Errors) {
-          list.Add(new Exception(x));
-        }
-        ErrorHandling.ShowErrorDialog(this, new AggregateException(list));
-      } else {
-        if (FolderBrowserDialog == null) {
-          FolderBrowserDialog = new FolderBrowserDialog();
-          FolderBrowserDialog.Description = "Select .json-Template Dictionary";
-        }
-
-        if (FolderBrowserDialog.ShowDialog() == DialogResult.OK) {
-          JsonTemplateGenerator.GenerateTemplate(FolderBrowserDialog.SelectedPath, textBoxTemplateName.Text, Optimizer, Root);
+      if (FolderBrowserDialog.ShowDialog() == DialogResult.OK) {
+        try {
+          JsonTemplateGenerator.GenerateTemplate(
+            Path.Combine(FolderBrowserDialog.SelectedPath, textBoxTemplateName.Text), 
+            Optimizer, Root);
           Close();
+        } catch (Exception ex) {
+          ErrorHandling.ShowErrorDialog(this, ex);
         }
       }
     }
@@ -97,15 +90,12 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
       if (item.Children != null) {
         foreach (var c in item.Children) {
           if (IsDrawableItem(c)) {
+            TreeNode childNode = new TreeNode(c.Name);
             if (c is IResultJsonItem) {
-              TreeNode childNode = new TreeNode(c.Name);
               treeViewResults.Nodes.Add(childNode);
-              RegisterItem(childNode, c, treeViewResults);
-              if(Node2VM.TryGetValue(childNode, out IJsonItemVM vm))
-                vm.Selected = true;
-              
+              IJsonItemVM vm = RegisterItem(childNode, c, treeViewResults);
+              if (vm != null) vm.Selected = true;              
             } else {
-              TreeNode childNode = new TreeNode(c.Name);
               node.Nodes.Add(childNode);
               BuildTreeNode(childNode, c);
             }
@@ -114,8 +104,8 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
       }
     }
 
-    private void RegisterItem(TreeNode node, IJsonItem item, TreeView tv) {
-      if (JI2VM.TryGetValue(item.GetType(), out Type vmType)) { // TODO: enhance for interfaces?
+    private IJsonItemVM RegisterItem(TreeNode node, IJsonItem item, TreeView tv) {
+      if (JI2VM.TryGetValue(item.GetType(), out Type vmType)) {
         IJsonItemVM vm = (IJsonItemVM)Activator.CreateInstance(vmType);
 
         vm.Item = item;
@@ -127,10 +117,12 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
         Node2VM.Add(node, vm);
         UserControl control = new JsonItemBaseControl(vm, vm.Control);
         Node2Control.Add(node, control);
+        return vm;
       } else {
         node.ForeColor = Color.LightGray;
         node.NodeFont = new Font(SystemFonts.DialogFont, FontStyle.Italic);
       }
+      return null;
     }
 
     private bool IsDrawableItem(IJsonItem item) {
@@ -141,7 +133,7 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
         }
       }
       
-      return b || !(item is EmptyJsonItem);
+      return b || !(item is EmptyJsonItem) || !(item is UnsupportedJsonItem);
     }
     
     private void treeView_AfterSelect(object sender, TreeViewEventArgs e) {

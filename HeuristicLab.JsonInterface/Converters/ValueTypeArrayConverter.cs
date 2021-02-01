@@ -13,6 +13,9 @@ namespace HeuristicLab.JsonInterface {
     public override int Priority => 1;
     public override Type ConvertableType => typeof(IntArray);
 
+    public override bool CanConvertType(Type t) =>
+      ConvertableType.IsAssignableFrom(t);
+
     public override void Inject(IItem item, IJsonItem data, IJsonItemConverter root) {
       IntArray arr = item as IntArray;
       IntArrayJsonItem intArrayItem = data as IntArrayJsonItem;
@@ -37,6 +40,9 @@ namespace HeuristicLab.JsonInterface {
   public class DoubleArrayConverter : BaseConverter {
     public override int Priority => 1;
     public override Type ConvertableType => typeof(DoubleArray);
+
+    public override bool CanConvertType(Type t) =>
+      ConvertableType.IsAssignableFrom(t);
 
     public override void Inject(IItem item, IJsonItem data, IJsonItemConverter root) {
       DoubleArray arr = item as DoubleArray;
@@ -63,6 +69,9 @@ namespace HeuristicLab.JsonInterface {
     public override int Priority => 2;
     public override Type ConvertableType => typeof(PercentArray);
 
+    public override bool CanConvertType(Type t) =>
+      ConvertableType.IsAssignableFrom(t);
+
     public override void Inject(IItem item, IJsonItem data, IJsonItemConverter root) {
       PercentArray arr = item as PercentArray;
       DoubleArrayJsonItem doubleArrayItem = data as DoubleArrayJsonItem;
@@ -87,6 +96,9 @@ namespace HeuristicLab.JsonInterface {
   public class BoolArrayConverter : BaseConverter {
     public override int Priority => 1;
     public override Type ConvertableType => typeof(BoolArray);
+
+    public override bool CanConvertType(Type t) =>
+      ConvertableType.IsAssignableFrom(t);
 
     public override void Inject(IItem item, IJsonItem data, IJsonItemConverter root) {
       BoolArray arr = item as BoolArray;

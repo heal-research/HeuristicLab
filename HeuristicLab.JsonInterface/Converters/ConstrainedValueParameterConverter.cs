@@ -11,6 +11,9 @@ namespace HeuristicLab.JsonInterface {
     public override int Priority => 3;
     public override Type ConvertableType => typeof(IConstrainedValueParameter<>);
 
+    public override bool CanConvertType(Type t) =>
+      t.GetInterfaces().Any(x => x.IsGenericType && x.GetGenericTypeDefinition() == typeof(IConstrainedValueParameter<>));
+
     public override void Inject(IItem item, IJsonItem data, IJsonItemConverter root) {
       StringJsonItem cdata = data as StringJsonItem;
       IParameter parameter = item as IParameter;

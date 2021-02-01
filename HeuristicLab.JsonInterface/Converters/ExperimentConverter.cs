@@ -11,6 +11,9 @@ namespace HeuristicLab.JsonInterface {
     public override int Priority => 10;
     public override Type ConvertableType => HEAL.Attic.Mapper.StaticCache.GetType(new Guid("A8A4536B-54C1-4A17-AB58-A6006F7F394B"));
 
+    public override bool CanConvertType(Type t) =>
+      ConvertableType.IsAssignableFrom(t);
+
     public override IJsonItem Extract(IItem value, IJsonItemConverter root) {
       dynamic experiment = (dynamic)value;
       EmptyJsonItem experimentJI = new EmptyJsonItem() {

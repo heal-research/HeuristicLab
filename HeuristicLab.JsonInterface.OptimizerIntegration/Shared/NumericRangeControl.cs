@@ -50,5 +50,16 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
         errorProvider.SetError(textBoxTo, null);
       }
     }
+
+    public static UserControl Create(IJsonItemVM vm) {
+      NumericRangeControl numericRangeControl = new NumericRangeControl();
+      numericRangeControl.TBMinRange.DataBindings.Add("Text", vm, nameof(RangedValueBaseVM<int, IntJsonItem>.MinRange));
+      numericRangeControl.TBMaxRange.DataBindings.Add("Text", vm, nameof(RangedValueBaseVM<int, IntJsonItem>.MaxRange));
+      numericRangeControl.EnableMinRange.DataBindings.Add("Checked", vm, nameof(RangedValueBaseVM<int, IntJsonItem>.EnableMinRange),
+        false, DataSourceUpdateMode.OnPropertyChanged);
+      numericRangeControl.EnableMaxRange.DataBindings.Add("Checked", vm, nameof(RangedValueBaseVM<int, IntJsonItem>.EnableMaxRange),
+        false, DataSourceUpdateMode.OnPropertyChanged);
+      return numericRangeControl;
+    }
   }
 }

@@ -10,6 +10,9 @@ namespace HeuristicLab.JsonInterface {
     public override int Priority => 4;
     public override Type ConvertableType => typeof(IValueLookupParameter);
 
+    public override bool CanConvertType(Type t) =>
+      t.GetInterfaces().Any(x => x == typeof(IValueLookupParameter));
+
     public override void Inject(IItem item, IJsonItem data, IJsonItemConverter root) {
       IValueLookupParameter param = item as IValueLookupParameter;
       IValueLookupJsonItem lookupItem = data as IValueLookupJsonItem;

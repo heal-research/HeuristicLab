@@ -33,6 +33,9 @@ namespace HeuristicLab.JsonInterface {
     // RegressionProblemData
     public override Type ConvertableType => HEAL.Attic.Mapper.StaticCache.GetType(new Guid("EE612297-B1AF-42D2-BF21-AF9A2D42791C"));
 
+    public override bool CanConvertType(Type t) =>
+      ConvertableType.IsAssignableFrom(t);
+
     public override void Inject(IItem item, IJsonItem data, IJsonItemConverter root) {
 
       dynamic regressionProblemData = (dynamic)item;
@@ -179,29 +182,29 @@ namespace HeuristicLab.JsonInterface {
 
         if(it != null) {
           if(it.MoveNext() && it.Current is double) {
-            CreateMatrix(dict, out IList<string> rowNames, out double[][] mat);
+            CreateMatrix(dict, out IList<string> columnNames, out double[][] mat);
             return new DoubleMatrixJsonItem() {
               Name = Dataset,
               Value = mat,
-              RowNames = rowNames,
+              ColumnNames = columnNames,
               Minimum = double.MinValue,
               Maximum = double.MaxValue
             };
           } else if(it.Current is int) {
-            CreateMatrix(dict, out IList<string> rowNames, out int[][] mat);
+            CreateMatrix(dict, out IList<string> columnNames, out int[][] mat);
             return new IntMatrixJsonItem() {
               Name = Dataset,
               Value = mat,
-              RowNames = rowNames,
+              ColumnNames = columnNames,
               Minimum = int.MinValue,
               Maximum = int.MaxValue
             };
           } else if (it.Current is bool) {
-            CreateMatrix(dict, out IList<string> rowNames, out bool[][] mat);
+            CreateMatrix(dict, out IList<string> columnNames, out bool[][] mat);
             return new BoolMatrixJsonItem() {
               Name = Dataset,
               Value = mat,
-              RowNames = rowNames
+              ColumnNames = columnNames
             };
           }
         }
@@ -209,19 +212,19 @@ namespace HeuristicLab.JsonInterface {
       return null;
     }
     
-    private void CreateMatrix<T>(Dictionary<string, IList> dict, out IList<string> rowNames, out T[][] matrix) {
+    private void CreateMatrix<T>(Dictionary<string, IList> dict, out IList<string> columnNames, out T[][] matrix) {
       int cols = dict.Count, rows = 0, c = 0;
-      rowNames = new List<string>();
+      columnNames = new List<string>();
       matrix = new T[cols][];
       foreach (var x in dict) {
         rows = Math.Max(rows, x.Value.Count);
-        rowNames.Add(x.Key);
+        columnNames.Add(x.Key);
 
         matrix[c] = new T[rows];
-        int r = 0;
 
-        foreach (var rowValue in x.Value) {
-          matrix[c][r] = (T)rowValue;
+        int r = 0;
+        foreach (var callValue in x.Value) {
+          matrix[c][r] = (T)callValue;
           ++r;
         }
         ++c;
