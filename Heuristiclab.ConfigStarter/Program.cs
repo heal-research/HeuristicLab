@@ -47,7 +47,7 @@ namespace Heuristiclab.ConfigStarter {
       ActivateJsonItems(root);
 
       
-      JsonTemplateGenerator.GenerateTemplate(@"C:\Workspace\ConfigStarter\", "Template", alg, root);
+      //JsonTemplateGenerator.GenerateTemplate(@"C:\Workspace\ConfigStarter\", "Template", alg, root);
       
 
       List<ICommandLineArgument> arguments = new List<ICommandLineArgument>();

@@ -18,8 +18,7 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
       }
     }
     
-    public override UserControl Control =>
-       new JsonItemBoolControl(this);
+    public override UserControl Control => null;
   }
 
   public abstract class SingleValueVM<T, JsonItemType> : RangedValueBaseVM<T, JsonItemType>

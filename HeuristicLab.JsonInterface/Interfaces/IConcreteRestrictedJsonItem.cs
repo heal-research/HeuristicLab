@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 
 namespace HeuristicLab.JsonInterface {
   public interface IConcreteRestrictedJsonItem<T> : IJsonItem {
     /// <summary>
-    /// The item, 
+    /// array of restricted items
     /// </summary>
     IEnumerable<T> ConcreteRestrictedItems { get; set; }
   }

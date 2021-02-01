@@ -10,6 +10,8 @@ namespace HeuristicLab.JsonInterface {
     public override int Priority => 10;
     public override Type ConvertableType => HEAL.Attic.Mapper.StaticCache.GetType(new Guid("E85407E0-18EC-4198-8321-9CF030FDF6D7"));
 
+    public override bool CanConvertType(Type t) => ConvertableType.IsAssignableFrom(t);
+
     public override IJsonItem Extract(IItem value, IJsonItemConverter root) {
       dynamic batchRun = (dynamic)value;
       EmptyJsonItem batchRunJI = new EmptyJsonItem() {
@@ -30,7 +32,6 @@ namespace HeuristicLab.JsonInterface {
         Minimum = 0, 
         Maximum = int.MaxValue 
       });
-      
       return batchRunJI;
     }
 

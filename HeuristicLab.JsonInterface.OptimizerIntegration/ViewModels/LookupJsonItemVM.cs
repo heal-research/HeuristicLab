@@ -7,9 +7,7 @@ using System.Windows.Forms;
 
 namespace HeuristicLab.JsonInterface.OptimizerIntegration {
   public class LookupJsonItemVM : JsonItemVMBase<LookupJsonItem>, ILookupJsonItemVM {
-
-    public override UserControl Control => new LookupJsonItemControl(this);
-
+    public override UserControl Control => null;
     public string ActualName {
       get => Item.ActualName;
       set {

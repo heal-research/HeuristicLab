@@ -94,11 +94,29 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Shared\ArrayJsonItemControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Shared\ArrayJsonItemControl.Designer.cs">
+      <DependentUpon>ArrayJsonItemControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Shared\CompoundControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Shared\CompoundControl.Designer.cs">
+      <DependentUpon>CompoundControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Shared\JsonItemBaseControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Shared\JsonItemBaseControl.Designer.cs">
       <DependentUpon>JsonItemBaseControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Shared\MatrixJsonItemControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Shared\MatrixJsonItemControl.Designer.cs">
+      <DependentUpon>MatrixJsonItemControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Shared\NumericRangeControl.cs">
       <SubType>UserControl</SubType>
@@ -107,6 +125,7 @@
       <DependentUpon>NumericRangeControl.cs</DependentUpon>
     </Compile>
     <Compile Include="ViewModels\ArrayValueVM.cs" />
+    <Compile Include="ViewModels\ConcreteRestrictedJsonItemVM.cs" />
     <Compile Include="ViewModels\DoubleVMs.cs" />
     <Compile Include="ViewModels\IntVMs.cs" />
     <Compile Include="ViewModels\JsonItemVMBase.cs" />
@@ -131,52 +150,10 @@
       <DependentUpon>ExportJsonDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="FileManager.cs" />
-    <Compile Include="Views\JsonItemConcreteItemArrayControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Views\JsonItemConcreteItemArrayControl.Designer.cs">
-      <DependentUpon>JsonItemConcreteItemArrayControl.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Views\JsonItemMultiValueControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Views\JsonItemMultiValueControl.Designer.cs">
-      <DependentUpon>JsonItemMultiValueControl.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Views\JsonItemBoolControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Views\JsonItemBoolControl.Designer.cs">
-      <DependentUpon>JsonItemBoolControl.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Views\JsonItemRangeControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Views\JsonItemRangeControl.Designer.cs">
-      <DependentUpon>JsonItemRangeControl.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Views\JsonItemValueControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Views\JsonItemValueControl.Designer.cs">
-      <DependentUpon>JsonItemValueControl.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Views\JsonItemValidValuesControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Views\JsonItemValidValuesControl.Designer.cs">
-      <DependentUpon>JsonItemValidValuesControl.cs</DependentUpon>
-    </Compile>
     <Compile Include="MenuItems\ImportJsonTemplateMenuItem.cs" />
     <Compile Include="MenuItems\ExportJsonTemplateMenuItem.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Views\LookupJsonItemControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Views\LookupJsonItemControl.Designer.cs">
-      <DependentUpon>LookupJsonItemControl.cs</DependentUpon>
-    </Compile>
     <Compile Include="Views\ValueLookupJsonItemControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -231,8 +208,17 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Include="Shared\ArrayJsonItemControl.resx">
+      <DependentUpon>ArrayJsonItemControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Shared\CompoundControl.resx">
+      <DependentUpon>CompoundControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Shared\JsonItemBaseControl.resx">
       <DependentUpon>JsonItemBaseControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Shared\MatrixJsonItemControl.resx">
+      <DependentUpon>MatrixJsonItemControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Shared\NumericRangeControl.resx">
       <DependentUpon>NumericRangeControl.cs</DependentUpon>
@@ -242,27 +228,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Views\ExportJsonDialog.resx">
       <DependentUpon>ExportJsonDialog.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Views\JsonItemConcreteItemArrayControl.resx">
-      <DependentUpon>JsonItemConcreteItemArrayControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Views\JsonItemMultiValueControl.resx">
-      <DependentUpon>JsonItemMultiValueControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Views\JsonItemBoolControl.resx">
-      <DependentUpon>JsonItemBoolControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Views\JsonItemRangeControl.resx">
-      <DependentUpon>JsonItemRangeControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Views\JsonItemValueControl.resx">
-      <DependentUpon>JsonItemValueControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Views\JsonItemValidValuesControl.resx">
-      <DependentUpon>JsonItemValidValuesControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Views\LookupJsonItemControl.resx">
-      <DependentUpon>LookupJsonItemControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\ValueLookupJsonItemControl.resx">
       <DependentUpon>ValueLookupJsonItemControl.cs</DependentUpon>

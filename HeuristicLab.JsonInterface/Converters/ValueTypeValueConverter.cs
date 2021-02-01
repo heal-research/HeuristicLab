@@ -12,6 +12,9 @@ namespace HeuristicLab.JsonInterface {
     public override int Priority => 1;
     public override Type ConvertableType => typeof(IntValue);
 
+    public override bool CanConvertType(Type t) =>
+      ConvertableType.IsAssignableFrom(t);
+
     public override void Inject(IItem item, IJsonItem data, IJsonItemConverter root) =>
       ((IntValue)item).Value = ((IntJsonItem)data).Value;
 
@@ -28,6 +31,9 @@ namespace HeuristicLab.JsonInterface {
   public class DoubleValueConverter : BaseConverter {
     public override int Priority => 1;
     public override Type ConvertableType => typeof(DoubleValue);
+
+    public override bool CanConvertType(Type t) =>
+      ConvertableType.IsAssignableFrom(t);
 
     public override void Inject(IItem item, IJsonItem data, IJsonItemConverter root) =>
       ((DoubleValue)item).Value = ((DoubleJsonItem)data).Value;
@@ -46,6 +52,9 @@ namespace HeuristicLab.JsonInterface {
     public override int Priority => 2;
     public override Type ConvertableType => typeof(PercentValue);
 
+    public override bool CanConvertType(Type t) =>
+      ConvertableType.IsAssignableFrom(t);
+
     public override void Inject(IItem item, IJsonItem data, IJsonItemConverter root) =>
       ((PercentValue)item).Value = ((DoubleJsonItem)data).Value;
 
@@ -63,6 +72,9 @@ namespace HeuristicLab.JsonInterface {
     public override int Priority => 1;
     public override Type ConvertableType => typeof(BoolValue);
 
+    public override bool CanConvertType(Type t) =>
+      ConvertableType.IsAssignableFrom(t);
+
     public override void Inject(IItem item, IJsonItem data, IJsonItemConverter root) =>
       ((BoolValue)item).Value = ((BoolJsonItem)data).Value;
 
@@ -77,6 +89,9 @@ namespace HeuristicLab.JsonInterface {
   public class DateTimeValueConverter : BaseConverter {
     public override int Priority => 1;
     public override Type ConvertableType => typeof(DateTimeValue);
+
+    public override bool CanConvertType(Type t) =>
+      ConvertableType.IsAssignableFrom(t);
 
     public override void Inject(IItem item, IJsonItem data, IJsonItemConverter root) =>
       ((DateTimeValue)item).Value = ((DateTimeJsonItem)data).Value;

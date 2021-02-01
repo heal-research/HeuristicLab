@@ -14,6 +14,9 @@ namespace HeuristicLab.JsonInterface {
     public override int Priority => 1;
     public override Type ConvertableType => typeof(IntRange);
 
+    public override bool CanConvertType(Type t) =>
+      ConvertableType.IsAssignableFrom(t);
+
     public override void Inject(IItem item, IJsonItem data, IJsonItemConverter root) {
       IntRange range = item as IntRange;
       IntRangeJsonItem cdata = data as IntRangeJsonItem;
@@ -37,6 +40,9 @@ namespace HeuristicLab.JsonInterface {
   public class DoubleRangeConverter : BaseConverter {
     public override int Priority => 1;
     public override Type ConvertableType => typeof(DoubleRange);
+
+    public override bool CanConvertType(Type t) =>
+      ConvertableType.IsAssignableFrom(t);
 
     public override void Inject(IItem item, IJsonItem data, IJsonItemConverter root) {
       DoubleRange range = item as DoubleRange;

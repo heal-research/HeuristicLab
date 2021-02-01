@@ -9,8 +9,12 @@ using HeuristicLab.Core;
 namespace HeuristicLab.JsonInterface {
   public class MultiCheckedOperatorConverter : ParameterizedItemConverter {
     public override int Priority => 3;
+
     public override Type ConvertableType => typeof(ICheckedMultiOperator<>);
-    
+
+    public override bool CanConvertType(Type t) =>
+      t.GetInterfaces().Any(x => x.IsGenericType && x.GetGenericTypeDefinition() == ConvertableType);
+
     public override void Inject(IItem item, IJsonItem data, IJsonItemConverter root) {
       base.Inject(item, data, root);
 

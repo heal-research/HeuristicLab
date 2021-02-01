@@ -9,7 +9,10 @@ namespace HeuristicLab.JsonInterface {
   public class LookupParameterConverter : BaseConverter {
     public override int Priority => 3;
     public override Type ConvertableType => typeof(ILookupParameter);
-    
+
+    public override bool CanConvertType(Type t) =>
+      t.GetInterfaces().Any(x => x == typeof(ILookupParameter));
+
     public override void Inject(IItem item, IJsonItem data, IJsonItemConverter root) =>
       ((ILookupParameter)item).ActualName = ((ILookupJsonItem)data).ActualName as string;
 

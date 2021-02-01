@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace HeuristicLab.JsonInterface.OptimizerIntegration {
 
@@ -10,6 +11,8 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
     where T : IComparable
     where JsonItemType : class, IIntervalRestrictedJsonItem<T> 
   {
+    public override UserControl Control => NumericRangeControl.Create(this);
+
     public T MinRange {
       get => Item.Minimum;
       set {

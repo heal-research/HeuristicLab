@@ -11,6 +11,7 @@ namespace HeuristicLab.JsonInterface {
   public class IntMatrixConverter : ValueTypeMatrixConverter<IntMatrix, int> {
     public override int Priority => 1;
     public override Type ConvertableType => typeof(IntMatrix);
+
     public override void Inject(IItem item, IJsonItem data, IJsonItemConverter root) {
       IntMatrix mat = item as IntMatrix;
       IntMatrixJsonItem d = data as IntMatrixJsonItem;
@@ -91,7 +92,17 @@ namespace HeuristicLab.JsonInterface {
     where MatrixType : ValueTypeMatrix<T> 
     where T : struct 
   {
+    public override bool CanConvertType(Type t) =>
+      ConvertableType.IsAssignableFrom(t);
+
     #region Helper
+    /// <summary>
+    /// Copies the data into the matrix object. Uses reflection to set the
+    /// row and column size of the matrix, because it is not possible to
+    /// create a new matrix at this point and there exists no public resize method.
+    /// </summary>
+    /// <param name="matrix"></param>
+    /// <param name="data"></param>
     protected void CopyMatrixData(MatrixType matrix, T[][] data) {
       var cols = data.Length;
       var rows = data.Length > 0 ? data[0].Length : 0;

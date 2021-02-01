@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using HEAL.Attic;
@@ -65,7 +66,10 @@ namespace HeuristicLab.JsonInterface {
       // get algorithm root item
       IJsonItem rootItem = Objects.First().Value;
 
-      //TODO validate
+      // validation
+      ValidationResult validationResult = rootItem.GetValidator().Validate();
+      if (!validationResult.Success)
+        throw validationResult.GenerateException();
 
       // inject configuration
       JsonItemConverter.Inject(optimizer, rootItem);
@@ -104,9 +108,13 @@ namespace HeuristicLab.JsonInterface {
         // override default value
         if (Objects.TryGetValue(path, out IJsonItem param)) {
           // remove fixed template parameter from config => dont allow to copy them from concrete config
+          // TODO: shift this into JsonItems?
           obj.Property(nameof(IIntervalRestrictedJsonItem<int>.Minimum))?.Remove();
           obj.Property(nameof(IIntervalRestrictedJsonItem<int>.Maximum))?.Remove();
           obj.Property(nameof(IConcreteRestrictedJsonItem<string>.ConcreteRestrictedItems))?.Remove();
+          obj.Property(nameof(IMatrixJsonItem.ColumnsResizable))?.Remove();
+          obj.Property(nameof(IMatrixJsonItem.RowsResizable))?.Remove();
+          obj.Property(nameof(IArrayJsonItem.Resizable))?.Remove();
           // merge
           param.SetJObject(obj);
         } else throw new InvalidDataException($"No parameter with path='{path}' defined!");

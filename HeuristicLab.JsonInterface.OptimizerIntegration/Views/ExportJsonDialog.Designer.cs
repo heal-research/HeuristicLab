@@ -248,7 +248,6 @@
       this.Controls.Add(this.tabControl1);
       this.Name = "ExportJsonDialog";
       this.RightToLeft = System.Windows.Forms.RightToLeft.No;
-      this.ShowIcon = false;
       this.Text = "Export Json";
       this.groupBoxDetails.ResumeLayout(false);
       this.splitContainer1.Panel1.ResumeLayout(false);

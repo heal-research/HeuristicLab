@@ -25,15 +25,15 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
     public JsonItemBaseControl(IJsonItemVM vm, UserControl control) {
       InitializeComponent();
       VM = vm;
-      control.Margin = new Padding() { All = 0 };
-      tableLayoutPanel1.Controls.Add(control, 0, 1);
-      control.Dock = DockStyle.Fill;
+      if(control != null) {
+        control.Margin = new Padding() { All = 0 };
+        tableLayoutPanel1.Controls.Add(control, 0, 1);
+        control.Dock = DockStyle.Fill;
+      }
       Init();
     }
 
     private void Init() {
-      checkBoxActive.DataBindings.Add("Checked", VM, nameof(IJsonItemVM.Selected),
-        false, DataSourceUpdateMode.OnPropertyChanged);
       textBoxName.DataBindings.Add("Text", VM, nameof(IJsonItemVM.Name));
       textBoxDescription.DataBindings.Add("Text", VM, nameof(IJsonItemVM.Description));
     }

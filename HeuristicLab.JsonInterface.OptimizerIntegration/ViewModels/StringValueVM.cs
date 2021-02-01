@@ -1,60 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+﻿using System.Linq;
 
 namespace HeuristicLab.JsonInterface.OptimizerIntegration {
-  public class StringValueVM : JsonItemVMBase<StringJsonItem> {
-    public override UserControl Control =>
-       new JsonItemValidValuesControl(this);
 
-    public string Value {
-      get => Item.Value?.ToString();
-      set {
-        Item.Value = value;
-        OnPropertyChange(this, nameof(Value));
-      }
-    }
+  public class StringValueVM : ConcreteRestrictedJsonItemVM<StringJsonItem, string, string> {
+    protected override string GetDefaultValue() => Range.FirstOrDefault();
 
-    public IEnumerable<string> Range {
-      get => Item.ConcreteRestrictedItems;
-      set {
-        Item.ConcreteRestrictedItems = value;
-        //check if value is still in range
-        if (!Range.Contains(Value)) {
-          Value = Range.FirstOrDefault();
-          if (Range.Count() == 0)
-            //if no elements exists -> deselect item
-            base.Selected = false;
-          OnPropertyChange(this, nameof(Value));
-        }
-        
-        OnPropertyChange(this, nameof(Range));
-      }
-    }
+    protected override bool RangeContainsValue() => Range.Contains(Value);
   }
 
-  public class StringArrayVM : JsonItemVMBase<StringArrayJsonItem> {
-    public override UserControl Control =>
-       new JsonItemConcreteItemArrayControl(this);
+  public class StringArrayVM : ConcreteRestrictedJsonItemVM<StringArrayJsonItem, string, string[]> {
+    protected override string[] GetDefaultValue() => Range.ToArray();
 
-    public string[] Value {
-      get => Item.Value;
-      set {
-        Item.Value = value;
-        OnPropertyChange(this, nameof(Value));
-      }
-    }
-
-    public IEnumerable<string> Range {
-      get => Item.ConcreteRestrictedItems;
-      set {
-        Item.ConcreteRestrictedItems = value;
-        OnPropertyChange(this, nameof(Range));
-      }
-    }
+    protected override bool RangeContainsValue() => Value.All(x => Range.Any(y => x == y));
   }
 }

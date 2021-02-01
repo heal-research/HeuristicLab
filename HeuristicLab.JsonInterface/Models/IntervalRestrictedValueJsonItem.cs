@@ -19,7 +19,6 @@ namespace HeuristicLab.JsonInterface {
       var minProp = jObject[nameof(IIntervalRestrictedJsonItem<T>.Minimum)];
       if (minProp != null) Minimum = minProp.ToObject<T>();
 
-
       var maxProp = jObject[nameof(IIntervalRestrictedJsonItem<T>.Maximum)];
       if (maxProp != null) Maximum = maxProp.ToObject<T>();
     }

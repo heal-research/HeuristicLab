@@ -32,7 +32,9 @@ namespace HeuristicLab.JsonInterface.App {
 
         WriteResultsToFile(outputFile, optimizer, configuredResultItem);
       } catch (Exception e) {
+        Console.Error.WriteLine($"{e.Message} \n\n\n\n {e.StackTrace}");
         File.WriteAllText(outputFile, e.Message + "\n\n\n\n" + e.StackTrace);
+        Environment.Exit(-1);
       }
     }
 

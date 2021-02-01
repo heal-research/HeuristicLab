@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace HeuristicLab.JsonInterface.OptimizerIntegration {
-  public abstract class JsonItemVMBase<JsonItemType> : IJsonItemVM<JsonItemType> //TODO: RENAME, oder vlt JsonItems direkt als VM?
+  public abstract class JsonItemVMBase<JsonItemType> : IJsonItemVM<JsonItemType>
     where JsonItemType : class, IJsonItem 
   {
     IJsonItem IJsonItemVM.Item { 

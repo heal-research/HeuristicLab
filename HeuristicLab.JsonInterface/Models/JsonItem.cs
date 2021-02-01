@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -25,6 +26,9 @@ namespace HeuristicLab.JsonInterface {
 
     public bool Success { get; }
     public IEnumerable<string> Errors { get; }
+
+    public Exception GenerateException() => 
+      new AggregateException(Errors.Select(x => new ArgumentException(x)));
   }
 
   /// <summary>
@@ -75,7 +79,6 @@ namespace HeuristicLab.JsonInterface {
       }
     }
 
-    // TODO jsonIgnore dataType?
     [JsonIgnore]
     public virtual IEnumerable<IJsonItem> Children { get; protected set; }
 

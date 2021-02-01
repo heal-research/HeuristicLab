@@ -25,8 +25,12 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
     public static void ExportJsonTemplate(IContentView view) {
       IStorableContent content = view.Content as IStorableContent;
       if (!view.Locked && content != null) {
-        exportDialog.Content = content;
-        exportDialog.ShowDialog();
+        if(content is IOptimizer) {
+          exportDialog.Content = content;
+          exportDialog.ShowDialog();
+        } else {
+          MessageBox.Show("This cannot item cannot be converted.", "Unsupported Item", MessageBoxButtons.OK);
+        }
       }
     }
 

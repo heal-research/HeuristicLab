@@ -12,6 +12,9 @@ namespace HeuristicLab.JsonInterface {
 
     public override Type ConvertableType => typeof(IAlgorithm);
 
+    public override bool CanConvertType(Type t) => 
+      t.GetInterfaces().Any(x => x == ConvertableType);
+
     public override void Inject(IItem item, IJsonItem data, IJsonItemConverter root) {
       base.Inject(item, data, root);
       IAlgorithm algorithm = item as IAlgorithm;

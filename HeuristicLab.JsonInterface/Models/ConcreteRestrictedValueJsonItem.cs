@@ -1,8 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace HeuristicLab.JsonInterface {
+
   public abstract class ConcreteRestrictedValueJsonItem<T> : ValueJsonItem<T>, IConcreteRestrictedJsonItem<T> {
+
     public IEnumerable<T> ConcreteRestrictedItems { get; set; }
 
     protected override ValidationResult Validate() {
