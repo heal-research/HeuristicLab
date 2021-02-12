@@ -124,7 +124,10 @@ namespace HeuristicLab.JsonInterface {
         ReferenceLoopHandling = ReferenceLoopHandling.Ignore
       });
 
-    public virtual void SetJObject(JObject jObject) { }
+    public virtual void SetJObject(JObject jObject) {
+      Name = (jObject[nameof(IJsonItem.Name)]?.ToObject<string>());
+      Description = (jObject[nameof(IJsonItem.Description)]?.ToObject<string>());
+    }
     #endregion
 
     #region Abstract Methods

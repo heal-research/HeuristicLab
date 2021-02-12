@@ -80,8 +80,11 @@ namespace HeuristicLab.JsonInterface {
     private IEnumerable<IResultJsonItem> CollectResults() {
       IList<IResultJsonItem> res = new List<IResultJsonItem>();
       foreach(JObject obj in Template[Constants.Results]) {
-        string name = obj.Property("Name").Value.ToString();
-        res.Add(new ResultJsonItem() { Name = name });
+        //string name = obj.Property("Name").Value.ToString();
+        var resultItem = new ResultJsonItem();
+        resultItem.SetJObject(obj);
+        res.Add(resultItem);
+        //res.Add(new ResultJsonItem() { Name = name });
       }
       return res;
     }
