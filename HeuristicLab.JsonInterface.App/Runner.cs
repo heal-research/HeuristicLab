@@ -2,14 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using HeuristicLab.Optimization;
-using HeuristicLab.ParallelEngine;
-using HeuristicLab.Problems.DataAnalysis.Symbolic;
-using HeuristicLab.Problems.DataAnalysis.Symbolic.Regression;
-using HeuristicLab.SequentialEngine;
 using Newtonsoft.Json.Linq;
 
 namespace HeuristicLab.JsonInterface.App {
@@ -41,32 +36,30 @@ namespace HeuristicLab.JsonInterface.App {
     private static void WriteResultsToFile(string file, IOptimizer optimizer, IEnumerable<IResultJsonItem> configuredResultItem) =>
       File.WriteAllText(file, FetchResults(optimizer, configuredResultItem));
 
-    private static string FetchResults(IOptimizer optimizer, IEnumerable<IResultJsonItem> configuredResultItem) {
+    private static IEnumerable<IResultFormatter> ResultFormatter { get; } =
+      PluginInfrastructure.ApplicationManager.Manager.GetInstances<IResultFormatter>();
+
+    private static IResultFormatter GetResultFormatter(string fullName) =>
+      ResultFormatter?.Where(x => x.GetType().FullName == fullName).Last();
+
+    private static string FetchResults(IOptimizer optimizer, IEnumerable<IResultJsonItem> configuredResultItems) {
       JArray arr = new JArray();
-      IEnumerable<string> configuredResults = configuredResultItem.Select(x => x.Name);
+      IEnumerable<string> configuredResults = configuredResultItems.Select(x => x.Name);
 
       foreach (var run in optimizer.Runs) {
         JObject obj = new JObject();
         arr.Add(obj);
         obj.Add("Run", JToken.FromObject(run.ToString()));
 
-        // add empty values for configured results
-        var emptyToken = JToken.FromObject("");
-        foreach (var cr in configuredResults) {
-          obj.Add(cr, emptyToken);
-        }
+        // zip and filter the results with the ResultJsonItems
+        var filteredResults = configuredResultItems.Zip(
+          run.Results.Where(x => configuredResultItems.Any(y => y.Name == x.Key)), 
+          (x, y) => new { Item = x, Value = y.Value });
 
-        // change empty values with calculated values
-        var formatter = new SymbolicDataAnalysisExpressionMATLABFormatter();
-        foreach (var res in run.Results) {
-          if(obj.ContainsKey(res.Key)) {
-            if (res.Value is ISymbolicRegressionSolution solution) {
-              var formattedModel = formatter.Format(solution.Model.SymbolicExpressionTree);
-              obj[res.Key] = JToken.FromObject(formattedModel);
-            } else {
-              obj[res.Key] = JToken.FromObject(res.Value.ToString());
-            }
-          }
+        // add results to the JObject
+        foreach(var result in filteredResults) {
+          var formatter = GetResultFormatter(result.Item.ResultFormatterType);
+          obj.Add(result.Item.Name, formatter.Format(result.Value));
         }
       }
       return SingleLineArrayJsonWriter.Serialize(arr);

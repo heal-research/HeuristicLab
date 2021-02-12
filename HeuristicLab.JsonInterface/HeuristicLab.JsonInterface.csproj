@@ -65,7 +65,9 @@
     <Compile Include="Converters\BatchRunConverter.cs" />
     <Compile Include="Converters\ExperimentConverter.cs" />
     <Compile Include="Converters\RegressionProblemDataConverter.cs" />
+    <Compile Include="Converters\ResultConverter.cs" />
     <Compile Include="Converters\ResultParameterConverter.cs" />
+    <Compile Include="Converters\SymbolicRegressionSolutionConverter.cs" />
     <Compile Include="Converters\ValueLookupParameterConverter.cs" />
     <Compile Include="Converters\ValueRangeConverter.cs" />
     <Compile Include="Interfaces\IArrayJsonItem.cs" />
@@ -76,6 +78,7 @@
     <Compile Include="Interfaces\ILookupJsonItem.cs" />
     <Compile Include="Interfaces\IMatrixJsonItem.cs" />
     <Compile Include="Interfaces\IRangedJsonItem.cs" />
+    <Compile Include="Interfaces\IResultFormatter.cs" />
     <Compile Include="Interfaces\IResultJsonItem.cs" />
     <Compile Include="Interfaces\IValueJsonItem.cs" />
     <Compile Include="Interfaces\IValueLookupJsonItem.cs" />
@@ -99,6 +102,9 @@
     <Compile Include="JsonItems\UnsupportedJsonItem.cs" />
     <Compile Include="JsonItems\ValueJsonItem.cs" />
     <Compile Include="JsonItems\ValueLookupJsonItem.cs" />
+    <Compile Include="ResultFormatter\MatlabResultFormatter.cs" />
+    <Compile Include="ResultFormatter\ResultFormatter.cs" />
+    <Compile Include="ResultFormatter\StringResultFormatter.cs" />
     <Compile Include="SingleLineArrayJsonWriter.cs" />
     <Compile Include="JsonTemplateGenerator.cs" />
     <Compile Include="JsonTemplateInstantiator.cs" />
@@ -141,6 +147,10 @@
       <Project>{BBAB9DF5-5EF3-4BA8-ADE9-B36E82114937}</Project>
       <Name>HeuristicLab.Data-3.3</Name>
     </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Encodings.SymbolicExpressionTreeEncoding\3.4\HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.4.csproj">
+      <Project>{06d4a186-9319-48a0-bade-a2058d462eea}</Project>
+      <Name>HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.4</Name>
+    </ProjectReference>
     <ProjectReference Include="..\HeuristicLab.Optimization\3.3\HeuristicLab.Optimization-3.3.csproj">
       <Project>{14ab8d24-25bc-400c-a846-4627aa945192}</Project>
       <Name>HeuristicLab.Optimization-3.3</Name>
@@ -152,6 +162,14 @@
     <ProjectReference Include="..\HeuristicLab.PluginInfrastructure\3.3\HeuristicLab.PluginInfrastructure-3.3.csproj">
       <Project>{94186a6a-5176-4402-ae83-886557b53cca}</Project>
       <Name>HeuristicLab.PluginInfrastructure-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Problems.DataAnalysis.Symbolic.Regression\3.4\HeuristicLab.Problems.DataAnalysis.Symbolic.Regression-3.4.csproj">
+      <Project>{5ac82412-911b-4fa2-a013-edc5e3f3fcc2}</Project>
+      <Name>HeuristicLab.Problems.DataAnalysis.Symbolic.Regression-3.4</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Problems.DataAnalysis.Symbolic\3.4\HeuristicLab.Problems.DataAnalysis.Symbolic-3.4.csproj">
+      <Project>{3d28463f-ec96-4d82-afee-38be91a0ca00}</Project>
+      <Name>HeuristicLab.Problems.DataAnalysis.Symbolic-3.4</Name>
     </ProjectReference>
     <ProjectReference Include="..\HeuristicLab.Problems.DataAnalysis\3.4\HeuristicLab.Problems.DataAnalysis-3.4.csproj">
       <Project>{df87c13e-a889-46ff-8153-66dcaa8c5674}</Project>

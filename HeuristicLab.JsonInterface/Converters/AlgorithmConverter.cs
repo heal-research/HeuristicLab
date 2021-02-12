@@ -29,10 +29,12 @@ namespace HeuristicLab.JsonInterface {
       IJsonItem item = base.Extract(value, root);
       IAlgorithm algorithm = value as IAlgorithm;
       foreach (var res in algorithm.Results) {
+        item.AddChildren(root.Extract(res, root));
+        /*
         item.AddChildren(new ResultJsonItem() {
           Name = res.Name,
           Description = res.Description
-        });
+        });*/
       }
       item.AddChildren(root.Extract(algorithm.Problem, root));
       return item;

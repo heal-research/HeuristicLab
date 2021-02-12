@@ -65,12 +65,12 @@ namespace HeuristicLab.JsonInterface {
       }
 
       // check data
-      if(!dataset.RowNames.Any(x => x == targetVariable.Value)) {
+      if(!dataset.ColumnNames.Any(x => x == targetVariable.Value)) {
         throw new Exception($"The value of the target variable ('{targetVariable.Value}') has no matching row name value of the dataset.");
       }
 
       foreach(var v in allowedInputVariables.Value) {
-        if(!dataset.RowNames.Any(x => x == v))
+        if(!dataset.ColumnNames.Any(x => x == v))
           throw new Exception($"The value of the input variable ('{v}') has no matching row name value of the dataset.");
       }
 
@@ -105,7 +105,7 @@ namespace HeuristicLab.JsonInterface {
       if (item != null) {
         var dictTmp = new Dictionary<string, IList>();
         int c = 0;
-        foreach (var col in item.RowNames) {
+        foreach (var col in item.ColumnNames) {
           dictTmp.Add(col, new List<double>(item.Value[c]));
           ++c;
         }
@@ -115,7 +115,7 @@ namespace HeuristicLab.JsonInterface {
         rows.SetValue(dataset, item.Value[0].Length);
 
         var variableNames = dataset.GetType().GetField(VariableNames, flags);
-        variableNames.SetValue(dataset, item.RowNames);
+        variableNames.SetValue(dataset, item.ColumnNames);
 
         var dataInfo = dataset.GetType().GetField(VariableValues, flags);
         dataInfo.SetValue(dataset, dictTmp);
@@ -161,7 +161,7 @@ namespace HeuristicLab.JsonInterface {
         checkedItemList.Clear();
 
         // add list items and set their check state (based on allowed input variables)
-        foreach(var i in matrix.RowNames) {
+        foreach(var i in matrix.ColumnNames) {
           bool isChecked = false;
           foreach(var x in item.Value)
             isChecked = isChecked || (x == i);
