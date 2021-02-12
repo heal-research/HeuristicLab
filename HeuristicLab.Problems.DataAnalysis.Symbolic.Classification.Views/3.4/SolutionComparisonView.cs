@@ -89,12 +89,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification.Views {
         .Concat(new[] { problemData.Dataset.GetDoubleValues(problemData.TargetVariable).ToList() });
 
       var newDs = new Dataset(variableNames, variableValues);
-      var newProblemData = new ClassificationProblemData(newDs, variableNames.Take(variableNames.Length - 1), variableNames.Last());
-
-      foreach (var classValue in problemData.ClassValues) {
-        newProblemData.SetClassName(classValue, problemData.GetClassName(classValue));
-      }
-      newProblemData.PositiveClass = problemData.PositiveClass;
+      var newProblemData = new ClassificationProblemData(newDs, variableNames.Take(variableNames.Length - 1), variableNames.Last(), problemData.ClassNames, problemData.PositiveClass);
 
       newProblemData.TrainingPartition.Start = problemData.TrainingPartition.Start;
       newProblemData.TrainingPartition.End = problemData.TrainingPartition.End;

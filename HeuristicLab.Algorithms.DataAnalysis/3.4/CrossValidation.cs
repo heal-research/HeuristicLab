@@ -520,13 +520,13 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       var aggregatedResults = new List<IResult>();
       foreach (KeyValuePair<string, List<IClassificationSolution>> solutions in resultSolutions) {
         // at least one algorithm (GBT with logistic regression loss) produces a classification solution even though the original problem is a regression problem.
-        var targetVariable = solutions.Value.First().ProblemData.TargetVariable;
         var dataset = (Dataset)Problem.ProblemData.Dataset;
         if (ShuffleSamples.Value) {
           var random = new FastRandom(seed);
           dataset = dataset.Shuffle(random);
         }
-        var problemDataClone = new ClassificationProblemData(dataset, Problem.ProblemData.AllowedInputVariables, targetVariable);
+        var problemData = (IClassificationProblemData)Problem.ProblemData;
+        var problemDataClone = new ClassificationProblemData(dataset, problemData.AllowedInputVariables, problemData.TargetVariable, problemData.ClassNames, problemData.PositiveClass);
         // set partitions of problem data clone correctly
         problemDataClone.TrainingPartition.Start = SamplesStart.Value; problemDataClone.TrainingPartition.End = SamplesEnd.Value;
         problemDataClone.TestPartition.Start = SamplesStart.Value; problemDataClone.TestPartition.End = SamplesEnd.Value;

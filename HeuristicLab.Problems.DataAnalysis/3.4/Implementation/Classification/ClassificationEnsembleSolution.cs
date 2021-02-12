@@ -259,13 +259,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       testEvaluationCache.Clear();
       evaluationCache.Clear();
 
-      IClassificationProblemData problemData = new ClassificationProblemData(ProblemData.Dataset,
-                                                                     ProblemData.AllowedInputVariables,
-                                                                     ProblemData.TargetVariable);
-      problemData.TrainingPartition.Start = ProblemData.TrainingPartition.Start;
-      problemData.TrainingPartition.End = ProblemData.TrainingPartition.End;
-      problemData.TestPartition.Start = ProblemData.TestPartition.Start;
-      problemData.TestPartition.End = ProblemData.TestPartition.End;
+      IClassificationProblemData problemData = new ClassificationProblemData(ProblemData);
 
       foreach (var solution in ClassificationSolutions) {
         if (solution is ClassificationEnsembleSolution)
