@@ -52,9 +52,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       this.interpolant = (alglib.spline1d.spline1dinterpolant)orig.interpolant.make_copy();
     }
     public Spline1dModel(alglib.spline1d.spline1dinterpolant interpolant, string targetVar, string inputVar)
-      : base("Spline model (1d)", "Spline model (1d)") {
-      this.interpolant = (alglib.spline1d.spline1dinterpolant)interpolant.make_copy();
-      this.TargetVariable = targetVar;
+      : base(targetVar, "Spline model (1d)") {
+      this.interpolant = (alglib.spline1d.spline1dinterpolant)interpolant.make_copy();      
       this.variablesUsedForPrediction = new string[] { inputVar };
     }
 
