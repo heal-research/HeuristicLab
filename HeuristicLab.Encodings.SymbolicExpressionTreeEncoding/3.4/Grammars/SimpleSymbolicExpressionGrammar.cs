@@ -20,8 +20,8 @@
 #endregion
 
 using System.Collections.Generic;
-using HeuristicLab.Common;
 using HEAL.Attic;
+using HeuristicLab.Common;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   [StorableType("70D190B2-22F4-41E5-9938-EFD1B14ECF43")]
@@ -54,8 +54,8 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
         if (symbol.MaximumArity > 0) AddAllowedChildSymbol(symbol, s);
       }
     }
-    public void AddSymbols(IEnumerable<string> symbolNames, int minimumArity, int maximiumArity) {
-      foreach (var symbolName in symbolNames) AddSymbol(symbolName, minimumArity, maximiumArity);
+    public void AddSymbols(IEnumerable<string> symbolNames, int minimumArity, int maximumArity) {
+      foreach (var symbolName in symbolNames) AddSymbol(symbolName, minimumArity, maximumArity);
     }
 
     public void AddTerminalSymbol(string symbolName) {
