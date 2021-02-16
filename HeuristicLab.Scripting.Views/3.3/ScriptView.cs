@@ -208,13 +208,25 @@ namespace HeuristicLab.Scripting.Views {
       Content.Code = codeEditor.UserCode;
     }
 
+    private void errorListView_MouseClick(object sender, MouseEventArgs e) {
+      if (e.Button != MouseButtons.Left) return;
+
+      var item = errorListView.SelectedItems[0];
+      var message = (CompilerError)item.Tag;
+
+      codeEditor.ScrollToPosition(message.Line, message.Column);
+      codeEditor.Focus();
+    }
+
     private void errorListView_MouseDoubleClick(object sender, MouseEventArgs e) {
-      if (e.Button == MouseButtons.Left) {
-        var item = errorListView.SelectedItems[0];
-        var message = (CompilerError)item.Tag;
-        codeEditor.ScrollToPosition(message.Line, message.Column);
-        codeEditor.Focus();
-      }
+      if (e.Button != MouseButtons.Left) return;
+
+      var item = errorListView.SelectedItems[0];
+      var message = (CompilerError)item.Tag;
+
+      using (var dialog = new CompilerErrorDialog(message)) {
+        dialog.ShowDialog(this);
+      };
     }
     #endregion
 
