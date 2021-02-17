@@ -70,8 +70,8 @@ namespace HeuristicLab.Data.Views {
       // 
       // rowsTextBox
       // 
-      this.rowsTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.rowsTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.rowsTextBox.Location = new System.Drawing.Point(69, 0);
       this.rowsTextBox.Name = "rowsTextBox";
       this.rowsTextBox.Size = new System.Drawing.Size(355, 20);
@@ -85,10 +85,10 @@ namespace HeuristicLab.Data.Views {
       this.dataGridView.AllowUserToAddRows = false;
       this.dataGridView.AllowUserToDeleteRows = false;
       this.dataGridView.AllowUserToOrderColumns = true;
-      this.dataGridView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
-      this.dataGridView.ClipboardCopyMode = System.Windows.Forms.DataGridViewClipboardCopyMode.Disable;
+      this.dataGridView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.dataGridView.ClipboardCopyMode = System.Windows.Forms.DataGridViewClipboardCopyMode.EnableWithoutHeaderText;
       this.dataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
       this.dataGridView.Location = new System.Drawing.Point(0, 52);
       this.dataGridView.Name = "dataGridView";
@@ -114,8 +114,8 @@ namespace HeuristicLab.Data.Views {
       // 
       // columnsTextBox
       // 
-      this.columnsTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.columnsTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.columnsTextBox.Location = new System.Drawing.Point(69, 26);
       this.columnsTextBox.Name = "columnsTextBox";
       this.columnsTextBox.Size = new System.Drawing.Size(355, 20);
@@ -135,6 +135,7 @@ namespace HeuristicLab.Data.Views {
       // 
       // contextMenu
       // 
+      this.contextMenu.ImageScalingSize = new System.Drawing.Size(20, 20);
       this.contextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.ShowHideColumns});
       this.contextMenu.Name = "contextMenu";
@@ -149,8 +150,8 @@ namespace HeuristicLab.Data.Views {
       // 
       // statisticsTextBox
       // 
-      this.statisticsTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.statisticsTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.statisticsTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
       this.statisticsTextBox.Location = new System.Drawing.Point(3, 388);
       this.statisticsTextBox.Name = "statisticsTextBox";
@@ -160,7 +161,6 @@ namespace HeuristicLab.Data.Views {
       // 
       // StringConvertibleMatrixView
       // 
-      this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
       this.Controls.Add(this.columnsTextBox);
       this.Controls.Add(this.dataGridView);

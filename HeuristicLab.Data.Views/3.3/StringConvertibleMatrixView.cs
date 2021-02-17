@@ -305,63 +305,61 @@ namespace HeuristicLab.Data.Views {
 
     private void CopyValuesFromDataGridView() {
       if (dataGridView.SelectedCells.Count == 0) return;
+
+      //if not all cells are selected use the built-in functionality for copying values to the clipboard
+      if (!dataGridView.AreAllCellsSelected(false)) {
+        dataGridView.ClipboardCopyMode = DataGridViewClipboardCopyMode.EnableWithoutHeaderText;
+        var data = dataGridView.GetClipboardContent();
+        Clipboard.SetDataObject(data);
+        return;
+      }
+
+      //Ff all cells are selected we want to include row and column headers if they are set in the content.
+      //This is not possible with the built-in functionality, because only both headers can be added.
+      //Furthermore, the current implementation of the view with the virtual datagridview does set 
+      //rowheaders only when they are displayed (see UpdateRowHeaders) and otherwise leaves them empty.
+
       StringBuilder s = new StringBuilder();
-      int minRowIndex = dataGridView.SelectedCells[0].RowIndex;
-      int maxRowIndex = dataGridView.SelectedCells[dataGridView.SelectedCells.Count - 1].RowIndex;
-      int minColIndex = dataGridView.SelectedCells[0].ColumnIndex;
-      int maxColIndex = dataGridView.SelectedCells[dataGridView.SelectedCells.Count - 1].ColumnIndex;
 
-      if (minRowIndex > maxRowIndex) {
-        int temp = minRowIndex;
-        minRowIndex = maxRowIndex;
-        maxRowIndex = temp;
-      }
-      if (minColIndex > maxColIndex) {
-        int temp = minColIndex;
-        minColIndex = maxColIndex;
-        maxColIndex = temp;
-      }
+      bool addColumnNames = Content.ColumnNames.Any();
+      bool addRowNames = Content.RowNames.Any();
 
-      bool addRowNames = dataGridView.AreAllCellsSelected(false) && Content.RowNames.Count() > 0;
-      bool addColumnNames = dataGridView.AreAllCellsSelected(false) && Content.ColumnNames.Count() > 0;
-
-      //add colum names
+      //add first row with column headers
       if (addColumnNames) {
-        if (addRowNames)
-          s.Append('\t');
-
+        var columnNames = Content.ColumnNames.ToArray();
+        if (addRowNames) s.Append('\t'); //there is no column header for the row headers
         DataGridViewColumn column = dataGridView.Columns.GetFirstColumn(DataGridViewElementStates.Visible);
         while (column != null) {
-          s.Append(column.HeaderText);
+          s.Append(columnNames[column.Index]);
           s.Append('\t');
+
           column = dataGridView.Columns.GetNextColumn(column, DataGridViewElementStates.Visible, DataGridViewElementStates.None);
         }
-        s.Remove(s.Length - 1, 1); //remove last tab
         s.Append(Environment.NewLine);
       }
 
-      for (int i = minRowIndex; i <= maxRowIndex; i++) {
-        if (!dataGridView.Rows[i].Visible) continue;
+      var rowNames = Content.RowNames.ToArray();
+      for (int r = 0; r < dataGridView.RowCount; r++) {
+        if (!dataGridView.Rows[r].Visible) continue; //skip invisible rows
 
-        int rowIndex = this.virtualRowIndices[i];
+        int rowIndex = virtualRowIndices[r];
         if (addRowNames) {
-          s.Append(Content.RowNames.ElementAt(rowIndex));
+          s.Append(rowNames[rowIndex]);
           s.Append('\t');
         }
 
         DataGridViewColumn column = dataGridView.Columns.GetFirstColumn(DataGridViewElementStates.Visible);
         while (column != null) {
-          DataGridViewCell cell = dataGridView[column.Index, i];
-          if (cell.Selected) {
-            s.Append(Content.GetValue(rowIndex, column.Index));
-            s.Append('\t');
-          }
+          s.Append(Content.GetValue(rowIndex, column.Index));
+          s.Append('\t');
 
           column = dataGridView.Columns.GetNextColumn(column, DataGridViewElementStates.Visible, DataGridViewElementStates.None);
         }
+
         s.Remove(s.Length - 1, 1); //remove last tab
         s.Append(Environment.NewLine);
       }
+
       Clipboard.SetText(s.ToString());
     }
 
