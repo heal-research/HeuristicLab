@@ -314,10 +314,10 @@ namespace HeuristicLab.Data.Views {
         return;
       }
 
-      //Ff all cells are selected we want to include row and column headers if they are set in the content.
+      //If all cells are selected we want to include row and column headers if they are set in the content.
       //This is not possible with the built-in functionality, because only both headers can be added.
-      //Furthermore, the current implementation of the view with the virtual datagridview does set 
-      //rowheaders only when they are displayed (see UpdateRowHeaders) and otherwise leaves them empty.
+      //Furthermore, the current implementation of the view with the virtual DataGridView does set 
+      //Row headers only when they are displayed (see UpdateRowHeaders) and otherwise leaves them empty.
 
       StringBuilder s = new StringBuilder();
 
