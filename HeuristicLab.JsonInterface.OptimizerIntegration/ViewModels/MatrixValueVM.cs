@@ -1,9 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace HeuristicLab.JsonInterface.OptimizerIntegration {
@@ -15,7 +11,6 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
 
     public override UserControl Control => CompoundControl.Create(base.Control, MatrixJsonItemControl.Create(this));
 
-    public abstract T[][] Value { get; set; }
     public bool RowsResizable {
       get => Item.RowsResizable; 
       set {

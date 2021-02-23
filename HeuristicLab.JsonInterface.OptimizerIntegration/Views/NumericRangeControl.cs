@@ -15,8 +15,25 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
     public TextBox TBMaxRange { get; set; }
     public CheckBox EnableMinRange { get; set; }
     public CheckBox EnableMaxRange { get; set; }
-    public NumericRangeControl() {
+
+    private NumericRangeControl() {
       InitializeComponent();
+      Init();
+    }
+
+    protected NumericRangeControl(IJsonItemVM vm) {
+      InitializeComponent();
+      Init();
+      TBMinRange.DataBindings.Add("Text", vm, nameof(RangedValueBaseVM<int, IntJsonItem>.MinRange));
+      TBMaxRange.DataBindings.Add("Text", vm, nameof(RangedValueBaseVM<int, IntJsonItem>.MaxRange));
+      EnableMinRange.DataBindings.Add("Checked", vm, nameof(RangedValueBaseVM<int, IntJsonItem>.EnableMinRange),
+        false, DataSourceUpdateMode.OnPropertyChanged);
+      EnableMaxRange.DataBindings.Add("Checked", vm, nameof(RangedValueBaseVM<int, IntJsonItem>.EnableMaxRange),
+        false, DataSourceUpdateMode.OnPropertyChanged);
+    }
+
+
+    private void Init() {
       TBMinRange = textBoxFrom;
       TBMaxRange = textBoxTo;
       EnableMinRange = checkBoxFrom;
@@ -51,15 +68,6 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
       }
     }
 
-    public static UserControl Create(IJsonItemVM vm) {
-      NumericRangeControl numericRangeControl = new NumericRangeControl();
-      numericRangeControl.TBMinRange.DataBindings.Add("Text", vm, nameof(RangedValueBaseVM<int, IntJsonItem>.MinRange));
-      numericRangeControl.TBMaxRange.DataBindings.Add("Text", vm, nameof(RangedValueBaseVM<int, IntJsonItem>.MaxRange));
-      numericRangeControl.EnableMinRange.DataBindings.Add("Checked", vm, nameof(RangedValueBaseVM<int, IntJsonItem>.EnableMinRange),
-        false, DataSourceUpdateMode.OnPropertyChanged);
-      numericRangeControl.EnableMaxRange.DataBindings.Add("Checked", vm, nameof(RangedValueBaseVM<int, IntJsonItem>.EnableMaxRange),
-        false, DataSourceUpdateMode.OnPropertyChanged);
-      return numericRangeControl;
-    }
+    public static UserControl Create(IJsonItemVM vm) => new NumericRangeControl(vm);
   }
 }

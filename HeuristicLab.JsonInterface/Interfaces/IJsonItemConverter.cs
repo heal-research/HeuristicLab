@@ -20,11 +20,6 @@ namespace HeuristicLab.JsonInterface {
     IJsonItem Extract(IItem value, IJsonItemConverter root);
 
     /// <summary>
-    /// The targeted type for the converter.
-    /// </summary>
-    Type ConvertableType { get; }
-
-    /// <summary>
     /// A given priority, higher numbers are prior.
     /// </summary>
     int Priority { get; }

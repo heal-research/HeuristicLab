@@ -72,7 +72,7 @@ namespace HeuristicLab.JsonInterface {
     #region Helper    
     private static void PopulateJsonItems(IJsonItem item, IList<IJsonItem> jsonItems) {
       foreach(var x in item) {
-        if (x.Active && !(x is EmptyJsonItem)) {
+        if (x.Active && !(x is EmptyJsonItem) && !(x is UnsupportedJsonItem)) {
           jsonItems.Add(x);
         }
       }

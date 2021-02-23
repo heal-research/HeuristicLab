@@ -2,15 +2,16 @@
 
 namespace HeuristicLab.JsonInterface.OptimizerIntegration {
   public partial class MatrixJsonItemControl : UserControl {
-    public MatrixJsonItemControl() {
+    private MatrixJsonItemControl() {
       InitializeComponent();
     }
 
-    public static MatrixJsonItemControl Create(IJsonItemVM vm) {
-      var control = new MatrixJsonItemControl();
-      control.checkBoxRowsResizable.DataBindings.Add("Checked", vm, nameof(IMatrixJsonItemVM.RowsResizable));
-      control.checkBoxColumnsResizable .DataBindings.Add("Checked", vm, nameof(IMatrixJsonItemVM.ColumnsResizable));
-      return control;
+    protected MatrixJsonItemControl(IJsonItemVM vm) {
+      InitializeComponent();
+      checkBoxRowsResizable.DataBindings.Add("Checked", vm, nameof(IMatrixJsonItemVM.RowsResizable));
+      checkBoxColumnsResizable.DataBindings.Add("Checked", vm, nameof(IMatrixJsonItemVM.ColumnsResizable));
     }
+
+    public static MatrixJsonItemControl Create(IJsonItemVM vm) => new MatrixJsonItemControl(vm);
   }
 }

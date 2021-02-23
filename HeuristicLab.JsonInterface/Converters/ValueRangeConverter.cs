@@ -1,10 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 
@@ -12,10 +6,9 @@ namespace HeuristicLab.JsonInterface {
 
   public class IntRangeConverter : BaseConverter {
     public override int Priority => 1;
-    public override Type ConvertableType => typeof(IntRange);
 
     public override bool CanConvertType(Type t) =>
-      ConvertableType.IsAssignableFrom(t);
+      typeof(IntRange).IsAssignableFrom(t);
 
     public override void Inject(IItem item, IJsonItem data, IJsonItemConverter root) {
       IntRange range = item as IntRange;
@@ -39,10 +32,9 @@ namespace HeuristicLab.JsonInterface {
 
   public class DoubleRangeConverter : BaseConverter {
     public override int Priority => 1;
-    public override Type ConvertableType => typeof(DoubleRange);
 
     public override bool CanConvertType(Type t) =>
-      ConvertableType.IsAssignableFrom(t);
+      typeof(DoubleRange).IsAssignableFrom(t);
 
     public override void Inject(IItem item, IJsonItem data, IJsonItemConverter root) {
       DoubleRange range = item as DoubleRange;

@@ -30,11 +30,8 @@ namespace HeuristicLab.JsonInterface {
 
     public override int Priority => 20;
 
-    // RegressionProblemData
-    public override Type ConvertableType => HEAL.Attic.Mapper.StaticCache.GetType(new Guid("EE612297-B1AF-42D2-BF21-AF9A2D42791C"));
-
     public override bool CanConvertType(Type t) =>
-      ConvertableType.IsAssignableFrom(t);
+      HEAL.Attic.Mapper.StaticCache.GetType(new Guid("EE612297-B1AF-42D2-BF21-AF9A2D42791C")).IsAssignableFrom(t);
 
     public override void Inject(IItem item, IJsonItem data, IJsonItemConverter root) {
 

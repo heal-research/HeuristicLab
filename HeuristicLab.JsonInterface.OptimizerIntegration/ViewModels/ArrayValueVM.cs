@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace HeuristicLab.JsonInterface.OptimizerIntegration {
@@ -16,7 +11,6 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
 
     public ArrayValueVM() { }
     
-    public abstract T[] Value { get; set; }
     public bool Resizable { 
       get => Item.Resizable; 
       set {

@@ -115,7 +115,7 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
 
         VMs.Add(vm);
         Node2VM.Add(node, vm);
-        UserControl control = new JsonItemBaseControl(vm, vm.Control);
+        UserControl control = JsonItemBaseControl.Create(vm, vm.Control);
         Node2Control.Add(node, control);
         return vm;
       } else {

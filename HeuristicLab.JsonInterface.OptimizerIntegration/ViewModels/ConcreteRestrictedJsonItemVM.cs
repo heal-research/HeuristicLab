@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace HeuristicLab.JsonInterface.OptimizerIntegration {
@@ -16,19 +13,10 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
     where T : class, IConcreteRestrictedJsonItem<X>, IValueJsonItem<V> {
     public override UserControl Control {
       get {
-        var control = new ConcreteItemsRestrictor();
-        control.Init(Item.ConcreteRestrictedItems);
+        var control = ConcreteItemsRestrictor.Create(Item.ConcreteRestrictedItems);
         control.OnChecked += AddComboOption;
         control.OnUnchecked += RemoveComboOption;
         return control;
-      }
-    }
-
-    public V Value {
-      get => Item.Value;
-      set {
-        Item.Value = value;
-        OnPropertyChange(this, nameof(Value));
       }
     }
 
@@ -39,13 +27,11 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
         //check if value is still in range
 
         if (!RangeContainsValue()) {
-          Value = GetDefaultValue();
+          Item.Value = GetDefaultValue();
 
           //if no elements exists -> deselect item
           if (Range.Count() == 0)
             base.Selected = false;
-
-          OnPropertyChange(this, nameof(Value));
         }
 
         OnPropertyChange(this, nameof(Range));

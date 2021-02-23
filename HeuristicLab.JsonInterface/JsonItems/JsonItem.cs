@@ -63,12 +63,8 @@ namespace HeuristicLab.JsonInterface {
 
     public virtual string Description { get; set; }
 
-    private string fixedPath = "";
     public virtual string Path {
       get {
-        if (!string.IsNullOrWhiteSpace(fixedPath))
-          return fixedPath;
-
         IJsonItem tmp = Parent;
         StringBuilder builder = new StringBuilder(this.Name);
         while(tmp != null) {
@@ -113,9 +109,6 @@ namespace HeuristicLab.JsonInterface {
     }
 
     public IJsonItemValidator GetValidator() => new JsonItemValidator(this);
-
-    public void FixatePath() => fixedPath = Path;
-    public void LoosenPath() => fixedPath = "";
 
     public virtual JObject GenerateJObject() =>
       JObject.FromObject(this, new JsonSerializer() {

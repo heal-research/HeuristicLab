@@ -11,7 +11,6 @@ namespace HeuristicLab.JsonInterface {
   /// </summary>
   public abstract class ResultFormatter : IResultFormatter {
     public abstract int Priority { get; }
-
     public abstract bool CanFormatType(Type t);
     public abstract string Format(object o);
 

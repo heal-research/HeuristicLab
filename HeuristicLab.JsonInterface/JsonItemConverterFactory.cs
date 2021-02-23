@@ -4,7 +4,7 @@ using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.JsonInterface {
   public static class JsonItemConverterFactory {
-    private static IDictionary<Type, IJsonItemConverter> ConverterCache { get; set; }
+    private static IEnumerable<IJsonItemConverter> ConverterCache { get; set; }
 
     public static JsonItemConverter Create() {
       if (ConverterCache == null)
@@ -13,10 +13,11 @@ namespace HeuristicLab.JsonInterface {
     }
 
     private static void InitCache() {
-      ConverterCache = new Dictionary<Type, IJsonItemConverter>();
+      IList<IJsonItemConverter> cache = new List<IJsonItemConverter>();
       foreach (var converter in ApplicationManager.Manager.GetInstances<IJsonItemConverter>()) {
-        ConverterCache.Add(converter.ConvertableType, converter);
+        cache.Add(converter);
       }
+      ConverterCache = cache;
     }
   }
 }
