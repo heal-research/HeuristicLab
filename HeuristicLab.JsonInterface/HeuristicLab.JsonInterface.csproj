@@ -67,7 +67,6 @@
     <Compile Include="Converters\RegressionProblemDataConverter.cs" />
     <Compile Include="Converters\ResultConverter.cs" />
     <Compile Include="Converters\ResultParameterConverter.cs" />
-    <Compile Include="Converters\SymbolicRegressionSolutionConverter.cs" />
     <Compile Include="Converters\ValueLookupParameterConverter.cs" />
     <Compile Include="Converters\ValueRangeConverter.cs" />
     <Compile Include="Interfaces\IArrayJsonItem.cs" />
@@ -105,6 +104,7 @@
     <Compile Include="ResultFormatter\MatlabResultFormatter.cs" />
     <Compile Include="ResultFormatter\ResultFormatter.cs" />
     <Compile Include="ResultFormatter\StringResultFormatter.cs" />
+    <Compile Include="ResultFormatter\SymbolicRegressionSolutionFormatterBase.cs" />
     <Compile Include="SingleLineArrayJsonWriter.cs" />
     <Compile Include="JsonTemplateGenerator.cs" />
     <Compile Include="JsonTemplateInstantiator.cs" />

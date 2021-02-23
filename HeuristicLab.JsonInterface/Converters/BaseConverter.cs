@@ -14,8 +14,6 @@ namespace HeuristicLab.JsonInterface {
 
     public abstract bool CanConvertType(Type t);
 
-    public abstract Type ConvertableType { get; }
-
     public abstract void Inject(IItem item, IJsonItem data, IJsonItemConverter root);
     public abstract IJsonItem Extract(IItem value, IJsonItemConverter root);
 

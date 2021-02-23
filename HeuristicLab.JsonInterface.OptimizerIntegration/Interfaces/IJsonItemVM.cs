@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace HeuristicLab.JsonInterface.OptimizerIntegration {
-  public interface IJsonItemVM : INotifyPropertyChanged, IDisposable 
+  public interface IJsonItemVM : INotifyPropertyChanged 
   {
     event Action ItemChanged;
 

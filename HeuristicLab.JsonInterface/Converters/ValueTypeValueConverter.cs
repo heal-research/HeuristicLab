@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 
@@ -10,10 +6,9 @@ namespace HeuristicLab.JsonInterface {
 
   public class IntValueConverter : BaseConverter {
     public override int Priority => 1;
-    public override Type ConvertableType => typeof(IntValue);
 
     public override bool CanConvertType(Type t) =>
-      ConvertableType.IsAssignableFrom(t);
+      typeof(IntValue).IsAssignableFrom(t);
 
     public override void Inject(IItem item, IJsonItem data, IJsonItemConverter root) =>
       ((IntValue)item).Value = ((IntJsonItem)data).Value;
@@ -30,10 +25,9 @@ namespace HeuristicLab.JsonInterface {
 
   public class DoubleValueConverter : BaseConverter {
     public override int Priority => 1;
-    public override Type ConvertableType => typeof(DoubleValue);
 
     public override bool CanConvertType(Type t) =>
-      ConvertableType.IsAssignableFrom(t);
+      typeof(DoubleValue).IsAssignableFrom(t);
 
     public override void Inject(IItem item, IJsonItem data, IJsonItemConverter root) =>
       ((DoubleValue)item).Value = ((DoubleJsonItem)data).Value;
@@ -50,10 +44,9 @@ namespace HeuristicLab.JsonInterface {
 
   public class PercentValueConverter : BaseConverter {
     public override int Priority => 2;
-    public override Type ConvertableType => typeof(PercentValue);
 
     public override bool CanConvertType(Type t) =>
-      ConvertableType.IsAssignableFrom(t);
+      typeof(PercentValue).IsAssignableFrom(t);
 
     public override void Inject(IItem item, IJsonItem data, IJsonItemConverter root) =>
       ((PercentValue)item).Value = ((DoubleJsonItem)data).Value;
@@ -70,10 +63,9 @@ namespace HeuristicLab.JsonInterface {
 
   public class BoolValueConverter : BaseConverter {
     public override int Priority => 1;
-    public override Type ConvertableType => typeof(BoolValue);
 
     public override bool CanConvertType(Type t) =>
-      ConvertableType.IsAssignableFrom(t);
+      typeof(BoolValue).IsAssignableFrom(t);
 
     public override void Inject(IItem item, IJsonItem data, IJsonItemConverter root) =>
       ((BoolValue)item).Value = ((BoolJsonItem)data).Value;
@@ -88,10 +80,9 @@ namespace HeuristicLab.JsonInterface {
 
   public class DateTimeValueConverter : BaseConverter {
     public override int Priority => 1;
-    public override Type ConvertableType => typeof(DateTimeValue);
 
     public override bool CanConvertType(Type t) =>
-      ConvertableType.IsAssignableFrom(t);
+      typeof(DateTimeValue).IsAssignableFrom(t);
 
     public override void Inject(IItem item, IJsonItem data, IJsonItemConverter root) =>
       ((DateTimeValue)item).Value = ((DateTimeJsonItem)data).Value;

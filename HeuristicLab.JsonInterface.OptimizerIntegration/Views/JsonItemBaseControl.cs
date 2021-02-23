@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel;
 using System.Windows.Forms;
 
 namespace HeuristicLab.JsonInterface.OptimizerIntegration {
@@ -15,25 +8,15 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
     private JsonItemBaseControl() {
       InitializeComponent();
     }
-    
-    public JsonItemBaseControl(IJsonItemVM vm) {
-      InitializeComponent();
-      VM = vm;
-      Init();
-    }
 
-    public JsonItemBaseControl(IJsonItemVM vm, UserControl control) {
+    protected JsonItemBaseControl(IJsonItemVM vm, UserControl control) {
       InitializeComponent();
       VM = vm;
-      if(control != null) {
+      if (control != null) {
         control.Margin = new Padding() { All = 0 };
         tableLayoutPanel1.Controls.Add(control, 0, 1);
         control.Dock = DockStyle.Fill;
       }
-      Init();
-    }
-
-    private void Init() {
       textBoxName.DataBindings.Add("Text", VM, nameof(IJsonItemVM.Name));
       textBoxDescription.DataBindings.Add("Text", VM, nameof(IJsonItemVM.Description));
     }
@@ -46,5 +29,7 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
         errorProvider.SetError(textBoxName, null);
       }
     }
+
+    public static JsonItemBaseControl Create(IJsonItemVM vm, UserControl control) => new JsonItemBaseControl(vm, control);
   }
 }

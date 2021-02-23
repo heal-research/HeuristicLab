@@ -9,11 +9,10 @@ using HeuristicLab.Data;
 namespace HeuristicLab.JsonInterface {
   public class EnumTypeConverter : BaseConverter {
     public override int Priority => 1;
-    public override Type ConvertableType => typeof(EnumValue<>);
 
     public override bool CanConvertType(Type t) =>
       typeof(EnumValue<>).IsAssignableFrom(t) || 
-      (t.IsGenericType && t.GetGenericTypeDefinition() == ConvertableType);
+      (t.IsGenericType && t.GetGenericTypeDefinition() == typeof(EnumValue<>));
 
     public override void Inject(IItem item, IJsonItem data, IJsonItemConverter root) =>
       ((dynamic)item).Value = Enum.Parse(

@@ -31,7 +31,8 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
         _bottomControl = value;
       }
     }
-    public CompoundControl() {
+
+    protected CompoundControl() {
       InitializeComponent();
     }
 

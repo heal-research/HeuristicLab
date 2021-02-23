@@ -8,7 +8,6 @@ using HeuristicLab.Core;
 namespace HeuristicLab.JsonInterface {
   public class ValueParameterConverter : BaseConverter {
     public override int Priority => 2;
-    public override Type ConvertableType => typeof(IValueParameter);
 
     public override bool CanConvertType(Type t) =>
       t.GetInterfaces().Any(x => x == typeof(IValueParameter));

@@ -10,7 +10,6 @@ using HeuristicLab.Core;
 namespace HeuristicLab.JsonInterface {
   public class IntMatrixConverter : ValueTypeMatrixConverter<IntMatrix, int> {
     public override int Priority => 1;
-    public override Type ConvertableType => typeof(IntMatrix);
 
     public override void Inject(IItem item, IJsonItem data, IJsonItemConverter root) {
       IntMatrix mat = item as IntMatrix;
@@ -30,7 +29,6 @@ namespace HeuristicLab.JsonInterface {
 
   public class DoubleMatrixConverter : ValueTypeMatrixConverter<DoubleMatrix, double> {
     public override int Priority => 1;
-    public override Type ConvertableType => typeof(DoubleMatrix);
 
     public override void Inject(IItem item, IJsonItem data, IJsonItemConverter root) {
       DoubleMatrix mat = item as DoubleMatrix;
@@ -52,7 +50,6 @@ namespace HeuristicLab.JsonInterface {
 
   public class PercentMatrixConverter : ValueTypeMatrixConverter<PercentMatrix, double> {
     public override int Priority => 2;
-    public override Type ConvertableType => typeof(PercentMatrix);
 
     public override void Inject(IItem item, IJsonItem data, IJsonItemConverter root) {
       PercentMatrix mat = item as PercentMatrix;
@@ -72,7 +69,6 @@ namespace HeuristicLab.JsonInterface {
 
   public class BoolMatrixConverter : ValueTypeMatrixConverter<BoolMatrix, bool> {
     public override int Priority => 1;
-    public override Type ConvertableType => typeof(BoolMatrix);
 
     public override void Inject(IItem item, IJsonItem data, IJsonItemConverter root) {
       BoolMatrix mat = item as BoolMatrix;
@@ -93,7 +89,7 @@ namespace HeuristicLab.JsonInterface {
     where T : struct 
   {
     public override bool CanConvertType(Type t) =>
-      ConvertableType.IsAssignableFrom(t);
+      typeof(MatrixType).IsAssignableFrom(t);
 
     #region Helper
     /// <summary>

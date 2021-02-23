@@ -7,10 +7,10 @@ namespace HeuristicLab.JsonInterface {
   /// Class for handling json converters.
   /// </summary>
   public class JsonItemConverter : IJsonItemConverter {
-    
+
     #region Properties
-    private IDictionary<Type, IJsonItemConverter> Converters { get; set; } 
-      = new Dictionary<Type, IJsonItemConverter>();
+    private IEnumerable<IJsonItemConverter> Converters { get; set; }
+      = Enumerable.Empty<IJsonItemConverter>();
 
     private IDictionary<int, IJsonItem> InjectCache { get; set; }
       = new Dictionary<int, IJsonItem>();
@@ -34,10 +34,9 @@ namespace HeuristicLab.JsonInterface {
       IList<IJsonItemConverter> possibleConverters = new List<IJsonItemConverter>();
       
       foreach (var x in Converters) {
-        if (x.Value.CanConvertType(type))
-          possibleConverters.Add(x.Value);
+        if (x.CanConvertType(type))
+          possibleConverters.Add(x);
       }
-        
 
       if(possibleConverters.Count > 0) {
         IJsonItemConverter best = possibleConverters.First();
@@ -85,7 +84,7 @@ namespace HeuristicLab.JsonInterface {
     /// <summary>
     /// Static constructor for default converter configuration.
     /// </summary>
-    internal JsonItemConverter(IDictionary<Type, IJsonItemConverter> converters) {
+    internal JsonItemConverter(IEnumerable<IJsonItemConverter> converters) {
       Converters = converters;
     }
   }

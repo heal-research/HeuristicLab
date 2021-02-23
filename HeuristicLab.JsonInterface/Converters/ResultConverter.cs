@@ -7,10 +7,8 @@ namespace HeuristicLab.JsonInterface {
   public class ResultConverter : BaseConverter {
     public override int Priority => 1;
 
-    public override Type ConvertableType => typeof(IResult);
-
     public override bool CanConvertType(Type t) =>
-      t.GetInterfaces().Any(x => x == ConvertableType);
+      t.GetInterfaces().Any(x => x == typeof(IResult));
 
     public override IJsonItem Extract(IItem value, IJsonItemConverter root) {
       IResult res = value as IResult;

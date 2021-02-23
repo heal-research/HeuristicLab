@@ -11,11 +11,27 @@ using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.JsonInterface.OptimizerIntegration {
   public partial class ValueLookupJsonItemControl : UserControl {
-    private static IDictionary<Type, Type> JI2VM { get; set; }
 
-    public ValueLookupJsonItemControl(IValueLookupJsonItemVM vm) {
+    private static IDictionary<Type, Type> ji2vm = null;
+    private static IDictionary<Type, Type> JI2VM { 
+      get {
+        if (ji2vm == null) {
+          ji2vm = new Dictionary<Type, Type>();
+          foreach (var vmType in ApplicationManager.Manager.GetTypes(typeof(IJsonItemVM))) {
+            IJsonItemVM vm = (IJsonItemVM)Activator.CreateInstance(vmType);
+            ji2vm.Add(vm.TargetedJsonItemType, vmType);
+          }
+        }
+        return ji2vm;
+      } 
+    }
+
+    private ValueLookupJsonItemControl() {
       InitializeComponent();
-      InitCache();
+    }
+
+    protected ValueLookupJsonItemControl(IValueLookupJsonItemVM vm) {
+      InitializeComponent();
       if (vm.JsonItemReference != null && JI2VM.TryGetValue(vm.JsonItemReference.GetType(), out Type vmType)) {
         IJsonItemVM tmp = (IJsonItemVM)Activator.CreateInstance(vmType);
         tmp.Item = vm.JsonItemReference;
@@ -28,14 +44,6 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
       }
     }
 
-    private void InitCache() {
-      if(JI2VM == null) {
-        JI2VM = new Dictionary<Type, Type>();
-        foreach (var vmType in ApplicationManager.Manager.GetTypes(typeof(IJsonItemVM))) {
-          IJsonItemVM vm = (IJsonItemVM)Activator.CreateInstance(vmType);
-          JI2VM.Add(vm.TargetedJsonItemType, vmType);
-        }
-      }
-    }
+    public static ValueLookupJsonItemControl Create(IValueLookupJsonItemVM vm) => new ValueLookupJsonItemControl(vm);
   }
 }

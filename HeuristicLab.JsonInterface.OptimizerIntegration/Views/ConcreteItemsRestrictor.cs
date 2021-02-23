@@ -14,16 +14,20 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
     public event Action<object> OnChecked;
     public event Action<object> OnUnchecked;
 
-    public ConcreteItemsRestrictor() {
+    protected ConcreteItemsRestrictor() {
       InitializeComponent();
     }
 
-    public void Init<T>(IEnumerable<T> objs) {
-      if(objs != null) {
-        foreach(var obj in objs) {
+    public static ConcreteItemsRestrictor Create<T>(IEnumerable<T> objs) {
+      ConcreteItemsRestrictor ctrl = new ConcreteItemsRestrictor();
+      ctrl.Init<T>(objs);
+      return ctrl;
+    }
+
+    protected void Init<T>(IEnumerable<T> objs) {
+      if(objs != null)
+        foreach(var obj in objs)
           SetupOption(obj);
-        }
-      }
     }
 
     private void SetupOption(object opt) {

@@ -3,14 +3,15 @@
 namespace HeuristicLab.JsonInterface.OptimizerIntegration {
   public partial class ArrayJsonItemControl : UserControl {
 
-    public ArrayJsonItemControl() {
+    private ArrayJsonItemControl() {
       InitializeComponent();
     }
 
-    public static ArrayJsonItemControl Create(IJsonItemVM vm) {
-      var control = new ArrayJsonItemControl();
-      control.checkBoxResizable.DataBindings.Add("Checked", vm, nameof(IArrayJsonItemVM.Resizable));
-      return control;
+    protected ArrayJsonItemControl(IJsonItemVM vm) {
+      InitializeComponent();
+      checkBoxResizable.DataBindings.Add("Checked", vm, nameof(IArrayJsonItemVM.Resizable));
     }
+
+    public static ArrayJsonItemControl Create(IJsonItemVM vm) => new ArrayJsonItemControl(vm);
   }
 }

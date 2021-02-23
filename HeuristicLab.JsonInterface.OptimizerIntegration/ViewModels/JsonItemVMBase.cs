@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace HeuristicLab.JsonInterface.OptimizerIntegration {
@@ -20,9 +16,7 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
     public JsonItemType Item {
       get => item;
       set {
-        item?.LoosenPath();
         item = value;
-        item.FixatePath();
         ItemChanged?.Invoke();
       }
     }
@@ -64,7 +58,6 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
     public event Action ItemChanged;
     public event Action SelectedChanged;
 
-
     protected void OnPropertyChange(object sender, string propertyName) {
       // Make a temporary copy of the event to avoid possibility of
       // a race condition if the last subscriber unsubscribes
@@ -74,25 +67,5 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
       PropertyChangedEventHandler tmp = PropertyChanged;
       tmp?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
-    
-    #region IDisposable Support
-    private bool disposedValue = false; // To detect redundant calls
-
-    protected virtual void Dispose(bool disposing) {
-      if (!disposedValue) {
-        if (disposing) {
-          item.LoosenPath();
-          item = null;
-        }
-        disposedValue = true;
-      }
-    }
-
-    // This code added to correctly implement the disposable pattern.
-    public void Dispose() {
-      // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
-      Dispose(true);
-    }
-    #endregion
   }
 }
