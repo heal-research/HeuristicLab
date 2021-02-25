@@ -305,6 +305,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       for (int i = 0; i < ClassNamesParameter.Value.Rows; i++)
         classNamesCache.Add(ClassNamesParameter.Value[i, 0]);
     }
+
     public override IDeepCloneable Clone(Cloner cloner) {
       if (this == emptyProblemData) return emptyProblemData;
       return new ClassificationProblemData(this, cloner);
@@ -313,13 +314,24 @@ namespace HeuristicLab.Problems.DataAnalysis {
     public ClassificationProblemData() : this(defaultDataset, defaultAllowedInputVariables, defaultTargetVariable, Enumerable.Empty<string>()) { }
 
     public ClassificationProblemData(IClassificationProblemData classificationProblemData)
-      : this(classificationProblemData.Dataset, classificationProblemData.AllowedInputVariables, classificationProblemData.TargetVariable, classificationProblemData.ClassNames, classificationProblemData.PositiveClass) {
-      
+      : this(classificationProblemData, classificationProblemData.Dataset) {
+    }
+
+    /// <summary>
+    /// This method satisfies a common use case: making a copy of the problem but providing a different dataset.
+    /// One must be careful here that the dataset passed is not modified, as that would invalidate the problem data internals.
+    /// Passing a ModifiableDataset to this constructor is therefore discouraged.
+    /// </summary>
+    /// <param name="classificationProblemData">The original instance of classification problem data.</param>
+    /// <param name="dataset">The new dataset.</param>
+    public ClassificationProblemData(IClassificationProblemData classificationProblemData, IDataset dataset)
+    : this(classificationProblemData.Dataset, classificationProblemData.AllowedInputVariables, classificationProblemData.TargetVariable, classificationProblemData.ClassNames, classificationProblemData.PositiveClass) {
+
       TrainingPartition.Start = classificationProblemData.TrainingPartition.Start;
       TrainingPartition.End = classificationProblemData.TrainingPartition.End;
       TestPartition.Start = classificationProblemData.TestPartition.Start;
       TestPartition.End = classificationProblemData.TestPartition.End;
-      
+
       for (int i = 0; i < Classes; i++) {
         for (int j = 0; j < Classes; j++) {
           ClassificationPenaltiesParameter.Value[i, j] = classificationProblemData.GetClassificationPenalty(ClassValuesCache[i], ClassValuesCache[j]);
@@ -327,11 +339,8 @@ namespace HeuristicLab.Problems.DataAnalysis {
       }
     }
 
-    public ClassificationProblemData(IDataset dataset, IEnumerable<string> allowedInputVariables, string targetVariable, IEnumerable<ITransformation> transformations = null)
-      : this(dataset, allowedInputVariables, targetVariable, Enumerable.Empty<string>(), null, transformations) { }
-
     public ClassificationProblemData(IDataset dataset, IEnumerable<string> allowedInputVariables, string targetVariable,
-      IEnumerable<string> classNames,
+      IEnumerable<string> classNames = null,
       string positiveClass = null, // can be null in which case it's set as the first class name
       IEnumerable<ITransformation> transformations = null)
       : base(dataset, allowedInputVariables, transformations ?? Enumerable.Empty<ITransformation>()) {
@@ -347,10 +356,10 @@ namespace HeuristicLab.Problems.DataAnalysis {
       ResetTargetVariableDependentMembers(); // correctly set the values of the parameters added above
 
       // set the class names
-      if (classNames.Any()) {
+      if (classNames != null && classNames.Any()) {
         // better to allocate lists because we use these multiple times below
         var names = classNames.ToList();
-        var values = ClassValues.ToList();
+        var values = ClassValuesCache;
 
         if (names.Count != values.Count) {
           throw new ArgumentException();
