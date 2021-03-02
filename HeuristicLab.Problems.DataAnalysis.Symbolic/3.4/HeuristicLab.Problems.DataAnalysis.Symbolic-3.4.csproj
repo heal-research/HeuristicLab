@@ -152,6 +152,7 @@
     <Compile Include="Creators\SymbolicDataAnalysisExpressionBalancedTreeCreator.cs" />
     <Compile Include="Crossovers\SymbolicDataAnalysisExpressionDiversityPreservingCrossover.cs" />
     <Compile Include="Formatters\InfixExpressionFormatter.cs" />
+    <Compile Include="Formatters\SymbolicDataAnalysisExpressionPythonFormatter.cs" />
     <Compile Include="Formatters\TSQLExpressionFormatter.cs" />
     <Compile Include="Formatters\SymbolicDataAnalysisExpressionMathematicaFormatter.cs" />
     <Compile Include="Formatters\SymbolicDataAnalysisExpressionCSharpFormatter.cs" />
