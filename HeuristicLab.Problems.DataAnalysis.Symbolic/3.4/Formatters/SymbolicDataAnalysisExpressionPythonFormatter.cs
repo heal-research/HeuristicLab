@@ -35,7 +35,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   public sealed class SymbolicDataAnalysisExpressionPythonFormatter : NamedItem, ISymbolicExpressionTreeStringFormatter {
 
     private int VariableCounter { get; set; } = 0;
-    private IDictionary<string, string> VariableMap = new Dictionary<string, string>();
+    private IDictionary<string, string> VariableMap { get; } = new Dictionary<string, string>();
+    private int MathLibCounter { get; set; } = 0;
+    private int StatisticLibCounter { get; set; } = 0;
+    private int EvaluateIfCounter { get; set; } = 0;
 
     [StorableConstructor]
     private SymbolicDataAnalysisExpressionPythonFormatter(StorableConstructorFlag _) : base(_) { }
@@ -64,18 +67,23 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     private void GenerateImports(StringBuilder strBuilder) {
-      strBuilder.AppendLine("# imports");
-      strBuilder.AppendLine("import math");
-      strBuilder.AppendLine("import statistics");
+      if(MathLibCounter > 0 || StatisticLibCounter > 0)
+        strBuilder.AppendLine("# imports");
+      if(MathLibCounter > 0)
+        strBuilder.AppendLine("import math");
+      if(StatisticLibCounter > 0)
+        strBuilder.AppendLine("import statistics");
     }
 
     private void GenerateIfThenElseSource(StringBuilder strBuilder) {
-      strBuilder.AppendLine("# condition helper function");
-      strBuilder.AppendLine("def evaluate_if(condition, then_path, else_path): ");
-      strBuilder.AppendLine("\tif condition:");
-      strBuilder.AppendLine("\t\treturn then_path");
-      strBuilder.AppendLine("\telse:");
-      strBuilder.AppendLine("\t\treturn else_path");
+      if(EvaluateIfCounter > 0) {
+        strBuilder.AppendLine("# condition helper function");
+        strBuilder.AppendLine("def evaluate_if(condition, then_path, else_path): ");
+        strBuilder.AppendLine("\tif condition:");
+        strBuilder.AppendLine("\t\treturn then_path");
+        strBuilder.AppendLine("\telse:");
+        strBuilder.AppendLine("\t\treturn else_path");
+      }
     }
 
     private void GenerateModelComment(StringBuilder strBuilder) {
@@ -109,20 +117,25 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       } else if (symbol is And) {
         FormatNode(node, strBuilder, infixSymbol: " and ");
       } else if (symbol is Average) {
+        StatisticLibCounter++;
         FormatNode(node, strBuilder, prefixSymbol: "statistics.mean", openingSymbol: "([", closingSymbol: "])");
       } else if (symbol is Cosine) {
+        MathLibCounter++;
         FormatNode(node, strBuilder, "math.cos");
       } else if (symbol is Division) {
         FormatDivision(node, strBuilder);
       } else if (symbol is Exponential) {
+        MathLibCounter++;
         FormatNode(node, strBuilder, "math.exp");
       } else if (symbol is GreaterThan) {
         FormatNode(node, strBuilder, infixSymbol: " > ");
       } else if (symbol is IfThenElse) {
+        EvaluateIfCounter++;
         FormatNode(node, strBuilder, "evaluate_if");
       } else if (symbol is LessThan) {
         FormatNode(node, strBuilder, infixSymbol: " < ");
       } else if (symbol is Logarithm) {
+        MathLibCounter++;
         FormatNode(node, strBuilder, "math.log");
       } else if (symbol is Multiplication) {
         FormatNode(node, strBuilder, infixSymbol: " * ");
@@ -133,28 +146,34 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       } else if (symbol is Xor) {
         FormatNode(node, strBuilder, infixSymbol: " ^ ");
       } else if (symbol is Sine) {
+        MathLibCounter++;
         FormatNode(node, strBuilder, "math.sin");
       } else if (symbol is Subtraction) {
         FormatSubtraction(node, strBuilder);
       } else if (symbol is Tangent) {
+        MathLibCounter++;
         FormatNode(node, strBuilder, "math.tan");
       } else if (symbol is HyperbolicTangent) {
+        MathLibCounter++;
         FormatNode(node, strBuilder, "math.tanh");
       } else if (symbol is Square) {
         FormatPower(node, strBuilder, "2");
       } else if (symbol is SquareRoot) {
+        MathLibCounter++;
         FormatNode(node, strBuilder, "math.sqrt");
       } else if (symbol is Cube) {
         FormatPower(node, strBuilder, "3");
       } else if (symbol is CubeRoot) {
         FormatNode(node, strBuilder, closingSymbol: " ** (1. / 3))");
       } else if (symbol is Power) {
+        MathLibCounter++;
         FormatNode(node, strBuilder, "math.pow");
       } else if (symbol is Root) {
         FormatRoot(node, strBuilder);
       } else if (symbol is Absolute) {
         FormatNode(node, strBuilder, "abs");
       } else if (symbol is AnalyticQuotient) {
+        MathLibCounter++;
         strBuilder.Append("(");
         FormatRecursively(node.GetSubtree(0), strBuilder);
         strBuilder.Append(" / math.sqrt(1 + math.pow(");
@@ -187,12 +206,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     private void FormatPower(ISymbolicExpressionTreeNode node, StringBuilder strBuilder, string exponent) {
+      MathLibCounter++;
       strBuilder.Append("math.pow(");
       FormatRecursively(node.GetSubtree(0), strBuilder);
       strBuilder.Append($", {exponent})");
     }
 
     private void FormatRoot(ISymbolicExpressionTreeNode node, StringBuilder strBuilder) {
+      MathLibCounter++;
       strBuilder.Append("math.pow(");
       FormatRecursively(node.GetSubtree(0), strBuilder);
       strBuilder.Append(", 1.0 / (");
