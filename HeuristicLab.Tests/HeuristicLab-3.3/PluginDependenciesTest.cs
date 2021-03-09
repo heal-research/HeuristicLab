@@ -38,7 +38,13 @@ namespace HeuristicLab.Tests {
     // Use ClassInitialize to run code before running the first test in the class
     [ClassInitialize]
     public static void MyClassInitialize(TestContext testContext) {
-      loadedPlugins = PluginLoader.Assemblies.Where(PluginLoader.IsPluginAssembly).ToDictionary(a => a, GetPluginFromAssembly);
+      try {
+        loadedPlugins = PluginLoader.Assemblies.Where(PluginLoader.IsPluginAssembly).ToDictionary(a => a, GetPluginFromAssembly);
+      } catch (BadImageFormatException e) {
+        var message = string.Join(Environment.NewLine, "Could not load all types. Check if test process architecture is set to x64.", string.Empty, "Exception:", e);
+        Assert.Fail(message);
+      }
+
       pluginNames = loadedPlugins.ToDictionary(a => a.Key.GetName().FullName, a => GetPluginName(a.Value));
 
       foreach (Assembly pluginAssembly in loadedPlugins.Keys) {
