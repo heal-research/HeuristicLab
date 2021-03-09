@@ -36,11 +36,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     [Storable]
     private readonly string[] variablesUsedForPrediction;
-    public override IEnumerable<string> VariablesUsedForPrediction {
-      get {
-        return variablesUsedForPrediction;
-      }
-    }
+    public override IEnumerable<string> VariablesUsedForPrediction => variablesUsedForPrediction;
 
     [StorableConstructor]
     private Spline1dModel(StorableConstructorFlag deserializing) : base(deserializing) {
@@ -53,28 +49,21 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
     public Spline1dModel(alglib.spline1d.spline1dinterpolant interpolant, string targetVar, string inputVar)
       : base(targetVar, "Spline model (1d)") {
-      this.interpolant = (alglib.spline1d.spline1dinterpolant)interpolant.make_copy();      
+      this.interpolant = (alglib.spline1d.spline1dinterpolant)interpolant.make_copy();
       this.variablesUsedForPrediction = new string[] { inputVar };
     }
 
 
-    public override IDeepCloneable Clone(Cloner cloner) {
-      return new Spline1dModel(this, cloner);
-    }
+    public override IDeepCloneable Clone(Cloner cloner) => new Spline1dModel(this, cloner);
 
     public override IRegressionSolution CreateRegressionSolution(IRegressionProblemData problemData) {
       return new RegressionSolution(this, (IRegressionProblemData)problemData.Clone());
     }
 
-    public double GetEstimatedValue(double x) {
-      return alglib.spline1d.spline1dcalc(interpolant, x);
-    }
+    public double GetEstimatedValue(double x) => alglib.spline1d.spline1dcalc(interpolant, x);
 
     public override IEnumerable<double> GetEstimatedValues(IDataset dataset, IEnumerable<int> rows) {
-      var x = dataset.GetDoubleValues(VariablesUsedForPrediction.First(), rows).ToArray();
-      foreach (var xi in x) {
-        yield return GetEstimatedValue(xi);
-      }
+      return dataset.GetDoubleValues(VariablesUsedForPrediction.First(), rows).Select(GetEstimatedValue);
     }
 
     #region persistence
