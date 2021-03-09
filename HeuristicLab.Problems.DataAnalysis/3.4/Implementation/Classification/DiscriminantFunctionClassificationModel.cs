@@ -73,6 +73,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       model = cloner.Clone(original.model);
       classValues = (double[])original.classValues.Clone();
       thresholds = (double[])original.thresholds.Clone();
+      thresholdCalculator = (IDiscriminantFunctionThresholdCalculator)original.thresholdCalculator.Clone();
     }
 
     public DiscriminantFunctionClassificationModel(IRegressionModel model, IDiscriminantFunctionThresholdCalculator thresholdCalculator)
