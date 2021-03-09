@@ -87,9 +87,9 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
       // replace with PercentValue for files which had CrossoverProbability as DoubleValue
-      if (Parameters.ContainsKey(CrossoverProbabilityParameterName)) {
-        var oldValue = ((IFixedValueParameter<DoubleValue>)Parameters[CrossoverProbabilityParameterName]).Value.Value;
-        Parameters.Remove(CrossoverProbabilityParameterName);
+      if (Parameters.ContainsKey(CrossoverProbabilityParameterName) && (Parameters[CrossoverProbabilityParameterName] is IFixedValueParameter<DoubleValue> oldParam)) {
+        var oldValue = oldParam.Value.Value;
+        Parameters.Remove(oldParam);
         Parameters.Add(new FixedValueParameter<PercentValue>(CrossoverProbabilityParameterName, "The probability that a crossover is performed. Otherwise a copy of the first parent is returned.", new PercentValue(oldValue)));
       }
       if (!Parameters.ContainsKey(CrossoverProbabilityParameterName)) {
