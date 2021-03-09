@@ -119,6 +119,8 @@
     <None Include="Plugin.cs.frame" />
     <Compile Include="GammaDistributedRandom.cs" />
     <Compile Include="ListExtensions.cs" />
+    <Compile Include="NormalDistributedRandomPolar.cs" />
+    <Compile Include="NormalRandomizerPolar.cs" />
     <Compile Include="RandomSeedGenerator.cs" />
     <Compile Include="UniformDistributedRandom.cs" />
     <Compile Include="FastRandom.cs" />
