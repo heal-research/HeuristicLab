@@ -98,7 +98,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
 
       #region root rules
       // cancellation
-      AssertEqualAfterSimplification("(root (variable 2.0 a) 0.0)", "1.0");
+      AssertEqualAfterSimplification("(root (variable 2.0 a) 0.0)", "NaN");
       // fixed point
       AssertEqualAfterSimplification("(root (variable 2.0 a) 1.0)", "(variable 2.0 a)");
       // inversion fixed point
@@ -267,6 +267,18 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
       AssertEqualAfterSimplification("(* (aq (variable 1.0 x) (variable 1.0 y)) 2.0)", "(aq (variable 2.0 x) (variable 1.0 y))");
       AssertEqualAfterSimplification("(/ (aq (variable 1.0 x) (variable 1.0 y)) 2.0)", "(aq (variable 0.5 x) (variable 1.0 y))");
 
+      #endregion
+
+      #region do not drop subtrees with small weights
+      AssertEqualAfterSimplification("(* 1e-14 (variable 1.0 a))", "(variable 1e-14 a)");
+      AssertEqualAfterSimplification("(+ (variable 1.0 a) 1e-14)", 
+                                     "(+ (variable 1.0 a) 1e-14)");
+      // a scenario where a term with small weight can have large effect
+      AssertEqualAfterSimplification("(+ (* (pow (variable 1.0 a) 10) 1e-14) 1.0)",
+                                     "(+ (* (pow (variable 1.0 a) 10) 1e-14) 1.0)");
+      // a test case (from ticket #2985)
+      AssertEqualAfterSimplification("(+ (* (exp (variable 3.5861E+001 a)) 5.5606E-016) 5.9323E-002)",
+                                     "(+ (* (exp (variable 3.5861E+001 a)) 5.5606E-016) 5.9323E-002)");
       #endregion
     }
 
