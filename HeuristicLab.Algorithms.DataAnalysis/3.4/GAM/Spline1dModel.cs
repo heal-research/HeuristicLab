@@ -25,6 +25,7 @@ using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Problems.DataAnalysis;
+using System;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   [Item("Spline model (1d)",
@@ -34,9 +35,17 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     // not storable! see persistence properties below
     private alglib.spline1d.spline1dinterpolant interpolant;
 
+    [Storable(OldName = "variablesUsedForPrediction")]
+    private string[] StorableVariablesUsedForPrediction {
+      set {
+        if (value.Length > 1) throw new ArgumentException("A one-dimensional spline model supports only one input variable.");
+        inputVariable = value[0];
+      }
+    }
+
     [Storable]
-    private readonly string[] variablesUsedForPrediction;
-    public override IEnumerable<string> VariablesUsedForPrediction => variablesUsedForPrediction;
+    private string inputVariable;
+    public override IEnumerable<string> VariablesUsedForPrediction => new[] { inputVariable };
 
     [StorableConstructor]
     private Spline1dModel(StorableConstructorFlag deserializing) : base(deserializing) {
@@ -44,26 +53,29 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     private Spline1dModel(Spline1dModel orig, Cloner cloner) : base(orig, cloner) {
-      this.variablesUsedForPrediction = orig.VariablesUsedForPrediction.ToArray();
+      this.inputVariable = orig.inputVariable;
       this.interpolant = (alglib.spline1d.spline1dinterpolant)orig.interpolant.make_copy();
     }
     public Spline1dModel(alglib.spline1d.spline1dinterpolant interpolant, string targetVar, string inputVar)
-      : base(targetVar, "Spline model (1d)") {
+      : base(targetVar, $"Spline model ({inputVar})") {
       this.interpolant = (alglib.spline1d.spline1dinterpolant)interpolant.make_copy();
-      this.variablesUsedForPrediction = new string[] { inputVar };
+      this.inputVariable = inputVar;      
     }
 
 
     public override IDeepCloneable Clone(Cloner cloner) => new Spline1dModel(this, cloner);
 
     public override IRegressionSolution CreateRegressionSolution(IRegressionProblemData problemData) {
-      return new RegressionSolution(this, (IRegressionProblemData)problemData.Clone());
+      var solution =  new RegressionSolution(this, (IRegressionProblemData)problemData.Clone());
+      solution.Name = $"Regression Spline ({inputVariable})";
+
+      return solution;
     }
 
     public double GetEstimatedValue(double x) => alglib.spline1d.spline1dcalc(interpolant, x);
 
     public override IEnumerable<double> GetEstimatedValues(IDataset dataset, IEnumerable<int> rows) {
-      return dataset.GetDoubleValues(VariablesUsedForPrediction.First(), rows).Select(GetEstimatedValue);
+      return dataset.GetDoubleValues(inputVariable, rows).Select(GetEstimatedValue);
     }
 
     #region persistence
