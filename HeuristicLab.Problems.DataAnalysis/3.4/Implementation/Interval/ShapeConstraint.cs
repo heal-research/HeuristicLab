@@ -170,12 +170,12 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     private string GenerateExpressionString() {
       string expression;
-
+      string write(double val) => double.IsPositiveInfinity(val) ? "inf." : double.IsNegativeInfinity(val) ? "-inf." : $"{val}";
       if (!IsDerivative) {
-        expression = string.Format($"f in [{Interval?.LowerBound} .. {Interval?.UpperBound}]");
+        expression = string.Format($"f in [{write(Interval.LowerBound)} .. {write(Interval.UpperBound)}]");
         if (Regions != null) {
           foreach (var region in Regions.GetReadonlyDictionary())
-            expression += $", {region.Key} in [{region.Value.LowerBound} .. {region.Value.UpperBound}]";
+            expression += $", {region.Key} in [{write(region.Value.LowerBound)} .. {write(region.Value.UpperBound)}]";
         }
         if (Weight != 1.0) {
           expression += $" weight: {weight}";
@@ -193,10 +193,10 @@ namespace HeuristicLab.Problems.DataAnalysis {
         case 3:
           derivationString = "³"; break;
       }
-      expression = string.Format($"∂{derivationString}f/∂{Variable}{derivationString} in [{Interval?.LowerBound} .. {Interval?.UpperBound}]");
+      expression = string.Format($"∂{derivationString}f/∂{Variable}{derivationString} in [{write(Interval.LowerBound)} .. {write(Interval.UpperBound)}]");
       if (Regions != null) {
         foreach (var region in Regions.GetReadonlyDictionary())
-          expression += $", {region.Key} in [{region.Value.LowerBound} .. {region.Value.UpperBound}]";
+          expression += $", {region.Key} in [{write(region.Value.LowerBound)} .. {write(region.Value.UpperBound)}]";
       }
       if (Weight != 1.0) {
         expression += $" weight: {weight}";

@@ -102,6 +102,10 @@
       <HintPath>..\..\bin\ALGLIB-3.7.0.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="HEAL.Attic, Version=1.5.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\bin\HEAL.Attic.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>

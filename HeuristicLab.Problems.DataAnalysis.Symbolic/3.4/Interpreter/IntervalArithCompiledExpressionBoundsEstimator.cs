@@ -193,6 +193,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             }
             return Expression.Divide(e1, e2);
           }
+        case OpCodes.AnalyticQuotient: {
+            var a = expr(node.GetSubtree(0));
+            var b = expr(node.GetSubtree(1));
+            var fun = typeof(Interval).GetMethod(methodName[opCode], new[] { a.Type, b.Type });
+            return Expression.Call(fun, a, b);
+          }
         // all these cases share the same code: get method info by name, emit call expression
         case OpCodes.Exp:
         case OpCodes.Log:
@@ -204,8 +210,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         case OpCodes.Cube:
         case OpCodes.SquareRoot:
         case OpCodes.CubeRoot:
-        case OpCodes.Absolute:
-        case OpCodes.AnalyticQuotient: {
+        case OpCodes.Absolute: {
             var arg = expr(node.GetSubtree(0));
             var fun = typeof(Interval).GetMethod(methodName[opCode], new[] { arg.Type });
             return Expression.Call(fun, arg);

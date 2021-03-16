@@ -38,9 +38,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       ISymbolicExpressionTree tree) {
       var varRanges = variableRanges.GetReadonlyDictionary();
 
-      if (constraint.Variable != null && !varRanges.ContainsKey(constraint.Variable)) {
+      if (!string.IsNullOrEmpty(constraint.Variable) && !varRanges.ContainsKey(constraint.Variable)) {
         throw new ArgumentException(
-          $"The given variable {constraint.Variable} in the constraint does not exist in the model.",
+          $"No variable range found for variable {constraint.Variable} used in the constraints.",
           nameof(constraint));
       }
 

@@ -31,7 +31,7 @@ using HeuristicLab.Parameters;
 using HeuristicLab.Problems.DataAnalysis.Symbolic.Regression;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
-  [Item("NMSE Evaluator (single-objective, with shape-constraints)", "Calculates NMSE of a symbolic regression solution and checks constraints the fitness is a combination of NMSE and constraint violations.")]
+  [Item("NMSE Evaluator with shape-constraints", "Calculates NMSE of a symbolic regression solution and checks constraints the fitness is a combination of NMSE and constraint violations.")]
   [StorableType("27473973-DD8D-4375-997D-942E2280AE8E")]
   public class NMSEConstraintsEvaluator : SymbolicRegressionSingleObjectiveEvaluator {
     #region Parameter/Properties

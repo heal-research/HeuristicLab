@@ -32,7 +32,7 @@ using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Parameters;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression.MultiObjective {
-  [Item("NMSE Evaluator (multi-objective, with shape-constraints)",
+  [Item("NMSE Evaluator with shape-constraints",
     "Calculates the NMSE and the constraints violations of a symbolic regression solution as objectives.")]
   [StorableType("8E9D76B7-ED9C-43E7-9898-01FBD3633880")]
   public class NMSEConstraintsEvaluator : SymbolicRegressionMultiObjectiveEvaluator {

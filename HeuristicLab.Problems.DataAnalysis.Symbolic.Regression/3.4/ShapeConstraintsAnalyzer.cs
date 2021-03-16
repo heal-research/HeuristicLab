@@ -30,7 +30,7 @@ using HeuristicLab.Parameters;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
   [StorableType("4318C6BD-E0A1-45FE-AC30-96E7F73B51FB")]
-  [Item("Shape-constraints analyser", "Analyzes the number of shape-constraint violations of symbolic regression models.")]
+  [Item("ShapeConstraintsAnalyzer", "Analyzes the number of shape-constraint violations of symbolic regression models.")]
   public class ShapeConstraintsAnalyzer : SymbolicDataAnalysisAnalyzer, ISymbolicExpressionTreeAnalyzer {
     private const string ProblemDataParameterName = "ProblemData";
     private const string ConstraintViolationsParameterName = "ConstraintViolations";
@@ -105,7 +105,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       var constraintViolationsTable = ConstraintViolations;
       var estimator = new IntervalArithBoundsEstimator();
 
-      if (constraintViolationsTable.Rows.Any())
+      if (!constraintViolationsTable.Rows.Any())
         foreach (var constraint in constraints)
           constraintViolationsTable.Rows.Add(new DataRow(constraint.ToString()));
 

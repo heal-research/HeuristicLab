@@ -49,6 +49,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       base.OnContentChanged();
       this.shapeConstraintsView.Content = Content;
       UpdateControl();
+      errorOutput.Text = "";
     }
 
     protected override void RegisterContentEvents() {
@@ -76,6 +77,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
 
     protected override void SetEnabledStateOfControls() {
       constraintsInput.Enabled = Content != null && !Locked && !ReadOnly;
+      parseBtn.Enabled = Content != null && !Locked && !ReadOnly;
     }
 
 
@@ -89,7 +91,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
           errorOutput.Text = "Constraints successfully parsed.";
           errorOutput.ForeColor = Color.DarkGreen;
         } catch (ArgumentException ex) {
-          errorOutput.Text = ex.Message.Replace("Parameter name", "@Line");
+          errorOutput.Text = ex.Message;
           errorOutput.ForeColor = Color.DarkRed;
         } finally {
           suspendUpdates = false;

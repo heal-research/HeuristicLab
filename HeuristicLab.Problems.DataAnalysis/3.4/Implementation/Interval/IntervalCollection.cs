@@ -34,7 +34,6 @@ namespace HeuristicLab.Problems.DataAnalysis {
       get => HeuristicLab.Common.Resources.VSImageLibrary.Object;
     }
 
-    //[Storable]
     private IDictionary<string, Interval> intervals { get; set; } = new Dictionary<string, Interval>();
 
     [Storable(OldName = "StorableIntervalInformation")]

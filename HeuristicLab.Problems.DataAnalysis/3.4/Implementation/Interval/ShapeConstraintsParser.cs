@@ -60,14 +60,14 @@ namespace HeuristicLab.Problems.DataAnalysis {
         return ParseDerivationConstraint(expr);
       } else {
         throw new
-          ArgumentException("Error at your constraints definition constraints have to start with (f | d | ∂ | #)",
+          ArgumentException($"Error at in definition {expr}. Constraints have to start with (f | d | ∂ | #)",
                             nameof(expr));
       }
     }
 
     // [124 .. 145]
     private const string intervalRegex = @"\s*[\[]" +
-                                         @"\s*(?<lowerBound>[^\s\.;]*)" +
+                                         @"\s*(?<lowerBound>[^\s;]*)" +
                                          @"\s*(\.{2}|\s+|;)" +
                                          @"\s*(?<upperBound>[^\s\]]*)" +
                                          @"\s*[\]]";
@@ -75,7 +75,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     private const string variableRegex = @"(['](?<varName>.*)[']|(?<varName>[^\s²³]+))\s*";
     private const string weightRegex = @"\s*(weight:\s*(?<weight>\S*))?";
     public static ShapeConstraint ParseFunctionRangeConstraint(string expr) {
-      if (!expr.StartsWith("f")) throw new ArgumentException("Invalid function range constraint (e.g. f in [1..2])", nameof(expr));
+      if (!expr.StartsWith("f")) throw new ArgumentException($"Invalid function range constraint {expr} (e.g. f in [1..2])", nameof(expr));
       var start = "f".Length;
       var end = expr.Length;
       var targetConstraint = expr.Substring(start, end - start);
@@ -94,12 +94,12 @@ namespace HeuristicLab.Problems.DataAnalysis {
                     @"\s*\bin\b" +
                     intervalRegex +
                     @"(" +
-                      @"\s*,\s*"+ variableRegex +
+                      @"\s*,\s*" + variableRegex +
                       @"\s *\bin\b" +
                       intervalRegex +
                     @")*" +
                     weightRegex
-                    ); 
+                    );
 
 
       if (match.Success) {
@@ -124,13 +124,13 @@ namespace HeuristicLab.Problems.DataAnalysis {
             if (regions.GetReadonlyDictionary().All(r => r.Key != region.Key))
               regions.AddInterval(region.Key, region.Value);
             else
-              throw new ArgumentException("A constraint cannot contain multiple regions of the same variable.");
+              throw new ArgumentException($"The constraint {expr} has multiple regions of the same variable.");
           }
           return new ShapeConstraint(interval, regions, weight);
         } else
           return new ShapeConstraint(interval, weight);
       } else
-        throw new ArgumentException("The inserted target constraint is not valid.", nameof(expr));
+        throw new ArgumentException($"The inserted target constraint {expr} is not valid.", nameof(expr));
     }
     public static ShapeConstraint ParseDerivationConstraint(string expr) {
       var match = Regex.Match(expr,
@@ -148,7 +148,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
                                   intervalRegex +
                                   @")*" +
                                 weightRegex
-                                ); 
+                                );
 
       if (match.Success) {
         // if (match.Groups.Count < 26)
@@ -160,9 +160,9 @@ namespace HeuristicLab.Problems.DataAnalysis {
         var denominatorNumDeriv = match.Groups["numDerivations"].Captures[1].Value.Trim();
         if (enumeratorNumDeriv != "" || denominatorNumDeriv != "") {
           if (enumeratorNumDeriv == "" || denominatorNumDeriv == "")
-            throw new ArgumentException("Number of derivation has to be written on both sides.", nameof(expr));
+            throw new ArgumentException($"Number of derivation has to be written on both sides in {expr}.", nameof(expr));
           if (enumeratorNumDeriv != denominatorNumDeriv)
-            throw new ArgumentException("Derivation number is not equal on both sides.", nameof(expr));
+            throw new ArgumentException($"Derivation number is not equal on both sides in {expr}.", nameof(expr));
         }
 
         var lowerBound = ParseIntervalBounds(match.Groups["lowerBound"].Captures[0].Value);
@@ -186,13 +186,13 @@ namespace HeuristicLab.Problems.DataAnalysis {
             if (regions.GetReadonlyDictionary().All(r => r.Key != region.Key))
               regions.AddInterval(region.Key, region.Value);
             else
-              throw new ArgumentException("A constraint cannot contain multiple regions of the same variable.");
+              throw new ArgumentException($"The constraint {expr} has multiple regions of the same variable.");
           }
           return new ShapeConstraint(variable, numberOfDerivation, interval, regions, weight);
         } else
           return new ShapeConstraint(variable, numberOfDerivation, interval, weight);
       } else
-        throw new ArgumentException("The inserted derivation constraint is not valid.", nameof(expr));
+        throw new ArgumentException($"The inserted derivation constraint {expr} is not valid.", nameof(expr));
     }
 
 
@@ -219,7 +219,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     private static double ParseAndValidateDouble(string input) {
       var valid = double.TryParse(input, out var value);
       if (!valid) {
-        throw new ArgumentException("Invalid value (valid value format: \"" + FormatPatterns.GetDoubleFormatPattern() + "\")");
+        throw new ArgumentException($"Invalid value {input} (valid value format: \"" + "+inf. | inf. | -inf. | " + FormatPatterns.GetDoubleFormatPattern() + "\")");
       }
 
       return value;
