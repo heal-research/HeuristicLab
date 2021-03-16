@@ -33,6 +33,8 @@ namespace HeuristicLab.Problems.DataAnalysis {
     [Storable]
     public double UpperBound { get; private set; }
 
+    public double Width => UpperBound - LowerBound;
+
     [StorableConstructor]
     protected Interval(StorableConstructorFlag _) { }
 
@@ -65,6 +67,8 @@ namespace HeuristicLab.Problems.DataAnalysis {
       this.LowerBound = lowerBound;
       this.UpperBound = upperBound;
     }
+
+    private Interval(double v) : this(v, v) { }
 
     public bool Contains(double value) {
       return LowerBound <= value && value <= UpperBound;
@@ -125,8 +129,8 @@ namespace HeuristicLab.Problems.DataAnalysis {
       if (other == null)
         return false;
 
-      return (UpperBound.IsAlmost(other.UpperBound) || (double.IsNaN(UpperBound) && double.IsNaN(other.UpperBound)))
-        && (LowerBound.IsAlmost(other.LowerBound) || (double.IsNaN(LowerBound) && double.IsNaN(other.LowerBound)));
+      return (UpperBound==other.UpperBound || (double.IsNaN(UpperBound) && double.IsNaN(other.UpperBound)))
+        && (LowerBound==other.LowerBound || (double.IsNaN(LowerBound) && double.IsNaN(other.LowerBound)));
     }
 
     public override bool Equals(object obj) {
@@ -274,6 +278,36 @@ namespace HeuristicLab.Problems.DataAnalysis {
       var quotient = Divide(dividend, divisor);
       return quotient;
     }
+    #endregion
+
+    #region arithmetic overloads
+    public static Interval operator +(Interval a, Interval b) => Add(a, b);
+    public static Interval operator +(Interval a, double b) => Add(a, new Interval(b));
+    public static Interval operator +(double a, Interval b) => Add(new Interval(a), b);
+    public static Interval operator -(Interval a, Interval b) => Subtract(a, b);
+    public static Interval operator -(Interval a, double b) => Subtract(a, new Interval(b));
+    public static Interval operator -(double a, Interval b) => Subtract(new Interval(a), b);
+    public static Interval operator -(Interval a) => Subtract(new Interval(0), a);
+    public static Interval operator *(Interval a, Interval b) => Multiply(a, b);
+    public static Interval operator *(Interval a, double b) => Multiply(a, new Interval(b));
+    public static Interval operator *(double a, Interval b) => Multiply(new Interval(a), b);
+    public static Interval operator /(Interval a, Interval b) => Divide(a, b);
+    public static Interval operator /(Interval a, double b) => Divide(a, new Interval(b));
+    public static Interval operator /(double a, Interval b) => Divide(new Interval(a), b);
+    public static Interval Exponential(double a) { return Exponential(new Interval(a)); }
+    public static Interval Logarithm(double a) { return Logarithm(new Interval(a)); }
+    public static Interval Sine(double a) { return Sine(new Interval(a)); }
+    public static Interval Cosine(double a) { return Cosine(new Interval(a)); }
+    public static Interval Tangens(double a) { return Tangens(new Interval(a)); }
+    public static Interval HyperbolicTangent(double a) { return HyperbolicTangent(new Interval(a)); }
+    public static Interval Square(double a) { return Square(new Interval(a)); }
+    public static Interval Cube(double a) { return Cube(new Interval(a)); }
+    public static Interval SquareRoot(double a) { return SquareRoot(new Interval(a)); }
+    public static Interval CubicRoot(double a) { return CubicRoot(new Interval(a)); }
+    public static Interval Absolute(double a) { return Absolute(new Interval(a)); }
+    public static Interval AnalyticQuotient(Interval a, double b) { return AnalyticalQuotient(a, new Interval(b)); }
+    public static Interval AnalyticQuotient(double a, Interval b) { return AnalyticalQuotient(new Interval(a), b); }
+    public static Interval AnalyticQuotient(double a, double b) { return AnalyticalQuotient(new Interval(a), new Interval(b)); }
     #endregion
   }
 }

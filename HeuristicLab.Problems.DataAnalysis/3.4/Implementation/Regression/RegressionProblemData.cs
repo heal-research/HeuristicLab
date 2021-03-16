@@ -34,7 +34,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
   public class RegressionProblemData : DataAnalysisProblemData, IRegressionProblemData, IStorableContent {
     protected const string TargetVariableParameterName = "TargetVariable";
     protected const string VariableRangesParameterName = "VariableRanges";
-    protected const string IntervalConstraintsParameterName = "IntervalConstraints";
+    protected const string ShapeConstraintsParameterName = "ShapeConstraints";
     public string Filename { get; set; }
 
     #region default data
@@ -93,6 +93,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       problemData.Parameters.Add(new FixedValueParameter<IntRange>(TestPartitionParameterName, "", (IntRange)new IntRange(0, 0).AsReadOnly()));
       problemData.Parameters.Add(new ConstrainedValueParameter<StringValue>(TargetVariableParameterName, new ItemSet<StringValue>()));
       problemData.Parameters.Add(new FixedValueParameter<IntervalCollection>(VariableRangesParameterName, "", new IntervalCollection()));
+      problemData.Parameters.Add(new FixedValueParameter<ShapeConstraints>(ShapeConstraintsParameterName, "", new ShapeConstraints()));
       emptyProblemData = problemData;
     }
     #endregion
@@ -106,6 +107,11 @@ namespace HeuristicLab.Problems.DataAnalysis {
     public IntervalCollection VariableRanges {
       get => VariableRangesParameter.Value;
     }
+
+    public IFixedValueParameter<ShapeConstraints> ShapeConstraintsParameter =>
+      (IFixedValueParameter<ShapeConstraints>) Parameters[ShapeConstraintsParameterName];
+
+    public ShapeConstraints ShapeConstraints => ShapeConstraintsParameter.Value;
 
 
     public string TargetVariable {
@@ -139,6 +145,15 @@ namespace HeuristicLab.Problems.DataAnalysis {
         var intervalCollection = CalculateDatasetIntervals(this.Dataset);
         Parameters.Add(new FixedValueParameter<IntervalCollection>(VariableRangesParameterName, intervalCollection));
       }
+      if(Parameters.ContainsKey("IntervalConstraints")) {
+        var param = (IFixedValueParameter<ShapeConstraints>)Parameters["IntervalConstraints"];
+        Parameters.Remove(param);
+        Parameters.Add(new FixedValueParameter<ShapeConstraints>(ShapeConstraintsParameterName, param.Value));
+      }
+      if (!Parameters.ContainsKey(ShapeConstraintsParameterName)) {
+        Parameters.Add(new FixedValueParameter<ShapeConstraints>(ShapeConstraintsParameterName, new ShapeConstraints()));
+      }
+
       RegisterParameterEvents();
     }
 
@@ -162,18 +177,27 @@ namespace HeuristicLab.Problems.DataAnalysis {
       TestPartition.End = regressionProblemData.TestPartition.End;
     }
 
-    public RegressionProblemData(IDataset dataset, IEnumerable<string> allowedInputVariables, string targetVariable, IEnumerable<ITransformation> transformations = null)
+    public RegressionProblemData(IDataset dataset, IEnumerable<string> allowedInputVariables, string targetVariable, 
+      IEnumerable<ITransformation> transformations = null,
+      IntervalCollection variableRanges = null,
+      ShapeConstraints shapeConstraints = null)
       : base(dataset, allowedInputVariables, transformations ?? Enumerable.Empty<ITransformation>()) {
       var variables = InputVariables.Select(x => x.AsReadOnly()).ToList();
       Parameters.Add(new ConstrainedValueParameter<StringValue>(TargetVariableParameterName, new ItemSet<StringValue>(variables), variables.Where(x => x.Value == targetVariable).First()));
-      var intervalCollection = CalculateDatasetIntervals(this.Dataset);
-      Parameters.Add(new FixedValueParameter<IntervalCollection>(VariableRangesParameterName, intervalCollection));
+      if (variableRanges == null) {
+        variableRanges = CalculateDatasetIntervals(this.Dataset);
+      }
+      Parameters.Add(new FixedValueParameter<IntervalCollection>(VariableRangesParameterName, variableRanges));
+      if (shapeConstraints == null) {
+        shapeConstraints = new ShapeConstraints();
+      } 
+      Parameters.Add(new FixedValueParameter<ShapeConstraints>(ShapeConstraintsParameterName, shapeConstraints));
       RegisterParameterEvents();
     }
 
     private static IntervalCollection CalculateDatasetIntervals(IDataset dataset) {
       IntervalCollection intervalCollection = new IntervalCollection();
-      foreach (var variable in dataset.DoubleVariables) {// intervals are only possible for double variables
+      foreach (var variable in dataset.DoubleVariables) { // intervals are only possible for double variables
         var variableInterval = Interval.GetInterval(dataset.GetDoubleValues(variable));
         intervalCollection.AddInterval(variable, variableInterval);
       }
