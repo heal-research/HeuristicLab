@@ -44,8 +44,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
 
     protected override void OnContentChanged() {
       base.OnContentChanged();
-      this.regionView.Content = Content.Regions;
-      UpdateControls();
+      if (Content == null) {
+        this.regionView.Content = null;
+      } else {
+        this.regionView.Content = Content.Regions;
+        UpdateControls();
+      }
     }
 
     protected override void RegisterContentEvents() {
@@ -177,12 +181,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         return;
       }
 
-      if ((int)numberOfDerivationsComboBox.SelectedItem == 1)
-        Content.NumberOfDerivations = 1;
-      else if ((int)numberOfDerivationsComboBox.SelectedItem == 2)
-        Content.NumberOfDerivations = 2;
-      else if ((int)numberOfDerivationsComboBox.SelectedItem == 3)
-        Content.NumberOfDerivations = 3;
+      if (Content != null) {
+        if ((int)numberOfDerivationsComboBox.SelectedItem == 1)
+          Content.NumberOfDerivations = 1;
+        else if ((int)numberOfDerivationsComboBox.SelectedItem == 2)
+          Content.NumberOfDerivations = 2;
+        else if ((int)numberOfDerivationsComboBox.SelectedItem == 3)
+          Content.NumberOfDerivations = 3;
+      }
     }
 
     private void weightInput_TextChanged(object sender, EventArgs e) {

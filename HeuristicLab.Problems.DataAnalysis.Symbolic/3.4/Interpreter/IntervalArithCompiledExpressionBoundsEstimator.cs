@@ -76,7 +76,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     [StorableConstructor]
     private IntervalArithCompiledExpressionBoundsEstimator(StorableConstructorFlag _) : base(_) { }
 
-    private IntervalArithCompiledExpressionBoundsEstimator(IntervalArithCompiledExpressionBoundsEstimator original, Cloner cloner) : base(original, cloner) { }
+    protected IntervalArithCompiledExpressionBoundsEstimator(IntervalArithCompiledExpressionBoundsEstimator original, Cloner cloner) : base(original, cloner) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new IntervalArithCompiledExpressionBoundsEstimator(this, cloner);
