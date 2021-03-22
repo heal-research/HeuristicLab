@@ -87,7 +87,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         Content.Clear();
         try {
           var parsedConstraints = ShapeConstraintsParser.ParseConstraints(constraintsInput.Text);
-          Content.AddRange(parsedConstraints);
+          //Content.AddRange(parsedConstraints);
+          foreach(var constraint in parsedConstraints) {
+            if (parsedConstraints.ItemChecked(constraint))
+              Content.Add(constraint, true);
+            else
+              Content.Add(constraint, false);
+          }
           errorOutput.Text = "Constraints successfully parsed.";
           errorOutput.ForeColor = Color.DarkGreen;
         } catch (ArgumentException ex) {

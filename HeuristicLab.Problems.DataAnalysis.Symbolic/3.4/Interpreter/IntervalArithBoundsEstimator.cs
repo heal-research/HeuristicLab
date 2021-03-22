@@ -52,7 +52,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     [StorableConstructor]
     private IntervalArithBoundsEstimator(StorableConstructorFlag _) : base(_) { }
 
-    private IntervalArithBoundsEstimator(IntervalArithBoundsEstimator original, Cloner cloner) : base(original, cloner) { }
+    protected IntervalArithBoundsEstimator(IntervalArithBoundsEstimator original, Cloner cloner) : base(original, cloner) { }
 
     public IntervalArithBoundsEstimator() : base("Interval Arithmetic Bounds Estimator",
       "Estimates the bounds of the model with interval arithmetic") {
