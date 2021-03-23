@@ -231,7 +231,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             result = Evaluate(instructions, ref instructionCounter, nodeIntervals, variableIntervals);
             for (var i = 1; i < currentInstr.nArguments; i++) {
               var argumentInterval = Evaluate(instructions, ref instructionCounter, nodeIntervals, variableIntervals);
-              result = Interval.AnalyticalQuotient(result, argumentInterval);
+              result = Interval.AnalyticQuotient(result, argumentInterval);
             }
 
             break;

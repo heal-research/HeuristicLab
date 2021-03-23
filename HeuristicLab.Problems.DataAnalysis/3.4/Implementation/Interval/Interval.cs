@@ -270,7 +270,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       return new Interval(min, max);
     }
 
-    public static Interval AnalyticalQuotient(Interval a, Interval b) {
+    public static Interval AnalyticQuotient(Interval a, Interval b) {
       var dividend = a;
       var divisor = Add(Square(b), new Interval(1.0, 1.0));
       divisor = SquareRoot(divisor);
@@ -305,9 +305,9 @@ namespace HeuristicLab.Problems.DataAnalysis {
     public static Interval SquareRoot(double a) { return SquareRoot(new Interval(a)); }
     public static Interval CubicRoot(double a) { return CubicRoot(new Interval(a)); }
     public static Interval Absolute(double a) { return Absolute(new Interval(a)); }
-    public static Interval AnalyticQuotient(Interval a, double b) { return AnalyticalQuotient(a, new Interval(b)); }
-    public static Interval AnalyticQuotient(double a, Interval b) { return AnalyticalQuotient(new Interval(a), b); }
-    public static Interval AnalyticQuotient(double a, double b) { return AnalyticalQuotient(new Interval(a), new Interval(b)); }
+    public static Interval AnalyticQuotient(Interval a, double b) { return AnalyticQuotient(a, new Interval(b)); }
+    public static Interval AnalyticQuotient(double a, Interval b) { return AnalyticQuotient(new Interval(a), b); }
+    public static Interval AnalyticQuotient(double a, double b) { return AnalyticQuotient(new Interval(a), new Interval(b)); }
     #endregion
   }
 }

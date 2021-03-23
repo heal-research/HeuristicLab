@@ -108,7 +108,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
         } else {
           Add(new Result(ModelBoundsResultName, "Results concerning the derivation of symbolic regression solution", value));
         }
-
       }
     }
 

@@ -145,7 +145,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       if (variableRanges == null)
         throw new ArgumentNullException("No variablew ranges are present!", nameof(variableRanges));
 
-      //Check if all variables used in the tree are present in the dataset
+      // Check if all variables used in the tree are present in the dataset
       foreach (var variable in tree.IterateNodesPrefix().OfType<VariableTreeNode>().Select(n => n.VariableName)
                                    .Distinct())
         if (!variableRanges.ContainsKey(variable))
@@ -190,7 +190,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             result = new Interval(constTreeNode.Value, constTreeNode.Value);
             break;
           }
-        //Elementary arithmetic rules
         case OpCodes.Add: {
             result = Evaluate(instructions, ref instructionCounter, nodeIntervals, variableIntervals);
             for (var i = 1; i < currentInstr.nArguments; i++) {
@@ -292,7 +291,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             result = Evaluate(instructions, ref instructionCounter, nodeIntervals, variableIntervals);
             for (var i = 1; i < currentInstr.nArguments; i++) {
               var argumentInterval = Evaluate(instructions, ref instructionCounter, nodeIntervals, variableIntervals);
-              result = Interval.AnalyticalQuotient(result, argumentInterval);
+              result = Interval.AnalyticQuotient(result, argumentInterval);
             }
 
             break;

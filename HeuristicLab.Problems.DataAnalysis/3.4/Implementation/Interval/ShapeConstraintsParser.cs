@@ -75,7 +75,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     private const string variableRegex = @"(['](?<varName>.*)[']|(?<varName>[^\s²³]+))\s*";
     private const string weightRegex = @"\s*(weight:\s*(?<weight>\S*))?";
     public static ShapeConstraint ParseFunctionRangeConstraint(string expr) {
-      if (!expr.StartsWith("f")) throw new ArgumentException($"Invalid function range constraint {expr} (e.g. f in [1..2])", nameof(expr));
+      if (!expr.StartsWith("f")) throw new ArgumentException($"Invalid function range constraint {expr} (e.g. f in [1..2])");
       var start = "f".Length;
       var end = expr.Length;
       var targetConstraint = expr.Substring(start, end - start);
@@ -130,7 +130,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
         } else
           return new ShapeConstraint(interval, weight);
       } else
-        throw new ArgumentException($"The inserted target constraint {expr} is not valid.", nameof(expr));
+        throw new ArgumentException($"The target constraint {expr} is not valid.");
     }
     public static ShapeConstraint ParseDerivationConstraint(string expr) {
       var match = Regex.Match(expr,
@@ -160,9 +160,9 @@ namespace HeuristicLab.Problems.DataAnalysis {
         var denominatorNumDeriv = match.Groups["numDerivations"].Captures[1].Value.Trim();
         if (enumeratorNumDeriv != "" || denominatorNumDeriv != "") {
           if (enumeratorNumDeriv == "" || denominatorNumDeriv == "")
-            throw new ArgumentException($"Number of derivation has to be written on both sides in {expr}.", nameof(expr));
+            throw new ArgumentException($"Number of derivation has to be written on both sides in {expr}.");
           if (enumeratorNumDeriv != denominatorNumDeriv)
-            throw new ArgumentException($"Derivation number is not equal on both sides in {expr}.", nameof(expr));
+            throw new ArgumentException($"Derivation number is not equal on both sides in {expr}.");
         }
 
         var lowerBound = ParseIntervalBounds(match.Groups["lowerBound"].Captures[0].Value);
@@ -192,7 +192,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
         } else
           return new ShapeConstraint(variable, numberOfDerivation, interval, weight);
       } else
-        throw new ArgumentException($"The inserted derivation constraint {expr} is not valid.", nameof(expr));
+        throw new ArgumentException($"The derivation constraint {expr} is not valid.");
     }
 
 
