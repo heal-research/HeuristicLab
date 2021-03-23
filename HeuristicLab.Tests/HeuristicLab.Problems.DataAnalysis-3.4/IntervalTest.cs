@@ -219,9 +219,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
       //Assert.AreEqual(new Interval(aPos.LowerBound/Math.Sqrt(17), aPos.UpperBound/Math.Sqrt(5)), Interval.AnalyticalQuotient(aPos, bNeg));
       //Assert.AreEqual(new Interval(aZero.LowerBound/Math.Sqrt(5), aZero.UpperBound/Math.Sqrt(5)), Interval.AnalyticalQuotient(aZero, bNeg));
       //Assert.AreEqual(new Interval(aNeg.LowerBound/Math.Sqrt(5), aNeg.UpperBound/Math.Sqrt(17)), Interval.AnalyticalQuotient(aNeg, bNeg));
-      Assert.AreEqual(new Interval(double.NegativeInfinity, double.PositiveInfinity), Interval.AnalyticalQuotient(aPos, bZero));
-      Assert.AreEqual(new Interval(double.NegativeInfinity, double.PositiveInfinity), Interval.AnalyticalQuotient(aPos, bPos));
-      Assert.AreEqual(new Interval(double.NegativeInfinity, double.PositiveInfinity), Interval.AnalyticalQuotient(aZero, bNeg));
+      Assert.AreEqual(new Interval(double.NegativeInfinity, double.PositiveInfinity), Interval.AnalyticQuotient(aPos, bZero));
+      Assert.AreEqual(new Interval(double.NegativeInfinity, double.PositiveInfinity), Interval.AnalyticQuotient(aPos, bPos));
+      Assert.AreEqual(new Interval(double.NegativeInfinity, double.PositiveInfinity), Interval.AnalyticQuotient(aZero, bNeg));
     }
 
     [TestMethod]
