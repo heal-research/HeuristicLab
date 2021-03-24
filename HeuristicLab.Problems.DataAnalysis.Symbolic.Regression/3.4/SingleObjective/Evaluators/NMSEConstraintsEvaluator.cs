@@ -131,15 +131,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           estimationLimits.Lower, estimationLimits.Upper);
       } else {
         if (applyLinearScaling) {
-          //Check for interval arithmetic grammar
-          if (!(tree.Root.Grammar is IntervalArithmeticGrammar))
-            throw new ArgumentException($"{ItemName} can only be used with IntervalArithmeticGrammar.");
-
           var rootNode = new ProgramRootSymbol().CreateTreeNode();
           var startNode = new StartSymbol().CreateTreeNode();
           var offset = tree.Root.GetSubtree(0) //Start
                                 .GetSubtree(0); //Offset
           var scaling = offset.GetSubtree(0);
+
+          //Check if tree contains offset and scaling nodes
+          if (!(offset.Symbol is Addition) || !(scaling.Symbol is Multiplication))
+            throw new ArgumentException($"{ItemName} can only be used with IntervalArithmeticGrammar.");
+
           var t = (ISymbolicExpressionTreeNode)scaling.GetSubtree(0).Clone();
           rootNode.AddSubtree(startNode);
           startNode.AddSubtree(t);
