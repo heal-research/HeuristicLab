@@ -529,10 +529,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     }
 
     public async Task AddSolutionAsync(IRegressionSolution solution) {
-      if (!SolutionsCompatible(solutions.Concat(new[] { solution })))
-        throw new ArgumentException("The solution is not compatible with the problem data.");
       if (solutions.Contains(solution))
         return;
+      if (!SolutionsCompatible(solutions.Concat(new[] { solution })))
+        throw new ArgumentException("The solution is not compatible with the problem data.");
 
       solutions.Add(solution);
       RecalculateTrainingLimits(true);
@@ -567,14 +567,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     private static bool SolutionsCompatible(IEnumerable<IRegressionSolution> solutions) {
       var refSolution = solutions.First();
       var refSolVars = refSolution.ProblemData.Dataset.VariableNames;
+      var refFactorVars = refSolVars.Where(refSolution.ProblemData.Dataset.VariableHasType<string>);
+      var distinctVals = refFactorVars.ToDictionary(fv => fv, fv => refSolution.ProblemData.Dataset.GetStringValues(fv).Distinct().ToArray());
       foreach (var solution in solutions.Skip(1)) {
         var variables1 = solution.ProblemData.Dataset.VariableNames;
         if (!variables1.All(refSolVars.Contains))
           return false;
 
         foreach (var factorVar in variables1.Where(solution.ProblemData.Dataset.VariableHasType<string>)) {
-          var distinctVals = refSolution.ProblemData.Dataset.GetStringValues(factorVar).Distinct();
-          if (solution.ProblemData.Dataset.GetStringValues(factorVar).Any(val => !distinctVals.Contains(val))) return false;
+          var refValues = distinctVals[factorVar];
+          if (solution.ProblemData.Dataset.GetStringValues(factorVar).Distinct().Any(val => !refValues.Contains(val))) return false;
         }
       }
       return true;
