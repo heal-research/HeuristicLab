@@ -95,7 +95,7 @@ namespace HeuristicLab.DataPreprocessing {
       if (!context.Data.VariableNames.Contains(targetVariable))
         targetVariable = context.Data.VariableNames.First();
       var inputVariables = GetDoubleInputVariables(targetVariable);
-      var newProblemData = new ClassificationProblemData(ExportedDataset, inputVariables, targetVariable, Transformations) {
+      var newProblemData = new ClassificationProblemData(ExportedDataset, inputVariables, targetVariable, transformations: Transformations) {
         PositiveClass = oldProblemData.PositiveClass
       };
       return newProblemData;

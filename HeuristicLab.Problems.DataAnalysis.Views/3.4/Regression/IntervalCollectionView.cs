@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -94,8 +94,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     }
 
     private void SetColumnNames() {
-      dataGridView.Columns.Add("lowerBound", "Lower Bound");
-      dataGridView.Columns.Add("upperBound", "Upper Bound");
+      dataGridView.Columns.Add("lowerBound", "Lower bound");
+      dataGridView.Columns.Add("upperBound", "Upper bound");
     }
 
     private void dataGridView_CellValueChanged(object sender, DataGridViewCellEventArgs e) {

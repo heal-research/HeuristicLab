@@ -54,8 +54,8 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     public IValueLookupParameter<IntValue> MaximumSymbolicExpressionTreeDepthParameter {
       get { return (IValueLookupParameter<IntValue>)Parameters[MaximumSymbolicExpressionTreeDepthParameterName]; }
     }
-    public IFixedValueParameter<DoubleValue> CrossoverProbabilityParameter {
-      get { return (IFixedValueParameter<DoubleValue>)Parameters[CrossoverProbabilityParameterName]; }
+    public IFixedValueParameter<PercentValue> CrossoverProbabilityParameter {
+      get { return (IFixedValueParameter<PercentValue>)Parameters[CrossoverProbabilityParameterName]; }
     }
     #endregion
     #region Properties
@@ -80,14 +80,20 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       : base() {
       Parameters.Add(new ValueLookupParameter<IntValue>(MaximumSymbolicExpressionTreeLengthParameterName, "The maximal length (number of nodes) of the symbolic expression tree."));
       Parameters.Add(new ValueLookupParameter<IntValue>(MaximumSymbolicExpressionTreeDepthParameterName, "The maximal depth of the symbolic expression tree (a tree with one node has depth = 0)."));
-      Parameters.Add(new ValueLookupParameter<PercentValue>(InternalCrossoverPointProbabilityParameterName, "The probability to select an internal crossover point (instead of a leaf node).", new PercentValue(0.9)));
-      Parameters.Add(new FixedValueParameter<DoubleValue>(CrossoverProbabilityParameterName, "", new DoubleValue(1)));
+      Parameters.Add(new ValueLookupParameter<PercentValue>(InternalCrossoverPointProbabilityParameterName, "The probability to select an internal crossover point (instead of a leaf node).", new PercentValue(0.9, true)));
+      Parameters.Add(new FixedValueParameter<PercentValue>(CrossoverProbabilityParameterName, "The probability that a crossover is performed. Otherwise a copy of the first parent is returned.", new PercentValue(1, true)));
     }
 
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
+      // replace with PercentValue for files which had CrossoverProbability as DoubleValue
+      if (Parameters.ContainsKey(CrossoverProbabilityParameterName) && (Parameters[CrossoverProbabilityParameterName] is IFixedValueParameter<DoubleValue> oldParam)) {
+        var oldValue = oldParam.Value.Value;
+        Parameters.Remove(oldParam);
+        Parameters.Add(new FixedValueParameter<PercentValue>(CrossoverProbabilityParameterName, "The probability that a crossover is performed. Otherwise a copy of the first parent is returned.", new PercentValue(oldValue)));
+      }
       if (!Parameters.ContainsKey(CrossoverProbabilityParameterName)) {
-        Parameters.Add(new FixedValueParameter<DoubleValue>(CrossoverProbabilityParameterName, "", new DoubleValue(1)));
+        Parameters.Add(new FixedValueParameter<PercentValue>(CrossoverProbabilityParameterName, "The probability that a crossover is performed. Otherwise a copy of the first parent is returned.", new PercentValue(1, true)));
       }
     }
 
@@ -105,7 +111,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       ISymbolicExpressionTree parent0, ISymbolicExpressionTree parent1,
       double probability,
       double internalCrossoverPointProbability, int maxTreeLength, int maxTreeDepth) {
-      if ((probability < 1) && (random.NextDouble() >= probability)) return random.NextDouble() < 0.5 ? parent0 : parent1;
+      if ((probability < 1) && (random.NextDouble() >= probability)) return parent0;
       // select a random crossover point in the first parent 
       CutPoint crossoverPoint0;
       SelectCrossoverPoint(random, parent0, internalCrossoverPointProbability, maxTreeLength, maxTreeDepth, out crossoverPoint0);

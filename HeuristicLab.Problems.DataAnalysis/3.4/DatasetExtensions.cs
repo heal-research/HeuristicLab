@@ -95,6 +95,16 @@ namespace HeuristicLab.Problems.DataAnalysis {
       return matrix;
     }
 
+    public static IntervalCollection GetIntervals(this IDataset dataset) {
+      IntervalCollection intervalCollection = new IntervalCollection();
+      foreach (var variable in dataset.DoubleVariables) { // intervals are only possible for double variables
+        var variableInterval = Interval.GetInterval(dataset.GetDoubleValues(variable));
+        intervalCollection.AddInterval(variable, variableInterval);
+      }
+
+      return intervalCollection;
+    }
+
     public static IEnumerable<KeyValuePair<string, IEnumerable<string>>> GetFactorVariableValues(
       this IDataset ds, IEnumerable<string> factorVariables, IEnumerable<int> rows) {
       return from factor in factorVariables

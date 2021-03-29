@@ -38,6 +38,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   [StorableType("98A887E7-73DD-4602-BD6C-2F6B9E6FBBC5")]
   [Creatable(CreatableAttribute.Categories.DataAnalysisRegression, Priority = 600)]
   public sealed class GeneralizedAdditiveModelAlgorithm : FixedDataAnalysisAlgorithm<IRegressionProblem> {
+
     #region ParameterNames
 
     private const string IterationsParameterName = "Iterations";
@@ -45,6 +46,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     private const string SeedParameterName = "Seed";
     private const string SetSeedRandomlyParameterName = "SetSeedRandomly";
     private const string CreateSolutionParameterName = "CreateSolution";
+
     #endregion
 
     #region ParameterProperties
@@ -140,8 +142,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       // init
       var problemData = Problem.ProblemData;
       var ds = problemData.Dataset;
-      var trainRows = problemData.TrainingIndices;
-      var testRows = problemData.TestIndices;
+      var trainRows = problemData.TrainingIndices.ToArray();
+      var testRows = problemData.TestIndices.ToArray();
       var avgY = problemData.TargetVariableTrainingValues.Average();
       var inputVars = problemData.AllowedInputVariables.ToArray();
 
@@ -177,10 +179,10 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       double[] res = problemData.TargetVariableTrainingValues.Select(yi => yi - avgY).ToArray();
       double[] resTest = problemData.TargetVariableTestValues.Select(yi => yi - avgY).ToArray();
 
-      curRMSE.Value = res.StandardDeviation();
-      curRMSETest.Value = resTest.StandardDeviation();
-      rmseRow.Values.Add(res.StandardDeviation()); 
-      rmseRowTest.Values.Add(resTest.StandardDeviation());
+      curRMSE.Value = RMSE(res);
+      curRMSETest.Value = RMSE(resTest);
+      rmseRow.Values.Add(curRMSE.Value);
+      rmseRowTest.Values.Add(curRMSETest.Value);
 
 
       double lambda = Lambda;
@@ -196,15 +198,15 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
           AddInPlace(res, f[inputIdx].GetEstimatedValues(ds, trainRows));
           AddInPlace(resTest, f[inputIdx].GetEstimatedValues(ds, testRows));
 
-          rssTable[inputIdx, 0] = res.Variance();
+          rssTable[inputIdx, 0] = MSE(res);
           f[inputIdx] = RegressSpline(problemData, inputVar, res, lambda);
 
           SubtractInPlace(res, f[inputIdx].GetEstimatedValues(ds, trainRows));
           SubtractInPlace(resTest, f[inputIdx].GetEstimatedValues(ds, testRows));
         }
 
-        curRMSE.Value = res.StandardDeviation(); 
-        curRMSETest.Value = resTest.StandardDeviation();
+        curRMSE.Value = RMSE(res);
+        curRMSETest.Value = RMSE(resTest);
         rmseRow.Values.Add(curRMSE.Value);
         rmseRowTest.Values.Add(curRMSETest.Value);
         iterations.Value = i;
@@ -214,9 +216,20 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       if (CreateSolution) {
         var model = new RegressionEnsembleModel(f.Concat(new[] { new ConstantModel(avgY, problemData.TargetVariable) }));
         model.AverageModelEstimates = false;
-        var solution = model.CreateRegressionSolution((IRegressionProblemData)problemData.Clone());
+        var solution = model.CreateRegressionSolution((IRegressionProblemData)problemData.Clone());        
         Results.Add(new Result("Ensemble solution", solution));
       }
+    }
+
+    public static double MSE(IEnumerable<double> residuals) {
+      var mse  = residuals.Select(r => r * r).Average();
+      return mse;
+    }
+
+    public static double RMSE(IEnumerable<double> residuals) {
+      var mse = MSE(residuals);
+      var rmse = Math.Sqrt(mse);
+      return rmse;
     }
 
     private IRegressionModel RegressSpline(IRegressionProblemData problemData, string inputVar, double[] target, double lambda) {

@@ -148,6 +148,18 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         var f = (ISymbolicExpressionTreeNode)branch.GetSubtree(0).Clone();
         return Product(Product(CreateConstant(3.0), Square(f)), Derive(f, variableName));
       }
+      if (branch.Symbol is Power) {
+        // HL evaluators handle power strangely (exponent is rounded to an integer)
+        // here we only support the case when the exponent is a constant integer 
+        var exponent = branch.GetSubtree(1) as ConstantTreeNode;
+        if (exponent != null && Math.Truncate(exponent.Value) == exponent.Value) {
+          var newPower = (ISymbolicExpressionTreeNode)branch.Clone();
+          var f = (ISymbolicExpressionTreeNode)newPower.GetSubtree(0).Clone();
+          var newExponent = (ConstantTreeNode)newPower.GetSubtree(1);
+          newExponent.Value -= 1;
+          return Product(Product(CreateConstant(exponent.Value), newPower), Derive(f, variableName));
+        } else throw new NotSupportedException("Cannot derive non-integer powers");
+      }
       if (branch.Symbol is Absolute) {
         var f = (ISymbolicExpressionTreeNode)branch.GetSubtree(0).Clone();
         var absf = Abs((ISymbolicExpressionTreeNode)f.Clone());
@@ -262,8 +274,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           !(n.Symbol is SquareRoot) &&
           !(n.Symbol is Cube) &&
           !(n.Symbol is CubeRoot) &&
+          !(n.Symbol is Power) &&
           !(n.Symbol is Absolute) &&
           !(n.Symbol is AnalyticQuotient) &&
+          !(n.Symbol is HyperbolicTangent) &&
           !(n.Symbol is Sine) &&
           !(n.Symbol is Cosine) &&
           !(n.Symbol is Tangent) &&

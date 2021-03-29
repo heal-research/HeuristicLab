@@ -20,7 +20,6 @@
  */
 
 #endregion
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,10 +31,13 @@ using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Parameters;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
-  [StorableType("DE6C1E1E-D7C1-4070-847E-63B68562B10C")]
-  [Item("IntervalInterpreter", "Interpreter for calculation of intervals of symbolic models.")]
-  public sealed class IntervalInterpreter : ParameterizedNamedItem, IStatefulItem {
+  [StorableType("C8539434-6FB0-47D0-9F5A-2CAE5D8B8B4F")]
+  [Item("Interval Arithmetic Bounds Estimator", "Interpreter for calculation of intervals of symbolic models.")]
+  public sealed class IntervalArithBoundsEstimator : ParameterizedNamedItem, IBoundsEstimator {
+    #region Parameters
+
     private const string EvaluatedSolutionsParameterName = "EvaluatedSolutions";
+
     public IFixedValueParameter<IntValue> EvaluatedSolutionsParameter =>
       (IFixedValueParameter<IntValue>)Parameters[EvaluatedSolutionsParameterName];
 
@@ -43,26 +45,30 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       get => EvaluatedSolutionsParameter.Value.Value;
       set => EvaluatedSolutionsParameter.Value.Value = value;
     }
+    #endregion
+
+    #region Constructors
 
     [StorableConstructor]
-    private IntervalInterpreter(StorableConstructorFlag _) : base(_) { }
+    private IntervalArithBoundsEstimator(StorableConstructorFlag _) : base(_) { }
 
-    private IntervalInterpreter(IntervalInterpreter original, Cloner cloner)
-      : base(original, cloner) { }
+    protected IntervalArithBoundsEstimator(IntervalArithBoundsEstimator original, Cloner cloner) : base(original, cloner) { }
 
-    public IntervalInterpreter()
-      : base("IntervalInterpreter", "Interpreter for calculation of intervals of symbolic models.") {
+    public IntervalArithBoundsEstimator() : base("Interval Arithmetic Bounds Estimator",
+      "Estimates the bounds of the model with interval arithmetic") {
       Parameters.Add(new FixedValueParameter<IntValue>(EvaluatedSolutionsParameterName,
-        "A counter for the total number of solutions the interpreter has evaluated", new IntValue(0)));
+        "A counter for the total number of solutions the estimator has evaluated.", new IntValue(0)));
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new IntervalInterpreter(this, cloner);
+      return new IntervalArithBoundsEstimator(this, cloner);
     }
 
-    private readonly object syncRoot = new object();
+    #endregion
 
     #region IStatefulItem Members
+
+    private readonly object syncRoot = new object();
 
     public void InitializeState() {
       EvaluatedSolutions = 0;
@@ -72,78 +78,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
     #endregion
 
-    public Interval GetSymbolicExpressionTreeInterval(
-      ISymbolicExpressionTree tree, IDataset dataset,
-      IEnumerable<int> rows = null) {
-      var variableRanges = DatasetUtil.GetVariableRanges(dataset, rows);
-      return GetSymbolicExpressionTreeInterval(tree, variableRanges);
-    }
-
-    public Interval GetSymbolicExpressionTreeIntervals(
-      ISymbolicExpressionTree tree, IDataset dataset,
-      out IDictionary<ISymbolicExpressionTreeNode, Interval>
-        nodeIntervals, IEnumerable<int> rows = null) {
-      var variableRanges = DatasetUtil.GetVariableRanges(dataset, rows);
-      return GetSymbolicExpressionTreeIntervals(tree, variableRanges, out nodeIntervals);
-    }
-
-    public Interval GetSymbolicExpressionTreeInterval(
-      ISymbolicExpressionTree tree,
-      IReadOnlyDictionary<string, Interval> variableRanges) {
-      lock (syncRoot) {
-        EvaluatedSolutions++;
-      }
-
-      Interval outputInterval;
-
-      var instructionCount = 0;
-      var instructions = PrepareInterpreterState(tree, variableRanges);
-      outputInterval = Evaluate(instructions, ref instructionCount);
-
-      return outputInterval.LowerBound <= outputInterval.UpperBound
-        ? outputInterval
-        : new Interval(outputInterval.UpperBound, outputInterval.LowerBound);
-    }
-
-
-    public Interval GetSymbolicExpressionTreeIntervals(
-      ISymbolicExpressionTree tree,
-      IReadOnlyDictionary<string, Interval> variableRanges,
-      out IDictionary<ISymbolicExpressionTreeNode, Interval>
-        nodeIntervals) {
-      lock (syncRoot) {
-        EvaluatedSolutions++;
-      }
-
-      var intervals = new Dictionary<ISymbolicExpressionTreeNode, Interval>();
-      var instructions = PrepareInterpreterState(tree, variableRanges);
-
-      Interval outputInterval;
-      var instructionCount = 0;
-      outputInterval = Evaluate(instructions, ref instructionCount, intervals);
-
-      nodeIntervals = new Dictionary<ISymbolicExpressionTreeNode, Interval>();
-      foreach (var kvp in intervals) {
-        var interval = kvp.Value;
-        if (interval.IsInfiniteOrUndefined || interval.LowerBound <= interval.UpperBound)
-          nodeIntervals.Add(kvp.Key, interval);
-        else
-          nodeIntervals.Add(kvp.Key, new Interval(interval.UpperBound, interval.LowerBound));
-      }
-
-      // because of numerical errors the bounds might be incorrect
-      if (outputInterval.IsInfiniteOrUndefined || outputInterval.LowerBound <= outputInterval.UpperBound)
-        return outputInterval;
-
-      return new Interval(outputInterval.UpperBound, outputInterval.LowerBound);
-    }
-
+    #region Evaluation
 
     private static Instruction[] PrepareInterpreterState(
       ISymbolicExpressionTree tree,
-      IReadOnlyDictionary<string, Interval> variableRanges) {
+      IDictionary<string, Interval> variableRanges) {
       if (variableRanges == null)
-        throw new ArgumentNullException("No variablew ranges are present!", nameof(variableRanges));
+        throw new ArgumentNullException("No variable ranges are present!", nameof(variableRanges));
 
       // Check if all variables used in the tree are present in the dataset
       foreach (var variable in tree.IterateNodesPrefix().OfType<VariableTreeNode>().Select(n => n.VariableName)
@@ -163,11 +104,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     // Use ref parameter, because the tree will be iterated through recursively from the left-side branch to the right side
     // Update instructionCounter, whenever Evaluate is called
     public static Interval Evaluate(
-    Instruction[] instructions, ref int instructionCounter,
+      Instruction[] instructions, ref int instructionCounter,
       IDictionary<ISymbolicExpressionTreeNode, Interval> nodeIntervals = null,
-      IReadOnlyDictionary<string, Interval> variableIntervals = null) {
+      IDictionary<string, Interval> variableIntervals = null) {
       var currentInstr = instructions[instructionCounter];
-
       instructionCounter++;
       Interval result;
 
@@ -297,7 +237,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             break;
           }
         default:
-          throw new NotSupportedException($"The tree contains the unknown symbol {currentInstr.dynamicNode.Symbol}");
+          throw new NotSupportedException(
+            $"The tree contains the unknown symbol {currentInstr.dynamicNode.Symbol}");
       }
 
       if (!(nodeIntervals == null || nodeIntervals.ContainsKey(currentInstr.dynamicNode)))
@@ -306,8 +247,67 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       return result;
     }
 
+    #endregion
 
-    public static bool IsCompatible(ISymbolicExpressionTree tree) {
+    #region Helpers
+
+    private static IDictionary<string, Interval> GetOccurringVariableRanges(
+      ISymbolicExpressionTree tree, IntervalCollection variableRanges) {
+      var variables = tree.IterateNodesPrefix().OfType<VariableTreeNode>().Select(v => v.VariableName).Distinct()
+                          .ToList();
+
+      return variables.ToDictionary(x => x, x => variableRanges.GetReadonlyDictionary()[x]);
+    }
+
+    #endregion
+  
+    public Interval GetModelBound(ISymbolicExpressionTree tree, IntervalCollection variableRanges) {
+      lock (syncRoot) {
+        EvaluatedSolutions++;
+      }
+
+      var occuringVariableRanges = GetOccurringVariableRanges(tree, variableRanges);
+      var instructions = PrepareInterpreterState(tree, occuringVariableRanges);
+      Interval resultInterval;
+      var instructionCounter = 0;
+      resultInterval = Evaluate(instructions, ref instructionCounter, variableIntervals: occuringVariableRanges);
+
+      // because of numerical errors the bounds might be incorrect
+      if (resultInterval.IsInfiniteOrUndefined || resultInterval.LowerBound <= resultInterval.UpperBound)
+        return resultInterval;
+
+      return new Interval(resultInterval.UpperBound, resultInterval.LowerBound);
+    }
+
+    public IDictionary<ISymbolicExpressionTreeNode, Interval> GetModelNodeBounds(
+      ISymbolicExpressionTree tree, IntervalCollection variableRanges) {
+      throw new NotImplementedException();
+    }
+
+    public double GetConstraintViolation(
+      ISymbolicExpressionTree tree, IntervalCollection variableRanges, ShapeConstraint constraint) {
+      var occuringVariableRanges = GetOccurringVariableRanges(tree, variableRanges);
+      var instructions = PrepareInterpreterState(tree, occuringVariableRanges);
+      var instructionCounter = 0;
+      var modelBound = Evaluate(instructions, ref instructionCounter, variableIntervals: occuringVariableRanges);
+      if (constraint.Interval.Contains(modelBound)) return 0.0;
+
+
+      var error = 0.0;
+
+      if (!constraint.Interval.Contains(modelBound.LowerBound)) {
+        error += Math.Abs(modelBound.LowerBound - constraint.Interval.LowerBound);
+      }
+
+      if (!constraint.Interval.Contains(modelBound.UpperBound)) {
+        error += Math.Abs(modelBound.UpperBound - constraint.Interval.UpperBound);
+      }
+
+      return error;
+    }
+
+
+    public bool IsCompatible(ISymbolicExpressionTree tree) {
       var containsUnknownSymbols = (
         from n in tree.Root.GetSubtree(0).IterateNodesPrefix()
         where
