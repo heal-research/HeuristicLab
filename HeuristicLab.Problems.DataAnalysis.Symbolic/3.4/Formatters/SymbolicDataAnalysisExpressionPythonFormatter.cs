@@ -34,12 +34,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableType("37C1E1DD-437F-414B-AA96-9C6A0F6FEE46")]
   public sealed class SymbolicDataAnalysisExpressionPythonFormatter : NamedItem, ISymbolicExpressionTreeStringFormatter {
 
-    private int VariableCounter { get; set; } = 0;
-    private IDictionary<string, string> VariableMap { get; } = new Dictionary<string, string>();
-    private int MathLibCounter { get; set; } = 0;
-    private int StatisticLibCounter { get; set; } = 0;
-    private int EvaluateIfCounter { get; set; } = 0;
-
     [StorableConstructor]
     private SymbolicDataAnalysisExpressionPythonFormatter(StorableConstructorFlag _) : base(_) { }
     private SymbolicDataAnalysisExpressionPythonFormatter(SymbolicDataAnalysisExpressionPythonFormatter original, Cloner cloner) : base(original, cloner) { }
@@ -53,30 +47,76 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
     public string Format(ISymbolicExpressionTree symbolicExpressionTree) {
       StringBuilder strBuilderModel = new StringBuilder();
+      var header = GenerateHeader(symbolicExpressionTree);
       FormatRecursively(symbolicExpressionTree.Root, strBuilderModel);
-      return $"{GenerateHeader()}{strBuilderModel}";
+      return $"{header}{strBuilderModel}";
     }
 
-    private string GenerateHeader() {
+    public static string FormatTree(ISymbolicExpressionTree symbolicExpressionTree) {
+      var formatter = new SymbolicDataAnalysisExpressionPythonFormatter();
+      return formatter.Format(symbolicExpressionTree);
+    }
+
+    private string GenerateHeader(ISymbolicExpressionTree symbolicExpressionTree) {
       StringBuilder strBuilder = new StringBuilder();
-      GenerateImports(strBuilder);
-      GenerateIfThenElseSource(strBuilder);
-      GenerateModelComment(strBuilder);
-      GenerateModelEvaluationFunction(strBuilder);
+
+      ISet<string> variables = new HashSet<string>();
+      int mathLibCounter = 0;
+      int statisticLibCounter = 0;
+      int evaluateIfCounter = 0;
+
+      // iterate tree and search for necessary imports and variable names
+      foreach (var node in symbolicExpressionTree.IterateNodesPostfix()) {
+        ISymbol symbol = node.Symbol;
+        if (symbol is Average) statisticLibCounter++;
+        else if (symbol is IfThenElse) evaluateIfCounter++;
+        else if (symbol is Cosine) mathLibCounter++;
+        else if (symbol is Exponential) mathLibCounter++;
+        else if (symbol is Logarithm) mathLibCounter++;
+        else if (symbol is Sine) mathLibCounter++;
+        else if (symbol is Tangent) mathLibCounter++;
+        else if (symbol is HyperbolicTangent) mathLibCounter++;
+        else if (symbol is SquareRoot) mathLibCounter++;
+        else if (symbol is Power) mathLibCounter++;
+        else if (symbol is AnalyticQuotient) mathLibCounter++;
+        else if (node is VariableTreeNode) {
+          var varNode = node as VariableTreeNode;
+          var formattedVariable = VariableName2Identifier(varNode.VariableName);
+          variables.Add(formattedVariable);
+        }
+      }
+
+      // generate import section (if necessary)
+      var importSection = GenerateNecessaryImports(mathLibCounter, statisticLibCounter);
+      strBuilder.Append(importSection);
+
+      // generate if-then-else helper construct (if necessary)
+      var ifThenElseSourceSection = GenerateIfThenElseSource(evaluateIfCounter);
+      strBuilder.Append(ifThenElseSourceSection);
+
+      // generate model evaluation function
+      var modelEvaluationFunctionSection = GenerateModelEvaluationFunction(variables);
+      strBuilder.Append(modelEvaluationFunctionSection);
+
       return strBuilder.ToString();
     }
 
-    private void GenerateImports(StringBuilder strBuilder) {
-      if(MathLibCounter > 0 || StatisticLibCounter > 0)
+    private string GenerateNecessaryImports(int mathLibCounter, int statisticLibCounter) {
+      StringBuilder strBuilder = new StringBuilder();
+      if (mathLibCounter > 0 || statisticLibCounter > 0) {
         strBuilder.AppendLine("# imports");
-      if(MathLibCounter > 0)
-        strBuilder.AppendLine("import math");
-      if(StatisticLibCounter > 0)
-        strBuilder.AppendLine("import statistics");
+        if (mathLibCounter > 0)
+          strBuilder.AppendLine("import math");
+        if (statisticLibCounter > 0)
+          strBuilder.AppendLine("import statistics");
+        strBuilder.AppendLine();
+      }
+      return strBuilder.ToString();
     }
 
-    private void GenerateIfThenElseSource(StringBuilder strBuilder) {
-      if(EvaluateIfCounter > 0) {
+    private string GenerateIfThenElseSource(int evaluateIfCounter) {
+      StringBuilder strBuilder = new StringBuilder();
+      if (evaluateIfCounter > 0) {
         strBuilder.AppendLine("# condition helper function");
         strBuilder.AppendLine("def evaluate_if(condition, then_path, else_path): ");
         strBuilder.AppendLine("\tif condition:");
@@ -84,142 +124,90 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         strBuilder.AppendLine("\telse:");
         strBuilder.AppendLine("\t\treturn else_path");
       }
+      return strBuilder.ToString();
     }
 
-    private void GenerateModelComment(StringBuilder strBuilder) {
-      strBuilder.AppendLine("# model");
-      strBuilder.AppendLine("\"\"\"");
-      foreach (var kvp in VariableMap) {
-        strBuilder.AppendLine($"{kvp.Key} = {kvp.Value}");
-      }
-      strBuilder.AppendLine("\"\"\"");
-    }
-
-    private void GenerateModelEvaluationFunction(StringBuilder strBuilder) {
+    private string GenerateModelEvaluationFunction(ISet<string> variables) {
+      StringBuilder strBuilder = new StringBuilder();
       strBuilder.Append("def evaluate(");
-      foreach (var kvp in VariableMap) {
-        strBuilder.Append($"{kvp.Value}");
-        if (kvp.Key != VariableMap.Last().Key)
-          strBuilder.Append(",");
+      var orderedVariables = variables.OrderBy(n => n, new NaturalStringComparer());
+      foreach (var variable in orderedVariables) {
+        strBuilder.Append($"{variable}");
+        if (variable != orderedVariables.Last())
+          strBuilder.Append(", ");
       }
       strBuilder.AppendLine("):");
       strBuilder.Append("\treturn ");
+      return strBuilder.ToString();
     }
 
     private void FormatRecursively(ISymbolicExpressionTreeNode node, StringBuilder strBuilder) {
       ISymbol symbol = node.Symbol;
-      if (symbol is ProgramRootSymbol) {
+      if (symbol is ProgramRootSymbol)
         FormatRecursively(node.GetSubtree(0), strBuilder);
-      } else if (symbol is StartSymbol) {
+      else if (symbol is StartSymbol)
         FormatRecursively(node.GetSubtree(0), strBuilder);
-      } else if (symbol is Addition) {
-        FormatNode(node, strBuilder, infixSymbol: " + ");
-      } else if (symbol is And) {
-        FormatNode(node, strBuilder, infixSymbol: " and ");
-      } else if (symbol is Average) {
-        StatisticLibCounter++;
-        FormatNode(node, strBuilder, prefixSymbol: "statistics.mean", openingSymbol: "([", closingSymbol: "])");
-      } else if (symbol is Cosine) {
-        MathLibCounter++;
-        FormatNode(node, strBuilder, "math.cos");
-      } else if (symbol is Division) {
-        FormatDivision(node, strBuilder);
-      } else if (symbol is Exponential) {
-        MathLibCounter++;
-        FormatNode(node, strBuilder, "math.exp");
-      } else if (symbol is GreaterThan) {
-        FormatNode(node, strBuilder, infixSymbol: " > ");
-      } else if (symbol is IfThenElse) {
-        EvaluateIfCounter++;
-        FormatNode(node, strBuilder, "evaluate_if");
-      } else if (symbol is LessThan) {
-        FormatNode(node, strBuilder, infixSymbol: " < ");
-      } else if (symbol is Logarithm) {
-        MathLibCounter++;
-        FormatNode(node, strBuilder, "math.log");
-      } else if (symbol is Multiplication) {
-        FormatNode(node, strBuilder, infixSymbol: " * ");
-      } else if (symbol is Not) {
-        FormatNode(node, strBuilder, "not");
-      } else if (symbol is Or) {
-        FormatNode(node, strBuilder, infixSymbol: " or ");
-      } else if (symbol is Xor) {
-        FormatNode(node, strBuilder, infixSymbol: " ^ ");
-      } else if (symbol is Sine) {
-        MathLibCounter++;
-        FormatNode(node, strBuilder, "math.sin");
-      } else if (symbol is Subtraction) {
-        FormatSubtraction(node, strBuilder);
-      } else if (symbol is Tangent) {
-        MathLibCounter++;
-        FormatNode(node, strBuilder, "math.tan");
-      } else if (symbol is HyperbolicTangent) {
-        MathLibCounter++;
-        FormatNode(node, strBuilder, "math.tanh");
-      } else if (symbol is Square) {
-        FormatPower(node, strBuilder, "2");
-      } else if (symbol is SquareRoot) {
-        MathLibCounter++;
-        FormatNode(node, strBuilder, "math.sqrt");
-      } else if (symbol is Cube) {
-        FormatPower(node, strBuilder, "3");
-      } else if (symbol is CubeRoot) {
-        FormatNode(node, strBuilder, closingSymbol: " ** (1. / 3))");
-      } else if (symbol is Power) {
-        MathLibCounter++;
-        FormatNode(node, strBuilder, "math.pow");
-      } else if (symbol is Root) {
-        FormatRoot(node, strBuilder);
-      } else if (symbol is Absolute) {
+      else if (symbol is Absolute)
         FormatNode(node, strBuilder, "abs");
-      } else if (symbol is AnalyticQuotient) {
-        MathLibCounter++;
-        strBuilder.Append("(");
-        FormatRecursively(node.GetSubtree(0), strBuilder);
-        strBuilder.Append(" / math.sqrt(1 + math.pow(");
-        FormatRecursively(node.GetSubtree(1), strBuilder);
-        strBuilder.Append(" , 2) ) )");
-      } else {
-        if (node is VariableTreeNode) {
-          FormatVariableTreeNode(node, strBuilder);
-        } else if (node is ConstantTreeNode) {
-          FormatConstantTreeNode(node, strBuilder);
-        } else {
-          throw new NotSupportedException("Formatting of symbol: " + symbol + " not supported for Python symbolic expression tree formatter.");
-        }  
-      }
+      else if (symbol is Addition)
+        FormatNode(node, strBuilder, infixSymbol: " + ");
+      else if (symbol is Subtraction)
+        FormatSubtraction(node, strBuilder);
+      else if (symbol is Multiplication)
+        FormatNode(node, strBuilder, infixSymbol: " * ");
+      else if (symbol is Division)
+        FormatDivision(node, strBuilder);
+      else if (symbol is Average)
+        FormatNode(node, strBuilder, prefixSymbol: "statistics.mean", openingSymbol: "([", closingSymbol: "])");
+      else if (symbol is Sine)
+        FormatNode(node, strBuilder, "math.sin");
+      else if (symbol is Cosine)
+        FormatNode(node, strBuilder, "math.cos");
+      else if (symbol is Tangent)
+        FormatNode(node, strBuilder, "math.tan");
+      else if (symbol is HyperbolicTangent)
+        FormatNode(node, strBuilder, "math.tanh");
+      else if (symbol is Exponential)
+        FormatNode(node, strBuilder, "math.exp");
+      else if (symbol is Logarithm)
+        FormatNode(node, strBuilder, "math.log");
+      else if (symbol is Power)
+        FormatNode(node, strBuilder, "math.pow");
+      else if (symbol is Root)
+        FormatRoot(node, strBuilder);
+      else if (symbol is Square)
+        FormatPower(node, strBuilder, "2");
+      else if (symbol is SquareRoot)
+        FormatNode(node, strBuilder, "math.sqrt");
+      else if (symbol is Cube)
+        FormatPower(node, strBuilder, "3");
+      else if (symbol is CubeRoot)
+        FormatNode(node, strBuilder, closingSymbol: " ** (1. / 3))");
+      else if (symbol is AnalyticQuotient)
+        FormatAnalyticQuotient(node, strBuilder);
+      else if (symbol is And)
+        FormatNode(node, strBuilder, infixSymbol: " and ");
+      else if (symbol is Or)
+        FormatNode(node, strBuilder, infixSymbol: " or ");
+      else if (symbol is Xor)
+        FormatNode(node, strBuilder, infixSymbol: " ^ ");
+      else if (symbol is Not)
+        FormatNode(node, strBuilder, "not");
+      else if (symbol is IfThenElse)
+        FormatNode(node, strBuilder, "evaluate_if");
+      else if (symbol is GreaterThan)
+        FormatNode(node, strBuilder, infixSymbol: " > ");
+      else if (symbol is LessThan)
+        FormatNode(node, strBuilder, infixSymbol: " < ");
+      else if (node is VariableTreeNode)
+        FormatVariableTreeNode(node, strBuilder);
+      else if (node is ConstantTreeNode)
+        FormatConstantTreeNode(node, strBuilder);
+      else
+        throw new NotSupportedException("Formatting of symbol: " + symbol + " not supported for Python symbolic expression tree formatter.");
     }
 
-    private void FormatVariableTreeNode(ISymbolicExpressionTreeNode node, StringBuilder strBuilder) {
-      var varNode = node as VariableTreeNode;
-      string variable;
-      if (!VariableMap.TryGetValue(varNode.VariableName, out variable)) {
-        variable = $"var{VariableCounter++}";
-        VariableMap.Add(varNode.VariableName, variable);
-      }
-      strBuilder.AppendFormat("{0} * {1}", variable, varNode.Weight.ToString("g17", CultureInfo.InvariantCulture));
-    }
-
-    private void FormatConstantTreeNode(ISymbolicExpressionTreeNode node, StringBuilder strBuilder) {
-      var constNode = node as ConstantTreeNode;
-      strBuilder.Append(constNode.Value.ToString("g17", CultureInfo.InvariantCulture));
-    }
-
-    private void FormatPower(ISymbolicExpressionTreeNode node, StringBuilder strBuilder, string exponent) {
-      MathLibCounter++;
-      strBuilder.Append("math.pow(");
-      FormatRecursively(node.GetSubtree(0), strBuilder);
-      strBuilder.Append($", {exponent})");
-    }
-
-    private void FormatRoot(ISymbolicExpressionTreeNode node, StringBuilder strBuilder) {
-      MathLibCounter++;
-      strBuilder.Append("math.pow(");
-      FormatRecursively(node.GetSubtree(0), strBuilder);
-      strBuilder.Append(", 1.0 / (");
-      FormatRecursively(node.GetSubtree(1), strBuilder);
-      strBuilder.Append("))");
-    }
+    private string VariableName2Identifier(string variableName) => variableName.Replace(" ", "_");
 
     private void FormatNode(ISymbolicExpressionTreeNode node, StringBuilder strBuilder, string prefixSymbol = "", string openingSymbol = "(", string closingSymbol = ")", string infixSymbol = ",") {
       strBuilder.Append($"{prefixSymbol}{openingSymbol}");
@@ -231,21 +219,30 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       strBuilder.Append(closingSymbol);
     }
 
-    private void FormatDivision(ISymbolicExpressionTreeNode node, StringBuilder strBuilder) {
-      strBuilder.Append("(");
-      if (node.SubtreeCount == 1) {
-        strBuilder.Append("1.0 / ");
-        FormatRecursively(node.GetSubtree(0), strBuilder);
-      } else {
-        FormatRecursively(node.GetSubtree(0), strBuilder);
-        strBuilder.Append("/ (");
-        for (int i = 1; i < node.SubtreeCount; i++) {
-          if (i > 1) strBuilder.Append(" * ");
-          FormatRecursively(node.GetSubtree(i), strBuilder);
-        }
-        strBuilder.Append(")");
-      }
-      strBuilder.Append(")");
+    private void FormatVariableTreeNode(ISymbolicExpressionTreeNode node, StringBuilder strBuilder) {
+      var varNode = node as VariableTreeNode;
+      var formattedVariable = VariableName2Identifier(varNode.VariableName);
+      var variableWeight = varNode.Weight.ToString("g17", CultureInfo.InvariantCulture);
+      strBuilder.Append($"{formattedVariable} * {variableWeight}");
+    }
+
+    private void FormatConstantTreeNode(ISymbolicExpressionTreeNode node, StringBuilder strBuilder) {
+      var constNode = node as ConstantTreeNode;
+      strBuilder.Append(constNode.Value.ToString("g17", CultureInfo.InvariantCulture));
+    }
+
+    private void FormatPower(ISymbolicExpressionTreeNode node, StringBuilder strBuilder, string exponent) {
+      strBuilder.Append("math.pow(");
+      FormatRecursively(node.GetSubtree(0), strBuilder);
+      strBuilder.Append($", {exponent})");
+    }
+
+    private void FormatRoot(ISymbolicExpressionTreeNode node, StringBuilder strBuilder) {
+      strBuilder.Append("math.pow(");
+      FormatRecursively(node.GetSubtree(0), strBuilder);
+      strBuilder.Append(", 1.0 / (");
+      FormatRecursively(node.GetSubtree(1), strBuilder);
+      strBuilder.Append("))");
     }
 
     private void FormatSubtraction(ISymbolicExpressionTreeNode node, StringBuilder strBuilder) {
@@ -257,6 +254,30 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       //Default case: more than 1 child
       FormatNode(node, strBuilder, infixSymbol: " - ");
     }
-  }
 
+    private void FormatDivision(ISymbolicExpressionTreeNode node, StringBuilder strBuilder) {
+      strBuilder.Append("(");
+      if (node.SubtreeCount == 1) {
+        strBuilder.Append("1.0 / ");
+        FormatRecursively(node.GetSubtree(0), strBuilder);
+      } else {
+        FormatRecursively(node.GetSubtree(0), strBuilder);
+        strBuilder.Append(" / (");
+        for (int i = 1; i < node.SubtreeCount; i++) {
+          if (i > 1) strBuilder.Append(" * ");
+          FormatRecursively(node.GetSubtree(i), strBuilder);
+        }
+        strBuilder.Append(")");
+      }
+      strBuilder.Append(")");
+    }
+
+    private void FormatAnalyticQuotient(ISymbolicExpressionTreeNode node, StringBuilder strBuilder) {
+      strBuilder.Append("(");
+      FormatRecursively(node.GetSubtree(0), strBuilder);
+      strBuilder.Append(" / math.sqrt(1 + math.pow(");
+      FormatRecursively(node.GetSubtree(1), strBuilder);
+      strBuilder.Append(" , 2) ) )");
+    }
+  }
 }
