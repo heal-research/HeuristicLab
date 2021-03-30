@@ -39,6 +39,7 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
 
       CheckBox checkBox = new CheckBox();
       checkBox.Checked = true;
+      checkBox.Margin = new Padding(0);
 
       checkBox.CheckStateChanged += (o, args) => {
         if (checkBox.Checked)

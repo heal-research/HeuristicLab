@@ -45,8 +45,8 @@
       // 
       this.textBoxName.Dock = System.Windows.Forms.DockStyle.Fill;
       this.errorProvider.SetIconAlignment(this.textBoxName, System.Windows.Forms.ErrorIconAlignment.MiddleLeft);
-      this.textBoxName.Location = new System.Drawing.Point(100, 2);
-      this.textBoxName.Margin = new System.Windows.Forms.Padding(0, 2, 0, 0);
+      this.textBoxName.Location = new System.Drawing.Point(100, 0);
+      this.textBoxName.Margin = new System.Windows.Forms.Padding(0);
       this.textBoxName.Name = "textBoxName";
       this.textBoxName.Size = new System.Drawing.Size(394, 20);
       this.textBoxName.TabIndex = 10;
@@ -61,9 +61,11 @@
       this.tableLayoutPanel1.Location = new System.Drawing.Point(3, 3);
       this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(0);
       this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-      this.tableLayoutPanel1.RowCount = 2;
-      this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 50F));
+      this.tableLayoutPanel1.RowCount = 3;
+      this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 44F));
+      this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 6F));
       this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+      this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
       this.tableLayoutPanel1.Size = new System.Drawing.Size(494, 594);
       this.tableLayoutPanel1.TabIndex = 16;
       // 
@@ -84,14 +86,14 @@
       this.tableLayoutPanel5.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
       this.tableLayoutPanel5.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
       this.tableLayoutPanel5.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-      this.tableLayoutPanel5.Size = new System.Drawing.Size(494, 50);
+      this.tableLayoutPanel5.Size = new System.Drawing.Size(494, 44);
       this.tableLayoutPanel5.TabIndex = 17;
       // 
       // textBoxDescription
       // 
       this.textBoxDescription.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.textBoxDescription.Location = new System.Drawing.Point(100, 27);
-      this.textBoxDescription.Margin = new System.Windows.Forms.Padding(0, 2, 0, 0);
+      this.textBoxDescription.Location = new System.Drawing.Point(100, 23);
+      this.textBoxDescription.Margin = new System.Windows.Forms.Padding(0);
       this.textBoxDescription.Name = "textBoxDescription";
       this.textBoxDescription.Size = new System.Drawing.Size(394, 20);
       this.textBoxDescription.TabIndex = 14;
@@ -103,7 +105,7 @@
       this.label1.Location = new System.Drawing.Point(0, 0);
       this.label1.Margin = new System.Windows.Forms.Padding(0);
       this.label1.Name = "label1";
-      this.label1.Size = new System.Drawing.Size(100, 25);
+      this.label1.Size = new System.Drawing.Size(100, 23);
       this.label1.TabIndex = 9;
       this.label1.Text = "Name";
       this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -112,10 +114,10 @@
       // 
       this.labelDescription.AutoSize = true;
       this.labelDescription.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.labelDescription.Location = new System.Drawing.Point(0, 25);
+      this.labelDescription.Location = new System.Drawing.Point(0, 23);
       this.labelDescription.Margin = new System.Windows.Forms.Padding(0);
       this.labelDescription.Name = "labelDescription";
-      this.labelDescription.Size = new System.Drawing.Size(100, 25);
+      this.labelDescription.Size = new System.Drawing.Size(100, 24);
       this.labelDescription.TabIndex = 13;
       this.labelDescription.Text = "Description";
       this.labelDescription.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;

@@ -45,7 +45,8 @@
       this.groupBox2.Location = new System.Drawing.Point(0, 0);
       this.groupBox2.Margin = new System.Windows.Forms.Padding(0);
       this.groupBox2.Name = "groupBox2";
-      this.groupBox2.Size = new System.Drawing.Size(526, 63);
+      this.groupBox2.Padding = new System.Windows.Forms.Padding(6);
+      this.groupBox2.Size = new System.Drawing.Size(526, 69);
       this.groupBox2.TabIndex = 19;
       this.groupBox2.TabStop = false;
       this.groupBox2.Text = "Range";
@@ -53,32 +54,31 @@
       // tableLayoutPanel2
       // 
       this.tableLayoutPanel2.ColumnCount = 2;
-      this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 100F));
+      this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 93F));
       this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
       this.tableLayoutPanel2.Controls.Add(this.textBoxTo, 1, 1);
       this.tableLayoutPanel2.Controls.Add(this.textBoxFrom, 1, 0);
       this.tableLayoutPanel2.Controls.Add(this.checkBoxFrom, 0, 0);
       this.tableLayoutPanel2.Controls.Add(this.checkBoxTo, 0, 1);
       this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.tableLayoutPanel2.Location = new System.Drawing.Point(3, 16);
+      this.tableLayoutPanel2.Location = new System.Drawing.Point(6, 19);
       this.tableLayoutPanel2.Margin = new System.Windows.Forms.Padding(0);
       this.tableLayoutPanel2.Name = "tableLayoutPanel2";
       this.tableLayoutPanel2.RowCount = 2;
       this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
       this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-      this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-      this.tableLayoutPanel2.Size = new System.Drawing.Size(520, 44);
+      this.tableLayoutPanel2.Size = new System.Drawing.Size(514, 44);
       this.tableLayoutPanel2.TabIndex = 22;
       // 
       // textBoxTo
       // 
       this.textBoxTo.Dock = System.Windows.Forms.DockStyle.Fill;
       this.errorProvider.SetIconAlignment(this.textBoxTo, System.Windows.Forms.ErrorIconAlignment.MiddleLeft);
-      this.textBoxTo.Location = new System.Drawing.Point(100, 22);
+      this.textBoxTo.Location = new System.Drawing.Point(93, 22);
       this.textBoxTo.Margin = new System.Windows.Forms.Padding(0);
       this.textBoxTo.Name = "textBoxTo";
       this.textBoxTo.ReadOnly = true;
-      this.textBoxTo.Size = new System.Drawing.Size(420, 20);
+      this.textBoxTo.Size = new System.Drawing.Size(421, 20);
       this.textBoxTo.TabIndex = 6;
       this.textBoxTo.Validating += new System.ComponentModel.CancelEventHandler(this.textBoxTo_Validating);
       // 
@@ -86,11 +86,11 @@
       // 
       this.textBoxFrom.Dock = System.Windows.Forms.DockStyle.Fill;
       this.errorProvider.SetIconAlignment(this.textBoxFrom, System.Windows.Forms.ErrorIconAlignment.MiddleLeft);
-      this.textBoxFrom.Location = new System.Drawing.Point(100, 0);
+      this.textBoxFrom.Location = new System.Drawing.Point(93, 0);
       this.textBoxFrom.Margin = new System.Windows.Forms.Padding(0);
       this.textBoxFrom.Name = "textBoxFrom";
       this.textBoxFrom.ReadOnly = true;
-      this.textBoxFrom.Size = new System.Drawing.Size(420, 20);
+      this.textBoxFrom.Size = new System.Drawing.Size(421, 20);
       this.textBoxFrom.TabIndex = 2;
       this.textBoxFrom.Validating += new System.ComponentModel.CancelEventHandler(this.textBoxFrom_Validating);
       // 
@@ -101,7 +101,7 @@
       this.checkBoxFrom.Location = new System.Drawing.Point(0, 0);
       this.checkBoxFrom.Margin = new System.Windows.Forms.Padding(0);
       this.checkBoxFrom.Name = "checkBoxFrom";
-      this.checkBoxFrom.Size = new System.Drawing.Size(100, 22);
+      this.checkBoxFrom.Size = new System.Drawing.Size(93, 22);
       this.checkBoxFrom.TabIndex = 4;
       this.checkBoxFrom.Text = "From:";
       this.checkBoxFrom.UseVisualStyleBackColor = true;
@@ -113,7 +113,7 @@
       this.checkBoxTo.Location = new System.Drawing.Point(0, 22);
       this.checkBoxTo.Margin = new System.Windows.Forms.Padding(0);
       this.checkBoxTo.Name = "checkBoxTo";
-      this.checkBoxTo.Size = new System.Drawing.Size(100, 22);
+      this.checkBoxTo.Size = new System.Drawing.Size(93, 22);
       this.checkBoxTo.TabIndex = 7;
       this.checkBoxTo.Text = "To:";
       this.checkBoxTo.UseVisualStyleBackColor = true;
@@ -132,9 +132,9 @@
       this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
       this.tableLayoutPanel1.Name = "tableLayoutPanel1";
       this.tableLayoutPanel1.RowCount = 2;
-      this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 63F));
+      this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 69F));
       this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-      this.tableLayoutPanel1.Size = new System.Drawing.Size(526, 63);
+      this.tableLayoutPanel1.Size = new System.Drawing.Size(526, 69);
       this.tableLayoutPanel1.TabIndex = 23;
       // 
       // NumericRangeControl
@@ -143,7 +143,7 @@
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.Controls.Add(this.tableLayoutPanel1);
       this.Name = "NumericRangeControl";
-      this.Size = new System.Drawing.Size(526, 63);
+      this.Size = new System.Drawing.Size(526, 69);
       this.groupBox2.ResumeLayout(false);
       this.tableLayoutPanel2.ResumeLayout(false);
       this.tableLayoutPanel2.PerformLayout();

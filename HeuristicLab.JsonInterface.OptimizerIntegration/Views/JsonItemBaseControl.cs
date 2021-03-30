@@ -14,7 +14,7 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
       VM = vm;
       if (control != null) {
         control.Margin = new Padding() { All = 0 };
-        tableLayoutPanel1.Controls.Add(control, 0, 1);
+        tableLayoutPanel1.Controls.Add(control, 0, 2);
         control.Dock = DockStyle.Fill;
       }
       textBoxName.DataBindings.Add("Text", VM, nameof(IJsonItemVM.Name));
