@@ -42,7 +42,7 @@
       this.tableOptions.Name = "tableOptions";
       this.tableOptions.RowCount = 1;
       this.tableOptions.RowStyles.Add(new System.Windows.Forms.RowStyle());
-      this.tableOptions.Size = new System.Drawing.Size(494, 181);
+      this.tableOptions.Size = new System.Drawing.Size(491, 181);
       this.tableOptions.TabIndex = 13;
       // 
       // groupBox1
@@ -52,6 +52,7 @@
       this.groupBox1.Location = new System.Drawing.Point(0, 0);
       this.groupBox1.Margin = new System.Windows.Forms.Padding(0);
       this.groupBox1.Name = "groupBox1";
+      this.groupBox1.Padding = new System.Windows.Forms.Padding(3, 3, 6, 3);
       this.groupBox1.Size = new System.Drawing.Size(500, 200);
       this.groupBox1.TabIndex = 0;
       this.groupBox1.TabStop = false;

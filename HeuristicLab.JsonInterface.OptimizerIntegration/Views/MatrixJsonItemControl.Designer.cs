@@ -27,8 +27,8 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
       this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
       this.groupBox2 = new System.Windows.Forms.GroupBox();
       this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
-      this.checkBoxColumnsResizable = new System.Windows.Forms.CheckBox();
       this.checkBoxRowsResizable = new System.Windows.Forms.CheckBox();
+      this.checkBoxColumnsResizable = new System.Windows.Forms.CheckBox();
       this.tableLayoutPanel1.SuspendLayout();
       this.groupBox2.SuspendLayout();
       this.tableLayoutPanel2.SuspendLayout();
@@ -45,7 +45,7 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
       this.tableLayoutPanel1.RowCount = 2;
       this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 63F));
       this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-      this.tableLayoutPanel1.Size = new System.Drawing.Size(526, 63);
+      this.tableLayoutPanel1.Size = new System.Drawing.Size(526, 69);
       this.tableLayoutPanel1.TabIndex = 24;
       // 
       // groupBox2
@@ -55,6 +55,7 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
       this.groupBox2.Location = new System.Drawing.Point(0, 0);
       this.groupBox2.Margin = new System.Windows.Forms.Padding(0);
       this.groupBox2.Name = "groupBox2";
+      this.groupBox2.Padding = new System.Windows.Forms.Padding(6);
       this.groupBox2.Size = new System.Drawing.Size(526, 63);
       this.groupBox2.TabIndex = 19;
       this.groupBox2.TabStop = false;
@@ -68,26 +69,14 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
       this.tableLayoutPanel2.Controls.Add(this.checkBoxRowsResizable, 0, 0);
       this.tableLayoutPanel2.Controls.Add(this.checkBoxColumnsResizable, 0, 1);
       this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.tableLayoutPanel2.Location = new System.Drawing.Point(3, 16);
+      this.tableLayoutPanel2.Location = new System.Drawing.Point(6, 19);
       this.tableLayoutPanel2.Margin = new System.Windows.Forms.Padding(0);
       this.tableLayoutPanel2.Name = "tableLayoutPanel2";
       this.tableLayoutPanel2.RowCount = 2;
       this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
       this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-      this.tableLayoutPanel2.Size = new System.Drawing.Size(520, 44);
+      this.tableLayoutPanel2.Size = new System.Drawing.Size(514, 38);
       this.tableLayoutPanel2.TabIndex = 22;
-      // 
-      // checkBoxColumnsResizable
-      // 
-      this.checkBoxColumnsResizable.AutoSize = true;
-      this.checkBoxColumnsResizable.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.checkBoxColumnsResizable.Location = new System.Drawing.Point(0, 22);
-      this.checkBoxColumnsResizable.Margin = new System.Windows.Forms.Padding(0);
-      this.checkBoxColumnsResizable.Name = "checkBoxColumnsResizable";
-      this.checkBoxColumnsResizable.Size = new System.Drawing.Size(520, 22);
-      this.checkBoxColumnsResizable.TabIndex = 7;
-      this.checkBoxColumnsResizable.Text = "Columns Resizable";
-      this.checkBoxColumnsResizable.UseVisualStyleBackColor = true;
       // 
       // checkBoxRowsResizable
       // 
@@ -96,10 +85,22 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
       this.checkBoxRowsResizable.Location = new System.Drawing.Point(0, 0);
       this.checkBoxRowsResizable.Margin = new System.Windows.Forms.Padding(0);
       this.checkBoxRowsResizable.Name = "checkBoxRowsResizable";
-      this.checkBoxRowsResizable.Size = new System.Drawing.Size(520, 22);
+      this.checkBoxRowsResizable.Size = new System.Drawing.Size(514, 19);
       this.checkBoxRowsResizable.TabIndex = 4;
       this.checkBoxRowsResizable.Text = "Rows Resizable";
       this.checkBoxRowsResizable.UseVisualStyleBackColor = true;
+      // 
+      // checkBoxColumnsResizable
+      // 
+      this.checkBoxColumnsResizable.AutoSize = true;
+      this.checkBoxColumnsResizable.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.checkBoxColumnsResizable.Location = new System.Drawing.Point(0, 19);
+      this.checkBoxColumnsResizable.Margin = new System.Windows.Forms.Padding(0);
+      this.checkBoxColumnsResizable.Name = "checkBoxColumnsResizable";
+      this.checkBoxColumnsResizable.Size = new System.Drawing.Size(514, 19);
+      this.checkBoxColumnsResizable.TabIndex = 7;
+      this.checkBoxColumnsResizable.Text = "Columns Resizable";
+      this.checkBoxColumnsResizable.UseVisualStyleBackColor = true;
       // 
       // MatrixJsonItemControl
       // 
@@ -107,7 +108,7 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.Controls.Add(this.tableLayoutPanel1);
       this.Name = "MatrixJsonItemControl";
-      this.Size = new System.Drawing.Size(526, 63);
+      this.Size = new System.Drawing.Size(526, 69);
       this.tableLayoutPanel1.ResumeLayout(false);
       this.groupBox2.ResumeLayout(false);
       this.tableLayoutPanel2.ResumeLayout(false);

@@ -101,10 +101,10 @@
     <Compile Include="JsonItems\UnsupportedJsonItem.cs" />
     <Compile Include="JsonItems\ValueJsonItem.cs" />
     <Compile Include="JsonItems\ValueLookupJsonItem.cs" />
-    <Compile Include="ResultFormatter\MatlabResultFormatter.cs" />
-    <Compile Include="ResultFormatter\ResultFormatter.cs" />
-    <Compile Include="ResultFormatter\StringResultFormatter.cs" />
-    <Compile Include="ResultFormatter\SymbolicRegressionSolutionFormatterBase.cs" />
+    <Compile Include="ResultFormatters\MatlabResultFormatter.cs" />
+    <Compile Include="ResultFormatters\ResultFormatter.cs" />
+    <Compile Include="ResultFormatters\StringResultFormatter.cs" />
+    <Compile Include="ResultFormatters\SymbolicRegressionSolutionFormatterBase.cs" />
     <Compile Include="SingleLineArrayJsonWriter.cs" />
     <Compile Include="JsonTemplateGenerator.cs" />
     <Compile Include="JsonTemplateInstantiator.cs" />

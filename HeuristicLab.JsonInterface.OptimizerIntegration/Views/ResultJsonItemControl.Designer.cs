@@ -38,7 +38,8 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
       this.groupBox1.Location = new System.Drawing.Point(0, 0);
       this.groupBox1.Margin = new System.Windows.Forms.Padding(0);
       this.groupBox1.Name = "groupBox1";
-      this.groupBox1.Size = new System.Drawing.Size(526, 41);
+      this.groupBox1.Padding = new System.Windows.Forms.Padding(6);
+      this.groupBox1.Size = new System.Drawing.Size(526, 47);
       this.groupBox1.TabIndex = 0;
       this.groupBox1.TabStop = false;
       this.groupBox1.Text = "Formatter";
@@ -48,9 +49,9 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
       this.comboBoxFormatter.Dock = System.Windows.Forms.DockStyle.Fill;
       this.comboBoxFormatter.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this.comboBoxFormatter.FormattingEnabled = true;
-      this.comboBoxFormatter.Location = new System.Drawing.Point(3, 16);
+      this.comboBoxFormatter.Location = new System.Drawing.Point(6, 19);
       this.comboBoxFormatter.Name = "comboBoxFormatter";
-      this.comboBoxFormatter.Size = new System.Drawing.Size(520, 21);
+      this.comboBoxFormatter.Size = new System.Drawing.Size(514, 21);
       this.comboBoxFormatter.TabIndex = 0;
       // 
       // tableLayoutPanel1
@@ -62,9 +63,9 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
       this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
       this.tableLayoutPanel1.Name = "tableLayoutPanel1";
       this.tableLayoutPanel1.RowCount = 2;
-      this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 41F));
+      this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 47F));
       this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-      this.tableLayoutPanel1.Size = new System.Drawing.Size(526, 41);
+      this.tableLayoutPanel1.Size = new System.Drawing.Size(526, 47);
       this.tableLayoutPanel1.TabIndex = 1;
       // 
       // ResultJsonItemControl
@@ -73,7 +74,7 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.Controls.Add(this.tableLayoutPanel1);
       this.Name = "ResultJsonItemControl";
-      this.Size = new System.Drawing.Size(526, 41);
+      this.Size = new System.Drawing.Size(526, 47);
       this.groupBox1.ResumeLayout(false);
       this.tableLayoutPanel1.ResumeLayout(false);
       this.ResumeLayout(false);
