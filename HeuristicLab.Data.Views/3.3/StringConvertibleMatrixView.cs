@@ -297,10 +297,13 @@ namespace HeuristicLab.Data.Views {
     }
 
     protected virtual void dataGridView_KeyDown(object sender, KeyEventArgs e) {
-      if (!ReadOnly && e.Control && e.KeyCode == Keys.V)
+      if (!ReadOnly && e.Control && e.KeyCode == Keys.V) {
         PasteValuesToDataGridView();
-      else if (e.Control && e.KeyCode == Keys.C)
+        e.Handled = true;
+      } else if (e.Control && e.KeyCode == Keys.C) {
         CopyValuesFromDataGridView();
+        e.Handled = true;
+      }
     }
 
     private void CopyValuesFromDataGridView() {
