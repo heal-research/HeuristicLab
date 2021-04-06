@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
-VisualStudioVersion = 16.0.29009.5
+VisualStudioVersion = 16.0.30907.101
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{96396439-A764-4022-A8D2-BE021449B8D1}"
 	ProjectSection(SolutionItems) = preProject
@@ -471,7 +471,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.ExactOptimizat
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Algorithms.DataAnalysis.DecisionTrees-3.4", "HeuristicLab.Algorithms.DataAnalysis.DecisionTrees\3.4\HeuristicLab.Algorithms.DataAnalysis.DecisionTrees-3.4.csproj", "{541A53F3-E6A7-402F-91BB-D76041CDD9FD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Heuristiclab.ConfigStarter", "Heuristiclab.ConfigStarter\Heuristiclab.ConfigStarter.csproj", "{E0FB3F94-8A4D-4F37-8D8F-E757B1E6E99A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Algorithms.MultiObjectiveLocalSearch", "HeuristicLab.Algorithms.MultiObjectiveLocalSearch\3.3\HeuristicLab.Algorithms.MultiObjectiveLocalSearch.csproj", "{4CCDD23A-9FA3-4B36-9469-87D67E99225F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.JsonInterface", "HeuristicLab.JsonInterface\HeuristicLab.JsonInterface.csproj", "{0E3AAB5E-F152-44E0-A054-4D9A83ECEE08}"
 EndProject
@@ -2297,18 +2297,18 @@ Global
 		{541A53F3-E6A7-402F-91BB-D76041CDD9FD}.Release|x64.Build.0 = Release|Any CPU
 		{541A53F3-E6A7-402F-91BB-D76041CDD9FD}.Release|x86.ActiveCfg = Release|Any CPU
 		{541A53F3-E6A7-402F-91BB-D76041CDD9FD}.Release|x86.Build.0 = Release|Any CPU
-		{E0FB3F94-8A4D-4F37-8D8F-E757B1E6E99A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E0FB3F94-8A4D-4F37-8D8F-E757B1E6E99A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E0FB3F94-8A4D-4F37-8D8F-E757B1E6E99A}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{E0FB3F94-8A4D-4F37-8D8F-E757B1E6E99A}.Debug|x64.Build.0 = Debug|Any CPU
-		{E0FB3F94-8A4D-4F37-8D8F-E757B1E6E99A}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{E0FB3F94-8A4D-4F37-8D8F-E757B1E6E99A}.Debug|x86.Build.0 = Debug|Any CPU
-		{E0FB3F94-8A4D-4F37-8D8F-E757B1E6E99A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E0FB3F94-8A4D-4F37-8D8F-E757B1E6E99A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E0FB3F94-8A4D-4F37-8D8F-E757B1E6E99A}.Release|x64.ActiveCfg = Release|Any CPU
-		{E0FB3F94-8A4D-4F37-8D8F-E757B1E6E99A}.Release|x64.Build.0 = Release|Any CPU
-		{E0FB3F94-8A4D-4F37-8D8F-E757B1E6E99A}.Release|x86.ActiveCfg = Release|Any CPU
-		{E0FB3F94-8A4D-4F37-8D8F-E757B1E6E99A}.Release|x86.Build.0 = Release|Any CPU
+		{4CCDD23A-9FA3-4B36-9469-87D67E99225F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4CCDD23A-9FA3-4B36-9469-87D67E99225F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4CCDD23A-9FA3-4B36-9469-87D67E99225F}.Debug|x64.ActiveCfg = Debug|x64
+		{4CCDD23A-9FA3-4B36-9469-87D67E99225F}.Debug|x64.Build.0 = Debug|x64
+		{4CCDD23A-9FA3-4B36-9469-87D67E99225F}.Debug|x86.ActiveCfg = Debug|x86
+		{4CCDD23A-9FA3-4B36-9469-87D67E99225F}.Debug|x86.Build.0 = Debug|x86
+		{4CCDD23A-9FA3-4B36-9469-87D67E99225F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4CCDD23A-9FA3-4B36-9469-87D67E99225F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4CCDD23A-9FA3-4B36-9469-87D67E99225F}.Release|x64.ActiveCfg = Release|x64
+		{4CCDD23A-9FA3-4B36-9469-87D67E99225F}.Release|x64.Build.0 = Release|x64
+		{4CCDD23A-9FA3-4B36-9469-87D67E99225F}.Release|x86.ActiveCfg = Release|x86
+		{4CCDD23A-9FA3-4B36-9469-87D67E99225F}.Release|x86.Build.0 = Release|x86
 		{0E3AAB5E-F152-44E0-A054-4D9A83ECEE08}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{0E3AAB5E-F152-44E0-A054-4D9A83ECEE08}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0E3AAB5E-F152-44E0-A054-4D9A83ECEE08}.Debug|x64.ActiveCfg = Debug|Any CPU

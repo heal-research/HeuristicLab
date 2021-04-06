@@ -34,22 +34,25 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     #region parameters for recalculation of the model
     [Storable]
-    private int seed;
+    private readonly int seed;
     [Storable]
-    private IDataAnalysisProblemData originalTrainingData;
+    private readonly IDataAnalysisProblemData originalTrainingData;
     [Storable]
-    private double[] classValues;
+    private readonly double[] classValues;
     [Storable]
-    private int nTrees;
+    private readonly int nTrees;
     [Storable]
-    private double r;
+    private readonly double r;
     [Storable]
-    private double m;
+    private readonly double m;
     #endregion
+
 
     // don't store the actual model!
     // the actual model is only recalculated when necessary
+    private IRandomForestModel fullModel = null;
     private readonly Lazy<IRandomForestModel> actualModel;
+
     private IRandomForestModel ActualModel {
       get { return actualModel.Value; }
     }
@@ -73,25 +76,22 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       this.r = r;
       this.m = m;
 
-      actualModel = new Lazy<IRandomForestModel>(() => RecalculateModel());
+      actualModel = CreateLazyInitFunc();
     }
 
-    // wrap an actual model in a surrograte
+    // wrap an actual model in a surrogate
     public RandomForestModelSurrogate(IRandomForestModel model, string targetVariable, IDataAnalysisProblemData originalTrainingData,
-      int seed, int nTrees, double r, double m, double[] classValues = null) : this(targetVariable, originalTrainingData, seed, nTrees, r, m, classValues) {
-      actualModel = new Lazy<IRandomForestModel>(() => model);
+      int seed, int nTrees, double r, double m, double[] classValues = null)
+      : this(targetVariable, originalTrainingData, seed, nTrees, r, m, classValues) {
+      fullModel = model;
     }
 
     [StorableConstructor]
     private RandomForestModelSurrogate(StorableConstructorFlag _) : base(_) {
-      actualModel = new Lazy<IRandomForestModel>(() => RecalculateModel());
+      actualModel = CreateLazyInitFunc();
     }
 
     private RandomForestModelSurrogate(RandomForestModelSurrogate original, Cloner cloner) : base(original, cloner) {
-      IRandomForestModel clonedModel = null;
-      if (original.actualModel.IsValueCreated) clonedModel = cloner.Clone(original.ActualModel);
-      actualModel = new Lazy<IRandomForestModel>(CreateLazyInitFunc(clonedModel)); // only capture clonedModel in the closure
-
       // clone data which is necessary to rebuild the model
       this.originalTrainingData = cloner.Clone(original.originalTrainingData);
       this.seed = original.seed;
@@ -99,16 +99,21 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       this.nTrees = original.nTrees;
       this.r = original.r;
       this.m = original.m;
-    }
 
-    private Func<IRandomForestModel> CreateLazyInitFunc(IRandomForestModel clonedModel) {
-      return () => {
-        return clonedModel ?? RecalculateModel();
-      };
+      // clone full model if it has already been created
+      if (original.fullModel != null) this.fullModel = cloner.Clone(original.fullModel);
+      actualModel = CreateLazyInitFunc();
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new RandomForestModelSurrogate(this, cloner);
+    }
+
+    private Lazy<IRandomForestModel> CreateLazyInitFunc() {
+      return new Lazy<IRandomForestModel>(() => {
+        if (fullModel == null) fullModel = RecalculateModel();
+        return fullModel;
+      });
     }
 
     private IRandomForestModel RecalculateModel() {
@@ -127,6 +132,10 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
                                               out relClassError, out oobRelClassError);
       }
       return randomForestModel;
+    }
+
+    public override bool IsProblemDataCompatible(IDataAnalysisProblemData problemData, out string errorMessage) {
+      return ActualModel.IsProblemDataCompatible(problemData, out errorMessage);
     }
 
     //RegressionModel methods

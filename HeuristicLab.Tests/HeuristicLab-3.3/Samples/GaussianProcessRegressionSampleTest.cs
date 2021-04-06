@@ -67,8 +67,8 @@ namespace HeuristicLab.Tests {
       gpr.Description = "A Gaussian process regression algorithm which solves the spatial co-evolution benchmark problem";
       gpr.Problem = regProblem;
 
-      gpr.CovarianceFunction = new CovarianceSquaredExponentialIso();
-      gpr.MeanFunction = new MeanConst();
+      gpr.CovarianceFunction = gpr.CovarianceFunctionParameter.ValidValues.OfType<CovarianceSquaredExponentialIso>().First();
+      gpr.MeanFunction = gpr.MeanFunctionParameter.ValidValues.OfType<MeanConst>().First();
       gpr.MinimizationIterations = 20;
       gpr.Seed = 0;
       gpr.SetSeedRandomly = true;

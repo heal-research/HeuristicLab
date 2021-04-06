@@ -19,27 +19,24 @@
  */
 #endregion
 
-using System;
 using System.Windows.Forms;
-using HeuristicLab.Common;
 using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Core.Views {
   public partial class NestingLevelErrorControl : UserControl {
-    private Func<IContent> Content { get; set; }
-    private Type ViewType { get; set; }
-
-    public NestingLevelErrorControl(Func<IContent> content, Type viewType)
-      : base() {
+    public NestingLevelErrorControl() : base() {
       InitializeComponent();
-      Content = content;
-      ViewType = viewType;
     }
 
+    private IContentView SurroundingView => (IContentView)Parent;
+
     private void showButton_Click(object sender, System.EventArgs e) {
-      if (Content != null && ViewType != null) {
-        MainFormManager.MainForm.ShowContent(Content(), ViewType);
-      }
+      if (SurroundingView == null) return;
+      if (SurroundingView.Content == null) return;
+
+      var view = MainFormManager.MainForm.ShowContent(SurroundingView.Content, SurroundingView.GetType());
+      view.ReadOnly = SurroundingView.ReadOnly;
+      view.Locked = SurroundingView.Locked;
     }
   }
 }

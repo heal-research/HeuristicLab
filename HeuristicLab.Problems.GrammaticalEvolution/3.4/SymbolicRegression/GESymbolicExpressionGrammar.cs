@@ -24,17 +24,17 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HEAL.Attic;
 using HeuristicLab.Problems.DataAnalysis.Symbolic;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.Problems.GrammaticalEvolution {
   [StorableType("73D43A23-02FF-4BD8-9834-55D8A90E0FCE")]
   [Item("GESymbolicExpressionGrammar", "Represents a grammar for functional expressions for grammatical evolution.")]
-  public class GESymbolicExpressionGrammar : SymbolicExpressionGrammar, ISymbolicDataAnalysisGrammar {
+  public class GESymbolicExpressionGrammar : DataAnalysisGrammar, ISymbolicDataAnalysisGrammar {
     [StorableConstructor]
     protected GESymbolicExpressionGrammar(StorableConstructorFlag _) : base(_) { }
     protected GESymbolicExpressionGrammar(GESymbolicExpressionGrammar original, Cloner cloner) : base(original, cloner) { }

@@ -1,4 +1,4 @@
-#region License Information
+﻿#region License Information
 /* HeuristicLab
  * Copyright (C) Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
@@ -20,12 +20,12 @@
 #endregion
 
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Optimization;
-using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
   /// <summary>
@@ -45,6 +45,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     private const string TestUpperEstimationLimitHitsResultName = "Test Upper Estimation Limit Hits";
     private const string TrainingNaNEvaluationsResultName = "Training NaN Evaluations";
     private const string TestNaNEvaluationsResultName = "Test NaN Evaluations";
+
+    private const string ModelBoundsResultName = "Model Bounds";
 
     public new ISymbolicRegressionModel Model {
       get { return (ISymbolicRegressionModel)base.Model; }
@@ -95,6 +97,22 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       private set { ((IntValue)EstimationLimitsResultCollection[TestNaNEvaluationsResultName].Value).Value = value; }
     }
 
+    public IntervalCollection ModelBoundsCollection {
+      get {
+        if (!ContainsKey(ModelBoundsResultName)) return null;
+        return (IntervalCollection)this[ModelBoundsResultName].Value;
+      }
+      private set {
+        if (ContainsKey(ModelBoundsResultName)) {
+          this[ModelBoundsResultName].Value = value;
+        } else {
+          Add(new Result(ModelBoundsResultName, "Results concerning the derivation of symbolic regression solution", value));
+        }
+      }
+    }
+
+
+
     [StorableConstructor]
     private SymbolicRegressionSolution(StorableConstructorFlag _) : base(_) { }
     private SymbolicRegressionSolution(SymbolicRegressionSolution original, Cloner cloner)
@@ -117,6 +135,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       estimationLimitResults.Add(new Result(TrainingNaNEvaluationsResultName, "", new IntValue()));
       estimationLimitResults.Add(new Result(TestNaNEvaluationsResultName, "", new IntValue()));
       Add(new Result(EstimationLimitsResultsResultName, "Results concerning the estimation limits of symbolic regression solution", estimationLimitResults));
+
+      if (IntervalInterpreter.IsCompatible(Model.SymbolicExpressionTree))
+        Add(new Result(ModelBoundsResultName, "Results concerning the derivation of symbolic regression solution", new IntervalCollection()));
+
       RecalculateResults();
     }
 
@@ -138,6 +160,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
         Add(new Result(EstimationLimitsResultsResultName, "Results concerning the estimation limits of symbolic regression solution", estimationLimitResults));
         CalculateResults();
       }
+
+      if (!ContainsKey(ModelBoundsResultName)) {
+        if (IntervalInterpreter.IsCompatible(Model.SymbolicExpressionTree)) {
+          Add(new Result(ModelBoundsResultName, "Results concerning the derivation of symbolic regression solution", new IntervalCollection()));
+          CalculateResults();
+        }
+      }
     }
 
     protected override void RecalculateResults() {
@@ -158,6 +187,32 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       TestLowerEstimationLimitHits = EstimatedTestValues.Count(x => x.IsAlmost(Model.LowerEstimationLimit));
       TrainingNaNEvaluations = Model.Interpreter.GetSymbolicExpressionTreeValues(Model.SymbolicExpressionTree, ProblemData.Dataset, ProblemData.TrainingIndices).Count(double.IsNaN);
       TestNaNEvaluations = Model.Interpreter.GetSymbolicExpressionTreeValues(Model.SymbolicExpressionTree, ProblemData.Dataset, ProblemData.TestIndices).Count(double.IsNaN);
+
+      //Check if the tree contains unknown symbols for the interval calculation
+      if (IntervalInterpreter.IsCompatible(Model.SymbolicExpressionTree))
+        ModelBoundsCollection = CalculateModelIntervals(this);
+    }
+
+    private static IntervalCollection CalculateModelIntervals(ISymbolicRegressionSolution solution) {
+      var intervalEvaluation = new IntervalCollection();
+      var interpreter = new IntervalInterpreter();
+      var problemData = solution.ProblemData;
+      var model = solution.Model;
+      var variableRanges = problemData.VariableRanges.GetReadonlyDictionary();
+
+      intervalEvaluation.AddInterval($"Target {problemData.TargetVariable}", new Interval(variableRanges[problemData.TargetVariable].LowerBound, variableRanges[problemData.TargetVariable].UpperBound));
+      intervalEvaluation.AddInterval("Model", interpreter.GetSymbolicExpressionTreeInterval(model.SymbolicExpressionTree, variableRanges));
+
+      if (DerivativeCalculator.IsCompatible(model.SymbolicExpressionTree)) {
+        foreach (var inputVariable in model.VariablesUsedForPrediction.OrderBy(v => v, new NaturalStringComparer())) {
+          var derivedModel = DerivativeCalculator.Derive(model.SymbolicExpressionTree, inputVariable);
+          var derivedResultInterval = interpreter.GetSymbolicExpressionTreeInterval(derivedModel, variableRanges);
+
+          intervalEvaluation.AddInterval(" ∂f/∂" + inputVariable, new Interval(derivedResultInterval.LowerBound, derivedResultInterval.UpperBound));
+        }
+      }
+
+      return intervalEvaluation;
     }
   }
 }

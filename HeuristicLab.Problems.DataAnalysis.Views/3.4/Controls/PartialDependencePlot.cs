@@ -35,7 +35,7 @@ using HeuristicLab.Visualization.ChartControlsExtensions;
 
 namespace HeuristicLab.Problems.DataAnalysis.Views {
   public partial class PartialDependencePlot : UserControl, IPartialDependencePlot {
-    private ModifiableDataset sharedFixedVariables; // used for syncronising variable values between charts
+    private ModifiableDataset sharedFixedVariables; // used for synchronizing variable values between charts
     private ModifiableDataset internalDataset; // holds the x values for each point drawn
 
     private CancellationTokenSource cancelCurrentRecalculateSource;
@@ -350,8 +350,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     }
 
     private void RecalculateTrainingLimits(bool initializeAxisRanges) {
-      trainingMin = solutions.Select(s => s.ProblemData.Dataset.GetDoubleValues(freeVariable, s.ProblemData.TrainingIndices).Where(x => !double.IsNaN(x)).Min()).Max();
-      trainingMax = solutions.Select(s => s.ProblemData.Dataset.GetDoubleValues(freeVariable, s.ProblemData.TrainingIndices).Where(x => !double.IsNaN(x)).Max()).Min();
+      //Set min and max to the interval ranges
+      trainingMin = solutions.Select(s => s.ProblemData.VariableRanges.GetInterval(freeVariable).LowerBound).Max();
+      trainingMax = solutions.Select(s => s.ProblemData.VariableRanges.GetInterval(freeVariable).UpperBound).Min();
 
       if (initializeAxisRanges) {
         double xmin, xmax, xinterval;
@@ -437,7 +438,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       chart.ApplyPaletteColors();
       chart.Palette = ChartColorPalette.None;
 
-      // Add confidence interval series before its coresponding series for correct z index
+      // Add confidence interval series before its corresponding series for correct z index
       foreach (var solution in solutions) {
         Series ciSeries;
         if (ciSeriesCache.TryGetValue(solution, out ciSeries)) {
@@ -528,10 +529,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     }
 
     public async Task AddSolutionAsync(IRegressionSolution solution) {
-      if (!SolutionsCompatible(solutions.Concat(new[] { solution })))
-        throw new ArgumentException("The solution is not compatible with the problem data.");
       if (solutions.Contains(solution))
         return;
+      if (!SolutionsCompatible(solutions.Concat(new[] { solution })))
+        throw new ArgumentException("The solution is not compatible with the problem data.");
 
       solutions.Add(solution);
       RecalculateTrainingLimits(true);
@@ -566,14 +567,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     private static bool SolutionsCompatible(IEnumerable<IRegressionSolution> solutions) {
       var refSolution = solutions.First();
       var refSolVars = refSolution.ProblemData.Dataset.VariableNames;
+      var refFactorVars = refSolVars.Where(refSolution.ProblemData.Dataset.VariableHasType<string>);
+      var distinctVals = refFactorVars.ToDictionary(fv => fv, fv => refSolution.ProblemData.Dataset.GetStringValues(fv).Distinct().ToArray());
       foreach (var solution in solutions.Skip(1)) {
         var variables1 = solution.ProblemData.Dataset.VariableNames;
         if (!variables1.All(refSolVars.Contains))
           return false;
 
         foreach (var factorVar in variables1.Where(solution.ProblemData.Dataset.VariableHasType<string>)) {
-          var distinctVals = refSolution.ProblemData.Dataset.GetStringValues(factorVar).Distinct();
-          if (solution.ProblemData.Dataset.GetStringValues(factorVar).Any(val => !distinctVals.Contains(val))) return false;
+          var refValues = distinctVals[factorVar];
+          if (solution.ProblemData.Dataset.GetStringValues(factorVar).Distinct().Any(val => !refValues.Contains(val))) return false;
         }
       }
       return true;
@@ -644,9 +647,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     }
 
     private void sharedFixedVariables_Reset(object sender, EventArgs e) {
+      RecalculateInternalDataset();
       var newValue = sharedFixedVariables.GetDoubleValue(FreeVariable, 0);
       VerticalLineAnnotation.X = newValue;
-      UpdateCursor(); // triggers update of InternalDataset
+      UpdateCursor();
     }
 
     private void chart_AnnotationPositionChanging(object sender, AnnotationPositionChangingEventArgs e) {

@@ -34,9 +34,10 @@ using HeuristicLab.MainForm.WindowsForms;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
   public abstract partial class InteractiveSymbolicDataAnalysisSolutionSimplifierView : AsynchronousContentView {
-    private Dictionary<ISymbolicExpressionTreeNode, ISymbolicExpressionTreeNode> foldedNodes;
-    private Dictionary<ISymbolicExpressionTreeNode, ISymbolicExpressionTreeNode> changedNodes;
-    private Dictionary<ISymbolicExpressionTreeNode, double> nodeImpacts;
+    private readonly Dictionary<ISymbolicExpressionTreeNode, ISymbolicExpressionTreeNode> foldedNodes = new Dictionary<ISymbolicExpressionTreeNode, ISymbolicExpressionTreeNode>();
+    private readonly Dictionary<ISymbolicExpressionTreeNode, ISymbolicExpressionTreeNode> changedNodes = new Dictionary<ISymbolicExpressionTreeNode, ISymbolicExpressionTreeNode>();
+    private readonly Dictionary<ISymbolicExpressionTreeNode, Interval> nodeIntervals = new Dictionary<ISymbolicExpressionTreeNode, Interval>();
+    private readonly Dictionary<ISymbolicExpressionTreeNode, double> nodeImpacts = new Dictionary<ISymbolicExpressionTreeNode, double>();
 
     private readonly ISymbolicDataAnalysisSolutionImpactValuesCalculator impactCalculator;
 
@@ -48,9 +49,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
 
     protected InteractiveSymbolicDataAnalysisSolutionSimplifierView(ISymbolicDataAnalysisSolutionImpactValuesCalculator impactCalculator) {
       InitializeComponent();
-      foldedNodes = new Dictionary<ISymbolicExpressionTreeNode, ISymbolicExpressionTreeNode>();
-      changedNodes = new Dictionary<ISymbolicExpressionTreeNode, ISymbolicExpressionTreeNode>();
-      nodeImpacts = new Dictionary<ISymbolicExpressionTreeNode, double>();
       this.Caption = "Interactive Solution Simplifier";
       this.impactCalculator = impactCalculator;
 
@@ -167,11 +165,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
 
     private void Content_Changed(object sender, EventArgs e) {
       UpdateView();
+      SetEnabledStateOfControls();
     }
 
     protected override void OnContentChanged() {
       base.OnContentChanged();
-      foldedNodes = new Dictionary<ISymbolicExpressionTreeNode, ISymbolicExpressionTreeNode>();
+      foldedNodes.Clear();
+      changedNodes.Clear();
+      nodeIntervals.Clear();
+      nodeImpacts.Clear();
       UpdateView();
       viewHost.Content = this.Content;
     }
@@ -191,18 +193,39 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       treeChart.Tree = tree.Root.SubtreeCount > 1 ? new SymbolicExpressionTree(tree.Root) : new SymbolicExpressionTree(tree.Root.GetSubtree(0).GetSubtree(0));
 
       progress.Start("Calculate Impact and Replacement Values ...");
-      progress.CanBeStopped = true;
       cancellationTokenSource = new CancellationTokenSource();
-      var impactAndReplacementValues = await Task.Run(() => CalculateImpactAndReplacementValues(tree));
+      progress.CanBeStopped = true;
       try {
-        await Task.Delay(500, cancellationTokenSource.Token); // wait for progressbar to finish animation
-      } catch (OperationCanceledException) { }
-      var replacementValues = impactAndReplacementValues.ToDictionary(x => x.Key, x => x.Value.Item2);
-      foreach (var pair in replacementValues.Where(pair => !(pair.Key is ConstantTreeNode))) {
-        foldedNodes[pair.Key] = MakeConstantTreeNode(pair.Value);
+        var impactAndReplacementValues = await Task.Run(() => CalculateImpactAndReplacementValues(tree));
+        try {
+          await Task.Delay(300, cancellationTokenSource.Token); // wait for progressbar to finish animation
+        } catch (OperationCanceledException) { }
+
+        var replacementValues = impactAndReplacementValues.ToDictionary(x => x.Key, x => x.Value.Item2);
+        foreach (var pair in replacementValues.Where(pair => !(pair.Key is ConstantTreeNode))) {
+          foldedNodes[pair.Key] = MakeConstantTreeNode(pair.Value);
+        }
+        
+        foreach (var pair in impactAndReplacementValues) {
+          nodeImpacts[pair.Key] = pair.Value.Item1;
+        }
+
+        if (IntervalInterpreter.IsCompatible(tree)) { 
+          var regressionProblemData = Content.ProblemData as IRegressionProblemData;
+          if (regressionProblemData != null) {
+            var interpreter = new IntervalInterpreter();
+            var variableRanges = regressionProblemData.VariableRanges.GetReadonlyDictionary();
+            IDictionary<ISymbolicExpressionTreeNode, Interval> intervals;
+            interpreter.GetSymbolicExpressionTreeIntervals(tree, variableRanges, out intervals);
+            foreach (var kvp in intervals) {
+              nodeIntervals[kvp.Key] = kvp.Value;
+            }
+          }
+        }
+      } finally {
+        progress.Finish();
       }
-      nodeImpacts = impactAndReplacementValues.ToDictionary(x => x.Key, x => x.Value.Item1);
-      progress.Finish();
+
       progress.CanBeStopped = false;
       PaintNodeImpacts();
     }
@@ -295,12 +318,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
             visualTree.ToolTip += Environment.NewLine + "Replacement value: " + constantReplacementNode.Value;
           }
         }
-        if (visualTree != null)
+        if (visualTree != null) {
+          if (nodeIntervals.ContainsKey(treeNode))
+            visualTree.ToolTip += String.Format($"{Environment.NewLine}Intervals: [{nodeIntervals[treeNode].LowerBound:G5} ... {nodeIntervals[treeNode].UpperBound:G5}]");
           if (changedNodes.ContainsKey(treeNode)) {
             visualTree.LineColor = Color.DodgerBlue;
           } else if (treeNode is ConstantTreeNode && foldedNodes.ContainsKey(treeNode)) {
             visualTree.LineColor = Color.DarkOrange;
           }
+        }
       }
       treeChart.RepaintNodes();
     }
@@ -312,10 +338,19 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
 
     private async void btnOptimizeConstants_Click(object sender, EventArgs e) {
       progress.Start("Optimizing Constants ...");
-      var tree = (ISymbolicExpressionTree)Content.Model.SymbolicExpressionTree.Clone();
-      var newTree = await Task.Run(() => OptimizeConstants(tree, progress));
-      await Task.Delay(500); // wait for progressbar to finish animation
-      UpdateModel(newTree); // UpdateModel calls Progress.Finish (via Content_Changed)
+      cancellationTokenSource = new CancellationTokenSource();
+      progress.CanBeStopped = true;
+      try {
+        var tree = (ISymbolicExpressionTree)Content.Model.SymbolicExpressionTree.Clone();
+
+        var newTree = await Task.Run(() => OptimizeConstants(tree, progress));
+        try {
+          await Task.Delay(300, cancellationTokenSource.Token); // wait for progressbar to finish animation
+        } catch (OperationCanceledException) { }
+        UpdateModel(newTree); // triggers progress.Finish after calculating the node impacts when model is changed
+      } catch {
+        progress.Finish();
+      }
     }
   }
 }

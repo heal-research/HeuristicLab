@@ -38,8 +38,9 @@
       this.endDateTimePicker = new System.Windows.Forms.DateTimePicker();
       this.endLabel = new System.Windows.Forms.Label();
       this.indefiniteCheckBox = new System.Windows.Forms.CheckBox();
-      this.createdTextBox = new System.Windows.Forms.TextBox();      
+      this.createdTextBox = new System.Windows.Forms.TextBox();
       this.toolTip = new System.Windows.Forms.ToolTip(this.components);
+      this.refreshButton = new System.Windows.Forms.Button();
       this.SuspendLayout();
       // 
       // idLabel
@@ -67,7 +68,7 @@
       this.nameLabel.Location = new System.Drawing.Point(3, 37);
       this.nameLabel.Name = "nameLabel";
       this.nameLabel.Size = new System.Drawing.Size(38, 13);
-      this.nameLabel.TabIndex = 0;
+      this.nameLabel.TabIndex = 2;
       this.nameLabel.Text = "Name:";
       // 
       // nameTextBox
@@ -77,7 +78,7 @@
       this.nameTextBox.Location = new System.Drawing.Point(72, 34);
       this.nameTextBox.Name = "nameTextBox";
       this.nameTextBox.Size = new System.Drawing.Size(464, 20);
-      this.nameTextBox.TabIndex = 2;
+      this.nameTextBox.TabIndex = 3;
       this.nameTextBox.TextChanged += new System.EventHandler(this.nameTextBox_TextChanged);
       this.nameTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.nameTextBox_Validating);
       // 
@@ -87,7 +88,7 @@
       this.descriptionLabel.Location = new System.Drawing.Point(3, 63);
       this.descriptionLabel.Name = "descriptionLabel";
       this.descriptionLabel.Size = new System.Drawing.Size(63, 13);
-      this.descriptionLabel.TabIndex = 0;
+      this.descriptionLabel.TabIndex = 4;
       this.descriptionLabel.Text = "Description:";
       // 
       // descriptionTextBox
@@ -98,8 +99,18 @@
       this.descriptionTextBox.Multiline = true;
       this.descriptionTextBox.Name = "descriptionTextBox";
       this.descriptionTextBox.Size = new System.Drawing.Size(464, 98);
-      this.descriptionTextBox.TabIndex = 3;
+      this.descriptionTextBox.TabIndex = 5;
       this.descriptionTextBox.TextChanged += new System.EventHandler(this.descriptionTextBox_TextChanged);
+      // 
+      // ownerComboBox
+      // 
+      this.ownerComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      this.ownerComboBox.FormattingEnabled = true;
+      this.ownerComboBox.Location = new System.Drawing.Point(72, 164);
+      this.ownerComboBox.Name = "ownerComboBox";
+      this.ownerComboBox.Size = new System.Drawing.Size(200, 21);
+      this.ownerComboBox.TabIndex = 7;
+      this.ownerComboBox.SelectedIndexChanged += new System.EventHandler(this.ownerComboBox_SelectedIndexChanged);
       // 
       // ownerLabel
       // 
@@ -107,20 +118,8 @@
       this.ownerLabel.Location = new System.Drawing.Point(3, 167);
       this.ownerLabel.Name = "ownerLabel";
       this.ownerLabel.Size = new System.Drawing.Size(41, 13);
-      this.ownerLabel.TabIndex = 0;
+      this.ownerLabel.TabIndex = 6;
       this.ownerLabel.Text = "Owner:";
-      // 
-      // ownerComboBox
-      // 
-      //this.ownerComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-      //      | System.Windows.Forms.AnchorStyles.Right)));
-      this.ownerComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-      this.ownerComboBox.FormattingEnabled = true;
-      this.ownerComboBox.Location = new System.Drawing.Point(72, 164);
-      this.ownerComboBox.Name = "ownerComboBox";
-      this.ownerComboBox.Size = new System.Drawing.Size(200, 21);
-      this.ownerComboBox.TabIndex = 4;
-      this.ownerComboBox.SelectedIndexChanged += new System.EventHandler(this.ownerComboBox_SelectedIndexChanged);
       // 
       // createdLabel
       // 
@@ -128,19 +127,18 @@
       this.createdLabel.Location = new System.Drawing.Point(3, 197);
       this.createdLabel.Name = "createdLabel";
       this.createdLabel.Size = new System.Drawing.Size(47, 13);
-      this.createdLabel.TabIndex = 8;
+      this.createdLabel.TabIndex = 9;
       this.createdLabel.Text = "Created:";
       // 
       // startDateTimePicker
       // 
       this.startDateTimePicker.CustomFormat = "ddd, dd.MM.yyyy, HH:mm:ss";
-      this.startDateTimePicker.Enabled = false;
       this.startDateTimePicker.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
       this.startDateTimePicker.Location = new System.Drawing.Point(72, 216);
       this.startDateTimePicker.Name = "startDateTimePicker";
       this.startDateTimePicker.Size = new System.Drawing.Size(200, 20);
-      this.startDateTimePicker.TabIndex = 9;
-      this.startDateTimePicker.ValueChanged += new System.EventHandler(this.startDateTimePicker_ValueChanged);      
+      this.startDateTimePicker.TabIndex = 12;
+      this.startDateTimePicker.ValueChanged += new System.EventHandler(this.startDateTimePicker_ValueChanged);
       // 
       // startLabel
       // 
@@ -148,18 +146,17 @@
       this.startLabel.Location = new System.Drawing.Point(3, 223);
       this.startLabel.Name = "startLabel";
       this.startLabel.Size = new System.Drawing.Size(32, 13);
-      this.startLabel.TabIndex = 10;
+      this.startLabel.TabIndex = 11;
       this.startLabel.Text = "Start:";
       // 
       // endDateTimePicker
       // 
       this.endDateTimePicker.CustomFormat = "ddd, dd.MM.yyyy, HH:mm:ss";
-      this.endDateTimePicker.Enabled = false;
       this.endDateTimePicker.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
       this.endDateTimePicker.Location = new System.Drawing.Point(72, 243);
       this.endDateTimePicker.Name = "endDateTimePicker";
       this.endDateTimePicker.Size = new System.Drawing.Size(200, 20);
-      this.endDateTimePicker.TabIndex = 11;
+      this.endDateTimePicker.TabIndex = 14;
       this.endDateTimePicker.ValueChanged += new System.EventHandler(this.endDateTimePicker_ValueChanged);
       // 
       // endLabel
@@ -168,7 +165,7 @@
       this.endLabel.Location = new System.Drawing.Point(3, 249);
       this.endLabel.Name = "endLabel";
       this.endLabel.Size = new System.Drawing.Size(29, 13);
-      this.endLabel.TabIndex = 10;
+      this.endLabel.TabIndex = 13;
       this.endLabel.Text = "End:";
       // 
       // indefiniteCheckBox
@@ -177,7 +174,7 @@
       this.indefiniteCheckBox.Location = new System.Drawing.Point(278, 245);
       this.indefiniteCheckBox.Name = "indefiniteCheckBox";
       this.indefiniteCheckBox.Size = new System.Drawing.Size(69, 17);
-      this.indefiniteCheckBox.TabIndex = 13;
+      this.indefiniteCheckBox.TabIndex = 15;
       this.indefiniteCheckBox.Text = "Indefinite";
       this.indefiniteCheckBox.UseVisualStyleBackColor = true;
       this.indefiniteCheckBox.CheckedChanged += new System.EventHandler(this.indefiniteCheckBox_CheckedChanged);
@@ -188,12 +185,23 @@
       this.createdTextBox.Name = "createdTextBox";
       this.createdTextBox.ReadOnly = true;
       this.createdTextBox.Size = new System.Drawing.Size(200, 20);
-      this.createdTextBox.TabIndex = 14;
+      this.createdTextBox.TabIndex = 10;
+      // 
+      // refreshButton
+      // 
+      this.refreshButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Refresh;
+      this.refreshButton.Location = new System.Drawing.Point(278, 162);
+      this.refreshButton.Name = "refreshButton";
+      this.refreshButton.Size = new System.Drawing.Size(24, 24);
+      this.refreshButton.TabIndex = 8;
+      this.refreshButton.UseVisualStyleBackColor = true;
+      this.refreshButton.Click += new System.EventHandler(this.refreshButton_Click);
       // 
       // ProjectView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.Controls.Add(this.refreshButton);
       this.Controls.Add(this.createdTextBox);
       this.Controls.Add(this.indefiniteCheckBox);
       this.Controls.Add(this.endLabel);
@@ -212,7 +220,6 @@
       this.Name = "ProjectView";
       this.Size = new System.Drawing.Size(539, 271);
       this.Load += new System.EventHandler(this.ProjectView_Load);
-      this.Disposed += new System.EventHandler(this.ProjectView_Disposed);
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -234,7 +241,8 @@
     private System.Windows.Forms.DateTimePicker endDateTimePicker;
     private System.Windows.Forms.Label endLabel;
     private System.Windows.Forms.CheckBox indefiniteCheckBox;
-    private System.Windows.Forms.TextBox createdTextBox;    
+    private System.Windows.Forms.TextBox createdTextBox;
     private System.Windows.Forms.ToolTip toolTip;
+    private System.Windows.Forms.Button refreshButton;
   }
 }

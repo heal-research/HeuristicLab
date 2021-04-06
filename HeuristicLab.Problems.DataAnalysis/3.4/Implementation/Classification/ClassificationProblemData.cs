@@ -305,25 +305,32 @@ namespace HeuristicLab.Problems.DataAnalysis {
       for (int i = 0; i < ClassNamesParameter.Value.Rows; i++)
         classNamesCache.Add(ClassNamesParameter.Value[i, 0]);
     }
+
     public override IDeepCloneable Clone(Cloner cloner) {
       if (this == emptyProblemData) return emptyProblemData;
       return new ClassificationProblemData(this, cloner);
     }
 
-    public ClassificationProblemData() : this(defaultDataset, defaultAllowedInputVariables, defaultTargetVariable) { }
+    public ClassificationProblemData() : this(defaultDataset, defaultAllowedInputVariables, defaultTargetVariable, Enumerable.Empty<string>()) { }
 
     public ClassificationProblemData(IClassificationProblemData classificationProblemData)
-      : this(classificationProblemData.Dataset, classificationProblemData.AllowedInputVariables, classificationProblemData.TargetVariable) {
+      : this(classificationProblemData, classificationProblemData.Dataset) {
+    }
+
+    /// <summary>
+    /// This method satisfies a common use case: making a copy of the problem but providing a different dataset.
+    /// One must be careful here that the dataset passed is not modified, as that would invalidate the problem data internals.
+    /// Passing a ModifiableDataset to this constructor is therefore discouraged.
+    /// </summary>
+    /// <param name="classificationProblemData">The original instance of classification problem data.</param>
+    /// <param name="dataset">The new dataset.</param>
+    public ClassificationProblemData(IClassificationProblemData classificationProblemData, IDataset dataset)
+    : this(classificationProblemData.Dataset, classificationProblemData.AllowedInputVariables, classificationProblemData.TargetVariable, classificationProblemData.ClassNames, classificationProblemData.PositiveClass) {
+
       TrainingPartition.Start = classificationProblemData.TrainingPartition.Start;
       TrainingPartition.End = classificationProblemData.TrainingPartition.End;
       TestPartition.Start = classificationProblemData.TestPartition.Start;
       TestPartition.End = classificationProblemData.TestPartition.End;
-
-      for (int i = 0; i < classificationProblemData.ClassNames.Count(); i++)
-        ClassNamesParameter.Value[i, 0] = classificationProblemData.ClassNames.ElementAt(i);
-
-      //mkommend: The positive class depends on the class names and as a result must only be set after the classe names parameter.
-      PositiveClass = classificationProblemData.PositiveClass;
 
       for (int i = 0; i < Classes; i++) {
         for (int j = 0; j < Classes; j++) {
@@ -332,18 +339,44 @@ namespace HeuristicLab.Problems.DataAnalysis {
       }
     }
 
-    public ClassificationProblemData(IDataset dataset, IEnumerable<string> allowedInputVariables, string targetVariable, IEnumerable<ITransformation> transformations = null)
+    public ClassificationProblemData(IDataset dataset, IEnumerable<string> allowedInputVariables, string targetVariable,
+      IEnumerable<string> classNames = null,
+      string positiveClass = null, // can be null in which case it's set as the first class name
+      IEnumerable<ITransformation> transformations = null)
       : base(dataset, allowedInputVariables, transformations ?? Enumerable.Empty<ITransformation>()) {
       var validTargetVariableValues = CheckVariablesForPossibleTargetVariables(dataset).Select(x => new StringValue(x).AsReadOnly()).ToList();
       var target = validTargetVariableValues.Where(x => x.Value == targetVariable).DefaultIfEmpty(validTargetVariableValues.First()).First();
 
       Parameters.Add(new ConstrainedValueParameter<StringValue>(TargetVariableParameterName, new ItemSet<StringValue>(validTargetVariableValues), target));
-      Parameters.Add(new FixedValueParameter<StringMatrix>(ClassNamesParameterName, ""));
+      Parameters.Add(new FixedValueParameter<StringMatrix>(ClassNamesParameterName, "", new StringMatrix()));
       Parameters.Add(new ConstrainedValueParameter<StringValue>(PositiveClassParameterName, "The positive class which is used for quality measure calculation (e.g., specifity, sensitivity,...)"));
       Parameters.Add(new FixedValueParameter<DoubleMatrix>(ClassificationPenaltiesParameterName, ""));
 
       RegisterParameterEvents();
-      ResetTargetVariableDependentMembers();
+      ResetTargetVariableDependentMembers(); // correctly set the values of the parameters added above
+
+      // set the class names
+      if (classNames != null && classNames.Any()) {
+        // better to allocate lists because we use these multiple times below
+        var names = classNames.ToList();
+        var values = ClassValuesCache;
+
+        if (names.Count != values.Count) {
+          throw new ArgumentException();
+        }
+
+        ((IStringConvertibleMatrix)ClassNamesParameter.Value).Columns = 1;
+        ((IStringConvertibleMatrix)ClassNamesParameter.Value).Rows = names.Count;
+
+        for (int i = 0; i < names.Count; ++i) {
+          SetClassName(values[i], names[i]);
+        }
+      }
+
+      // set the positive class value
+      if (positiveClass != null) {
+        PositiveClass = positiveClass;
+      }
     }
 
     public static IEnumerable<string> CheckVariablesForPossibleTargetVariables(IDataset dataset) {

@@ -25,6 +25,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
 using HEAL.Attic;
+using System;
 
 namespace HeuristicLab.Random {
   /// <summary>
@@ -32,6 +33,7 @@ namespace HeuristicLab.Random {
   /// </summary>
   [StorableType("0EAF4184-6C98-4C9D-80A1-09A42E03450E")]
   [Item("NormalRandomizer", "Initializes the value of variable 'Value' to a random value normally distributed with parameters 'Mu' and 'Sigma'")]
+  [Obsolete("Use NormalRandomizerPolar instead.")]
   public class NormalRandomizer : SingleSuccessorOperator {
     #region Parameter Properties
     public ILookupParameter<IRandom> RandomParameter {

@@ -45,8 +45,10 @@ Icon "..\HeuristicLab\3.3\HeuristicLab.ico"
 Section "HeuristicLabHiveSlave (required)"
 	SetOutPath $INSTDIR
 
-	File "${SLAVEBUILDPATH}\HeuristicLab.Clients.Hive.Slave.WindowsService.exe"
+	File "${SLAVEBUILDPATH}\Google.Protobuf.dll"
+	File "${SLAVEBUILDPATH}\HEAL.Attic.dll"
 	File "${SLAVEBUILDPATH}\HeuristicLab.Clients.Common-3.3.dll"
+	File "${SLAVEBUILDPATH}\HeuristicLab.Clients.Hive.Slave.WindowsService.exe"
 	File "${SLAVEBUILDPATH}\HeuristicLab.Clients.Hive.Slave.WindowsService.exe.config"
 	File "${SLAVEBUILDPATH}\HeuristicLab.Clients.Hive.SlaveCore-3.3.dll"
 	File "${SLAVEBUILDPATH}\HeuristicLab.Clients.Hive-3.3.dll"
@@ -81,27 +83,8 @@ Section "un.Uninstall"
 	DeleteRegKey HKLM SOFTWARE\HeuristicLabHiveSlave
 
 	nsExec::ExecToLog '"$INSTDIR\HeuristicLab.Clients.Hive.Slave.WindowsService.exe" --uninstall'
-	  
-	Delete $INSTDIR\HeuristicLab.Clients.Hive.Slave.WindowsService.exe
-	Delete $INSTDIR\HeuristicLab.Clients.Common-3.3.dll
-	Delete $INSTDIR\HeuristicLab.Clients.Hive.Slave.WindowsService.exe.config
-	Delete $INSTDIR\HeuristicLab.Clients.Hive.SlaveCore-3.3.dll
-	Delete $INSTDIR\HeuristicLab.Clients.Hive-3.3.dll
-	Delete $INSTDIR\HeuristicLab.Collections-3.3.dll
-	Delete $INSTDIR\HeuristicLab.Common.Resources-3.3.dll
-	Delete $INSTDIR\HeuristicLab.Common-3.3.dll
-	Delete $INSTDIR\HeuristicLab.Core-3.3.dll
-	Delete $INSTDIR\HeuristicLab.Data-3.3.dll
-	Delete $INSTDIR\HeuristicLab.Hive-3.3.dll
-	Delete $INSTDIR\HeuristicLab.MainForm-3.3.dll
-	Delete $INSTDIR\HeuristicLab.Optimization-3.3.dll
-	Delete $INSTDIR\HeuristicLab.Parameters-3.3.dll
-	Delete $INSTDIR\HeuristicLab.Persistence-3.3.dll
-	Delete $INSTDIR\HeuristicLab.PluginInfrastructure-3.3.dll
-	Delete $INSTDIR\HeuristicLab.Tracing-3.3.dll
-	Delete $INSTDIR\uninstall.exe
 
-	RMDir "$INSTDIR"
+	RMDir /r "$INSTDIR"
 SectionEnd
 
 

@@ -81,7 +81,7 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
       });
     }
 
-    public Task UpdateJobState(Guid taskId, TaskState taskState, string exception) {
+    public Task UpdateTaskState(Guid taskId, TaskState taskState, string exception) {
       return CallHiveService(s => s.UpdateTaskState(taskId, taskState, ConfigManager.Instance.GetClientInfo().Id, null, exception));
     }
     #endregion

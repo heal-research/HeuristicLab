@@ -72,17 +72,17 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
 
     public ClassificationEnsembleProblemData() : base() { }
+
     public ClassificationEnsembleProblemData(IClassificationProblemData classificationProblemData)
-      : base(classificationProblemData.Dataset, classificationProblemData.AllowedInputVariables, classificationProblemData.TargetVariable) {
-      this.TrainingPartition.Start = classificationProblemData.TrainingPartition.Start;
-      this.TrainingPartition.End = classificationProblemData.TrainingPartition.End;
-      this.TestPartition.Start = classificationProblemData.TestPartition.Start;
-      this.TestPartition.End = classificationProblemData.TestPartition.End;
-      this.PositiveClass = classificationProblemData.PositiveClass;
+      : base(classificationProblemData) {
     }
 
     public ClassificationEnsembleProblemData(Dataset dataset, IEnumerable<string> allowedInputVariables, string targetVariable)
       : base(dataset, allowedInputVariables, targetVariable) {
+    }
+
+    public ClassificationEnsembleProblemData(Dataset dataset, IEnumerable<string> allowedInputVariables, string targetVariable, IEnumerable<string> classNames, string positiveClass = null)
+      : base(dataset, allowedInputVariables, targetVariable, classNames, positiveClass) {
     }
   }
 }

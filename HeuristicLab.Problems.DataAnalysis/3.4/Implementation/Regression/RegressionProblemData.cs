@@ -1,4 +1,4 @@
-#region License Information
+﻿#region License Information
 /* HeuristicLab
  * Copyright (C) Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
@@ -22,17 +22,19 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis {
   [StorableType("EE612297-B1AF-42D2-BF21-AF9A2D42791C")]
   [Item("RegressionProblemData", "Represents an item containing all data defining a regression problem.")]
   public class RegressionProblemData : DataAnalysisProblemData, IRegressionProblemData, IStorableContent {
     protected const string TargetVariableParameterName = "TargetVariable";
+    protected const string VariableRangesParameterName = "VariableRanges";
+    protected const string ShapeConstraintsParameterName = "ShapeConstraints";
     public string Filename { get; set; }
 
     #region default data
@@ -90,13 +92,27 @@ namespace HeuristicLab.Problems.DataAnalysis {
       problemData.Parameters.Add(new FixedValueParameter<IntRange>(TrainingPartitionParameterName, "", (IntRange)new IntRange(0, 0).AsReadOnly()));
       problemData.Parameters.Add(new FixedValueParameter<IntRange>(TestPartitionParameterName, "", (IntRange)new IntRange(0, 0).AsReadOnly()));
       problemData.Parameters.Add(new ConstrainedValueParameter<StringValue>(TargetVariableParameterName, new ItemSet<StringValue>()));
+      problemData.Parameters.Add(new FixedValueParameter<IntervalCollection>(VariableRangesParameterName, "", new IntervalCollection()));
+      problemData.Parameters.Add(new FixedValueParameter<ShapeConstraints>(ShapeConstraintsParameterName, "", new ShapeConstraints()));
       emptyProblemData = problemData;
     }
     #endregion
 
-    public IConstrainedValueParameter<StringValue> TargetVariableParameter {
-      get { return (IConstrainedValueParameter<StringValue>)Parameters[TargetVariableParameterName]; }
+    #region parameter properties
+    public IConstrainedValueParameter<StringValue> TargetVariableParameter => (IConstrainedValueParameter<StringValue>)Parameters[TargetVariableParameterName];
+    public IFixedValueParameter<ShapeConstraints> ShapeConstraintsParameter => (IFixedValueParameter<ShapeConstraints>)Parameters[ShapeConstraintsParameterName];
+    public IFixedValueParameter<IntervalCollection> VariableRangesParameter => (IFixedValueParameter<IntervalCollection>)Parameters[VariableRangesParameterName];
+    #endregion
+
+    #region properties
+    public IntervalCollection VariableRanges {
+      get => VariableRangesParameter.Value;
     }
+
+
+    public ShapeConstraints ShapeConstraints => ShapeConstraintsParameter.Value;
+
+
     public string TargetVariable {
       get { return TargetVariableParameter.Value.Value; }
       set {
@@ -108,22 +124,30 @@ namespace HeuristicLab.Problems.DataAnalysis {
         TargetVariableParameter.Value = matchingParameterValue;
       }
     }
+    public IEnumerable<double> TargetVariableValues => Dataset.GetDoubleValues(TargetVariable);
+    public IEnumerable<double> TargetVariableTrainingValues => Dataset.GetDoubleValues(TargetVariable, TrainingIndices);
+    public IEnumerable<double> TargetVariableTestValues => Dataset.GetDoubleValues(TargetVariable, TestIndices);
+    #endregion
 
-    public IEnumerable<double> TargetVariableValues {
-      get { return Dataset.GetDoubleValues(TargetVariable); }
-    }
-    public IEnumerable<double> TargetVariableTrainingValues {
-      get { return Dataset.GetDoubleValues(TargetVariable, TrainingIndices); }
-    }
-    public IEnumerable<double> TargetVariableTestValues {
-      get { return Dataset.GetDoubleValues(TargetVariable, TestIndices); }
-    }
 
 
     [StorableConstructor]
     protected RegressionProblemData(StorableConstructorFlag _) : base(_) { }
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
+      if (!Parameters.ContainsKey(VariableRangesParameterName)) {
+        var intervalCollection = Dataset.GetIntervals();
+        Parameters.Add(new FixedValueParameter<IntervalCollection>(VariableRangesParameterName, intervalCollection));
+      }
+      if (Parameters.ContainsKey("IntervalConstraints")) {
+        var param = (IFixedValueParameter<ShapeConstraints>)Parameters["IntervalConstraints"];
+        Parameters.Remove(param);
+        Parameters.Add(new FixedValueParameter<ShapeConstraints>(ShapeConstraintsParameterName, param.Value));
+      }
+      if (!Parameters.ContainsKey(ShapeConstraintsParameterName)) {
+        Parameters.Add(new FixedValueParameter<ShapeConstraints>(ShapeConstraintsParameterName, new ShapeConstraints()));
+      }
+
       RegisterParameterEvents();
     }
 
@@ -147,17 +171,29 @@ namespace HeuristicLab.Problems.DataAnalysis {
       TestPartition.End = regressionProblemData.TestPartition.End;
     }
 
-    public RegressionProblemData(IDataset dataset, IEnumerable<string> allowedInputVariables, string targetVariable, IEnumerable<ITransformation> transformations = null)
+    public RegressionProblemData(IDataset dataset, IEnumerable<string> allowedInputVariables, string targetVariable,
+      IEnumerable<ITransformation> transformations = null,
+      IntervalCollection variableRanges = null,
+      ShapeConstraints shapeConstraints = null)
       : base(dataset, allowedInputVariables, transformations ?? Enumerable.Empty<ITransformation>()) {
       var variables = InputVariables.Select(x => x.AsReadOnly()).ToList();
       Parameters.Add(new ConstrainedValueParameter<StringValue>(TargetVariableParameterName, new ItemSet<StringValue>(variables), variables.Where(x => x.Value == targetVariable).First()));
+      if (variableRanges == null) {
+        variableRanges = Dataset.GetIntervals();
+      }
+      Parameters.Add(new FixedValueParameter<IntervalCollection>(VariableRangesParameterName, variableRanges));
+
+      if (shapeConstraints == null) {
+        shapeConstraints = new ShapeConstraints();
+      }
+      Parameters.Add(new FixedValueParameter<ShapeConstraints>(ShapeConstraintsParameterName, shapeConstraints));
       RegisterParameterEvents();
     }
-
     private void RegisterParameterEvents() {
-      TargetVariableParameter.ValueChanged += new EventHandler(TargetVariableParameter_ValueChanged);
+      TargetVariableParameter.ValueChanged += new EventHandler(Parameter_ValueChanged);
+      // VariableRanges and ShapeConstraints are fixed parameters
     }
-    private void TargetVariableParameter_ValueChanged(object sender, EventArgs e) {
+    private void Parameter_ValueChanged(object sender, EventArgs e) {
       OnChanged();
     }
   }

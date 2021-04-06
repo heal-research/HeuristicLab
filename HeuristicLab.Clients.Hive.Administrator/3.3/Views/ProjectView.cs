@@ -27,13 +27,12 @@ using HeuristicLab.Clients.Access;
 using HeuristicLab.Clients.Hive.Views;
 using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
+using Tpl = System.Threading.Tasks;
 
 namespace HeuristicLab.Clients.Hive.Administrator.Views {
   [View("ProjectView")]
   [Content(typeof(Project), IsDefaultView = true)]
   public partial class ProjectView : ItemView {
-    private readonly object locker = new object();
-
     public new Project Content {
       get { return (Project)base.Content; }
       set { base.Content = value; }
@@ -57,29 +56,12 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       base.DeregisterContentEvents();
     }
 
-    protected void RegisterControlEvents() {
-      nameTextBox.TextChanged += nameTextBox_TextChanged;
-      nameTextBox.Validating += nameTextBox_Validating;
-      descriptionTextBox.TextChanged += descriptionTextBox_TextChanged;
-      ownerComboBox.SelectedIndexChanged += ownerComboBox_SelectedIndexChanged;
-      startDateTimePicker.ValueChanged += startDateTimePicker_ValueChanged;
-      endDateTimePicker.ValueChanged += endDateTimePicker_ValueChanged;
-      indefiniteCheckBox.CheckedChanged += indefiniteCheckBox_CheckedChanged;
-    }
-
-    protected void DeregisterControlEvents() {
-      nameTextBox.TextChanged -= nameTextBox_TextChanged;
-      nameTextBox.Validating -= nameTextBox_Validating;
-      descriptionTextBox.TextChanged -= descriptionTextBox_TextChanged;
-      ownerComboBox.SelectedIndexChanged -= ownerComboBox_SelectedIndexChanged;
-      startDateTimePicker.ValueChanged -= startDateTimePicker_ValueChanged;
-      endDateTimePicker.ValueChanged -= endDateTimePicker_ValueChanged;
-      indefiniteCheckBox.CheckedChanged -= indefiniteCheckBox_CheckedChanged;
-    }
-
     protected override void OnContentChanged() {
       base.OnContentChanged();
-      DeregisterControlEvents();
+      UpdateView();
+    }
+
+    private void UpdateView() {
       if (Content == null) {
         idTextBox.Clear();
         nameTextBox.Clear();
@@ -93,209 +75,30 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
         idTextBox.Text = Content.Id.ToString();
         nameTextBox.Text = Content.Name;
         descriptionTextBox.Text = Content.Description;
-
-        if (AccessClient.Instance.UsersAndGroups != null) {
-          var users = AccessClient.Instance.UsersAndGroups.OfType<LightweightUser>();
-          if (!Content.ParentProjectId.HasValue) users = users.Where(x => x.Roles.Select(y => y.Name).Contains(HiveRoles.Administrator));
-          var projectOwnerId = Content.OwnerUserId;
-          ownerComboBox.DataSource = users.OrderBy(x => x.UserName).ToList();
-          ownerComboBox.SelectedItem = users.FirstOrDefault(x => x.Id == projectOwnerId);
-        }
-
+        ownerComboBox.SelectedItem = AccessClient.Instance.UsersAndGroups?.OfType<LightweightUser>().SingleOrDefault(x => x.Id == Content.OwnerUserId);
         createdTextBox.Text = Content.DateCreated.ToString("ddd, dd.MM.yyyy, HH:mm:ss");
         startDateTimePicker.Value = Content.StartDate;
-
+        endDateTimePicker.Value = Content.EndDate.GetValueOrDefault(Content.StartDate);
         indefiniteCheckBox.Checked = !Content.EndDate.HasValue;
-        if (!indefiniteCheckBox.Checked) endDateTimePicker.Value = Content.EndDate.Value;
-        else endDateTimePicker.Value = Content.StartDate;
-        endDateTimePicker.Enabled = !indefiniteCheckBox.Checked;
-      }
-      SetEnabledStateOfControls();
-      RegisterControlEvents();
-    }
-
-    protected override void SetEnabledStateOfControls() {
-      base.SetEnabledStateOfControls();
-      bool enabled = Content != null && !Locked && !ReadOnly;
-      nameTextBox.Enabled = enabled;
-      descriptionTextBox.Enabled = enabled;
-      ownerComboBox.Enabled = enabled;
-      createdTextBox.Enabled = enabled;
-      startDateTimePicker.Enabled = enabled;
-      endDateTimePicker.Enabled = enabled && Content.EndDate.HasValue;
-      indefiniteCheckBox.Enabled = enabled;
-
-      if (Content != null) {
-        //var parentProject = HiveAdminClient.Instance.GetAvailableProjectAncestors(Content.Id).LastOrDefault();
-        var parentProject = HiveAdminClient.Instance.Projects.FirstOrDefault(x => x.Id == Content.ParentProjectId);
-        if ((!IsAdmin() && (parentProject == null || parentProject.EndDate.HasValue))
-           || (IsAdmin() && parentProject != null && parentProject.EndDate.HasValue)) {
-          indefiniteCheckBox.Enabled = false;
-        }
-
-        if (Content.Id != Guid.Empty && !IsAdmin() && !HiveAdminClient.Instance.CheckOwnershipOfParentProject(Content, UserInformation.Instance.User.Id)) {
-          ownerComboBox.Enabled = false;
-          startDateTimePicker.Enabled = false;
-          endDateTimePicker.Enabled = false;
-          indefiniteCheckBox.Enabled = false;
-        }
-      }
-    }
-    #endregion
-
-    #region Event Handlers
-    private void Content_PropertyChanged(object sender, PropertyChangedEventArgs e) {
-      if (InvokeRequired) Invoke((Action<object, PropertyChangedEventArgs>)Content_PropertyChanged, sender, e);
-      else OnContentChanged();
-    }
-
-    private void AccessClient_Instance_Refreshing(object sender, EventArgs e) {
-      if (InvokeRequired) Invoke((Action<object, EventArgs>)AccessClient_Instance_Refreshing, sender, e);
-      else {
-        Progress.Show(this, "Refreshing ...", ProgressMode.Indeterminate);
-        SetEnabledStateOfControls();
       }
     }
 
-    private void AccessClient_Instance_Refreshed(object sender, EventArgs e) {
-      if (InvokeRequired) Invoke((Action<object, EventArgs>)AccessClient_Instance_Refreshed, sender, e);
-      else {
-        Progress.Hide(this);
-        SetEnabledStateOfControls();
-      }
+    private async Tpl.Task UpdateUsersAsync() {
+      await Tpl.Task.Run(() => UpdateUsers());
     }
 
-    private async void ProjectView_Load(object sender, EventArgs e) {
-      await SecurityExceptionUtil.TryAsyncAndReportSecurityExceptions(
-        action: () => UpdateUsers(),
-        finallyCallback: () => {
-          ownerComboBox.SelectedIndexChanged -= ownerComboBox_SelectedIndexChanged;
-          var users = AccessClient.Instance.UsersAndGroups.OfType<LightweightUser>();
-          if (Content != null && !Content.ParentProjectId.HasValue) users = users.Where(x => x.Roles.Select(y => y.Name).Contains(HiveRoles.Administrator));
-          var projectOwnerId = Content != null ? Content.OwnerUserId : (Guid?)null;
-          ownerComboBox.DataSource = users.OrderBy(x => x.UserName).ToList();
-          ownerComboBox.SelectedItem = projectOwnerId.HasValue ? users.FirstOrDefault(x => x.Id == projectOwnerId) : null;
-          ownerComboBox.SelectedIndexChanged += ownerComboBox_SelectedIndexChanged;
-        });
-    }
-
-    private void ProjectView_Disposed(object sender, EventArgs e) {
-      AccessClient.Instance.Refreshed -= AccessClient_Instance_Refreshed;
-      AccessClient.Instance.Refreshing -= AccessClient_Instance_Refreshing;
-    }
-
-    private void nameTextBox_Validating(object sender, CancelEventArgs e) {
-      if (string.IsNullOrEmpty(nameTextBox.Text)) {
-        MessageBox.Show(
-          "Project must have a name.",
-          "HeuristicLab Hive Administrator",
-          MessageBoxButtons.OK,
-          MessageBoxIcon.Error);
-        e.Cancel = true;
-      }
-    }
-
-    private void nameTextBox_TextChanged(object sender, EventArgs e) {
-      if (Content != null && Content.Name != nameTextBox.Text) {
-        DeregisterContentEvents();
-        Content.Name = nameTextBox.Text;
-        RegisterContentEvents();
-      }
-    }
-
-    private void descriptionTextBox_TextChanged(object sender, EventArgs e) {
-      if (Content != null && Content.Description != descriptionTextBox.Text) {
-        DeregisterContentEvents();
-        Content.Description = descriptionTextBox.Text;
-        RegisterContentEvents();
-      }
-    }
-
-    private void ownerComboBox_SelectedIndexChanged(object sender, EventArgs e) {
-      var selectedItem = (LightweightUser)ownerComboBox.SelectedItem;
-      var selectedOwnerUserId = selectedItem != null ? selectedItem.Id : Guid.Empty;
-      if (Content != null && Content.OwnerUserId != selectedOwnerUserId) {
-        DeregisterContentEvents();
-        Content.OwnerUserId = selectedOwnerUserId;
-        RegisterContentEvents();
-      }
-    }
-
-    private void startDateTimePicker_ValueChanged(object sender, EventArgs e) {
-      if (Content == null) return;
-      startDateTimePicker.ValueChanged -= startDateTimePicker_ValueChanged;
-
-      if (!IsAdmin()) {
-        var parentProject = HiveAdminClient.Instance.GetAvailableProjectAncestors(Content.Id).LastOrDefault();
-        if (parentProject != null) {
-          if (startDateTimePicker.Value < parentProject.StartDate)
-            startDateTimePicker.Value = parentProject.StartDate;
-        } else {
-          startDateTimePicker.Value = Content.StartDate;
-        }
-      }
-
-      if (!Content.EndDate.HasValue || startDateTimePicker.Value > Content.EndDate)
-        endDateTimePicker.Value = startDateTimePicker.Value;
-      if (Content.StartDate != startDateTimePicker.Value) {
-        DeregisterContentEvents();
-        Content.StartDate = startDateTimePicker.Value;
-        RegisterContentEvents();
-      }
-
-      startDateTimePicker.ValueChanged += startDateTimePicker_ValueChanged;
-    }
-
-    private void endDateTimePicker_ValueChanged(object sender, EventArgs e) {
-      if (Content == null) return;
-      endDateTimePicker.ValueChanged -= endDateTimePicker_ValueChanged;
-
-      if (!IsAdmin()) {
-        var parentProject = HiveAdminClient.Instance.GetAvailableProjectAncestors(Content.Id).LastOrDefault();
-        if (parentProject != null) {
-          if (parentProject.EndDate.HasValue && endDateTimePicker.Value > parentProject.EndDate.Value) {
-            endDateTimePicker.Value = parentProject.EndDate.Value;
-          }
-        } else if (Content.EndDate.HasValue) {
-          endDateTimePicker.Value = Content.EndDate.Value;
-        }
-      }
-
-      if (endDateTimePicker.Value < startDateTimePicker.Value)
-        endDateTimePicker.Value = startDateTimePicker.Value;
-      if (Content.EndDate != endDateTimePicker.Value) {
-        DeregisterContentEvents();
-        Content.EndDate = endDateTimePicker.Value;
-        RegisterContentEvents();
-      }
-
-      endDateTimePicker.ValueChanged += endDateTimePicker_ValueChanged;
-    }
-
-    private void indefiniteCheckBox_CheckedChanged(object sender, EventArgs e) {
-      if (Content == null) return;
-
-      var newEndDate = indefiniteCheckBox.Checked ? (DateTime?)null : endDateTimePicker.Value;
-      endDateTimePicker.Enabled = !indefiniteCheckBox.Checked;
-      if (Content.EndDate != newEndDate) {
-        DeregisterContentEvents();
-        Content.EndDate = newEndDate;
-        RegisterContentEvents();
-      }
-    }
-    #endregion
-
-    #region Helpers
     private void UpdateUsers() {
+      // deregister handler to avoid change of content's owner when data source is updated
+      ownerComboBox.SelectedIndexChanged -= ownerComboBox_SelectedIndexChanged;
       try {
-        AccessClient.Instance.Refresh();
+        ownerComboBox.DataSource = null;
+        SecurityExceptionUtil.TryAndReportSecurityExceptions(AccessClient.Instance.Refresh);
+        ownerComboBox.DataSource = AccessClient.Instance.UsersAndGroups.OfType<LightweightUser>().OrderBy(x => x.UserName).ToList();
       } catch (AnonymousUserException) {
         ShowHiveInformationDialog();
+      } finally {
+        ownerComboBox.SelectedIndexChanged += ownerComboBox_SelectedIndexChanged;
       }
-    }
-
-    private bool IsAdmin() {
-      return HiveRoles.CheckAdminUserPermissions();
     }
 
     private void ShowHiveInformationDialog() {
@@ -305,6 +108,173 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
           dialog.ShowDialog(this);
         }
       }
+    }
+
+    protected override void SetEnabledStateOfControls() {
+      base.SetEnabledStateOfControls();
+
+      bool enabled = Content != null && !Locked && !ReadOnly;
+
+      nameTextBox.Enabled = enabled;
+      descriptionTextBox.Enabled = enabled;
+      ownerComboBox.Enabled = enabled;
+      refreshButton.Enabled = enabled;
+      createdTextBox.Enabled = enabled;
+      startDateTimePicker.Enabled = enabled;
+      endDateTimePicker.Enabled = enabled && Content.EndDate.HasValue && Content.EndDate > Content.StartDate;
+      indefiniteCheckBox.Enabled = enabled;
+
+      if (Content == null) return;
+
+      var parentProject = HiveAdminClient.Instance.Projects.SingleOrDefault(x => x.Id == Content.ParentProjectId);
+      if (parentProject != null && parentProject.EndDate.HasValue)
+        indefiniteCheckBox.Enabled = false;
+
+      if (Content.Id == Guid.Empty) return; // newly created project
+      if (HiveRoles.CheckAdminUserPermissions()) return; // admins can edit any project
+      if (HiveAdminClient.Instance.CheckOwnershipOfParentProject(Content, UserInformation.Instance.User.Id)) return; // owner can edit project
+
+      // project was already created and user is neither admin nor owner
+      ownerComboBox.Enabled = false;
+      startDateTimePicker.Enabled = false;
+      endDateTimePicker.Enabled = false;
+      indefiniteCheckBox.Enabled = false;
+    }
+    #endregion
+
+    #region Event Handlers
+    private void ProjectView_Load(object sender, EventArgs e) {
+      Locked = true;
+      try {
+        UpdateUsers();
+        UpdateView();
+      } finally {
+        Locked = false;
+      }
+    }
+
+    private void Content_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+      UpdateView();
+    }
+
+    private void nameTextBox_TextChanged(object sender, EventArgs e) {
+      if (Content == null || Content.Name == nameTextBox.Text) return;
+      Content.Name = nameTextBox.Text;
+    }
+
+    private void nameTextBox_Validating(object sender, CancelEventArgs e) {
+      if (!string.IsNullOrEmpty(nameTextBox.Text)) return;
+
+      MessageBox.Show("Project must have a name.", "HeuristicLab Hive Administrator", MessageBoxButtons.OK, MessageBoxIcon.Error);
+      e.Cancel = true;
+    }
+
+    private void descriptionTextBox_TextChanged(object sender, EventArgs e) {
+      if (Content == null || Content.Description == descriptionTextBox.Text) return;
+      Content.Description = descriptionTextBox.Text;
+    }
+
+    private void ownerComboBox_SelectedIndexChanged(object sender, EventArgs e) {
+      if (Content == null) return;
+
+      var selectedItem = (LightweightUser)ownerComboBox.SelectedItem;
+      var selectedOwnerUserId = selectedItem != null ? selectedItem.Id : Guid.Empty;
+      if (Content.OwnerUserId == selectedOwnerUserId) return;
+
+      Content.OwnerUserId = selectedOwnerUserId;
+    }
+
+    private async void refreshButton_Click(object sender, EventArgs e) {
+      Locked = true;
+      try {
+        await UpdateUsersAsync();
+        UpdateView();
+      } finally {
+        Locked = false;
+      }
+    }
+
+    private void startDateTimePicker_ValueChanged(object sender, EventArgs e) {
+      if (Content == null || Content.StartDate == startDateTimePicker.Value) return;
+
+      string errorMessage = string.Empty;
+
+      var parentProject = HiveAdminClient.Instance.Projects.SingleOrDefault(x => x.Id == Content.ParentProjectId);
+      if (parentProject != null) {
+        if (startDateTimePicker.Value < parentProject.StartDate) {
+          errorMessage = "Project cannot start before its parent project has started.";
+        } else if (startDateTimePicker.Value > parentProject.EndDate) {
+          errorMessage = "Project cannot start after its parent project has ended.";
+        }
+      }
+
+      if (startDateTimePicker.Value > endDateTimePicker.Value) {
+        errorMessage = "Project cannot start after it ends.";
+      }
+
+      if (!string.IsNullOrEmpty(errorMessage)) {
+        MessageBox.Show(errorMessage, "HeuristicLab Hive Administrator", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        startDateTimePicker.Value = Content.StartDate;
+      }
+
+      Content.StartDate = startDateTimePicker.Value;
+    }
+
+    private void endDateTimePicker_ValueChanged(object sender, EventArgs e) {
+      if (Content == null || Content.EndDate == endDateTimePicker.Value || Content.StartDate == endDateTimePicker.Value) return;
+
+      string errorMessage = string.Empty;
+
+      var parentProject = HiveAdminClient.Instance.Projects.SingleOrDefault(x => x.Id == Content.ParentProjectId);
+      if (parentProject != null) {
+        if (endDateTimePicker.Value > parentProject.EndDate) {
+          errorMessage = "Project cannot end after its parent project has ended.";
+        } else if (endDateTimePicker.Value < parentProject.StartDate) {
+          errorMessage = "Project cannot end before its parent project has started.";
+        }
+      }
+
+      if (endDateTimePicker.Value < startDateTimePicker.Value) {
+        errorMessage = "Project cannot end after it starts.";
+      }
+
+      if (!string.IsNullOrEmpty(errorMessage)) {
+        MessageBox.Show(errorMessage, "HeuristicLab Hive Administrator", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        endDateTimePicker.Value = Content.EndDate.GetValueOrDefault(Content.StartDate);
+      }
+
+      Content.EndDate = endDateTimePicker.Value;
+    }
+
+    private void indefiniteCheckBox_CheckedChanged(object sender, EventArgs e) {
+      if (Content == null) return;
+
+      var newEndDate = indefiniteCheckBox.Checked ? (DateTime?)null : endDateTimePicker.Value;
+
+      if (Content.EndDate == newEndDate) return;
+      Content.EndDate = newEndDate;
+
+      endDateTimePicker.Enabled = !indefiniteCheckBox.Checked;
+    }
+
+    private void AccessClient_Instance_Refreshing(object sender, EventArgs e) {
+      if (InvokeRequired) {
+        Invoke((Action<object, EventArgs>)AccessClient_Instance_Refreshing, sender, e);
+        return;
+      }
+
+      Progress.Show(this, "Refreshing ...", ProgressMode.Indeterminate);
+      SetEnabledStateOfControls();
+    }
+
+    private void AccessClient_Instance_Refreshed(object sender, EventArgs e) {
+      if (InvokeRequired) {
+        Invoke((Action<object, EventArgs>)AccessClient_Instance_Refreshed, sender, e);
+        return;
+      }
+
+      Progress.Hide(this);
+      SetEnabledStateOfControls();
     }
     #endregion
   }

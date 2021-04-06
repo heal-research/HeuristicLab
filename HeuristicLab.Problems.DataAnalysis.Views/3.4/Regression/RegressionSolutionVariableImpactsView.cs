@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using HeuristicLab.Common;
 using HeuristicLab.Data;
 using HeuristicLab.MainForm;
@@ -85,7 +86,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         UpdateVariableImpact();
       }
     }
-    private void RegressionSolutionVariableImpactsView_VisibleChanged(object sender, EventArgs e) {
+
+    protected override void OnVisibleChanged(EventArgs e) {
+      base.OnVisibleChanged(e);
+      if (!this.Visible) {
+        cancellationToken.Cancel();
+      }
+    }
+
+    protected override void OnClosed(FormClosedEventArgs e) {
+      base.OnClosed(e);
       cancellationToken.Cancel();
     }
 
@@ -134,14 +144,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
           .Where(v => problemData.Dataset.VariableHasType<double>(v) || problemData.Dataset.VariableHasType<string>(v))
           .ToList();
 
-        List<Tuple<string, double>> impacts = null;
-        await Task.Run(() => { impacts = CalculateVariableImpacts(originalVariableOrdering, Content.Model, problemData, Content.EstimatedValues, dataPartition, replMethod, factorReplMethod, cancellationToken.Token, progress); });
-        if (impacts == null) { return; }
+        var impacts = await Task.Run(() => CalculateVariableImpacts(originalVariableOrdering, Content.Model, problemData, Content.EstimatedValues, dataPartition, replMethod, factorReplMethod, cancellationToken.Token, progress));
 
         rawVariableImpacts.AddRange(impacts);
         UpdateOrdering();
-      }
-      finally {
+      } catch (OperationCanceledException) {
+      } finally {
         Progress.Hide(this);
       }
     }
@@ -167,7 +175,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       var originalCalculatorValue = RegressionSolutionVariableImpactsCalculator.CalculateQuality(targetValuesPartition, estimatedValuesPartition);
 
       foreach (var variableName in originalVariableOrdering) {
-        if (cancellationToken.Token.IsCancellationRequested) { return null; }
+        token.ThrowIfCancellationRequested();
         progress.ProgressValue = (double)++i / count;
         progress.Message = string.Format("Calculating impact for variable {0} ({1} of {2})", variableName, i, count);
 

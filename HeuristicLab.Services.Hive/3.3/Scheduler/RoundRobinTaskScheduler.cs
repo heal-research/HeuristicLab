@@ -22,84 +22,51 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using HeuristicLab.Services.Hive.DataAccess.Interfaces;
 using DA = HeuristicLab.Services.Hive.DataAccess;
 
 namespace HeuristicLab.Services.Hive {
-  public class RoundRobinTaskScheduler : ITaskScheduler {
-    private IPersistenceManager PersistenceManager {
-      get { return ServiceLocator.Instance.PersistenceManager; }
+  public class RoundRobinTaskScheduler : TaskScheduler {
+    private class TaskPriorityResult {
+      public Guid TaskId { get; set; }
+      public Guid OwnerUserId { get; set; }
     }
 
-    public IEnumerable<TaskInfoForScheduler> Schedule(IEnumerable<TaskInfoForScheduler> tasks, int count = 1) {
-      if (!tasks.Any()) return Enumerable.Empty<TaskInfoForScheduler>();
-
+    protected override IReadOnlyList<Guid> ScheduleInternal(DA.Slave slave, int count) {
       var pm = PersistenceManager;
-      var userPriorityDao = pm.UserPriorityDao;
-      var jobDao = pm.JobDao;
 
-      var userPriorities = pm.UseTransaction(() => userPriorityDao.GetAll()
-        .OrderBy(x => x.DateEnqueued)
-        .ToArray()
-      );
+      var result = pm.DataContext.ExecuteQuery<TaskPriorityResult>(
+        GetHighestPriorityWaitingTasksQuery, slave.ResourceId, count, slave.FreeCores, slave.FreeMemory).ToList();
 
-      var userIds = userPriorities.Select(x => x.UserId).ToList();
-      var jobs = pm.UseTransaction(() => {
-        return jobDao.GetAll()
-          .Where(x => userIds.Contains(x.OwnerUserId))
-          .Select(x => new {
-            Id = x.JobId,
-            DateCreated = x.DateCreated,
-            OwnerUserId = x.OwnerUserId
-          })
-          .ToList();
-      });
-
-      var taskJobRelations = tasks.Join(jobs,
-        task => task.JobId,
-        job => job.Id,
-        (task, job) => new { Task = task, JobInfo = job })
-        .OrderByDescending(x => x.Task.Priority)
-        .ToList();
-
-      var scheduledTasks = new List<TaskInfoForScheduler>();
-      int priorityIndex = 0;
-
-      if (count == 0 || count > taskJobRelations.Count) count = taskJobRelations.Count;
-
-      for (int i = 0; i < count; i++) {
-        var defaultEntry = taskJobRelations.First(); // search first task which is not included yet
-        var priorityEntries = taskJobRelations.Where(x => x.JobInfo.OwnerUserId == userPriorities[priorityIndex].UserId).ToArray(); // search for tasks with desired user priority
-        while (!priorityEntries.Any() && priorityIndex < userPriorities.Length - 1) {
-          priorityIndex++;
-          priorityEntries = taskJobRelations.Where(x => x.JobInfo.OwnerUserId == userPriorities[priorityIndex].UserId).ToArray();
-        }
-        if (priorityEntries.Any()) { // tasks with desired user priority found
-          var priorityEntry = priorityEntries.OrderByDescending(x => x.Task.Priority).ThenBy(x => x.JobInfo.DateCreated).First();
-          if (defaultEntry.Task.Priority <= priorityEntry.Task.Priority) {
-            taskJobRelations.Remove(priorityEntry);
-            scheduledTasks.Add(priorityEntry.Task);
-            UpdateUserPriority(pm, userPriorities[priorityIndex]);
-            priorityIndex++;
-          } else { // there are other tasks with higher priorities
-            taskJobRelations.Remove(defaultEntry);
-            scheduledTasks.Add(defaultEntry.Task);
-          }
-        } else {
-          taskJobRelations.Remove(defaultEntry);
-          scheduledTasks.Add(defaultEntry.Task);
-        }
-        if (priorityIndex >= (userPriorities.Length - 1)) priorityIndex = 0;
+      foreach (var row in result) {
+        pm.DataContext.ExecuteCommand("UPDATE UserPriority SET DateEnqueued = SYSDATETIME() WHERE UserId = {0}", row.OwnerUserId);
       }
-      return scheduledTasks;
 
+      return result.Select(x => x.TaskId).ToArray();
     }
 
-    private void UpdateUserPriority(IPersistenceManager pm, DA.UserPriority up) {
-      pm.UseTransaction(() => {
-        up.DateEnqueued = DateTime.Now;
-        pm.SubmitChanges();
-      });
-    }
+    #region Query Strings
+    private string GetHighestPriorityWaitingTasksQuery = @"
+WITH rbranch AS(
+  SELECT ResourceId, ParentResourceId
+  FROM [Resource]
+  WHERE ResourceId = {0}
+  UNION ALL
+  SELECT r.ResourceId, r.ParentResourceId
+  FROM [Resource] r
+  JOIN rbranch rb ON rb.ParentResourceId = r.ResourceId
+)
+SELECT TOP ({1}) t.TaskId, j.OwnerUserId
+FROM Task t
+  JOIN Job j on t.JobId = j.JobId
+  JOIN AssignedJobResource ajr on j.JobId = ajr.JobId
+  JOIN rbranch on ajr.ResourceId = rbranch.ResourceId
+  JOIN UserPriority u on j.OwnerUserId = u.UserId
+WHERE NOT (t.IsParentTask = 1 AND t.FinishWhenChildJobsFinished = 1)
+AND t.TaskState = 'Waiting'
+AND t.CoresNeeded <= {2}
+AND t.MemoryNeeded <= {3}
+AND j.JobState = 'Online'
+ORDER BY t.Priority DESC, u.DateEnqueued ASC, j.DateCreated ASC";
+    #endregion
   }
 }

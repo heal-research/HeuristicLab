@@ -63,23 +63,23 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       internal TokenType TokenType;
     }
 
-    private class SymbolNameComparer : IEqualityComparer<ISymbol>, IComparer<ISymbol> {
+    private class SymbolComparer : IEqualityComparer<ISymbol>, IComparer<ISymbol> {
       public int Compare(ISymbol x, ISymbol y) {
         return x.Name.CompareTo(y.Name);
       }
 
       public bool Equals(ISymbol x, ISymbol y) {
-        return Compare(x, y) == 0;
+        return x.GetType() == y.GetType();
       }
 
       public int GetHashCode(ISymbol obj) {
-        return obj.Name.GetHashCode();
+        return obj.GetType().GetHashCode();
       }
     }
     // format name <-> symbol 
     // the lookup table is also used in the corresponding formatter
     internal static readonly BidirectionalLookup<string, ISymbol>
-      knownSymbols = new BidirectionalLookup<string, ISymbol>(StringComparer.InvariantCulture, new SymbolNameComparer());
+      knownSymbols = new BidirectionalLookup<string, ISymbol>(StringComparer.InvariantCulture, new SymbolComparer());
 
     private Constant constant = new Constant();
     private Variable variable = new Variable();
