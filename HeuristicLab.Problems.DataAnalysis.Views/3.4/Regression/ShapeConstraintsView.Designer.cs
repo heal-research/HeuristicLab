@@ -53,8 +53,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
             this.components = new System.ComponentModel.Container();
             this.splitContainer = new System.Windows.Forms.SplitContainer();
             this.groupBox = new System.Windows.Forms.GroupBox();
+            this.ConstraintsInputBaseLayout = new System.Windows.Forms.TableLayoutPanel();
             this.constraintsInput = new System.Windows.Forms.TextBox();
             this.parseBtn = new System.Windows.Forms.Button();
+            this.infoTableLayout = new System.Windows.Forms.TableLayoutPanel();
             this.infoLabel = new System.Windows.Forms.Label();
             this.errorOutput = new System.Windows.Forms.Label();
             this.shapeConstraintsView = new HeuristicLab.Core.Views.CheckedItemListView<ShapeConstraint>();
@@ -64,69 +66,102 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
             this.splitContainer.Panel2.SuspendLayout();
             this.splitContainer.SuspendLayout();
             this.groupBox.SuspendLayout();
+            this.ConstraintsInputBaseLayout.SuspendLayout();
+            this.infoTableLayout.SuspendLayout();
             this.SuspendLayout();
             // 
-            // splitContainer1
+            // splitContainer
             // 
             this.splitContainer.Dock = System.Windows.Forms.DockStyle.Fill;
             this.splitContainer.Location = new System.Drawing.Point(0, 0);
-            this.splitContainer.Name = "splitContainer1";
+            this.splitContainer.Name = "splitContainer";
             // 
-            // splitContainer1.Panel1
+            // splitContainer.Panel1
             // 
             this.splitContainer.Panel1.Controls.Add(this.groupBox);
             // 
-            // splitContainer1.Panel2
+            // splitContainer.Panel2
             // 
             this.splitContainer.Panel2.Controls.Add(this.shapeConstraintsView);
             this.splitContainer.Size = new System.Drawing.Size(888, 629);
             this.splitContainer.SplitterDistance = 296;
             this.splitContainer.TabIndex = 0;
             // 
-            // groupBox1
+            // groupBox
             // 
-            this.groupBox.Controls.Add(this.constraintsInput);
-            this.groupBox.Controls.Add(this.parseBtn);
-            this.groupBox.Controls.Add(this.infoLabel);
-            this.groupBox.Controls.Add(this.errorOutput);
+            this.groupBox.Controls.Add(this.ConstraintsInputBaseLayout);
             this.groupBox.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox.Location = new System.Drawing.Point(0, 0);
-            this.groupBox.Name = "groupBox1";
+            this.groupBox.Name = "groupBox";
+            this.groupBox.Padding = new System.Windows.Forms.Padding(7);
             this.groupBox.Size = new System.Drawing.Size(296, 629);
             this.groupBox.TabIndex = 3;
             this.groupBox.TabStop = false;
             this.groupBox.Text = "Constraints Input";
             // 
+            // ConstraintsInputBaseLayout
+            // 
+            this.ConstraintsInputBaseLayout.ColumnCount = 1;
+            this.ConstraintsInputBaseLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.ConstraintsInputBaseLayout.Controls.Add(this.constraintsInput, 0, 1);
+            this.ConstraintsInputBaseLayout.Controls.Add(this.parseBtn, 0, 2);
+            this.ConstraintsInputBaseLayout.Controls.Add(this.infoTableLayout, 0, 0);
+            this.ConstraintsInputBaseLayout.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.ConstraintsInputBaseLayout.Location = new System.Drawing.Point(7, 20);
+            this.ConstraintsInputBaseLayout.Name = "ConstraintsInputBaseLayout";
+            this.ConstraintsInputBaseLayout.RowCount = 3;
+            this.ConstraintsInputBaseLayout.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.ConstraintsInputBaseLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.ConstraintsInputBaseLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
+            this.ConstraintsInputBaseLayout.Size = new System.Drawing.Size(282, 602);
+            this.ConstraintsInputBaseLayout.TabIndex = 6;
+            // 
             // constraintsInput
             // 
-            this.constraintsInput.AcceptsTab = true;
             this.constraintsInput.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.constraintsInput.Location = new System.Drawing.Point(3, 29);
+            this.constraintsInput.Location = new System.Drawing.Point(3, 16);
             this.constraintsInput.Multiline = true;
             this.constraintsInput.Name = "constraintsInput";
             this.constraintsInput.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.constraintsInput.Size = new System.Drawing.Size(290, 561);
-            this.constraintsInput.TabIndex = 2;
+            this.constraintsInput.Size = new System.Drawing.Size(276, 553);
+            this.constraintsInput.TabIndex = 0;
             this.constraintsInput.TextChanged += new System.EventHandler(this.constraintsInput_TextChanged);
             // 
             // parseBtn
             // 
-            this.parseBtn.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.parseBtn.Location = new System.Drawing.Point(3, 590);
+            this.parseBtn.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.parseBtn.Location = new System.Drawing.Point(3, 575);
             this.parseBtn.Name = "parseBtn";
-            this.parseBtn.Size = new System.Drawing.Size(290, 23);
+            this.parseBtn.Size = new System.Drawing.Size(276, 24);
             this.parseBtn.TabIndex = 1;
             this.parseBtn.Text = "Parse Constraints";
             this.parseBtn.UseVisualStyleBackColor = true;
             this.parseBtn.Click += new System.EventHandler(this.parseBtn_Click);
             // 
-            // label1
+            // infoTableLayout
             // 
+            this.infoTableLayout.AutoSize = true;
+            this.infoTableLayout.ColumnCount = 2;
+            this.infoTableLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.infoTableLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 40F));
+            this.infoTableLayout.Controls.Add(this.infoLabel, 1, 0);
+            this.infoTableLayout.Controls.Add(this.errorOutput, 0, 0);
+            this.infoTableLayout.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.infoTableLayout.Location = new System.Drawing.Point(0, 0);
+            this.infoTableLayout.Margin = new System.Windows.Forms.Padding(0);
+            this.infoTableLayout.Name = "infoTableLayout";
+            this.infoTableLayout.RowCount = 1;
+            this.infoTableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.infoTableLayout.Size = new System.Drawing.Size(282, 13);
+            this.infoTableLayout.TabIndex = 2;
+            // 
+            // infoLabel
+            // 
+            this.infoLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.infoLabel.AutoSize = true;
-            this.infoLabel.Dock = System.Windows.Forms.DockStyle.Top;
             this.infoLabel.Image = global::HeuristicLab.Problems.DataAnalysis.Views.Properties.Resources.VS2008ImageLibrary_Annotations_Information;
-            this.infoLabel.Location = new System.Drawing.Point(3, 16);
-            this.infoLabel.Name = "label1";
+            this.infoLabel.Location = new System.Drawing.Point(260, 0);
+            this.infoLabel.Name = "infoLabel";
             this.infoLabel.Size = new System.Drawing.Size(19, 13);
             this.infoLabel.TabIndex = 4;
             this.infoLabel.Text = "    ";
@@ -136,20 +171,19 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
             // errorOutput
             // 
             this.errorOutput.AutoSize = true;
-            this.errorOutput.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.errorOutput.ForeColor = System.Drawing.Color.DarkRed;
-            this.errorOutput.Location = new System.Drawing.Point(3, 613);
-            this.errorOutput.MaximumSize = new System.Drawing.Size(350, 0);
+            this.errorOutput.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.errorOutput.Location = new System.Drawing.Point(3, 0);
             this.errorOutput.Name = "errorOutput";
-            this.errorOutput.Size = new System.Drawing.Size(35, 13);
-            this.errorOutput.TabIndex = 3;
-            this.errorOutput.Text = "label2";
+            this.errorOutput.Size = new System.Drawing.Size(236, 13);
+            this.errorOutput.TabIndex = 5;
+            this.errorOutput.Text = "label1";
             // 
-            // intervalConstraintsView
+            // box1
             // 
+            this.shapeConstraintsView.AutoSize = true;
             this.shapeConstraintsView.Dock = System.Windows.Forms.DockStyle.Fill;
             this.shapeConstraintsView.Location = new System.Drawing.Point(0, 0);
-            this.shapeConstraintsView.Name = "intervalConstraintsView";
+            this.shapeConstraintsView.Name = "box1";
             this.shapeConstraintsView.Size = new System.Drawing.Size(588, 629);
             this.shapeConstraintsView.TabIndex = 2;
             this.shapeConstraintsView.TabStop = false;
@@ -163,10 +197,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
             this.Size = new System.Drawing.Size(888, 629);
             this.splitContainer.Panel1.ResumeLayout(false);
             this.splitContainer.Panel2.ResumeLayout(false);
+            this.splitContainer.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).EndInit();
             this.splitContainer.ResumeLayout(false);
             this.groupBox.ResumeLayout(false);
-            this.groupBox.PerformLayout();
+            this.ConstraintsInputBaseLayout.ResumeLayout(false);
+            this.ConstraintsInputBaseLayout.PerformLayout();
+            this.infoTableLayout.ResumeLayout(false);
+            this.infoTableLayout.PerformLayout();
             this.ResumeLayout(false);
 
     }
@@ -174,11 +212,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
 
     private System.Windows.Forms.SplitContainer splitContainer;
     private System.Windows.Forms.GroupBox groupBox;
-    private System.Windows.Forms.Button parseBtn;
     private HeuristicLab.Core.Views.CheckedItemListView<ShapeConstraint> shapeConstraintsView;
-    private System.Windows.Forms.TextBox constraintsInput;
-    private Label errorOutput;
     private Label infoLabel;
     protected ToolTip toolTip;
-    }
+    private TableLayoutPanel ConstraintsInputBaseLayout;
+    private TextBox constraintsInput;
+    private Button parseBtn;
+    private Label errorOutput;
+    private TableLayoutPanel infoTableLayout;
+  }
 }
