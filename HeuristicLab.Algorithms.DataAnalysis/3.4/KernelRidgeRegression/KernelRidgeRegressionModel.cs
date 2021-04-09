@@ -107,7 +107,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
           y[i] *= model.yScale;
         }
         // cholesky decomposition
-        var res = alglib.trfac.spdmatrixcholesky(ref l, n, false);
+        var res = alglib.trfac.spdmatrixcholesky(ref l, n, false, null);
         if (res == false) { //try lua decomposition if cholesky faild
           int[] pivots;
           var lua = new double[n, n];

@@ -320,7 +320,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       }
 
       // cholesky decomposition
-      var res = alglib.trfac.spdmatrixcholesky(ref l, n, false);
+      var res = alglib.trfac.spdmatrixcholesky(ref l, n, false, null);
       if (!res) throw new ArgumentException("Matrix is not positive semidefinite");
       return l;
     }
@@ -411,7 +411,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         }
 
         // for stddev 
-        alglib.ablas.rmatrixlefttrsm(n, newN, l, 0, 0, false, false, 0, ref sWKs, 0, 0);
+        alglib.ablas.rmatrixlefttrsm(n, newN, l, 0, 0, false, false, 0, sWKs, 0, 0, null);
 
         for (int i = 0; i < newN; i++) {
           var col = Util.GetCol(sWKs, i).ToArray();

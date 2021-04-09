@@ -19,6 +19,7 @@
  */
 #endregion
 
+extern alias alglib_3_7;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,12 +32,20 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   /// <summary>
   /// Represents a neural network model for regression and classification
   /// </summary>
-  [StorableType("AEB9B960-FCA6-4A6D-BD5F-27BCE9CC5BEA")]
+  [StorableType("DABDBD64-E93B-4F50-A343-C8A92C1C48A4")]
   [Item("NeuralNetworkModel", "Represents a neural network for regression and classification.")]
   public sealed class NeuralNetworkModel : ClassificationModel, INeuralNetworkModel {
 
     private object mlpLocker = new object();
+
+
+
     private alglib.multilayerperceptron multiLayerPerceptron;
+    [Storable]
+    private string SerializedMultiLayerPerceptron {
+      get { alglib.mlpserialize(multiLayerPerceptron, out var ser); return ser; }
+      set { if (value != null) alglib.mlpunserialize(value, out multiLayerPerceptron); }
+    }
 
     public override IEnumerable<string> VariablesUsedForPrediction {
       get { return allowedInputVariables; }
@@ -47,23 +56,11 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     [Storable]
     private double[] classValues;
     [StorableConstructor]
-    private NeuralNetworkModel(StorableConstructorFlag _) : base(_) {
-      multiLayerPerceptron = new alglib.multilayerperceptron();
-    }
+    private NeuralNetworkModel(StorableConstructorFlag _) : base(_) { }
     private NeuralNetworkModel(NeuralNetworkModel original, Cloner cloner)
       : base(original, cloner) {
-      multiLayerPerceptron = new alglib.multilayerperceptron();
-      multiLayerPerceptron.innerobj.chunks = (double[,])original.multiLayerPerceptron.innerobj.chunks.Clone();
-      multiLayerPerceptron.innerobj.columnmeans = (double[])original.multiLayerPerceptron.innerobj.columnmeans.Clone();
-      multiLayerPerceptron.innerobj.columnsigmas = (double[])original.multiLayerPerceptron.innerobj.columnsigmas.Clone();
-      multiLayerPerceptron.innerobj.derror = (double[])original.multiLayerPerceptron.innerobj.derror.Clone();
-      multiLayerPerceptron.innerobj.dfdnet = (double[])original.multiLayerPerceptron.innerobj.dfdnet.Clone();
-      multiLayerPerceptron.innerobj.neurons = (double[])original.multiLayerPerceptron.innerobj.neurons.Clone();
-      multiLayerPerceptron.innerobj.nwbuf = (double[])original.multiLayerPerceptron.innerobj.nwbuf.Clone();
-      multiLayerPerceptron.innerobj.structinfo = (int[])original.multiLayerPerceptron.innerobj.structinfo.Clone();
-      multiLayerPerceptron.innerobj.weights = (double[])original.multiLayerPerceptron.innerobj.weights.Clone();
-      multiLayerPerceptron.innerobj.x = (double[])original.multiLayerPerceptron.innerobj.x.Clone();
-      multiLayerPerceptron.innerobj.y = (double[])original.multiLayerPerceptron.innerobj.y.Clone();
+      if (original.multiLayerPerceptron != null)
+        multiLayerPerceptron = (alglib.multilayerperceptron)original.multiLayerPerceptron.make_copy();
       allowedInputVariables = (string[])original.allowedInputVariables.Clone();
       if (original.classValues != null)
         this.classValues = (double[])original.classValues.Clone();
@@ -72,7 +69,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       : base(targetVariable) {
       this.name = ItemName;
       this.description = ItemDescription;
-      this.multiLayerPerceptron = multiLayerPerceptron;
+      this.multiLayerPerceptron = (alglib.multilayerperceptron)multiLayerPerceptron.make_copy();
       this.allowedInputVariables = allowedInputVariables.ToArray();
       if (classValues != null)
         this.classValues = (double[])classValues.Clone();
@@ -94,7 +91,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         for (int column = 0; column < columns; column++) {
           x[column] = inputData[row, column];
         }
-        // NOTE: mlpprocess changes data in multiLayerPerceptron and is therefore not thread-save!
+        // NOTE: mlpprocess changes data in multiLayerPerceptron and is therefore not thread-safe!
         lock (mlpLocker) {
           alglib.mlpprocess(multiLayerPerceptron, x, ref y);
         }
@@ -114,7 +111,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         for (int column = 0; column < columns; column++) {
           x[column] = inputData[row, column];
         }
-        // NOTE: mlpprocess changes data in multiLayerPerceptron and is therefore not thread-save!
+        // NOTE: mlpprocess changes data in multiLayerPerceptron and is therefore not thread-safe!
         lock (mlpLocker) {
           alglib.mlpprocess(multiLayerPerceptron, x, ref y);
         }
@@ -155,107 +152,5 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     public override IClassificationSolution CreateClassificationSolution(IClassificationProblemData problemData) {
       return new NeuralNetworkClassificationSolution(this, new ClassificationProblemData(problemData));
     }
-
-    #region persistence
-    [Storable]
-    private double[,] MultiLayerPerceptronChunks {
-      get {
-        return multiLayerPerceptron.innerobj.chunks;
-      }
-      set {
-        multiLayerPerceptron.innerobj.chunks = value;
-      }
-    }
-    [Storable]
-    private double[] MultiLayerPerceptronColumnMeans {
-      get {
-        return multiLayerPerceptron.innerobj.columnmeans;
-      }
-      set {
-        multiLayerPerceptron.innerobj.columnmeans = value;
-      }
-    }
-    [Storable]
-    private double[] MultiLayerPerceptronColumnSigmas {
-      get {
-        return multiLayerPerceptron.innerobj.columnsigmas;
-      }
-      set {
-        multiLayerPerceptron.innerobj.columnsigmas = value;
-      }
-    }
-    [Storable]
-    private double[] MultiLayerPerceptronDError {
-      get {
-        return multiLayerPerceptron.innerobj.derror;
-      }
-      set {
-        multiLayerPerceptron.innerobj.derror = value;
-      }
-    }
-    [Storable]
-    private double[] MultiLayerPerceptronDfdnet {
-      get {
-        return multiLayerPerceptron.innerobj.dfdnet;
-      }
-      set {
-        multiLayerPerceptron.innerobj.dfdnet = value;
-      }
-    }
-    [Storable]
-    private double[] MultiLayerPerceptronNeurons {
-      get {
-        return multiLayerPerceptron.innerobj.neurons;
-      }
-      set {
-        multiLayerPerceptron.innerobj.neurons = value;
-      }
-    }
-    [Storable]
-    private double[] MultiLayerPerceptronNwbuf {
-      get {
-        return multiLayerPerceptron.innerobj.nwbuf;
-      }
-      set {
-        multiLayerPerceptron.innerobj.nwbuf = value;
-      }
-    }
-    [Storable]
-    private int[] MultiLayerPerceptronStuctinfo {
-      get {
-        return multiLayerPerceptron.innerobj.structinfo;
-      }
-      set {
-        multiLayerPerceptron.innerobj.structinfo = value;
-      }
-    }
-    [Storable]
-    private double[] MultiLayerPerceptronWeights {
-      get {
-        return multiLayerPerceptron.innerobj.weights;
-      }
-      set {
-        multiLayerPerceptron.innerobj.weights = value;
-      }
-    }
-    [Storable]
-    private double[] MultiLayerPerceptronX {
-      get {
-        return multiLayerPerceptron.innerobj.x;
-      }
-      set {
-        multiLayerPerceptron.innerobj.x = value;
-      }
-    }
-    [Storable]
-    private double[] MultiLayerPerceptronY {
-      get {
-        return multiLayerPerceptron.innerobj.y;
-      }
-      set {
-        multiLayerPerceptron.innerobj.y = value;
-      }
-    }
-    #endregion
   }
 }

@@ -30,266 +30,177 @@ namespace HeuristicLab.Algorithms.GradientDescent {
   [StorableType("2A117076-0311-4F85-A1B9-16F39D5752DE")]
   [Item("LbfgsState", "Internal state for the limited-memory BFGS optimization algorithm.")]
   public sealed class LbfgsState : Item {
-    private alglib.minlbfgs.minlbfgsstate state;
-    public alglib.minlbfgs.minlbfgsstate State { get { return state; } }
+    private alglib.minlbfgsstate state;
+    public alglib.minlbfgsstate State { get { return state; } }
 
     [StorableConstructor]
-    private LbfgsState(StorableConstructorFlag _) : base(_) {
-      state = new alglib.minlbfgs.minlbfgsstate();
-    }
+    private LbfgsState(StorableConstructorFlag _) : base(_) { state = new alglib.minlbfgsstate(); }
     private LbfgsState(LbfgsState original, Cloner cloner)
       : base(original, cloner) {
-      this.state = new alglib.minlbfgs.minlbfgsstate();
-      this.state.autobuf = CopyArray(original.state.autobuf);
-      this.state.d = CopyArray(original.state.d);
-      this.state.denseh = CopyArray(original.state.denseh);
-      this.state.diagh = CopyArray(original.state.diagh);
-      this.state.diffstep = original.state.diffstep;
-      this.state.epsf = original.state.epsf;
-      this.state.epsg = original.state.epsg;
-      this.state.epsx = original.state.epsx;
-      this.state.f = original.state.f;
-      this.state.fbase = original.state.fbase;
-      this.state.fm1 = original.state.fm1;
-      this.state.fm2 = original.state.fm2;
-      this.state.fold = original.state.fold;
-      this.state.fp1 = original.state.fp1;
-      this.state.fp2 = original.state.fp1;
-      this.state.g = CopyArray(original.state.g);
-      this.state.gammak = original.state.gammak;
-      this.state.k = original.state.k;
-
-      this.state.lstate.brackt = original.state.lstate.brackt;
-      this.state.lstate.dg = original.state.lstate.dg;
-      this.state.lstate.dginit = original.state.lstate.dginit;
-      this.state.lstate.dgm = original.state.lstate.dgm;
-      this.state.lstate.dgtest = original.state.lstate.dgtest;
-      this.state.lstate.dgx = original.state.lstate.dgx;
-      this.state.lstate.dgxm = original.state.lstate.dgxm;
-      this.state.lstate.dgy = original.state.lstate.dgy;
-      this.state.lstate.dgym = original.state.lstate.dgym;
-      this.state.lstate.finit = original.state.lstate.finit;
-      this.state.lstate.fm = original.state.lstate.fm;
-      this.state.lstate.ftest1 = original.state.lstate.ftest1;
-      this.state.lstate.fx = original.state.lstate.fx;
-      this.state.lstate.fxm = original.state.lstate.fxm;
-      this.state.lstate.fy = original.state.lstate.fy;
-      this.state.lstate.fym = original.state.lstate.fym;
-      this.state.lstate.infoc = original.state.lstate.infoc;
-      this.state.lstate.stage1 = original.state.lstate.stage1;
-      this.state.lstate.stmax = original.state.lstate.stmax;
-      this.state.lstate.stmin = original.state.lstate.stmin;
-      this.state.lstate.stx = original.state.lstate.stx;
-      this.state.lstate.sty = original.state.lstate.sty;
-      this.state.lstate.width = original.state.lstate.width;
-      this.state.lstate.width1 = original.state.lstate.width1;
-      this.state.lstate.xtrapf = original.state.lstate.xtrapf;
-
-      this.state.m = original.state.m;
-      this.state.maxits = original.state.maxits;
-      this.state.mcstage = original.state.mcstage;
-      this.state.n = original.state.n;
-      this.state.needf = original.state.needf;
-      this.state.needfg = original.state.needfg;
-      this.state.nfev = original.state.nfev;
-      this.state.p = original.state.p;
-      this.state.prectype = original.state.prectype;
-      this.state.q = original.state.q;
-      this.state.repiterationscount = original.state.repiterationscount;
-      this.state.repnfev = original.state.repnfev;
-      this.state.repterminationtype = original.state.repterminationtype;
-      this.state.rho = CopyArray(original.state.rho);
-      this.state.rstate.ba = CopyArray(original.state.rstate.ba);
-      this.state.rstate.ca = CopyArray(original.state.rstate.ca);
-      this.state.rstate.ia = CopyArray(original.state.rstate.ia);
-      this.state.rstate.ra = CopyArray(original.state.rstate.ra);
-      this.state.rstate.stage = original.state.rstate.stage;
-
-      this.state.s = CopyArray(original.state.s);
-      this.state.sk = CopyArray(original.state.sk);
-      this.state.stp = original.state.stp;
-      this.state.stpmax = original.state.stpmax;
-      this.state.theta = CopyArray(original.state.theta);
-      this.state.trimthreshold = original.state.trimthreshold;
-      this.state.work = CopyArray(original.state.work);
-      this.state.x = CopyArray(original.state.x);
-      this.state.xrep = original.state.xrep;
-      this.state.xupdated = original.state.xupdated;
-      this.state.yk = CopyArray(original.state.yk);
+      if (original.state != null)
+        this.state = (alglib.minlbfgsstate)original.state.make_copy();
     }
 
-    public LbfgsState(alglib.minlbfgs.minlbfgsstate state)
+    public LbfgsState(alglib.minlbfgsstate state)
       : base() {
-      this.state = state;
+      this.state = (alglib.minlbfgsstate)state.make_copy();
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new LbfgsState(this, cloner);
     }
 
-
-    private T[] CopyArray<T>(T[] a) {
-      var c = new T[a.Length];
-      Array.Copy(a, c, c.Length);
-      return c;
-    }
-    private T[,] CopyArray<T>(T[,] a) {
-      var c = new T[a.GetLength(0), a.GetLength(1)];
-      Array.Copy(a, c, c.Length);
-      return c;
-    }
-
     #region persistence
     [Storable]
-    private double[] Autobuf { get { return state.autobuf; } set { state.autobuf = value; } }
+    private double[] Autobuf { get { return state.innerobj.autobuf; } set { state.innerobj.autobuf = value; } }
     [Storable]
-    private double[] D { get { return state.d; } set { state.d = value; } }
+    private double[] D { get { return state.innerobj.d; } set { state.innerobj.d = value; } }
     [Storable]
-    private double[,] Denseh { get { return state.denseh; } set { state.denseh = value; } }
+    private double[,] Denseh { get { return state.innerobj.denseh; } set { state.innerobj.denseh = value; } }
     [Storable]
-    private double[] Diagh { get { return state.diagh; } set { state.diagh = value; } }
+    private double[] Diagh { get { return state.innerobj.diagh; } set { state.innerobj.diagh = value; } }
     [Storable]
-    private double Diffstep { get { return state.diffstep; } set { state.diffstep = value; } }
+    private double Diffstep { get { return state.innerobj.diffstep; } set { state.innerobj.diffstep = value; } }
     [Storable]
-    private double Epsf { get { return state.epsf; } set { state.epsf = value; } }
+    private double Epsf { get { return state.innerobj.epsf; } set { state.innerobj.epsf = value; } }
     [Storable]
-    private double Epsg { get { return state.epsg; } set { state.epsg = value; } }
+    private double Epsg { get { return state.innerobj.epsg; } set { state.innerobj.epsg = value; } }
     [Storable]
-    private double Epsx { get { return state.epsx; } set { state.epsx = value; } }
+    private double Epsx { get { return state.innerobj.epsx; } set { state.innerobj.epsx = value; } }
     [Storable]
-    private double F { get { return state.f; } set { state.f = value; } }
+    private double F { get { return state.innerobj.f; } set { state.innerobj.f = value; } }
     [Storable]
-    private double Fbase { get { return state.fbase; } set { state.fbase = value; } }
+    private double Fbase { get { return state.innerobj.fbase; } set { state.innerobj.fbase = value; } }
     [Storable]
-    private double Fm1 { get { return state.fm1; } set { state.fm1 = value; } }
+    private double Fm1 { get { return state.innerobj.fm1; } set { state.innerobj.fm1 = value; } }
     [Storable]
-    private double Fm2 { get { return state.fm2; } set { state.fm2 = value; } }
+    private double Fm2 { get { return state.innerobj.fm2; } set { state.innerobj.fm2 = value; } }
     [Storable]
-    private double Fold { get { return state.fold; } set { state.fold = value; } }
+    private double Fold { get { return state.innerobj.fold; } set { state.innerobj.fold = value; } }
     [Storable]
-    private double Fp1 { get { return state.fp1; } set { state.fp1 = value; } }
+    private double Fp1 { get { return state.innerobj.fp1; } set { state.innerobj.fp1 = value; } }
     [Storable]
-    private double Fp2 { get { return state.fp2; } set { state.fp2 = value; } }
+    private double Fp2 { get { return state.innerobj.fp2; } set { state.innerobj.fp2 = value; } }
     [Storable]
-    private double[] G { get { return state.g; } set { state.g = value; } }
+    private double[] G { get { return state.innerobj.g; } set { state.innerobj.g = value; } }
     [Storable]
-    private double Gammak { get { return state.gammak; } set { state.gammak = value; } }
+    private double Gammak { get { return state.innerobj.gammak; } set { state.innerobj.gammak = value; } }
     [Storable]
-    private int K { get { return state.k; } set { state.k = value; } }
+    private int K { get { return state.innerobj.k; } set { state.innerobj.k = value; } }
     [Storable]
-    private bool LstateBrackt { get { return state.lstate.brackt; } set { state.lstate.brackt = value; } }
+    private bool LstateBrackt { get { return state.innerobj.lstate.brackt; } set { state.innerobj.lstate.brackt = value; } }
     [Storable]
-    private double LstateDg { get { return state.lstate.dg; } set { state.lstate.dg = value; } }
+    private double LstateDg { get { return state.innerobj.lstate.dg; } set { state.innerobj.lstate.dg = value; } }
     [Storable]
-    private double LstateDginit { get { return state.lstate.dginit; } set { state.lstate.dginit = value; } }
+    private double LstateDginit { get { return state.innerobj.lstate.dginit; } set { state.innerobj.lstate.dginit = value; } }
     [Storable]
-    private double LstateDgm { get { return state.lstate.dgm; } set { state.lstate.dgm = value; } }
+    private double LstateDgm { get { return state.innerobj.lstate.dgm; } set { state.innerobj.lstate.dgm = value; } }
     [Storable]
-    private double LstateDgtest { get { return state.lstate.dgtest; } set { state.lstate.dgtest = value; } }
+    private double LstateDgtest { get { return state.innerobj.lstate.dgtest; } set { state.innerobj.lstate.dgtest = value; } }
     [Storable]
-    private double LstateDgx { get { return state.lstate.dgx; } set { state.lstate.dgx = value; } }
+    private double LstateDgx { get { return state.innerobj.lstate.dgx; } set { state.innerobj.lstate.dgx = value; } }
     [Storable]
-    private double LstateDgxm { get { return state.lstate.dgxm; } set { state.lstate.dgxm = value; } }
+    private double LstateDgxm { get { return state.innerobj.lstate.dgxm; } set { state.innerobj.lstate.dgxm = value; } }
     [Storable]
-    private double LstateDgy { get { return state.lstate.dgy; } set { state.lstate.dgy = value; } }
+    private double LstateDgy { get { return state.innerobj.lstate.dgy; } set { state.innerobj.lstate.dgy = value; } }
     [Storable]
-    private double LstateDgym { get { return state.lstate.dgym; } set { state.lstate.dgym = value; } }
+    private double LstateDgym { get { return state.innerobj.lstate.dgym; } set { state.innerobj.lstate.dgym = value; } }
     [Storable]
-    private double LstateFinit { get { return state.lstate.finit; } set { state.lstate.finit = value; } }
+    private double LstateFinit { get { return state.innerobj.lstate.finit; } set { state.innerobj.lstate.finit = value; } }
     [Storable]
-    private double LstateFm { get { return state.lstate.fm; } set { state.lstate.fm = value; } }
+    private double LstateFm { get { return state.innerobj.lstate.fm; } set { state.innerobj.lstate.fm = value; } }
     [Storable]
-    private double LstateFtest1 { get { return state.lstate.ftest1; } set { state.lstate.ftest1 = value; } }
+    private double LstateFtest1 { get { return state.innerobj.lstate.ftest1; } set { state.innerobj.lstate.ftest1 = value; } }
     [Storable]
-    private double LstateFx { get { return state.lstate.fx; } set { state.lstate.fx = value; } }
+    private double LstateFx { get { return state.innerobj.lstate.fx; } set { state.innerobj.lstate.fx = value; } }
     [Storable]
-    private double LstateFxm { get { return state.lstate.fxm; } set { state.lstate.fxm = value; } }
+    private double LstateFxm { get { return state.innerobj.lstate.fxm; } set { state.innerobj.lstate.fxm = value; } }
     [Storable]
-    private double LstateFy { get { return state.lstate.fy; } set { state.lstate.fy = value; } }
+    private double LstateFy { get { return state.innerobj.lstate.fy; } set { state.innerobj.lstate.fy = value; } }
     [Storable]
-    private double LstateFym { get { return state.lstate.fym; } set { state.lstate.fym = value; } }
+    private double LstateFym { get { return state.innerobj.lstate.fym; } set { state.innerobj.lstate.fym = value; } }
     [Storable]
-    private int LstateInfoc { get { return state.lstate.infoc; } set { state.lstate.infoc = value; } }
+    private int LstateInfoc { get { return state.innerobj.lstate.infoc; } set { state.innerobj.lstate.infoc = value; } }
     [Storable]
-    private bool LstateStage1 { get { return state.lstate.stage1; } set { state.lstate.stage1 = value; } }
+    private bool LstateStage1 { get { return state.innerobj.lstate.stage1; } set { state.innerobj.lstate.stage1 = value; } }
     [Storable]
-    private double LstateStmax { get { return state.lstate.stmax; } set { state.lstate.stmax = value; } }
+    private double LstateStmax { get { return state.innerobj.lstate.stmax; } set { state.innerobj.lstate.stmax = value; } }
     [Storable]
-    private double LstateStmin { get { return state.lstate.stmin; } set { state.lstate.stmin = value; } }
+    private double LstateStmin { get { return state.innerobj.lstate.stmin; } set { state.innerobj.lstate.stmin = value; } }
     [Storable]
-    private double LstateStx { get { return state.lstate.stx; } set { state.lstate.stx = value; } }
+    private double LstateStx { get { return state.innerobj.lstate.stx; } set { state.innerobj.lstate.stx = value; } }
     [Storable]
-    private double LstateSty { get { return state.lstate.sty; } set { state.lstate.sty = value; } }
+    private double LstateSty { get { return state.innerobj.lstate.sty; } set { state.innerobj.lstate.sty = value; } }
     [Storable]
-    private double LstateWidth { get { return state.lstate.width; } set { state.lstate.width = value; } }
+    private double LstateWidth { get { return state.innerobj.lstate.width; } set { state.innerobj.lstate.width = value; } }
     [Storable]
-    private double LstateWidth1 { get { return state.lstate.width1; } set { state.lstate.width1 = value; } }
+    private double LstateWidth1 { get { return state.innerobj.lstate.width1; } set { state.innerobj.lstate.width1 = value; } }
     [Storable]
-    private double LstateXtrapf { get { return state.lstate.xtrapf; } set { state.lstate.xtrapf = value; } }
+    private double LstateXtrapf { get { return state.innerobj.lstate.xtrapf; } set { state.innerobj.lstate.xtrapf = value; } }
 
     [Storable]
-    private int M { get { return state.m; } set { state.m = value; } }
+    private int M { get { return state.innerobj.m; } set { state.innerobj.m = value; } }
     [Storable]
-    private int MaxIts { get { return state.maxits; } set { state.maxits = value; } }
+    private int MaxIts { get { return state.innerobj.maxits; } set { state.innerobj.maxits = value; } }
     [Storable]
-    private int Mcstage { get { return state.mcstage; } set { state.mcstage = value; } }
+    private int Mcstage { get { return state.innerobj.mcstage; } set { state.innerobj.mcstage = value; } }
     [Storable]
-    private int N { get { return state.n; } set { state.n = value; } }
+    private int N { get { return state.innerobj.n; } set { state.innerobj.n = value; } }
     [Storable]
-    private bool Needf { get { return state.needf; } set { state.needf = value; } }
+    private bool Needf { get { return state.innerobj.needf; } set { state.innerobj.needf = value; } }
     [Storable]
-    private bool Needfg { get { return state.needfg; } set { state.needfg = value; } }
+    private bool Needfg { get { return state.innerobj.needfg; } set { state.innerobj.needfg = value; } }
     [Storable]
-    private int Nfev { get { return state.nfev; } set { state.nfev = value; } }
+    private int Nfev { get { return state.innerobj.nfev; } set { state.innerobj.nfev = value; } }
     [Storable]
-    private int P { get { return state.p; } set { state.p = value; } }
+    private int P { get { return state.innerobj.p; } set { state.innerobj.p = value; } }
     [Storable]
-    private int Prectype { get { return state.prectype; } set { state.prectype = value; } }
+    private int Prectype { get { return state.innerobj.prectype; } set { state.innerobj.prectype = value; } }
     [Storable]
-    private int Q { get { return state.q; } set { state.q = value; } }
+    private int Q { get { return state.innerobj.q; } set { state.innerobj.q = value; } }
     [Storable]
-    private int Repiterationscount { get { return state.repiterationscount; } set { state.repiterationscount = value; } }
+    private int Repiterationscount { get { return state.innerobj.repiterationscount; } set { state.innerobj.repiterationscount = value; } }
     [Storable]
-    private int Repnfev { get { return state.repnfev; } set { state.repnfev = value; } }
+    private int Repnfev { get { return state.innerobj.repnfev; } set { state.innerobj.repnfev = value; } }
     [Storable]
-    private int Repterminationtype { get { return state.repterminationtype; } set { state.repterminationtype = value; } }
+    private int Repterminationtype { get { return state.innerobj.repterminationtype; } set { state.innerobj.repterminationtype = value; } }
     [Storable]
-    private double[] Rho { get { return state.rho; } set { state.rho = value; } }
+    private double[] Rho { get { return state.innerobj.rho; } set { state.innerobj.rho = value; } }
     [Storable]
-    private bool[] RstateBa { get { return state.rstate.ba; } set { state.rstate.ba = value; } }
+    private bool[] RstateBa { get { return state.innerobj.rstate.ba; } set { state.innerobj.rstate.ba = value; } }
     [Storable]
     private IList<Tuple<double, double>> RStateCa {
-      get { return state.rstate.ca.Select(c => Tuple.Create(c.x, c.y)).ToList(); }
-      set { state.rstate.ca = value.Select(t => new alglib.complex(t.Item1, t.Item2)).ToArray(); }
+      get { return state.innerobj.rstate.ca.Select(c => Tuple.Create(c.x, c.y)).ToList(); }
+      set { state.innerobj.rstate.ca = value.Select(t => new alglib.complex(t.Item1, t.Item2)).ToArray(); }
     }
     [Storable]
-    private int[] RstateIa { get { return state.rstate.ia; } set { state.rstate.ia = value; } }
+    private int[] RstateIa { get { return state.innerobj.rstate.ia; } set { state.innerobj.rstate.ia = value; } }
     [Storable]
-    private double[] RstateRa { get { return state.rstate.ra; } set { state.rstate.ra = value; } }
+    private double[] RstateRa { get { return state.innerobj.rstate.ra; } set { state.innerobj.rstate.ra = value; } }
     [Storable]
-    private int RstateStage { get { return state.rstate.stage; } set { state.rstate.stage = value; } }
+    private int RstateStage { get { return state.innerobj.rstate.stage; } set { state.innerobj.rstate.stage = value; } }
     [Storable]
-    private double[] S { get { return state.s; } set { state.s = value; } }
+    private double[] S { get { return state.innerobj.s; } set { state.innerobj.s = value; } }
     [Storable]
-    private double[,] Sk { get { return state.sk; } set { state.sk = value; } }
+    private double[,] Sk { get { return state.innerobj.sk; } set { state.innerobj.sk = value; } }
     [Storable]
-    private double Stp { get { return state.stp; } set { state.stp = value; } }
+    private double Stp { get { return state.innerobj.stp; } set { state.innerobj.stp = value; } }
     [Storable]
-    private double Stpmax { get { return state.stpmax; } set { state.stpmax = value; } }
+    private double Stpmax { get { return state.innerobj.stpmax; } set { state.innerobj.stpmax = value; } }
     [Storable]
-    private double[] Theta { get { return state.theta; } set { state.theta = value; } }
+    private double[] Theta { get { return state.innerobj.theta; } set { state.innerobj.theta = value; } }
     [Storable]
-    private double Trimthreshold { get { return state.trimthreshold; } set { state.trimthreshold = value; } }
+    private double Trimthreshold { get { return state.innerobj.trimthreshold; } set { state.innerobj.trimthreshold = value; } }
     [Storable]
-    private double[] Work { get { return state.work; } set { state.work = value; } }
+    private double[] Work { get { return state.innerobj.work; } set { state.innerobj.work = value; } }
     [Storable]
-    private double[] X { get { return state.x; } set { state.x = value; } }
+    private double[] X { get { return state.innerobj.x; } set { state.innerobj.x = value; } }
     [Storable]
-    private bool Xrep { get { return state.xrep; } set { state.xrep = value; } }
+    private bool Xrep { get { return state.innerobj.xrep; } set { state.innerobj.xrep = value; } }
     [Storable]
-    private bool Xupdated { get { return state.xupdated; } set { state.xupdated = value; } }
+    private bool Xupdated { get { return state.innerobj.xupdated; } set { state.innerobj.xupdated = value; } }
     [Storable]
-    private double[,] Yk { get { return state.yk; } set { state.yk = value; } }
+    private double[,] Yk { get { return state.innerobj.yk; } set { state.innerobj.yk = value; } }
     #endregion
   }
 }

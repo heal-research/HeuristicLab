@@ -120,14 +120,13 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
       int nl = xs.Length;
       // mu is generated from same distribution as x
       double[] mu = Enumerable.Range(0, nl).Select(_ => random.NextDouble() * 2 - 1).ToArray();
-      double[,] v = new double[nl, nl];
       var condNum = 4.0 / 0.01; // as given in the paper for max and min eigen values
 
       // temporarily use different random number generator in alglib
       var curRand = alglib.math.rndobject;
       alglib.math.rndobject = new System.Random(random.Next());
 
-      alglib.matgen.spdmatrixrndcond(nl, condNum, ref v);
+      alglib.spdmatrixrndcond(nl, condNum, out var v);
       // restore
       alglib.math.rndobject = curRand;
 
@@ -136,7 +135,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
       var y = new double[nl];
       for (int i = 0; i < nRows; i++) {
         for (int j = 0; j < nl; j++) z[j] = xs[j][i] - mu[j];
-        alglib.ablas.rmatrixmv(nl, nl, v, 0, 0, 0, z, 0, ref y, 0);
+        alglib.rmatrixmv(nl, nl, v, 0, 0, 0, z, 0, ref y, 0);
 
         // dot prod
         var s = 0.0;

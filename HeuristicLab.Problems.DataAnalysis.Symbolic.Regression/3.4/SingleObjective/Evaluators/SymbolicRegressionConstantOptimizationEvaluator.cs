@@ -269,7 +269,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
 
       try {
         alglib.lsfitcreatefg(x, y, c, n, m, k, false, out state);
-        alglib.lsfitsetcond(state, 0.0, 0.0, maxIterations);
+        alglib.lsfitsetcond(state, 0.0, maxIterations);
         alglib.lsfitsetxrep(state, iterationCallback != null);
         //alglib.lsfitsetgradientcheck(state, 0.001);
         alglib.lsfitfit(state, function_cx_1_func, function_cx_1_grad, xrep, rowEvaluationsCounter);
