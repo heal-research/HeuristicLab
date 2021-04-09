@@ -191,11 +191,11 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
       alglib.multilayerperceptron multiLayerPerceptron = null;
       if (nLayers == 0) {
-        alglib.mlpcreate0(allowedInputVariables.Count(), nout: 1, out multiLayerPerceptron);
+        alglib.mlpcreate0(allowedInputVariables.Count(), 1, out multiLayerPerceptron);
       } else if (nLayers == 1) {
-        alglib.mlpcreate1(allowedInputVariables.Count(), nHiddenNodes1, nout: 1, out multiLayerPerceptron);
+        alglib.mlpcreate1(allowedInputVariables.Count(), nHiddenNodes1, 1, out multiLayerPerceptron);
       } else if (nLayers == 2) {
-        alglib.mlpcreate2(allowedInputVariables.Count(), nHiddenNodes1, nHiddenNodes2, nout: 1, out multiLayerPerceptron);
+        alglib.mlpcreate2(allowedInputVariables.Count(), nHiddenNodes1, nHiddenNodes2, 1, out multiLayerPerceptron);
       } else throw new ArgumentException("Number of layers must be zero, one, or two.", "nLayers");
 
       int info;

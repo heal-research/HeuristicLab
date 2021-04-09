@@ -127,7 +127,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       } else {
         alglib.knnbuildersetdatasetcls(knnbuilder, inputMatrix, nRows, nFeatures, classValues.Length);
       }
-      alglib.knnbuilderbuildknnmodel(knnbuilder, k, eps: 0.0, out model, out var report); // eps=0 (exact k-nn search is performed)
+      alglib.knnbuilderbuildknnmodel(knnbuilder, k, 0.0, out model, out var report); // eps=0 (exact k-nn search is performed)
 
     }
 

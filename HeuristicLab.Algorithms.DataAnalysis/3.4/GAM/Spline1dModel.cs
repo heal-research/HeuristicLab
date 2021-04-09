@@ -54,12 +54,12 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     private Spline1dModel(Spline1dModel orig, Cloner cloner) : base(orig, cloner) {
       this.inputVariable = orig.inputVariable;
-      this.interpolant = (alglib.spline1d.spline1dinterpolant)orig.interpolant.make_copy();
+      if(orig.interpolant != null) this.interpolant = (alglib.spline1d.spline1dinterpolant)orig.interpolant.make_copy();
     }
     public Spline1dModel(alglib.spline1d.spline1dinterpolant interpolant, string targetVar, string inputVar)
       : base(targetVar, $"Spline model ({inputVar})") {
       this.interpolant = (alglib.spline1d.spline1dinterpolant)interpolant.make_copy();
-      this.inputVariable = inputVar;      
+      this.inputVariable = inputVar;
     }
 
 
@@ -72,7 +72,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       return solution;
     }
 
-    public double GetEstimatedValue(double x) => alglib.spline1d.spline1dcalc(interpolant, x);
+    public double GetEstimatedValue(double x) => alglib.spline1d.spline1dcalc(interpolant, x, null);
 
     public override IEnumerable<double> GetEstimatedValues(IDataset dataset, IEnumerable<int> rows) {
       return dataset.GetDoubleValues(inputVariable, rows).Select(GetEstimatedValue);

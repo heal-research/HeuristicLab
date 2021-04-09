@@ -65,7 +65,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
       var ds = ReduceDataset(dataset, rows);
       // the new implementation of kNN uses selfmatch=true by default
-      nnModel = new NearestNeighbourModelAlglib_3_7(ds, Enumerable.Range(0, ds.Rows), k, selfMatch: false, ds.VariableNames.Last(), ds.VariableNames.Take(transformationMatrix.GetLength(1)), classValues: classValues);
+      nnModel = new NearestNeighbourModelAlglib_3_7(ds, Enumerable.Range(0, ds.Rows), k, false, ds.VariableNames.Last(), ds.VariableNames.Take(transformationMatrix.GetLength(1)), classValues: classValues);
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
