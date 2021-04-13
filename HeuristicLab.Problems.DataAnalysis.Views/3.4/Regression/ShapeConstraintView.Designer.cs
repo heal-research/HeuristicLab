@@ -46,200 +46,190 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
-      this.components = new System.ComponentModel.Container();
-      this.lowerboundLabel = new System.Windows.Forms.Label();
-      this.upperboundLabel = new System.Windows.Forms.Label();
-      this.variableLabel = new System.Windows.Forms.Label();
-      this.numberOfDerivationLabel = new System.Windows.Forms.Label();
-      this.upperboundInput = new System.Windows.Forms.TextBox();
-      this.lowerboundInput = new System.Windows.Forms.TextBox();
-      this.variableInput = new System.Windows.Forms.TextBox();
-      this.groupBox = new System.Windows.Forms.GroupBox();
-      this.weightTextBox = new System.Windows.Forms.TextBox();
-      this.weightLabel = new System.Windows.Forms.Label();
-      this.regionLabel = new System.Windows.Forms.Label();
-      this.regionView = new HeuristicLab.Problems.DataAnalysis.Views.IntervalCollectionView();
-      this.numberOfDerivationsComboBox = new System.Windows.Forms.ComboBox();
-      this.errorProvider = new System.Windows.Forms.ErrorProvider(this.components);
-      this.groupBox.SuspendLayout();
-      ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
-      this.SuspendLayout();
-      // 
-      // lowerboundLabel
-      // 
-      this.lowerboundLabel.AutoSize = true;
-      this.lowerboundLabel.Location = new System.Drawing.Point(8, 75);
-      this.lowerboundLabel.Name = "lowerboundLabel";
-      this.lowerboundLabel.Size = new System.Drawing.Size(72, 13);
-      this.lowerboundLabel.TabIndex = 4;
-      this.lowerboundLabel.Text = "Lower bound:";
-      // 
-      // upperboundLabel
-      // 
-      this.upperboundLabel.AutoSize = true;
-      this.upperboundLabel.Location = new System.Drawing.Point(8, 101);
-      this.upperboundLabel.Name = "upperboundLabel";
-      this.upperboundLabel.Size = new System.Drawing.Size(72, 13);
-      this.upperboundLabel.TabIndex = 6;
-      this.upperboundLabel.Text = "Upper bound:";
-      // 
-      // variableLabel
-      // 
-      this.variableLabel.AutoSize = true;
-      this.variableLabel.Location = new System.Drawing.Point(8, 22);
-      this.variableLabel.Name = "variableLabel";
-      this.variableLabel.Size = new System.Drawing.Size(48, 13);
-      this.variableLabel.TabIndex = 0;
-      this.variableLabel.Text = "Variable:";
-      // 
-      // numberderivationLabel
-      // 
-      this.numberOfDerivationLabel.AutoSize = true;
-      this.numberOfDerivationLabel.Location = new System.Drawing.Point(8, 48);
-      this.numberOfDerivationLabel.Name = "numberderivationLabel";
-      this.numberOfDerivationLabel.Size = new System.Drawing.Size(58, 13);
-      this.numberOfDerivationLabel.TabIndex = 2;
-      this.numberOfDerivationLabel.Text = "Derivative:";
-      // 
-      // upperboundInput
-      // 
-      this.upperboundInput.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            this.components = new System.ComponentModel.Container();
+            this.errorProvider = new System.Windows.Forms.ErrorProvider(this.components);
+            this.lowerboundLabel = new System.Windows.Forms.Label();
+            this.upperboundLabel = new System.Windows.Forms.Label();
+            this.variableLabel = new System.Windows.Forms.Label();
+            this.numberOfDerivationLabel = new System.Windows.Forms.Label();
+            this.upperboundInput = new System.Windows.Forms.TextBox();
+            this.lowerboundInput = new System.Windows.Forms.TextBox();
+            this.variableInput = new System.Windows.Forms.TextBox();
+            this.numberOfDerivationsComboBox = new System.Windows.Forms.ComboBox();
+            this.regionLabel = new System.Windows.Forms.Label();
+            this.weightLabel = new System.Windows.Forms.Label();
+            this.weightTextBox = new System.Windows.Forms.TextBox();
+            this.regionView = new HeuristicLab.Problems.DataAnalysis.Views.IntervalCollectionView();
+            ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
+            this.SuspendLayout();
+            // 
+            // errorProvider
+            // 
+            this.errorProvider.ContainerControl = this;
+            this.errorProvider.RightToLeft = true;
+            // 
+            // lowerboundLabel
+            // 
+            this.lowerboundLabel.AutoSize = true;
+            this.lowerboundLabel.Location = new System.Drawing.Point(2, 59);
+            this.lowerboundLabel.Name = "lowerboundLabel";
+            this.lowerboundLabel.Size = new System.Drawing.Size(72, 13);
+            this.lowerboundLabel.TabIndex = 4;
+            this.lowerboundLabel.Text = "Lower bound:";
+            // 
+            // upperboundLabel
+            // 
+            this.upperboundLabel.AutoSize = true;
+            this.upperboundLabel.Location = new System.Drawing.Point(2, 85);
+            this.upperboundLabel.Name = "upperboundLabel";
+            this.upperboundLabel.Size = new System.Drawing.Size(72, 13);
+            this.upperboundLabel.TabIndex = 6;
+            this.upperboundLabel.Text = "Upper bound:";
+            // 
+            // variableLabel
+            // 
+            this.variableLabel.AutoSize = true;
+            this.variableLabel.Location = new System.Drawing.Point(2, 6);
+            this.variableLabel.Name = "variableLabel";
+            this.variableLabel.Size = new System.Drawing.Size(48, 13);
+            this.variableLabel.TabIndex = 0;
+            this.variableLabel.Text = "Variable:";
+            // 
+            // numberOfDerivationLabel
+            // 
+            this.numberOfDerivationLabel.AutoSize = true;
+            this.numberOfDerivationLabel.Location = new System.Drawing.Point(2, 32);
+            this.numberOfDerivationLabel.Name = "numberOfDerivationLabel";
+            this.numberOfDerivationLabel.Size = new System.Drawing.Size(58, 13);
+            this.numberOfDerivationLabel.TabIndex = 2;
+            this.numberOfDerivationLabel.Text = "Derivative:";
+            // 
+            // upperboundInput
+            // 
+            this.upperboundInput.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.upperboundInput.Location = new System.Drawing.Point(86, 98);
-      this.upperboundInput.Name = "upperboundInput";
-      this.upperboundInput.Size = new System.Drawing.Size(495, 20);
-      this.upperboundInput.TabIndex = 7;
-      this.upperboundInput.Validating += new System.ComponentModel.CancelEventHandler(this.upperboundInput_Validating);
-      this.upperboundInput.Validated += new System.EventHandler(this.upperboundInput_Validated);
-      // 
-      // lowerboundInput
-      // 
-      this.lowerboundInput.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            this.upperboundInput.Location = new System.Drawing.Point(80, 82);
+            this.upperboundInput.Name = "upperboundInput";
+            this.upperboundInput.Size = new System.Drawing.Size(495, 20);
+            this.upperboundInput.TabIndex = 7;
+            this.upperboundInput.Validating += new System.ComponentModel.CancelEventHandler(this.upperboundInput_Validating);
+            this.upperboundInput.Validated += new System.EventHandler(this.upperboundInput_Validated);
+            // 
+            // lowerboundInput
+            // 
+            this.lowerboundInput.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.lowerboundInput.Location = new System.Drawing.Point(86, 72);
-      this.lowerboundInput.Name = "lowerboundInput";
-      this.lowerboundInput.Size = new System.Drawing.Size(495, 20);
-      this.lowerboundInput.TabIndex = 5;
-      this.lowerboundInput.Validating += new System.ComponentModel.CancelEventHandler(this.lowerboundInput_Validating);
-      this.lowerboundInput.Validated += new System.EventHandler(this.lowerboundInput_Validated);
-      // 
-      // variableInput
-      // 
-      this.variableInput.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            this.lowerboundInput.Location = new System.Drawing.Point(80, 56);
+            this.lowerboundInput.Name = "lowerboundInput";
+            this.lowerboundInput.Size = new System.Drawing.Size(495, 20);
+            this.lowerboundInput.TabIndex = 5;
+            this.lowerboundInput.Validating += new System.ComponentModel.CancelEventHandler(this.lowerboundInput_Validating);
+            this.lowerboundInput.Validated += new System.EventHandler(this.lowerboundInput_Validated);
+            // 
+            // variableInput
+            // 
+            this.variableInput.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.variableInput.Location = new System.Drawing.Point(86, 19);
-      this.variableInput.Name = "variableInput";
-      this.variableInput.Size = new System.Drawing.Size(495, 20);
-      this.variableInput.TabIndex = 1;
-      // 
-      // groupBox
-      // 
-      this.groupBox.Controls.Add(this.weightTextBox);
-      this.groupBox.Controls.Add(this.weightLabel);
-      this.groupBox.Controls.Add(this.regionLabel);
-      this.groupBox.Controls.Add(this.regionView);
-      this.groupBox.Controls.Add(this.numberOfDerivationsComboBox);
-      this.groupBox.Controls.Add(this.variableInput);
-      this.groupBox.Controls.Add(this.lowerboundInput);
-      this.groupBox.Controls.Add(this.upperboundInput);
-      this.groupBox.Controls.Add(this.numberOfDerivationLabel);
-      this.groupBox.Controls.Add(this.variableLabel);
-      this.groupBox.Controls.Add(this.upperboundLabel);
-      this.groupBox.Controls.Add(this.lowerboundLabel);
-      this.groupBox.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.groupBox.Location = new System.Drawing.Point(0, 0);
-      this.groupBox.Name = "groupBox";
-      this.groupBox.Size = new System.Drawing.Size(587, 380);
-      this.groupBox.TabIndex = 0;
-      this.groupBox.TabStop = false;
-      this.groupBox.Text = "Shape Constraint Detail";
-      // 
-      // weightInput
-      // 
-      this.weightTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            this.variableInput.Location = new System.Drawing.Point(80, 3);
+            this.variableInput.Name = "variableInput";
+            this.variableInput.Size = new System.Drawing.Size(495, 20);
+            this.variableInput.TabIndex = 1;
+            this.variableInput.TextChanged += new System.EventHandler(this.variableInput_TextChanged);
+            // 
+            // numberOfDerivationsComboBox
+            // 
+            this.numberOfDerivationsComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.weightTextBox.Location = new System.Drawing.Point(86, 124);
-      this.weightTextBox.Name = "weightInput";
-      this.weightTextBox.Size = new System.Drawing.Size(495, 20);
-      this.weightTextBox.TabIndex = 9;
-      this.weightTextBox.TextChanged += new System.EventHandler(this.weightInput_TextChanged);
-      // 
-      // WeightLab
-      // 
-      this.weightLabel.AutoSize = true;
-      this.weightLabel.Location = new System.Drawing.Point(8, 127);
-      this.weightLabel.Name = "WeightLab";
-      this.weightLabel.Size = new System.Drawing.Size(44, 13);
-      this.weightLabel.TabIndex = 8;
-      this.weightLabel.Text = "Weight:";
-      // 
-      // regionLab
-      // 
-      this.regionLabel.AutoSize = true;
-      this.regionLabel.Location = new System.Drawing.Point(8, 150);
-      this.regionLabel.Name = "regionLab";
-      this.regionLabel.Size = new System.Drawing.Size(49, 13);
-      this.regionLabel.TabIndex = 10;
-      this.regionLabel.Text = "Regions:";
-      // 
-      // regionView
-      // 
-      this.regionView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
+            this.numberOfDerivationsComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.numberOfDerivationsComboBox.FormattingEnabled = true;
+            this.numberOfDerivationsComboBox.Items.AddRange(new object[] {
+            "1",
+            "2",
+            "3"});
+            this.numberOfDerivationsComboBox.Location = new System.Drawing.Point(80, 29);
+            this.numberOfDerivationsComboBox.Name = "numberOfDerivationsComboBox";
+            this.numberOfDerivationsComboBox.Size = new System.Drawing.Size(495, 21);
+            this.numberOfDerivationsComboBox.TabIndex = 3;
+            this.numberOfDerivationsComboBox.SelectedIndexChanged += new System.EventHandler(this.numberderivationInput_SelectedIndexChanged);
+            // 
+            // regionLabel
+            // 
+            this.regionLabel.AutoSize = true;
+            this.regionLabel.Location = new System.Drawing.Point(2, 134);
+            this.regionLabel.Name = "regionLabel";
+            this.regionLabel.Size = new System.Drawing.Size(49, 13);
+            this.regionLabel.TabIndex = 10;
+            this.regionLabel.Text = "Regions:";
+            // 
+            // weightLabel
+            // 
+            this.weightLabel.AutoSize = true;
+            this.weightLabel.Location = new System.Drawing.Point(2, 111);
+            this.weightLabel.Name = "weightLabel";
+            this.weightLabel.Size = new System.Drawing.Size(44, 13);
+            this.weightLabel.TabIndex = 8;
+            this.weightLabel.Text = "Weight:";
+            // 
+            // weightTextBox
+            // 
+            this.weightTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.regionView.Caption = "IntervalCollection View";
-      this.regionView.Content = null;
-      this.regionView.Location = new System.Drawing.Point(86, 150);
-      this.regionView.Name = "regionView";
-      this.regionView.ReadOnly = false;
-      this.regionView.Size = new System.Drawing.Size(495, 224);
-      this.regionView.TabIndex = 11;
-      this.regionView.TabStop = false;
-      // 
-      // numberderivationInput
-      // 
-      this.numberOfDerivationsComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            this.weightTextBox.Location = new System.Drawing.Point(80, 108);
+            this.weightTextBox.Name = "weightTextBox";
+            this.weightTextBox.Size = new System.Drawing.Size(495, 20);
+            this.weightTextBox.TabIndex = 9;
+            this.weightTextBox.TextChanged += new System.EventHandler(this.weightInput_TextChanged);
+            // 
+            // regionView
+            // 
+            this.regionView.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.numberOfDerivationsComboBox.FormattingEnabled = true;
-      this.numberOfDerivationsComboBox.Location = new System.Drawing.Point(86, 45);
-      this.numberOfDerivationsComboBox.Name = "numberderivationInput";
-      this.numberOfDerivationsComboBox.Size = new System.Drawing.Size(495, 21);
-      this.numberOfDerivationsComboBox.TabIndex = 3;
-      this.numberOfDerivationsComboBox.SelectedIndexChanged += new System.EventHandler(this.numberderivationInput_SelectedIndexChanged);
-      // 
-      // errorProvider
-      // 
-      this.errorProvider.ContainerControl = this;
-      this.errorProvider.RightToLeft = true;
-      // 
-      // ShapeConstraintView
-      // 
-      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
-      this.Controls.Add(this.groupBox);
-      this.Name = "ShapeConstraintView";
-      this.Size = new System.Drawing.Size(587, 380);
-      this.groupBox.ResumeLayout(false);
-      this.groupBox.PerformLayout();
-      ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
-      this.ResumeLayout(false);
+            this.regionView.AutoSize = true;
+            this.regionView.Caption = "IntervalCollection View";
+            this.regionView.Content = null;
+            this.regionView.Location = new System.Drawing.Point(80, 134);
+            this.regionView.Name = "regionView";
+            this.regionView.ReadOnly = false;
+            this.regionView.Size = new System.Drawing.Size(495, 243);
+            this.regionView.TabIndex = 11;
+            this.regionView.TabStop = false;
+            // 
+            // ShapeConstraintView
+            // 
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
+            this.Controls.Add(this.weightTextBox);
+            this.Controls.Add(this.weightLabel);
+            this.Controls.Add(this.variableInput);
+            this.Controls.Add(this.regionLabel);
+            this.Controls.Add(this.lowerboundLabel);
+            this.Controls.Add(this.regionView);
+            this.Controls.Add(this.upperboundLabel);
+            this.Controls.Add(this.numberOfDerivationsComboBox);
+            this.Controls.Add(this.variableLabel);
+            this.Controls.Add(this.numberOfDerivationLabel);
+            this.Controls.Add(this.lowerboundInput);
+            this.Controls.Add(this.upperboundInput);
+            this.Name = "ShapeConstraintView";
+            this.Size = new System.Drawing.Size(587, 380);
+            ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
+            this.ResumeLayout(false);
+            this.PerformLayout();
 
     }
 
     #endregion
-
-    private System.Windows.Forms.Label lowerboundLabel;
-    private System.Windows.Forms.Label upperboundLabel;
-    private System.Windows.Forms.Label variableLabel;
-    private System.Windows.Forms.Label numberOfDerivationLabel;
-    private System.Windows.Forms.TextBox upperboundInput;
-    private System.Windows.Forms.TextBox lowerboundInput;
-    private System.Windows.Forms.TextBox variableInput;
-    private System.Windows.Forms.GroupBox groupBox;
     private System.Windows.Forms.ErrorProvider errorProvider;
-    private System.Windows.Forms.ComboBox numberOfDerivationsComboBox;
-    private IntervalCollectionView regionView;
-    private System.Windows.Forms.Label regionLabel;
     private System.Windows.Forms.TextBox weightTextBox;
     private System.Windows.Forms.Label weightLabel;
+    private System.Windows.Forms.TextBox variableInput;
+    private System.Windows.Forms.Label regionLabel;
+    private System.Windows.Forms.Label lowerboundLabel;
+    private IntervalCollectionView regionView;
+    private System.Windows.Forms.Label upperboundLabel;
+    private System.Windows.Forms.ComboBox numberOfDerivationsComboBox;
+    private System.Windows.Forms.Label variableLabel;
+    private System.Windows.Forms.Label numberOfDerivationLabel;
+    private System.Windows.Forms.TextBox lowerboundInput;
+    private System.Windows.Forms.TextBox upperboundInput;
   }
 }

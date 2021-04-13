@@ -34,7 +34,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     public string Variable {
       get => variable;
-      private set {
+      set {
         if (variable == value)
           return;
         variable = value;
@@ -148,6 +148,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       Regions = cloner.Clone(original.Regions);
       Weight = original.weight;
     }
+
 
     public event EventHandler Changed;
 

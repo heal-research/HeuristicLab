@@ -64,7 +64,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
 
     protected override void SetEnabledStateOfControls() {
       base.SetEnabledStateOfControls();
-      variableInput.Enabled = Content != null && !Locked && !ReadOnly;
+      variableInput.Enabled = Content != null && !Locked && !ReadOnly && Content.Variable != String.Empty;
       numberOfDerivationsComboBox.Enabled = Content != null && !Locked && !ReadOnly;
       lowerboundInput.Enabled = Content != null && !Locked && !ReadOnly;
       upperboundInput.Enabled = Content != null && !Locked && !ReadOnly;
@@ -111,15 +111,19 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       if (!Content.IsDerivative) {
         numberOfDerivationsComboBox.Enabled = false;
         numberOfDerivationsComboBox.SelectedItem = null;
-        numberOfDerivationsComboBox.Text = "0";
       } else {
-        numberOfDerivationLabel.Visible = true;
-        numberOfDerivationsComboBox.Visible = true;
         numberOfDerivationsComboBox.Enabled = true;
         numberOfDerivationsComboBox.SelectedItem = Content.NumberOfDerivations;
       }
 
-      regionView.Content = Content.Regions;
+      if (Content.Regions.Count > 0) {
+        regionView.Content = Content.Regions;
+        regionLabel.Visible = true;
+        regionView.Visible = true;
+      } else {
+        regionLabel.Visible = false;
+        regionView.Visible = false;
+      }
     }
 
     #endregion
@@ -196,6 +200,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       if (!double.IsNaN(value)) Content.Weight = value;
     }
 
+    private void variableInput_TextChanged(object sender, EventArgs e) {
+      var value = variableInput.Text;
+      if (!String.IsNullOrEmpty(value)) Content.Variable = value;
+    }
 
     #endregion
 
@@ -205,6 +213,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       UpdateControls();
     }
 
-   #endregion
+
+    #endregion
   }
 }
