@@ -33,6 +33,7 @@ namespace HeuristicLab.Tests {
   public class PluginDependenciesTest {
     private static Dictionary<Assembly, Type> loadedPlugins;
     private static Dictionary<string, string> pluginNames;
+    private static Dictionary<string, Version> pluginVersions;
     private static Dictionary<string, Assembly> pluginFilesToPluginLookup = new Dictionary<string, Assembly>();
 
     // Use ClassInitialize to run code before running the first test in the class
@@ -46,6 +47,7 @@ namespace HeuristicLab.Tests {
       }
 
       pluginNames = loadedPlugins.ToDictionary(a => a.Key.GetName().FullName, a => GetPluginName(a.Value));
+      pluginVersions = loadedPlugins.ToDictionary(a => a.Key.GetName().FullName, a => GetPluginVersion(a.Value));
 
       foreach (Assembly pluginAssembly in loadedPlugins.Keys) {
         Type pluginType = GetPluginFromAssembly(pluginAssembly);
@@ -70,17 +72,21 @@ namespace HeuristicLab.Tests {
         var pluginAssemblies = PluginLoader.Assemblies.Where(a => pluginFiles.Contains(Path.GetFileName(a.Location))).ToList();
         var referencedAssemblies = pluginAssemblies.SelectMany(a => a.GetReferencedAssemblies()).ToList();
 
-        Dictionary<string, PluginDependencyAttribute> pluginDependencies = Attribute.GetCustomAttributes(plugin, false).OfType<PluginDependencyAttribute>().ToDictionary(a => a.Dependency);
+        var pluginDependencies = Attribute.GetCustomAttributes(plugin, false).OfType<PluginDependencyAttribute>().ToArray();
+
+        bool versionLessThan(Version a, Version b) => a.Major < b.Major || ((a.Major == b.Major) && (a.Minor <= b.Minor));
+
+        bool compatiblePluginAvailable(string referencedAssemblyName) => pluginDependencies.Any(pd => pd.Dependency == pluginNames[referencedAssemblyName] && versionLessThan(pd.Version, pluginVersions[referencedAssemblyName]));
 
         foreach (AssemblyName referencedAssemblyName in referencedAssemblies) {
           if (IsPluginAssemblyName(referencedAssemblyName)) {
-            if (!pluginDependencies.ContainsKey(pluginNames[referencedAssemblyName.FullName]))
-              errorMessage.AppendLine("Missing dependency in plugin " + plugin + " to referenced plugin " + pluginNames[referencedAssemblyName.FullName] + ".");
+            if (!compatiblePluginAvailable(referencedAssemblyName.FullName))
+              errorMessage.AppendLine("Missing dependency in plugin " + plugin + " to referenced plugin " + pluginNames[referencedAssemblyName.FullName] + " in version >= " + pluginVersions[referencedAssemblyName.FullName] + ".");
           } else { //no plugin assembly => test if the assembly is delivered by another plugin
             if (pluginFilesToPluginLookup.ContainsKey(referencedAssemblyName.Name)) {
               string containingPluginFullName = pluginFilesToPluginLookup[referencedAssemblyName.Name].FullName;
-              if (containingPluginFullName != pluginAssembly.FullName && !pluginDependencies.ContainsKey(pluginNames[containingPluginFullName]))
-                errorMessage.AppendLine("Missing dependency in plugin " + plugin + " to plugin " + pluginNames[containingPluginFullName] + " due to a reference to " + referencedAssemblyName.FullName + ".");
+              if (containingPluginFullName != pluginAssembly.FullName && !compatiblePluginAvailable(containingPluginFullName))
+                errorMessage.AppendLine("Missing dependency in plugin " + plugin + " to plugin " + pluginNames[containingPluginFullName] + " in version >= " + pluginVersions[containingPluginFullName] + " due to a reference to " + referencedAssemblyName.FullName + ".");
             }
           }
         }
@@ -133,6 +139,15 @@ namespace HeuristicLab.Tests {
       if (pluginAttribute != null)
         name = pluginAttribute.Name;
       return name;
+    }
+
+    private static Version GetPluginVersion(Type plugin) {
+      var version = new Version();
+      PluginAttribute pluginAttribute = (PluginAttribute)Attribute.GetCustomAttribute(plugin, typeof(PluginAttribute));
+      if (pluginAttribute != null) {
+        version = pluginAttribute.Version;
+      }
+      return version;
     }
 
     private static bool IsPluginAssemblyName(AssemblyName assemblyName) {
