@@ -13,8 +13,6 @@ public class RFRegressionCrossValidationScript : HeuristicLab.Scripting.CSharpSc
   const int maximumDegreeOfParallelism = 4;
   /* Number of crossvalidation folds: */
   const int numberOfFolds = 3;
-  /* Specify whether the crossvalidation folds should be shuffled */
-  const bool shuffleFolds = true;
 
   /* The tunable Random Forest parameters:
      - "n" (number of trees). In the random forests literature, this is referred to as the ntree parameter.
@@ -36,8 +34,9 @@ public class RFRegressionCrossValidationScript : HeuristicLab.Scripting.CSharpSc
 
   private static RandomForestRegressionSolution GridSearchWithCrossvalidation(IRegressionProblemData problemData, out RFParameter bestParameters, int seed = 3141519) {
     double rmsError, outOfBagRmsError, avgRelError, outOfBagAvgRelError;
-    bestParameters = RandomForestUtil.GridSearch(problemData, numberOfFolds, shuffleFolds, randomForestParameterRanges, seed, maximumDegreeOfParallelism);
-    var model = RandomForestModel.CreateRegressionModel(problemData, problemData.TrainingIndices, bestParameters.N, bestParameters.R, bestParameters.M, seed, out rmsError, out outOfBagRmsError, out avgRelError, out outOfBagAvgRelError);
+    bestParameters = RandomForestUtil.GridSearch(problemData, numberOfFolds, randomForestParameterRanges, seed, maximumDegreeOfParallelism);
+    var model = RandomForestRegression.CreateRandomForestRegressionModel(problemData, problemData.TrainingIndices, bestParameters.N, bestParameters.R, bestParameters.M, seed, 
+                                                                         out rmsError, out avgRelError, out outOfBagRmsError, out outOfBagAvgRelError);
     return (RandomForestRegressionSolution)model.CreateRegressionSolution(problemData);
   }
 
@@ -45,8 +44,8 @@ public class RFRegressionCrossValidationScript : HeuristicLab.Scripting.CSharpSc
     double rmsError, outOfBagRmsError, avgRelError, outOfBagAvgRelError;
     var random = new MersenneTwister();
     bestParameters = RandomForestUtil.GridSearch(problemData, randomForestParameterRanges, seed, maximumDegreeOfParallelism);
-    var model = RandomForestModel.CreateRegressionModel(problemData, problemData.TrainingIndices, bestParameters.N, bestParameters.R, bestParameters.M, seed,
-                                                        out rmsError, out outOfBagRmsError, out avgRelError, out outOfBagAvgRelError);
+    var model = RandomForestRegression.CreateRandomForestRegressionModel(problemData, problemData.TrainingIndices, bestParameters.N, bestParameters.R, bestParameters.M, seed,
+                                                                         out rmsError, out avgRelError, out outOfBagRmsError, out outOfBagAvgRelError);
     return (RandomForestRegressionSolution)model.CreateRegressionSolution(problemData);
   }
 
