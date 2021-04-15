@@ -198,7 +198,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         var parameters = new RFParameter();
         for (int i = 0; i < setters.Count; ++i) { setters[i](parameters, parameterValues[i]); }
         RandomForestRegression.CreateRandomForestRegressionModel(problemData, problemData.TrainingIndices, parameters.N, parameters.R, parameters.M, seed,
-                                                                 out var rmsError, out var outOfBagRmsError, out var avgRelError, out var outOfBagAvgRelError);
+                                                                 out var rmsError, out var avgRelError, out var outOfBagRmsError, out var outOfBagAvgRelError);
 
         lock (locker) {
           if (bestOutOfBagRmsError > outOfBagRmsError) {
@@ -230,7 +230,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         var parameters = new RFParameter();
         for (int i = 0; i < setters.Count; ++i) { setters[i](parameters, parameterValues[i]); }
         RandomForestClassification.CreateRandomForestClassificationModel(problemData, problemData.TrainingIndices, parameters.N, parameters.R, parameters.M, seed,
-                                                                         out var rmsError, out var outOfBagRmsError, out var avgRelError, out var outOfBagAvgRelError);
+                                                                         out var rmsError, out var avgRelError, out var outOfBagRmsError, out var outOfBagAvgRelError);
 
         lock (locker) {
           if (bestOutOfBagRmsError > outOfBagRmsError) {
@@ -247,12 +247,11 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     /// </summary>
     /// <param name="problemData">The regression problem data</param>
     /// <param name="numberOfFolds">The number of folds for crossvalidation</param>
-    /// <param name="shuffleFolds">Specifies whether the folds should be shuffled</param>
     /// <param name="parameterRanges">The ranges for each parameter in the grid search</param>
     /// <param name="seed">The random seed (required by the random forest model)</param>
     /// <param name="maxDegreeOfParallelism">The maximum allowed number of threads (to parallelize the grid search)</param>
     /// <returns>The best parameter values found by the grid search</returns>
-    public static RFParameter GridSearch(IRegressionProblemData problemData, int numberOfFolds, bool shuffleFolds, Dictionary<string, IEnumerable<double>> parameterRanges, int seed = 12345, int maxDegreeOfParallelism = 1) {
+    public static RFParameter GridSearch(IRegressionProblemData problemData, int numberOfFolds, Dictionary<string, IEnumerable<double>> parameterRanges, int seed = 12345, int maxDegreeOfParallelism = 1) {
       DoubleValue mse = new DoubleValue(Double.MaxValue);
       RFParameter bestParameter = new RFParameter();
 
