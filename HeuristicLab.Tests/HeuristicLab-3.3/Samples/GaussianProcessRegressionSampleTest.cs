@@ -51,8 +51,8 @@ namespace HeuristicLab.Tests {
       gpr.SetSeedRandomly = false;
       gpr.Seed = 1618551877;
       SamplesUtils.RunAlgorithm(gpr);
-      Assert.AreEqual(-940.70700288855619, SamplesUtils.GetDoubleResult(gpr, "NegativeLogLikelihood"));
-      Assert.AreEqual(0.99563390794061979, SamplesUtils.GetDoubleResult(gpr, "Training R²"));
+      Assert.AreEqual(-992.445399028808, SamplesUtils.GetDoubleResult(gpr, "NegativeLogLikelihood"), 1e-8);
+      Assert.AreEqual(0.99559260785271853, SamplesUtils.GetDoubleResult(gpr, "Training R²"), 1e-8);
     }
 
     private GaussianProcessRegression CreateGaussianProcessRegressionSample() {

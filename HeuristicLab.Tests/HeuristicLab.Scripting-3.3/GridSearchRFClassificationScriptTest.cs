@@ -58,8 +58,8 @@ namespace HeuristicLab.Tests {
       ScriptingUtils.RunScript(script);
 
       var bestSolution = ScriptingUtils.GetVariable<IClassificationSolution>(script, BestSolutionVariableName);
-      Assert.AreEqual(0.85179407176287, bestSolution.TrainingAccuracy, 1E-8);
-      Assert.AreEqual(0.81875, bestSolution.TestAccuracy, 1E-8);
+      Assert.AreEqual(0.858034321372855, bestSolution.TrainingAccuracy, 1E-8);
+      Assert.AreEqual(0.821875, bestSolution.TestAccuracy, 1E-8);
     }
 
     private CSharpScript CreateGridSearchRFClassificationScript() {

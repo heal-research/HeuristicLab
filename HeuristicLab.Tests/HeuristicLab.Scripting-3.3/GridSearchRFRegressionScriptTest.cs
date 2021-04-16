@@ -58,8 +58,8 @@ namespace HeuristicLab.Tests {
       ScriptingUtils.RunScript(script);
 
       var bestSolution = ScriptingUtils.GetVariable<IRegressionSolution>(script, BestSolutionVariableName);
-      Assert.AreEqual(0.968329534139836, bestSolution.TrainingRSquared, 1E-8);
-      Assert.AreEqual(0.982380790563445, bestSolution.TestRSquared, 1E-8);
+      Assert.AreEqual(0.964218622548574, bestSolution.TrainingRSquared, 1E-8);
+      Assert.AreEqual(0.985989017766796, bestSolution.TestRSquared, 1E-8);
     }
 
     private CSharpScript CreateGridSearchRFRegressionScript() {

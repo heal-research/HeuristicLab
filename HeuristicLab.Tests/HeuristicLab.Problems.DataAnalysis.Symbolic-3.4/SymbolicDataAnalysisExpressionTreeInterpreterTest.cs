@@ -273,7 +273,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
     [TestCategory("Problems.DataAnalysis.Symbolic")]
     [TestProperty("Time", "long")]
     public void TestCompiledInterpreterEstimatedValuesConsistency() {
-      const double delta = 1e-12;
+      const double delta = 1e-8;
 
       var twister = new MersenneTwister();
       int seed = twister.Next(0, int.MaxValue);
@@ -287,6 +287,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
       var grammar = new TypeCoherentExpressionGrammar();
       grammar.ConfigureAsDefaultRegressionGrammar();
       grammar.Symbols.First(x => x.Name == "Power Functions").Enabled = true;
+      grammar.Symbols.First(x => x is Cube).Enabled = true;
+      grammar.Symbols.First(x => x is CubeRoot).Enabled = true;
+      grammar.Symbols.First(x => x is Square).Enabled = true;
+      grammar.Symbols.First(x => x is SquareRoot).Enabled = true;
+      grammar.Symbols.First(x => x is Absolute).Enabled = true;
+      grammar.Symbols.First(x => x is Sine).Enabled = true;
+      grammar.Symbols.First(x => x is Cosine).Enabled = true;
+      grammar.Symbols.First(x => x is Tangent).Enabled = true;
+      grammar.Symbols.First(x => x is Root).Enabled = false;
+      grammar.Symbols.First(x => x is Power).Enabled = false;
 
       var randomTrees = Util.CreateRandomTrees(twister, dataset, grammar, N, 1, 10, 0, 0);
       foreach (ISymbolicExpressionTree tree in randomTrees) {
@@ -338,7 +348,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
                 }
               }
               string errorMessage = string.Format("Interpreters {0} and {1} do not agree on tree {2} and row {3} (seed = {4}).", interpreters[m].Name, interpreters[n].Name, i, row, seed);
-              Assert.AreEqual(v1, v2, delta, errorMessage);
+              Assert.IsTrue(double.IsPositiveInfinity(v1) && double.IsPositiveInfinity(v2) ||
+                            double.IsNaN(v1) && double.IsNaN(v2) ||
+                            double.IsNegativeInfinity(v1) && double.IsNegativeInfinity(v2) ||
+                            Math.Abs(1.0 - v1 / v2) < delta, errorMessage);
             }
           }
         }
