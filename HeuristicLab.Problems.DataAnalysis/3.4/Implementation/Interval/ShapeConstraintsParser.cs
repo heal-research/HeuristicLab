@@ -74,6 +74,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     private const string variableRegex = @"(['](?<varName>.*)[']|(?<varName>[^\s²³]+))\s*";
     private const string weightRegex = @"\s*(weight:\s*(?<weight>\S*))?";
+    private const string thresholdRegex = @"\s*(threshold\s*in\s*(?<threshold> "+ intervalRegex + @"))?";
     public static ShapeConstraint ParseFunctionRangeConstraint(string expr) {
       if (!expr.StartsWith("f")) throw new ArgumentException($"Invalid function range constraint {expr} (e.g. f in [1..2])");
       var start = "f".Length;
@@ -89,7 +90,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       // df/d'x' in [0 .. 10] weight: 2.0
       // df / d'x' in [0..10], 'x' in [1 .. 3]
       // df / d'x' in [0..10], 'x' in [1 .. 3], y in [10..30] weight: 1.2
-
+      // df / d'x' in [0..10], 'x' in [1 .. 3], y in [10..30] weight: 1.2 threshold in [-10 .. 10]
       var match = Regex.Match(targetConstraint,
                     @"\s*\bin\b" +
                     intervalRegex +
@@ -98,7 +99,8 @@ namespace HeuristicLab.Problems.DataAnalysis {
                       @"\s *\bin\b" +
                       intervalRegex +
                     @")*" +
-                    weightRegex
+                    weightRegex +
+                    thresholdRegex
                     );
 
 
@@ -109,9 +111,18 @@ namespace HeuristicLab.Problems.DataAnalysis {
         var upperBound = ParseIntervalBounds(match.Groups["upperBound"].Captures[0].Value);
         var interval = new Interval(lowerBound, upperBound);
         var weight = 1.0;
+        var threshold = new Interval(double.NegativeInfinity, double.PositiveInfinity);
 
         if (match.Groups["weight"].Success && !string.IsNullOrWhiteSpace(match.Groups["weight"].Value))
           weight = ParseAndValidateDouble(match.Groups["weight"].Value);
+
+        if(match.Groups["threshold"].Success) {
+          var lowerboundCount = match.Groups["lowerBound"].Captures.Count;
+          var upperboundCount = match.Groups["upperBound"].Captures.Count;
+          var thresholdLb = ParseIntervalBounds(match.Groups["lowerBound"].Captures[lowerboundCount - 1].Value);
+          var thresholdUb = ParseIntervalBounds(match.Groups["upperBound"].Captures[upperboundCount - 1].Value);
+          threshold = new Interval(thresholdLb, thresholdUb);
+        }
 
         if (match.Groups["varName"].Success) {
           IntervalCollection regions = new IntervalCollection();
@@ -126,9 +137,9 @@ namespace HeuristicLab.Problems.DataAnalysis {
             else
               throw new ArgumentException($"The constraint {expr} has multiple regions of the same variable.");
           }
-          return new ShapeConstraint(interval, regions, weight);
+          return new ShapeConstraint(interval, regions, weight, threshold);
         } else
-          return new ShapeConstraint(interval, weight);
+          return new ShapeConstraint(interval, weight, threshold);
       } else
         throw new ArgumentException($"The target constraint {expr} is not valid.");
     }
@@ -147,7 +158,8 @@ namespace HeuristicLab.Problems.DataAnalysis {
                                   @"\s *\bin\b" +
                                   intervalRegex +
                                   @")*" +
-                                weightRegex
+                                weightRegex +
+                                thresholdRegex
                                 );
 
       if (match.Success) {
@@ -171,9 +183,18 @@ namespace HeuristicLab.Problems.DataAnalysis {
         var numberOfDerivation = ParseDerivationCount(enumeratorNumDeriv);
         var interval = new Interval(lowerBound, upperBound);
         var weight = 1.0;
+        var threshold = new Interval(double.NegativeInfinity, double.PositiveInfinity);
 
         if (match.Groups["weight"].Success && !string.IsNullOrWhiteSpace(match.Groups["weight"].Value))
           weight = ParseAndValidateDouble(match.Groups["weight"].Value);
+
+        if (match.Groups["threshold"].Success) {
+          var lowerboundCount = match.Groups["lowerBound"].Captures.Count;
+          var upperboundCount = match.Groups["upperBound"].Captures.Count;
+          var thresholdLb = ParseIntervalBounds(match.Groups["lowerBound"].Captures[lowerboundCount - 1].Value);
+          var thresholdUb = ParseIntervalBounds(match.Groups["upperBound"].Captures[upperboundCount - 1].Value);
+          threshold = new Interval(thresholdLb, thresholdUb);
+        }
 
         if (match.Groups["varName"].Captures.Count > 1) {
           IntervalCollection regions = new IntervalCollection();
@@ -188,9 +209,9 @@ namespace HeuristicLab.Problems.DataAnalysis {
             else
               throw new ArgumentException($"The constraint {expr} has multiple regions of the same variable.");
           }
-          return new ShapeConstraint(variable, numberOfDerivation, interval, regions, weight);
+          return new ShapeConstraint(variable, numberOfDerivation, interval, regions, weight, threshold);
         } else
-          return new ShapeConstraint(variable, numberOfDerivation, interval, weight);
+          return new ShapeConstraint(variable, numberOfDerivation, interval, weight, threshold);
       } else
         throw new ArgumentException($"The derivation constraint {expr} is not valid.");
     }
