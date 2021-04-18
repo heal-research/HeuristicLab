@@ -320,7 +320,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
               var v1 = valuesMatrix[m][row];
               var v2 = valuesMatrix[n][row];
               if (double.IsNaN(v1) && double.IsNaN(v2)) continue;
-              if (Math.Abs(v1 - v2) > delta) {
+              if (Math.Abs(1.0 - v1 / v2) >= delta) {
                 Console.WriteLine(formatter.Format(tree));
                 foreach (var node in tree.Root.GetSubtree(0).GetSubtree(0).IterateNodesPrefix().ToList()) {
                   var rootNode = (SymbolicExpressionTreeTopLevelNode)grammar.ProgramRootSymbol.CreateTreeNode();
