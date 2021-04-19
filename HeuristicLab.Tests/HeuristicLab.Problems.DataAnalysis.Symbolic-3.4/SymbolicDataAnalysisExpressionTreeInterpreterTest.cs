@@ -320,7 +320,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
               var v1 = valuesMatrix[m][row];
               var v2 = valuesMatrix[n][row];
               if (double.IsNaN(v1) && double.IsNaN(v2)) continue;
-              if (Math.Abs(1.0 - v1 / v2) >= delta) {
+              if (v1 != v2 && Math.Abs(1.0 - v1 / v2) >= delta) {
                 Console.WriteLine(formatter.Format(tree));
                 foreach (var node in tree.Root.GetSubtree(0).GetSubtree(0).IterateNodesPrefix().ToList()) {
                   var rootNode = (SymbolicExpressionTreeTopLevelNode)grammar.ProgramRootSymbol.CreateTreeNode();
@@ -348,9 +348,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
                 }
               }
               string errorMessage = string.Format("Interpreters {0} and {1} do not agree on tree {2} and row {3} (seed = {4}).", interpreters[m].Name, interpreters[n].Name, i, row, seed);
-              Assert.IsTrue(double.IsPositiveInfinity(v1) && double.IsPositiveInfinity(v2) ||
-                            double.IsNaN(v1) && double.IsNaN(v2) ||
-                            double.IsNegativeInfinity(v1) && double.IsNegativeInfinity(v2) ||
+              Assert.IsTrue(double.IsNaN(v1) && double.IsNaN(v2) ||
+                            v1 == v2 || // in particular 0 = 0
                             Math.Abs(1.0 - v1 / v2) < delta, errorMessage);
             }
           }
