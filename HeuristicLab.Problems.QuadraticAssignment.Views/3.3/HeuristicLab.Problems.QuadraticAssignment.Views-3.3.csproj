@@ -130,10 +130,6 @@
     <Compile Include="QAPVisualizationControl.Designer.cs">
       <DependentUpon>QAPVisualizationControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="QuadraticAssignmentProblemView.cs" />
-    <Compile Include="QuadraticAssignmentProblemView.Designer.cs">
-      <DependentUpon>QuadraticAssignmentProblemView.cs</DependentUpon>
-    </Compile>
     <None Include="Plugin.cs.frame" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -37,8 +37,6 @@ namespace HeuristicLab.Optimization.Views {
       set { base.Content = value; }
     }
 
-
-
     /// <summary>
     /// Initializes a new instance of <see cref="ItemBaseView"/>.
     /// </summary>
