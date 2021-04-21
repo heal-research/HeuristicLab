@@ -310,6 +310,12 @@
     <Compile Include="RunCollectionViews\RunCollectionChartAggregationView.Designer.cs">
       <DependentUpon>RunCollectionChartAggregationView.cs</DependentUpon>
     </Compile>
+    <Compile Include="SolutionContextView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="SolutionContextView.Designer.cs">
+      <DependentUpon>SolutionContextView.cs</DependentUpon>
+    </Compile>
     <Compile Include="TimeLimitRunView.cs">
       <SubType>UserControl</SubType>
     </Compile>
