@@ -30,9 +30,9 @@ namespace HeuristicLab.Optimization {
   /// <summary>
   /// Interface to represent an optimization problem.
   /// </summary>
-  public interface IProblem : IParameterizedNamedItem, IStorableContent {
+  public interface IProblem : IResultsProducingItem, IStorableContent {
     //TODO extract into interface? ResultsProducingItems? Problem and Algorithm 
-    ResultCollection Results { get; }
+    //ResultCollection Results { get; }
 
     event EventHandler Reset;
   }
@@ -40,7 +40,7 @@ namespace HeuristicLab.Optimization {
   //TODO Intermediate class for compatibility 
   //TODO move members to generic IProblem after every problem used the new architecture
   //TODO ABE: We can maybe use it as non-generic interface that exports IEncoding Encoding { get; }
-  //TODO ABE: and which is explicitely implemented in some base class
+  //TODO ABE: and which is explicitly implemented in some base class
   [StorableType("1dbe48d6-c008-4e40-86ad-c222450a3187")]
   public interface IEncodedProblem : IProblem {
     IEnumerable<IItem> Operators { get; }

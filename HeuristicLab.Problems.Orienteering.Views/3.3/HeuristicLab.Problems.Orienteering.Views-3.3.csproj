@@ -113,9 +113,7 @@
     <Compile Include="OrienteeringProblemDataView.Designer.cs">
       <DependentUpon>OrienteeringProblemDataView.cs</DependentUpon>
     </Compile>
-    <Compile Include="OrienteeringProblemView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
+    <Compile Include="OrienteeringProblemView.cs" />
     <Compile Include="OrienteeringProblemView.Designer.cs">
       <DependentUpon>OrienteeringProblemView.cs</DependentUpon>
     </Compile>

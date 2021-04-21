@@ -115,9 +115,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="JobShopSchedulingProblemView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
+    <Compile Include="JobShopSchedulingProblemView.cs" />
     <Compile Include="JobShopSchedulingProblemView.Designer.cs">
       <DependentUpon>JobShopSchedulingProblemView.cs</DependentUpon>
     </Compile>

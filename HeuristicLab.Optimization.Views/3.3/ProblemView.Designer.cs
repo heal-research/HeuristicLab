@@ -44,42 +44,23 @@ namespace HeuristicLab.Optimization.Views {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
+      this.components = new System.ComponentModel.Container();
       this.problemInstanceSplitContainer = new System.Windows.Forms.SplitContainer();
-      this.libraryLabel = new System.Windows.Forms.Label();
-      this.problemInstanceProviderComboBox = new System.Windows.Forms.ComboBox();
-      this.problemInstanceProviderViewHost = new HeuristicLab.MainForm.WindowsForms.ViewHost();
-      ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
+      this.toolTip = new System.Windows.Forms.ToolTip(this.components);
+      this.ContentPanel = new System.Windows.Forms.Panel();
+      this.namedItemView = new HeuristicLab.Core.Views.NamedItemView();
+      this.problemInstanceProvidersControl = new HeuristicLab.Optimization.Views.ProblemInstanceProvidersControl();
+      this.resultsProducingItemView = new HeuristicLab.Optimization.Views.ResultsProducingItemView();
       ((System.ComponentModel.ISupportInitialize)(this.problemInstanceSplitContainer)).BeginInit();
       this.problemInstanceSplitContainer.Panel1.SuspendLayout();
       this.problemInstanceSplitContainer.Panel2.SuspendLayout();
       this.problemInstanceSplitContainer.SuspendLayout();
+      this.ContentPanel.SuspendLayout();
       this.SuspendLayout();
-      // 
-      // parameterCollectionView
-      // 
-      this.parameterCollectionView.Location = new System.Drawing.Point(6, 27);
-      this.parameterCollectionView.Size = new System.Drawing.Size(501, 303);
-      // 
-      // nameTextBox
-      // 
-      this.errorProvider.SetIconAlignment(this.nameTextBox, System.Windows.Forms.ErrorIconAlignment.MiddleLeft);
-      this.errorProvider.SetIconPadding(this.nameTextBox, 2);
-      this.nameTextBox.Location = new System.Drawing.Point(47, 1);
-      this.nameTextBox.Size = new System.Drawing.Size(438, 20);
-      // 
-      // nameLabel
-      // 
-      this.nameLabel.Location = new System.Drawing.Point(3, 6);
-      // 
-      // infoLabel
-      // 
-      this.infoLabel.Location = new System.Drawing.Point(491, 4);
       // 
       // problemInstanceSplitContainer
       // 
-      this.problemInstanceSplitContainer.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+      this.problemInstanceSplitContainer.Dock = System.Windows.Forms.DockStyle.Fill;
       this.problemInstanceSplitContainer.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
       this.problemInstanceSplitContainer.IsSplitterFixed = true;
       this.problemInstanceSplitContainer.Location = new System.Drawing.Point(0, 0);
@@ -88,78 +69,87 @@ namespace HeuristicLab.Optimization.Views {
       // 
       // problemInstanceSplitContainer.Panel1
       // 
-      this.problemInstanceSplitContainer.Panel1.Controls.Add(this.libraryLabel);
-      this.problemInstanceSplitContainer.Panel1.Controls.Add(this.problemInstanceProviderComboBox);
-      this.problemInstanceSplitContainer.Panel1.Controls.Add(this.problemInstanceProviderViewHost);
+      this.problemInstanceSplitContainer.Panel1.Controls.Add(this.problemInstanceProvidersControl);
       this.problemInstanceSplitContainer.Panel1MinSize = 10;
       // 
       // problemInstanceSplitContainer.Panel2
       // 
-      this.problemInstanceSplitContainer.Panel2.Controls.Add(this.nameLabel);
-      this.problemInstanceSplitContainer.Panel2.Controls.Add(this.nameTextBox);
-      this.problemInstanceSplitContainer.Panel2.Controls.Add(this.parameterCollectionView);
-      this.problemInstanceSplitContainer.Panel2.Controls.Add(this.infoLabel);
-      this.problemInstanceSplitContainer.Size = new System.Drawing.Size(511, 363);
+      this.problemInstanceSplitContainer.Panel2.Controls.Add(this.namedItemView);
+      this.problemInstanceSplitContainer.Panel2.Controls.Add(this.ContentPanel);
+      this.problemInstanceSplitContainer.Size = new System.Drawing.Size(960, 709);
       this.problemInstanceSplitContainer.SplitterDistance = 26;
       this.problemInstanceSplitContainer.TabIndex = 13;
       // 
-      // libraryLabel
+      // ContentPanel
       // 
-      this.libraryLabel.AutoSize = true;
-      this.libraryLabel.Location = new System.Drawing.Point(3, 6);
-      this.libraryLabel.Name = "libraryLabel";
-      this.libraryLabel.Size = new System.Drawing.Size(41, 13);
-      this.libraryLabel.TabIndex = 17;
-      this.libraryLabel.Text = "Library:";
-      // 
-      // problemInstanceProviderComboBox
-      // 
-      this.problemInstanceProviderComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-      this.problemInstanceProviderComboBox.FormattingEnabled = true;
-      this.problemInstanceProviderComboBox.Location = new System.Drawing.Point(50, 2);
-      this.problemInstanceProviderComboBox.Name = "problemInstanceProviderComboBox";
-      this.problemInstanceProviderComboBox.Size = new System.Drawing.Size(208, 21);
-      this.problemInstanceProviderComboBox.TabIndex = 18;
-      this.problemInstanceProviderComboBox.SelectedIndexChanged += new System.EventHandler(this.problemInstanceProviderComboBox_SelectedIndexChanged);
-      // 
-      // problemInstanceProviderViewHost
-      // 
-      this.problemInstanceProviderViewHost.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+      this.ContentPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.problemInstanceProviderViewHost.Caption = "ProblemInstanceConsumerView";
-      this.problemInstanceProviderViewHost.Content = null;
-      this.problemInstanceProviderViewHost.Enabled = false;
-      this.problemInstanceProviderViewHost.Location = new System.Drawing.Point(264, 1);
-      this.problemInstanceProviderViewHost.Name = "problemInstanceProviderViewHost";
-      this.problemInstanceProviderViewHost.ReadOnly = false;
-      this.problemInstanceProviderViewHost.Size = new System.Drawing.Size(247, 23);
-      this.problemInstanceProviderViewHost.TabIndex = 0;
-      this.problemInstanceProviderViewHost.ViewsLabelVisible = false;
-      this.problemInstanceProviderViewHost.ViewType = null;
+      this.ContentPanel.Controls.Add(this.resultsProducingItemView);
+      this.ContentPanel.Location = new System.Drawing.Point(0, 33);
+      this.ContentPanel.Name = "ContentPanel";
+      this.ContentPanel.Size = new System.Drawing.Size(960, 646);
+      this.ContentPanel.TabIndex = 2;
+      // 
+      // namedItemView
+      // 
+      this.namedItemView.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.namedItemView.Caption = "NamedItem View";
+      this.namedItemView.Content = null;
+      this.namedItemView.Location = new System.Drawing.Point(0, 3);
+      this.namedItemView.Name = "namedItemView";
+      this.namedItemView.ReadOnly = false;
+      this.namedItemView.Size = new System.Drawing.Size(960, 21);
+      this.namedItemView.TabIndex = 1;
+      // 
+      // problemInstanceProvidersControl
+      // 
+      this.problemInstanceProvidersControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.problemInstanceProvidersControl.Consumer = null;
+      this.problemInstanceProvidersControl.Location = new System.Drawing.Point(0, 0);
+      this.problemInstanceProvidersControl.Margin = new System.Windows.Forms.Padding(0);
+      this.problemInstanceProvidersControl.Name = "problemInstanceProvidersControl";
+      this.problemInstanceProvidersControl.Size = new System.Drawing.Size(960, 26);
+      this.problemInstanceProvidersControl.TabIndex = 0;
+      // 
+      // resultsProducingItemView
+      // 
+      this.resultsProducingItemView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.resultsProducingItemView.Caption = "Results Producing Item View";
+      this.resultsProducingItemView.Content = null;
+      this.resultsProducingItemView.Location = new System.Drawing.Point(3, 3);
+      this.resultsProducingItemView.Name = "resultsProducingItemView";
+      this.resultsProducingItemView.ReadOnly = false;
+      this.resultsProducingItemView.Size = new System.Drawing.Size(954, 640);
+      this.resultsProducingItemView.TabIndex = 0;
       // 
       // ProblemView
       // 
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
       this.Controls.Add(this.problemInstanceSplitContainer);
       this.Name = "ProblemView";
-      this.Size = new System.Drawing.Size(511, 363);
-      ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
+      this.Size = new System.Drawing.Size(960, 709);
       this.problemInstanceSplitContainer.Panel1.ResumeLayout(false);
-      this.problemInstanceSplitContainer.Panel1.PerformLayout();
       this.problemInstanceSplitContainer.Panel2.ResumeLayout(false);
-      this.problemInstanceSplitContainer.Panel2.PerformLayout();
       ((System.ComponentModel.ISupportInitialize)(this.problemInstanceSplitContainer)).EndInit();
       this.problemInstanceSplitContainer.ResumeLayout(false);
+      this.ContentPanel.ResumeLayout(false);
       this.ResumeLayout(false);
 
     }
 
     #endregion
 
+    protected HeuristicLab.Optimization.Views.ResultsProducingItemView resultsProducingItemView;
     protected System.Windows.Forms.SplitContainer problemInstanceSplitContainer;
-    protected HeuristicLab.MainForm.WindowsForms.ViewHost problemInstanceProviderViewHost;
-    protected System.Windows.Forms.Label libraryLabel;
-    protected System.Windows.Forms.ComboBox problemInstanceProviderComboBox;
+    private System.Windows.Forms.ToolTip toolTip;
+    private ProblemInstanceProvidersControl problemInstanceProvidersControl;
+    private Core.Views.NamedItemView namedItemView;
+    private System.Windows.Forms.Panel ContentPanel;
   }
 }

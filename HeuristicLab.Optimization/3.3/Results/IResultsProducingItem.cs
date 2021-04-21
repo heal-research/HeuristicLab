@@ -1,3 +1,5 @@
+using HEAL.Attic;
+using HeuristicLab.Core;
 #region License Information
 /* HeuristicLab
  * Copyright (C) Heuristic and Evolutionary Algorithms Laboratory (HEAL)
@@ -19,18 +21,12 @@
  */
 #endregion
 
-using System.Collections.Generic;
-using HEAL.Attic;
-
-namespace HeuristicLab.Core {
-  [StorableType("5d65ecdc-1659-488c-8a6f-0f630a2deeef")]
+namespace HeuristicLab.Optimization {
+  [StorableType("059A9D25-DA28-4A48-A69B-45BD9F514490")]
   /// <summary>
-  /// An interface which represents an item which contains parameters.
+  /// An interface which represents a parameterized item that produces results as well.
   /// </summary>
-  public interface IParameterizedItem : IItem {
-    IKeyedItemCollection<string, IParameter> Parameters { get; }
-    // TODO: Move the following to separate interface, not only parameterized items
-    // could be collected in runs. Maybe ICollectible
-    void CollectParameterValues(IDictionary<string, IItem> values);
+  public interface IResultsProducingItem : INamedItem, IParameterizedItem {
+    ResultCollection Results { get; }
   }
 }

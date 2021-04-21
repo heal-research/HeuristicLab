@@ -66,11 +66,12 @@ namespace HeuristicLab.Problems.Instances.Views {
       // 
       // instancesComboBox
       // 
-      this.instancesComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+      this.instancesComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this.instancesComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this.instancesComboBox.FormattingEnabled = true;
-      this.instancesComboBox.Location = new System.Drawing.Point(60, 2);
+      this.instancesComboBox.ItemHeight = 13;
+      this.instancesComboBox.Location = new System.Drawing.Point(60, 1);
       this.instancesComboBox.Name = "instancesComboBox";
       this.instancesComboBox.Size = new System.Drawing.Size(540, 21);
       this.instancesComboBox.TabIndex = 7;
@@ -112,27 +113,27 @@ namespace HeuristicLab.Problems.Instances.Views {
       // 
       this.splitContainer2.Panel2.Controls.Add(this.instanceLabel);
       this.splitContainer2.Panel2.Controls.Add(this.instancesComboBox);
-      this.splitContainer2.Size = new System.Drawing.Size(632, 23);
+      this.splitContainer2.Size = new System.Drawing.Size(632, 25);
       this.splitContainer2.SplitterDistance = 25;
       this.splitContainer2.TabIndex = 21;
       // 
       // exportButton
       // 
-      this.exportButton.Location = new System.Drawing.Point(1, 0);
+      this.exportButton.Location = new System.Drawing.Point(0, 0);
       this.exportButton.Name = "exportButton";
       this.exportButton.Size = new System.Drawing.Size(24, 24);
       this.exportButton.TabIndex = 20;
       this.exportButton.Text = "Export";
       this.exportButton.UseVisualStyleBackColor = true;
-      this.exportButton.Click += new System.EventHandler(exportButton_Click);
+      this.exportButton.Click += new System.EventHandler(this.exportButton_Click);
       // 
       // splitContainer1
       // 
-      this.splitContainer1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+      this.splitContainer1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this.splitContainer1.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
       this.splitContainer1.IsSplitterFixed = true;
-      this.splitContainer1.Location = new System.Drawing.Point(33, -1);
+      this.splitContainer1.Location = new System.Drawing.Point(30, 0);
       this.splitContainer1.Name = "splitContainer1";
       // 
       // splitContainer1.Panel1
@@ -142,7 +143,7 @@ namespace HeuristicLab.Problems.Instances.Views {
       // splitContainer1.Panel2
       // 
       this.splitContainer1.Panel2.Controls.Add(this.splitContainer2);
-      this.splitContainer1.Size = new System.Drawing.Size(661, 23);
+      this.splitContainer1.Size = new System.Drawing.Size(661, 25);
       this.splitContainer1.SplitterDistance = 25;
       this.splitContainer1.TabIndex = 21;
       // 
@@ -154,11 +155,11 @@ namespace HeuristicLab.Problems.Instances.Views {
       this.importButton.TabIndex = 19;
       this.importButton.Text = "Import";
       this.importButton.UseVisualStyleBackColor = true;
-      this.importButton.Click += new System.EventHandler(importButton_Click);
+      this.importButton.Click += new System.EventHandler(this.importButton_Click);
       // 
       // libraryInfoButton
       // 
-      this.libraryInfoButton.Location = new System.Drawing.Point(3, -1);
+      this.libraryInfoButton.Location = new System.Drawing.Point(3, 0);
       this.libraryInfoButton.Name = "libraryInfoButton";
       this.libraryInfoButton.Size = new System.Drawing.Size(24, 24);
       this.libraryInfoButton.TabIndex = 22;
@@ -166,12 +167,13 @@ namespace HeuristicLab.Problems.Instances.Views {
       this.libraryInfoButton.UseVisualStyleBackColor = true;
       this.libraryInfoButton.Click += new System.EventHandler(this.libraryInfoButton_Click);
       // 
-      // ProblemInstanceProviderViewGeneric
+      // ProblemInstanceProviderView
       // 
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
       this.Controls.Add(this.libraryInfoButton);
       this.Controls.Add(this.splitContainer1);
-      this.Name = "ProblemInstanceProviderViewGeneric";
+      this.Name = "ProblemInstanceProviderView";
+      this.Size = new System.Drawing.Size(694, 24);
       this.splitContainer2.Panel1.ResumeLayout(false);
       this.splitContainer2.Panel2.ResumeLayout(false);
       this.splitContainer2.Panel2.PerformLayout();

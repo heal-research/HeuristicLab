@@ -20,12 +20,9 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
+using HeuristicLab.MainForm.WindowsForms;
 using HeuristicLab.Problems.Instances;
-using HeuristicLab.Problems.Instances.Views;
 
 namespace HeuristicLab.Optimization.Views {
   /// <summary>
@@ -33,19 +30,14 @@ namespace HeuristicLab.Optimization.Views {
   /// </summary>
   [View("Problem View")]
   [Content(typeof(IProblem), true)]
-  public partial class ProblemView : ParameterizedNamedItemView {
+  public partial class ProblemView : AsynchronousContentView {
 
     public new IProblem Content {
       get { return (IProblem)base.Content; }
       set { base.Content = value; }
     }
 
-    protected IEnumerable<IProblemInstanceProvider> problemInstanceProviders;
-    public IEnumerable<IProblemInstanceProvider> ProblemInstanceProviders {
-      get { return new List<IProblemInstanceProvider>(problemInstanceProviders); }
-    }
 
-    public IProblemInstanceProvider SelectedProvider { get; protected set; }
 
     /// <summary>
     /// Initializes a new instance of <see cref="ItemBaseView"/>.
@@ -54,72 +46,35 @@ namespace HeuristicLab.Optimization.Views {
       InitializeComponent();
     }
 
+    protected override void RegisterContentEvents() {
+      base.RegisterContentEvents();
+      Content.NameChanged += Content_NameChanged;
+    }
+
+    protected override void DeregisterContentEvents() {
+      Content.NameChanged -= Content_NameChanged;
+      base.DeregisterContentEvents();
+    }
+
     protected override void OnContentChanged() {
       base.OnContentChanged();
-      if (Content == null) {
-        problemInstanceProviders = null;
-        problemInstanceProviderComboBox.DataSource = null;
-        problemInstanceSplitContainer.Panel1Collapsed = true;
-      } else {
-        var consumer = Content as IProblemInstanceConsumer;
-        if (consumer != null) {
-          problemInstanceProviders = ProblemInstanceManager.GetProviders(Content);
-          bool expand = problemInstanceProviders.Any();
-          if (expand) {
-            problemInstanceProviderComboBox.DisplayMember = "Name";
-            problemInstanceProviderComboBox.DataSource = ProblemInstanceProviders.OrderBy(x => x.Name).ToList();
-          }
-          problemInstanceSplitContainer.Panel1Collapsed = !expand;
-        } else
-          problemInstanceSplitContainer.Panel1Collapsed = true;
+      problemInstanceProvidersControl.Consumer = Content as IProblemInstanceConsumer;
+      namedItemView.Content = Content;
+      resultsProducingItemView.Content = Content;
+
+      if (!problemInstanceProvidersControl.ProvidersAvailable) problemInstanceSplitContainer.Panel1Collapsed = true;
+      if (Content == null) return;
+
+      Caption = Content.Name;
+    }
+
+    protected virtual void Content_NameChanged(object sender, EventArgs e) {
+      if (InvokeRequired) {
+        Invoke(new EventHandler(Content_NameChanged), sender, e);
+        return;
       }
-      SetEnabledStateOfControls();
+      Caption = Content.Name;
     }
 
-    protected virtual void problemInstanceProviderComboBox_SelectedIndexChanged(object sender, System.EventArgs e) {
-      if (problemInstanceProviderComboBox.SelectedIndex >= 0) {
-        SelectedProvider = (IProblemInstanceProvider)problemInstanceProviderComboBox.SelectedItem;
-        problemInstanceProviderViewHost.Content = SelectedProvider;
-        var view = (ProblemInstanceProviderView)problemInstanceProviderViewHost.ActiveView;
-        var consumer = (IProblemInstanceConsumer)Content;
-        view.Consumer = consumer;
-        if (CheckForIProblemInstanceExporter(consumer))
-          view.Exporter = (IProblemInstanceExporter)Content;
-        else view.Exporter = null;
-        SetTooltip();
-      } else {
-        SelectedProvider = null;
-      }
-      SetEnabledStateOfControls();
-    }
-
-    protected bool CheckForIProblemInstanceExporter(IProblemInstanceConsumer content) {
-      return Content.GetType().GetInterfaces()
-                    .Any(x => x == typeof(IProblemInstanceExporter));
-    }
-
-    #region ToolTip
-    protected void SetTooltip() {
-      toolTip.SetToolTip(problemInstanceProviderComboBox, GetProviderToolTip());
-    }
-
-    private string GetProviderToolTip() {
-      var provider = SelectedProvider;
-      string toolTip = provider.Name;
-
-      if (!String.IsNullOrEmpty(provider.ReferencePublication)) {
-        toolTip = toolTip
-            + Environment.NewLine + Environment.NewLine
-            + provider.ReferencePublication;
-      }
-      if (provider.WebLink != null) {
-        toolTip = toolTip
-            + Environment.NewLine
-            + provider.WebLink.ToString();
-      }
-
-      return toolTip;
-    }
-    #endregion
   }
 }

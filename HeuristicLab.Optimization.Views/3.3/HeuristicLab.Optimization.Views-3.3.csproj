@@ -165,6 +165,12 @@
     <Compile Include="ExperimentListView.Designer.cs">
       <DependentUpon>ExperimentListView.cs</DependentUpon>
     </Compile>
+    <Compile Include="ProblemInstanceProvidersControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ProblemInstanceProvidersControl.Designer.cs">
+      <DependentUpon>ProblemInstanceProvidersControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="ResultParameterView.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -183,6 +189,12 @@
     </Compile>
     <Compile Include="ProblemView.Designer.cs">
       <DependentUpon>ProblemView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ResultsProducingItemView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ResultsProducingItemView.Designer.cs">
+      <DependentUpon>ResultsProducingItemView.cs</DependentUpon>
     </Compile>
     <Compile Include="RunCollectionModifierListView.cs">
       <SubType>UserControl</SubType>

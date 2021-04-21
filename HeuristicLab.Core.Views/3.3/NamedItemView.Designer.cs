@@ -66,9 +66,9 @@ namespace HeuristicLab.Core.Views {
       // 
       this.nameTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
-      this.nameTextBox.Location = new System.Drawing.Point(58, 0);
+      this.nameTextBox.Location = new System.Drawing.Point(50, 0);
       this.nameTextBox.Name = "nameTextBox";
-      this.nameTextBox.Size = new System.Drawing.Size(268, 20);
+      this.nameTextBox.Size = new System.Drawing.Size(274, 20);
       this.nameTextBox.TabIndex = 1;
       this.nameTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.nameTextBox_KeyDown);
       this.nameTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.nameTextBox_Validating);
