@@ -46,7 +46,8 @@ namespace HeuristicLab.Problems.GraphColoring {
     [Storable] public IValueParameter<EnumValue<FitnessFunction>> FitnessFunctionParameter { get; private set; }
     [Storable] public IValueParameter<IntValue> BestKnownColorsParameter { get; private set; }
     [Storable] public IResult<IntValue> BestSolutionColorsResult { get; private set; }
-    [Storable] public IResult<IntValue> BestSolutionConflicts { get; private set; }
+    [Storable] public IResult<IntValue> BestSolutionConflictsResult { get; private set; }
+    [Storable] public IResult<IntMatrix> BestColoringResult { get; private set; }
 
     public FitnessFunction FitnessFunction {
       get { return FitnessFunctionParameter.Value.Value; }
@@ -60,6 +61,9 @@ namespace HeuristicLab.Problems.GraphColoring {
       AdjacencyListParameter = cloner.Clone(original.AdjacencyListParameter);
       FitnessFunctionParameter = cloner.Clone(original.FitnessFunctionParameter);
       BestKnownColorsParameter = cloner.Clone(original.BestKnownColorsParameter);
+      BestSolutionColorsResult = cloner.Clone(original.BestSolutionColorsResult);
+      BestSolutionConflictsResult = cloner.Clone(original.BestSolutionConflictsResult);
+      BestColoringResult = cloner.Clone(original.BestColoringResult);
       RegisterEventHandlers();
     }
     public GraphColoringProblem() {
@@ -68,6 +72,8 @@ namespace HeuristicLab.Problems.GraphColoring {
       Parameters.Add(FitnessFunctionParameter = new ValueParameter<EnumValue<FitnessFunction>>("Fitness Function", "The function to use for evaluating the quality of a solution.", new EnumValue<FitnessFunction>(FitnessFunction.Penalized)));
       Parameters.Add(BestKnownColorsParameter = new OptionalValueParameter<IntValue>("BestKnownColors", "The least amount of colors in a valid coloring.") { ReadOnly = true });
       Results.Add(BestSolutionColorsResult = new Result<IntValue>("Best Solution Colors", "The number of best solution found so far."));
+      Results.Add(BestSolutionConflictsResult = new Result<IntValue>("Best Solution Conflicts", "The number of conflicts in the the best solution found so far."));
+      Results.Add(BestColoringResult = new Result<IntMatrix>("Best Coloring", "The best coloring that is currently found."));
 
       var imat = new IntMatrix(defaultInstance.Length, 2);
       for (var i = 0; i < defaultInstance.Length; i++) {
@@ -164,57 +170,28 @@ namespace HeuristicLab.Problems.GraphColoring {
     public override void Analyze(ISingleObjectiveSolutionContext<LinearLinkage>[] solutionContexts, IRandom random) {
       base.Analyze(solutionContexts, random);
 
-      var lles = solutionContexts.Select(context => context.EncodedSolution).ToArray();
+      var best = GetBest(solutionContexts);
+      var llee = best.EncodedSolution.ToEndLinks();
+      var colors = llee.Distinct().Count();
+      var conflicts = CalculateConflicts(llee);
 
-      //TODO: reimplement code below using results directly
+      var improvement = !BestSolutionConflictsResult.HasValue
+        || conflicts < BestSolutionConflictsResult.Value.Value
+        || (conflicts == BestSolutionConflictsResult.Value.Value
+          && colors < BestSolutionColorsResult.Value.Value);
 
-      //var orderedIndividuals = lles.Zip(qualities, (i, q) => new { LLE = i, Quality = q }).OrderBy(z => z.Quality);
-      //var best = Maximization ? orderedIndividuals.Last().LLE : orderedIndividuals.First().LLE;
+      if (improvement) {
+        BestSolutionColorsResult.Value = new IntValue(colors);
+        BestSolutionConflictsResult.Value = new IntValue(conflicts);
+        var matrix = new IntMatrix(llee.Length, 2) { ColumnNames = new[] { "Node", "Color" } };
+        UpdateMatrix(llee, matrix);
+        BestColoringResult.Value = matrix;
+      }
 
-      //var llee = best.ToEndLinks();
-      //var colors = llee.Distinct().Count();
-      //var conflicts = CalculateConflicts(llee);
-
-      //IResult res;
-      //int bestColors = int.MaxValue, bestConflicts = int.MaxValue;
-      //var improvement = false;
-      //if (!results.TryGetValue("Best Solution Conflicts", out res)) {
-      //  bestConflicts = conflicts;
-      //  res = new Result("Best Solution Conflicts", new IntValue(bestConflicts));
-      //  results.Add(res);
-      //} else {
-      //  bestConflicts = ((IntValue)res.Value).Value;
-      //  improvement = conflicts < bestConflicts;
-      //  if (improvement) ((IntValue)res.Value).Value = bestConflicts = conflicts;
-      //}
-      //if (!results.TryGetValue("Best Solution Colors", out res)) {
-      //  bestColors = colors;
-      //  res = new Result("Best Solution Colors", new IntValue(bestColors));
-      //  results.Add(res);
-      //} else {
-      //  bestColors = ((IntValue)res.Value).Value;
-      //  improvement = improvement || conflicts == bestConflicts && colors < bestColors;
-      //  if (improvement)
-      //    ((IntValue)res.Value).Value = bestColors = colors;
-      //}
-      //if (!results.ContainsKey("Best Encoded Solution") || improvement)
-      //  results.AddOrUpdateResult("Best Encoded Solution", (LinearLinkage)best.Clone());
-
-      //if (!results.TryGetValue("Best Solution", out res) || !(res.Value is IntMatrix)) {
-      //  var matrix = new IntMatrix(llee.Length, 2) { ColumnNames = new[] { "Node", "Color" } };
-      //  UpdateMatrix(llee, matrix);
-      //  res = new Result("Best Solution", matrix);
-      //  results.AddOrUpdateResult("Best Solution", matrix);
-      //} else {
-      //  if (improvement) {
-      //    UpdateMatrix(llee, (IntMatrix)res.Value);
-      //  }
-      //}
-
-      //if (conflicts == 0) {
-      //  if (BestKnownColorsParameter.Value == null || BestKnownColorsParameter.Value.Value > colors)
-      //    BestKnownColorsParameter.Value = new IntValue(colors);
-      //}
+      if (conflicts == 0) {
+        if (BestKnownColorsParameter.Value == null || colors < BestKnownColorsParameter.Value.Value)
+          BestKnownColorsParameter.Value = new IntValue(colors);
+      }
     }
 
     private static void UpdateMatrix(int[] llee, IntMatrix matrix) {
