@@ -89,19 +89,27 @@ namespace HeuristicLab.Optimization.Views {
     protected override void RegisterContentEvents() {
       base.RegisterContentEvents();
       RegisterContentParametersEvents();
-      RegisterContentResultsEents();
+      RegisterContentResultsEvents();
     }
     private void RegisterContentParametersEvents() {
       Content.Parameters.ItemsAdded += ParametersOnItemsChanged;
-      Content.Parameters.ItemsRemoved += ParametersOnItemsChanged;
+      Content.Parameters.ItemsRemoved += ParametersOnItemsRemoved;
       Content.Parameters.ItemsReplaced += ParametersOnItemsChanged;
       Content.Parameters.CollectionReset += ParametersOnItemsChanged;
+
+      foreach (var item in Content.Parameters) {
+        RegisterItemEvents(item);
+      }
     }
-    private void RegisterContentResultsEents() {
+    private void RegisterContentResultsEvents() {
       Content.Results.ItemsAdded += ResultsOnItemsChanged;
-      Content.Results.ItemsRemoved += ResultsOnItemsChanged;
+      Content.Results.ItemsRemoved += ResultsOnItemsRemoved;
       Content.Results.ItemsReplaced += ResultsOnItemsChanged;
       Content.Results.CollectionReset += ResultsOnItemsChanged;
+
+      foreach (var item in Content.Results) {
+        RegisterItemEvents(item);
+      }
     }
     protected virtual void RegisterItemEvents(IItem item) {
       item.ItemImageChanged += new EventHandler(Item_ItemImageChanged);
@@ -119,13 +127,13 @@ namespace HeuristicLab.Optimization.Views {
     }
     private void DeregisterContentParametersEvents() {
       Content.Parameters.ItemsAdded -= ParametersOnItemsChanged;
-      Content.Parameters.ItemsRemoved -= ParametersOnItemsChanged;
+      Content.Parameters.ItemsRemoved -= ParametersOnItemsRemoved;
       Content.Parameters.ItemsReplaced -= ParametersOnItemsChanged;
       Content.Parameters.CollectionReset -= ParametersOnItemsChanged;
     }
     private void DeregisterContentResultsEvents() {
       Content.Results.ItemsAdded -= ResultsOnItemsChanged;
-      Content.Results.ItemsRemoved -= ResultsOnItemsChanged;
+      Content.Results.ItemsRemoved -= ResultsOnItemsRemoved;
       Content.Results.ItemsReplaced -= ResultsOnItemsChanged;
       Content.Results.CollectionReset -= ResultsOnItemsChanged;
     }
@@ -154,10 +162,6 @@ namespace HeuristicLab.Optimization.Views {
         listView.Items.Remove(item);
       }
       itemToListViewItem.Clear();
-
-      var counter = 0;
-      foreach (var item in listView.Items.OfType<ListViewItem>().OrderBy(x => x.ImageIndex).ToList())
-        item.ImageIndex = counter++;
       listView.EndUpdate();
 
       if (Content == null) return;
@@ -190,10 +194,15 @@ namespace HeuristicLab.Optimization.Views {
       }
       foreach (var item in e.Items) {
         var listViewItem = CreateListViewItem(item, parameterGroup);
+        RegisterItemEvents(item);
         listView.Items.Add(listViewItem);
         itemToListViewItem[item] = listViewItem;
       }
       AdjustListViewColumnSizes();
+    }
+    private void ParametersOnItemsRemoved(object sender, CollectionItemsChangedEventArgs<IParameter> e) {
+      var eventArgs = new CollectionItemsChangedEventArgs<IParameter>(new IParameter[0], e.Items);
+      ParametersOnItemsChanged(sender, eventArgs);
     }
 
     private void ResultsOnItemsChanged(object sender, CollectionItemsChangedEventArgs<IResult> e) {
@@ -203,10 +212,15 @@ namespace HeuristicLab.Optimization.Views {
       }
       foreach (var item in e.Items) {
         var listViewItem = CreateListViewItem(item, resultsGroup);
+        RegisterItemEvents(item);
         listView.Items.Add(listViewItem);
         itemToListViewItem[item] = listViewItem;
       }
       AdjustListViewColumnSizes();
+    }
+    private void ResultsOnItemsRemoved(object sender, CollectionItemsChangedEventArgs<IResult> e) {
+      var eventArgs = new CollectionItemsChangedEventArgs<IResult>(new IResult[0], e.Items);
+      ResultsOnItemsChanged(sender, eventArgs);
     }
 
 
