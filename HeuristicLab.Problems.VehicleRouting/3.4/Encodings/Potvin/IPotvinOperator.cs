@@ -20,11 +20,10 @@
 #endregion
 
 using HEAL.Attic;
+using HeuristicLab.Problems.VehicleRouting.Interfaces;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
   [StorableType("90265685-321B-4E34-AD9F-30FA917F07A0")]
-  public interface IPotvinOperator /*:
-    ISingleDepotOperator, IHomogenousCapacitatedOperator, ITimeWindowedOperator,
-    IMultiDepotOperator, IHeterogenousCapacitatedOperator*/ {
+  public interface IPotvinOperator : IGeneralVRPOperator {
   }
 }

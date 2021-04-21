@@ -19,6 +19,8 @@
  */
 #endregion
 
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using HEAL.Attic;
 using HeuristicLab.Common;
@@ -30,6 +32,9 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings {
   [Item("VRPEncoding", "")]
   [StorableType("2bb0d7d5-d842-4cf7-8242-1d49940aa4b6")]
   public abstract class VRPEncoding : Encoding, IVRPEncoding {
+    private static HashSet<Type> encodingOperatorTypes = new HashSet<Type>() { typeof(Alba.IAlbaOperator), typeof(GVR.IGVROperator),
+      typeof(Potvin.IPotvinOperator), typeof(Prins.IPrinsOperator), typeof(Zhu.IZhuOperator) };
+    public static IReadOnlyCollection<Type> EncodingOperatorTypes => encodingOperatorTypes.ToList().AsReadOnly();
 
     [StorableConstructor]
     protected VRPEncoding(StorableConstructorFlag _) : base(_) { }

@@ -216,6 +216,10 @@ namespace HeuristicLab.Problems.VehicleRouting {
         newOps.Add(new QualitySimilarityCalculator());
       if (operatorTypes.Add(typeof(PopulationSimilarityAnalyzer)))
         newOps.Add(new PopulationSimilarityAnalyzer(Operators.OfType<ISolutionSimilarityCalculator>()));
+      if (operatorTypes.Add(typeof(VRPIntraRouteImprovementOperator)))
+        newOps.Add(new VRPIntraRouteImprovementOperator());
+      if (operatorTypes.Add(typeof(VRPPathRelinker)))
+        newOps.Add(new VRPPathRelinker());
 
       var assembly = typeof(VehicleRoutingProblem).Assembly;
       var analyzers = ApplicationManager.Manager.GetTypes(new[] { typeof(IAnalyzer) }, assembly, true, false, false)

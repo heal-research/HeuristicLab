@@ -63,7 +63,7 @@ namespace HeuristicLab.Problems.Programmable {
           adjacencyMatrix[i, j] = adjacencyMatrix[j, i] = random.Next(2) == 0;
     }
 
-    public override double Evaluate(LinearLinkage solution, IRandom random, CancellationToken token) {
+    public override ISingleObjectiveEvaluationResult Evaluate(LinearLinkage solution, IRandom random, CancellationToken token) {
       var penalty = 0;
       var groups = solution.GetGroups().ToList();
       for (var i = 0; i < groups.Count; i++) {
@@ -73,10 +73,10 @@ namespace HeuristicLab.Problems.Programmable {
       }
       var result = groups.Count;
       if (penalty > 0) result += penalty + ProblemSize;
-      return result;
+      return new SingleObjectiveEvaluationResult(result);
     }
 
-    public override void Analyze(LinearLinkage[] solutions, double[] qualities, ResultCollection results, IRandom random) { }
+    public override void Analyze(ISingleObjectiveSolutionContext<LinearLinkage>[] solutionContexts, IRandom random) { }
 
     public override IEnumerable<LinearLinkage> GetNeighbors(LinearLinkage solution, IRandom random) {
       foreach (var move in ExhaustiveSwap2MoveGenerator.Generate(solution)) {

@@ -123,8 +123,8 @@ namespace HeuristicLab.Optimizer {
         try {
           item = (NamedItem)serializer.Deserialize(stream, out var info,false);
           if (item == null) item = new ErrorMessage(name, "Sample failed to load!");
-        } catch {
-          item = new ErrorMessage(name, "Sample failed to load!");
+        } catch (Exception e) {
+          item = new ErrorMessage(name, "Sample failed to load!" + Environment.NewLine + e.ToString());
         }
         OnSampleLoaded(item, group, 1.0 / count);
       }

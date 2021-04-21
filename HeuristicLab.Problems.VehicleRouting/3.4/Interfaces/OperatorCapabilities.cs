@@ -39,7 +39,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Interfaces {
   [StorableType("D9F4AD37-6D17-4376-874C-5773BFDE9A77")]
   public interface IHeterogenousCapacitatedOperator : ICapacitatedOperator { }
   [StorableType("7d2e4513-fbd9-4ef4-8512-aceb6a4dafcf")]
-  public interface INotCapacitatedOperaor : IVRPOperator { }
+  public interface INotCapacitatedOperator : IVRPOperator { }
   [StorableType("43A35B3E-B3F4-4A16-9940-CFDA9E288F78")]
   public interface ITimeWindowedOperator : IVRPOperator { }
   [StorableType("0195366c-f965-475f-8fc0-3cd11ce57e1f")]

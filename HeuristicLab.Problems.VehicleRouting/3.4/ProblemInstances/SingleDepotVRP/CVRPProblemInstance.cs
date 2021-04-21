@@ -65,7 +65,7 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
 
     public override IEnumerable<IOperator> FilterOperators(IEnumerable<IOperator> operators) {
       return base.FilterOperators(operators)
-        .Where(x => !(x is INotCapacitatedOperaor))
+        .Where(x => !(x is INotCapacitatedOperator))
         .Union(operators.Where(x => x is IHomogenousCapacitatedOperator
                                  || x is ICapacitatedOperator && !(x is IHeterogenousCapacitatedOperator)));
     }

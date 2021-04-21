@@ -63,6 +63,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Zhu {
     protected override void DiscoverOperators() {
       var assembly = typeof(IZhuOperator).Assembly;
       var discoveredTypes = ApplicationManager.Manager.GetTypes(encodingSpecificOperatorTypes, assembly, true, false, false);
+      discoveredTypes = discoveredTypes.Where(x => EncodingOperatorTypes.Except(new[] { typeof(IZhuOperator) }).All(y => !y.IsAssignableFrom(x)));
       var operators = discoveredTypes.Select(t => (IOperator)Activator.CreateInstance(t));
       var newOperators = operators.Except(Operators, new TypeEqualityComparer<IOperator>()).ToList();
 
