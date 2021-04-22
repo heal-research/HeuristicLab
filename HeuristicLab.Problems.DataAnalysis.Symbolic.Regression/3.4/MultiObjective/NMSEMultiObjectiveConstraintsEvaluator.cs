@@ -31,33 +31,24 @@ using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Parameters;
 
-namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression.MultiObjective {
-  [Item("NMSE Evaluator with shape-constraints",
-    "Calculates the NMSE and the constraints violations of a symbolic regression solution as objectives.")]
+namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
+  [Item("NMSE Evaluator with shape constraints (multi-objective)",
+    "Calculates the NMSE and constraint violations for a symbolic regression model.")]
   [StorableType("8E9D76B7-ED9C-43E7-9898-01FBD3633880")]
-  public class NMSEConstraintsEvaluator : SymbolicRegressionMultiObjectiveEvaluator {
-    public const string NumObjectivesParameterName = "NumObjectives";
+  public class NMSEMultiObjectiveConstraintsEvaluator : SymbolicRegressionMultiObjectiveEvaluator, IMultiObjectiveConstraintsEvaluator {
+    private const string NumConstraintsParameterName = "NumConstraints";
     private const string BoundsEstimatorParameterName = "BoundsEstimator";
 
-    public IFixedValueParameter<IntValue> NumObjectivesParameter =>
-      (IFixedValueParameter<IntValue>)Parameters[NumObjectivesParameterName];
+    public IFixedValueParameter<IntValue> NumConstraintsParameter =>
+      (IFixedValueParameter<IntValue>)Parameters[NumConstraintsParameterName];
 
     public IValueParameter<IBoundsEstimator> BoundsEstimatorParameter =>
       (IValueParameter<IBoundsEstimator>)Parameters[BoundsEstimatorParameterName];
 
-    [Storable]
-    private bool[] maximization;
-
-    public int NumObjectives {
-      get => NumObjectivesParameter.Value.Value;
+    public int NumConstraints {
+      get => NumConstraintsParameter.Value.Value;
       set {
-        NumObjectivesParameter.Value.Value = value;
-
-        /*
-         * First objective is to minimize the NMSE
-         * All following objectives have to be minimized ==> Constraints
-         */
-        this.maximization = new bool[value];
+        NumConstraintsParameter.Value.Value = value;
       }
     }
 
@@ -66,20 +57,19 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression.MultiObjective 
       set => BoundsEstimatorParameter.Value = value;
     }
 
+    public override IEnumerable<bool> Maximization => new bool[1 + NumConstraints]; // minimize all objectives
+
     #region Constructors
 
-    public NMSEConstraintsEvaluator() {
-      Parameters.Add(new FixedValueParameter<IntValue>(NumObjectivesParameterName, new IntValue(2)));
+    public NMSEMultiObjectiveConstraintsEvaluator() {
+      Parameters.Add(new FixedValueParameter<IntValue>(NumConstraintsParameterName, new IntValue(0)));
       Parameters.Add(new ValueParameter<IBoundsEstimator>(BoundsEstimatorParameterName, new IntervalArithBoundsEstimator()));
-      maximization = new bool[2];
     }
 
     [StorableConstructor]
-    protected NMSEConstraintsEvaluator(StorableConstructorFlag _) : base(_) { }
+    protected NMSEMultiObjectiveConstraintsEvaluator(StorableConstructorFlag _) : base(_) { }
 
-    protected NMSEConstraintsEvaluator(NMSEConstraintsEvaluator original, Cloner cloner) : base(original, cloner) {
-      this.maximization = (bool[])original.maximization.Clone();
-    }
+    protected NMSEMultiObjectiveConstraintsEvaluator(NMSEMultiObjectiveConstraintsEvaluator original, Cloner cloner) : base(original, cloner) { }
 
     #endregion
 
@@ -87,7 +77,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression.MultiObjective 
     private void AfterDeserialization() { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new NMSEConstraintsEvaluator(this, cloner);
+      return new NMSEMultiObjectiveConstraintsEvaluator(this, cloner);
     }
 
 
@@ -116,7 +106,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression.MultiObjective 
 
           //Check if tree contains offset and scaling nodes
           if (!(offset.Symbol is Addition) || !(scaling.Symbol is Multiplication))
-            throw new ArgumentException($"{ItemName} can only be used with IntervalArithmeticGrammar.");
+            throw new ArgumentException($"{ItemName} can only be used with LinearScalingGrammar.");
 
 
           var t = (ISymbolicExpressionTreeNode)scaling.GetSubtree(0).Clone();
@@ -137,11 +127,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression.MultiObjective 
             var scalingParameter = scaling.GetSubtree(1) as ConstantTreeNode;
             scalingParameter.Value = beta;
           }
-        }
+        } // else alpha and beta are evolved
       }
 
       var qualities = Calculate(interpreter, tree, estimationLimits.Lower, estimationLimits.Upper, problemData,
-        rows, BoundsEstimator);
+        rows, BoundsEstimator, DecimalPlaces);
       QualitiesParameter.ActualValue = new DoubleArray(qualities);
       return base.InstrumentedApply();
     }
@@ -156,7 +146,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression.MultiObjective 
 
       var quality = Calculate(SymbolicDataAnalysisTreeInterpreterParameter.ActualValue, tree,
         EstimationLimitsParameter.ActualValue.Lower, EstimationLimitsParameter.ActualValue.Upper,
-        problemData, rows, BoundsEstimator);
+        problemData, rows, BoundsEstimator, DecimalPlaces);
 
       SymbolicDataAnalysisTreeInterpreterParameter.ExecutionContext = null;
       EstimationLimitsParameter.ExecutionContext = null;
@@ -170,18 +160,25 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression.MultiObjective 
       ISymbolicDataAnalysisExpressionTreeInterpreter interpreter,
       ISymbolicExpressionTree solution, double lowerEstimationLimit,
       double upperEstimationLimit,
-      IRegressionProblemData problemData, IEnumerable<int> rows, IBoundsEstimator estimator) {
+      IRegressionProblemData problemData, IEnumerable<int> rows, IBoundsEstimator estimator, int decimalPlaces) {
       OnlineCalculatorError errorState;
       var estimatedValues = interpreter.GetSymbolicExpressionTreeValues(solution, problemData.Dataset, rows);
       var targetValues = problemData.Dataset.GetDoubleValues(problemData.TargetVariable, rows);
-      var constraints = problemData.ShapeConstraints.EnabledConstraints;
+      var constraints = Enumerable.Empty<ShapeConstraint>();
+      if (problemData is ShapeConstrainedRegressionProblemData scProbData) {
+        constraints = scProbData.ShapeConstraints.EnabledConstraints;
+      }
       var intervalCollection = problemData.VariableRanges;
 
       double nmse;
 
       var boundedEstimatedValues = estimatedValues.LimitToRange(lowerEstimationLimit, upperEstimationLimit);
       nmse = OnlineNormalizedMeanSquaredErrorCalculator.Calculate(targetValues, boundedEstimatedValues, out errorState);
+
       if (errorState != OnlineCalculatorError.None) nmse = 1.0;
+
+      if (decimalPlaces >= 0)
+        nmse = Math.Round(nmse, decimalPlaces);
 
       if (nmse > 1)
         nmse = 1.0;
@@ -192,13 +189,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression.MultiObjective 
         if (double.IsNaN(violation) || double.IsInfinity(violation)) {
           objectives.Add(double.MaxValue);
         } else {
-          objectives.Add(violation);
+          objectives.Add(Math.Round(violation, decimalPlaces));
         }
       }
 
       return objectives.ToArray();
     }
-
-    public override IEnumerable<bool> Maximization => maximization;
   }
 }

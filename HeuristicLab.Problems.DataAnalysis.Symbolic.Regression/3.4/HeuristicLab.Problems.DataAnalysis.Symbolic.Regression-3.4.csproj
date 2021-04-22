@@ -118,17 +118,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MultiObjective\NMSEConstraintsEvaluator.cs" />
+    <Compile Include="Interfaces\IMultiObjectiveConstaintsEvaluator.cs" />
+    <Compile Include="MultiObjective\NMSEMultiObjectiveConstraintsEvaluator.cs" />
     <Compile Include="MultiObjective\PearsonRSquaredNestedTreeSizeEvaluator.cs" />
     <Compile Include="MultiObjective\PearsonRSquaredNumberOfVariablesEvaluator.cs" />
     <Compile Include="MultiObjective\PearsonRSquaredAverageSimilarityEvaluator.cs" />
     <Compile Include="MultiObjective\PearsonRSquaredTreeComplexityEvaluator.cs" />
+    <Compile Include="MultiObjective\ShapeConstrainedRegressionMultiObjectiveProblem.cs" />
     <Compile Include="MultiObjective\SymbolicRegressionMultiObjectiveValidationBestSolutionAnalyzer.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="ShapeConstraintsAnalyzer.cs" />
     <Compile Include="SingleObjective\ConstantOptimizationAnalyzer.cs" />
-    <Compile Include="SingleObjective\Evaluators\NMSEConstraintsEvaluator.cs" />
+    <Compile Include="SingleObjective\Evaluators\NMSESingleObjectiveConstraintsEvaluator.cs" />
     <Compile Include="SingleObjective\Evaluators\SymbolicRegressionMeanRelativeErrorEvaluator.cs" />
+    <Compile Include="SingleObjective\ShapeConstrainedRegressionSingleObjectiveProblem.cs" />
     <Compile Include="SingleObjective\SymbolicRegressionSolutionsAnalyzer.cs" />
     <Compile Include="SymbolicRegressionPhenotypicDiversityAnalyzer.cs" />
     <Compile Include="SymbolicRegressionPruningAnalyzer.cs" />

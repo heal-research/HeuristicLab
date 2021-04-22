@@ -28,12 +28,11 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Parameters;
-using HeuristicLab.Problems.DataAnalysis.Symbolic.Regression;
 
-namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
-  [Item("NMSE Evaluator with shape-constraints", "Calculates NMSE of a symbolic regression solution and checks constraints the fitness is a combination of NMSE and constraint violations.")]
+namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
+  [Item("NMSE Evaluator with shape-constraints (single-objective)", "Calculates NMSE of a symbolic regression solution and checks constraints. The fitness is a combination of NMSE and constraint violations.")]
   [StorableType("27473973-DD8D-4375-997D-942E2280AE8E")]
-  public class NMSEConstraintsEvaluator : SymbolicRegressionSingleObjectiveEvaluator {
+  public class NMSESingleObjectiveConstraintsEvaluator : SymbolicRegressionSingleObjectiveEvaluator {
     #region Parameter/Properties
 
     private const string OptimizeParametersParameterName = "OptimizeParameters";
@@ -90,12 +89,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     #region Constructors/Cloning
 
     [StorableConstructor]
-    protected NMSEConstraintsEvaluator(StorableConstructorFlag _) : base(_) { }
+    protected NMSESingleObjectiveConstraintsEvaluator(StorableConstructorFlag _) : base(_) { }
 
-    protected NMSEConstraintsEvaluator(
-      NMSEConstraintsEvaluator original, Cloner cloner) : base(original, cloner) { }
+    protected NMSESingleObjectiveConstraintsEvaluator(
+      NMSESingleObjectiveConstraintsEvaluator original, Cloner cloner) : base(original, cloner) { }
 
-    public NMSEConstraintsEvaluator() {
+    public NMSESingleObjectiveConstraintsEvaluator() {
       Parameters.Add(new FixedValueParameter<BoolValue>(OptimizeParametersParameterName,
         "Define whether optimization of numeric parameters is active or not (default: false).", new BoolValue(false)));
       Parameters.Add(new FixedValueParameter<IntValue>(ParameterOptimizationIterationsParameterName,
@@ -112,7 +111,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     private void AfterDeserialization() { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new NMSEConstraintsEvaluator(this, cloner);
+      return new NMSESingleObjectiveConstraintsEvaluator(this, cloner);
     }
 
     #endregion
@@ -139,7 +138,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
           //Check if tree contains offset and scaling nodes
           if (!(offset.Symbol is Addition) || !(scaling.Symbol is Multiplication))
-            throw new ArgumentException($"{ItemName} can only be used with IntervalArithmeticGrammar.");
+            throw new ArgumentException($"{ItemName} can only be used with LinearScalingGrammar.");
 
           var t = (ISymbolicExpressionTreeNode)scaling.GetSubtree(0).Clone();
           rootNode.AddSubtree(startNode);
@@ -180,7 +179,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
       var estimatedValues = interpreter.GetSymbolicExpressionTreeValues(tree, problemData.Dataset, rows);
       var targetValues = problemData.Dataset.GetDoubleValues(problemData.TargetVariable, rows);
-      var constraints = problemData.ShapeConstraints.EnabledConstraints;
+      var constraints = Enumerable.Empty<ShapeConstraint>();
+      if (problemData is ShapeConstrainedRegressionProblemData scProbData) {
+        constraints = scProbData.ShapeConstraints.EnabledConstraints;
+      } 
       var intervalCollection = problemData.VariableRanges;
 
       var boundedEstimatedValues = estimatedValues.LimitToRange(lowerEstimationLimit, upperEstimationLimit);
@@ -199,13 +201,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
       if (useSoftConstraints) {
         if (penaltyFactor < 0.0)
-          throw new ArgumentException("The parameter has to be greater or equal 0.0!", nameof(penaltyFactor));
+          throw new ArgumentException("The parameter has to be >= 0.0.", nameof(penaltyFactor));
 
-        var weightedViolationSum = constraints
+        var weightedViolationsAvg = constraints
           .Zip(constraintViolations, (c, v) => c.Weight * v)
           .Average();
 
-        return Math.Min(nmse, 1.0) + penaltyFactor * weightedViolationSum;
+        return Math.Min(nmse, 1.0) + penaltyFactor * weightedViolationsAvg;
       } else if (constraintViolations.Any(x => x > 0.0)) {
         return 1.0;
       }

@@ -142,7 +142,11 @@
     <Compile Include="Implementation\DataAnalysisModel.cs" />
     <Compile Include="Implementation\Interval\Interval.cs" />
     <Compile Include="Implementation\Interval\IntervalCollection.cs" />
+    <Compile Include="Implementation\Interval\IShapeConstrainedRegressionProblem.cs" />
+    <Compile Include="Implementation\Interval\IShapeConstrainedRegressionProblemData.cs" />
     <Compile Include="Implementation\Interval\ShapeConstraint.cs" />
+    <Compile Include="Implementation\Interval\ShapeConstrainedRegressionProblemData.cs" />
+    <Compile Include="Implementation\Interval\ShapeConstrainedRegressionProblem.cs" />
     <Compile Include="Implementation\Interval\ShapeConstraintsParser.cs" />
     <Compile Include="Implementation\Regression\ConfidenceBoundRegressionSolution.cs" />
     <Compile Include="Implementation\Regression\ConstantRegressionModel.cs" />

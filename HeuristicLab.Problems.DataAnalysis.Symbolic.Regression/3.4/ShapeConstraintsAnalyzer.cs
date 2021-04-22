@@ -30,7 +30,7 @@ using HeuristicLab.Parameters;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
   [StorableType("4318C6BD-E0A1-45FE-AC30-96E7F73B51FB")]
-  [Item("ShapeConstraintsAnalyzer", "Analyzes the number of shape-constraint violations of symbolic regression models.")]
+  [Item("ShapeConstraintsAnalyzer", "Analyzes the number of shape constraint violations of symbolic regression models.")]
   public class ShapeConstraintsAnalyzer : SymbolicDataAnalysisAnalyzer, ISymbolicExpressionTreeAnalyzer {
     private const string ProblemDataParameterName = "ProblemData";
     private const string ConstraintViolationsParameterName = "ConstraintViolations";
@@ -96,7 +96,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     private void AfterDeserialization() { }
 
     public override IOperation Apply() {
-      var problemData = RegressionProblemData;
+      var problemData = (IShapeConstrainedRegressionProblemData)RegressionProblemData;
       var trees = SymbolicExpressionTree.ToArray();
 
       var results = ResultCollection;
@@ -114,11 +114,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
         constraintViolationsTable.Rows[constraint.ToString()].Values.Add(numViolations);
       }
 
-      var constraintUnsatisfiedSolutionsDataTable = InfeasibleSolutions;
-      if (constraintUnsatisfiedSolutionsDataTable.Rows.Count == 0)
-        constraintUnsatisfiedSolutionsDataTable.Rows.Add(new DataRow(InfeasibleSolutionsParameterName));
+      var infeasibleSolutionsDataTable = InfeasibleSolutions;
+      if (infeasibleSolutionsDataTable.Rows.Count == 0)
+        infeasibleSolutionsDataTable.Rows.Add(new DataRow(InfeasibleSolutionsParameterName));
 
-      constraintUnsatisfiedSolutionsDataTable.Rows[InfeasibleSolutionsParameterName]
+      infeasibleSolutionsDataTable.Rows[InfeasibleSolutionsParameterName]
         .Values
         .Add(trees.Count(t => IntervalUtil.GetConstraintViolations(constraints, estimator, variableRanges, t).Any(x => x > 0.0)));
 

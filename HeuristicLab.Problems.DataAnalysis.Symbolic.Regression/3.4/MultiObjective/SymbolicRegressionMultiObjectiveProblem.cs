@@ -59,8 +59,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     }
     public override IDeepCloneable Clone(Cloner cloner) { return new SymbolicRegressionMultiObjectiveProblem(this, cloner); }
 
-    public SymbolicRegressionMultiObjectiveProblem()
-      : base(new RegressionProblemData(), new SymbolicRegressionMultiObjectivePearsonRSquaredTreeSizeEvaluator(), new SymbolicDataAnalysisExpressionTreeCreator()) {
+    public SymbolicRegressionMultiObjectiveProblem() : this(new RegressionProblemData(), new SymbolicRegressionMultiObjectivePearsonRSquaredTreeSizeEvaluator(), new SymbolicDataAnalysisExpressionTreeCreator()) { }
+    public SymbolicRegressionMultiObjectiveProblem(IRegressionProblemData problemData, ISymbolicRegressionMultiObjectiveEvaluator evaluator, ISymbolicDataAnalysisSolutionCreator solutionCreator)
+      : base(problemData, evaluator, solutionCreator) {
       Parameters.Add(new FixedValueParameter<DoubleLimit>(EstimationLimitsParameterName, EstimationLimitsParameterDescription));
 
       EstimationLimitsParameter.Hidden = true;

@@ -29,21 +29,21 @@ using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableType("5A2300A0-D0FC-4F2D-B910-F86384FE9052")]
-  [Item("IntervalArithmeticGrammar", "Represents a grammar for interval arithmetic which includes linear scaling parts implicitly.")]
-  public class IntervalArithmeticGrammar : DataAnalysisGrammar, ISymbolicDataAnalysisGrammar {
-    public IntervalArithmeticGrammar() : base(ItemAttribute.GetName(typeof(IntervalArithmeticGrammar)),
-      ItemAttribute.GetDescription(typeof(IntervalArithmeticGrammar))) {
+  [Item("LinearScalingGrammar", "Represents a grammar which includes linear scaling parts implicitly.")]
+  public class LinearScalingGrammar : DataAnalysisGrammar, ISymbolicDataAnalysisGrammar {
+    public LinearScalingGrammar() : base(ItemAttribute.GetName(typeof(LinearScalingGrammar)),
+      ItemAttribute.GetDescription(typeof(LinearScalingGrammar))) {
       Initialize();
     }
 
     [StorableConstructor]
-    public IntervalArithmeticGrammar(StorableConstructorFlag _) : base(_) { }
+    public LinearScalingGrammar(StorableConstructorFlag _) : base(_) { }
 
-    protected IntervalArithmeticGrammar(IntervalArithmeticGrammar original, Cloner cloner) : base(original, cloner) { }
-    public IntervalArithmeticGrammar(string name, string description) : base(name, description) { }
+    protected LinearScalingGrammar(LinearScalingGrammar original, Cloner cloner) : base(original, cloner) { }
+    public LinearScalingGrammar(string name, string description) : base(name, description) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new IntervalArithmeticGrammar(this, cloner);
+      return new LinearScalingGrammar(this, cloner);
     }
 
     private void Initialize() {

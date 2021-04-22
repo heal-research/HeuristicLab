@@ -76,6 +76,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     public event EventHandler Changed;
 
+
     private void RaiseChanged() {
       var handlers = Changed;
       if (handlers != null)

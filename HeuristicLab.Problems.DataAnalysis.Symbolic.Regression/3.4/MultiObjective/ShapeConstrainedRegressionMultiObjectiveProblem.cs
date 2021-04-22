@@ -19,110 +19,93 @@
  */
 #endregion
 
+using System;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
+using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
-  [Item("Symbolic Regression Problem (single-objective)", "Represents a single objective symbolic regression problem.")]
-  [StorableType("7DDCF683-96FC-4F70-BF4F-FE3A0B0DE6E0")]
-  [Creatable(CreatableAttribute.Categories.GeneticProgrammingProblems, Priority = 100)]
-  public class SymbolicRegressionSingleObjectiveProblem : SymbolicDataAnalysisSingleObjectiveProblem<IRegressionProblemData, ISymbolicRegressionSingleObjectiveEvaluator, ISymbolicDataAnalysisSolutionCreator>, IRegressionProblem {
+  [Item("Shape-constrained symbolic regression problem (multi-objective)", "Represents a multi-objective shape-constrained regression problem.")]
+  [StorableType("2956C66F-4B71-4A62-998F-B52C5E8C02CD")]
+  [Creatable(CreatableAttribute.Categories.GeneticProgrammingProblems, Priority = 150)]
+  public class ShapeConstrainedRegressionMultiObjectiveProblem : SymbolicDataAnalysisMultiObjectiveProblem<IRegressionProblemData, IMultiObjectiveConstraintsEvaluator, ISymbolicDataAnalysisSolutionCreator>, IRegressionProblem {
     private const double PunishmentFactor = 10;
     private const int InitialMaximumTreeDepth = 8;
     private const int InitialMaximumTreeLength = 25;
     private const string EstimationLimitsParameterName = "EstimationLimits";
-    private const string EstimationLimitsParameterDescription = "The limits for the estimated value that can be returned by the symbolic regression model.";
+    private const string EstimationLimitsParameterDescription = "The lower and upper limit for the estimated value that can be returned by the symbolic regression model.";
 
     #region parameter properties
     public IFixedValueParameter<DoubleLimit> EstimationLimitsParameter {
       get { return (IFixedValueParameter<DoubleLimit>)Parameters[EstimationLimitsParameterName]; }
     }
     #endregion
+
     #region properties
     public DoubleLimit EstimationLimits {
       get { return EstimationLimitsParameter.Value; }
     }
+
     #endregion
+
     [StorableConstructor]
-    protected SymbolicRegressionSingleObjectiveProblem(StorableConstructorFlag _) : base(_) { }
-    protected SymbolicRegressionSingleObjectiveProblem(SymbolicRegressionSingleObjectiveProblem original, Cloner cloner)
+    protected ShapeConstrainedRegressionMultiObjectiveProblem(StorableConstructorFlag _) : base(_) { }
+    protected ShapeConstrainedRegressionMultiObjectiveProblem(ShapeConstrainedRegressionMultiObjectiveProblem original, Cloner cloner)
       : base(original, cloner) {
       RegisterEventHandlers();
     }
-    public override IDeepCloneable Clone(Cloner cloner) { return new SymbolicRegressionSingleObjectiveProblem(this, cloner); }
+    public override IDeepCloneable Clone(Cloner cloner) { return new ShapeConstrainedRegressionMultiObjectiveProblem(this, cloner); }
 
-    public SymbolicRegressionSingleObjectiveProblem() : this(new RegressionProblemData(), new SymbolicRegressionSingleObjectivePearsonRSquaredEvaluator(), new SymbolicDataAnalysisExpressionTreeCreator()) {
-    }
-    public SymbolicRegressionSingleObjectiveProblem(IRegressionProblemData problemData, ISymbolicRegressionSingleObjectiveEvaluator evaluator, ISymbolicDataAnalysisSolutionCreator solutionCreator) :
-      base(problemData, evaluator, solutionCreator) {
+    public ShapeConstrainedRegressionMultiObjectiveProblem()
+      : base(new ShapeConstrainedRegressionProblemData(), new NMSEMultiObjectiveConstraintsEvaluator(), new SymbolicDataAnalysisExpressionTreeCreator()) {
 
       Parameters.Add(new FixedValueParameter<DoubleLimit>(EstimationLimitsParameterName, EstimationLimitsParameterDescription));
-
       EstimationLimitsParameter.Hidden = true;
 
-
       ApplyLinearScalingParameter.Value.Value = true;
-      Maximization.Value = true;
+      SymbolicExpressionTreeGrammarParameter.Value = new LinearScalingGrammar();
+
       MaximumSymbolicExpressionTreeDepth.Value = InitialMaximumTreeDepth;
       MaximumSymbolicExpressionTreeLength.Value = InitialMaximumTreeLength;
 
-      RegisterEventHandlers();
-      ConfigureGrammarSymbols();
       InitializeOperators();
       UpdateEstimationLimits();
+      UpdateMaximization();
+      RegisterEventHandlers();
     }
 
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
       RegisterEventHandlers();
-      // compatibility
-      bool changed = false;
-      if (!Operators.OfType<SymbolicRegressionSingleObjectiveTrainingParetoBestSolutionAnalyzer>().Any()) {
-        Operators.Add(new SymbolicRegressionSingleObjectiveTrainingParetoBestSolutionAnalyzer());
-        changed = true;
-      }
-      if (!Operators.OfType<SymbolicRegressionSingleObjectiveValidationParetoBestSolutionAnalyzer>().Any()) {
-        Operators.Add(new SymbolicRegressionSingleObjectiveValidationParetoBestSolutionAnalyzer());
-        changed = true;
-      }
-      if (!Operators.OfType<SymbolicRegressionSolutionsAnalyzer>().Any()) {
-        Operators.Add(new SymbolicRegressionSolutionsAnalyzer());
-        changed = true;
-      }
-
-      if (!Operators.OfType<ShapeConstraintsAnalyzer>().Any()) {
-        Operators.Add(new ShapeConstraintsAnalyzer());
-        changed = true;
-      }
-      if (changed) {
-        ParameterizeOperators();
-      }
     }
 
     private void RegisterEventHandlers() {
-      SymbolicExpressionTreeGrammarParameter.ValueChanged += (o, e) => ConfigureGrammarSymbols();
+      Evaluator.NumConstraintsParameter.Value.ValueChanged += NumConstraintsParameter_ValueChanged;
     }
 
-    private void ConfigureGrammarSymbols() {
-      var grammar = SymbolicExpressionTreeGrammar as TypeCoherentExpressionGrammar;
-      if (grammar != null) grammar.ConfigureAsDefaultRegressionGrammar();
+    protected override void OnEvaluatorChanged() {
+      base.OnEvaluatorChanged();
+      UpdateEvaluatorObjectives(); // update objectives in evaluator based ProblemData
+      Evaluator.NumConstraintsParameter.Value.ValueChanged += NumConstraintsParameter_ValueChanged;
+    }
+    protected override void OnProblemDataChanged() {
+      base.OnProblemDataChanged();
+
+      UpdateEstimationLimits();
+      UpdateMaximization();
+      UpdateEvaluatorObjectives();
     }
 
-    private void InitializeOperators() {
-      Operators.Add(new SymbolicRegressionSingleObjectiveTrainingBestSolutionAnalyzer());
-      Operators.Add(new SymbolicRegressionSingleObjectiveValidationBestSolutionAnalyzer());
-      Operators.Add(new SymbolicRegressionSingleObjectiveOverfittingAnalyzer());
-      Operators.Add(new SymbolicRegressionSingleObjectiveTrainingParetoBestSolutionAnalyzer());
-      Operators.Add(new SymbolicRegressionSingleObjectiveValidationParetoBestSolutionAnalyzer());
-      Operators.Add(new SymbolicRegressionSolutionsAnalyzer());
-      Operators.Add(new SymbolicExpressionTreePhenotypicSimilarityCalculator());
-      Operators.Add(new ShapeConstraintsAnalyzer());
-      Operators.Add(new SymbolicRegressionPhenotypicDiversityAnalyzer(Operators.OfType<SymbolicExpressionTreePhenotypicSimilarityCalculator>()) { DiversityResultName = "Phenotypic Diversity" });
-      ParameterizeOperators();
+    private void NumConstraintsParameter_ValueChanged(object sender, EventArgs e) {
+      UpdateMaximization();
+    }
+
+    private void UpdateMaximization() {
+      Maximization = new BoolArray(Evaluator.Maximization.ToArray());
     }
 
     private void UpdateEstimationLimits() {
@@ -137,10 +120,20 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
         EstimationLimits.Lower = double.MinValue;
       }
     }
+    private void UpdateEvaluatorObjectives() {
+      if (ProblemData is ShapeConstrainedRegressionProblemData scProblemData) {
+        Evaluator.NumConstraintsParameter.Value.Value = scProblemData.ShapeConstraints.EnabledConstraints.Count();
+      } else {
+        Evaluator.NumConstraintsParameter.Value.Value = 0;
+      }
+    }
 
-    protected override void OnProblemDataChanged() {
-      base.OnProblemDataChanged();
-      UpdateEstimationLimits();
+    private void InitializeOperators() {
+      Operators.Add(new SymbolicRegressionMultiObjectiveTrainingBestSolutionAnalyzer());
+      Operators.Add(new SymbolicRegressionMultiObjectiveValidationBestSolutionAnalyzer());
+      Operators.Add(new SymbolicExpressionTreePhenotypicSimilarityCalculator());
+      Operators.Add(new SymbolicRegressionPhenotypicDiversityAnalyzer(Operators.OfType<SymbolicExpressionTreePhenotypicSimilarityCalculator>()));
+      ParameterizeOperators();
     }
 
     protected override void ParameterizeOperators() {
@@ -154,7 +147,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
 
       foreach (var op in Operators.OfType<ISolutionSimilarityCalculator>()) {
         op.SolutionVariableName = SolutionCreator.SymbolicExpressionTreeParameter.ActualName;
-        op.QualityVariableName = Evaluator.QualityParameter.ActualName;
+        op.QualityVariableName = Evaluator.QualitiesParameter.ActualName;
 
         if (op is SymbolicExpressionTreePhenotypicSimilarityCalculator) {
           var phenotypicSimilarityCalculator = (SymbolicExpressionTreePhenotypicSimilarityCalculator)op;
@@ -162,6 +155,17 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
           phenotypicSimilarityCalculator.Interpreter = SymbolicExpressionTreeInterpreter;
         }
       }
+    }
+
+
+    public override void Load(IRegressionProblemData data) {
+      var scProblemData = new ShapeConstrainedRegressionProblemData(data.Dataset, data.AllowedInputVariables, data.TargetVariable,
+                                                                    data.TrainingPartition, data.TestPartition) {
+        Name = data.Name,
+        Description = data.Description
+      };
+
+      base.Load(scProblemData);
     }
   }
 }

@@ -1,5 +1,4 @@
 ﻿#region License Information
-
 /* HeuristicLab
  * Copyright (C) Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
@@ -18,19 +17,12 @@
  * You should have received a copy of the GNU General Public License
  * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
  */
-
 #endregion
 
-using System.Collections.Generic;
 using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis {
-  [StorableType("1ef22b8b-f3b4-494b-8cdd-f08e84e316e0")]
-  public interface IRegressionProblemData : IDataAnalysisProblemData {
-    string TargetVariable { get; set; }
-    IntervalCollection VariableRanges { get; }
-    IEnumerable<double> TargetVariableValues { get; }
-    IEnumerable<double> TargetVariableTrainingValues { get; }
-    IEnumerable<double> TargetVariableTestValues { get; }
+  [StorableType("C6E9D32A-7727-487E-859C-DF24EDCC5922")]
+  public interface  IShapeConstrainedRegressionProblem : IDataAnalysisProblem<IShapeConstrainedRegressionProblemData> {
   }
 }
