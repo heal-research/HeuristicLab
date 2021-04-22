@@ -118,7 +118,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Interfaces\IMultiObjectiveConstaintsEvaluator.cs" />
+    <Compile Include="Interfaces\IMultiObjectiveConstraintsEvaluator.cs" />
     <Compile Include="MultiObjective\NMSEMultiObjectiveConstraintsEvaluator.cs" />
     <Compile Include="MultiObjective\PearsonRSquaredNestedTreeSizeEvaluator.cs" />
     <Compile Include="MultiObjective\PearsonRSquaredNumberOfVariablesEvaluator.cs" />
