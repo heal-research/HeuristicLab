@@ -282,6 +282,18 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             result = Interval.CubicRoot(argumentInterval);
             break;
           }
+        case OpCodes.Power: {
+            var a = Evaluate(instructions, ref instructionCounter, nodeIntervals, variableIntervals);
+            var b = Evaluate(instructions, ref instructionCounter, nodeIntervals, variableIntervals);
+            // support only integer powers
+            if(b.LowerBound == b.UpperBound && Math.Truncate(b.LowerBound) == b.LowerBound) {
+              result = Interval.Power(a, (int)b.LowerBound);
+            } else {
+              throw new NotSupportedException("Interval is only supported for integer powers");
+            }
+            break;
+          }
+
         case OpCodes.Absolute: {
             var argumentInterval = Evaluate(instructions, ref instructionCounter, nodeIntervals, variableIntervals);
             result = Interval.Absolute(argumentInterval);
@@ -328,6 +340,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           !(n.Symbol is SquareRoot) &&
           !(n.Symbol is Cube) &&
           !(n.Symbol is CubeRoot) &&
+          !(n.Symbol is Power) &&
           !(n.Symbol is Absolute) &&
           !(n.Symbol is AnalyticQuotient)
         select n).Any();

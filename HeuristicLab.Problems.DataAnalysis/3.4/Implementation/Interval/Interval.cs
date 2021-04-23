@@ -77,7 +77,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     public bool Contains(Interval other) {
       if (double.IsNegativeInfinity(LowerBound) && double.IsPositiveInfinity(UpperBound)) return true;
       if (other.LowerBound >= LowerBound && other.UpperBound <= UpperBound) return true;
-  
+
       return false;
     }
 
@@ -96,7 +96,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     /// True if the interval is positive without zero
     /// </summary>
     public bool IsPositive {
-      get => LowerBound > 0.0; 
+      get => LowerBound > 0.0;
     }
 
     /// <summary>
@@ -129,8 +129,8 @@ namespace HeuristicLab.Problems.DataAnalysis {
       if (other == null)
         return false;
 
-      return (UpperBound==other.UpperBound || (double.IsNaN(UpperBound) && double.IsNaN(other.UpperBound)))
-        && (LowerBound==other.LowerBound || (double.IsNaN(LowerBound) && double.IsNaN(other.LowerBound)));
+      return (UpperBound == other.UpperBound || (double.IsNaN(UpperBound) && double.IsNaN(other.UpperBound)))
+        && (LowerBound == other.LowerBound || (double.IsNaN(LowerBound) && double.IsNaN(other.LowerBound)));
     }
 
     public override bool Equals(object obj) {
@@ -237,6 +237,22 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     public static Interval Cube(Interval a) {
       return new Interval(Math.Pow(a.LowerBound, 3), Math.Pow(a.UpperBound, 3));
+    }
+
+    public static Interval Power(Interval a, int b) {
+      if (b < 0) return Power(1.0 / a, -b); // a^(-b) = 1/(a^b)
+      if (b == 0 && (a.Contains(0.0) || a.IsInfiniteOrUndefined)) return new Interval(double.NaN, double.NaN);  // 0^0, +/-inf^0 are undefined
+      if (b == 0) return new Interval(1.0, 1.0); // x^0 = 1
+      if (b == 1) return a;
+      if (b % 2 == 0) {
+        // even powers (see x²)
+        if (a.UpperBound <= 0) return new Interval(Math.Pow(a.UpperBound, b), Math.Pow(a.LowerBound, b));     // interval is negative
+        if (a.LowerBound >= 0) return new Interval(Math.Pow(a.LowerBound, b), Math.Pow(a.UpperBound, b)); // interval is positive
+        return new Interval(0, Math.Max(Math.Pow(a.LowerBound, b), Math.Pow(a.UpperBound, b))); // interval goes over zero
+      } else {
+        // odd powers (see x³)
+        return new Interval(Math.Pow(a.LowerBound, b), Math.Pow(a.UpperBound, b));
+      }
     }
 
     /// <summary>
