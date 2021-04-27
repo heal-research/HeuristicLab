@@ -152,6 +152,7 @@
     <EmbeddedResource Include="Documents\SGP_Robocode.hl" />
     <EmbeddedResource Include="Documents\PSO_Rastrigin.hl" />
     <EmbeddedResource Include="Documents\OSGP_SymReg.hl" />
+    <EmbeddedResource Include="Documents\GA_Shape_Constrained_Regression.hl" />
     <None Include="Plugin.cs.frame" />
     <Compile Include="ChangeNestingLevelDialog.cs">
       <SubType>Form</SubType>

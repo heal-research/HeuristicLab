@@ -34,51 +34,75 @@ namespace HeuristicLab.Problems.DataAnalysis {
   public class ShapeConstrainedRegressionProblemData : RegressionProblemData, IShapeConstrainedRegressionProblemData {
     protected const string ShapeConstraintsParameterName = "ShapeConstraints";
 
-    private static double[,] kozaF1 = new double[,] {
-          {2.017885919, -1.449165046},
-          {1.30060506,  -1.344523885},
-          {1.147134798, -1.317989331},
-          {0.877182504, -1.266142284},
-          {0.852562452, -1.261020794},
-          {0.431095788, -1.158793317},
-          {0.112586002, -1.050908405},
-          {0.04594507,  -1.021989402},
-          {0.042572879, -1.020438113},
-          {-0.074027291,  -0.959859562},
-          {-0.109178553,  -0.938094706},
-          {-0.259721109,  -0.803635355},
-          {-0.272991057,  -0.387519561},
-          {-0.161978191,  -0.193611001},
-          {-0.102489983,  -0.114215349},
-          {-0.01469968, -0.014918985},
-          {-0.008863365,  -0.008942626},
-          {0.026751057, 0.026054094},
-          {0.166922436, 0.14309643},
-          {0.176953808, 0.1504144},
-          {0.190233418, 0.159916534},
-          {0.199800708, 0.166635331},
-          {0.261502822, 0.207600348},
-          {0.30182879,  0.232370249},
-          {0.83763905,  0.468046718}
+    private static double[,] sigmoid = new double[,] {
+      {1.00, 0.09, 0.01390952},
+      {1.10, 0.11, 0.048256016},
+      {1.20, 0.14, 0.010182641},
+      {1.30, 0.17, 0.270361269},
+      {1.40, 0.20, 0.091503971},
+      {1.50, 0.24, 0.338157191},
+      {1.60, 0.28, 0.328508579},
+      {1.70, 0.34, 0.21867684},
+      {1.80, 0.40, 0.34515433},
+      {1.90, 0.46, 0.562746903},
+      {2.00, 0.54, 0.554800831},
+      {2.10, 0.62, 0.623018787},
+      {2.20, 0.71, 0.626224329},
+      {2.30, 0.80, 0.909006688},
+      {2.40, 0.90, 0.92514929},
+      {2.50, 1.00, 1.097199936},
+      {2.60, 1.10, 1.138309608},
+      {2.70, 1.20, 1.087880692},
+      {2.80, 1.29, 1.370491683},
+      {2.90, 1.38, 1.422048792},
+      {3.00, 1.46, 1.505242141},
+      {3.10, 1.54, 1.684790135},
+      {3.20, 1.60, 1.480232277},
+      {3.30, 1.66, 1.577412501},
+      {3.40, 1.72, 1.664822534},
+      {3.50, 1.76, 1.773580664},
+      {3.60, 1.80, 1.941034478},
+      {3.70, 1.83, 1.730361986},
+      {3.80, 1.86, 1.9785952},
+      {3.90, 1.89, 1.946698641},
+      {4.00, 1.91, 1.766502803},
+      {4.10, 1.92, 1.847756843},
+      {4.20, 1.94, 1.894506213},
+      {4.30, 1.95, 2.029194724},
+      {4.40, 1.96, 2.01830679},
+      {4.50, 1.96, 1.924316332},
+      {4.60, 1.97, 1.971354792},
+      {4.70, 1.98, 1.85665728},
+      {4.80, 1.98, 1.831400496},
+      {4.90, 1.98, 2.057843156},
+      {5.00, 1.99, 2.128769896},
     };
 
     private static readonly Dataset defaultDataset;
     private static readonly IEnumerable<string> defaultAllowedInputVariables;
     private static readonly string defaultTargetVariable;
+    private static readonly ShapeConstraints defaultShapeConstraints;
+    private static readonly IntervalCollection defaultVariableRanges;
 
     private static readonly ShapeConstrainedRegressionProblemData emptyProblemData;
-    public new static ShapeConstrainedRegressionProblemData EmptyProblemData {
-      get { return emptyProblemData; }
-    }
+    public new static ShapeConstrainedRegressionProblemData EmptyProblemData => emptyProblemData;
 
     static ShapeConstrainedRegressionProblemData() {
-      defaultDataset = new Dataset(new string[] { "y", "x" }, kozaF1);
-      defaultDataset.Name = "Fourth-order Polynomial Function Benchmark Dataset";
-      defaultDataset.Description = "f(x) = x^4 + x^3 + x^2 + x^1";
+      defaultDataset = new Dataset(new string[] { "x", "y", "y_noise" }, sigmoid) {
+        Name = "Sigmoid function to show shape-constrained symbolic regression.",
+        Description = "f(x) = 1 + tanh(x - 2.5)"
+      };
       defaultAllowedInputVariables = new List<string>() { "x" };
-      defaultTargetVariable = "y";
+      defaultTargetVariable = "y_noise";
+      defaultShapeConstraints = new ShapeConstraints {
+        new ShapeConstraint(new Interval(0, 2), 1.0),
+        new ShapeConstraint("x", 1, new Interval(0, double.PositiveInfinity), 1.0)
+      };
+      defaultVariableRanges = defaultDataset.GetIntervals();
+      defaultVariableRanges.SetInterval("x", new Interval(0, 6));
+
       var problemData = new ShapeConstrainedRegressionProblemData();
-      problemData.Parameters.Clear(); // parameters are cleared and added below because we cannot set / change parameters of ProblemData
+      problemData.Parameters.Clear();
       problemData.Name = "Empty Regression ProblemData";
       problemData.Description = "This ProblemData acts as place holder before the correct problem data is loaded.";
       problemData.isEmpty = true;
@@ -93,8 +117,8 @@ namespace HeuristicLab.Problems.DataAnalysis {
       emptyProblemData = problemData;
     }
 
-    public IFixedValueParameter<ShapeConstraints> ShapeConstraintsParameter => (IFixedValueParameter<ShapeConstraints>)Parameters[ShapeConstraintsParameterName];
-    public ShapeConstraints ShapeConstraints => ShapeConstraintsParameter.Value;
+    public IFixedValueParameter<ShapeConstraints> ShapeConstraintParameter => (IFixedValueParameter<ShapeConstraints>)Parameters[ShapeConstraintsParameterName];
+    public ShapeConstraints ShapeConstraints => ShapeConstraintParameter.Value;
 
     [StorableConstructor]
     protected ShapeConstrainedRegressionProblemData(StorableConstructorFlag _) : base(_) { }
@@ -108,13 +132,12 @@ namespace HeuristicLab.Problems.DataAnalysis {
       RegisterEventHandlers();
     }
     public override IDeepCloneable Clone(Cloner cloner) {
-      if (this == emptyProblemData) return emptyProblemData;
-      return new ShapeConstrainedRegressionProblemData(this, cloner);
+      return this == emptyProblemData ? emptyProblemData : new ShapeConstrainedRegressionProblemData(this, cloner);
     }
 
     public ShapeConstrainedRegressionProblemData() : this(defaultDataset, defaultAllowedInputVariables, defaultTargetVariable,
                                                           trainingPartition: new IntRange(0, defaultDataset.Rows),
-                                                          testPartition: new IntRange(0, 0)) { } // no test partition for the demo problem
+                                                          testPartition: new IntRange(0, 0), sc: defaultShapeConstraints, variableRanges: defaultVariableRanges) { } // no test partition for the demo problem
 
     public ShapeConstrainedRegressionProblemData(IRegressionProblemData regressionProblemData)
       : this(regressionProblemData.Dataset, regressionProblemData.AllowedInputVariables, regressionProblemData.TargetVariable,

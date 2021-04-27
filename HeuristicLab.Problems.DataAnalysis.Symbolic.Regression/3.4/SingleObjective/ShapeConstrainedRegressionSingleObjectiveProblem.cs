@@ -37,6 +37,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       : base(new ShapeConstrainedRegressionProblemData(), new NMSESingleObjectiveConstraintsEvaluator(), new SymbolicDataAnalysisExpressionTreeCreator()) {
 
       ApplyLinearScalingParameter.Value.Value = true;
+      Maximization.Value = false;
       SymbolicExpressionTreeGrammarParameter.Value = new LinearScalingGrammar();
 
       InitializeOperators();
