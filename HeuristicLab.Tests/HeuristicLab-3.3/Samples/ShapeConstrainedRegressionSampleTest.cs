@@ -45,10 +45,17 @@ namespace HeuristicLab.Tests {
       ga.SetSeedRandomly.Value = false;
       SamplesUtils.RunAlgorithm(ga);
 
-      Assert.AreEqual(0.317642788600248, SamplesUtils.GetDoubleResult(ga, "BestQuality"), 1E-8);
-      Assert.AreEqual(40.9805778810063, SamplesUtils.GetDoubleResult(ga, "CurrentAverageQuality"), 1E-8);
-      Assert.AreEqual(3359.91748220025, SamplesUtils.GetDoubleResult(ga, "CurrentWorstQuality"), 1E-8);
-      Assert.AreEqual(150200, SamplesUtils.GetIntResult(ga, "EvaluatedSolutions"));
+      if (Environment.Is64BitProcess) {
+        Assert.AreEqual(0.355347729912352, SamplesUtils.GetDoubleResult(ga, "BestQuality"), 1E-8);
+        Assert.AreEqual(27.6606834433137, SamplesUtils.GetDoubleResult(ga, "CurrentAverageQuality"), 1E-8);
+        Assert.AreEqual(3359.91748220025, SamplesUtils.GetDoubleResult(ga, "CurrentWorstQuality"), 1E-8);
+        Assert.AreEqual(150200, SamplesUtils.GetIntResult(ga, "EvaluatedSolutions"));
+      } else {
+        Assert.AreEqual(0.317642788600248, SamplesUtils.GetDoubleResult(ga, "BestQuality"), 1E-8);
+        Assert.AreEqual(40.9805778810063, SamplesUtils.GetDoubleResult(ga, "CurrentAverageQuality"), 1E-8);
+        Assert.AreEqual(3359.91748220025, SamplesUtils.GetDoubleResult(ga, "CurrentWorstQuality"), 1E-8);
+        Assert.AreEqual(150200, SamplesUtils.GetIntResult(ga, "EvaluatedSolutions"));
+      }
     }
 
     public static GeneticAlgorithm CreateShapeConstrainedRegressionSample() {
