@@ -70,7 +70,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
       if (noiseRatio != null) {
         var D_noise     = new List<double>();
         var sigma_noise = (double) Math.Sqrt(noiseRatio.Value) * D.StandardDeviationPop();
-        D_noise.AddRange(D.Select(md => md + NormalDistributedRandom.NextDouble(rand, 0, sigma_noise)));
+        D_noise.AddRange(D.Select(md => md + NormalDistributedRandomPolar.NextDouble(rand, 0, sigma_noise)));
         data.Remove(D);
         data.Add(D_noise);
       }
