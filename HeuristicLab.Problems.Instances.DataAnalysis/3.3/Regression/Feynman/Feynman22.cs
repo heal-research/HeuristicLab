@@ -35,7 +35,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     protected override string TargetVariable { get { return noiseRatio == null ? "tau" : "tau_noise"; } }
 
     protected override string[] VariableNames {
-      get { return new[] {"r", "F", "theta", noiseRatio == null ? "tau" : "tau_noise"}; }
+      get { return noiseRatio == null ? new[] { "r", "F", "theta", "tau" } : new[] { "r", "F", "theta", "tau", "tau_noise" }; }
     }
 
     protected override string[] AllowedInputVariables { get { return new[] {"r", "F", "theta"}; } }
@@ -67,13 +67,8 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
         tau.Add(res);
       }
 
-      if (noiseRatio != null) {
-        var tau_noise   = new List<double>();
-        var sigma_noise = (double) Math.Sqrt(noiseRatio.Value) * tau.StandardDeviationPop();
-        tau_noise.AddRange(tau.Select(md => md + NormalDistributedRandomPolar.NextDouble(rand, 0, sigma_noise)));
-        data.Remove(tau);
-        data.Add(tau_noise);
-      }
+      var targetNoise = GetNoisyTarget(tau, rand);
+      if (targetNoise != null) data.Add(targetNoise);
 
       return data;
     }

@@ -35,7 +35,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     protected override string TargetVariable { get { return noiseRatio == null ? "v" : "v_noise"; } }
 
     protected override string[] VariableNames {
-      get { return new[] {"mu_drift", "q", "Volt", "d", noiseRatio == null ? "v" : "v_noise"}; }
+      get { return noiseRatio == null ? new[] { "mu_drift", "q", "Volt", "d", "v" } : new[] { "mu_drift", "q", "Volt", "d", "v", "v_noise" }; }
     }
 
     protected override string[] AllowedInputVariables { get { return new[] {"mu_drift", "q", "Volt", "d"}; } }
@@ -69,13 +69,8 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
         v.Add(res);
       }
 
-      if (noiseRatio != null) {
-        var v_noise     = new List<double>();
-        var sigma_noise = (double) Math.Sqrt(noiseRatio.Value) * v.StandardDeviationPop();
-        v_noise.AddRange(v.Select(md => md + NormalDistributedRandomPolar.NextDouble(rand, 0, sigma_noise)));
-        data.Remove(v);
-        data.Add(v_noise);
-      }
+      var targetNoise = GetNoisyTarget(v, rand);
+      if (targetNoise != null) data.Add(targetNoise);
 
       return data;
     }

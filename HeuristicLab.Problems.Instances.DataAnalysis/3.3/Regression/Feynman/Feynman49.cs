@@ -35,7 +35,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     protected override string TargetVariable { get { return noiseRatio == null ? "c" : "c_noise"; } }
 
     protected override string[] VariableNames {
-      get { return new[] {"gamma", "pr", "rho", noiseRatio == null ? "c" : "c_noise"}; }
+      get { return noiseRatio == null ? new[] { "gamma", "pr", "rho", "c" } : new[] { "gamma", "pr", "rho", "c", "c_noise" }; }
     }
 
     protected override string[] AllowedInputVariables { get { return new[] {"gamma", "pr", "rho"}; } }
@@ -67,13 +67,8 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
         c.Add(res);
       }
 
-      if (noiseRatio != null) {
-        var c_noise     = new List<double>();
-        var sigma_noise = (double) Math.Sqrt(noiseRatio.Value) * c.StandardDeviationPop();
-        c_noise.AddRange(c.Select(md => md + NormalDistributedRandomPolar.NextDouble(rand, 0, sigma_noise)));
-        data.Remove(c);
-        data.Add(c_noise);
-      }
+      var targetNoise = GetNoisyTarget(c, rand);
+      if (targetNoise != null) data.Add(targetNoise);
 
       return data;
     }

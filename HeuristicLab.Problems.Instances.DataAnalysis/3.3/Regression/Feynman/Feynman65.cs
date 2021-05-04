@@ -35,7 +35,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     protected override string TargetVariable { get { return noiseRatio == null ? "theta" : "theta_noise"; } }
 
     protected override string[] VariableNames {
-      get { return new[] {"n", "alpha", noiseRatio == null ? "theta" : "theta_noise"}; }
+      get { return noiseRatio == null ? new[] { "n", "alpha", "theta" } : new[] { "n", "alpha", "theta", "theta_noise" }; }
     }
 
     protected override string[] AllowedInputVariables { get { return new[] {"n", "alpha"}; } }
@@ -65,13 +65,8 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
         theta.Add(res);
       }
 
-      if (noiseRatio != null) {
-        var theta_noise = new List<double>();
-        var sigma_noise = (double) Math.Sqrt(noiseRatio.Value) * theta.StandardDeviationPop();
-        theta_noise.AddRange(theta.Select(md => md + NormalDistributedRandomPolar.NextDouble(rand, 0, sigma_noise)));
-        data.Remove(theta);
-        data.Add(theta_noise);
-      }
+      var targetNoise = GetNoisyTarget(theta, rand);
+      if (targetNoise != null) data.Add(targetNoise);
 
       return data;
     }
