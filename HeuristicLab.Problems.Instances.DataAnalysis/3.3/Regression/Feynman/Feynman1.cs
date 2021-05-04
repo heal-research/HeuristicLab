@@ -59,7 +59,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
       data.Add(f);
 
       for (var i = 0; i < theta.Count; i++) {
-        var res = Math.Exp(Math.Pow(-i, 2) / 2) / Math.Sqrt(2 * Math.PI);
+        var res = Math.Exp(Math.Pow(-theta[i], 2) / 2) / Math.Sqrt(2 * Math.PI);
         f.Add(res);
       }
 
