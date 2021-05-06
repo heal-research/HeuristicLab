@@ -85,7 +85,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Tests {
               par0 = (SymbolicExpressionTree)trees.SampleRandom(random).Clone();
               par1 = (SymbolicExpressionTree)trees.SampleRandom(random).Clone();
             } while (par0.Length > MAX_TREE_LENGTH || par1.Length > MAX_TREE_LENGTH);
-            var newTree = SubtreeCrossover.Cross(random, par0, par1, 0.9, MAX_TREE_LENGTH, MAX_TREE_DEPTH);
+            var newTree = SubtreeCrossover.Cross(random, par0, par1, 1.0, 0.9, MAX_TREE_LENGTH, MAX_TREE_DEPTH);
             stopwatch.Stop();
             Util.IsValid(newTree);
             newTrees.Add(newTree);
