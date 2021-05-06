@@ -134,6 +134,10 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       return randomForestModel;
     }
 
+    public override bool IsProblemDataCompatible(IDataAnalysisProblemData problemData, out string errorMessage) {
+      return ActualModel.IsProblemDataCompatible(problemData, out errorMessage);
+    }
+
     //RegressionModel methods
     public bool IsProblemDataCompatible(IRegressionProblemData problemData, out string errorMessage) {
       return ActualModel.IsProblemDataCompatible(problemData, out errorMessage);
