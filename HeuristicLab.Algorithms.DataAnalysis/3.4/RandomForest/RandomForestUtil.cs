@@ -96,8 +96,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     public static void AssertInputMatrix(double[,] inputMatrix) {
-      if (inputMatrix.ContainsNanOrInfinity())
-        throw new NotSupportedException("Random forest modeling does not support NaN or infinity values in the input dataset.");
+      foreach(var val in inputMatrix) if(double.IsNaN(val))
+        throw new NotSupportedException("Random forest modeling does not support NaN values in the input dataset.");
     }
 
     internal static alglib.decisionforest CreateRandomForestModel(int seed, double[,] inputMatrix, int nTrees, double r, double m, int nClasses, out alglib.dfreport rep) {
