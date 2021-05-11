@@ -144,7 +144,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     public ShapeConstrainedRegressionProblemData(IRegressionProblemData regressionProblemData)
       : this(regressionProblemData.Dataset, regressionProblemData.AllowedInputVariables, regressionProblemData.TargetVariable,
           regressionProblemData.TrainingPartition, regressionProblemData.TestPartition, regressionProblemData.Transformations,
-          (regressionProblemData is ShapeConstrainedRegressionProblemData scRegProblemData) ? scRegProblemData.ShapeConstraints : null, 
+          (regressionProblemData is ShapeConstrainedRegressionProblemData) ? ((ShapeConstrainedRegressionProblemData)regressionProblemData).ShapeConstraints : null, 
           regressionProblemData.VariableRanges) {
     }
 
