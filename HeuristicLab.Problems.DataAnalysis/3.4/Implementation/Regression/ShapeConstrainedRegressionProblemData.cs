@@ -34,6 +34,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
   public class ShapeConstrainedRegressionProblemData : RegressionProblemData, IShapeConstrainedRegressionProblemData {
     protected const string ShapeConstraintsParameterName = "ShapeConstraints";
 
+    #region default data
     private static double[,] sigmoid = new double[,] {
       {1.00, 0.09, 0.01390952},
       {1.10, 0.11, 0.048256016},
@@ -89,7 +90,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     static ShapeConstrainedRegressionProblemData() {
       defaultDataset = new Dataset(new string[] { "x", "y", "y_noise" }, sigmoid) {
-        Name = "Sigmoid function to show shape-constrained symbolic regression.",
+        Name = "Sigmoid function for shape-constrained symbolic regression.",
         Description = "f(x) = 1 + tanh(x - 2.5)"
       };
       defaultAllowedInputVariables = new List<string>() { "x" };
@@ -109,13 +110,14 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
       problemData.Parameters.Add(new FixedValueParameter<Dataset>(DatasetParameterName, "", new Dataset()));
       problemData.Parameters.Add(new FixedValueParameter<ReadOnlyCheckedItemList<StringValue>>(InputVariablesParameterName, ""));
-      problemData.Parameters.Add(new FixedValueParameter<IntRange>(TrainingPartitionParameterName, "", (IntRange)new IntRange(0, 0).AsReadOnly()));
-      problemData.Parameters.Add(new FixedValueParameter<IntRange>(TestPartitionParameterName, "", (IntRange)new IntRange(0, 0).AsReadOnly()));
+      problemData.Parameters.Add(new FixedValueParameter<IntRange>(TrainingPartitionParameterName, "", (IntRange)new IntRange(0, 20).AsReadOnly()));
+      problemData.Parameters.Add(new FixedValueParameter<IntRange>(TestPartitionParameterName, "", (IntRange)new IntRange(20, 40).AsReadOnly()));
       problemData.Parameters.Add(new ConstrainedValueParameter<StringValue>(TargetVariableParameterName, new ItemSet<StringValue>()));
       problemData.Parameters.Add(new FixedValueParameter<IntervalCollection>(VariableRangesParameterName, "", new IntervalCollection()));
       problemData.Parameters.Add(new FixedValueParameter<ShapeConstraints>(ShapeConstraintsParameterName, "", new ShapeConstraints()));
       emptyProblemData = problemData;
     }
+    #endregion
 
     public IFixedValueParameter<ShapeConstraints> ShapeConstraintParameter => (IFixedValueParameter<ShapeConstraints>)Parameters[ShapeConstraintsParameterName];
     public ShapeConstraints ShapeConstraints => ShapeConstraintParameter.Value;
@@ -141,7 +143,9 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     public ShapeConstrainedRegressionProblemData(IRegressionProblemData regressionProblemData)
       : this(regressionProblemData.Dataset, regressionProblemData.AllowedInputVariables, regressionProblemData.TargetVariable,
-          regressionProblemData.TrainingPartition, regressionProblemData.TestPartition, regressionProblemData.Transformations, null, regressionProblemData.VariableRanges) {
+          regressionProblemData.TrainingPartition, regressionProblemData.TestPartition, regressionProblemData.Transformations,
+          (regressionProblemData is ShapeConstrainedRegressionProblemData scRegProblemData) ? scRegProblemData.ShapeConstraints : null, 
+          regressionProblemData.VariableRanges) {
     }
 
     public ShapeConstrainedRegressionProblemData(IDataset dataset, IEnumerable<string> allowedInputVariables, string targetVariable,
