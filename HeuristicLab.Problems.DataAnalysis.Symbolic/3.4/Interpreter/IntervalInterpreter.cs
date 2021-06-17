@@ -286,7 +286,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             var a = Evaluate(instructions, ref instructionCounter, nodeIntervals, variableIntervals);
             var b = Evaluate(instructions, ref instructionCounter, nodeIntervals, variableIntervals);
             // support only integer powers
-            if(b.LowerBound == b.UpperBound && Math.Truncate(b.LowerBound) == b.LowerBound) {
+            if (b.LowerBound == b.UpperBound && Math.Truncate(b.LowerBound) == b.LowerBound) {
               result = Interval.Power(a, (int)b.LowerBound);
             } else {
               throw new NotSupportedException("Interval is only supported for integer powers");
@@ -320,9 +320,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
 
     public static bool IsCompatible(ISymbolicExpressionTree tree) {
-      var containsUnknownSymbols = (
-        from n in tree.Root.GetSubtree(0).IterateNodesPrefix()
-        where
+      foreach (var n in tree.Root.GetSubtree(0).IterateNodesPrefix()) {
+        if (
           !(n.Symbol is Variable) &&
           !(n.Symbol is Constant) &&
           !(n.Symbol is StartSymbol) &&
@@ -342,9 +341,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           !(n.Symbol is CubeRoot) &&
           !(n.Symbol is Power) &&
           !(n.Symbol is Absolute) &&
-          !(n.Symbol is AnalyticQuotient)
-        select n).Any();
-      return !containsUnknownSymbols;
+          !(n.Symbol is AnalyticQuotient)) return false;
+
+        else if (n.Symbol is Power) {
+          // only integer exponents are supported
+          var exp = n.GetSubtree(1) as ConstantTreeNode;
+          if (exp == null || exp.Value != Math.Truncate(exp.Value)) return false;
+        }
+      }
+      return true;
     }
   }
 }
