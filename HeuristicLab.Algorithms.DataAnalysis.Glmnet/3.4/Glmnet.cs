@@ -32,7 +32,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Glmnet {
     ///       ka=2 => naive algorithm
     ///  parm = penalty member index(0 <= parm <= 1)
     ///         = 0.0 => ridge
-    ///  = 1.0 => lasso
+    ///         = 1.0 => lasso
     ///    no = number of observations
     ///    ni = number of predictor variables
     ///  y(no) = response vector(overwritten)
@@ -42,13 +42,13 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Glmnet {
     ///       jd(1) != 0 => do not use variables jd(2)...jd(jd(1)+1)
     ///  vp(ni) = relative penalties for each predictor variable
     ///       vp(j) = 0 => jth variable unpenalized
-    ///    cl(2, ni) = interval constraints on coefficient values(overwritten)
-    ///  cl(1, j) = lower bound for jth coefficient value(&lt;= 0.0)
-    ///  cl(2, j) = upper bound for jth coefficient value(>= 0.0)
+    ///  cl(2, ni) = interval constraints on coefficient values (overwritten)
+    ///    cl(1, j) = lower bound for jth coefficient value(<= 0.0)
+    ///    cl(2, j) = upper bound for jth coefficient value(>= 0.0)
     ///  ne = maximum number of variables allowed to enter largest model
-    /// (stopping criterion)
+    ///      (stopping criterion)
     ///  nx = maximum number of variables allowed to enter all models
-    ///  along path(memory allocation, nx > ne).
+    ///       along path(memory allocation, nx > ne).
     ///  nlam = (maximum)number of lamda values
     ///    flmin = user control of lamda values(>=0)
     ///  flmin < 1.0 => minimum lamda = flmin * (largest lamda value)
