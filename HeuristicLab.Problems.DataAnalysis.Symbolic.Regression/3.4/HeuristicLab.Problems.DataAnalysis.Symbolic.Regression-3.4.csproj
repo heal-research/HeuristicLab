@@ -130,6 +130,7 @@
     <Compile Include="SingleObjective\Evaluators\NMSEConstraintsEvaluator.cs" />
     <Compile Include="SingleObjective\Evaluators\SymbolicRegressionMeanRelativeErrorEvaluator.cs" />
     <Compile Include="SingleObjective\SymbolicRegressionSolutionsAnalyzer.cs" />
+    <Compile Include="SymbolicRegressionMetaModelAnalyzer.cs" />
     <Compile Include="SymbolicRegressionPhenotypicDiversityAnalyzer.cs" />
     <Compile Include="SymbolicRegressionPruningAnalyzer.cs" />
     <Compile Include="SingleObjective\Evaluators\SymbolicRegressionLogResidualEvaluator.cs" />
@@ -157,6 +158,7 @@
     <Compile Include="SingleObjective\Evaluators\SymbolicRegressionSingleObjectiveMeanSquaredErrorEvaluator.cs" />
     <Compile Include="SingleObjective\Evaluators\SymbolicRegressionSingleObjectivePearsonRSquaredEvaluator.cs" />
     <Compile Include="SymbolicRegressionPruningOperator.cs" />
+    <Compile Include="SymbolicRegressionSingleObjectiveMetaModelAnalyzer.cs" />
     <Compile Include="SymbolicRegressionSolution.cs" />
     <Compile Include="SymbolicRegressionSolutionImpactValuesCalculator.cs" />
     <None Include="HeuristicLab.snk" />

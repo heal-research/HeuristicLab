@@ -106,7 +106,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
 
     [Storable]
-    private Interval threshold;
+    private Interval threshold = new Interval(0, 0);
     public Interval Threshold {
       get => threshold;
       set {
@@ -118,36 +118,67 @@ namespace HeuristicLab.Problems.DataAnalysis {
       }
     }
 
+
+    [Storable]
+    private Interval targetInterval;
+    public Interval TargetInterval {
+      get => targetInterval;
+      set {
+        if (targetInterval == value)
+          return;
+        targetInterval = value;
+        OnToStringChanged();
+        OnChanged();
+      }
+    }
+
+    [Storable]
+    private Interval dynInterval = new Interval(double.NegativeInfinity, double.PositiveInfinity);
+    public Interval DynInterval {
+      get => dynInterval;
+      set {
+        if (dynInterval == value)
+          return;
+        dynInterval = value;
+        OnToStringChanged();
+        OnChanged();
+      }
+    }
+
     [StorableConstructor]
     private ShapeConstraint(StorableConstructorFlag _) : base(_) { }
 
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
       if (regions != null) regions.Changed += regions_Changed;
+      if (TargetInterval == null)
+        TargetInterval = new Interval(interval.LowerBound, interval.UpperBound);
     }
 
     // without derivation
-    public ShapeConstraint(Interval interval, double weight, Interval threshold)
+    public ShapeConstraint(Interval interval, double weight, Interval threshold, Interval dynInterval)
       : this(string.Empty, 0,
-         interval, new IntervalCollection(), weight, threshold) { }
+         interval, new IntervalCollection(), weight, threshold, dynInterval) { }
 
-    public ShapeConstraint(Interval interval, IntervalCollection regions, double weight, Interval threshold)
+    public ShapeConstraint(Interval interval, IntervalCollection regions, double weight, Interval threshold, Interval dynInterval)
       : this(string.Empty, 0,
-         interval, regions, weight, threshold) { }
+         interval, regions, weight, threshold, dynInterval) { }
 
     public ShapeConstraint(string variable, int numberOfDerivations,
-                              Interval interval, double weight, Interval threshold)
+                              Interval interval, double weight, Interval threshold, Interval dynInterval)
       : this(variable, numberOfDerivations,
-             interval, new IntervalCollection(), weight, threshold) { }
+             interval, new IntervalCollection(), weight, threshold, dynInterval) { }
 
     public ShapeConstraint(string variable, int numberOfDerivations,
-                              Interval interval, IntervalCollection regions, double weight, Interval threshold) {
+                              Interval interval, IntervalCollection regions, double weight, Interval threshold, Interval dynInterval) {
       Variable = variable;
       NumberOfDerivations = numberOfDerivations;
       Interval = interval;
       Regions = regions;
       Weight = weight;
       Threshold = threshold;
+      DynInterval = dynInterval;
+      TargetInterval = new Interval(interval.LowerBound, interval.UpperBound);
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -161,8 +192,10 @@ namespace HeuristicLab.Problems.DataAnalysis {
       Interval = original.Interval;
       Regions = cloner.Clone(original.Regions);
       Weight = original.weight;
+      Threshold = original.Threshold;
+      DynInterval = original.DynInterval;
+      TargetInterval = original.TargetInterval;
     }
-
 
     public event EventHandler Changed;
 
@@ -187,7 +220,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       string expression;
       string write(double val) => double.IsPositiveInfinity(val) ? "inf." : double.IsNegativeInfinity(val) ? "-inf." : $"{val}";
       if (!IsDerivative) {
-        expression = string.Format($"f in [{write(Interval.LowerBound)} .. {write(Interval.UpperBound)}]");
+        expression = string.Format($"f in [{write(TargetInterval.LowerBound)} .. {write(TargetInterval.UpperBound)}]");
       } else {
         var derivationString = string.Empty;
         switch (numberOfDerivations) {
@@ -198,7 +231,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
           case 3:
             derivationString = "³"; break;
         }
-        expression = string.Format($"∂{derivationString}f/∂{Variable}{derivationString} in [{write(Interval.LowerBound)} .. {write(Interval.UpperBound)}]");
+        expression = string.Format($"∂{derivationString}f/∂{Variable}{derivationString} in [{write(TargetInterval.LowerBound)} .. {write(TargetInterval.UpperBound)}]");
       }
 
       if (Regions != null) {
@@ -208,8 +241,12 @@ namespace HeuristicLab.Problems.DataAnalysis {
       if (Weight != 1.0) {
         expression += $" weight: {weight}";
       }
+
       if (!double.IsNegativeInfinity(Threshold.LowerBound) || !double.IsPositiveInfinity(Threshold.UpperBound))
-        expression += $" threshold: [{write(Threshold.LowerBound)} .. {write(Threshold.UpperBound)}]";
+        expression += $" threshold in [{write(Threshold.LowerBound)} .. {write(Threshold.UpperBound)}]";
+
+      if (!double.IsNegativeInfinity(DynInterval.LowerBound) && !double.IsPositiveInfinity(DynInterval.UpperBound))
+        expression += $" start in [{write(DynInterval.LowerBound)} .. {write(DynInterval.UpperBound)}]";
 
       return expression;
     }

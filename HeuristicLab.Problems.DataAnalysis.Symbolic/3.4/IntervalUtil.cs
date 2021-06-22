@@ -27,6 +27,20 @@ using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   public static class IntervalUtil {
+    public static IEnumerable<Interval> GetModelBounds(
+      IEnumerable<ShapeConstraint> constraints, IBoundsEstimator estimator, IntervalCollection intervalCollection,
+      ISymbolicExpressionTree solution) {
+      return constraints.Select(constraint => GetModelBound(constraint, estimator, intervalCollection, solution)).ToList();
+    }
+
+    public static Interval GetModelBound(
+      ShapeConstraint constraint, IBoundsEstimator estimator, IntervalCollection variableRanges,
+      ISymbolicExpressionTree tree) {
+      var regionRanges = GetRegionRanges(constraint, variableRanges);
+      tree = DeriveTree(tree, constraint, estimator);
+      return estimator.GetModelBound(tree, regionRanges);
+    }
+
     public static IEnumerable<double> GetConstraintViolations(
       IEnumerable<ShapeConstraint> constraints, IBoundsEstimator estimator, IntervalCollection intervalCollection,
       ISymbolicExpressionTree solution) {
@@ -36,6 +50,39 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     public static double GetConstraintViolation(
       ShapeConstraint constraint, IBoundsEstimator estimator, IntervalCollection variableRanges,
       ISymbolicExpressionTree tree) {
+
+      var regionRanges = GetRegionRanges(constraint, variableRanges);
+      tree = DeriveTree(tree, constraint, estimator);
+      return estimator.GetConstraintViolation(tree, regionRanges, constraint);
+      /*
+      if (!constraint.IsDerivative) {
+        return estimator.GetConstraintViolation(tree, regionRanges, constraint);
+      } else {
+        for (var i = 0; i < constraint.NumberOfDerivations; ++i) {
+          if (!estimator.IsCompatible(tree) || !DerivativeCalculator.IsCompatible(tree)) {
+            throw new ArgumentException("The tree contains an unsupported symbol.");
+          }
+
+          tree = DerivativeCalculator.Derive(tree, constraint.Variable);
+        }
+
+        return estimator.GetConstraintViolation(tree, regionRanges, constraint);
+      }
+      */
+    }
+
+    private static ISymbolicExpressionTree DeriveTree(ISymbolicExpressionTree tree, ShapeConstraint constraint, IBoundsEstimator estimator) {
+      if (constraint.IsDerivative) {
+        for (var i = 0; i < constraint.NumberOfDerivations; ++i) {
+          if (!estimator.IsCompatible(tree) || !DerivativeCalculator.IsCompatible(tree))
+            throw new ArgumentException("The tree contains an unsupported symbol.");
+          tree = DerivativeCalculator.Derive(tree, constraint.Variable);
+        }
+      }
+      return tree;
+    }
+
+    private static IntervalCollection GetRegionRanges(ShapeConstraint constraint, IntervalCollection variableRanges) {
       var varRanges = variableRanges.GetReadonlyDictionary();
 
       if (!string.IsNullOrEmpty(constraint.Variable) && !varRanges.ContainsKey(constraint.Variable)) {
@@ -54,19 +101,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         }
       }
 
-      if (!constraint.IsDerivative) {
-        return estimator.GetConstraintViolation(tree, regionRanges, constraint);
-      } else {
-        for (var i = 0; i < constraint.NumberOfDerivations; ++i) {
-          if (!estimator.IsCompatible(tree) || !DerivativeCalculator.IsCompatible(tree)) {
-            throw new ArgumentException("The tree contains an unsupported symbol.");
-          }
-
-          tree = DerivativeCalculator.Derive(tree, constraint.Variable);
-        }
-
-        return estimator.GetConstraintViolation(tree, regionRanges, constraint);
-      }
+      return regionRanges;
     }
   }
 }

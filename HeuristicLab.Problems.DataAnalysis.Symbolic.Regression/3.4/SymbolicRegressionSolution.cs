@@ -37,6 +37,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     private const string ModelLengthResultName = "Model Length";
     private const string ModelDepthResultName = "Model Depth";
 
+    private const string ConstraintViolationsResultsResultName = "Constraint Violations Results";
+
     private const string EstimationLimitsResultsResultName = "Estimation Limits Results";
     private const string EstimationLimitsResultName = "Estimation Limits";
     private const string TrainingUpperEstimationLimitHitsResultName = "Training Upper Estimation Limit Hits";
@@ -63,6 +65,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     public int ModelDepth {
       get { return ((IntValue)this[ModelDepthResultName].Value).Value; }
       private set { ((IntValue)this[ModelDepthResultName].Value).Value = value; }
+    }
+
+    public ResultCollection ConstraintViolationsResults {
+      get { return (ResultCollection)this[ConstraintViolationsResultsResultName].Value; }
     }
 
     private ResultCollection EstimationLimitsResultCollection {
@@ -136,6 +142,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       estimationLimitResults.Add(new Result(TestNaNEvaluationsResultName, "", new IntValue()));
       Add(new Result(EstimationLimitsResultsResultName, "Results concerning the estimation limits of symbolic regression solution", estimationLimitResults));
 
+
+      ResultCollection constraintViolationResults = new ResultCollection();
+      constraintViolationResults.Add(new Result("Violations", "Count of constraint violations", new IntValue()));
+      foreach (var constraint in problemData.ShapeConstraints.EnabledConstraints)
+        constraintViolationResults.Add(new Result(constraint.ToString(), "", new DoubleValue()));
+      Add(new Result(ConstraintViolationsResultsResultName, "Results concerning the constraint violations of symbolic regression solution", constraintViolationResults));
+
       if (IntervalInterpreter.IsCompatible(Model.SymbolicExpressionTree))
         Add(new Result(ModelBoundsResultName, "Results concerning the derivation of symbolic regression solution", new IntervalCollection()));
 
@@ -158,6 +171,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
         estimationLimitResults.Add(new Result(TrainingNaNEvaluationsResultName, "", new IntValue()));
         estimationLimitResults.Add(new Result(TestNaNEvaluationsResultName, "", new IntValue()));
         Add(new Result(EstimationLimitsResultsResultName, "Results concerning the estimation limits of symbolic regression solution", estimationLimitResults));
+
         CalculateResults();
       }
 
@@ -177,6 +191,31 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     private void CalculateResults() {
       ModelLength = Model.SymbolicExpressionTree.Length;
       ModelDepth = Model.SymbolicExpressionTree.Depth;
+
+      var constraints = ProblemData.ShapeConstraints.EnabledConstraints;
+      var estimator = new IntervalArithBoundsEstimator();
+      int violationCounter = 0;
+      foreach (var constraint in constraints) {
+        constraint.Interval = new Interval(constraint.TargetInterval.LowerBound, constraint.TargetInterval.UpperBound);
+        var v = IntervalUtil.GetConstraintViolation(constraint, estimator, ProblemData.VariableRanges, Model.SymbolicExpressionTree);
+        ((DoubleValue)ConstraintViolationsResults[constraint.ToString()].Value).Value = v;
+        if(double.IsNaN(v) || double.IsInfinity(v) || v > 0) {
+          violationCounter++;
+        }
+      }
+      ((IntValue)ConstraintViolationsResults["Violations"].Value).Value = violationCounter;
+
+
+      /*
+      if(constraints.Count() > 0)
+        ConstraintViolationsResults = 
+          IntervalUtil.GetConstraintViolations(
+            constraints, 
+            new IntervalArithBoundsEstimator(), 
+            ProblemData.VariableRanges, 
+            Model.SymbolicExpressionTree)
+          .Where(x => x > 0.0).Count();
+      */
 
       EstimationLimits.Lower = Model.LowerEstimationLimit;
       EstimationLimits.Upper = Model.UpperEstimationLimit;
