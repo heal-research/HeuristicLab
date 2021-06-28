@@ -130,7 +130,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     private void AfterDeserialization() {
       if (!Parameters.ContainsKey(VariableRangesParameterName)) {
         var variableRanges = Dataset.GetVariableRanges();
-        Parameters.Add(new FixedValueParameter<IntervalCollection>(VariableRangesParameterName, intervalCollection));
+        Parameters.Add(new FixedValueParameter<IntervalCollection>(VariableRangesParameterName, variableRanges));
       }
 
       RegisterParameterEvents();
