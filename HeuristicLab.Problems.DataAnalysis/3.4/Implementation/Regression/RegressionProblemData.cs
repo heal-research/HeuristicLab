@@ -129,7 +129,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
       if (!Parameters.ContainsKey(VariableRangesParameterName)) {
-        var intervalCollection = Dataset.GetIntervals();
+        var variableRanges = Dataset.GetVariableRanges();
         Parameters.Add(new FixedValueParameter<IntervalCollection>(VariableRangesParameterName, intervalCollection));
       }
 
@@ -163,7 +163,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       var variables = InputVariables.Select(x => x.AsReadOnly()).ToList();
       Parameters.Add(new ConstrainedValueParameter<StringValue>(TargetVariableParameterName, new ItemSet<StringValue>(variables), variables.Where(x => x.Value == targetVariable).First()));
       if (variableRanges == null) {
-        variableRanges = Dataset.GetIntervals();
+        variableRanges = Dataset.GetVariableRanges();
       }
       Parameters.Add(new FixedValueParameter<IntervalCollection>(VariableRangesParameterName, variableRanges));
     }

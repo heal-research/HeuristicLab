@@ -99,7 +99,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
         new ShapeConstraint(new Interval(0, 2), 1.0),
         new ShapeConstraint("x", 1, new Interval(0, double.PositiveInfinity), 1.0)
       };
-      defaultVariableRanges = defaultDataset.GetIntervals();
+      defaultVariableRanges = defaultDataset.GetVariableRanges();
       defaultVariableRanges.SetInterval("x", new Interval(0, 6));
 
       var problemData = new ShapeConstrainedRegressionProblemData();
