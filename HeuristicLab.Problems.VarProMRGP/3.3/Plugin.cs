@@ -22,7 +22,7 @@
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Problems.VarProMRGP {
-  [Plugin("HeuristicLab.Problems.VarProMRGP", "3.3.16.0")]
+  [Plugin("HeuristicLab.Problems.VarProMRGP", "3.3.16.17998")]
   [PluginFile("HeuristicLab.Problems.VarProMRGP-3.3.dll", PluginFileType.Assembly)]
   [PluginDependency("HeuristicLab.Algorithms.DataAnalysis", "3.4")]
   [PluginDependency("HeuristicLab.Analysis", "3.3")]

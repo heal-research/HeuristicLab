@@ -50,6 +50,7 @@ namespace HeuristicLab.Problems.VarProMRGP {
       simpleMulSy.Name = "SimpleMul";
       Symbol aqSy = new AnalyticQuotient();
       Symbol logSy = new Logarithm();
+      Symbol absSy = new Absolute();
       Symbol expSy = new Exponential();
 
       var constSy = new Constant();
@@ -68,7 +69,7 @@ namespace HeuristicLab.Problems.VarProMRGP {
       varSy.WeightMu = 1.0;
       varSy.WeightSigma = 0.0;
 
-      var allSymbols = new List<Symbol>() { sumForLogSy, mulSy, simpleMulSy, aqSy, logSy, expSy, constSy, constOneSy, varSy };
+      var allSymbols = new List<Symbol>() { sumForLogSy, mulSy, simpleMulSy, aqSy, logSy, absSy, expSy, constSy, constOneSy, varSy };
 
       foreach (var symb in allSymbols)
         AddSymbol(symb);
@@ -78,7 +79,7 @@ namespace HeuristicLab.Problems.VarProMRGP {
       SetSubtreeCount(mulSy, 2, 4);
 
 
-      foreach (var funSymb in new[] { logSy, expSy }) {
+      foreach (var funSymb in new[] { logSy, expSy, absSy }) {
         SetSubtreeCount(funSymb, 1, 1);
       }
 
@@ -98,8 +99,11 @@ namespace HeuristicLab.Problems.VarProMRGP {
         AddAllowedChildSymbol(mulSy, childSy);
       }
 
+      // log(abs(sum))
       // allowed for log:
-      AddAllowedChildSymbol(logSy, sumForLogSy);
+      AddAllowedChildSymbol(logSy, absSy);
+      // allowed for abs:
+      AddAllowedChildSymbol(absSy, sumForLogSy);
 
       // allowed for exp:
       AddAllowedChildSymbol(expSy, simpleMulSy);

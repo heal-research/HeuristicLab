@@ -37,7 +37,6 @@ using HeuristicLab.Problems.DataAnalysis.Symbolic.Regression;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using HeuristicLab.Random;
-using HeuristicLab.Analysis.Statistics;
 
 namespace HeuristicLab.Problems.VarProMRGP {
   [Item("VarPro Multi-Regression Genetic Programming", "Similar to MRGP but MRGP is a inappropriate name, we should think about a new name.")]
@@ -90,11 +89,10 @@ namespace HeuristicLab.Problems.VarProMRGP {
 
 
     #region not cloned or stored
-    private int[] featureIdx = null; // code[featureIdx[i]] is the last operation of feature i
-    [ExcludeFromObjectGraphTraversal]
-    private NativeInterpreter.NativeInstruction[] code = null;
-    private Dictionary<string, GCHandle> cachedData = null;
-    private LinearTransformation[] transformations;
+    ISymbolicExpressionTree[] features;
+    private List<TreeToAutoDiffTermConverter.ParametricFunctionGradient> featCode; // AutoDiff delegates for the features
+    private List<double[]> featParam; // parameters for the features
+    private List<double[][]> featVariables;
     #endregion
 
 
@@ -107,6 +105,8 @@ namespace HeuristicLab.Problems.VarProMRGP {
 
     public Problem() {
       var g = new VarProGrammar();
+
+      // TODO optionally: scale dataset
 
       Parameters.Add(new ValueParameter<IRegressionProblemData>("ProblemData", "", new RegressionProblemData()));
       Parameters.Add(new ValueParameter<VarProGrammar>("Grammar", "", g));
@@ -139,21 +139,19 @@ namespace HeuristicLab.Problems.VarProMRGP {
     // Dependencies of parameters and fields
     // ProblemData
     //   |
-    //   +------------------+
-    //   |                  |
-    // cachedData         Grammar             MaxSize           MaxDepth          MaxInteractions
-    // cachedDataSet        |                    |                 |                 |
-    //                      +--------------------+-----------------+-----------------+
-    //                      |
-    //                     Features
-    //                      Code
-    //                      |
-    //                     Encoding (Length)
-    //                      |
-    //                      +--------------------+
-    //                      |                    |
-    //                   BestKnownSolution      Operators (Parameter)
-    //                   BestKnownQuality
+    // Grammar             MaxSize           MaxDepth          MaxInteractions
+    //   |                    |                 |                 |
+    //   +--------------------+-----------------+-----------------+
+    //   |
+    //  Features
+    //   Code
+    //   |
+    //  Encoding (Length)
+    //   |
+    //   +--------------------+
+    //   |                    |
+    // BestKnownSolution      Operators (Parameter)
+    // BestKnownQuality
 
     private void RegisterEventHandlers() {
       RegressionProblemDataParameter.ValueChanged += RegressionProblemDataParameter_ValueChanged;
@@ -186,13 +184,11 @@ namespace HeuristicLab.Problems.VarProMRGP {
     }
 
     private void RegressionProblemData_Changed(object sender, EventArgs e) {
-      UpdateDataCache();
       Grammar.ConfigureVariableSymbols(RegressionProblemData);
     }
 
     private void RegressionProblemDataParameter_ValueChanged(object sender, EventArgs e) {
       RegressionProblemData.Changed += RegressionProblemData_Changed;
-      UpdateDataCache();
       Grammar.ConfigureVariableSymbols(RegressionProblemData);
     }
 
@@ -208,57 +204,9 @@ namespace HeuristicLab.Problems.VarProMRGP {
       BestKnownSolutionParameter.ActualValue = null;
     }
 
-    private void UpdateDataCache() {
-      if (cachedData != null) {
-        foreach (var gch in cachedData.Values) {
-          gch.Free();
-        }
-        cachedData = null;
-      }
-
-      var dataset = RegressionProblemData.Dataset;
-
-      // free handles to old data
-      if (cachedData != null) {
-        foreach (var gch in cachedData.Values) {
-          gch.Free();
-        }
-        cachedData = null;
-      }
-
-      // cache new data
-      cachedData = new Dictionary<string, GCHandle>();
-      transformations = new LinearTransformation[dataset.DoubleVariables.Count()];
-      int varIdx = 0;
-      foreach (var v in dataset.DoubleVariables) {
-        var values = dataset.GetDoubleValues(v).ToArray();
-        if (v == RegressionProblemData.TargetVariable) {
-          // do not scale target
-          var linTransform = new LinearTransformation(dataset.DoubleVariables);
-          linTransform.Addend = 0;
-          linTransform.Multiplier = 1.0;
-          transformations[varIdx++] = linTransform;
-        } else {
-          // Scale to 0 .. 1
-          var max = values.Max();
-          var min = values.Min();
-          var range = max - min;
-          var linTransform = new LinearTransformation(dataset.DoubleVariables);
-          transformations[varIdx++] = linTransform;
-          linTransform.Addend = -1 * min / range - 0.0;
-          linTransform.Multiplier = 1.0 / range;
-          for (int i = 0; i < values.Length; i++) {
-            values[i] = values[i] * linTransform.Multiplier + linTransform.Addend;
-          }
-        }
-        var gch = GCHandle.Alloc(values, GCHandleType.Pinned);
-        cachedData[v] = gch;
-      }
-    }
-
     private void UpdateFeaturesAndCode() {
-      var features = GenerateFeaturesSystematic(10000, new MersenneTwister(31415), Grammar, MaxSize, MaxDepth, maxVariables: 3);
-      GenerateCode(features, RegressionProblemData.Dataset);
+      features = GenerateFeaturesSystematic(10000, new MersenneTwister(31415), Grammar, MaxSize, MaxDepth, maxVariables: 3);
+      GenerateCode(features, RegressionProblemData);
       var formatter = new InfixExpressionFormatter();
       Features = new ItemArray<StringValue>(features.Select(fi => new StringValue(formatter.Format(fi, System.Globalization.NumberFormatInfo.InvariantInfo, formatString: "0.0")).AsReadOnly())).AsReadOnly();
     }
@@ -267,25 +215,10 @@ namespace HeuristicLab.Problems.VarProMRGP {
     #endregion
 
     public override double Evaluate(Individual individual, IRandom random) {
-      if (cachedData == null || code == null) {
-        // after loading from file or cloning the data cache and code must be restored
-        UpdateDataCache();
+      if (featCode == null) {
         UpdateFeaturesAndCode();
       }
       var b = individual.BinaryVector(Encoding.Name);
-      var fittingOptions = new NativeInterpreter.SolverOptions();
-      fittingOptions.Iterations = 10;
-      fittingOptions.Algorithm = NativeInterpreter.Algorithm.Krogh;
-      fittingOptions.LinearSolver = NativeInterpreter.CeresTypes.LinearSolverType.DENSE_QR;
-      fittingOptions.Minimizer = NativeInterpreter.CeresTypes.MinimizerType.TRUST_REGION;
-      fittingOptions.TrustRegionStrategy = NativeInterpreter.CeresTypes.TrustRegionStrategyType.LEVENBERG_MARQUARDT;
-
-      var evalOptions = new NativeInterpreter.SolverOptions();
-      evalOptions.Iterations = 0;
-      evalOptions.Algorithm = NativeInterpreter.Algorithm.Krogh;
-      evalOptions.LinearSolver = NativeInterpreter.CeresTypes.LinearSolverType.DENSE_QR;
-      evalOptions.Minimizer = NativeInterpreter.CeresTypes.MinimizerType.TRUST_REGION;
-      evalOptions.TrustRegionStrategy = NativeInterpreter.CeresTypes.TrustRegionStrategyType.LEVENBERG_MARQUARDT;
 
       var rows = RegressionProblemData.TrainingIndices.ToArray();
 
@@ -294,109 +227,98 @@ namespace HeuristicLab.Problems.VarProMRGP {
       var termIndexList = new List<int>();
       for (int i = 0; i < b.Length; i++) {
         if (b[i] == true) {
-          termIndexList.Add(featureIdx[i]);
+          termIndexList.Add(i);
         }
       }
 
-      var coefficients = new double[termIndexList.Count + 1]; // coefficients for all terms + offset 
-                                                              // var avgCoefficients = new double[Features.Length];
+      var oldParameterValues = ExtractParameters(termIndexList);
+      var alpha = (double[])oldParameterValues.Clone();
 
-      // 5-fold CV
-      var nFolds = 5;
-      var nFoldRows = nRows / nFolds;
-      var fittingRows = new int[(nFolds - 1) * nFoldRows];
-      var fittingResult = new double[fittingRows.Length];
+      var target = RegressionProblemData.TargetVariableTrainingValues.ToArray();
 
-      var testRows = new int[nFoldRows];
-      var testResult = new double[nFoldRows];
-      var cvMSE = new List<double>();
-      var trainMSE = new List<double>();
-      for (int testFold = 0; testFold < nFolds; testFold++) {
-        // TODO: THREAD SAFETY FOR PARALLEL EVALUATION
-        // CODE IS MANIPULATED
-        lock (code) {
-          var oldParameterValues = ExtractParameters(code, termIndexList);
-
-          #region fit to training folds
-          // copy rows from the four training folds
-          var nextFoldIdx = 0;
-          for (int fold = 0; fold < nFolds; fold++) {
-            if (fold == testFold) {
-              Array.Copy(allRows, fold * nFoldRows, testRows, 0, nFoldRows);
-            } else {
-              Array.Copy(allRows, fold * nFoldRows, fittingRows, nextFoldIdx, nFoldRows);
-              nextFoldIdx += nFoldRows;
-            }
-          }
-
-          var fittingTarget = RegressionProblemData.Dataset.GetDoubleValues(RegressionProblemData.TargetVariable, fittingRows).ToArray();
-
-          Array.Clear(fittingResult, 0, fittingResult.Length);
-          Array.Clear(coefficients, 0, coefficients.Length);
-
-
-          NativeInterpreter.NativeWrapper.GetValuesVarPro(code, code.Length, termIndexList.ToArray(), termIndexList.Count, fittingRows, fittingRows.Length,
-            coefficients, fittingOptions, fittingResult, fittingTarget, out var optSummary);
-          #endregion
-
-          if (optSummary.InitialCost < 0 || optSummary.FinalCost < 0) throw new InvalidProgramException();
-          trainMSE.Add(optSummary.FinalCost * 2.0 / fittingRows.Length); // ceres cost is 0.5 * sum of squared residuals
-                                                                         // average of all coefficients
-                                                                         // TODO return a statistic for the relevance of the term instead of the coefficient
-                                                                         // for (int k = 0; k < termIndexList.Count; k++) {
-                                                                         //   avgCoefficients[Array.IndexOf(featureIdx, termIndexList[k])] += coefficients[k] / nFolds; // TODO perf
-                                                                         // }
-
-          #region calculate output on test fold to determine CV MSE
-
-          // evaluate all terms for test rows
-          var sumOutput = new double[testResult.Length];
-          for (int r = 0; r < sumOutput.Length; r++) {
-            sumOutput[r] = coefficients[coefficients.Length - 1]; // offset
-          }
-
-          for (int k = 0; k < termIndexList.Count; k++) {
-            var termIdx = termIndexList[k];
-            // copy relevant part of the code
-            var termCode = new NativeInterpreter.NativeInstruction[code[termIdx].length];
-            Array.Copy(code, termIdx - termCode.Length + 1, termCode, 0, termCode.Length);
-            NativeInterpreter.NativeWrapper.GetValues(termCode, termCode.Length, testRows, testRows.Length, evalOptions, testResult, null, out var evalSummary);
-
-            for (int r = 0; r < sumOutput.Length; r++) {
-              sumOutput[r] += coefficients[k] * testResult[r];
-            }
-          }
-
-          var evalTarget = RegressionProblemData.Dataset.GetDoubleValues(RegressionProblemData.TargetVariable, testRows);
-          if (sumOutput.Any(d => double.IsNaN(d))) cvMSE.Add(evalTarget.VariancePop()); // variance of target is MSE of constant model
-          else cvMSE.Add(sumOutput.Zip(evalTarget, (ri, ti) => { var res = ti - ri; return res * res; }).Average());
-
-          #endregion
-
-          #region prepare for next varpro call
-          var newParameterValues = ExtractParameters(code, termIndexList);
-          // keep the updated parameter values only when the coefficient is significantly <> 0
-          for (int i = 0; i < termIndexList.Count; i++) {
-            // TODO would actually need to take variance of term into account
-            if (Math.Abs(coefficients[i]) > 1e-5) {
-              oldParameterValues[i] = newParameterValues[i];
-            }
-          }
-          UpdateParameter(code, termIndexList, oldParameterValues);
+      // local function for feature evaluation
+      void Phi(double[] a, ref double[,] phi) {
+        if (phi == null) {
+          phi = new double[nRows, termIndexList.Count + 1]; // + offset term
+          // last term is constant = 1
+          for (int i = 0; i < nRows; i++)
+            phi[i, termIndexList.Count] = 1.0;
         }
-        #endregion
+        var offset = 0;
+        // for each term
+        for (int i = 0; i < termIndexList.Count; i++) {
+          var termIdx = termIndexList[i];
+          var numFeatParam = this.featParam[termIdx].Length;
+          var variableValues = new double[featVariables[termIdx].Length];
+          var featParam = new double[numFeatParam];
+          Array.Copy(a, offset, featParam, 0, featParam.Length);
+          // for each row
+          for (int j = 0; j < nRows; j++) {
+            // copy row values
+            for (int k = 0; k < variableValues.Length; k++) {
+              variableValues[k] = featVariables[termIdx][k][j]; // featVariables is column-order
+            }
+            var tup = featCode[termIdx].Invoke(featParam, variableValues); // TODO for phi we do not actually need g
+            phi[j, i] = tup.Item2;
+          }
+          offset += numFeatParam;
+        }
       }
 
+      // local function for Jacobian evaluation
+      void Jac(double[] a, ref double[,] J, ref int[,] ind) {
+        if (J == null) {
+          J = new double[nRows, featParam.Sum(fp => fp.Length)]; // all parameters
+          ind = new int[2, featParam.Sum(fp => fp.Length)];
+        }
+        var offset = 0;
+        // for each term
+        for (int i = 0; i < termIndexList.Count; i++) {
+          var termIdx = termIndexList[i];
+          var numFeatParam = this.featParam[termIdx].Length;
+          var variableValues = new double[featVariables[termIdx].Length];
+          var featParam = new double[numFeatParam];
+          Array.Copy(a, offset, featParam, 0, featParam.Length);
 
-      individual["Train MSE (avg)"] = new DoubleValue(trainMSE.Average());
-      individual["Parameter"] = new DoubleArray(ExtractParameters(code, termIndexList).SelectMany(arr => arr).ToArray()); // store the parameter which worked for this individual for solution creation
-                                                                                                                          // individual["Coefficients"] = new DoubleArray(avgCoefficients); // for allele frequency analysis
-                                                                                                                          // return new double[] { avgCost, coefficients.Count(ci => Math.Abs(ci) > 1e-9) };
-                                                                                                                          // average of averages 
-      individual["CV MSE (avg)"] = new DoubleValue(cvMSE.Average());
-      individual["CV MSE (stdev)"] = new DoubleValue(cvMSE.StandardDeviation());
-      return cvMSE.Average() + cvMSE.StandardDeviation();
-      // return new double[] { cvMSE.Average() + cvMSE.StandardDeviation(), termIndexList.Count };
+          // for each parameter
+          for (int k = 0; k < featParam.Length; k++) {
+            ind[0, offset + k] = i; // column idx in phi
+            ind[1, offset + k] = offset + k; // parameter idx (no parameter is used twice)
+          }
+
+          // for each row
+          for (int j = 0; j < nRows; j++) {
+            // copy row values
+            for (int k = 0; k < variableValues.Length; k++) {
+              variableValues[k] = featVariables[termIdx][k][j]; // featVariables is column-order
+            }
+            var tup = featCode[termIdx].Invoke(featParam, variableValues);
+            // for each parameter
+            for (int k = 0; k < featParam.Length; k++) {
+              J[j, offset + k] = tup.Item1[k];
+            }
+          }
+          offset += numFeatParam;
+        }
+      }
+
+      try {
+        HEAL.VarPro.VariableProjection.Fit(Phi, Jac, target, alpha, out var coeff, out var report);
+
+
+        if (report.residNorm < 0) throw new InvalidProgramException();
+        UpdateParameter(termIndexList, alpha);
+
+
+        individual["Parameter"] = new DoubleArray(alpha); // store the parameter which worked for this individual for solution creation
+        individual["Coeff"] = new DoubleArray(coeff);
+
+        return report.residNormSqr / nRows;
+      } catch (Exception _) {
+        individual["Parameter"] = new DoubleArray(alpha); // store the parameter which worked for this individual for solution creation
+        individual["Coeff"] = new DoubleArray(termIndexList.Count + 1);
+        return double.MaxValue;
+      }
     }
 
 
@@ -414,107 +336,50 @@ namespace HeuristicLab.Problems.VarProMRGP {
       var curBestQuality = results.ContainsKey("BestQuality") ? ((DoubleValue)results["BestQuality"].Value).Value : double.NaN;
       if (double.IsNaN(curBestQuality) || bestQ < curBestQuality) {
         var bestVector = bestIndividual.BinaryVector(Encoding.Name);
-
-        var options = new NativeInterpreter.SolverOptions();
-        options.Iterations = 10; // optimize on full dataset
-        options.Algorithm = NativeInterpreter.Algorithm.Krogh;
-        options.LinearSolver = NativeInterpreter.CeresTypes.LinearSolverType.DENSE_QR;
-        options.Minimizer = NativeInterpreter.CeresTypes.MinimizerType.TRUST_REGION;
-        options.TrustRegionStrategy = NativeInterpreter.CeresTypes.TrustRegionStrategyType.LEVENBERG_MARQUARDT;
-
-        var rows = RegressionProblemData.TrainingIndices.ToArray();
-        var target = RegressionProblemData.TargetVariableTrainingValues.ToArray();
-
-        var rowsArray = rows.ToArray();
-        var nRows = rowsArray.Length;
-        var result = new double[nRows];
+        var bestParams = ((DoubleArray)bestIndividual["Parameter"]).ToArray();
+        var bestCoeff = ((DoubleArray)bestIndividual["Coeff"]).ToArray();
+        // var rows = RegressionProblemData.TrainingIndices.ToArray();
+        // var target = RegressionProblemData.TargetVariableTrainingValues.ToArray();
+        // 
+        // var rowsArray = rows.ToArray();
+        // var nRows = rowsArray.Length;
+        // var result = new double[nRows];
         var termIndexList = new List<int>();
-        var predictorNames = new List<string>();
+        // var predictorNames = new List<string>();
         for (int i = 0; i < bestVector.Length; i++) {
           if (bestVector[i] == true) {
-            termIndexList.Add(featureIdx[i]);
-            predictorNames.Add(Features[i].Value);
+            termIndexList.Add(i);
           }
         }
-        var coefficients = new double[termIndexList.Count + 1]; // coefficients for all terms + offset 
-                                                                // TODO: thread-safety
-        lock (code) {
-          UpdateParameter(code, termIndexList, ((DoubleArray)bestIndividual["Parameter"]).ToArray());
 
-          NativeInterpreter.NativeWrapper.GetValuesVarPro(code, code.Length, termIndexList.ToArray(), termIndexList.Count, rows, nRows, coefficients, options, result, target, out var optSummary);
-        }
-
-        #region linear model statistics
-        var xy = new double[nRows, termIndexList.Count + 1];
-        for(int j=0;j<termIndexList.Count;j++) {
-          var t = termIndexList[j];
-          var termCode = new NativeInterpreter.NativeInstruction[code[t].length];
-          Array.Copy(code, t - code[t].length + 1, termCode, 0, code[t].length);
-          options.Iterations = 0;
-          NativeInterpreter.NativeWrapper.GetValues(termCode, termCode.Length, rows, nRows, options, result, null, out _);
-          for(int i=0;i<nRows;i++) { xy[i, j] = result[i]; } // copy to matrix
-        }
-        // copy target to matrix
-        for (int i = 0; i < nRows; i++) { xy[i, termIndexList.Count] = target[i]; } // copy to matrix
-        predictorNames.Add("<const>"); // last coefficient is offset
-        // var stats = Statistics.CalculateLinearModelStatistics(xy, coefficients);
-        // results.AddOrUpdateResult("Statistics", stats.AsResultCollection(predictorNames));
-        #endregion
-
-        results.AddOrUpdateResult("Solution", CreateRegressionSolution(code, termIndexList, coefficients, RegressionProblemData));
+        results.AddOrUpdateResult("Solution", CreateRegressionSolution(termIndexList.ToArray(), bestParams, bestCoeff, RegressionProblemData));
         results.AddOrUpdateResult("BestQuality", new DoubleValue(bestQ));
-        results.AddOrUpdateResult("CV MSE (avg)", bestIndividual["CV MSE (avg)"]);
-        results.AddOrUpdateResult("CV MSE (stdev)", bestIndividual["CV MSE (stdev)"]);
       }
     }
 
     #region retrieval / update of non-linear parameters
-    private double[][] ExtractParameters(NativeInterpreter.NativeInstruction[] code, List<int> termIndexList) {
-      var p = new double[termIndexList.Count][];
+    private double[] ExtractParameters(List<int> termIndexList) {
+      var p = new List<double>();
       for (int i = 0; i < termIndexList.Count; i++) {
-        var termIdx = termIndexList[i];
-        var pList = new List<double>();
-        var start = termIdx - code[termIdx].length + 1;
-        for (int codeIdx = start; codeIdx <= termIdx; codeIdx++) {
-          if (code[codeIdx].optimize)
-            pList.Add(code[codeIdx].value);
-        }
-        p[i] = pList.ToArray();
+        p.AddRange(featParam[termIndexList[i]]);
       }
-      return p;
+      return p.ToArray();
     }
 
-    // parameters are given as array for each term
-    private void UpdateParameter(NativeInterpreter.NativeInstruction[] code, List<int> termIndexList, double[][] p) {
-      for (int i = 0; i < termIndexList.Count; i++) {
-        if (p[i].Length == 0) continue; // nothing to update
-        var termIdx = termIndexList[i];
-        var pIdx = 0;
-        var start = termIdx - code[termIdx].length + 1;
-        for (int codeIdx = start; codeIdx <= termIdx; codeIdx++) {
-          if (code[codeIdx].optimize)
-            code[codeIdx].value = p[i][pIdx++];
-        }
-      }
-    }
 
     // parameters are given as a flat array
-    private void UpdateParameter(NativeInterpreter.NativeInstruction[] code, List<int> termIndexList, double[] p) {
-      var pIdx = 0;
+    private void UpdateParameter(List<int> termIndexList, double[] p) {
+      var offset = 0;
       for (int i = 0; i < termIndexList.Count; i++) {
-        var termIdx = termIndexList[i];
-        var start = termIdx - code[termIdx].length + 1;
-        for (int codeIdx = start; codeIdx <= termIdx; codeIdx++) {
-          if (code[codeIdx].optimize)
-            code[codeIdx].value = p[pIdx++];
-        }
+        var numFeatParam = featParam[termIndexList[i]].Length;
+        Array.Copy(p, offset, featParam[termIndexList[i]], 0, numFeatParam);
+        offset += numFeatParam;
       }
     }
     #endregion
 
-
-
     #region feature generation
+    /*
     private static ISymbolicExpressionTree[] GenerateFeatures(int n, IRandom random, ISymbolicDataAnalysisGrammar grammar, int maxSize, int maxDepth) {
       var features = new ISymbolicExpressionTree[n];
       var hashes = new HashSet<ulong>();
@@ -530,6 +395,7 @@ namespace HeuristicLab.Problems.VarProMRGP {
       }
       return features;
     }
+    */
     private static ISymbolicExpressionTree[] GenerateFeaturesSystematic(int n, IRandom random, ISymbolicDataAnalysisGrammar grammar, int maxSize, int maxDepth, int maxVariables) {
       var hashes = new HashSet<ulong>();
 
@@ -606,24 +472,17 @@ namespace HeuristicLab.Problems.VarProMRGP {
     }
 
 
-    private void GenerateCode(ISymbolicExpressionTree[] features, IDataset dataset) {
-      byte mapSupportedSymbols(ISymbolicExpressionTreeNode node) {
-        var opCode = OpCodes.MapSymbolToOpCode(node);
-        if (supportedOpCodes.Contains(opCode)) return opCode;
-        else throw new NotSupportedException($"VarPro does not support {node.Symbol.Name}");
-      };
-
-      var i = 0;
-      featureIdx = new int[features.Length];
-
-      var code = new List<NativeInterpreter.NativeInstruction>(capacity: (int)(features.Sum(fi => fi.Length - 2) * 1.2));
+    private void GenerateCode(ISymbolicExpressionTree[] features, IRegressionProblemData problemData) {
+      this.featCode = new List<TreeToAutoDiffTermConverter.ParametricFunctionGradient>();
+      this.featParam = new List<double[]>();
+      this.featVariables = new List<double[][]>();
       foreach (var f in features) {
-        var featureCode = Compile(f, mapSupportedSymbols);
+        var featureCode = Compile(f, problemData, out var initialParamValues, out var variableValues);
 
-        code.AddRange(featureCode);
-        featureIdx[i++] = code.Count - 1;
+        featCode.Add(featureCode);
+        featParam.Add(initialParamValues);
+        featVariables.Add(variableValues);
       }
-      this.code = code.ToArray();
     }
 
 
@@ -649,83 +508,69 @@ namespace HeuristicLab.Problems.VarProMRGP {
       (byte)OpCode.Absolute,
       (byte)OpCode.AnalyticQuotient
     };
-    private NativeInterpreter.NativeInstruction[] Compile(ISymbolicExpressionTree tree, Func<ISymbolicExpressionTreeNode, byte> opCodeMapper) {
-      var root = tree.Root.GetSubtree(0).GetSubtree(0);
-      var code = new List<NativeInterpreter.NativeInstruction>();
-      foreach (var n in root.IterateNodesPrefix()) {
-        var instr = new NativeInterpreter.NativeInstruction { narg = (ushort)n.SubtreeCount, opcode = opCodeMapper(n), length = 1 }; // length is updated in a second pass below
-        if (n is VariableTreeNode variable) {
-          instr.value = variable.Weight;
-          instr.optimize = false;
-          instr.data = cachedData[variable.VariableName].AddrOfPinnedObject();
-        } else if (n is ConstantTreeNode constant) {
-          instr.value = constant.Value;
-          if (n.Symbol.Name != "<1.0>") // HACK TODO this depends on the name given in the grammar!
-            instr.optimize = true; // the VarPro grammar is specifically designed to make sure we have all necessary and only necessary non-linear parameters
-        }
-        if (n.Symbol is Logarithm) {
-          // for log(f(x)) generate code log ( sqrt(f(x)²)) to ensure argument to log is positive
-          code.Add(instr);
-          code.Add(new NativeInterpreter.NativeInstruction { narg = 1, opcode = (byte)OpCode.SquareRoot, length = 1 }); // length is updated in a second pass below
-          code.Add(new NativeInterpreter.NativeInstruction { narg = 1, opcode = (byte)OpCode.Square, length = 1 });
-        } else {
-          // all other operations are added verbatim
-          code.Add(instr);
-        }
+    private TreeToAutoDiffTermConverter.ParametricFunctionGradient Compile(ISymbolicExpressionTree tree, IRegressionProblemData problemData,
+      out double[] initialParameterValues, out double[][] variableValues) {
+      TreeToAutoDiffTermConverter.TryConvertToAutoDiff(tree, makeVariableWeightsVariable: false, addLinearScalingTerms: false,
+        out var parameters, out initialParameterValues, out var func, out var func_grad);
+      variableValues = new double[parameters.Count][];
+      for (int i = 0; i < parameters.Count; i++) {
+        variableValues[i] = problemData.Dataset.GetDoubleValues(parameters[i].variableName, problemData.TrainingIndices).ToArray(); // TODO: we could reuse the arrays
       }
-
-      code.Reverse();
-      var codeArr = code.ToArray();
-
-      // second pass to calculate lengths
-      for (int i = 0; i < codeArr.Length; i++) {
-        var c = i - 1;
-        for (int j = 0; j < codeArr[i].narg; ++j) {
-          codeArr[i].length += codeArr[c].length;
-          c -= codeArr[c].length;
-        }
-      }
-
-      return codeArr;
+      return func_grad;
     }
     #endregion
 
     #region solution creation
-    private IRegressionSolution CreateRegressionSolution(NativeInterpreter.NativeInstruction[] code, IList<int> termIndexList, double[] coefficients, IRegressionProblemData problemData) {
-      // parse back solution from code (required because we need to used optimized parameter values)
-      var addSy = symbols[(byte)OpCode.Add];
-      var mulSy = symbols[(byte)OpCode.Mul];
-      var sum = addSy.CreateTreeNode();
-      for (int i = 0; i < termIndexList.Count; i++) {
-        if (Math.Abs(coefficients[i]) < 1e-8) continue;
-        var termIdx = termIndexList[i];
-        var prod = mulSy.CreateTreeNode();
-        var constNode = (ConstantTreeNode)constSy.CreateTreeNode();
-        constNode.Value = coefficients[i];
-        var term = CreateTree(code, termIdx);
-        prod.AddSubtree(constNode);
-        prod.AddSubtree(term);
-        sum.AddSubtree(prod);
-      }
-      {
-        var constNode = (ConstantTreeNode)constSy.CreateTreeNode();
-        constNode.Value = coefficients.Last();
-        sum.AddSubtree(constNode);
-      }
+    private IRegressionSolution CreateRegressionSolution(int[] featIdx, double[] parameters, double[] coefficients, IRegressionProblemData problemData) {
       var root = (new ProgramRootSymbol()).CreateTreeNode();
       var start = (new StartSymbol()).CreateTreeNode();
+      var add = (new Addition()).CreateTreeNode();
       root.AddSubtree(start);
-      start.AddSubtree(sum);
+      start.AddSubtree(add);
+      var offset = 0;
+      for (int i = 0; i < featIdx.Length; i++) {
+        var term = (ISymbolicExpressionTreeNode)features[featIdx[i]].Root.GetSubtree(0).GetSubtree(0).Clone();
+
+        var termParameters = new double[featParam[featIdx[i]].Length];
+        Array.Copy(parameters, offset, termParameters, 0, termParameters.Length);
+        ReplaceParameters(term, termParameters);
+        offset += termParameters.Length;
+
+        var mul = (new Multiplication()).CreateTreeNode();
+        mul.AddSubtree(term);
+        mul.AddSubtree(CreateConstant(coefficients[i]));
+        add.AddSubtree(mul);
+      }
+      // last coeff is offset
+      add.AddSubtree(CreateConstant(coefficients[coefficients.Length - 1]));
+
       var tree = new SymbolicExpressionTree(root);
       var ds = problemData.Dataset;
-      var scaledDataset = new Dataset(ds.DoubleVariables, ds.ToArray(ds.DoubleVariables, transformations, Enumerable.Range(0, ds.Rows)));
-      var scaledProblemData = new RegressionProblemData(scaledDataset, problemData.AllowedInputVariables, problemData.TargetVariable, transformations);
+      var scaledDataset = new Dataset(ds.DoubleVariables, ds.ToArray(ds.DoubleVariables, Enumerable.Range(0, ds.Rows)));
+      var scaledProblemData = new RegressionProblemData(scaledDataset, problemData.AllowedInputVariables, problemData.TargetVariable);
       scaledProblemData.TrainingPartition.Start = problemData.TrainingPartition.Start;
       scaledProblemData.TrainingPartition.End = problemData.TrainingPartition.End;
       scaledProblemData.TestPartition.Start = problemData.TestPartition.Start;
       scaledProblemData.TestPartition.End = problemData.TestPartition.End;
       return new SymbolicRegressionSolution(
         new SymbolicRegressionModel(problemData.TargetVariable, tree, new SymbolicDataAnalysisExpressionTreeNativeInterpreter()), scaledProblemData);
+    }
+
+    private void ReplaceParameters(ISymbolicExpressionTreeNode term, double[] termParameters) {
+      // Autodiff converter extracts parameters using a pre-order tree traversal.
+      // Therefore, we must use a pre-order tree traversal here as well.
+      // Only ConstantTreeNode values are optimized.
+      var paramIdx = 0;
+      foreach (var node in term.IterateNodesPrefix().OfType<ConstantTreeNode>()) {
+        node.Value = termParameters[paramIdx++];
+      }
+      if (paramIdx != termParameters.Length) throw new InvalidProgramException();
+    }
+
+    private ISymbolicExpressionTreeNode CreateConstant(double coeff) {
+      var constNode = (ConstantTreeNode)(new Constant()).CreateTreeNode();
+      constNode.Value = coeff;
+      return constNode;
     }
 
     Dictionary<byte, Symbol> symbols = new Dictionary<byte, Symbol>() {
@@ -752,53 +597,6 @@ namespace HeuristicLab.Problems.VarProMRGP {
     Symbol varSy = new DataAnalysis.Symbolic.Variable();
 
 
-    private ISymbolicExpressionTreeNode CreateTree(NativeInterpreter.NativeInstruction[] code, int i) {
-      switch (code[i].opcode) {
-        case (byte)OpCode.Add:
-        case (byte)OpCode.Sub:
-        case (byte)OpCode.Mul:
-        case (byte)OpCode.Div:
-        case (byte)OpCode.Exp:
-        case (byte)OpCode.Log:
-        case (byte)OpCode.Sin:
-        case (byte)OpCode.Cos:
-        case (byte)OpCode.Tan:
-        case (byte)OpCode.Tanh:
-        case (byte)OpCode.Square:
-        case (byte)OpCode.SquareRoot:
-        case (byte)OpCode.Cube:
-        case (byte)OpCode.CubeRoot:
-        case (byte)OpCode.Absolute:
-        case (byte)OpCode.AnalyticQuotient: {
-            var node = symbols[code[i].opcode].CreateTreeNode();
-            var c = i - 1;
-            for (int childIdx = 0; childIdx < code[i].narg; childIdx++) {
-              node.AddSubtree(CreateTree(code, c));
-              c = c - code[c].length;
-            }
-            return node;
-          }
-        case (byte)OpCode.Constant: {
-            var node = (ConstantTreeNode)constSy.CreateTreeNode();
-            node.Value = code[i].value;
-            return node;
-          }
-        case (byte)OpCode.Variable: {
-            var node = (VariableTreeNode)varSy.CreateTreeNode();
-            node.Weight = code[i].value;
-            // TODO perf
-            node.VariableName = string.Empty;
-            foreach (var tup in this.cachedData) {
-              if (tup.Value.AddrOfPinnedObject() == code[i].data) {
-                node.VariableName = tup.Key;
-                break;
-              }
-            }
-            return node;
-          }
-        default: throw new NotSupportedException("unknown opcode");
-      }
-    }
     #endregion
 
     public void Load(IRegressionProblemData data) {
@@ -808,15 +606,15 @@ namespace HeuristicLab.Problems.VarProMRGP {
     private void InitializeOperators() {
       Operators.Add(new AlleleFrequencyAnalyzer());
 
-      var cvMSEAnalyzer = new BestAverageWorstQualityAnalyzer();
-      cvMSEAnalyzer.Name = "CVMSE Analzer";
-      ParameterizeAnalyzer(cvMSEAnalyzer, "CV MSE (avg)");
-      Operators.Add(cvMSEAnalyzer);
-      
-      var trainingMSEAnalyzer = new BestAverageWorstQualityAnalyzer();
-      trainingMSEAnalyzer.Name = "Training MSE Analzer";
-      ParameterizeAnalyzer(trainingMSEAnalyzer, "Train MSE (avg)");
-      Operators.Add(trainingMSEAnalyzer);
+      // var cvMSEAnalyzer = new BestAverageWorstQualityAnalyzer();
+      // cvMSEAnalyzer.Name = "CVMSE Analzer";
+      // ParameterizeAnalyzer(cvMSEAnalyzer, "CV MSE (avg)");
+      // Operators.Add(cvMSEAnalyzer);
+      // 
+      // var trainingMSEAnalyzer = new BestAverageWorstQualityAnalyzer();
+      // trainingMSEAnalyzer.Name = "Training MSE Analzer";
+      // ParameterizeAnalyzer(trainingMSEAnalyzer, "Train MSE (avg)");
+      // Operators.Add(trainingMSEAnalyzer);
 
       ParameterizeOperators();
     }

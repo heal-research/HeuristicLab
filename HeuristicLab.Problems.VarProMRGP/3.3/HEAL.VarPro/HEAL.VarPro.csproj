@@ -1,0 +1,70 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <SignAssembly>false</SignAssembly>
+    <AssemblyOriginatorKeyFile>HeuristicLab.snk</AssemblyOriginatorKeyFile>
+    <DelaySign>false</DelaySign>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="MKLTest.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="C:\Users\gabri\.nuget\packages\mathnet.numerics.openblas.win\0.2.0\build\x64\libgcc_s_seh-1.dll" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="C:\Users\gabri\.nuget\packages\mathnet.numerics.openblas.win\0.2.0\build\x64\libgfortran-3.dll" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="C:\Users\gabri\.nuget\packages\mathnet.numerics.openblas.win\0.2.0\build\x64\libopenblas.dll" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="C:\Users\gabri\.nuget\packages\mathnet.numerics.openblas.win\0.2.0\build\x64\libquadmath-0.dll" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="C:\Users\gabri\.nuget\packages\mathnet.numerics.openblas.win\0.2.0\build\x64\MathNet.Numerics.OpenBLAS.dll" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="C:\Users\gabri\.nuget\packages\mathnet.numerics.openblas.win\0.2.0\build\x86\libgcc_s_sjlj-1.dll" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="C:\Users\gabri\.nuget\packages\mathnet.numerics.openblas.win\0.2.0\build\x86\libgfortran-3.dll" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="C:\Users\gabri\.nuget\packages\mathnet.numerics.openblas.win\0.2.0\build\x86\libopenblas.dll" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="C:\Users\gabri\.nuget\packages\mathnet.numerics.openblas.win\0.2.0\build\x86\libquadmath-0.dll" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="C:\Users\gabri\.nuget\packages\mathnet.numerics.openblas.win\0.2.0\build\x86\MathNet.Numerics.OpenBLAS.dll" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="alglibnet2">
+      <HintPath>alglibnet2.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="alglibnet2.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>
