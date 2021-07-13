@@ -107,7 +107,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     public static void CreateExpression(IRandom random, ISymbolicExpressionTreeNode root, int targetLength, int maxDepth, double irregularityBias = 1) {
       var grammar = root.Grammar;
       var minSubtreeCount = grammar.GetMinimumSubtreeCount(root.Symbol);
-      var maxSubtreeCount = grammar.GetMinimumSubtreeCount(root.Symbol);
+      var maxSubtreeCount = grammar.GetMaximumSubtreeCount(root.Symbol);
       var arity = random.Next(minSubtreeCount, maxSubtreeCount + 1);
       int openSlots = arity;
 
