@@ -39,6 +39,7 @@ namespace HeuristicLab.Scripting {
   [StorableType("0FA4F218-E1F5-4C09-9C2F-12B32D4EC373")]
   public abstract class Script : NamedItem, IProgrammableItem {
     #region Fields & Properties
+    public static readonly HashSet<string> ExcludedAssemblyFileNames = new HashSet<string> { "IKVM.OpenJDK.ClassLibrary.dll" };
     public static new Image StaticItemImage {
       get { return VSImageLibrary.Script; }
     }
@@ -123,7 +124,8 @@ namespace HeuristicLab.Scripting {
 
     public virtual IEnumerable<Assembly> GetAssemblies() {
       var assemblies = AppDomain.CurrentDomain.GetAssemblies()
-        .Where(a => !a.IsDynamic && File.Exists(a.Location))
+        .Where(a => !a.IsDynamic && File.Exists(a.Location)
+                 && !ExcludedAssemblyFileNames.Contains(Path.GetFileName(a.Location)))
         .GroupBy(x => Regex.Replace(Path.GetFileName(x.Location), @"-[\d.]+\.dll$", ""))
         .Select(x => x.OrderByDescending(y => y.GetName().Version).First())
         .ToList();
