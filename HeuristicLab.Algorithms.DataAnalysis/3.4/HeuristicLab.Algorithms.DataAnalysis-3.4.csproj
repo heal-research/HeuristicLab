@@ -132,6 +132,8 @@
     </Compile>
     <Compile Include="DoubleArrayExtensions.cs" />
     <Compile Include="FixedDataAnalysisAlgorithm.cs" />
+    <Compile Include="GAM\GeneralizedAdditiveModelAlgorithm.cs" />
+    <Compile Include="GAM\Spline1dModel.cs" />
     <Compile Include="GaussianProcess\CovarianceFunctions\CovarianceSpectralMixture.cs" />
     <Compile Include="GaussianProcess\CovarianceFunctions\CovariancePiecewisePolynomial.cs" />
     <Compile Include="GaussianProcess\CovarianceFunctions\CovarianceNeuralNetwork.cs" />
