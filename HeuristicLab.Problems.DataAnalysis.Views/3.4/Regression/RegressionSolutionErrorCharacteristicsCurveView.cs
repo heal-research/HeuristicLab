@@ -103,8 +103,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         // recalculate baseline solutions (for symbolic regression models the features used in the model might have changed)
         solutions.Clear();
         solutions.Add(Content); // re-add the first solution
-        var baselineSolutions = CreateBaselineSolutions();
-        solutions.AddRange(baselineSolutions);
+        solutions.AddRange(CreateBaselineSolutions());
         UpdateChart();
       }
     }
@@ -114,8 +113,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         // recalculate baseline solutions
         solutions.Clear();
         solutions.Add(Content); // re-add the first solution
-        var baselineSolutions = CreateBaselineSolutions();
-        solutions.AddRange(baselineSolutions);
+        solutions.AddRange(CreateBaselineSolutions());
         UpdateChart();
       }
     }
@@ -126,8 +124,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       ReadOnly = Content == null;
       if (Content != null) {
         solutions.Add(Content);
-        var baselineSolutions = CreateBaselineSolutions();
-        solutions.AddRange(baselineSolutions);
+        solutions.AddRange(CreateBaselineSolutions());
       }
       UpdateChart();
     }
@@ -167,7 +164,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
 
       UpdateSeries(residuals, solutionSeries);
 
-      solutionSeries.ToolTip = "Area over Curve: " + CalculateAreaOverCurve(solutionSeries);
+      solutionSeries.ToolTip = "Area over curve: " + CalculateAreaOverCurve(solutionSeries);
       solutionSeries.LegendToolTip = "Double-click to open model";
       chart.Series.Add(solutionSeries);
     }
@@ -284,10 +281,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
 
     protected virtual IEnumerable<IRegressionSolution> CreateBaselineSolutions() {
       var constantSolution = CreateConstantSolution();
-      if (constantSolution != null) yield return CreateConstantSolution();
+      if (constantSolution != null) yield return constantSolution;
 
       var linearRegressionSolution = CreateLinearSolution();
-      if (linearRegressionSolution != null) yield return CreateLinearSolution();
+      if (linearRegressionSolution != null) yield return linearRegressionSolution;
     }
 
     private IRegressionSolution CreateConstantSolution() {
