@@ -9,11 +9,12 @@ namespace HeuristicLab.JsonInterface {
 
     public override bool CanFormatType(Type t) {
       var interfaces = t.GetInterfaces();
-      return t.GetInterfaces().Any(x => x == typeof(ISymbolicRegressionSolution));
+      var symRegSolutionType = typeof(ISymbolicRegressionSolution);
+      return t == symRegSolutionType || interfaces.Any(x => x == symRegSolutionType);
     }
 
     protected abstract ISymbolicExpressionTreeStringFormatter SymbolicExpressionTreeStringFormatter { get; }
 
-    public override string Format(object o) => SymbolicExpressionTreeStringFormatter.Format((ISymbolicExpressionTree)((ISymbolicRegressionSolution)o).Model.SymbolicExpressionTree);
+    public override string Format(object o) => SymbolicExpressionTreeStringFormatter.Format(((ISymbolicRegressionSolution)o).Model.SymbolicExpressionTree);
   }
 }
