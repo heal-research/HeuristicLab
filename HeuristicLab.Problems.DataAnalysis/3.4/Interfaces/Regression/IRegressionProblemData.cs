@@ -28,10 +28,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
   [StorableType("1ef22b8b-f3b4-494b-8cdd-f08e84e316e0")]
   public interface IRegressionProblemData : IDataAnalysisProblemData {
     string TargetVariable { get; set; }
-
     IntervalCollection VariableRanges { get; }
-    ShapeConstraints ShapeConstraints { get; }
-
     IEnumerable<double> TargetVariableValues { get; }
     IEnumerable<double> TargetVariableTrainingValues { get; }
     IEnumerable<double> TargetVariableTestValues { get; }

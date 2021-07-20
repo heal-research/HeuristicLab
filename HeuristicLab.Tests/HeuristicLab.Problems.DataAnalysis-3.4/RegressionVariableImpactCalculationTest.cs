@@ -270,31 +270,31 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
     }
     private Dictionary<string, double> GetExpectedValuesForRFTower() {
       Dictionary<string, double> expectedImpacts = new Dictionary<string, double>();
-      expectedImpacts.Add("x5", 0.00138095702433039);
-      expectedImpacts.Add("x19", 0.00220739387855795);
-      expectedImpacts.Add("x14", 0.00225120540266954);
-      expectedImpacts.Add("x18", 0.00311857736968479);
-      expectedImpacts.Add("x9", 0.00313474690023097);
-      expectedImpacts.Add("x20", 0.00321781251408282);
-      expectedImpacts.Add("x21", 0.00397483365571383);
-      expectedImpacts.Add("x16", 0.00433280262892111);
-      expectedImpacts.Add("x15", 0.00529918809786456);
-      expectedImpacts.Add("x3", 0.00658791244929757);
-      expectedImpacts.Add("x24", 0.0078645281886035);
-      expectedImpacts.Add("x4", 0.00907314110749047);
-      expectedImpacts.Add("x13", 0.0102943761648944);
-      expectedImpacts.Add("x22", 0.0107132858548163);
-      expectedImpacts.Add("x12", 0.0157078677788507);
-      expectedImpacts.Add("x23", 0.0235857534562318);
-      expectedImpacts.Add("x7", 0.0304143401617055);
-      expectedImpacts.Add("x11", 0.0310773441767309);
-      expectedImpacts.Add("x25", 0.0328308945873665);
-      expectedImpacts.Add("x17", 0.0428771226844575);
-      expectedImpacts.Add("x10", 0.0456335367972532);
-      expectedImpacts.Add("x8", 0.049849257881126);
-      expectedImpacts.Add("x1", 0.0663686086323108);
-      expectedImpacts.Add("x2", 0.0799083890750926);
-      expectedImpacts.Add("x6", 0.196557814244287);
+      expectedImpacts.Add("x1", 0.0460043373592669);
+      expectedImpacts.Add("x2", 0.0771677998074048);
+      expectedImpacts.Add("x3", 0.00619316631767142);
+      expectedImpacts.Add("x4", 0.0173307649229608);
+      expectedImpacts.Add("x5", 0.00165078943166208);
+      expectedImpacts.Add("x6", 0.393797136971534);
+      expectedImpacts.Add("x7", 0.0103041010136826);
+      expectedImpacts.Add("x8", 0.0218489557817256);
+      expectedImpacts.Add("x9", 0.0033320239547433);
+      expectedImpacts.Add("x10", 0.0386869026272391);
+      expectedImpacts.Add("x11", 0.0194313200667007);
+      expectedImpacts.Add("x12", 0.00685957264555537);
+      expectedImpacts.Add("x13", 0.00996030046057605);
+      expectedImpacts.Add("x14", 0.00290837005063926);
+      expectedImpacts.Add("x15", 0.00487537076065259);
+      expectedImpacts.Add("x16", 0.00469764322452204);
+      expectedImpacts.Add("x17", 0.0373542975924628);
+      expectedImpacts.Add("x18", 0.00208482408757715);
+      expectedImpacts.Add("x19", 0.00250463259329947);
+      expectedImpacts.Add("x20", 0.00211501042751294);
+      expectedImpacts.Add("x21", 0.0028823562854704);
+      expectedImpacts.Add("x22", 0.0113878041309722);
+      expectedImpacts.Add("x23", 0.0454532954039953);
+      expectedImpacts.Add("x24", 0.0115989415893684);
+      expectedImpacts.Add("x25", 0.0196479481586532);
 
       return expectedImpacts;
     }

@@ -98,8 +98,9 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ALGLIB-3.7.0, Version=3.7.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
-      <HintPath>..\..\bin\ALGLIB-3.7.0.dll</HintPath>
+    <Reference Include="ALGLIB-3.17.0, Version=3.17.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\bin\ALGLIB-3.17.0.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="AutoDiff-1.0, Version=1.0.0.14388, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
@@ -157,7 +158,7 @@
     <Compile Include="Formatters\SymbolicDataAnalysisExpressionMathematicaFormatter.cs" />
     <Compile Include="Formatters\SymbolicDataAnalysisExpressionCSharpFormatter.cs" />
     <Compile Include="Grammars\DataAnalysisGrammar.cs" />
-    <Compile Include="Grammars\IntervalArithmeticGrammar.cs" />
+    <Compile Include="Grammars\LinearScalingGrammar.cs" />
     <Compile Include="Hashing\HashExtensions.cs" />
     <Compile Include="Hashing\HashUtil.cs" />
     <Compile Include="Hashing\SymbolicExpressionTreeHash.cs" />

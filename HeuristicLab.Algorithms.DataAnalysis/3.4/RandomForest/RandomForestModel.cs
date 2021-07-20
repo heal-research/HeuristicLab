@@ -19,6 +19,8 @@
  */
 #endregion
 
+extern alias alglib_3_7;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,8 +40,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   [Item("RandomForestModel", "Represents a random forest for regression and classification.")]
   public sealed class RandomForestModel : ClassificationModel, IRandomForestModel {
     // not persisted
-    private alglib.decisionforest randomForest;
-    private alglib.decisionforest RandomForest {
+    private alglib_3_7.alglib.decisionforest randomForest;
+    private alglib_3_7.alglib.decisionforest RandomForest {
       get {
         // recalculate lazily
         if (randomForest.innerobj.trees == null || randomForest.innerobj.trees.Length == 0) RecalculateModel();
@@ -73,11 +75,11 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     [StorableConstructor]
     private RandomForestModel(StorableConstructorFlag _) : base(_) {
       // for backwards compatibility (loading old solutions)
-      randomForest = new alglib.decisionforest();
+      randomForest = new alglib_3_7.alglib.decisionforest();
     }
     private RandomForestModel(RandomForestModel original, Cloner cloner)
       : base(original, cloner) {
-      randomForest = new alglib.decisionforest();
+      randomForest = new alglib_3_7.alglib.decisionforest();
       randomForest.innerobj.bufsize = original.randomForest.innerobj.bufsize;
       randomForest.innerobj.nclasses = original.randomForest.innerobj.nclasses;
       randomForest.innerobj.ntrees = original.randomForest.innerobj.ntrees;
@@ -99,7 +101,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     // random forest models can only be created through the static factory methods CreateRegressionModel and CreateClassificationModel
-    private RandomForestModel(string targetVariable, alglib.decisionforest randomForest,
+    private RandomForestModel(string targetVariable, alglib_3_7.alglib.decisionforest randomForest,
       int seed, IDataAnalysisProblemData originalTrainingData,
       int nTrees, double r, double m, double[] classValues = null)
       : base(targetVariable) {
@@ -150,7 +152,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         for (int column = 0; column < columns; column++) {
           x[column] = inputData[row, column];
         }
-        alglib.dfprocess(RandomForest, x, ref y);
+        alglib_3_7.alglib.dfprocess(RandomForest, x, ref y);
         yield return y[0];
       }
     }
@@ -168,7 +170,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         for (int column = 0; column < columns; column++) {
           x[column] = inputData[row, column];
         }
-        alglib.dforest.dfprocessraw(RandomForest.innerobj, x, ref ys);
+        alglib_3_7.alglib.dforest.dfprocessraw(RandomForest.innerobj, x, ref ys);
         yield return ys.VariancePop();
       }
     }
@@ -186,7 +188,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         for (int column = 0; column < columns; column++) {
           x[column] = inputData[row, column];
         }
-        alglib.dfprocess(randomForest, x, ref y);
+        alglib_3_7.alglib.dfprocess(randomForest, x, ref y);
         // find class for with the largest probability value
         int maxProbClassIndex = 0;
         double maxProb = y[0];
@@ -314,8 +316,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       var variables = problemData.AllowedInputVariables.Concat(new string[] { problemData.TargetVariable });
       double[,] inputMatrix = problemData.Dataset.ToArray(variables, trainingIndices);
 
-      alglib.dfreport rep;
-      var dForest = RandomForestUtil.CreateRandomForestModel(seed, inputMatrix, nTrees, r, m, 1, out rep);
+      var dForest = RandomForestUtil.CreateRandomForestModelAlglib_3_7(seed, inputMatrix, nTrees, r, m, 1, out var rep);
 
       rmsError = rep.rmserror;
       outOfBagRmsError = rep.oobrmserror;
@@ -352,8 +353,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         inputMatrix[row, nColumns - 1] = classIndices[inputMatrix[row, nColumns - 1]];
       }
 
-      alglib.dfreport rep;
-      var dForest = RandomForestUtil.CreateRandomForestModel(seed, inputMatrix, nTrees, r, m, nClasses, out rep);
+      var dForest = RandomForestUtil.CreateRandomForestModelAlglib_3_7(seed, inputMatrix, nTrees, r, m, nClasses, out var rep);
 
       rmsError = rep.rmserror;
       outOfBagRmsError = rep.oobrmserror;

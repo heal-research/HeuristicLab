@@ -567,16 +567,20 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     private static bool SolutionsCompatible(IEnumerable<IRegressionSolution> solutions) {
       var refSolution = solutions.First();
       var refSolVars = refSolution.ProblemData.Dataset.VariableNames;
-      var refFactorVars = refSolVars.Where(refSolution.ProblemData.Dataset.VariableHasType<string>);
+      var refFactorVars = refSolution.ProblemData.Dataset.StringVariables;
       var distinctVals = refFactorVars.ToDictionary(fv => fv, fv => refSolution.ProblemData.Dataset.GetStringValues(fv).Distinct().ToArray());
+
       foreach (var solution in solutions.Skip(1)) {
-        var variables1 = solution.ProblemData.Dataset.VariableNames;
-        if (!variables1.All(refSolVars.Contains))
+        var variables1 = new HashSet<string>(solution.ProblemData.Dataset.VariableNames);
+        if (!variables1.IsSubsetOf(refSolVars))
           return false;
 
-        foreach (var factorVar in variables1.Where(solution.ProblemData.Dataset.VariableHasType<string>)) {
+        foreach (var factorVar in solution.ProblemData.Dataset.StringVariables) {
           var refValues = distinctVals[factorVar];
-          if (solution.ProblemData.Dataset.GetStringValues(factorVar).Distinct().Any(val => !refValues.Contains(val))) return false;
+          var values = new HashSet<string>(solution.ProblemData.Dataset.GetStringValues(factorVar));
+
+          if (!values.IsSubsetOf(refValues))
+            return false;
         }
       }
       return true;

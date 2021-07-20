@@ -33,8 +33,8 @@ namespace HeuristicLab.Problems.DataAnalysis {
   public abstract class ClassificationSolutionBase : DataAnalysisSolution, IClassificationSolution {
     private const string TrainingAccuracyResultName = "Accuracy (training)";
     private const string TestAccuracyResultName = "Accuracy (test)";
-    private const string TrainingNormalizedGiniCoefficientResultName = "Normalized Gini Coefficient (training)";
-    private const string TestNormalizedGiniCoefficientResultName = "Normalized Gini Coefficient (test)";
+    private const string TrainingNormalizedGiniCoefficientResultName = "Norm. Gini coeff. (training)";
+    private const string TestNormalizedGiniCoefficientResultName = "Norm. Gini coeff. (test)";
     private const string ClassificationPerformanceMeasuresResultName = "Classification Performance Measures";
 
     public new IClassificationModel Model {
@@ -96,17 +96,22 @@ namespace HeuristicLab.Problems.DataAnalysis {
     private void AfterDeserialization() {
       if (string.IsNullOrEmpty(Model.TargetVariable))
         Model.TargetVariable = this.ProblemData.TargetVariable;
-
-      if (!this.ContainsKey(TrainingNormalizedGiniCoefficientResultName))
+      var newResult = false;
+      if (!this.ContainsKey(TrainingNormalizedGiniCoefficientResultName)) {
         Add(new Result(TrainingNormalizedGiniCoefficientResultName, "Normalized Gini coefficient of the model on the training partition.", new DoubleValue()));
-      if (!this.ContainsKey(TestNormalizedGiniCoefficientResultName))
+        newResult = true;
+      }
+      if (!this.ContainsKey(TestNormalizedGiniCoefficientResultName)) {
         Add(new Result(TestNormalizedGiniCoefficientResultName, "Normalized Gini coefficient of the model on the test partition.", new DoubleValue()));
+        newResult = true;
+      }
       if (!this.ContainsKey(ClassificationPerformanceMeasuresResultName)) {
         Add(new Result(ClassificationPerformanceMeasuresResultName, @"Classification performance measures.\n
                               In a multiclass classification all misclassifications of the negative class will be treated as true negatives except on positive class estimations.",
                               new ClassificationPerformanceMeasuresResultCollection()));
-        CalculateClassificationResults();
+        newResult = true;
       }
+      if (newResult) CalculateClassificationResults();
     }
 
     protected void CalculateClassificationResults() {

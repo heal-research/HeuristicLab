@@ -52,7 +52,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
       if (!Parameters.ContainsKey(IrregularityBiasParameterName)) {
-        Parameters.Add(new FixedValueParameter<PercentValue>(IrregularityBiasParameterName, new PercentValue(0.0)));
+        Parameters.Add(new FixedValueParameter<PercentValue>(IrregularityBiasParameterName, "Allows to bias tree initialization towards less balanced/regular shapes. Set to 0% for most balanced and 100% for least balanced trees. (default = 0%)", new PercentValue(0.0)));
       }
     }
 
@@ -107,7 +107,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     public static void CreateExpression(IRandom random, ISymbolicExpressionTreeNode root, int targetLength, int maxDepth, double irregularityBias = 1) {
       var grammar = root.Grammar;
       var minSubtreeCount = grammar.GetMinimumSubtreeCount(root.Symbol);
-      var maxSubtreeCount = grammar.GetMinimumSubtreeCount(root.Symbol);
+      var maxSubtreeCount = grammar.GetMaximumSubtreeCount(root.Symbol);
       var arity = random.Next(minSubtreeCount, maxSubtreeCount + 1);
       int openSlots = arity;
 

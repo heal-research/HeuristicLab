@@ -40,11 +40,10 @@ namespace HeuristicLab.Analysis.Statistics {
 
     public void Calculate(double[] y, double[] x, out double p0) {
       if (y.Count() != x.Count()) {
-        throw new ArgumentException("The lenght of x and y needs do be equal. ");
+        throw new ArgumentException("The length of x and y needs do be equal. ");
       }
 
       double[] c = new double[] { 0.3 };
-      double epsf = 0;
       double epsx = 0.000001;
       int maxits = 0;
       int info;
@@ -58,7 +57,7 @@ namespace HeuristicLab.Analysis.Statistics {
       }
 
       alglib.lsfitcreatef(xx, y, c, diffstep, out state);
-      alglib.lsfitsetcond(state, epsf, epsx, maxits);
+      alglib.lsfitsetcond(state, epsx, maxits);
       alglib.lsfitfit(state, ExpFunc, null, null);
       alglib.lsfitresults(state, out info, out c, out rep);
 

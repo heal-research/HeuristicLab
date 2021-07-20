@@ -208,8 +208,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       } else if (nLayers == 2) {
         alglib.mlpcreatec2(allowedInputVariables.Count(), nHiddenNodes1, nHiddenNodes2, nClasses, out multiLayerPerceptron);
       } else throw new ArgumentException("Number of layers must be zero, one, or two.", "nLayers");
-      alglib.mlpreport rep;
 
+      alglib.mlpreport rep;
       int info;
       // using mlptrainlm instead of mlptraines or mlptrainbfgs because only one parameter is necessary
       alglib.mlptrainlm(multiLayerPerceptron, inputMatrix, nRows, decay, restarts, out info, out rep);

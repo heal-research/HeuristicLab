@@ -71,8 +71,6 @@ namespace HeuristicLab.Analysis {
       int dimension = dissimilarities.Rows;
       if (dimension != dissimilarities.Columns || coordinates.Rows != dimension) throw new ArgumentException("The number of coordinates and the number of rows and columns in the dissimilarities matrix do not match.");
 
-      double epsg = 1e-7;
-      double epsf = 0;
       double epsx = 0;
       int maxits = 0;
 
@@ -85,7 +83,7 @@ namespace HeuristicLab.Analysis {
 
           try {
             alglib.minlmcreatevj(dimension - 1, c, out state);
-            alglib.minlmsetcond(state, epsg, epsf, epsx, maxits);
+            alglib.minlmsetcond(state, epsx, maxits);
             alglib.minlmoptimize(state, StressFitness, StressJacobian, null, new Info(coordinates, dissimilarities, i));
             alglib.minlmresults(state, out c, out rep);
           } catch (alglib.alglibexception) { }

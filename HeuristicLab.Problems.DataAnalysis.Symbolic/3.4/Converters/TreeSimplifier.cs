@@ -783,6 +783,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         return MakeSquare(node.GetSubtree(0)); // sqr(abs(x)) = sqr(x)
       } else if (IsExp(node)) {
         return MakeExp(MakeProduct(node.GetSubtree(0), MakeConstant(2.0))); // sqr(exp(x)) = exp(2x)
+      } else if (IsSquare(node)) {
+        return MakePower(node.GetSubtree(0), MakeConstant(4));
       } else if (IsCube(node)) {
         return MakePower(node.GetSubtree(0), MakeConstant(6));
       } else {
@@ -808,6 +810,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         return MakeExp(MakeProduct(node.GetSubtree(0), MakeConstant(3)));
       } else if (IsSquare(node)) {
         return MakePower(node.GetSubtree(0), MakeConstant(6));
+      } else if (IsCube(node)) {
+        return MakePower(node.GetSubtree(0), MakeConstant(9));
       } else {
         var cubeNode = cubeSymbol.CreateTreeNode();
         cubeNode.AddSubtree(node);

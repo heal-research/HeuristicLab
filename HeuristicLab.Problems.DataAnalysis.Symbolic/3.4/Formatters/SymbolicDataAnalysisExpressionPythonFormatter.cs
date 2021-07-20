@@ -57,7 +57,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       return formatter.Format(symbolicExpressionTree);
     }
 
-    private string GenerateHeader(ISymbolicExpressionTree symbolicExpressionTree) {
+    private static string GenerateHeader(ISymbolicExpressionTree symbolicExpressionTree) {
       StringBuilder strBuilder = new StringBuilder();
 
       ISet<string> variables = new HashSet<string>();
@@ -101,7 +101,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       return strBuilder.ToString();
     }
 
-    private string GenerateNecessaryImports(int mathLibCounter, int statisticLibCounter) {
+    private static string GenerateNecessaryImports(int mathLibCounter, int statisticLibCounter) {
       StringBuilder strBuilder = new StringBuilder();
       if (mathLibCounter > 0 || statisticLibCounter > 0) {
         strBuilder.AppendLine("# imports");
@@ -114,7 +114,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       return strBuilder.ToString();
     }
 
-    private string GenerateIfThenElseSource(int evaluateIfCounter) {
+    private static string GenerateIfThenElseSource(int evaluateIfCounter) {
       StringBuilder strBuilder = new StringBuilder();
       if (evaluateIfCounter > 0) {
         strBuilder.AppendLine("# condition helper function");
@@ -127,7 +127,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       return strBuilder.ToString();
     }
 
-    private string GenerateModelEvaluationFunction(ISet<string> variables) {
+    private static string GenerateModelEvaluationFunction(ISet<string> variables) {
       StringBuilder strBuilder = new StringBuilder();
       strBuilder.Append("def evaluate(");
       var orderedVariables = variables.OrderBy(n => n, new NaturalStringComparer());
@@ -141,7 +141,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       return strBuilder.ToString();
     }
 
-    private void FormatRecursively(ISymbolicExpressionTreeNode node, StringBuilder strBuilder) {
+    private static void FormatRecursively(ISymbolicExpressionTreeNode node, StringBuilder strBuilder) {
       ISymbol symbol = node.Symbol;
       if (symbol is ProgramRootSymbol)
         FormatRecursively(node.GetSubtree(0), strBuilder);
@@ -207,9 +207,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         throw new NotSupportedException("Formatting of symbol: " + symbol + " not supported for Python symbolic expression tree formatter.");
     }
 
-    private string VariableName2Identifier(string variableName) => variableName.Replace(" ", "_");
+    private static string VariableName2Identifier(string variableName) => variableName.Replace(" ", "_");
 
-    private void FormatNode(ISymbolicExpressionTreeNode node, StringBuilder strBuilder, string prefixSymbol = "", string openingSymbol = "(", string closingSymbol = ")", string infixSymbol = ",") {
+    private static void FormatNode(ISymbolicExpressionTreeNode node, StringBuilder strBuilder, string prefixSymbol = "", string openingSymbol = "(", string closingSymbol = ")", string infixSymbol = ",") {
       strBuilder.Append($"{prefixSymbol}{openingSymbol}");
       foreach (var child in node.Subtrees) {
         FormatRecursively(child, strBuilder);
@@ -219,25 +219,25 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       strBuilder.Append(closingSymbol);
     }
 
-    private void FormatVariableTreeNode(ISymbolicExpressionTreeNode node, StringBuilder strBuilder) {
+    private static void FormatVariableTreeNode(ISymbolicExpressionTreeNode node, StringBuilder strBuilder) {
       var varNode = node as VariableTreeNode;
       var formattedVariable = VariableName2Identifier(varNode.VariableName);
       var variableWeight = varNode.Weight.ToString("g17", CultureInfo.InvariantCulture);
       strBuilder.Append($"{formattedVariable} * {variableWeight}");
     }
 
-    private void FormatConstantTreeNode(ISymbolicExpressionTreeNode node, StringBuilder strBuilder) {
+    private static void FormatConstantTreeNode(ISymbolicExpressionTreeNode node, StringBuilder strBuilder) {
       var constNode = node as ConstantTreeNode;
       strBuilder.Append(constNode.Value.ToString("g17", CultureInfo.InvariantCulture));
     }
 
-    private void FormatPower(ISymbolicExpressionTreeNode node, StringBuilder strBuilder, string exponent) {
+    private static void FormatPower(ISymbolicExpressionTreeNode node, StringBuilder strBuilder, string exponent) {
       strBuilder.Append("math.pow(");
       FormatRecursively(node.GetSubtree(0), strBuilder);
       strBuilder.Append($", {exponent})");
     }
 
-    private void FormatRoot(ISymbolicExpressionTreeNode node, StringBuilder strBuilder) {
+    private static void FormatRoot(ISymbolicExpressionTreeNode node, StringBuilder strBuilder) {
       strBuilder.Append("math.pow(");
       FormatRecursively(node.GetSubtree(0), strBuilder);
       strBuilder.Append(", 1.0 / (");
@@ -245,7 +245,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       strBuilder.Append("))");
     }
 
-    private void FormatSubtraction(ISymbolicExpressionTreeNode node, StringBuilder strBuilder) {
+    private static void FormatSubtraction(ISymbolicExpressionTreeNode node, StringBuilder strBuilder) {
       if (node.SubtreeCount == 1) {
         strBuilder.Append("-");
         FormatRecursively(node.GetSubtree(0), strBuilder);
@@ -255,7 +255,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       FormatNode(node, strBuilder, infixSymbol: " - ");
     }
 
-    private void FormatDivision(ISymbolicExpressionTreeNode node, StringBuilder strBuilder) {
+    private static void FormatDivision(ISymbolicExpressionTreeNode node, StringBuilder strBuilder) {
       strBuilder.Append("(");
       if (node.SubtreeCount == 1) {
         strBuilder.Append("1.0 / ");
@@ -272,7 +272,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       strBuilder.Append(")");
     }
 
-    private void FormatAnalyticQuotient(ISymbolicExpressionTreeNode node, StringBuilder strBuilder) {
+    private static void FormatAnalyticQuotient(ISymbolicExpressionTreeNode node, StringBuilder strBuilder) {
       strBuilder.Append("(");
       FormatRecursively(node.GetSubtree(0), strBuilder);
       strBuilder.Append(" / math.sqrt(1 + math.pow(");

@@ -35,7 +35,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     protected override string TargetVariable { get { return noiseRatio == null ? "flux" : "flux_noise"; } }
 
     protected override string[] VariableNames {
-      get { return new[] {"Pwr", "r", noiseRatio == null ? "flux" : "flux_noise"}; }
+      get { return noiseRatio == null ? new[] { "Pwr", "r", "flux" } : new[] { "Pwr", "r", "flux", "flux_noise" }; }
     }
 
     protected override string[] AllowedInputVariables { get { return new[] {"Pwr", "r"}; } }
@@ -65,13 +65,8 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
         flux.Add(res);
       }
 
-      if (noiseRatio != null) {
-        var flux_noise  = new List<double>();
-        var sigma_noise = (double) Math.Sqrt(noiseRatio.Value) * flux.StandardDeviationPop();
-        flux_noise.AddRange(flux.Select(md => md + NormalDistributedRandom.NextDouble(rand, 0, sigma_noise)));
-        data.Remove(flux);
-        data.Add(flux_noise);
-      }
+      var targetNoise = GetNoisyTarget(flux, rand);
+      if (targetNoise != null) data.Add(targetNoise);
 
       return data;
     }

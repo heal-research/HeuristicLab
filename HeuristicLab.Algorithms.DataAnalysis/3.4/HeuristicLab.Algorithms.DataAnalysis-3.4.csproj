@@ -106,8 +106,16 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ALGLIB-3.17.0, Version=3.17.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\bin\ALGLIB-3.17.0.dll</HintPath>
+      <Aliases>global</Aliases>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="ALGLIB-3.7.0, Version=3.7.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\bin\ALGLIB-3.7.0.dll</HintPath>
+      <Aliases>alglib_3_7</Aliases>
       <Private>False</Private>
     </Reference>
     <Reference Include="LibSVM-3.12, Version=3.12.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
@@ -285,6 +293,7 @@
     <Compile Include="NearestNeighbour\NearestNeighbourClassification.cs" />
     <Compile Include="NearestNeighbour\NearestNeighbourClassificationSolution.cs" />
     <Compile Include="NearestNeighbour\NearestNeighbourModel.cs" />
+    <Compile Include="NearestNeighbour\NearestNeighbourModelAlglib_3_7.cs" />
     <Compile Include="NearestNeighbour\NearestNeighbourRegression.cs" />
     <Compile Include="NearestNeighbour\NearestNeighbourRegressionSolution.cs" />
     <Compile Include="NeuralNetwork\NeuralNetworkEnsembleClassification.cs" />
@@ -295,6 +304,7 @@
     <Compile Include="NeuralNetwork\NeuralNetworkClassification.cs" />
     <Compile Include="NeuralNetwork\NeuralNetworkClassificationSolution.cs" />
     <Compile Include="NeuralNetwork\NeuralNetworkModel.cs" />
+    <Compile Include="NeuralNetwork\NeuralNetworkModelAlglib_3_7.cs" />
     <Compile Include="NeuralNetwork\NeuralNetworkRegression.cs" />
     <Compile Include="NeuralNetwork\NeuralNetworkRegressionSolution.cs" />
     <Compile Include="NonlinearRegression\NonlinearRegression.cs" />
@@ -304,6 +314,7 @@
     <Compile Include="RandomForest\RandomForestClassificationSolution.cs" />
     <Compile Include="RandomForest\RandomForestClassification.cs" />
     <Compile Include="RandomForest\RandomForestModel.cs" />
+    <Compile Include="RandomForest\RandomForestModelAlglib_3_7.cs" />
     <Compile Include="RandomForest\RandomForestModelFull.cs" />
     <Compile Include="RandomForest\RandomForestRegression.cs" />
     <Compile Include="RandomForest\RandomForestRegressionSolution.cs" />

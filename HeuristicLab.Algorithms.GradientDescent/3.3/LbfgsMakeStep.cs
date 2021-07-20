@@ -70,14 +70,12 @@ namespace HeuristicLab.Algorithms.GradientDescent {
 
     public override IOperation Apply() {
       var state = State;
-      bool @continue = alglib.minlbfgs.minlbfgsiteration(state.State);
+      bool @continue = alglib.minlbfgsiteration(state.State);
       TerminationCriterionParameter.ActualValue = new BoolValue(!@continue);
       if (@continue) {
         PointParameter.ActualValue = new RealVector(state.State.x);
       } else {
-        double[] x = new double[state.State.x.Length];
-        alglib.minlbfgs.minlbfgsreport rep = new alglib.minlbfgs.minlbfgsreport();
-        alglib.minlbfgs.minlbfgsresults(state.State, ref x, rep);
+        alglib.minlbfgsresults(state.State, out var x, out var rep);
         if (rep.terminationtype < 0) {
           if (rep.terminationtype == -1)
             throw new OperatorExecutionException(this, "Incorrect parameters were specified.");

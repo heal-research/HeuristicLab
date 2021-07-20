@@ -143,7 +143,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       { typeof(Sine), OpCodes.Sin },
       { typeof(Cosine), OpCodes.Cos },
       { typeof(Tangent), OpCodes.Tan },
-      { typeof (HyperbolicTangent), OpCodes.Tanh},
+      { typeof(HyperbolicTangent), OpCodes.Tanh},
       { typeof(Logarithm), OpCodes.Log },
       { typeof(Exponential), OpCodes.Exp },
       { typeof(IfThenElse), OpCodes.IfThenElse },

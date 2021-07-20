@@ -20,7 +20,7 @@ namespace HeuristicLab.Tests {
       a.ExceptionOccurred += (sender, e) => { ex = e.Value; };
       a.Prepare();
       a.Start();
-      Assert.IsNull(ex);
+      Assert.IsNull(ex, ex?.ToString());
     }
 
     public static double GetDoubleResult(IAlgorithm a, string resultName) {
