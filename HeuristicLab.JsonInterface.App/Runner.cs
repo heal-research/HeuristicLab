@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using HeuristicLab.Core;
 using HeuristicLab.Optimization;
 using Newtonsoft.Json.Linq;
 
@@ -52,14 +53,19 @@ namespace HeuristicLab.JsonInterface.App {
         obj.Add("Run", JToken.FromObject(run.ToString()));
 
         // zip and filter the results with the ResultJsonItems
-        var filteredResults = configuredResultItems.Zip(
-          run.Results.Where(x => configuredResultItems.Any(y => y.Name == x.Key)), 
-          (x, y) => new { Item = x, Value = y.Value });
+        var filteredResults = new List<Tuple<IResultJsonItem, IItem>>();
+        foreach(var resultItem in configuredResultItems) {
+          foreach(var result in run.Results) {
+            if(resultItem.Name == result.Key) {
+              filteredResults.Add(Tuple.Create(resultItem, result.Value));
+            }
+          }
+        }
 
         // add results to the JObject
         foreach(var result in filteredResults) {
-          var formatter = GetResultFormatter(result.Item.ResultFormatterType);
-          obj.Add(result.Item.Name, formatter.Format(result.Value));
+          var formatter = GetResultFormatter(result.Item1.ResultFormatterType);
+          obj.Add(result.Item1.Name, formatter.Format(result.Item2));
         }
       }
       return SingleLineArrayJsonWriter.Serialize(arr);

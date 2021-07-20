@@ -107,7 +107,7 @@ namespace HeuristicLab.JsonInterface {
     private void MergeTemplateWithConfig() {
       foreach (JObject obj in Config) {
         // build item from config object
-        string path = obj.Property("Path").Value.ToString();
+        string path = obj.Property("Path").Value.ToString(); // TODO: catch exception if path is not available
         // override default value
         if (Objects.TryGetValue(path, out IJsonItem param)) {
           // remove fixed template parameter from config => dont allow to copy them from concrete config
