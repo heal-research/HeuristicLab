@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using HEAL.Attic;
 using HeuristicLab.Optimization;
 using Newtonsoft.Json.Linq;
@@ -50,7 +51,9 @@ namespace HeuristicLab.JsonInterface {
       #endregion
 
       // extract metadata information
-      string hLFileLocation = Path.GetFullPath(Template[Constants.Metadata][Constants.HLFileLocation].ToString());
+      string relativePath = Template[Constants.Metadata][Constants.HLFileLocation].ToString(); // get relative path
+      // convert to absolute path
+      string hLFileLocation = Regex.Replace(relativePath, @"^(\.)", $"{Path.GetDirectoryName(templateFile)}");
 
       #region Deserialize HL File
       ProtoBufSerializer serializer = new ProtoBufSerializer();
@@ -107,7 +110,10 @@ namespace HeuristicLab.JsonInterface {
     private void MergeTemplateWithConfig() {
       foreach (JObject obj in Config) {
         // build item from config object
-        string path = obj.Property("Path").Value.ToString(); // TODO: catch exception if path is not available
+        var prop = obj.Property("Path");
+        if (prop == null) 
+          throw new ArgumentException("Path property is missing.");
+        string path = prop.Value.ToString();
         // override default value
         if (Objects.TryGetValue(path, out IJsonItem param)) {
           // remove fixed template parameter from config => dont allow to copy them from concrete config

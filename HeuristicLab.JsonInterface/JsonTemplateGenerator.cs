@@ -31,6 +31,7 @@ namespace HeuristicLab.JsonInterface {
       JArray parameterItems = new JArray();
       JArray resultItems = new JArray();
       IList<IJsonItem> jsonItems = new List<IJsonItem>();
+     
       string templateName = Path.GetFileName(templatePath);
       string templateDirectory = Path.GetDirectoryName(templatePath);
 
@@ -44,8 +45,11 @@ namespace HeuristicLab.JsonInterface {
 
       #region Serialize HL File
       ProtoBufSerializer serializer = new ProtoBufSerializer();
+      // get absolute path for serialization
       string hlFilePath = Path.Combine(templateDirectory, $"{templateName}.hl");
       serializer.Serialize(optimizer, hlFilePath);
+      // overwrite string for relative path
+      hlFilePath = Path.Combine($".{Path.DirectorySeparatorChar}", $"{templateName}.hl");
       #endregion
 
       #region Filter Items
