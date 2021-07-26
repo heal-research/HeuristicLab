@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using Newtonsoft.Json.Linq;
 
 namespace HeuristicLab.JsonInterface {
-  public abstract class RangedJsonItem<T> : JsonItem, IRangedJsonItem<T>
+  public abstract class RangedJsonItem<T> : IntervalRestrictedValueJsonItem<T>, IRangedJsonItem<T>
     where T : IComparable {
     public T MinValue { get; set; }
     public T MaxValue { get; set; }
-    public T Minimum { get; set; }
-    public T Maximum { get; set; }
 
     protected override ValidationResult Validate() {
       IList<string> errors = new List<string>();
@@ -18,6 +17,16 @@ namespace HeuristicLab.JsonInterface {
       return new ValidationResult((successMin && successMax), errors);
 
     }
-      
+
+    public override void SetJObject(JObject jObject) {
+      var minValueProp = jObject[nameof(IRangedJsonItem<T>.MinValue)];
+      if (minValueProp != null) MinValue = minValueProp.ToObject<T>();
+
+      var maxValueProp = jObject[nameof(IRangedJsonItem<T>.MaxValue)];
+      if (maxValueProp != null) MaxValue = maxValueProp.ToObject<T>();
+
+      base.SetJObject(jObject);
+    }
+
   }
 }

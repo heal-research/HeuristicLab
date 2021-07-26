@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
+using HeuristicLab.Problems.DataAnalysis;
 using Newtonsoft.Json.Linq;
 
 namespace HeuristicLab.JsonInterface {
@@ -22,6 +23,7 @@ namespace HeuristicLab.JsonInterface {
     private const string VariableValues = "variableValues";
     private const string VariableNames = "variableNames";
     private const string InputVariables = "InputVariables";
+    private const string VariableRanges = "VariableRanges";
     private const string Rows = "rows";
     private const string Value = "value";
     private const string Parameters = "parameters";
@@ -77,7 +79,7 @@ namespace HeuristicLab.JsonInterface {
       SetAllowedInputVariables(regressionProblemData, allowedInputVariables, dataset);
       SetTestPartition(regressionProblemData, testPartition);
       SetTrainingPartition(regressionProblemData, trainingPartition);
-
+      SetVariableRanges(regressionProblemData, dataset);
     }
 
     public override IJsonItem Extract(IItem value, IJsonItemConverter root) {
@@ -165,6 +167,26 @@ namespace HeuristicLab.JsonInterface {
           checkedItemList.Add(new StringValue(i).AsReadOnly(), isChecked);
         }
       }
+    }
+
+    private void SetVariableRanges(dynamic regressionProblemData, DoubleMatrixJsonItem item) {
+      // TODO 
+      if (item != null) {
+        object variableRanges = (object)regressionProblemData.VariableRanges; //IRegressionProblemData.cs
+        IntervalCollection collection = new IntervalCollection();
+        int count = 0;
+        foreach (var column in item.ColumnNames) {
+          collection.AddInterval(column, new Interval(item.Value[count].Min(), item.Value[count].Max()));
+          count++;
+        }
+
+        var variableRangesInfo = regressionProblemData.GetType().GetField(VariableRanges, flags);
+        variableRangesInfo.SetValue(regressionProblemData, collection);
+      }
+    }
+
+    private void SetShapeConstraints() {
+      // TODO
     }
     #endregion
 
