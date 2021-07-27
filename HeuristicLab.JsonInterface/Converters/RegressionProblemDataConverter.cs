@@ -170,18 +170,22 @@ namespace HeuristicLab.JsonInterface {
     }
 
     private void SetVariableRanges(dynamic regressionProblemData, DoubleMatrixJsonItem item) {
-      // TODO 
       if (item != null) {
-        object variableRanges = (object)regressionProblemData.VariableRanges; //IRegressionProblemData.cs
-        IntervalCollection collection = new IntervalCollection();
+        IntervalCollection variableRanges = (IntervalCollection)regressionProblemData.VariableRanges;
+
+        foreach(var kvp in variableRanges.GetDictionary()) {
+          variableRanges.DeleteInterval(kvp.Key);
+        }
+        
         int count = 0;
         foreach (var column in item.ColumnNames) {
-          collection.AddInterval(column, new Interval(item.Value[count].Min(), item.Value[count].Max()));
+          var doubleValuesForColumn = item.Value[count];
+          if (doubleValuesForColumn.Any(x => double.IsNaN(x))) // add a NaN interval if any NaN value exists
+            variableRanges.AddInterval(column, new Interval(double.NaN, double.NaN));
+          else
+            variableRanges.AddInterval(column, new Interval(doubleValuesForColumn.Min(), doubleValuesForColumn.Max()));
           count++;
         }
-
-        var variableRangesInfo = regressionProblemData.GetType().GetField(VariableRanges, flags);
-        variableRangesInfo.SetValue(regressionProblemData, collection);
       }
     }
 
