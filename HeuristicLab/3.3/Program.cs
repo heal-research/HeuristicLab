@@ -25,7 +25,11 @@ namespace HeuristicLab {
   static class Program {
     [STAThread]
     static void Main(string[] args) {
-      HeuristicLab.PluginInfrastructure.Main.Run(args);
+      if ((args.Length >= 1) && (args[0] == "/start:JsonInterface")) {
+        HeuristicLab.PluginInfrastructure.Main.HeadlessRun(args);
+      } else {
+        HeuristicLab.PluginInfrastructure.Main.Run(args);
+      }
     }
   }
 }

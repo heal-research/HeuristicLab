@@ -20,7 +20,10 @@
 #endregion
 
 using System;
+using System.IO;
+using System.Linq;
 using System.Windows.Forms;
+using HeuristicLab.PluginInfrastructure.Manager;
 using HeuristicLab.PluginInfrastructure.Starter;
 
 namespace HeuristicLab.PluginInfrastructure {
@@ -46,6 +49,29 @@ namespace HeuristicLab.PluginInfrastructure {
         }
         catch (Exception ex) {
           ErrorHandling.ShowErrorDialog(ex);
+        }
+      }
+    }
+
+    public static void HeadlessRun(string[] args) {
+      string pluginPath = Path.GetFullPath(Application.StartupPath);
+      var pluginManager = new PluginManager(pluginPath);
+      pluginManager.DiscoverAndCheckPlugins();
+
+      var arguments = CommandLineArgumentHandling.GetArguments(args);
+      foreach (var argument in arguments) {
+        if (argument is StartArgument) {
+          var arg = (StartArgument)argument;
+          var appDesc = (from desc in pluginManager.Applications
+                         where desc.Name.Equals(arg.Value)
+                         select desc).SingleOrDefault();
+          if (appDesc != null) {
+            try {
+              pluginManager.Run(appDesc, arguments);
+            } catch (Exception e) {
+              Console.WriteLine(e.Message);
+            }
+          }
         }
       }
     }
