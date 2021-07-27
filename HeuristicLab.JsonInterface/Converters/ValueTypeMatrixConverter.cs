@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using HeuristicLab.Data;
 using HeuristicLab.Core;
+using System.Reflection;
 
 namespace HeuristicLab.JsonInterface {
   public class IntMatrixConverter : ValueTypeMatrixConverter<IntMatrix, int> {
@@ -103,10 +104,18 @@ namespace HeuristicLab.JsonInterface {
       var cols = data.Length;
       var rows = data.Length > 0 ? data[0].Length : 0;
 
+
+      // matrix
+      var t = matrix.GetType();
+      var matrixInfo = matrix.GetType().GetField("matrix", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+      matrixInfo.SetValue(matrix, new T[rows, cols]);
+      /*
       var rowInfo = matrix.GetType().GetProperty("Rows");
-      rowInfo.SetValue(matrix, rows);
+      rowInfo.SetValue(matrix, rows); // TODO
       var colInfo = matrix.GetType().GetProperty("Columns");
       colInfo.SetValue(matrix, cols);
+      */
+
 
       for (int x = 0; x < rows; ++x) {
         for (int y = 0; y < cols; ++y) {
