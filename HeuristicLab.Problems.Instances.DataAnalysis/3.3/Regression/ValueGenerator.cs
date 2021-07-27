@@ -19,8 +19,11 @@
  */
 #endregion
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using HeuristicLab.Common;
+using HeuristicLab.Core;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
@@ -95,6 +98,17 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
       for (int i = 0; i < enumerators.Count(); i++) {
         allCombinations[i].Add(enumerators[i].Current);
       }
+    }
+
+    public static List<double> GenerateNoise(IEnumerable<double> target, IRandom rand, double? noiseRatio) {
+      if (noiseRatio == null) return null;
+
+      var targetNoise = new List<double>();
+      var targetSigma = target.StandardDeviation();
+      var noisePrng = new NormalDistributedRandomPolar(rand, 0, targetSigma * Math.Sqrt(noiseRatio.Value / (1.0 - noiseRatio.Value)));
+
+      targetNoise.AddRange(target.Select(t => t + noisePrng.NextDouble()).ToList());
+      return targetNoise;
     }
   }
 }

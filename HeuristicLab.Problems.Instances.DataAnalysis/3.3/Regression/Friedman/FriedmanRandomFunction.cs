@@ -85,10 +85,12 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
       }
       var y = GenerateRandomFunction(random, data);
 
-      var targetSigma = y.StandardDeviation();
-      var noisePrng = new NormalDistributedRandom(random, 0, targetSigma * Math.Sqrt(noiseRatio / (1.0 - noiseRatio)));
+      //var targetSigma = y.StandardDeviation();
+      //var noisePrng = new NormalDistributedRandom(random, 0, targetSigma * Math.Sqrt(noiseRatio / (1.0 - noiseRatio)));
 
-      data.Add(y.Select(t => t + noisePrng.NextDouble()).ToList());
+      //data.Add(y.Select(t => t + noisePrng.NextDouble()).ToList());
+
+      data.Add(ValueGenerator.GenerateNoise(y, random, noiseRatio));
 
       return data;
     }
