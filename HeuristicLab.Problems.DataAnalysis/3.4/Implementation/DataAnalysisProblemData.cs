@@ -37,6 +37,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     protected const string TrainingPartitionParameterName = "TrainingPartition";
     protected const string TestPartitionParameterName = "TestPartition";
     protected const string TransformationsParameterName = "Transformations";
+    protected const string VariableRangesParameterName = "VariableRanges";
 
     #region parameter properites
     //mkommend: inserted parameter caching due to performance reasons
@@ -47,6 +48,9 @@ namespace HeuristicLab.Problems.DataAnalysis {
         return datasetParameter;
       }
     }
+
+    public IFixedValueParameter<IntervalCollection> VariableRangesParameter => (IFixedValueParameter<IntervalCollection>)Parameters[VariableRangesParameterName];
+    public IntervalCollection VariableRanges => VariableRangesParameter.Value;
 
     private IFixedValueParameter<ReadOnlyCheckedItemList<StringValue>> inputVariablesParameter;
     public IFixedValueParameter<ReadOnlyCheckedItemList<StringValue>> InputVariablesParameter {
@@ -150,10 +154,14 @@ namespace HeuristicLab.Problems.DataAnalysis {
         Parameters.Add(new FixedValueParameter<ReadOnlyItemList<ITransformation>>(TransformationsParameterName, "", new ItemList<ITransformation>().AsReadOnly()));
         TransformationsParameter.Hidden = true;
       }
+      if (!Parameters.ContainsKey(VariableRangesParameterName)) {
+        var variableRanges = Dataset.GetVariableRanges();
+        Parameters.Add(new FixedValueParameter<IntervalCollection>(VariableRangesParameterName, variableRanges));
+      }
       RegisterEventHandlers();
     }
 
-    protected DataAnalysisProblemData(IDataset dataset, IEnumerable<string> allowedInputVariables, IEnumerable<ITransformation> transformations = null) {
+    protected DataAnalysisProblemData(IDataset dataset, IEnumerable<string> allowedInputVariables, IEnumerable<ITransformation> transformations = null, IntervalCollection variableRanges = null) {
       if (dataset == null) throw new ArgumentNullException("The dataset must not be null.");
       if (allowedInputVariables == null) throw new ArgumentNullException("The allowed input variables must not be null.");
 
@@ -177,6 +185,11 @@ namespace HeuristicLab.Problems.DataAnalysis {
       Parameters.Add(new FixedValueParameter<IntRange>(TrainingPartitionParameterName, "", new IntRange(trainingPartitionStart, trainingPartitionEnd)));
       Parameters.Add(new FixedValueParameter<IntRange>(TestPartitionParameterName, "", new IntRange(testPartitionStart, testPartitionEnd)));
       Parameters.Add(new FixedValueParameter<ReadOnlyItemList<ITransformation>>(TransformationsParameterName, "", transformationsList.AsReadOnly()));
+
+      if (variableRanges == null) {
+        variableRanges = Dataset.GetVariableRanges();
+      }
+      Parameters.Add(new FixedValueParameter<IntervalCollection>(VariableRangesParameterName, variableRanges));
 
       TransformationsParameter.Hidden = true;
 

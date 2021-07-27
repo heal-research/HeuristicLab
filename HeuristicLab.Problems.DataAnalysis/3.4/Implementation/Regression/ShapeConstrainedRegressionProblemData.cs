@@ -151,7 +151,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     public ShapeConstrainedRegressionProblemData(IDataset dataset, IEnumerable<string> allowedInputVariables, string targetVariable,
                                                  IntRange trainingPartition, IntRange testPartition,
                                                  IEnumerable<ITransformation> transformations = null, ShapeConstraints sc = null, IntervalCollection variableRanges = null)
-    : base(dataset, allowedInputVariables, targetVariable, transformations ?? Enumerable.Empty<ITransformation>(), variableRanges) {
+    : base(dataset, allowedInputVariables, targetVariable, transformations ?? Enumerable.Empty<ITransformation>()) {
       TrainingPartition.Start = trainingPartition.Start;
       TrainingPartition.End = trainingPartition.End;
       TestPartition.Start = testPartition.Start;
