@@ -65,7 +65,8 @@ namespace HeuristicLab.JsonInterface.App {
         // add results to the JObject
         foreach(var result in filteredResults) {
           var formatter = GetResultFormatter(result.Item1.ResultFormatterType);
-          obj.Add(result.Item1.Name, formatter.Format(result.Item2));
+          if(!obj.ContainsKey(result.Item1.Name)) // to prevent duplicates
+            obj.Add(result.Item1.Name, formatter.Format(result.Item2));
         }
       }
       return SingleLineArrayJsonWriter.Serialize(arr);

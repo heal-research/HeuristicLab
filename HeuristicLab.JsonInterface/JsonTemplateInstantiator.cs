@@ -24,6 +24,10 @@ namespace HeuristicLab.JsonInterface {
   /// </summary>
   public class JsonTemplateInstantiator {
 
+    #region Constants
+    private const string RelativePathCurrentDirectoryRegex = @"^(\.)";
+    #endregion
+
     #region Private Properties
     private JToken Template { get; set; }
     private JArray Config { get; set; }
@@ -51,9 +55,12 @@ namespace HeuristicLab.JsonInterface {
       #endregion
 
       // extract metadata information
-      string relativePath = Template[Constants.Metadata][Constants.HLFileLocation].ToString(); // get relative path
+      string relativePath = Template[Constants.Metadata][Constants.HLFileLocation].ToString().Trim(); // get relative path
       // convert to absolute path
-      string hLFileLocation = Regex.Replace(relativePath, @"^(\.)", $"{Path.GetDirectoryName(templateFile)}");
+      if (Regex.IsMatch(relativePath, RelativePathCurrentDirectoryRegex))
+        relativePath = relativePath.Remove(0, 2); // remove first 2 chars -> indicates the current directory
+
+      string hLFileLocation = $"{Path.GetDirectoryName(templateFile)}{Path.DirectorySeparatorChar}{relativePath}";
 
       #region Deserialize HL File
       ProtoBufSerializer serializer = new ProtoBufSerializer();
