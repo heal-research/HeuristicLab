@@ -49,9 +49,10 @@ namespace HeuristicLab.JsonInterface {
     private InstantiatorResult ExecuteInstantiaton(string templateFile, string configFile = null) {
 
       #region Parse Files
+      string templateFileFullPath = Path.GetFullPath(templateFile);
       Template = JToken.Parse(File.ReadAllText(templateFile));
       if(!string.IsNullOrEmpty(configFile))
-        Config = JArray.Parse(File.ReadAllText(configFile));
+        Config = JArray.Parse(File.ReadAllText(Path.GetFullPath(configFile)));
       #endregion
 
       // extract metadata information
@@ -60,8 +61,7 @@ namespace HeuristicLab.JsonInterface {
       if (Regex.IsMatch(relativePath, RelativePathCurrentDirectoryRegex))
         relativePath = relativePath.Remove(0, 2); // remove first 2 chars -> indicates the current directory
 
-      string hLFileLocation = $"{Path.GetDirectoryName(templateFile)}{Path.DirectorySeparatorChar}{relativePath}";
-
+      string hLFileLocation = Path.Combine(Path.GetDirectoryName(templateFileFullPath), relativePath);
       #region Deserialize HL File
       ProtoBufSerializer serializer = new ProtoBufSerializer();
       IOptimizer optimizer = (IOptimizer)serializer.Deserialize(hLFileLocation);

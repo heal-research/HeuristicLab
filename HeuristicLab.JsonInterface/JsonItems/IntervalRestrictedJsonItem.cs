@@ -1,17 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 
 namespace HeuristicLab.JsonInterface {
-  public abstract class IntervalRestrictedValueJsonItem<T> : ValueJsonItem<T>, IIntervalRestrictedJsonItem<T> // TODO: intervalrestriction before value?
+  public abstract class IntervalRestrictedJsonItem<T> : JsonItem, IIntervalRestrictedJsonItem<T>
     where T : IComparable {
     public T Minimum { get; set; }
     public T Maximum { get; set; }
-
-    protected override ValidationResult Validate() {
-      bool res = Minimum.CompareTo(Value) <= 0 && Maximum.CompareTo(Value) >= 0;
-      if (res) return ValidationResult.Successful();
-      else return ValidationResult.Faulty($"[{Path}]: Value {Value} is not between {Minimum} and {Maximum}.");
-    }
 
     public override void SetJObject(JObject jObject) {
       base.SetJObject(jObject);

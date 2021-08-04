@@ -20,13 +20,20 @@
 #endregion
 
 using System;
+using System.IO;
+using System.Reflection;
 
 namespace HeuristicLab {
   static class Program {
     [STAThread]
     static void Main(string[] args) {
       if ((args.Length >= 1) && (args[0] == "/start:JsonInterface")) {
-        HeuristicLab.PluginInfrastructure.Main.HeadlessRun(args);
+        try {
+          HeuristicLab.PluginInfrastructure.Main.HeadlessRun(args);
+        } catch (Exception e) {
+          File.WriteAllText(@"C:\Users\David\Desktop\GP_JsonInterface_Example\log.txt", e.Message);
+        }
+        File.WriteAllText(@"C:\Users\David\Desktop\GP_JsonInterface_Example\done.txt", Path.GetDirectoryName(Assembly.GetEntryAssembly().Location));
       } else {
         HeuristicLab.PluginInfrastructure.Main.Run(args);
       }

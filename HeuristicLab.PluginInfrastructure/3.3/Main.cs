@@ -22,6 +22,7 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Windows.Forms;
 using HeuristicLab.PluginInfrastructure.Manager;
 using HeuristicLab.PluginInfrastructure.Starter;
@@ -54,7 +55,7 @@ namespace HeuristicLab.PluginInfrastructure {
     }
 
     public static void HeadlessRun(string[] args) {
-      string pluginPath = Path.GetFullPath(Application.StartupPath);
+      string pluginPath = Path.GetFullPath(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location));
       var pluginManager = new PluginManager(pluginPath);
       pluginManager.DiscoverAndCheckPlugins();
 

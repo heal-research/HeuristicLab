@@ -89,6 +89,7 @@
     <Compile Include="JsonItems\DoubleJsonItems.cs" />
     <Compile Include="JsonItems\EmptyJsonItem.cs" />
     <Compile Include="JsonItems\IntervalRestrictedArrayJsonItem.cs" />
+    <Compile Include="JsonItems\IntervalRestrictedJsonItem.cs" />
     <Compile Include="JsonItems\IntervalRestrictedMatrixJsonItem.cs" />
     <Compile Include="JsonItems\IntervalRestrictedValueJsonItem.cs" />
     <Compile Include="JsonItems\IntJsonItems.cs" />

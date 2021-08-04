@@ -43,20 +43,20 @@ namespace HeuristicLab.Tests {
 
     public DeepCloneableCloningTest() {
       excludedTypes = new HashSet<Type> {
-        typeof (HeuristicLab.Problems.DataAnalysis.Dataset),
-        typeof (HeuristicLab.Problems.TravelingSalesman.DistanceMatrix),
-        typeof (HeuristicLab.Problems.DataAnalysis.ClassificationEnsembleSolution),
-        typeof (HeuristicLab.Problems.DataAnalysis.RegressionEnsembleSolution),
-        typeof (HeuristicLab.Problems.Orienteering.DistanceMatrix),
-        typeof (HeuristicLab.Problems.PTSP.DistanceMatrix)
+        typeof (Problems.DataAnalysis.Dataset),
+        typeof (Problems.TravelingSalesman.DistanceMatrix),
+        typeof (Problems.DataAnalysis.ClassificationEnsembleSolution),
+        typeof (Problems.DataAnalysis.RegressionEnsembleSolution),
+        typeof (Problems.Orienteering.DistanceMatrix),
+        typeof (Problems.PTSP.DistanceMatrix)
       };
       excludedTypes.Add(typeof(SymbolicExpressionGrammar).Assembly.GetType("HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.EmptySymbolicExpressionTreeGrammar"));
-
-      foreach (var symbolType in ApplicationManager.Manager.GetTypes(typeof(HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbol)))
+      
+      foreach (var symbolType in ApplicationManager.Manager.GetTypes(typeof(Encodings.SymbolicExpressionTreeEncoding.Symbol)))
         excludedTypes.Add(symbolType);
       // SimpleSymbol is a non-discoverable type and thus needs to be added manually
-      excludedTypes.Add(typeof(HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.SimpleSymbol));
-      foreach (var grammarType in ApplicationManager.Manager.GetTypes(typeof(HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.SymbolicExpressionGrammarBase)))
+      excludedTypes.Add(typeof(Encodings.SymbolicExpressionTreeEncoding.SimpleSymbol));
+      foreach (var grammarType in ApplicationManager.Manager.GetTypes(typeof(Encodings.SymbolicExpressionTreeEncoding.SymbolicExpressionGrammarBase)))
         excludedTypes.Add(grammarType);
     }
 

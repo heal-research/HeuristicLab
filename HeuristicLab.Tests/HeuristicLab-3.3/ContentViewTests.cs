@@ -38,7 +38,7 @@ namespace HeuristicLab.Tests {
       foreach (Type viewType in ApplicationManager.Manager.GetTypes(typeof(IContentView))) {
         // jkarder: skip this test for the SymbolicDataAnalysisModelMathView (and for views that derive from it)
         // reason: our new build agent cannot create an instance of this view due to the use of System.Windows.Forms.WebBrowser
-        if (typeof(HeuristicLab.Problems.DataAnalysis.Symbolic.Views.SymbolicDataAnalysisModelMathView).IsAssignableFrom(viewType))
+        if (typeof(Problems.DataAnalysis.Symbolic.Views.SymbolicDataAnalysisModelMathView).IsAssignableFrom(viewType))
           continue;
 
         //get all ContentAttributes on the instantiable view
