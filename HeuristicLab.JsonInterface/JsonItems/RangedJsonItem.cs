@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 
 namespace HeuristicLab.JsonInterface {
-  public abstract class RangedJsonItem<T> : IntervalRestrictedValueJsonItem<T>, IRangedJsonItem<T>
+  public abstract class RangedJsonItem<T> : IntervalRestrictedJsonItem<T>, IRangedJsonItem<T>
     where T : IComparable {
     public T MinValue { get; set; }
+    
     public T MaxValue { get; set; }
 
     protected override ValidationResult Validate() {

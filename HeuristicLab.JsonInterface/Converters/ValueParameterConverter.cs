@@ -15,15 +15,10 @@ namespace HeuristicLab.JsonInterface {
     public override void Inject(IItem value, IJsonItem data, IJsonItemConverter root) {
       IParameter parameter = value as IParameter;
 
-      if (parameter.ActualValue == null)
-        parameter.ActualValue = Instantiate(parameter.DataType);
-
-      if(parameter.ActualValue != null) {
-          if (data.Children == null || data.Children.Count() == 0)
-            root.Inject(parameter.ActualValue, data, root);
-          else
-            root.Inject(parameter.ActualValue, data, root);
-         
+      if (!(data is EmptyJsonItem)) {
+        if (parameter.ActualValue == null)
+          parameter.ActualValue = Instantiate(parameter.DataType);
+        root.Inject(parameter.ActualValue, data, root);
       }
     }
 

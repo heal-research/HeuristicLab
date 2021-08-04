@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using HeuristicLab.Algorithms.GeneticAlgorithm;
@@ -6,48 +7,172 @@ using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.JsonInterface;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
+using HeuristicLab.PluginInfrastructure.Manager;
 using HeuristicLab.Problems.TravelingSalesman;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Newtonsoft.Json.Linq;
 
 namespace HeuristicLab.JsonInterface.Tests {
   [TestClass]
   public class GeneratorInstantiatorTest {
-    private string templateFilePath = Directory.GetCurrentDirectory()+"\\Template.json";
-    private string configFilePath = Directory.GetCurrentDirectory() + "\\Config.json";
+    private string TmpDirectoryPath => Path.Combine(Directory.GetCurrentDirectory(), "JsonInterfaceTestEnvironment");
+    private string TemplateName => Path.Combine(TmpDirectoryPath, "Template");
+    private string TemplateFilePath => $"{TemplateName}.json";
+    private string ConfigFilePath => Path.Combine(TmpDirectoryPath, "Config.json");
+    private string OutFilePath => Path.Combine(TmpDirectoryPath, "out.json");
 
     [TestInitialize()]
     public void CreateTempFiles() {
+      string pluginPath = Path.GetFullPath(Directory.GetCurrentDirectory());
+      var pluginManager = new PluginManager(pluginPath);
+      pluginManager.DiscoverAndCheckPlugins();
+
+
+      Directory.CreateDirectory(TmpDirectoryPath);
+
       GeneticAlgorithm alg = new GeneticAlgorithm();
+      alg.PopulationSize.Value = 200;
       alg.Problem = new TravelingSalesmanProblem();
-      //File.WriteAllText(@"C:\Workspace\Template.json", gen.GenerateTemplate(alg, tsp));
-      File.WriteAllText(templateFilePath, JCGenerator.GenerateTemplate(alg));
-      File.WriteAllText(configFilePath, "["+
-        "{\"Name\": \"Seed\",\"Default\": 55555,\"Path\": \"Genetic Algorithm (GA).Seed\"},"+
-        "{\"Name\": \"Crossover\", \"Path\": \"Genetic Algorithm (GA).Crossover\", \"Default\": \"MultiPermutationCrossover\"}," +
-        "{\"Name\": \"Elites\", \"Path\": \"Genetic Algorithm (GA).Elites\", \"Default\": 5,\"Range\":[-2147483648,2147483647]}" +
-        "]");
+      
+      var rootItem = JsonItemConverter.Extract(alg);
+      foreach (var item in rootItem)
+        item.Active = true; //activate all items
+      JsonTemplateGenerator.GenerateTemplate(TemplateName, alg, rootItem);
+
+
+      var populationItem = 
+        (IntJsonItem)rootItem.Where(x => x.Name.Contains("PopulationSize")).FirstOrDefault();
+
+      populationItem.Value = 500;
+
+      JArray configItems = new JArray();
+      configItems.Add(populationItem.GenerateJObject());
+
+      File.WriteAllText(ConfigFilePath, SingleLineArrayJsonWriter.Serialize(configItems));
+
     }
-    
-    [TestCleanup()]
-    public void ClearTempFiles() {
-      File.Delete(templateFilePath);
-      File.Delete(configFilePath);
+
+    private void CreateTestEnvironment(IOptimizer optimizer, Func<IJsonItem,IEnumerable<IJsonItem>> selectConfigItems, Action body) {
+      // initialization
+      Directory.CreateDirectory(TmpDirectoryPath);
+
+      var rootItem = JsonItemConverter.Extract(optimizer);
+      foreach (var item in rootItem)
+        item.Active = true; //activate all items
+      JsonTemplateGenerator.GenerateTemplate(TemplateName, optimizer, rootItem);
+
+      JArray configItemsJArray = new JArray();
+      var configItems = selectConfigItems(rootItem);
+
+      foreach(var item in configItems) {
+        configItemsJArray.Add(item.GenerateJObject());
+      }
+      File.WriteAllText(ConfigFilePath, SingleLineArrayJsonWriter.Serialize(configItemsJArray));
+
+      // execute test
+      body();
+
+      // cleanup
+      var files = Directory.GetFiles(TmpDirectoryPath);
+      foreach (var file in files)
+        File.Delete(file);
+      Directory.Delete(TmpDirectoryPath);
     }
 
     [TestMethod]
-    public void TestInstantiator() {
-      GeneticAlgorithm alg = (GeneticAlgorithm)JCInstantiator.Instantiate(templateFilePath, configFilePath);
+    public void TestGATSP() {
+      var ga = new GeneticAlgorithm();
+      ga.PopulationSize.Value = 200;
+      ga.Problem = new TravelingSalesmanProblem();
 
-      Assert.AreEqual(55555, alg.Seed.Value);
-      Assert.IsTrue(alg.Crossover is MultiPermutationCrossover);
-      Assert.AreEqual(5, alg.Elites.Value);
+      CreateTestEnvironment(ga, 
+        r => r.Where(x => x.Name.Contains("PopulationSize"))
+              .Cast<IntJsonItem>()
+              .Select(x => { x.Value = 500; return x; }),
+        () => {
+          var result = JsonTemplateInstantiator.Instantiate(TemplateFilePath, ConfigFilePath);
+          var optimizer = (GeneticAlgorithm)result.Optimizer;
+          Assert.AreEqual(500, optimizer.PopulationSize.Value);
+
+          PluginInfrastructure.Main.HeadlessRun(new string[] { "/start:JsonInterface", TemplateFilePath, ConfigFilePath, OutFilePath });
+          Assert.IsTrue(File.Exists(OutFilePath));
+
+          var runs = JArray.Parse(File.ReadAllText(OutFilePath));
+          var results = (JObject)runs[0];
+          results.Property("Generations");
+        });
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentOutOfRangeException))]
-    public void TestRangeChangeWithConfig() {
-      File.WriteAllText(configFilePath, "[{\"Name\": \"MutationProbability\", \"Path\": \"Genetic Algorithm (GA).MutationProbability\", \"Default\": 2.0,\"Range\":[0.0,2.0]}]");
-      GeneticAlgorithm alg = (GeneticAlgorithm)JCInstantiator.Instantiate(templateFilePath, configFilePath);
+    public void TestGASymReg() {
+      var ga = new GeneticAlgorithm();
+      ga.PopulationSize.Value = 200;
+      ga.Problem = new Problems.DataAnalysis.Symbolic.Regression.SymbolicRegressionSingleObjectiveProblem();
+
+      CreateTestEnvironment(ga,
+        r => r.Where(x => x.Name.Contains("PopulationSize"))
+              .Cast<IntJsonItem>()
+              .Select(x => { x.Value = 500; return x; }),
+        () => {
+          var result = JsonTemplateInstantiator.Instantiate(TemplateFilePath, ConfigFilePath);
+          var optimizer = (GeneticAlgorithm)result.Optimizer;
+          Assert.AreEqual(500, optimizer.PopulationSize.Value);
+
+          PluginInfrastructure.Main.HeadlessRun(new string[] { "/start:JsonInterface", TemplateFilePath, ConfigFilePath, OutFilePath });
+          Assert.IsTrue(File.Exists(OutFilePath));
+
+          var runs = JArray.Parse(File.ReadAllText(OutFilePath));
+          var results = (JObject)runs[0];
+          results.Property("Generations");
+        });
+    }
+
+    [TestMethod]
+    public void TestOSGASymReg() {
+      var osga = new Algorithms.OffspringSelectionGeneticAlgorithm.OffspringSelectionGeneticAlgorithm();
+      osga.PopulationSize.Value = 200;
+      osga.Problem = new Problems.DataAnalysis.Symbolic.Regression.SymbolicRegressionSingleObjectiveProblem();
+
+      CreateTestEnvironment(osga,
+        r => r.Where(x => x.Name.Contains("PopulationSize"))
+              .Cast<IntJsonItem>()
+              .Select(x => { x.Value = 500; return x; }),
+        () => {
+          var result = JsonTemplateInstantiator.Instantiate(TemplateFilePath, ConfigFilePath);
+          var optimizer = (Algorithms.OffspringSelectionGeneticAlgorithm.OffspringSelectionGeneticAlgorithm)result.Optimizer;
+          Assert.AreEqual(500, optimizer.PopulationSize.Value);
+
+          PluginInfrastructure.Main.HeadlessRun(new string[] { "/start:JsonInterface", TemplateFilePath, ConfigFilePath, OutFilePath });
+          Assert.IsTrue(File.Exists(OutFilePath));
+
+          var runs = JArray.Parse(File.ReadAllText(OutFilePath));
+          var results = (JObject)runs[0];
+          results.Property("Generations");
+        });
+    }
+
+    [TestMethod]
+    public void TestOSGATSP() {
+      var osga = new Algorithms.OffspringSelectionGeneticAlgorithm.OffspringSelectionGeneticAlgorithm();
+      osga.PopulationSize.Value = 200;
+      osga.Problem = new TravelingSalesmanProblem();
+
+      CreateTestEnvironment(osga,
+        r => r.Where(x => x.Name.Contains("PopulationSize"))
+              .Cast<IntJsonItem>()
+              .Select(x => { x.Value = 500; return x; }),
+        () => {
+          var result = JsonTemplateInstantiator.Instantiate(TemplateFilePath, ConfigFilePath);
+          var optimizer = (Algorithms.OffspringSelectionGeneticAlgorithm.OffspringSelectionGeneticAlgorithm)result.Optimizer;
+          Assert.AreEqual(500, optimizer.PopulationSize.Value);
+
+          PluginInfrastructure.Main.HeadlessRun(new string[] { "/start:JsonInterface", TemplateFilePath, ConfigFilePath, OutFilePath });
+          Assert.IsTrue(File.Exists(OutFilePath));
+
+          var runs = JArray.Parse(File.ReadAllText(OutFilePath));
+          var results = (JObject)runs[0];
+          results.Property("Generations");
+        });
     }
   }
 }

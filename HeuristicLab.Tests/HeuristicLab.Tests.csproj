@@ -443,6 +443,9 @@
     <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <Private>false</Private>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -595,7 +598,6 @@
     <Compile Include="HeuristicLab.IGraph\IGraphWrappersMatrixTest.cs" />
     <Compile Include="HeuristicLab.IGraph\IGraphWrappersVectorTest.cs" />
     <Compile Include="HeuristicLab.JsonInterface\GeneratorInstantiatorTest.cs" />
-    <Compile Include="HeuristicLab.JsonInterface\ConvertableChecks.cs" />
     <Compile Include="HeuristicLab.Persistence-3.3\StorableAttributeTests.cs" />
     <Compile Include="HeuristicLab.Persistence-3.3\UseCases.cs" />
     <Compile Include="HeuristicLab.Persistence.Attic\PersistenceConsistencyChecks.cs" />
@@ -694,6 +696,7 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="HeuristicLab.snk" />
+    <None Include="packages.config" />
     <None Include="Test Resources\GA_SymbReg.hl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

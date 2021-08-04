@@ -49,7 +49,7 @@ namespace HeuristicLab.JsonInterface {
       string hlFilePath = Path.Combine(templateDirectory, $"{templateName}.hl");
       serializer.Serialize(optimizer, hlFilePath);
       // overwrite string for relative path
-      hlFilePath = Path.Combine($".{Path.DirectorySeparatorChar}", $"{templateName}.hl");
+      hlFilePath = Path.Combine($".", $"{templateName}.hl");
       #endregion
 
       #region Filter Items
