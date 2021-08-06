@@ -28,12 +28,7 @@ namespace HeuristicLab {
     [STAThread]
     static void Main(string[] args) {
       if ((args.Length >= 1) && (args[0] == "/start:JsonInterface")) {
-        try {
-          HeuristicLab.PluginInfrastructure.Main.HeadlessRun(args);
-        } catch (Exception e) {
-          File.WriteAllText(@"C:\Users\David\Desktop\GP_JsonInterface_Example\log.txt", e.Message);
-        }
-        File.WriteAllText(@"C:\Users\David\Desktop\GP_JsonInterface_Example\done.txt", Path.GetDirectoryName(Assembly.GetEntryAssembly().Location));
+        HeuristicLab.PluginInfrastructure.Main.HeadlessRun(args);
       } else {
         HeuristicLab.PluginInfrastructure.Main.Run(args);
       }

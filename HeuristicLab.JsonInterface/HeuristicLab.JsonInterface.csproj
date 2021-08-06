@@ -28,7 +28,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>..\bin\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -103,6 +103,7 @@
     <Compile Include="JsonItems\ValueJsonItem.cs" />
     <Compile Include="JsonItems\ValueLookupJsonItem.cs" />
     <Compile Include="ResultFormatters\MatlabResultFormatter.cs" />
+    <Compile Include="ResultFormatters\PythonResultFormatter.cs" />
     <Compile Include="ResultFormatters\ResultFormatter.cs" />
     <Compile Include="ResultFormatters\StringResultFormatter.cs" />
     <Compile Include="ResultFormatters\SymbolicRegressionSolutionFormatterBase.cs" />
@@ -179,10 +180,6 @@
     <ProjectReference Include="..\HeuristicLab.Problems.Instances.DataAnalysis\3.3\HeuristicLab.Problems.Instances.DataAnalysis-3.3.csproj">
       <Project>{94c7714e-29d4-4d6d-b213-2c18d627ab75}</Project>
       <Name>HeuristicLab.Problems.Instances.DataAnalysis-3.3</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\HeuristicLab.SequentialEngine\3.3\HeuristicLab.SequentialEngine-3.3.csproj">
-      <Project>{DC3D7072-7999-4719-B65D-3997744D5DC1}</Project>
-      <Name>HeuristicLab.SequentialEngine-3.3</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />
