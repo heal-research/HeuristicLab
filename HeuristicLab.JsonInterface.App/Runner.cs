@@ -34,8 +34,11 @@ namespace HeuristicLab.JsonInterface.App {
       }
     }
 
-    private static void WriteResultsToFile(string file, IOptimizer optimizer, IEnumerable<IResultJsonItem> configuredResultItem) =>
-      File.WriteAllText(file, FetchResults(optimizer, configuredResultItem));
+    private static void WriteResultsToFile(string file, IOptimizer optimizer, IEnumerable<IResultJsonItem> configuredResultItem) {
+      if (optimizer.Runs.Count > 0) 
+        File.WriteAllText(file, FetchResults(optimizer, configuredResultItem));
+    }
+      
 
     private static IEnumerable<IResultFormatter> ResultFormatter { get; } =
       PluginInfrastructure.ApplicationManager.Manager.GetInstances<IResultFormatter>();

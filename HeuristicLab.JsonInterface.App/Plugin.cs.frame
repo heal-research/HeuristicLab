@@ -31,7 +31,10 @@ namespace HeuristicLab.JsonInterface.App
   [PluginDependency("HeuristicLab.Optimization", "3.3")]
   [PluginDependency("HeuristicLab.Collections", "3.3")]
   [PluginDependency("HeuristicLab.Common", "3.3")]
+  [PluginDependency("HeuristicLab.Common.Resources", "3.3")]
   [PluginDependency("HeuristicLab.Core", "3.3")]
+  [PluginDependency("HeuristicLab.ParallelEngine", "3.3")]
+  [PluginDependency("HeuristicLab.Problems.Instances", "3.3")]
   public class HeuristicLabJsonInterfaceAppPlugin : PluginBase {
   }
 
