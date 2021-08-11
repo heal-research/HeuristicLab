@@ -3,13 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
 using HeuristicLab.Problems.DataAnalysis;
-using Newtonsoft.Json.Linq;
 
 namespace HeuristicLab.JsonInterface {
   public class RegressionProblemDataConverter : BaseConverter {
