@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using HeuristicLab.Common;
-using HeuristicLab.MainForm;
+﻿using System.Collections.Generic;
 using HeuristicLab.Optimizer;
 
 namespace HeuristicLab.JsonInterface.OptimizerIntegration.MenuItems {
