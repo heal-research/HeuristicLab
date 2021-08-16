@@ -243,8 +243,12 @@ namespace HeuristicLab.JsonInterface {
         matrix[c] = new T[rows];
 
         int r = 0;
-        foreach (var callValue in x.Value) {
-          matrix[c][r] = (T)callValue;
+        foreach (var cellValue in x.Value) {
+          try {
+            matrix[c][r] = (T)cellValue;
+          } catch (Exception e) {
+            throw new AggregateException($"The cell value '{cellValue}' in row {r} cannot be converted to {typeof(T).FullName}.", e);
+          }
           ++r;
         }
         ++c;

@@ -25,9 +25,10 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration
 {
   [Plugin("HeuristicLab.JsonInterface.OptimizerIntegration", "3.3.16.0")]
   [PluginFile("HeuristicLab.JsonInterface.OptimizerIntegration.dll", PluginFileType.Assembly)]
-  [PluginDependency("HeuristicLab.Attic", "1.0")]
+  //[PluginDependency("HeuristicLab.Attic", "1.0")]
   [PluginDependency("HeuristicLab.JsonInterface", "3.3")]
   [PluginDependency("HeuristicLab.Common", "3.3")]
+  [PluginDependency("HeuristicLab.Common.Resources", "3.3")]
   [PluginDependency("HeuristicLab.Core", "3.3")]
   [PluginDependency("HeuristicLab.Optimization", "3.3")]
   [PluginDependency("HeuristicLab.MainForm", "3.3")]
