@@ -42,11 +42,9 @@ namespace HeuristicLab.JsonInterface {
       IntRangeJsonItem trainingPartition = null;
       StringArrayJsonItem allowedInputVariables = null;
 
-
       // search first for the items (cache them, because the 
       // order is important for injection)
       foreach (var child in data.Children) {
-
         if (child.Path.EndsWith(Dataset))
           dataset = child as DoubleMatrixJsonItem;
         else if (child.Path.EndsWith(TargetVariable))
@@ -57,7 +55,6 @@ namespace HeuristicLab.JsonInterface {
           trainingPartition = child as IntRangeJsonItem;
         else if (child.Path.EndsWith(AllowedInputVariables))
           allowedInputVariables = child as StringArrayJsonItem;
-
       }
 
       // check data

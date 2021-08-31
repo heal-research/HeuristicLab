@@ -10,7 +10,7 @@ namespace HeuristicLab.JsonInterface {
       t.GetInterfaces().Any(x => x == typeof(IParameterizedItem));
 
     public override void Inject(IItem item, IJsonItem data, IJsonItemConverter root) {
-      IParameterizedItem pItem = item as IParameterizedItem;
+      var pItem = item as IParameterizedItem;
 
       if(data.Children != null) {
         foreach (var sp in data.Children)

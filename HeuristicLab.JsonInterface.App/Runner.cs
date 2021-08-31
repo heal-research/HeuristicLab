@@ -11,27 +11,21 @@ using Newtonsoft.Json.Linq;
 namespace HeuristicLab.JsonInterface.App {
   internal static class Runner {
     internal static void Run(string template, string config, string outputFile) {
-      try {
-        InstantiatorResult instantiatorResult = JsonTemplateInstantiator.Instantiate(template, config);
-        IOptimizer optimizer = instantiatorResult.Optimizer;
-        IEnumerable<IResultJsonItem> configuredResultItem = instantiatorResult.ConfiguredResultItems;
+      InstantiatorResult instantiatorResult = JsonTemplateInstantiator.Instantiate(template, config);
+      IOptimizer optimizer = instantiatorResult.Optimizer;
+      IEnumerable<IResultJsonItem> configuredResultItem = instantiatorResult.ConfiguredResultItems;
 
-        optimizer.Runs.Clear();
-        if (optimizer is EngineAlgorithm e)
-          e.Engine = new ParallelEngine.ParallelEngine();
+      optimizer.Runs.Clear();
+      if (optimizer is EngineAlgorithm e)
+        e.Engine = new ParallelEngine.ParallelEngine();
 
-        Task task = optimizer.StartAsync();
-        while (!task.IsCompleted) {
-          WriteResultsToFile(outputFile, optimizer, configuredResultItem);
-          Thread.Sleep(100);
-        }
-
+      Task task = optimizer.StartAsync();
+      while (!task.IsCompleted) {
         WriteResultsToFile(outputFile, optimizer, configuredResultItem);
-      } catch (Exception e) {
-        Console.Error.WriteLine($"{e.Message} \n\n\n\n {e.StackTrace}");
-        File.WriteAllText(outputFile, e.Message + "\n\n\n\n" + e.StackTrace);
-        Environment.Exit(-1);
+        Thread.Sleep(100);
       }
+
+      WriteResultsToFile(outputFile, optimizer, configuredResultItem);
     }
 
     private static void WriteResultsToFile(string file, IOptimizer optimizer, IEnumerable<IResultJsonItem> configuredResultItem) {
