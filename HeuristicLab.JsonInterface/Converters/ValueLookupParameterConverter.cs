@@ -19,7 +19,6 @@ namespace HeuristicLab.JsonInterface {
 
     public override IJsonItem Extract(IItem value, IJsonItemConverter root) {
       IValueLookupParameter param = value as IValueLookupParameter;
-
       IValueLookupJsonItem item = new ValueLookupJsonItem();
 
       if (param.Value != null) {

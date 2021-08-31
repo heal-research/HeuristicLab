@@ -55,25 +55,26 @@ namespace HeuristicLab.PluginInfrastructure {
     }
 
     public static void HeadlessRun(string[] args) {
-      string pluginPath = Path.GetFullPath(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location));
-      var pluginManager = new PluginManager(pluginPath);
-      pluginManager.DiscoverAndCheckPlugins();
+      try {
+        string pluginPath = Path.GetFullPath(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location));
+        var pluginManager = new PluginManager(pluginPath);
+        pluginManager.DiscoverAndCheckPlugins();
 
-      var arguments = CommandLineArgumentHandling.GetArguments(args);
-      foreach (var argument in arguments) {
-        if (argument is StartArgument) {
-          var arg = (StartArgument)argument;
-          var appDesc = (from desc in pluginManager.Applications
-                         where desc.Name.Equals(arg.Value)
-                         select desc).SingleOrDefault();
-          if (appDesc != null) {
-            try {
+        var arguments = CommandLineArgumentHandling.GetArguments(args);
+        foreach (var argument in arguments) {
+          if (argument is StartArgument) {
+            var arg = (StartArgument)argument;
+            var appDesc = (from desc in pluginManager.Applications
+                           where desc.Name.Equals(arg.Value)
+                           select desc).SingleOrDefault();
+            if (appDesc != null) {
               pluginManager.Run(appDesc, arguments);
-            } catch (Exception e) {
-              Console.WriteLine(e.Message);
             }
           }
         }
+      } catch (Exception e) {
+        Console.Error.WriteLine($"{e.Message} \n\n {e.StackTrace}");
+        Environment.Exit(-1);
       }
     }
   }
