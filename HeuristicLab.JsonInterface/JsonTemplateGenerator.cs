@@ -4,6 +4,7 @@ using Newtonsoft.Json.Linq;
 using HEAL.Attic;
 using System.IO;
 using HeuristicLab.Core;
+using System.Linq;
 
 namespace HeuristicLab.JsonInterface {
   /// <summary>
@@ -17,7 +18,7 @@ namespace HeuristicLab.JsonInterface {
     /// <param name="templatePath">the path for the template files</param>
     /// <param name="optimizer">the optimizer object to serialize</param>
     /// <param name="rootItem">Root JsonItem for serialization, considers only active JsonItems for serialization</param>
-    public static void GenerateTemplate(string templatePath, IOptimizer optimizer, IJsonItem rootItem) {
+    public static void GenerateTemplate(string templatePath, IOptimizer optimizer, IJsonItem rootItem, IEnumerable<IResultCollectionPostProcessor> postProcessors) {
       // clear all runs
       optimizer.Runs.Clear();
 
@@ -30,6 +31,14 @@ namespace HeuristicLab.JsonInterface {
       JObject template = JObject.Parse(Constants.Template);
       JArray parameterItems = new JArray();
       JArray resultItems = new JArray();
+      JArray postProcessorItems = new JArray();
+      // postProcessors.Select(x => new JObject().Add("Name", JToken.Parse(x.GetType().Name))
+      foreach (var proc in postProcessors) {
+        var tmp = new JObject();
+        tmp.Add("Name", proc.GetType().Name);
+        postProcessorItems.Add(tmp);
+      }
+
       IList<IJsonItem> jsonItems = new List<IJsonItem>();
      
       string templateName = Path.GetFileName(templatePath);
@@ -66,6 +75,7 @@ namespace HeuristicLab.JsonInterface {
       template[Constants.Metadata][Constants.HLFileLocation] = hlFilePath;
       template[Constants.Parameters] = parameterItems;
       template[Constants.Results] = resultItems;
+      template["PostProcessors"] = postProcessorItems;
       #endregion
 
       #region Serialize and write to file
@@ -75,7 +85,7 @@ namespace HeuristicLab.JsonInterface {
 
     #region Helper    
     private static void PopulateJsonItems(IJsonItem item, IList<IJsonItem> jsonItems) {
-      foreach(var x in item) {
+      foreach(var x in item) { // TODO: dieses konstrukt notwendig?
         if (x.Active && !(x is EmptyJsonItem) && !(x is UnsupportedJsonItem)) {
           jsonItems.Add(x);
         }
