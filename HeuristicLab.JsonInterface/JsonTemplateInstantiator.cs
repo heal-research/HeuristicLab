@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using HEAL.Attic;
 using HeuristicLab.Optimization;
+using HeuristicLab.PluginInfrastructure;
 using Newtonsoft.Json.Linq;
 
 namespace HeuristicLab.JsonInterface {
@@ -12,10 +13,18 @@ namespace HeuristicLab.JsonInterface {
     public InstantiatorResult(IOptimizer optimizer, IEnumerable<IResultJsonItem> configuredResultItems) {
       Optimizer = optimizer;
       ConfiguredResultItems = configuredResultItems;
+      PostProcessors = Enumerable.Empty<IResultCollectionPostProcessor>();
+    }
+
+    public InstantiatorResult(IOptimizer optimizer, IEnumerable<IResultJsonItem> configuredResultItems, IEnumerable<IResultCollectionPostProcessor> postProcessors) {
+      Optimizer = optimizer;
+      ConfiguredResultItems = configuredResultItems;
+      PostProcessors = postProcessors;
     }
 
     public IOptimizer Optimizer { get; }
     public IEnumerable<IResultJsonItem> ConfiguredResultItems { get; }
+    public IEnumerable<IResultCollectionPostProcessor> PostProcessors { get; }
   }
 
 
@@ -84,7 +93,17 @@ namespace HeuristicLab.JsonInterface {
       // inject configuration
       JsonItemConverter.Inject(optimizer, rootItem);
 
-      return new InstantiatorResult(optimizer, CollectResults());
+      IList<IResultCollectionPostProcessor> postProcessorList = new List<IResultCollectionPostProcessor>();
+      var postProcessors = ApplicationManager.Manager.GetInstances<IResultCollectionPostProcessor>();
+      foreach (JObject obj in Template["PostProcessors"]) {
+        //string name = obj.Property("Name").Value.ToString();
+        foreach(var proc in postProcessors) {
+          if (proc.GetType().Name == obj["Name"].ToString())
+            postProcessorList.Add(proc);
+        }
+      }
+
+      return new InstantiatorResult(optimizer, CollectResults(), postProcessorList);
     }
 
     private IEnumerable<IResultJsonItem> CollectResults() {

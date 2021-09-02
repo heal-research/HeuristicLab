@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Windows.Forms;
 using HeuristicLab.Common;
+using HeuristicLab.Core;
 using HeuristicLab.Optimization;
 using HeuristicLab.PluginInfrastructure;
 
@@ -19,6 +21,7 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
     private IJsonItem Root { get; set; }
     private IOptimizer Optimizer { get; set; }
     private IList<IJsonItemVM> VMs { get; set; }
+    private ICheckedItemList<IResultCollectionPostProcessor> PostProcessors { get; set; }
     #endregion
 
     private IContent content;
@@ -26,13 +29,12 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
       get => content;
       set {
         content = value;
-
+        //CheckedItemListView
         #region Clear
         VMs = new List<IJsonItemVM>();
         treeView.Nodes.Clear();
         treeViewResults.Nodes.Clear();
         #endregion
-
         Optimizer = content as IOptimizer;
         if(Optimizer != null) {
           Optimizer = (IOptimizer)Optimizer.Clone(); // clone the optimizer
@@ -58,6 +60,7 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
 
     public ExportJsonDialog() {
       InitializeComponent();
+      this.PostProcessors = this.postProcessorListView.Content;
       this.Icon = HeuristicLab.Common.Resources.HeuristicLab.Icon;
       InitCache();
     }
@@ -70,9 +73,11 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
 
       if (FolderBrowserDialog.ShowDialog() == DialogResult.OK) {
         try {
+          //foreach(var x in PostProcessors.CheckedItems)
+            
           JsonTemplateGenerator.GenerateTemplate(
             Path.Combine(FolderBrowserDialog.SelectedPath, textBoxTemplateName.Text), 
-            Optimizer, Root);
+            Optimizer, Root, PostProcessors.CheckedItems.Select(x => x.Value));
           Close();
         } catch (Exception ex) {
           ErrorHandling.ShowErrorDialog(this, ex);

@@ -52,6 +52,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -81,6 +82,7 @@
     <Compile Include="Interfaces\IResultJsonItem.cs" />
     <Compile Include="Interfaces\IValueJsonItem.cs" />
     <Compile Include="Interfaces\IValueLookupJsonItem.cs" />
+    <Compile Include="Interfaces\IResultCollectionPostProcessor.cs" />
     <Compile Include="JsonItems\ArrayJsonItem.cs" />
     <Compile Include="JsonItems\BoolJsonItems.cs" />
     <Compile Include="JsonItems\ConcreteRestrictedArrayJsonItem.cs" />
@@ -102,6 +104,7 @@
     <Compile Include="JsonItems\UnsupportedJsonItem.cs" />
     <Compile Include="JsonItems\ValueJsonItem.cs" />
     <Compile Include="JsonItems\ValueLookupJsonItem.cs" />
+    <Compile Include="ResultCollectionPostProcessors\SymRegPythonPostProcessor.cs" />
     <Compile Include="ResultFormatters\MatlabResultFormatter.cs" />
     <Compile Include="ResultFormatters\PythonResultFormatter.cs" />
     <Compile Include="ResultFormatters\ResultFormatter.cs" />

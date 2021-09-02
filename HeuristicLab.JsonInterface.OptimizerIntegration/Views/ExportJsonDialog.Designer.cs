@@ -1,4 +1,6 @@
-﻿namespace HeuristicLab.JsonInterface.OptimizerIntegration {
+﻿using HeuristicLab.Core;
+
+namespace HeuristicLab.JsonInterface.OptimizerIntegration {
   partial class ExportJsonDialog {
     /// <summary>
     /// Required designer variable.
@@ -37,6 +39,7 @@
       this.tabControl1 = new System.Windows.Forms.TabControl();
       this.tabPage1 = new System.Windows.Forms.TabPage();
       this.tabPage2 = new System.Windows.Forms.TabPage();
+      this.tabPage3 = new System.Windows.Forms.TabPage();
       this.label1 = new System.Windows.Forms.Label();
       this.textBoxTemplateName = new System.Windows.Forms.TextBox();
       this.errorProvider = new System.Windows.Forms.ErrorProvider(this.components);
@@ -171,6 +174,12 @@
       this.splitContainer2.Size = new System.Drawing.Size(796, 499);
       this.splitContainer2.SplitterDistance = 380;
       this.splitContainer2.TabIndex = 9;
+      // postProcessorListView
+      this.postProcessorListView = new Core.Views.CheckedItemListView<IResultCollectionPostProcessor>();
+      this.postProcessorListView.Content = new CheckedItemList<IResultCollectionPostProcessor>();
+      this.postProcessorListView.Content.Add(new SymRegPythonPostProcessor());
+      this.postProcessorListView.Location = new System.Drawing.Point(0, 6);
+      this.postProcessorListView.Dock = System.Windows.Forms.DockStyle.Fill;
       // 
       // tabControl1
       // 
@@ -179,6 +188,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
       this.tabControl1.Controls.Add(this.tabPage1);
       this.tabControl1.Controls.Add(this.tabPage2);
+      this.tabControl1.Controls.Add(this.tabPage3);
       this.tabControl1.Location = new System.Drawing.Point(12, 38);
       this.tabControl1.Name = "tabControl1";
       this.tabControl1.SelectedIndex = 0;
@@ -206,6 +216,16 @@
       this.tabPage2.TabIndex = 1;
       this.tabPage2.Text = "Results";
       this.tabPage2.UseVisualStyleBackColor = true;
+      // 
+      // tabPage3
+      // 
+      this.tabPage3.Controls.Add(this.postProcessorListView);
+      this.tabPage3.Location = new System.Drawing.Point(4, 22);
+      this.tabPage3.Name = "tabPage3";
+      this.tabPage3.Size = new System.Drawing.Size(802, 505);
+      this.tabPage3.TabIndex = 2;
+      this.tabPage3.Text = "Post Processors";
+      this.tabPage3.UseVisualStyleBackColor = true;
       // 
       // label1
       // 
@@ -288,5 +308,7 @@
     private System.Windows.Forms.SplitContainer splitContainer1;
     private System.Windows.Forms.GroupBox groupBox;
     private System.Windows.Forms.Panel panelResultDetails;
+    private System.Windows.Forms.TabPage tabPage3;
+    private Core.Views.CheckedItemListView<IResultCollectionPostProcessor> postProcessorListView;
   }
 }
