@@ -31,7 +31,6 @@ namespace HeuristicLab.JsonInterface {
       }
     }
 
-
     public override IDeepCloneable Clone(Cloner cloner) {
       return new SymRegPythonPostProcessor(this, cloner);
     }

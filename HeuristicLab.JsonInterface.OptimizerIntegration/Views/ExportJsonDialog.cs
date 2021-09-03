@@ -60,7 +60,7 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
 
     public ExportJsonDialog() {
       InitializeComponent();
-      this.PostProcessors = this.postProcessorListView.Content;
+      this.PostProcessors = this.postProcessorListControl.Content;
       this.Icon = HeuristicLab.Common.Resources.HeuristicLab.Icon;
       InitCache();
     }

@@ -154,6 +154,12 @@
     <Compile Include="MenuItems\ExportJsonTemplateMenuItem.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Views\ResultCollectionPostProcessorControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\ResultCollectionPostProcessorControl.Designer.cs">
+      <DependentUpon>ResultCollectionPostProcessorControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Views\ResultJsonItemControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
