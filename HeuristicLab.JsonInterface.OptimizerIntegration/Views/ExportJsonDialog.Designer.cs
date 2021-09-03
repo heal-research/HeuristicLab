@@ -175,11 +175,11 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
       this.splitContainer2.SplitterDistance = 380;
       this.splitContainer2.TabIndex = 9;
       // postProcessorListView
-      this.postProcessorListView = new Core.Views.CheckedItemListView<IResultCollectionPostProcessor>();
-      this.postProcessorListView.Content = new CheckedItemList<IResultCollectionPostProcessor>();
-      this.postProcessorListView.Content.Add(new SymRegPythonPostProcessor());
-      this.postProcessorListView.Location = new System.Drawing.Point(0, 6);
-      this.postProcessorListView.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.postProcessorListControl = new ResultCollectionPostProcessorControl();
+      this.postProcessorListControl.Content = new CheckedItemList<IResultCollectionPostProcessor>();
+      this.postProcessorListControl.Content.Add(new SymRegPythonPostProcessor());
+      this.postProcessorListControl.Location = new System.Drawing.Point(0, 6);
+      this.postProcessorListControl.Dock = System.Windows.Forms.DockStyle.Fill;
       // 
       // tabControl1
       // 
@@ -219,7 +219,7 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
       // 
       // tabPage3
       // 
-      this.tabPage3.Controls.Add(this.postProcessorListView);
+      this.tabPage3.Controls.Add(this.postProcessorListControl);
       this.tabPage3.Location = new System.Drawing.Point(4, 22);
       this.tabPage3.Name = "tabPage3";
       this.tabPage3.Size = new System.Drawing.Size(802, 505);
@@ -309,6 +309,6 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
     private System.Windows.Forms.GroupBox groupBox;
     private System.Windows.Forms.Panel panelResultDetails;
     private System.Windows.Forms.TabPage tabPage3;
-    private Core.Views.CheckedItemListView<IResultCollectionPostProcessor> postProcessorListView;
+    private ResultCollectionPostProcessorControl postProcessorListControl;
   }
 }
