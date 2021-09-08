@@ -21,7 +21,7 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
     private IJsonItem Root { get; set; }
     private IOptimizer Optimizer { get; set; }
     private IList<IJsonItemVM> VMs { get; set; }
-    private ICheckedItemList<IResultCollectionPostProcessor> PostProcessors { get; set; }
+    private ICheckedItemList<IResultCollectionProcessor> PostProcessors { get; set; }
     #endregion
 
     private IContent content;

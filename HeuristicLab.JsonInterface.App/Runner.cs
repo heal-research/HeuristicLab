@@ -28,7 +28,7 @@ namespace HeuristicLab.JsonInterface.App {
       WriteResultsToFile(outputFile, optimizer, configuredResultItem, instantiatorResult.PostProcessors);
     }
 
-    private static void WriteResultsToFile(string file, IOptimizer optimizer, IEnumerable<IResultJsonItem> configuredResultItem, IEnumerable<IResultCollectionPostProcessor> postProcessors) {
+    private static void WriteResultsToFile(string file, IOptimizer optimizer, IEnumerable<IResultJsonItem> configuredResultItem, IEnumerable<IResultCollectionProcessor> postProcessors) {
       if (optimizer.Runs.Count > 0) 
         File.WriteAllText(file, FetchResults(optimizer, configuredResultItem, postProcessors));
     }
@@ -40,7 +40,7 @@ namespace HeuristicLab.JsonInterface.App {
     private static IResultFormatter GetResultFormatter(string fullName) =>
       ResultFormatter?.Where(x => x.GetType().FullName == fullName).Last();
 
-    private static string FetchResults(IOptimizer optimizer, IEnumerable<IResultJsonItem> configuredResultItems, IEnumerable<IResultCollectionPostProcessor> postProcessors) {
+    private static string FetchResults(IOptimizer optimizer, IEnumerable<IResultJsonItem> configuredResultItems, IEnumerable<IResultCollectionProcessor> postProcessors) {
       JArray arr = new JArray();
       IEnumerable<string> configuredResults = configuredResultItems.Select(x => x.Name);
 
@@ -66,13 +66,11 @@ namespace HeuristicLab.JsonInterface.App {
             obj.Add(result.Item1.Name, formatter.Format(result.Item2));
         }
 
-        IDictionary<string, string> resultDict = new Dictionary<string, string>();
-        foreach (var processor in postProcessors) {
-          processor.Apply(run.Results, resultDict);
-        }
-        foreach(var kvp in resultDict) {
-          obj.Add(kvp.Key, kvp.Value);
-        }
+        foreach (var processor in postProcessors)
+          processor.Apply(run.Results);
+
+        foreach(var result in run.Results)
+          obj.Add(result.Key, result.Value.ToString());
       }
       return SingleLineArrayJsonWriter.Serialize(arr);
     }

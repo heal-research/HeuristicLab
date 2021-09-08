@@ -43,6 +43,8 @@ namespace HeuristicLab.Core.Views {
       set { base.Content = value; }
     }
 
+    protected virtual string GroupBoxText => "Items";
+
     public CheckedItemListView()
       : base() {
       InitializeComponent();
@@ -178,7 +180,7 @@ namespace HeuristicLab.Core.Views {
       if (InvokeRequired) {
         Invoke((Action)SetNumberOfCheckItems);
       } else {
-        this.itemsGroupBox.Text = String.Format("Items (Checked: {0}/{1})", Content.CheckedItems.Count(), Content.Count);
+        this.itemsGroupBox.Text = String.Format("{0} (Checked: {1}/{2})", GroupBoxText, Content.CheckedItems.Count(), Content.Count);
       }
     }
 

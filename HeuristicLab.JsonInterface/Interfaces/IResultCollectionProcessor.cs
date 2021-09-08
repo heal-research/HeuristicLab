@@ -8,8 +8,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Optimization;
 
 namespace HeuristicLab.JsonInterface {
-  public interface IResultCollectionPostProcessor : IItem {
-    
-    void Apply(IObservableDictionary<string, IItem> /*ResultCollection*/ results, IDictionary<string, string> output); //evtl. doch JToken als Dict?
+  public interface IResultCollectionProcessor : IParameterizedNamedItem {
+    void Apply(IObservableDictionary<string, IItem> results);
   }
 }

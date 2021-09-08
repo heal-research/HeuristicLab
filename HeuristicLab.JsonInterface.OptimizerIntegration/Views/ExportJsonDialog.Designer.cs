@@ -176,8 +176,7 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
       this.splitContainer2.TabIndex = 9;
       // postProcessorListView
       this.postProcessorListControl = new ResultCollectionPostProcessorControl();
-      this.postProcessorListControl.Content = new CheckedItemList<IResultCollectionPostProcessor>();
-      this.postProcessorListControl.Content.Add(new SymRegPythonPostProcessor());
+      this.postProcessorListControl.Content = new CheckedItemList<IResultCollectionProcessor>();
       this.postProcessorListControl.Location = new System.Drawing.Point(0, 6);
       this.postProcessorListControl.Dock = System.Windows.Forms.DockStyle.Fill;
       // 
