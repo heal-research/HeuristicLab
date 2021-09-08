@@ -13,10 +13,10 @@ namespace HeuristicLab.JsonInterface {
     public InstantiatorResult(IOptimizer optimizer, IEnumerable<IResultJsonItem> configuredResultItems) {
       Optimizer = optimizer;
       ConfiguredResultItems = configuredResultItems;
-      PostProcessors = Enumerable.Empty<IResultCollectionPostProcessor>();
+      PostProcessors = Enumerable.Empty<IResultCollectionProcessor>();
     }
 
-    public InstantiatorResult(IOptimizer optimizer, IEnumerable<IResultJsonItem> configuredResultItems, IEnumerable<IResultCollectionPostProcessor> postProcessors) {
+    public InstantiatorResult(IOptimizer optimizer, IEnumerable<IResultJsonItem> configuredResultItems, IEnumerable<IResultCollectionProcessor> postProcessors) {
       Optimizer = optimizer;
       ConfiguredResultItems = configuredResultItems;
       PostProcessors = postProcessors;
@@ -24,7 +24,7 @@ namespace HeuristicLab.JsonInterface {
 
     public IOptimizer Optimizer { get; }
     public IEnumerable<IResultJsonItem> ConfiguredResultItems { get; }
-    public IEnumerable<IResultCollectionPostProcessor> PostProcessors { get; }
+    public IEnumerable<IResultCollectionProcessor> PostProcessors { get; }
   }
 
 
@@ -64,6 +64,7 @@ namespace HeuristicLab.JsonInterface {
         Config = JArray.Parse(File.ReadAllText(Path.GetFullPath(configFile)));
       #endregion
 
+      #region Deserialize HL File
       // extract metadata information
       string relativePath = Template[Constants.Metadata][Constants.HLFileLocation].ToString().Trim(); // get relative path
       // convert to absolute path
@@ -71,7 +72,6 @@ namespace HeuristicLab.JsonInterface {
         relativePath = relativePath.Remove(0, 2); // remove first 2 chars -> indicates the current directory
 
       string hLFileLocation = Path.Combine(Path.GetDirectoryName(templateFileFullPath), relativePath);
-      #region Deserialize HL File
       ProtoBufSerializer serializer = new ProtoBufSerializer();
       IOptimizer optimizer = (IOptimizer)serializer.Deserialize(hLFileLocation);
       #endregion
@@ -93,27 +93,40 @@ namespace HeuristicLab.JsonInterface {
       // inject configuration
       JsonItemConverter.Inject(optimizer, rootItem);
 
-      IList<IResultCollectionPostProcessor> postProcessorList = new List<IResultCollectionPostProcessor>();
-      var postProcessors = ApplicationManager.Manager.GetInstances<IResultCollectionPostProcessor>();
-      foreach (JObject obj in Template["PostProcessors"]) {
-        //string name = obj.Property("Name").Value.ToString();
-        foreach(var proc in postProcessors) {
-          if (proc.GetType().Name == obj["Name"].ToString())
-            postProcessorList.Add(proc);
-        }
-      }
+      return new InstantiatorResult(optimizer, CollectResults(), CollectResultCollectionProcessors());
+    }
 
-      return new InstantiatorResult(optimizer, CollectResults(), postProcessorList);
+    /// <summary>
+    /// Instantiates all defined (in template) ResultCollectionProcessors and injects the configured parameters.
+    /// </summary>
+    private IEnumerable<IResultCollectionProcessor> CollectResultCollectionProcessors() {
+      IList<IResultCollectionProcessor> postProcessorList = new List<IResultCollectionProcessor>();
+      foreach (JObject obj in Template[Constants.ResultCollectionProcessorItems]) {
+        var guid = obj["GUID"].ToString();
+        var parameters = obj[Constants.Parameters];
+        var type = Mapper.StaticCache.GetType(new Guid(guid));
+        var rcp = (IResultCollectionProcessor)Activator.CreateInstance(type);
+        var rcpItem = JsonItemConverter.Extract(rcp);
+
+        foreach (JObject param in parameters) {
+          var path = param[nameof(IJsonItem.Path)].ToString();
+          foreach (var item in rcpItem)
+            if (item.Path == path)
+              item.SetJObject(param);
+        }
+
+        JsonItemConverter.Inject(rcp, rcpItem);
+        postProcessorList.Add(rcp);
+      }
+      return postProcessorList;
     }
 
     private IEnumerable<IResultJsonItem> CollectResults() {
       IList<IResultJsonItem> res = new List<IResultJsonItem>();
       foreach(JObject obj in Template[Constants.Results]) {
-        //string name = obj.Property("Name").Value.ToString();
         var resultItem = new ResultJsonItem();
         resultItem.SetJObject(obj);
         res.Add(resultItem);
-        //res.Add(new ResultJsonItem() { Name = name });
       }
       return res;
     }
@@ -123,7 +136,7 @@ namespace HeuristicLab.JsonInterface {
       Objects.Add(root.Path, root);
 
       foreach (JObject obj in Template[Constants.Parameters]) {
-        string path = obj.Property("Path").Value.ToString();
+        string path = obj.Property(nameof(IJsonItem.Path)).Value.ToString();
         foreach(var tmp in root) {
           if(tmp.Path == path) {
             tmp.SetJObject(obj);

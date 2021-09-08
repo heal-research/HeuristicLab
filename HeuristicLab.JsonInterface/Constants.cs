@@ -9,6 +9,7 @@
     internal const string HLFileLocation = "HLFileLocation";
     internal const string Parameters = "Parameters";
     internal const string Results = "Results";
+    internal const string ResultCollectionProcessorItems = "ResultCollectionProcessors";
 
     internal const string Template = @"{
       '" + Metadata + @"': {
@@ -16,7 +17,8 @@
         '" + HLFileLocation + @"':''
       },
       '" + Parameters + @"': [],
-      '" + Results + @"': []
+      '" + Results + @"': [],
+      '" + ResultCollectionProcessorItems + @"': []
     }";
   }
 }

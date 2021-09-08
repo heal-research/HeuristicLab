@@ -18,8 +18,10 @@ namespace HeuristicLab.JsonInterface {
     /// <param name="templatePath">the path for the template files</param>
     /// <param name="optimizer">the optimizer object to serialize</param>
     /// <param name="rootItem">Root JsonItem for serialization, considers only active JsonItems for serialization</param>
-    public static void GenerateTemplate(string templatePath, IOptimizer optimizer, IJsonItem rootItem, IEnumerable<IResultCollectionPostProcessor> postProcessors) {
+    public static void GenerateTemplate(string templatePath, IOptimizer optimizer, IJsonItem rootItem, IEnumerable<IResultCollectionProcessor> resultCollectionProcessors) {
       // clear all runs
+      if (optimizer.ExecutionState == ExecutionState.Paused)
+        optimizer.Stop();
       optimizer.Runs.Clear();
 
       // validation
@@ -31,26 +33,13 @@ namespace HeuristicLab.JsonInterface {
       JObject template = JObject.Parse(Constants.Template);
       JArray parameterItems = new JArray();
       JArray resultItems = new JArray();
-      JArray postProcessorItems = new JArray();
-      // postProcessors.Select(x => new JObject().Add("Name", JToken.Parse(x.GetType().Name))
-      foreach (var proc in postProcessors) {
-        var tmp = new JObject();
-        tmp.Add("Name", proc.GetType().Name);
-        postProcessorItems.Add(tmp);
-      }
-
-      IList<IJsonItem> jsonItems = new List<IJsonItem>();
-     
+      JArray resultCollectionProcessorItems = new JArray();
       string templateName = Path.GetFileName(templatePath);
       string templateDirectory = Path.GetDirectoryName(templatePath);
-
       #endregion
 
-      if(optimizer.ExecutionState == ExecutionState.Paused)
-        optimizer.Stop();
-
-      // recursively filter items with values/ranges/actualNames
-      PopulateJsonItems(rootItem, jsonItems);
+      // filter items with values/ranges/actualNames
+      var jsonItems = rootItem.Where(x => x.Active && !(x is EmptyJsonItem) && !(x is UnsupportedJsonItem));
 
       #region Serialize HL File
       ProtoBufSerializer serializer = new ProtoBufSerializer();
@@ -70,27 +59,38 @@ namespace HeuristicLab.JsonInterface {
       }
       #endregion
 
+      #region ResultCollectionProcessor Serialization
+      foreach (var proc in resultCollectionProcessors) {
+        JArray rcpParameterItems = new JArray();
+        var guid = StorableTypeAttribute.GetStorableTypeAttribute(proc.GetType()).Guid.ToString();
+        var item = JsonItemConverter.Extract(proc);
+
+        var rcpItems = item
+          .Where(x => !(x is EmptyJsonItem) && !(x is UnsupportedJsonItem))
+          .Select(x => x.GenerateJObject());
+
+        foreach (var i in rcpItems)
+          rcpParameterItems.Add(i);
+
+        JObject processorObj = new JObject();
+        processorObj.Add(nameof(IJsonItem.Name), item.Name);
+        processorObj.Add("GUID", guid);
+        processorObj.Add(Constants.Parameters, rcpParameterItems);
+        resultCollectionProcessorItems.Add(processorObj);
+      }
+      #endregion
+
       #region Set Template Data
       template[Constants.Metadata][Constants.TemplateName] = templateName;
       template[Constants.Metadata][Constants.HLFileLocation] = hlFilePath;
       template[Constants.Parameters] = parameterItems;
       template[Constants.Results] = resultItems;
-      template["PostProcessors"] = postProcessorItems;
+      template[Constants.ResultCollectionProcessorItems] = resultCollectionProcessorItems;
       #endregion
 
       #region Serialize and write to file
       File.WriteAllText(Path.Combine(templateDirectory, $"{templateName}.json"), SingleLineArrayJsonWriter.Serialize(template));
       #endregion
     }
-
-    #region Helper    
-    private static void PopulateJsonItems(IJsonItem item, IList<IJsonItem> jsonItems) {
-      foreach(var x in item) { // TODO: dieses konstrukt notwendig?
-        if (x.Active && !(x is EmptyJsonItem) && !(x is UnsupportedJsonItem)) {
-          jsonItems.Add(x);
-        }
-      }
-    }
-    #endregion
   }
 }
