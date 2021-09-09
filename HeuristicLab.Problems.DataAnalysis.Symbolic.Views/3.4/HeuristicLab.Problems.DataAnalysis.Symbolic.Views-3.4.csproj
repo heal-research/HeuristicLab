@@ -121,12 +121,6 @@
     <Compile Include="InteractiveSymbolicExpressionTreeChart.Designer.cs">
       <DependentUpon>InteractiveSymbolicExpressionTreeChart.cs</DependentUpon>
     </Compile>
-    <Compile Include="RunCollectionPartialDependencePlotView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="RunCollectionPartialDependencePlotView.Designer.cs">
-      <DependentUpon>RunCollectionPartialDependencePlotView.cs</DependentUpon>
-    </Compile>
     <Compile Include="SymbolicDataAnalysisModelMathView.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -281,10 +275,6 @@
       <Project>{3D28463F-EC96-4D82-AFEE-38BE91A0CA00}</Project>
       <Name>HeuristicLab.Problems.DataAnalysis.Symbolic-3.4</Name>
       <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Problems.DataAnalysis.Views\3.4\HeuristicLab.Problems.DataAnalysis.Views-3.4.csproj">
-      <Project>{3E9E8944-44FF-40BB-A622-3A4A7DD0F198}</Project>
-      <Name>HeuristicLab.Problems.DataAnalysis.Views-3.4</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Problems.DataAnalysis\3.4\HeuristicLab.Problems.DataAnalysis-3.4.csproj">
       <Project>{DF87C13E-A889-46FF-8153-66DCAA8C5674}</Project>

@@ -353,6 +353,12 @@
     <Compile Include="Regression\RegressionSolutionScatterPlotView.Designer.cs">
       <DependentUpon>RegressionSolutionScatterPlotView.cs</DependentUpon>
     </Compile>
+    <Compile Include="Regression\RunCollectionPartialDependencePlotView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Regression\RunCollectionPartialDependencePlotView.Designer.cs">
+      <DependentUpon>RunCollectionPartialDependencePlotView.cs</DependentUpon>
+    </Compile>
     <Compile Include="Regression\ShapeConstraintsView.cs">
       <SubType>UserControl</SubType>
     </Compile>
