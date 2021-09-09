@@ -238,6 +238,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       RecalculateAndRelayoutCharts();
     }
 
+    public async Task AddSolution(IRegressionSolution solution) {
+      foreach (var chart in partialDependencePlots.Values) {
+        await chart.AddSolutionAsync(solution);
+      }
+    }
+
     private void SharedFixedVariables_ItemChanged(object sender, EventArgs<int, int> e) {
       SharedFixedVariablesChanged();
     }
