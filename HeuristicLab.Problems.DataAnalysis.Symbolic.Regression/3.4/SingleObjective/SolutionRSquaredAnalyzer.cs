@@ -30,10 +30,12 @@ using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HEAL.Attic;
+using System;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
   [StorableType("789E0217-6DDC-44E8-85CC-A51A976A8FB8")]
-  public class SymbolicRegressionSolutionsAnalyzer : SingleSuccessorOperator, IAnalyzer {
+  [Obsolete("Use SolutionQualityAnalyzer instead")]
+  public class SolutionRSquaredAnalyzer : SingleSuccessorOperator, IAnalyzer {
     private const string ResultCollectionParameterName = "Results";
     private const string RegressionSolutionQualitiesResultName = "Regression Solution Qualities";
     private const string TrainingQualityParameterName = "TrainingRSquared";
@@ -54,14 +56,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     }
 
     [StorableConstructor]
-    protected SymbolicRegressionSolutionsAnalyzer(StorableConstructorFlag _) : base(_) { }
-    protected SymbolicRegressionSolutionsAnalyzer(SymbolicRegressionSolutionsAnalyzer original, Cloner cloner)
+    protected SolutionRSquaredAnalyzer(StorableConstructorFlag _) : base(_) { }
+    protected SolutionRSquaredAnalyzer(SolutionRSquaredAnalyzer original, Cloner cloner)
       : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new SymbolicRegressionSolutionsAnalyzer(this, cloner);
+      return new SolutionRSquaredAnalyzer(this, cloner);
     }
 
-    public SymbolicRegressionSolutionsAnalyzer() {
+    public SolutionRSquaredAnalyzer() {
       Parameters.Add(new LookupParameter<ResultCollection>(ResultCollectionParameterName, "The result collection to store the analysis results."));
       Parameters.Add(new LookupParameter<DoubleValue>(TrainingQualityParameterName));
       Parameters.Add(new LookupParameter<DoubleValue>(TestQualityParameterName));
@@ -92,7 +94,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       // only if the parameters are available (not available in old persisted code)
       ILookupParameter<DoubleValue> trainingQualityParam = null;
       ILookupParameter<DoubleValue> testQualityParam = null;
-      // store actual names of parameter because it is changed below
+      // store actual names of parameter because they are changed below
       trainingQualityParam = TrainingQualityParameter;
       string prevTrainingQualityParamName = trainingQualityParam.ActualName;
       testQualityParam = TestQualityParameter;
@@ -112,7 +114,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
         dataTable.Rows[testR2Name].Values.Add(solution.TestRSquared);
 
         // also add training and test R² to the scope using the parameters
-        // HACK: we change the ActualName of the parameter to write two variables for each solution in the results collection
+        // HACK: we change the ActualName of the parameter to write training & test quality for each solution in the results collection
         trainingQualityParam.ActualName = trainingR2Name;
         trainingQualityParam.ActualValue = new DoubleValue(solution.TrainingRSquared);
         testQualityParam.ActualName = testR2Name;

@@ -132,7 +132,8 @@
     <Compile Include="SingleObjective\Evaluators\NMSESingleObjectiveConstraintsEvaluator.cs" />
     <Compile Include="SingleObjective\Evaluators\SymbolicRegressionMeanRelativeErrorEvaluator.cs" />
     <Compile Include="SingleObjective\ShapeConstrainedRegressionSingleObjectiveProblem.cs" />
-    <Compile Include="SingleObjective\SymbolicRegressionSolutionsAnalyzer.cs" />
+    <Compile Include="SingleObjective\SolutionQualityAnalyzer.cs" />
+    <Compile Include="SingleObjective\SolutionRSquaredAnalyzer.cs" />
     <Compile Include="SymbolicRegressionPhenotypicDiversityAnalyzer.cs" />
     <Compile Include="SymbolicRegressionPruningAnalyzer.cs" />
     <Compile Include="SingleObjective\Evaluators\SymbolicRegressionLogResidualEvaluator.cs" />
