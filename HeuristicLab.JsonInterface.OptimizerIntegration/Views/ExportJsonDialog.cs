@@ -21,7 +21,7 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
     private IJsonItem Root { get; set; }
     private IOptimizer Optimizer { get; set; }
     private IList<IJsonItemVM> VMs { get; set; }
-    private ICheckedItemList<IResultCollectionProcessor> PostProcessors { get; set; }
+    private ICheckedItemList<IRunCollectionModifier> RunCollectionModifiers { get; set; }
     #endregion
 
     private IContent content;
@@ -60,7 +60,7 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
 
     public ExportJsonDialog() {
       InitializeComponent();
-      this.PostProcessors = this.postProcessorListControl.Content;
+      this.RunCollectionModifiers = this.postProcessorListControl.Content;
       this.Icon = HeuristicLab.Common.Resources.HeuristicLab.Icon;
       InitCache();
     }
@@ -77,7 +77,7 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
             
           JsonTemplateGenerator.GenerateTemplate(
             Path.Combine(FolderBrowserDialog.SelectedPath, textBoxTemplateName.Text), 
-            Optimizer, Root, PostProcessors.CheckedItems.Select(x => x.Value));
+            Optimizer, Root, RunCollectionModifiers.CheckedItems.Select(x => x.Value));
           Close();
         } catch (Exception ex) {
           ErrorHandling.ShowErrorDialog(this, ex);

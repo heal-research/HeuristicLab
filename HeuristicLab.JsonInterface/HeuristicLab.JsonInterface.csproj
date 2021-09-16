@@ -65,7 +65,7 @@
     <Compile Include="Converters\AlgorithmConverter.cs" />
     <Compile Include="Converters\BatchRunConverter.cs" />
     <Compile Include="Converters\ExperimentConverter.cs" />
-    <Compile Include="Converters\ObervableListConverter.cs" />
+    <Compile Include="Converters\ItemCollectionConverter.cs" />
     <Compile Include="Converters\RegressionProblemDataConverter.cs" />
     <Compile Include="Converters\ResultConverter.cs" />
     <Compile Include="Converters\ResultParameterConverter.cs" />
@@ -83,7 +83,7 @@
     <Compile Include="Interfaces\IResultJsonItem.cs" />
     <Compile Include="Interfaces\IValueJsonItem.cs" />
     <Compile Include="Interfaces\IValueLookupJsonItem.cs" />
-    <Compile Include="Interfaces\IResultCollectionProcessor.cs" />
+    <Compile Include="Interfaces\IListJsonItem.cs" />
     <Compile Include="JsonItems\ArrayJsonItem.cs" />
     <Compile Include="JsonItems\BoolJsonItems.cs" />
     <Compile Include="JsonItems\ConcreteRestrictedArrayJsonItem.cs" />
@@ -97,6 +97,7 @@
     <Compile Include="JsonItems\IntervalRestrictedValueJsonItem.cs" />
     <Compile Include="JsonItems\IntJsonItems.cs" />
     <Compile Include="JsonItems\JsonItem.cs" />
+    <Compile Include="JsonItems\ListJsonItem.cs" />
     <Compile Include="JsonItems\LookupJsonItem.cs" />
     <Compile Include="JsonItems\MatrixJsonItem.cs" />
     <Compile Include="JsonItems\RangedJsonItem.cs" />
@@ -105,8 +106,11 @@
     <Compile Include="JsonItems\UnsupportedJsonItem.cs" />
     <Compile Include="JsonItems\ValueJsonItem.cs" />
     <Compile Include="JsonItems\ValueLookupJsonItem.cs" />
+    <Compile Include="ResultCollectionProcessors\AbstractProcessors\RunCollectionSRSolutionFormatter.cs" />
     <Compile Include="ResultCollectionProcessors\FilterResultCollectionProcessor.cs" />
-    <Compile Include="ResultCollectionProcessors\SymRegPythonProcessor.cs" />
+    <Compile Include="ResultCollectionProcessors\RunCollectionSRSolutionGraphVizFormatter.cs" />
+    <Compile Include="ResultCollectionProcessors\RunCollectionSRSolutionLatexFormatter.cs" />
+    <Compile Include="ResultCollectionProcessors\RunCollectionSRSolutionPythonFormatter.cs" />
     <Compile Include="ResultFormatters\MatlabResultFormatter.cs" />
     <Compile Include="ResultFormatters\PythonResultFormatter.cs" />
     <Compile Include="ResultFormatters\ResultFormatter.cs" />

@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
+using HEAL.Attic;
 
 namespace HeuristicLab.JsonInterface {
+  [StorableType("D2521F37-3968-4FAC-AEE9-F083AA86C06C")]
   public class ValueLookupJsonItem : LookupJsonItem, IValueLookupJsonItem {
     public IJsonItem ActualValue { get; set; }
 
@@ -12,7 +14,7 @@ namespace HeuristicLab.JsonInterface {
 
     public override JObject GenerateJObject() {
       var obj = base.GenerateJObject();
-      if(ActualValue != null) {
+      if (ActualValue != null) {
         obj.Add(nameof(IValueLookupJsonItem.ActualValue), ActualValue.Path);
       }
       return obj;
@@ -20,11 +22,11 @@ namespace HeuristicLab.JsonInterface {
 
     public override IEnumerator<IJsonItem> GetEnumerator() {
       using (var it = base.GetEnumerator()) {
-        while(it.MoveNext()) {
+        while (it.MoveNext()) {
           yield return it.Current;
         }
       }
-      if(ActualValue != null) {
+      if (ActualValue != null) {
         using (var it = ActualValue.GetEnumerator()) {
           while (it.MoveNext()) {
             yield return it.Current;
@@ -32,5 +34,10 @@ namespace HeuristicLab.JsonInterface {
         }
       }
     }
+
+    public ValueLookupJsonItem() { }
+
+    [StorableConstructor]
+    protected ValueLookupJsonItem(StorableConstructorFlag _) : base(_) { }
   }
 }
