@@ -1,9 +1,11 @@
 ﻿using System;
 using Newtonsoft.Json.Linq;
+using HEAL.Attic;
 
 namespace HeuristicLab.JsonInterface {
-  public abstract class IntervalRestrictedValueJsonItem<T> : ValueJsonItem<T>, IIntervalRestrictedJsonItem<T> // TODO: intervalrestriction before value?
-    where T : IComparable {
+  [StorableType("5BD32AD9-7CA2-4837-B1C3-D47D0CD83035")]
+  public abstract class IntervalRestrictedValueJsonItem<T> : ValueJsonItem<T>, IIntervalRestrictedJsonItem<T>
+      where T : IComparable {
     public T Minimum { get; set; }
     public T Maximum { get; set; }
 
@@ -22,5 +24,10 @@ namespace HeuristicLab.JsonInterface {
       var maxProp = jObject[nameof(IIntervalRestrictedJsonItem<T>.Maximum)];
       if (maxProp != null) Maximum = maxProp.ToObject<T>();
     }
+
+    public IntervalRestrictedValueJsonItem() { }
+
+    [StorableConstructor]
+    protected IntervalRestrictedValueJsonItem(StorableConstructorFlag _) : base(_) { }
   }
 }

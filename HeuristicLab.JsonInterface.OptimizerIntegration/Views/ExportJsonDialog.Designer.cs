@@ -1,4 +1,5 @@
 ﻿using HeuristicLab.Core;
+using HeuristicLab.Optimization;
 
 namespace HeuristicLab.JsonInterface.OptimizerIntegration {
   partial class ExportJsonDialog {
@@ -26,6 +27,7 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
     /// </summary>
     private void InitializeComponent() {
       this.components = new System.ComponentModel.Container();
+      HeuristicLab.Core.CheckedItemList<HeuristicLab.Optimization.IRunCollectionModifier> checkedItemList_11 = new HeuristicLab.Core.CheckedItemList<HeuristicLab.Optimization.IRunCollectionModifier>();
       this.dataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
       this.exportButton = new System.Windows.Forms.Button();
       this.treeView = new System.Windows.Forms.TreeView();
@@ -40,6 +42,7 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
       this.tabPage1 = new System.Windows.Forms.TabPage();
       this.tabPage2 = new System.Windows.Forms.TabPage();
       this.tabPage3 = new System.Windows.Forms.TabPage();
+      this.postProcessorListControl = new HeuristicLab.JsonInterface.OptimizerIntegration.ResultCollectionPostProcessorControl();
       this.label1 = new System.Windows.Forms.Label();
       this.textBoxTemplateName = new System.Windows.Forms.TextBox();
       this.errorProvider = new System.Windows.Forms.ErrorProvider(this.components);
@@ -57,6 +60,7 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
       this.tabControl1.SuspendLayout();
       this.tabPage1.SuspendLayout();
       this.tabPage2.SuspendLayout();
+      this.tabPage3.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.jsonItemBindingSource)).BeginInit();
       this.SuspendLayout();
@@ -174,11 +178,6 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
       this.splitContainer2.Size = new System.Drawing.Size(796, 499);
       this.splitContainer2.SplitterDistance = 380;
       this.splitContainer2.TabIndex = 9;
-      // postProcessorListView
-      this.postProcessorListControl = new ResultCollectionPostProcessorControl();
-      this.postProcessorListControl.Content = new CheckedItemList<IResultCollectionProcessor>();
-      this.postProcessorListControl.Location = new System.Drawing.Point(0, 6);
-      this.postProcessorListControl.Dock = System.Windows.Forms.DockStyle.Fill;
       // 
       // tabControl1
       // 
@@ -223,8 +222,20 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
       this.tabPage3.Name = "tabPage3";
       this.tabPage3.Size = new System.Drawing.Size(802, 505);
       this.tabPage3.TabIndex = 2;
-      this.tabPage3.Text = "Post Processors";
+      this.tabPage3.Text = "Result Collection Modifiers";
       this.tabPage3.UseVisualStyleBackColor = true;
+      // 
+      // postProcessorListControl
+      // 
+      this.postProcessorListControl.Caption = "View";
+      checkedItemList_11.Capacity = 0;
+      this.postProcessorListControl.Content = checkedItemList_11;
+      this.postProcessorListControl.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.postProcessorListControl.Location = new System.Drawing.Point(0, 0);
+      this.postProcessorListControl.Name = "postProcessorListControl";
+      this.postProcessorListControl.ReadOnly = false;
+      this.postProcessorListControl.Size = new System.Drawing.Size(802, 505);
+      this.postProcessorListControl.TabIndex = 0;
       // 
       // label1
       // 
@@ -281,6 +292,7 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
       this.tabControl1.ResumeLayout(false);
       this.tabPage1.ResumeLayout(false);
       this.tabPage2.ResumeLayout(false);
+      this.tabPage3.ResumeLayout(false);
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
       ((System.ComponentModel.ISupportInitialize)(this.jsonItemBindingSource)).EndInit();
       this.ResumeLayout(false);

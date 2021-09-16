@@ -18,7 +18,7 @@ namespace HeuristicLab.JsonInterface {
     /// <param name="templatePath">the path for the template files</param>
     /// <param name="optimizer">the optimizer object to serialize</param>
     /// <param name="rootItem">Root JsonItem for serialization, considers only active JsonItems for serialization</param>
-    public static void GenerateTemplate(string templatePath, IOptimizer optimizer, IJsonItem rootItem, IEnumerable<IResultCollectionProcessor> resultCollectionProcessors) {
+    public static void GenerateTemplate(string templatePath, IOptimizer optimizer, IJsonItem rootItem, IEnumerable<IRunCollectionModifier> runCollectionModifiers) {
       // clear all runs
       if (optimizer.ExecutionState == ExecutionState.Paused)
         optimizer.Stop();
@@ -33,7 +33,7 @@ namespace HeuristicLab.JsonInterface {
       JObject template = JObject.Parse(Constants.Template);
       JArray parameterItems = new JArray();
       JArray resultItems = new JArray();
-      JArray resultCollectionProcessorItems = new JArray();
+      JArray runCollectionModifierItems = new JArray();
       string templateName = Path.GetFileName(templatePath);
       string templateDirectory = Path.GetDirectoryName(templatePath);
       #endregion
@@ -59,8 +59,8 @@ namespace HeuristicLab.JsonInterface {
       }
       #endregion
 
-      #region ResultCollectionProcessor Serialization
-      foreach (var proc in resultCollectionProcessors) {
+      #region RunCollectionModifiers Serialization
+      foreach (var proc in runCollectionModifiers) {
         JArray rcpParameterItems = new JArray();
         var guid = StorableTypeAttribute.GetStorableTypeAttribute(proc.GetType()).Guid.ToString();
         var item = JsonItemConverter.Extract(proc);
@@ -76,7 +76,7 @@ namespace HeuristicLab.JsonInterface {
         processorObj.Add(nameof(IJsonItem.Name), item.Name);
         processorObj.Add("GUID", guid);
         processorObj.Add(Constants.Parameters, rcpParameterItems);
-        resultCollectionProcessorItems.Add(processorObj);
+        runCollectionModifierItems.Add(processorObj);
       }
       #endregion
 
@@ -85,7 +85,7 @@ namespace HeuristicLab.JsonInterface {
       template[Constants.Metadata][Constants.HLFileLocation] = hlFilePath;
       template[Constants.Parameters] = parameterItems;
       template[Constants.Results] = resultItems;
-      template[Constants.ResultCollectionProcessorItems] = resultCollectionProcessorItems;
+      template[Constants.RunCollectionModifiers] = runCollectionModifierItems;
       #endregion
 
       #region Serialize and write to file

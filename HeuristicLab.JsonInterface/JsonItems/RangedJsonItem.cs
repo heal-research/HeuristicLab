@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
+using HEAL.Attic;
 
 namespace HeuristicLab.JsonInterface {
+  [StorableType("856DE916-D830-43A8-9B40-37E512A177DB")]
   public abstract class RangedJsonItem<T> : IntervalRestrictedJsonItem<T>, IRangedJsonItem<T>
-    where T : IComparable {
+      where T : IComparable {
     public T MinValue { get; set; }
-    
+
     public T MaxValue { get; set; }
 
     protected override ValidationResult Validate() {
@@ -28,6 +30,11 @@ namespace HeuristicLab.JsonInterface {
 
       base.SetJObject(jObject);
     }
+
+    public RangedJsonItem() { }
+
+    [StorableConstructor]
+    protected RangedJsonItem(StorableConstructorFlag _) : base(_) { }
 
   }
 }

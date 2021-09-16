@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using HEAL.Attic;
 
 namespace HeuristicLab.JsonInterface {
 
@@ -31,13 +32,14 @@ namespace HeuristicLab.JsonInterface {
       new AggregateException(Errors.Select(x => new ArgumentException(x)));
   }
 
+  [StorableType("B1270D98-B0D9-40FB-B089-F6E70C65CD65")]
   /// <summary>
   /// Main data class for json interface.
   /// </summary>
   public abstract class JsonItem : IJsonItem {
 
     public class JsonItemValidator : IJsonItemValidator {
-      private IDictionary<int, bool> Cache = new Dictionary<int, bool>();
+      //private IDictionary<int, bool> Cache = new Dictionary<int, bool>();
       private JsonItem Root { get; set; }
       public JsonItemValidator(JsonItem root) {
         Root = root;
@@ -46,9 +48,9 @@ namespace HeuristicLab.JsonInterface {
       public ValidationResult Validate() {
         List<string> errors = new List<string>();
         bool success = true;
-        foreach(var x in Root) {
+        foreach (var x in Root) {
           JsonItem item = x as JsonItem;
-          if(item.Active) {
+          if (item.Active) {
             var res = ((JsonItem)x).Validate();
             //if one success is false -> whole validation is false
             success = success && res.Success;
@@ -67,7 +69,7 @@ namespace HeuristicLab.JsonInterface {
       get {
         IJsonItem tmp = Parent;
         StringBuilder builder = new StringBuilder(this.Name);
-        while(tmp != null) {
+        while (tmp != null) {
           builder.Insert(0, tmp.Name + ".");
           tmp = tmp.Parent;
         }
@@ -85,22 +87,25 @@ namespace HeuristicLab.JsonInterface {
     public virtual bool Active { get; set; }
 
     #region Constructors
+    [StorableConstructor]
+    protected JsonItem(StorableConstructorFlag _) { }
+
     public JsonItem() { }
 
     public JsonItem(IEnumerable<IJsonItem> childs) {
       AddChildren(childs);
     }
     #endregion
-    
+
     #region Public Methods
-    public void AddChildren(params IJsonItem[] childs) => 
+    public void AddChildren(params IJsonItem[] childs) =>
       AddChildren(childs as IEnumerable<IJsonItem>);
 
     public void AddChildren(IEnumerable<IJsonItem> childs) {
       if (childs == null) return;
       if (Children == null)
         Children = new List<IJsonItem>();
-      if(Children is IList<IJsonItem> list) {
+      if (Children is IList<IJsonItem> list) {
         foreach (var child in childs) {
           list.Add(child);
           child.Parent = this;
@@ -130,7 +135,7 @@ namespace HeuristicLab.JsonInterface {
     #region IEnumerable Support
     public virtual IEnumerator<IJsonItem> GetEnumerator() {
       yield return this;
-      
+
       if (Children != null) {
         foreach (var x in Children) {
           foreach (var c in x) {

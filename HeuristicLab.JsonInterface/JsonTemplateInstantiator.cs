@@ -13,18 +13,18 @@ namespace HeuristicLab.JsonInterface {
     public InstantiatorResult(IOptimizer optimizer, IEnumerable<IResultJsonItem> configuredResultItems) {
       Optimizer = optimizer;
       ConfiguredResultItems = configuredResultItems;
-      PostProcessors = Enumerable.Empty<IResultCollectionProcessor>();
+      RunCollectionModifiers = Enumerable.Empty<IRunCollectionModifier>();
     }
 
-    public InstantiatorResult(IOptimizer optimizer, IEnumerable<IResultJsonItem> configuredResultItems, IEnumerable<IResultCollectionProcessor> postProcessors) {
+    public InstantiatorResult(IOptimizer optimizer, IEnumerable<IResultJsonItem> configuredResultItems, IEnumerable<IRunCollectionModifier> runCollectionModifiers) {
       Optimizer = optimizer;
       ConfiguredResultItems = configuredResultItems;
-      PostProcessors = postProcessors;
+      RunCollectionModifiers = runCollectionModifiers;
     }
 
     public IOptimizer Optimizer { get; }
     public IEnumerable<IResultJsonItem> ConfiguredResultItems { get; }
-    public IEnumerable<IResultCollectionProcessor> PostProcessors { get; }
+    public IEnumerable<IRunCollectionModifier> RunCollectionModifiers { get; }
   }
 
 
@@ -93,19 +93,19 @@ namespace HeuristicLab.JsonInterface {
       // inject configuration
       JsonItemConverter.Inject(optimizer, rootItem);
 
-      return new InstantiatorResult(optimizer, CollectResults(), CollectResultCollectionProcessors());
+      return new InstantiatorResult(optimizer, CollectResults(), CollectRunCollectionModifiers());
     }
 
     /// <summary>
     /// Instantiates all defined (in template) ResultCollectionProcessors and injects the configured parameters.
     /// </summary>
-    private IEnumerable<IResultCollectionProcessor> CollectResultCollectionProcessors() {
-      IList<IResultCollectionProcessor> postProcessorList = new List<IResultCollectionProcessor>();
-      foreach (JObject obj in Template[Constants.ResultCollectionProcessorItems]) {
+    private IEnumerable<IRunCollectionModifier> CollectRunCollectionModifiers() {
+      IList<IRunCollectionModifier> runCollectionModifiers = new List<IRunCollectionModifier>();
+      foreach (JObject obj in Template[Constants.RunCollectionModifiers]) {
         var guid = obj["GUID"].ToString();
         var parameters = obj[Constants.Parameters];
         var type = Mapper.StaticCache.GetType(new Guid(guid));
-        var rcp = (IResultCollectionProcessor)Activator.CreateInstance(type);
+        var rcp = (IRunCollectionModifier)Activator.CreateInstance(type);
         var rcpItem = JsonItemConverter.Extract(rcp);
 
         foreach (JObject param in parameters) {
@@ -116,9 +116,9 @@ namespace HeuristicLab.JsonInterface {
         }
 
         JsonItemConverter.Inject(rcp, rcpItem);
-        postProcessorList.Add(rcp);
+        runCollectionModifiers.Add(rcp);
       }
-      return postProcessorList;
+      return runCollectionModifiers;
     }
 
     private IEnumerable<IResultJsonItem> CollectResults() {

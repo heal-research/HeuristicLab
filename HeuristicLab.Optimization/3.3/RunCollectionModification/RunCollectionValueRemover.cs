@@ -26,6 +26,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
 using HEAL.Attic;
+using HeuristicLab.Collections;
 
 namespace HeuristicLab.Optimization {
 
@@ -37,9 +38,15 @@ namespace HeuristicLab.Optimization {
       get { return (ValueParameter<CheckedItemCollection<StringValue>>)Parameters["Values"]; }
     }
 
+    public IFixedValueParameter<BoolValue> InvertParameter {
+      get { return (IFixedValueParameter<BoolValue>)Parameters["Invert"]; }
+    }
+
     public IEnumerable<string> Values {
       get { return ValuesParameter.Value.CheckedItems.Select(v => v.Value); }
     }
+
+    public bool Invert => InvertParameter.Value.Value;
 
     #region Construction & Cloning    
     [StorableConstructor]
@@ -48,20 +55,32 @@ namespace HeuristicLab.Optimization {
       : base(original, cloner) {
     }
     public RunCollectionValueRemover() {
-      Parameters.Add(new ValueParameter<CheckedItemCollection<StringValue>>("Values", "The result or parameter values to be removed from each run."));      
+      Parameters.Add(new ValueParameter<CheckedItemCollection<StringValue>>("Values", "The result or parameter values to be removed from each run."));
+      Parameters.Add(new FixedValueParameter<BoolValue>("Invert", "Inverts the filter strategy: Blackbox <-> Whitebox (Default: Blackbox)", new BoolValue(false)));
     }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new RunCollectionValueRemover(this, cloner);
     }    
     #endregion    
 
-    public void Modify(List<IRun> runs) {      
+    public void Modify(List<IRun> runs) {
       foreach (var run in runs) {
-        foreach (var value in Values) {
-          run.Parameters.Remove(value);
-          run.Results.Remove(value);
-        }        
-      }      
+        if (Invert) { //Whitebox
+          var parametersCopy = new ObservableDictionary<string, IItem>(run.Parameters);
+          var resultsCopy = new ObservableDictionary<string, IItem>(run.Results);
+          foreach(var param in parametersCopy)
+            if (!Values.Any(x => x == param.Key))
+              run.Parameters.Remove(param.Key);
+          foreach (var result in resultsCopy)
+            if (!Values.Any(x => x == result.Key))
+              run.Results.Remove(result.Key);
+        } else { //Blackbox
+          foreach (var value in Values) {
+            run.Parameters.Remove(value);
+            run.Results.Remove(value);
+          }
+        }
+      }   
     }
     
   }
