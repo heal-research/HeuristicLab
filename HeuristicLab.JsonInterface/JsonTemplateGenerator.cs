@@ -83,6 +83,7 @@ namespace HeuristicLab.JsonInterface {
       #region Set Template Data
       template[Constants.Metadata][Constants.TemplateName] = templateName;
       template[Constants.Metadata][Constants.HLFileLocation] = hlFilePath;
+      template[Constants.Metadata][Constants.OptimizerDescription] = optimizer.Description;
       template[Constants.Parameters] = parameterItems;
       template[Constants.Results] = resultItems;
       template[Constants.RunCollectionModifiers] = runCollectionModifierItems;

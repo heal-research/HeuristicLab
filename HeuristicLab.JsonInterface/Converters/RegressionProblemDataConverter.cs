@@ -27,12 +27,16 @@ namespace HeuristicLab.JsonInterface {
     private const string CheckedItemList = "CheckedItemList";
     #endregion
 
-    public override int Priority => 20;
+    public override int Priority => 20;//20;
 
-    public override bool CanConvertType(Type t) =>
-      HEAL.Attic.Mapper.StaticCache.GetType(new Guid("EE612297-B1AF-42D2-BF21-AF9A2D42791C")).IsAssignableFrom(t);
+    public override bool CanConvertType(Type t) => t == typeof(ValueParameter<IRegressionProblemData>);
+      //HEAL.Attic.Mapper.StaticCache.GetType(new Guid("EE612297-B1AF-42D2-BF21-AF9A2D42791C")).IsAssignableFrom(t); // IRegressionProblemData
 
     public override void Inject(IItem item, IJsonItem data, IJsonItemConverter root) {
+
+      var tmp = item as IRegressionProblemData; //ModifiableDataset
+      //tmp.InputVariables
+      
 
       dynamic regressionProblemData = (dynamic)item;
 
@@ -140,6 +144,7 @@ namespace HeuristicLab.JsonInterface {
 
     private void SetAllowedInputVariables(dynamic regressionProblemData, StringArrayJsonItem item, IMatrixJsonItem matrix) {
       if (item != null && regressionProblemData is IParameterizedItem p) {
+        
         var regProbDataType = ((ParameterizedNamedItem)regressionProblemData).GetType(); //RegressionProblemData
 
         var parameterizedNamedItemType = regProbDataType.BaseType.BaseType;

@@ -8,8 +8,8 @@ namespace HeuristicLab.JsonInterface {
   [Item(Name = "RunCollection SymbolicRegressionSolution GraphViz Formatter")]
   [StorableType("55A9B87B-65AC-4160-ACA0-53FD1EBB1AB7")]
   public class RunCollectionSRSolutionGraphVizFormatter : RunCollectionSRSolutionFormatter {
-    protected override ISymbolicExpressionTreeStringFormatter Formatter => 
-      new SymbolicDataAnalysisExpressionLatexFormatter();
+    protected override ISymbolicExpressionTreeStringFormatter Formatter =>
+      new SymbolicExpressionTreeGraphvizFormatter();
 
     #region Constructors & Cloning
     [StorableConstructor]

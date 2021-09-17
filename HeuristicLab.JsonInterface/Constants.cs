@@ -7,6 +7,7 @@
     internal const string Metadata = "Metadata";
     internal const string TemplateName = "TemplateName";
     internal const string HLFileLocation = "HLFileLocation";
+    internal const string OptimizerDescription = "OptimizerDescription";
     internal const string Parameters = "Parameters";
     internal const string Results = "Results";
     internal const string RunCollectionModifiers = "RunCollectionModifiers";
@@ -14,7 +15,8 @@
     internal const string Template = @"{
       '" + Metadata + @"': {
         '" + TemplateName + @"':'',
-        '" + HLFileLocation + @"':''
+        '" + HLFileLocation + @"':'',
+        '" + OptimizerDescription + @"':''
       },
       '" + Parameters + @"': [],
       '" + Results + @"': [],

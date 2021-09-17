@@ -19,11 +19,14 @@ namespace HeuristicLab.JsonInterface {
     }
 
     public override void SetJObject(JObject jObject) {
-      TargetTypeGUID = jObject[nameof(IListJsonItem.TargetTypeGUID)].ToString();
-      var targetType = Mapper.StaticCache.GetType(new Guid(TargetTypeGUID));
+      var guidJObj = jObject[nameof(IListJsonItem.TargetTypeGUID)];
       IList<IJsonItem> items = new List<IJsonItem>();
-      foreach (JObject obj in jObject[nameof(IValueJsonItem.Value)]) {
-        items.Add((IJsonItem)obj.ToObject(targetType));
+      if (guidJObj != null) {
+        TargetTypeGUID = jObject[nameof(IListJsonItem.TargetTypeGUID)].ToString();
+        var targetType = Mapper.StaticCache.GetType(new Guid(TargetTypeGUID));
+        foreach (JObject obj in jObject[nameof(IValueJsonItem.Value)]) {
+          items.Add((IJsonItem)obj.ToObject(targetType));
+        }
       }
       Value = items.ToArray();
       Resizable = (jObject[nameof(IArrayJsonItem.Resizable)]?.ToObject<bool>()).GetValueOrDefault();
