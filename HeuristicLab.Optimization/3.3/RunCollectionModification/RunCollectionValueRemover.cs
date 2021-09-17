@@ -56,7 +56,7 @@ namespace HeuristicLab.Optimization {
     }
     public RunCollectionValueRemover() {
       Parameters.Add(new ValueParameter<CheckedItemCollection<StringValue>>("Values", "The result or parameter values to be removed from each run."));
-      Parameters.Add(new FixedValueParameter<BoolValue>("Invert", "Inverts the filter strategy: Blackbox <-> Whitebox (Default: Blackbox)", new BoolValue(false)));
+      Parameters.Add(new FixedValueParameter<BoolValue>("Invert", "Inverts the filter strategy: Blacklist <-> Whitelist (Default: Blacklist)", new BoolValue(false)));
     }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new RunCollectionValueRemover(this, cloner);
