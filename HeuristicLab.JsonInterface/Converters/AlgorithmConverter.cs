@@ -23,19 +23,6 @@ namespace HeuristicLab.JsonInterface {
     public override IJsonItem Extract(IItem value, IJsonItemConverter root) {
       IJsonItem item = base.Extract(value, root);
       IAlgorithm algorithm = value as IAlgorithm;
-      foreach (var res in algorithm.Results) {
-        var resultItem = root.Extract(res, root);
-        // fetch all result parameter items
-        var resultParameterItems = 
-          item.Where(x => x
-          .GetType()
-          .GetInterfaces()
-          .Any(y => y == typeof(IResultJsonItem)));
-        // check for duplicates (to prevent double result items,
-        // which can occur with result parameters)
-        if(!resultParameterItems.Any(x => x.Name == resultItem.Name))
-          item.AddChildren(resultItem);
-      }
       item.AddChildren(root.Extract(algorithm.Problem, root));
       return item;
     }

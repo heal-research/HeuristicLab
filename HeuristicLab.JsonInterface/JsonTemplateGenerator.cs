@@ -52,31 +52,28 @@ namespace HeuristicLab.JsonInterface {
 
       #region Filter Items
       foreach (var item in jsonItems) {
-        if (item is IResultJsonItem)
-          resultItems.Add(item.GenerateJObject());
-        else
-          parameterItems.Add(item.GenerateJObject());
+        parameterItems.Add(item.GenerateJObject());
       }
       #endregion
 
       #region RunCollectionModifiers Serialization
-      foreach (var proc in runCollectionModifiers) {
-        JArray rcpParameterItems = new JArray();
-        var guid = StorableTypeAttribute.GetStorableTypeAttribute(proc.GetType()).Guid.ToString();
-        var item = JsonItemConverter.Extract(proc);
+      foreach (var rcModifier in runCollectionModifiers) {
+        JArray rcModifierParameterItems = new JArray();
+        var guid = StorableTypeAttribute.GetStorableTypeAttribute(rcModifier.GetType()).Guid.ToString();
+        var item = JsonItemConverter.Extract(rcModifier);
 
-        var rcpItems = item
+        var rcModifierItems = item
           .Where(x => !(x is EmptyJsonItem) && !(x is UnsupportedJsonItem))
           .Select(x => x.GenerateJObject());
 
-        foreach (var i in rcpItems)
-          rcpParameterItems.Add(i);
+        foreach (var i in rcModifierItems)
+          rcModifierParameterItems.Add(i);
 
-        JObject processorObj = new JObject();
-        processorObj.Add(nameof(IJsonItem.Name), item.Name);
-        processorObj.Add("GUID", guid);
-        processorObj.Add(Constants.Parameters, rcpParameterItems);
-        runCollectionModifierItems.Add(processorObj);
+        JObject rcModifierObj = new JObject();
+        rcModifierObj.Add(nameof(IJsonItem.Name), item.Name);
+        rcModifierObj.Add("GUID", guid);
+        rcModifierObj.Add(Constants.Parameters, rcModifierParameterItems);
+        runCollectionModifierItems.Add(rcModifierObj);
       }
       #endregion
 
@@ -85,7 +82,6 @@ namespace HeuristicLab.JsonInterface {
       template[Constants.Metadata][Constants.HLFileLocation] = hlFilePath;
       template[Constants.Metadata][Constants.OptimizerDescription] = optimizer.Description;
       template[Constants.Parameters] = parameterItems;
-      template[Constants.Results] = resultItems;
       template[Constants.RunCollectionModifiers] = runCollectionModifierItems;
       #endregion
 

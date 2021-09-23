@@ -9,7 +9,6 @@
     internal const string HLFileLocation = "HLFileLocation";
     internal const string OptimizerDescription = "OptimizerDescription";
     internal const string Parameters = "Parameters";
-    internal const string Results = "Results";
     internal const string RunCollectionModifiers = "RunCollectionModifiers";
 
     internal const string Template = @"{
@@ -19,7 +18,6 @@
         '" + OptimizerDescription + @"':''
       },
       '" + Parameters + @"': [],
-      '" + Results + @"': [],
       '" + RunCollectionModifiers + @"': []
     }";
   }
