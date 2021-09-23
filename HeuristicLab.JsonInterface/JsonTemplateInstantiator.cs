@@ -10,20 +10,13 @@ using Newtonsoft.Json.Linq;
 
 namespace HeuristicLab.JsonInterface {
   public readonly struct InstantiatorResult {
-    public InstantiatorResult(IOptimizer optimizer, IEnumerable<IResultJsonItem> configuredResultItems) {
-      Optimizer = optimizer;
-      ConfiguredResultItems = configuredResultItems;
-      RunCollectionModifiers = Enumerable.Empty<IRunCollectionModifier>();
-    }
 
-    public InstantiatorResult(IOptimizer optimizer, IEnumerable<IResultJsonItem> configuredResultItems, IEnumerable<IRunCollectionModifier> runCollectionModifiers) {
+    public InstantiatorResult(IOptimizer optimizer, IEnumerable<IRunCollectionModifier> runCollectionModifiers) {
       Optimizer = optimizer;
-      ConfiguredResultItems = configuredResultItems;
       RunCollectionModifiers = runCollectionModifiers;
     }
 
     public IOptimizer Optimizer { get; }
-    public IEnumerable<IResultJsonItem> ConfiguredResultItems { get; }
     public IEnumerable<IRunCollectionModifier> RunCollectionModifiers { get; }
   }
 
@@ -74,6 +67,7 @@ namespace HeuristicLab.JsonInterface {
       string hLFileLocation = Path.Combine(Path.GetDirectoryName(templateFileFullPath), relativePath);
       ProtoBufSerializer serializer = new ProtoBufSerializer();
       IOptimizer optimizer = (IOptimizer)serializer.Deserialize(hLFileLocation);
+      optimizer.Prepare(true);
       #endregion
 
       // collect all parameterizedItems from template
@@ -93,7 +87,7 @@ namespace HeuristicLab.JsonInterface {
       // inject configuration
       JsonItemConverter.Inject(optimizer, rootItem);
 
-      return new InstantiatorResult(optimizer, CollectResults(), CollectRunCollectionModifiers());
+      return new InstantiatorResult(optimizer, CollectRunCollectionModifiers());
     }
 
     /// <summary>
@@ -101,34 +95,28 @@ namespace HeuristicLab.JsonInterface {
     /// </summary>
     private IEnumerable<IRunCollectionModifier> CollectRunCollectionModifiers() {
       IList<IRunCollectionModifier> runCollectionModifiers = new List<IRunCollectionModifier>();
+
+      if (Template is JObject o && !o.ContainsKey(Constants.RunCollectionModifiers))
+        return Enumerable.Empty<IRunCollectionModifier>();
+
       foreach (JObject obj in Template[Constants.RunCollectionModifiers]) {
         var guid = obj["GUID"].ToString();
         var parameters = obj[Constants.Parameters];
         var type = Mapper.StaticCache.GetType(new Guid(guid));
-        var rcp = (IRunCollectionModifier)Activator.CreateInstance(type);
-        var rcpItem = JsonItemConverter.Extract(rcp);
+        var rcModifier = (IRunCollectionModifier)Activator.CreateInstance(type);
+        var rcModifierItem = JsonItemConverter.Extract(rcModifier);
 
         foreach (JObject param in parameters) {
           var path = param[nameof(IJsonItem.Path)].ToString();
-          foreach (var item in rcpItem)
+          foreach (var item in rcModifierItem)
             if (item.Path == path)
               item.SetJObject(param);
         }
 
-        JsonItemConverter.Inject(rcp, rcpItem);
-        runCollectionModifiers.Add(rcp);
+        JsonItemConverter.Inject(rcModifier, rcModifierItem);
+        runCollectionModifiers.Add(rcModifier);
       }
       return runCollectionModifiers;
-    }
-
-    private IEnumerable<IResultJsonItem> CollectResults() {
-      IList<IResultJsonItem> res = new List<IResultJsonItem>();
-      foreach(JObject obj in Template[Constants.Results]) {
-        var resultItem = new ResultJsonItem();
-        resultItem.SetJObject(obj);
-        res.Add(resultItem);
-      }
-      return res;
     }
 
     private void CollectParameterizedItems(IOptimizer optimizer) {

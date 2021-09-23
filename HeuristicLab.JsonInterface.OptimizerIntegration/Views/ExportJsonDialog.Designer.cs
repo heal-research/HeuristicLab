@@ -33,26 +33,16 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
       this.treeView = new System.Windows.Forms.TreeView();
       this.groupBoxDetails = new System.Windows.Forms.GroupBox();
       this.panelParameterDetails = new System.Windows.Forms.Panel();
-      this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-      this.treeViewResults = new System.Windows.Forms.TreeView();
-      this.groupBox = new System.Windows.Forms.GroupBox();
-      this.panelResultDetails = new System.Windows.Forms.Panel();
       this.splitContainer2 = new System.Windows.Forms.SplitContainer();
       this.tabControl1 = new System.Windows.Forms.TabControl();
       this.tabPage1 = new System.Windows.Forms.TabPage();
       this.tabPage2 = new System.Windows.Forms.TabPage();
-      this.tabPage3 = new System.Windows.Forms.TabPage();
-      this.postProcessorListControl = new HeuristicLab.JsonInterface.OptimizerIntegration.ResultCollectionPostProcessorControl();
+      this.postProcessorListControl = new HeuristicLab.JsonInterface.OptimizerIntegration.RunCollectionModifierControl();
       this.label1 = new System.Windows.Forms.Label();
       this.textBoxTemplateName = new System.Windows.Forms.TextBox();
       this.errorProvider = new System.Windows.Forms.ErrorProvider(this.components);
       this.jsonItemBindingSource = new System.Windows.Forms.BindingSource(this.components);
       this.groupBoxDetails.SuspendLayout();
-      ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
-      this.splitContainer1.Panel1.SuspendLayout();
-      this.splitContainer1.Panel2.SuspendLayout();
-      this.splitContainer1.SuspendLayout();
-      this.groupBox.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
       this.splitContainer2.Panel1.SuspendLayout();
       this.splitContainer2.Panel2.SuspendLayout();
@@ -60,7 +50,6 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
       this.tabControl1.SuspendLayout();
       this.tabPage1.SuspendLayout();
       this.tabPage2.SuspendLayout();
-      this.tabPage3.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.jsonItemBindingSource)).BeginInit();
       this.SuspendLayout();
@@ -112,55 +101,6 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
       this.panelParameterDetails.Size = new System.Drawing.Size(406, 480);
       this.panelParameterDetails.TabIndex = 0;
       // 
-      // splitContainer1
-      // 
-      this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.splitContainer1.Location = new System.Drawing.Point(3, 3);
-      this.splitContainer1.Name = "splitContainer1";
-      // 
-      // splitContainer1.Panel1
-      // 
-      this.splitContainer1.Panel1.Controls.Add(this.treeViewResults);
-      this.splitContainer1.Panel1.Padding = new System.Windows.Forms.Padding(0, 6, 0, 1);
-      // 
-      // splitContainer1.Panel2
-      // 
-      this.splitContainer1.Panel2.Controls.Add(this.groupBox);
-      this.splitContainer1.Size = new System.Drawing.Size(796, 499);
-      this.splitContainer1.SplitterDistance = 380;
-      this.splitContainer1.TabIndex = 7;
-      // 
-      // treeViewResults
-      // 
-      this.treeViewResults.CheckBoxes = true;
-      this.treeViewResults.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.treeViewResults.Location = new System.Drawing.Point(0, 6);
-      this.treeViewResults.Name = "treeViewResults";
-      this.treeViewResults.Size = new System.Drawing.Size(380, 492);
-      this.treeViewResults.TabIndex = 6;
-      this.treeViewResults.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.treeViewResults_AfterCheck);
-      this.treeViewResults.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeViewResults_AfterSelect);
-      // 
-      // groupBox
-      // 
-      this.groupBox.Controls.Add(this.panelResultDetails);
-      this.groupBox.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.groupBox.Location = new System.Drawing.Point(0, 0);
-      this.groupBox.Name = "groupBox";
-      this.groupBox.Size = new System.Drawing.Size(412, 499);
-      this.groupBox.TabIndex = 5;
-      this.groupBox.TabStop = false;
-      this.groupBox.Text = "Details";
-      // 
-      // panelResultDetails
-      // 
-      this.panelResultDetails.AutoScroll = true;
-      this.panelResultDetails.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.panelResultDetails.Location = new System.Drawing.Point(3, 16);
-      this.panelResultDetails.Name = "panelResultDetails";
-      this.panelResultDetails.Size = new System.Drawing.Size(406, 480);
-      this.panelResultDetails.TabIndex = 0;
-      // 
       // splitContainer2
       // 
       this.splitContainer2.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -186,7 +126,6 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
             | System.Windows.Forms.AnchorStyles.Right)));
       this.tabControl1.Controls.Add(this.tabPage1);
       this.tabControl1.Controls.Add(this.tabPage2);
-      this.tabControl1.Controls.Add(this.tabPage3);
       this.tabControl1.Location = new System.Drawing.Point(12, 38);
       this.tabControl1.Name = "tabControl1";
       this.tabControl1.SelectedIndex = 0;
@@ -206,24 +145,13 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
       // 
       // tabPage2
       // 
-      this.tabPage2.Controls.Add(this.splitContainer1);
+      this.tabPage2.Controls.Add(this.postProcessorListControl);
       this.tabPage2.Location = new System.Drawing.Point(4, 22);
       this.tabPage2.Name = "tabPage2";
-      this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
       this.tabPage2.Size = new System.Drawing.Size(802, 505);
-      this.tabPage2.TabIndex = 1;
-      this.tabPage2.Text = "Results";
+      this.tabPage2.TabIndex = 2;
+      this.tabPage2.Text = "Result Collection Modifiers";
       this.tabPage2.UseVisualStyleBackColor = true;
-      // 
-      // tabPage3
-      // 
-      this.tabPage3.Controls.Add(this.postProcessorListControl);
-      this.tabPage3.Location = new System.Drawing.Point(4, 22);
-      this.tabPage3.Name = "tabPage3";
-      this.tabPage3.Size = new System.Drawing.Size(802, 505);
-      this.tabPage3.TabIndex = 2;
-      this.tabPage3.Text = "Result Collection Modifiers";
-      this.tabPage3.UseVisualStyleBackColor = true;
       // 
       // postProcessorListControl
       // 
@@ -280,11 +208,6 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
       this.RightToLeft = System.Windows.Forms.RightToLeft.No;
       this.Text = "Export Json";
       this.groupBoxDetails.ResumeLayout(false);
-      this.splitContainer1.Panel1.ResumeLayout(false);
-      this.splitContainer1.Panel2.ResumeLayout(false);
-      ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
-      this.splitContainer1.ResumeLayout(false);
-      this.groupBox.ResumeLayout(false);
       this.splitContainer2.Panel1.ResumeLayout(false);
       this.splitContainer2.Panel2.ResumeLayout(false);
       ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
@@ -292,7 +215,6 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
       this.tabControl1.ResumeLayout(false);
       this.tabPage1.ResumeLayout(false);
       this.tabPage2.ResumeLayout(false);
-      this.tabPage3.ResumeLayout(false);
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
       ((System.ComponentModel.ISupportInitialize)(this.jsonItemBindingSource)).EndInit();
       this.ResumeLayout(false);
@@ -311,15 +233,10 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
     private System.Windows.Forms.SplitContainer splitContainer2;
     private System.Windows.Forms.TabControl tabControl1;
     private System.Windows.Forms.TabPage tabPage1;
-    private System.Windows.Forms.TabPage tabPage2;
-    private System.Windows.Forms.TreeView treeViewResults;
     private System.Windows.Forms.Label label1;
     private System.Windows.Forms.TextBox textBoxTemplateName;
     private System.Windows.Forms.ErrorProvider errorProvider;
-    private System.Windows.Forms.SplitContainer splitContainer1;
-    private System.Windows.Forms.GroupBox groupBox;
-    private System.Windows.Forms.Panel panelResultDetails;
-    private System.Windows.Forms.TabPage tabPage3;
-    private ResultCollectionPostProcessorControl postProcessorListControl;
+    private System.Windows.Forms.TabPage tabPage2;
+    private RunCollectionModifierControl postProcessorListControl;
   }
 }

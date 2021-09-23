@@ -1,6 +1,6 @@
 ﻿
 namespace HeuristicLab.JsonInterface.OptimizerIntegration {
-  partial class ResultCollectionPostProcessorControl {
+  partial class RunCollectionModifierControl {
     /// <summary> 
     /// Erforderliche Designervariable.
     /// </summary>

@@ -11,8 +11,8 @@ using HeuristicLab.Collections;
 using HeuristicLab.Optimization;
 
 namespace HeuristicLab.JsonInterface.OptimizerIntegration {
-  public partial class ResultCollectionPostProcessorControl : Core.Views.CheckedItemListView<IRunCollectionModifier> {
-    public ResultCollectionPostProcessorControl() {
+  public partial class RunCollectionModifierControl : Core.Views.CheckedItemListView<IRunCollectionModifier> {
+    public RunCollectionModifierControl() {
       InitializeComponent();
     }
 

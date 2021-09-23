@@ -29,11 +29,9 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
       get => content;
       set {
         content = value;
-        //CheckedItemListView
         #region Clear
         VMs = new List<IJsonItemVM>();
         treeView.Nodes.Clear();
-        treeViewResults.Nodes.Clear();
         #endregion
         Optimizer = content as IOptimizer;
         if(Optimizer != null) {
@@ -45,7 +43,6 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
           treeView.Nodes.Add(parent);
           treeView.ExpandAll();
           panelParameterDetails.Controls.Clear();
-          panelResultDetails.Controls.Clear();
         }
       } 
     }
@@ -60,8 +57,8 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
 
     public ExportJsonDialog() {
       InitializeComponent();
-      this.RunCollectionModifiers = this.postProcessorListControl.Content;
-      this.Icon = HeuristicLab.Common.Resources.HeuristicLab.Icon;
+      RunCollectionModifiers = postProcessorListControl.Content;
+      Icon = Common.Resources.HeuristicLab.Icon;
       InitCache();
     }
 
@@ -73,8 +70,6 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
 
       if (FolderBrowserDialog.ShowDialog() == DialogResult.OK) {
         try {
-          //foreach(var x in PostProcessors.CheckedItems)
-            
           JsonTemplateGenerator.GenerateTemplate(
             Path.Combine(FolderBrowserDialog.SelectedPath, textBoxTemplateName.Text), 
             Optimizer, Root, RunCollectionModifiers.CheckedItems.Select(x => x.Value));
@@ -91,14 +86,8 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
         foreach (var c in item.Children) {
           if (IsDrawableItem(c)) {
             TreeNode childNode = new TreeNode(c.Name);
-            if (c is IResultJsonItem) {
-              treeViewResults.Nodes.Add(childNode);
-              IJsonItemVM vm = RegisterItem(childNode, c, treeViewResults);
-              if (vm != null) vm.Selected = true;              
-            } else {
-              node.Nodes.Add(childNode);
-              BuildTreeNode(childNode, c);
-            }
+            node.Nodes.Add(childNode);
+            BuildTreeNode(childNode, c);
           }
         }
       }
@@ -127,11 +116,9 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
 
     private bool IsDrawableItem(IJsonItem item) {
       bool b = false;
-      if (item.Children != null) {
-        foreach (var c in item.Children) {
+      if (item.Children != null)
+        foreach (var c in item.Children)
           b = b || IsDrawableItem(c);
-        }
-      }
       
       return b || !(item is EmptyJsonItem) || !(item is UnsupportedJsonItem);
     }
@@ -139,12 +126,6 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
     private void treeView_AfterSelect(object sender, TreeViewEventArgs e) {
       if(Node2Control.TryGetValue(treeView.SelectedNode, out UserControl control)) {
         SetControlOnPanel(control, panelParameterDetails);
-      }
-    }
-
-    private void treeViewResults_AfterSelect(object sender, TreeViewEventArgs e) {
-      if (Node2Control.TryGetValue(treeViewResults.SelectedNode, out UserControl control)) {
-        SetControlOnPanel(control, panelResultDetails);
       }
     }
 
@@ -170,19 +151,15 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
     }
 
     private void TreeView_AfterCheck(object sender, TreeViewEventArgs e) {
-      if (e.Action != TreeViewAction.Unknown) {
-        if (Node2VM.TryGetValue(e.Node, out IJsonItemVM vm)) {
+      if (e.Action != TreeViewAction.Unknown)
+        if (Node2VM.TryGetValue(e.Node, out IJsonItemVM vm))
           vm.Selected = e.Node.Checked;
-        }
-      }
     }
 
     private void treeViewResults_AfterCheck(object sender, TreeViewEventArgs e) {
-      if (e.Action != TreeViewAction.Unknown) {
-        if (Node2VM.TryGetValue(e.Node, out IJsonItemVM vm)) {
+      if (e.Action != TreeViewAction.Unknown)
+        if (Node2VM.TryGetValue(e.Node, out IJsonItemVM vm))
           vm.Selected = e.Node.Checked;
-        }
-      }
     }
   }
 }

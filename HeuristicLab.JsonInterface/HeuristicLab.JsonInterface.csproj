@@ -67,7 +67,6 @@
     <Compile Include="Converters\ExperimentConverter.cs" />
     <Compile Include="Converters\ItemCollectionConverter.cs" />
     <Compile Include="Converters\RegressionProblemDataConverter.cs" />
-    <Compile Include="Converters\ResultConverter.cs" />
     <Compile Include="Converters\ResultParameterConverter.cs" />
     <Compile Include="Converters\ValueLookupParameterConverter.cs" />
     <Compile Include="Converters\ValueRangeConverter.cs" />
@@ -79,8 +78,6 @@
     <Compile Include="Interfaces\ILookupJsonItem.cs" />
     <Compile Include="Interfaces\IMatrixJsonItem.cs" />
     <Compile Include="Interfaces\IRangedJsonItem.cs" />
-    <Compile Include="Interfaces\IResultFormatter.cs" />
-    <Compile Include="Interfaces\IResultJsonItem.cs" />
     <Compile Include="Interfaces\IValueJsonItem.cs" />
     <Compile Include="Interfaces\IValueLookupJsonItem.cs" />
     <Compile Include="Interfaces\IListJsonItem.cs" />
@@ -101,7 +98,6 @@
     <Compile Include="JsonItems\LookupJsonItem.cs" />
     <Compile Include="JsonItems\MatrixJsonItem.cs" />
     <Compile Include="JsonItems\RangedJsonItem.cs" />
-    <Compile Include="JsonItems\ResultJsonItem.cs" />
     <Compile Include="JsonItems\StringJsonItem.cs" />
     <Compile Include="JsonItems\UnsupportedJsonItem.cs" />
     <Compile Include="JsonItems\ValueJsonItem.cs" />
@@ -111,11 +107,6 @@
     <Compile Include="ResultCollectionProcessors\RunCollectionSRSolutionGraphVizFormatter.cs" />
     <Compile Include="ResultCollectionProcessors\RunCollectionSRSolutionLatexFormatter.cs" />
     <Compile Include="ResultCollectionProcessors\RunCollectionSRSolutionPythonFormatter.cs" />
-    <Compile Include="ResultFormatters\MatlabResultFormatter.cs" />
-    <Compile Include="ResultFormatters\PythonResultFormatter.cs" />
-    <Compile Include="ResultFormatters\ResultFormatter.cs" />
-    <Compile Include="ResultFormatters\StringResultFormatter.cs" />
-    <Compile Include="ResultFormatters\SymbolicRegressionSolutionFormatterBase.cs" />
     <Compile Include="SingleLineArrayJsonWriter.cs" />
     <Compile Include="JsonTemplateGenerator.cs" />
     <Compile Include="JsonTemplateInstantiator.cs" />

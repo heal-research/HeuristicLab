@@ -11,19 +11,9 @@ namespace HeuristicLab.JsonInterface {
       t.GetInterfaces().Any(x => x == typeof(IResultParameter));
 
     public override IJsonItem Extract(IItem value, IJsonItemConverter root) {
-      IResultParameter res = value as IResultParameter;
-      var formatter = ResultFormatter.ForType(res.DataType).Last();
-      return new ResultJsonItem() {
-        Name = res.ActualName,
-        Description = res.Description,
-        ResultFormatterType = formatter.GetType().FullName,
-        ValueType = res.DataType
-      };
+      return new UnsupportedJsonItem();
     }
 
-    public override void Inject(IItem item, IJsonItem data, IJsonItemConverter root) {
-      IResultParameter res = item as IResultParameter;
-      res.ActualName = data.Name;
-    }
+    public override void Inject(IItem item, IJsonItem data, IJsonItemConverter root) {}
   }
 }
