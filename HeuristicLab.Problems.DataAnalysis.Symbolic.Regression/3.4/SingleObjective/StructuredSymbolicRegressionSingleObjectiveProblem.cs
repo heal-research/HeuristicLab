@@ -10,6 +10,7 @@ using HeuristicLab.Common;
 using HeuristicLab.Problems.Instances;
 using HeuristicLab.Parameters;
 using HeuristicLab.Data;
+using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression.SingleObjective {
   [StorableType("7464E84B-65CC-440A-91F0-9FA920D730F9")]
@@ -26,7 +27,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression.SingleObjective
     #region Parameter
     public IValueParameter<IRegressionProblemData> ProblemDataParameter => (IValueParameter<IRegressionProblemData>)Parameters[ProblemDataParameterName];
     public IFixedValueParameter<StringValue> StructureDefinitionParameter => (IFixedValueParameter<StringValue>)Parameters[StructureDefinitionParameterName];
-    public IValueParameter<ISymbolicDataAnalysisGrammar> GrammarParameter => (IValueParameter<ISymbolicDataAnalysisGrammar>)Parameters[GrammarParameterName];
+    public IValueParameter<ISymbolicDataAnalysisGrammar> GrammarParameter => (IValueParameter<ISymbolicDataAnalysisGrammar>)Parameters[GrammarParameterName]; // könnte auch weg?
     #endregion
 
     #region Properties
@@ -60,9 +61,20 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression.SingleObjective
 
     #region Constructors & Cloning
     public StructuredSymbolicRegressionSingleObjectiveProblem() {
-      Parameters.Add(new ValueParameter<RegressionProblemData>(ProblemDataParameterName, new RegressionProblemData()));
-      Parameters.Add(new FixedValueParameter<StringValue>(StructureDefinitionParameterName, new StringValue("")));
-      Parameters.Add(new ValueParameter<ISymbolicDataAnalysisGrammar>(GrammarParameterName, new LinearScalingGrammar()));
+      var problemData = new ShapeConstrainedRegressionProblemData();
+      var grammar = new LinearScalingGrammar();
+      var varSym = (Variable)grammar.GetSymbol("Variable");
+      varSym.AllVariableNames = problemData.InputVariables.Select(x => x.Value);
+      varSym.VariableNames = problemData.InputVariables.Select(x => x.Value);
+      varSym.Enabled = true;
+
+      Parameters.Add(new ValueParameter<RegressionProblemData>(ProblemDataParameterName, problemData));
+      Parameters.Add(new FixedValueParameter<StringValue>(StructureDefinitionParameterName, new StringValue("e^f(x)/F(y)")));
+      Parameters.Add(new ValueParameter<ISymbolicDataAnalysisGrammar>(GrammarParameterName, grammar));
+      var parser = new InfixExpressionParser();
+      var tree = parser.Parse(StructureDefinition); 
+      
+      GetSubFunctions(tree);
     }
 
     public StructuredSymbolicRegressionSingleObjectiveProblem(StructuredSymbolicRegressionSingleObjectiveProblem original, Cloner cloner) {
@@ -76,7 +88,24 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression.SingleObjective
       new StructuredSymbolicRegressionSingleObjectiveProblem(this, cloner);
     #endregion
 
+    public void GetSubFunctions(ISymbolicExpressionTree tree) {
+      int count = 1;
+      foreach(var node in tree.IterateNodesPrefix())
+        if(node.Symbol is SubFunctionSymbol)
+          Encoding.Add(new SymbolicExpressionTreeEncoding($"f{count++}", Grammar/*new LinearScalingGrammar()*/, 25, 8));
+    }
+
     public override double Evaluate(Individual individual, IRandom random) {
+      foreach(var kvp in individual.Values) {
+        if(kvp.Value is SymbolicExpressionTree tree) {
+          foreach(var n in tree.IterateNodesPrefix()) {
+            if(n.Symbol is Variable v) {
+              var t = v.VariableNames;
+            }
+          }
+          Console.WriteLine(tree);
+        }
+      }
       return 0.0;
     }
 

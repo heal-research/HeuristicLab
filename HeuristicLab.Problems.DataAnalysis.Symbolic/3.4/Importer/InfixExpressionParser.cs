@@ -137,6 +137,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         { "XOR", new Xor()},
         { "DIFF", new Derivative()},
         { "LAG", new LaggedVariable() },
+        { "F", new SubFunctionSymbol() }
       };
 
 
