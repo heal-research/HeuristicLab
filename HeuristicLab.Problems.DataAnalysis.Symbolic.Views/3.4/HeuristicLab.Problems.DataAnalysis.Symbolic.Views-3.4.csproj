@@ -121,6 +121,18 @@
     <Compile Include="InteractiveSymbolicExpressionTreeChart.Designer.cs">
       <DependentUpon>InteractiveSymbolicExpressionTreeChart.cs</DependentUpon>
     </Compile>
+    <Compile Include="StructureTemplate\StructureTemplateView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="StructureTemplate\StructureTemplateView.Designer.cs">
+      <DependentUpon>StructureTemplateView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="StructureTemplate\SubFunctionListView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="StructureTemplate\SubFunctionListView.Designer.cs">
+      <DependentUpon>SubFunctionListView.cs</DependentUpon>
+    </Compile>
     <Compile Include="SymbolicDataAnalysisModelMathView.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -303,6 +315,11 @@
     <Content Include="displayModelFrame.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="StructureTemplate\StructureTemplateView.resx">
+      <DependentUpon>StructureTemplateView.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

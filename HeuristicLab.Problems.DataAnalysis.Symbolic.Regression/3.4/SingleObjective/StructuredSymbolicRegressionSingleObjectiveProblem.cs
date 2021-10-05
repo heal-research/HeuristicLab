@@ -12,21 +12,24 @@ using HeuristicLab.Parameters;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 
-namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression.SingleObjective {
+namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
   [StorableType("7464E84B-65CC-440A-91F0-9FA920D730F9")]
-  [Item(Name = "StructuredSymbolicRegressionSingleObjectiveProblem", Description = "A problem with a structural definition and unfixed subfunctions.")]
+  [Item(Name = "Structured Symbolic Regression Single Objective Problem (single-objective)", Description = "A problem with a structural definition and unfixed subfunctions.")]
+  [Creatable(CreatableAttribute.Categories.GeneticProgrammingProblems, Priority = 150)]
   public class StructuredSymbolicRegressionSingleObjectiveProblem : SingleObjectiveBasicProblem<MultiEncoding>, IRegressionProblem, IProblemInstanceConsumer<RegressionProblemData> {
 
     #region Constants
     private const string ProblemDataParameterName = "ProblemData";
     private const string StructureDefinitionParameterName = "Structure Definition";
     private const string GrammarParameterName = "Grammar";
+    private const string StructureTemplateParameterName = "Structure Template";
 
     #endregion
 
     #region Parameter
     public IValueParameter<IRegressionProblemData> ProblemDataParameter => (IValueParameter<IRegressionProblemData>)Parameters[ProblemDataParameterName];
     public IFixedValueParameter<StringValue> StructureDefinitionParameter => (IFixedValueParameter<StringValue>)Parameters[StructureDefinitionParameterName];
+    public IFixedValueParameter<StructureTemplate> StructureTemplateParameter => (IFixedValueParameter<StructureTemplate>)Parameters[StructureTemplateParameterName];
     public IValueParameter<ISymbolicDataAnalysisGrammar> GrammarParameter => (IValueParameter<ISymbolicDataAnalysisGrammar>)Parameters[GrammarParameterName]; // könnte auch weg?
     #endregion
 
@@ -42,6 +45,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression.SingleObjective
     public string StructureDefinition {
       get => StructureDefinitionParameter.Value.Value;
       set => StructureDefinitionParameter.Value.Value = value;
+    }
+
+    public StructureTemplate StructureTemplate {
+      get => StructureTemplateParameter.Value;
     }
 
     public ISymbolicDataAnalysisGrammar Grammar {
@@ -70,6 +77,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression.SingleObjective
 
       Parameters.Add(new ValueParameter<RegressionProblemData>(ProblemDataParameterName, problemData));
       Parameters.Add(new FixedValueParameter<StringValue>(StructureDefinitionParameterName, new StringValue("e^f(x)/F(y)")));
+      Parameters.Add(new FixedValueParameter<StructureTemplate>(StructureTemplateParameterName, new StructureTemplate()));
       Parameters.Add(new ValueParameter<ISymbolicDataAnalysisGrammar>(GrammarParameterName, grammar));
       var parser = new InfixExpressionParser();
       var tree = parser.Parse(StructureDefinition); 
@@ -77,12 +85,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression.SingleObjective
       GetSubFunctions(tree);
     }
 
-    public StructuredSymbolicRegressionSingleObjectiveProblem(StructuredSymbolicRegressionSingleObjectiveProblem original, Cloner cloner) {
-    }
+    public StructuredSymbolicRegressionSingleObjectiveProblem(StructuredSymbolicRegressionSingleObjectiveProblem original, Cloner cloner) { }
 
     [StorableConstructor]
-    protected StructuredSymbolicRegressionSingleObjectiveProblem(StorableConstructorFlag _) : base(_) {
-    }
+    protected StructuredSymbolicRegressionSingleObjectiveProblem(StorableConstructorFlag _) : base(_) { }
 
     public override IDeepCloneable Clone(Cloner cloner) =>
       new StructuredSymbolicRegressionSingleObjectiveProblem(this, cloner);
@@ -96,7 +102,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression.SingleObjective
     }
 
     public override double Evaluate(Individual individual, IRandom random) {
-      foreach(var kvp in individual.Values) {
+      Console.WriteLine(StructureTemplate.Template);
+      foreach (var kvp in individual.Values) {
         if(kvp.Value is SymbolicExpressionTree tree) {
           foreach(var n in tree.IterateNodesPrefix()) {
             if(n.Symbol is Variable v) {
