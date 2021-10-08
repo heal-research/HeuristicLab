@@ -247,6 +247,7 @@
     <Compile Include="Symbols\CubeRoot.cs" />
     <Compile Include="Symbols\HyperbolicTangent.cs" />
     <Compile Include="Symbols\SubFunctionSymbol.cs" />
+    <Compile Include="Symbols\SubFunctionTreeNode.cs" />
     <Compile Include="Symbols\VariableBase.cs" />
     <Compile Include="Symbols\VariableTreeNodeBase.cs" />
     <Compile Include="Symbols\Xor.cs" />

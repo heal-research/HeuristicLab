@@ -20,10 +20,21 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       set => base.Content = value;
     }
 
-
     public StructureTemplateView() {
       InitializeComponent();
       errorLabel.Text = "";
+    }
+
+    protected override void OnContentChanged() {
+      base.OnContentChanged();
+      if (Content == null) return;
+
+      expressionInput.Text = Content.Template;
+      symRegTreeChart.Content = Content.Tree;
+      subFunctionListView.Content = new ItemList<SubFunction>(Content.SubFunctions.Values).AsReadOnly();
+      
+      errorLabel.Text = "";
+      
     }
 
     private void parseButton_Click(object sender, EventArgs e) {
@@ -33,7 +44,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
           symRegTreeChart.Content = Content.Tree;
 
           var subFunctionList = new ItemList<SubFunction>();
-          foreach (var func in Content.SubFunctions)
+          foreach (var func in Content.SubFunctions.Values)
             subFunctionList.Add(func);
           subFunctionListView.Content = subFunctionList.AsReadOnly();
 

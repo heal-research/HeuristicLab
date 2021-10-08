@@ -452,12 +452,21 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             laggedVarNode.VariableName = varId.strVal;
             laggedVarNode.Lag = (int)Math.Round(sign * lagToken.doubleVal);
             laggedVarNode.Weight = 1.0;
+          } else if (funcNode.Symbol is SubFunctionSymbol) {
+            var subFunction = funcNode as SubFunctionTreeNode;
+            // input arguments
+            var args = ParseArgList(tokens);
+            IList<string> functionArguments = new List<string>();
+            foreach (var arg in args) 
+              if(arg is VariableTreeNode varTreeNode)
+                functionArguments.Add(varTreeNode.VariableName);
+            subFunction.FunctionArguments = functionArguments;
           } else {
             // functions
             var args = ParseArgList(tokens);
             // check number of arguments
             if (funcNode.Symbol.MinimumArity > args.Length || funcNode.Symbol.MaximumArity < args.Length) {
-              throw new ArgumentException(string.Format("Symbol {0} requires between {1} and  {2} arguments.", funcId,
+              throw new ArgumentException(string.Format("Symbol {0} requires between {1} and {2} arguments.", funcId,
                 funcNode.Symbol.MinimumArity, funcNode.Symbol.MaximumArity));
             }
             foreach (var arg in args) funcNode.AddSubtree(arg);

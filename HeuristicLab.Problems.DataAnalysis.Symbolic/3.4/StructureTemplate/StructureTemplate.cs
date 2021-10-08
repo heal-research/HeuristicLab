@@ -13,6 +13,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [Item("StructureTemplate", "Structure Template")]
   public class StructureTemplate : Item {
 
+    #region Properties
     [Storable]
     private string template = "";
     public string Template {
@@ -21,7 +22,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         if(template != value) {
           template = value;
           tree = Parser.Parse(template);
-          subFunctions = GetSubFunctions(Tree);
+          GetSubFunctions(Tree);
+          OnChanged();
         }
       } 
     }
@@ -30,15 +32,25 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     private ISymbolicExpressionTree tree;
     public ISymbolicExpressionTree Tree => tree;
 
+    //[Storable]
+    //private IDictionary<SubFunctionTreeNode, SubFunction> subFunctions;
     [Storable]
-    private IEnumerable<SubFunction> subFunctions;
-    public IEnumerable<SubFunction> SubFunctions => subFunctions;
+    public IDictionary<SubFunctionTreeNode, SubFunction> SubFunctions { get; private set; } = new Dictionary<SubFunctionTreeNode, SubFunction>();
+      //subFunctions == null ? new Dictionary<SubFunctionTreeNode, SubFunction>() : subFunctions;
 
     protected InfixExpressionParser Parser { get; set; } = new InfixExpressionParser();
+    #endregion
 
+    #region Events
+    public event EventHandler Changed;
+    
+    private void OnChanged() => Changed?.Invoke(this, EventArgs.Empty);
+    #endregion
 
     #region Constructors
-    public StructureTemplate() { }
+    public StructureTemplate() {
+      Template = "f(x)*f(y)+5";
+    }
 
     [StorableConstructor]
     protected StructureTemplate(StorableConstructorFlag _) : base(_) { }
@@ -51,11 +63,17 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       new StructureTemplate(this, cloner);
     #endregion
 
-    private IEnumerable<SubFunction> GetSubFunctions(ISymbolicExpressionTree tree) {
+    private void GetSubFunctions(ISymbolicExpressionTree tree) {
       int count = 1;
       foreach (var node in tree.IterateNodesPrefix())
-        if (node.Symbol is SubFunctionSymbol)
-          yield return new SubFunction() { Name = $"f{count++}" };
+        if (node is SubFunctionTreeNode subFunctionTreeNode) { 
+          var subFunction = new SubFunction() { 
+            Name = $"f{count++}({string.Join(",", subFunctionTreeNode.FunctionArguments)})", 
+            FunctionArguments = subFunctionTreeNode.FunctionArguments 
+          };
+          SubFunctions.Add(subFunctionTreeNode, subFunction);
+        }
+
     }
   }
 }

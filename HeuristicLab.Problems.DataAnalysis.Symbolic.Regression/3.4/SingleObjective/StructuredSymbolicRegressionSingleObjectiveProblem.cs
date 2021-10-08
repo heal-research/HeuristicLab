@@ -23,14 +23,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     private const string StructureDefinitionParameterName = "Structure Definition";
     private const string GrammarParameterName = "Grammar";
     private const string StructureTemplateParameterName = "Structure Template";
-
+    private const string MainTreeResultParameterName = "Main Tree";
     #endregion
 
     #region Parameter
     public IValueParameter<IRegressionProblemData> ProblemDataParameter => (IValueParameter<IRegressionProblemData>)Parameters[ProblemDataParameterName];
     public IFixedValueParameter<StringValue> StructureDefinitionParameter => (IFixedValueParameter<StringValue>)Parameters[StructureDefinitionParameterName];
     public IFixedValueParameter<StructureTemplate> StructureTemplateParameter => (IFixedValueParameter<StructureTemplate>)Parameters[StructureTemplateParameterName];
-    public IValueParameter<ISymbolicDataAnalysisGrammar> GrammarParameter => (IValueParameter<ISymbolicDataAnalysisGrammar>)Parameters[GrammarParameterName]; // könnte auch weg?
+    public IValueParameter<ISymbolicDataAnalysisGrammar> GrammarParameter => (IValueParameter<ISymbolicDataAnalysisGrammar>)Parameters[GrammarParameterName];
+    public IResultParameter<ISymbolicExpressionTree> MainTreeResultParameter => (IResultParameter<ISymbolicExpressionTree>)Parameters[MainTreeResultParameterName];
     #endregion
 
     #region Properties
@@ -75,34 +76,58 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       varSym.VariableNames = problemData.InputVariables.Select(x => x.Value);
       varSym.Enabled = true;
 
+      var structureTemplate = new StructureTemplate();
+      structureTemplate.Changed += (sender, args) => {
+        foreach (var e in Encoding.Encodings.ToArray())
+          Encoding.Remove(e);
+
+        foreach(var sf in structureTemplate.SubFunctions.Values) {
+          Encoding.Add(new SymbolicExpressionTreeEncoding(sf.Name, sf.Grammar, sf.MaximumSymbolicExpressionTreeLength, sf.MaximumSymbolicExpressionTreeDepth));
+        }
+      };
+
       Parameters.Add(new ValueParameter<RegressionProblemData>(ProblemDataParameterName, problemData));
-      Parameters.Add(new FixedValueParameter<StringValue>(StructureDefinitionParameterName, new StringValue("e^f(x)/F(y)")));
-      Parameters.Add(new FixedValueParameter<StructureTemplate>(StructureTemplateParameterName, new StructureTemplate()));
+      Parameters.Add(new FixedValueParameter<StructureTemplate>(StructureTemplateParameterName, structureTemplate));
       Parameters.Add(new ValueParameter<ISymbolicDataAnalysisGrammar>(GrammarParameterName, grammar));
-      var parser = new InfixExpressionParser();
-      var tree = parser.Parse(StructureDefinition); 
-      
-      GetSubFunctions(tree);
+      Parameters.Add(new ResultParameter<ISymbolicExpressionTree>(MainTreeResultParameterName, ""));
+      MainTreeResultParameter.DefaultValue = new SymbolicExpressionTree();
     }
 
     public StructuredSymbolicRegressionSingleObjectiveProblem(StructuredSymbolicRegressionSingleObjectiveProblem original, Cloner cloner) { }
 
     [StorableConstructor]
     protected StructuredSymbolicRegressionSingleObjectiveProblem(StorableConstructorFlag _) : base(_) { }
+    #endregion
 
+    #region Cloning
     public override IDeepCloneable Clone(Cloner cloner) =>
       new StructuredSymbolicRegressionSingleObjectiveProblem(this, cloner);
     #endregion
 
-    public void GetSubFunctions(ISymbolicExpressionTree tree) {
-      int count = 1;
-      foreach(var node in tree.IterateNodesPrefix())
-        if(node.Symbol is SubFunctionSymbol)
-          Encoding.Add(new SymbolicExpressionTreeEncoding($"f{count++}", Grammar/*new LinearScalingGrammar()*/, 25, 8));
-    }
-
     public override double Evaluate(Individual individual, IRandom random) {
-      Console.WriteLine(StructureTemplate.Template);
+      var templateTree = (ISymbolicExpressionTree)StructureTemplate.Tree.Clone();
+      var subFunctionDict = StructureTemplate.SubFunctions;
+          
+      // build main tree
+      foreach (var n in templateTree.IterateNodesPrefix()) {
+        if(n is SubFunctionTreeNode subFunctionTreeNode) {
+          if(subFunctionDict.TryGetValue(subFunctionTreeNode, out SubFunction subFunction)) {
+            var subFunctionTree = individual.SymbolicExpressionTree(subFunction.Name);
+            var parent = n.Parent;
+            // remove all subtrees
+
+            var subtreeCount = parent.SubtreeCount;
+            for (int idx = 0; idx < subtreeCount; ++idx)
+              parent.RemoveSubtree(idx);
+
+            // add new tree
+            parent.AddSubtree(subFunctionTree.Root);
+          }
+        }
+      }
+
+      MainTreeResultParameter.ActualValue = templateTree;
+      /*
       foreach (var kvp in individual.Values) {
         if(kvp.Value is SymbolicExpressionTree tree) {
           foreach(var n in tree.IterateNodesPrefix()) {
@@ -110,9 +135,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
               var t = v.VariableNames;
             }
           }
-          Console.WriteLine(tree);
         }
       }
+      */
       return 0.0;
     }
 
