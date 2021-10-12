@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using HeuristicLab.Core;
 using HEAL.Attic;
 using HeuristicLab.Common;
@@ -32,11 +29,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     private ISymbolicExpressionTree tree;
     public ISymbolicExpressionTree Tree => tree;
 
-    //[Storable]
-    //private IDictionary<SubFunctionTreeNode, SubFunction> subFunctions;
     [Storable]
     public IDictionary<SubFunctionTreeNode, SubFunction> SubFunctions { get; private set; } = new Dictionary<SubFunctionTreeNode, SubFunction>();
-      //subFunctions == null ? new Dictionary<SubFunctionTreeNode, SubFunction>() : subFunctions;
 
     protected InfixExpressionParser Parser { get; set; } = new InfixExpressionParser();
     #endregion
@@ -48,9 +42,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     #endregion
 
     #region Constructors
-    public StructureTemplate() {
-      Template = "f(x)*f(y)+5";
-    }
+    public StructureTemplate() { }
 
     [StorableConstructor]
     protected StructureTemplate(StorableConstructorFlag _) : base(_) { }
@@ -65,15 +57,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
     private void GetSubFunctions(ISymbolicExpressionTree tree) {
       int count = 1;
+      SubFunctions.Clear();
       foreach (var node in tree.IterateNodesPrefix())
         if (node is SubFunctionTreeNode subFunctionTreeNode) { 
           var subFunction = new SubFunction() { 
             Name = $"f{count++}({string.Join(",", subFunctionTreeNode.FunctionArguments)})", 
             FunctionArguments = subFunctionTreeNode.FunctionArguments 
           };
+          subFunctionTreeNode.SubFunction = subFunction;
           SubFunctions.Add(subFunctionTreeNode, subFunction);
         }
-
     }
   }
 }

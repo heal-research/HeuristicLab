@@ -15,6 +15,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     public new SubFunctionSymbol Symbol => (SubFunctionSymbol)base.Symbol;
 
     public IEnumerable<string> FunctionArguments { get; set; } = Enumerable.Empty<string>();
+    
+    public SubFunction SubFunction { get; set; }
     #endregion
 
     #region Constructors
@@ -23,7 +25,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     [StorableConstructor]
     protected SubFunctionTreeNode(StorableConstructorFlag _) : base(_) { }
 
-    protected SubFunctionTreeNode(SubFunctionTreeNode original, Cloner cloner) : base(original, cloner) { }
+    protected SubFunctionTreeNode(SubFunctionTreeNode original, Cloner cloner) : base(original, cloner) {
+      this.SubFunction = original.SubFunction;
+    }
     #endregion
 
     #region Cloning
