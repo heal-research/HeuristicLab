@@ -80,6 +80,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     // the lookup table is also used in the corresponding formatter
     internal static readonly BidirectionalLookup<string, ISymbol>
       knownSymbols = new BidirectionalLookup<string, ISymbol>(StringComparer.InvariantCulture, new SymbolComparer());
+    internal static readonly SubFunctionSymbol subFunctionSymbol = new SubFunctionSymbol();
 
     private Constant constant = new Constant();
     private Variable variable = new Variable();
@@ -136,8 +137,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         { "NOT", new Not()},
         { "XOR", new Xor()},
         { "DIFF", new Derivative()},
-        { "LAG", new LaggedVariable() },
-        { "F", new SubFunctionSymbol() }
+        { "LAG", new LaggedVariable() }/*,
+        { "F", new SubFunctionSymbol() }*/
       };
 
 
@@ -340,9 +341,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     private ISymbol GetSymbol(string tok) {
-      var symb = knownSymbols.GetByFirst(tok).FirstOrDefault();
-      if (symb == null) throw new ArgumentException(string.Format("Unknown token {0} found.", tok));
-      return symb;
+      if(knownSymbols.ContainsFirst(tok))
+        return knownSymbols.GetByFirst(tok).FirstOrDefault();
+      else
+        return subFunctionSymbol;
     }
 
     /// Term          = Fact { '*' Fact | '/' Fact }
@@ -452,15 +454,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             laggedVarNode.VariableName = varId.strVal;
             laggedVarNode.Lag = (int)Math.Round(sign * lagToken.doubleVal);
             laggedVarNode.Weight = 1.0;
-          } else if (funcNode.Symbol is SubFunctionSymbol) {
+          } else if (funcNode.Symbol is SubFunctionSymbol) { // SubFunction
             var subFunction = funcNode as SubFunctionTreeNode;
+            subFunction.Name = next.strVal;
             // input arguments
             var args = ParseArgList(tokens);
-            IList<string> functionArguments = new List<string>();
+            IList<string> arguments = new List<string>();
             foreach (var arg in args) 
               if(arg is VariableTreeNode varTreeNode)
-                functionArguments.Add(varTreeNode.VariableName);
-            subFunction.FunctionArguments = functionArguments;
+                arguments.Add(varTreeNode.VariableName);
+            subFunction.Arguments = arguments;
           } else {
             // functions
             var args = ParseArgList(tokens);

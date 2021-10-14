@@ -61,8 +61,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       foreach (var node in tree.IterateNodesPrefix())
         if (node is SubFunctionTreeNode subFunctionTreeNode) { 
           var subFunction = new SubFunction() { 
-            Name = $"f{count++}({string.Join(",", subFunctionTreeNode.FunctionArguments)})", 
-            FunctionArguments = subFunctionTreeNode.FunctionArguments 
+            Name = $"f{count++}({string.Join(",", subFunctionTreeNode.Arguments)})", 
+            FunctionArguments = subFunctionTreeNode.Arguments 
           };
           subFunctionTreeNode.SubFunction = subFunction;
           SubFunctions.Add(subFunctionTreeNode, subFunction);

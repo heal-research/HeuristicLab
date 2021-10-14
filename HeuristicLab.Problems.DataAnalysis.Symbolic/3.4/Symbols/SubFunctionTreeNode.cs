@@ -9,14 +9,16 @@ using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableType("05130B5F-0125-4367-A4E9-C42D1085024E")]
-  public class SubFunctionTreeNode : SymbolicExpressionTreeNode {
+  public class SubFunctionTreeNode : SymbolicExpressionTreeNode { //TODO: as TerminalNode? -> but has children in a fully builded tree
 
     #region Properties
     public new SubFunctionSymbol Symbol => (SubFunctionSymbol)base.Symbol;
 
-    public IEnumerable<string> FunctionArguments { get; set; } = Enumerable.Empty<string>();
+    public IEnumerable<string> Arguments { get; set; } = Enumerable.Empty<string>();
     
     public SubFunction SubFunction { get; set; }
+
+    public string Name { get; set; }
     #endregion
 
     #region Constructors
@@ -33,5 +35,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     #region Cloning
     public override IDeepCloneable Clone(Cloner cloner) => new SubFunctionTreeNode(this, cloner);
     #endregion
+
+    public override string ToString() {
+      if (string.IsNullOrEmpty(Name))
+        return base.ToString();
+      return Name;
+    }
+    
   }
 }

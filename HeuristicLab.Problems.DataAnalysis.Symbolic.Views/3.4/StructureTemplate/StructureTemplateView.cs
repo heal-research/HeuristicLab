@@ -7,6 +7,7 @@ using HeuristicLab.Collections;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
+using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views;
 using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
 
@@ -23,6 +24,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
     public StructureTemplateView() {
       InitializeComponent();
       errorLabel.Text = "";
+      treeChart.SymbolicExpressionTreeNodeClicked += TreeChart_SymbolicExpressionTreeNodeClicked;
+    }
+
+    private void TreeChart_SymbolicExpressionTreeNodeClicked(object sender, MouseEventArgs e) {
+      var visualTreeNode = sender as VisualTreeNode<ISymbolicExpressionTreeNode>;
+      if(visualTreeNode != null) {
+        var subFunctionTreeNode = visualTreeNode.Content as SubFunctionTreeNode;
+        viewHost.Content = subFunctionTreeNode?.SubFunction;
+      }
     }
 
     protected override void OnContentChanged() {
@@ -31,8 +41,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
 
       expressionInput.Text = Content.Template;
       symRegTreeChart.Content = Content.Tree;
-      subFunctionListView.Content = new ItemList<SubFunction>(Content.SubFunctions.Values).AsReadOnly();
-      
+
+      treeChart.Tree = Content.Tree;
+
       errorLabel.Text = "";
       
     }
@@ -42,11 +53,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
         try {
           Content.Template = expressionInput.Text;
           symRegTreeChart.Content = Content.Tree;
-
-          var subFunctionList = new ItemList<SubFunction>();
-          foreach (var func in Content.SubFunctions.Values)
-            subFunctionList.Add(func);
-          subFunctionListView.Content = subFunctionList.AsReadOnly();
+          treeChart.Tree = Content.Tree;
 
           errorLabel.Text = "Template structure successfully parsed.";
           errorLabel.ForeColor = Color.DarkGreen;

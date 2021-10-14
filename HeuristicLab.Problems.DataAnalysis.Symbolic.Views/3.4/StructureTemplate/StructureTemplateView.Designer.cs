@@ -1,4 +1,6 @@
 ﻿
+using System.Drawing;
+
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
   partial class StructureTemplateView {
     /// <summary> 
@@ -24,13 +26,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
+      this.components = new System.ComponentModel.Container();
       this.expressionInput = new System.Windows.Forms.TextBox();
       this.parseButton = new System.Windows.Forms.Button();
       this.errorLabel = new System.Windows.Forms.Label();
       this.symRegTreeChart = new HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views.GraphicalSymbolicExpressionTreeView();
       this.templateStructureGroupBox = new System.Windows.Forms.GroupBox();
+      this.treeChart = new HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views.SymbolicExpressionTreeChart();
       this.splitContainer = new System.Windows.Forms.SplitContainer();
-      this.subFunctionListView = new HeuristicLab.Problems.DataAnalysis.Symbolic.Views.SubFunctionListView();
+      this.viewHost = new HeuristicLab.MainForm.WindowsForms.ViewHost();
       this.templateStructureGroupBox.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
       this.splitContainer.Panel1.SuspendLayout();
@@ -70,19 +74,19 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       // symRegTreeChart
       // 
       this.symRegTreeChart.AllowDrop = true;
-      this.symRegTreeChart.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+      this.symRegTreeChart.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this.symRegTreeChart.Caption = "Graphical SymbolicExpressionTree View";
       this.symRegTreeChart.Content = null;
       this.symRegTreeChart.Location = new System.Drawing.Point(6, 74);
       this.symRegTreeChart.Name = "symRegTreeChart";
       this.symRegTreeChart.ReadOnly = false;
-      this.symRegTreeChart.Size = new System.Drawing.Size(288, 320);
+      this.symRegTreeChart.Size = new System.Drawing.Size(288, 153);
       this.symRegTreeChart.TabIndex = 6;
       // 
       // templateStructureGroupBox
       // 
+      this.templateStructureGroupBox.Controls.Add(this.treeChart);
       this.templateStructureGroupBox.Controls.Add(this.symRegTreeChart);
       this.templateStructureGroupBox.Controls.Add(this.parseButton);
       this.templateStructureGroupBox.Controls.Add(this.errorLabel);
@@ -94,6 +98,26 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       this.templateStructureGroupBox.TabIndex = 8;
       this.templateStructureGroupBox.TabStop = false;
       this.templateStructureGroupBox.Text = "Template Structure";
+      // 
+      // treeChart
+      // 
+      this.treeChart.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.treeChart.BackgroundColor = System.Drawing.Color.White;
+      this.treeChart.LineColor = System.Drawing.Color.Black;
+      this.treeChart.Location = new System.Drawing.Point(6, 233);
+      this.treeChart.MinimumHorizontalDistance = 30;
+      this.treeChart.MinimumHorizontalPadding = 20;
+      this.treeChart.MinimumVerticalDistance = 30;
+      this.treeChart.MinimumVerticalPadding = 20;
+      this.treeChart.Name = "treeChart";
+      this.treeChart.PreferredNodeHeight = 46;
+      this.treeChart.PreferredNodeWidth = 70;
+      this.treeChart.Size = new System.Drawing.Size(288, 150);
+      this.treeChart.SuspendRepaint = false;
+      this.treeChart.TabIndex = 7;
+      this.treeChart.TextFont = new System.Drawing.Font("Times New Roman", 8F);
+      this.treeChart.Tree = null;
       // 
       // splitContainer
       // 
@@ -109,22 +133,25 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       // 
       // splitContainer.Panel2
       // 
-      this.splitContainer.Panel2.Controls.Add(this.subFunctionListView);
+      this.splitContainer.Panel2.Controls.Add(this.viewHost);
       this.splitContainer.Panel2MinSize = 5;
       this.splitContainer.Size = new System.Drawing.Size(600, 400);
       this.splitContainer.SplitterDistance = 300;
       this.splitContainer.TabIndex = 10;
       // 
-      // subFunctionListView
+      // viewHost
       // 
-      this.subFunctionListView.Caption = "View";
-      this.subFunctionListView.Content = null;
-      this.subFunctionListView.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.subFunctionListView.Location = new System.Drawing.Point(0, 0);
-      this.subFunctionListView.Name = "subFunctionListView";
-      this.subFunctionListView.ReadOnly = false;
-      this.subFunctionListView.Size = new System.Drawing.Size(296, 400);
-      this.subFunctionListView.TabIndex = 7;
+      this.viewHost.Caption = "View";
+      this.viewHost.Content = null;
+      this.viewHost.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.viewHost.Enabled = false;
+      this.viewHost.Location = new System.Drawing.Point(0, 0);
+      this.viewHost.Name = "viewHost";
+      this.viewHost.ReadOnly = false;
+      this.viewHost.Size = new System.Drawing.Size(296, 400);
+      this.viewHost.TabIndex = 8;
+      this.viewHost.ViewsLabelVisible = true;
+      this.viewHost.ViewType = null;
       // 
       // StructureTemplateView
       // 
@@ -148,8 +175,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
     private System.Windows.Forms.Button parseButton;
     private System.Windows.Forms.Label errorLabel;
     private Encodings.SymbolicExpressionTreeEncoding.Views.GraphicalSymbolicExpressionTreeView symRegTreeChart;
-    private SubFunctionListView subFunctionListView;
     private System.Windows.Forms.GroupBox templateStructureGroupBox;
     private System.Windows.Forms.SplitContainer splitContainer;
+    private Encodings.SymbolicExpressionTreeEncoding.Views.SymbolicExpressionTreeChart treeChart;
+    private MainForm.WindowsForms.ViewHost viewHost;
   }
 }

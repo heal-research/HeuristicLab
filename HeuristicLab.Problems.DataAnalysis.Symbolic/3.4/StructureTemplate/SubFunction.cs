@@ -43,7 +43,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       set => MaximumSymbolicExpressionTreeLengthParameter.Value.Value = value;
     }
 
-    public IEnumerable<string> FunctionArguments {
+    public IEnumerable<string> FunctionArguments { // TODO: gehört weg
       get => FunctionArgumentsParameter.Value.Select(x => x.Value); 
       set {
         var varSym = (Variable)Grammar.GetSymbol("Variable");
