@@ -21,7 +21,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     #region Constants
     private const string ProblemDataParameterName = "ProblemData";
     private const string StructureDefinitionParameterName = "Structure Definition";
-    private const string GrammarParameterName = "Grammar";
     private const string StructureTemplateParameterName = "Structure Template";
     #endregion
 
@@ -29,7 +28,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     public IValueParameter<IRegressionProblemData> ProblemDataParameter => (IValueParameter<IRegressionProblemData>)Parameters[ProblemDataParameterName];
     public IFixedValueParameter<StringValue> StructureDefinitionParameter => (IFixedValueParameter<StringValue>)Parameters[StructureDefinitionParameterName];
     public IFixedValueParameter<StructureTemplate> StructureTemplateParameter => (IFixedValueParameter<StructureTemplate>)Parameters[StructureTemplateParameterName];
-    public IValueParameter<ISymbolicDataAnalysisGrammar> GrammarParameter => (IValueParameter<ISymbolicDataAnalysisGrammar>)Parameters[GrammarParameterName];
     #endregion
 
     #region Properties
@@ -50,11 +48,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       get => StructureTemplateParameter.Value;
     }
 
-    public ISymbolicDataAnalysisGrammar Grammar {
-      get => GrammarParameter.Value;
-      set => GrammarParameter.Value = value;
-    }
-
     IParameter IDataAnalysisProblem.ProblemDataParameter => ProblemDataParameter;
     IDataAnalysisProblemData IDataAnalysisProblem.ProblemData => ProblemData;
 
@@ -68,20 +61,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     #region Constructors & Cloning
     public StructuredSymbolicRegressionSingleObjectiveProblem() {
       var problemData = new ShapeConstrainedRegressionProblemData();
-      var grammar = new LinearScalingGrammar();
-      var varSym = (Variable)grammar.GetSymbol("Variable");
-      varSym.AllVariableNames = problemData.InputVariables.Select(x => x.Value);
-      varSym.VariableNames = problemData.InputVariables.Select(x => x.Value);
-      varSym.Enabled = true;
 
       var structureTemplate = new StructureTemplate();
       structureTemplate.Changed += OnTemplateChanged;
 
       Parameters.Add(new ValueParameter<IRegressionProblemData>(ProblemDataParameterName, problemData));
       Parameters.Add(new FixedValueParameter<StructureTemplate>(StructureTemplateParameterName, structureTemplate));
-      Parameters.Add(new ValueParameter<ISymbolicDataAnalysisGrammar>(GrammarParameterName, grammar));
 
-      //structureTemplate.Template = "f(x)*f(y)+5";
     }
 
     public StructuredSymbolicRegressionSingleObjectiveProblem(StructuredSymbolicRegressionSingleObjectiveProblem original, Cloner cloner) { }
@@ -96,11 +82,17 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     #endregion
 
     private void OnTemplateChanged(object sender, EventArgs args) {
+      SetupStructureTemplate();
+    }
+
+    private void SetupStructureTemplate() {
       foreach (var e in Encoding.Encodings.ToArray())
         Encoding.Remove(e);
 
-      foreach (var sf in StructureTemplate.SubFunctions.Values) {
-        Encoding.Add(new SymbolicExpressionTreeEncoding(sf.Name, sf.Grammar, sf.MaximumSymbolicExpressionTreeLength, sf.MaximumSymbolicExpressionTreeDepth));
+      foreach (var f in StructureTemplate.SubFunctions.Values) {
+        SetupVariables(f);
+        if(!Encoding.Encodings.Any(x => x.Name == f.Name)) // to prevent the same encoding twice
+          Encoding.Add(new SymbolicExpressionTreeEncoding(f.Name, f.Grammar, f.MaximumSymbolicExpressionTreeLength, f.MaximumSymbolicExpressionTreeDepth));
       }
     }
 
@@ -121,15 +113,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
         result.Value = BuildTree(individuals[bestIdx]);
       else
         results.Add(new Result("Best Tree", BuildTree(individuals[bestIdx])));
-
-      /*
-      if (results.TryGetValue("Tree", out IResult result)) {
-        var list = result.Value as ItemList<ISymbolicExpressionTree>;
-        list.Clear();
-        list.AddRange(individuals.Select(x => (BuildTree(x))));
-      } else 
-        results.Add(new Result("Tree", new ItemList<ISymbolicExpressionTree>(individuals.Select(x => (BuildTree(x))))));
-      */
     }
 
     public override double Evaluate(Individual individual, IRandom random) {
@@ -151,7 +134,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       foreach (var n in templateTree.IterateNodesPrefix()) {
         if (n.Symbol is SubFunctionSymbol) {
           var subFunctionTreeNode = n as SubFunctionTreeNode;
-          var subFunctionTree = individual.SymbolicExpressionTree(subFunctionTreeNode.SubFunction.Name);
+          var subFunctionTree = individual.SymbolicExpressionTree(subFunctionTreeNode.Name);
           var parent = n.Parent;
 
           // remove SubFunctionTreeNode
@@ -166,8 +149,42 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       return templateTree;
     }
 
+    private void SetupVariables(SubFunction subFunction) {
+      var varSym = (Variable)subFunction.Grammar.GetSymbol("Variable");
+      if (varSym == null) {
+        varSym = new Variable();
+        subFunction.Grammar.AddSymbol(varSym);
+      }
+
+      var allVariables = ProblemData.InputVariables.Select(x => x.Value);
+      var allInputs = allVariables.Where(x => x != ProblemData.TargetVariable);
+
+      // set all variables
+      varSym.AllVariableNames = allVariables;
+
+      // set all allowed variables
+      if (subFunction.Arguments.Contains("_")) {
+        varSym.VariableNames = allInputs;
+      } else {
+        var vars = new List<string>();
+        var exceptions = new List<Exception>();
+        foreach (var arg in subFunction.Arguments) {
+          if (allInputs.Contains(arg))
+            vars.Add(arg);
+          else
+            exceptions.Add(new ArgumentException($"The argument '{arg}' for sub-function '{subFunction.Name}' is not a valid variable."));
+        }
+        if (exceptions.Any())
+          throw new AggregateException(exceptions);
+        varSym.VariableNames = vars;
+      }
+
+      varSym.Enabled = true;
+    }
+
     public void Load(RegressionProblemData data) {
       ProblemData = data;
+      SetupStructureTemplate();
     }
   }
 }

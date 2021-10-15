@@ -23,51 +23,60 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
 
     public StructureTemplateView() {
       InitializeComponent();
-      errorLabel.Text = "";
-      treeChart.SymbolicExpressionTreeNodeClicked += TreeChart_SymbolicExpressionTreeNodeClicked;
+      infoLabel.Text = "";
+      treeChart.SymbolicExpressionTreeNodeClicked += SymbolicExpressionTreeNodeClicked;
+      
     }
 
-    private void TreeChart_SymbolicExpressionTreeNodeClicked(object sender, MouseEventArgs e) {
+    private void SymbolicExpressionTreeNodeClicked(object sender, MouseEventArgs e) {
       var visualTreeNode = sender as VisualTreeNode<ISymbolicExpressionTreeNode>;
       if(visualTreeNode != null) {
         var subFunctionTreeNode = visualTreeNode.Content as SubFunctionTreeNode;
-        viewHost.Content = subFunctionTreeNode?.SubFunction;
+        if(Content.SubFunctions.TryGetValue(subFunctionTreeNode.Name, out SubFunction subFunction))
+          viewHost.Content = subFunction;
       }
     }
 
     protected override void OnContentChanged() {
       base.OnContentChanged();
       if (Content == null) return;
-
       expressionInput.Text = Content.Template;
-      symRegTreeChart.Content = Content.Tree;
-
-      treeChart.Tree = Content.Tree;
-
-      errorLabel.Text = "";
-      
+      PaintTree();
+      infoLabel.Text = "";
     }
 
-    private void parseButton_Click(object sender, EventArgs e) {
+    private void ParseButtonClick(object sender, EventArgs e) {
       if(!string.IsNullOrEmpty(expressionInput.Text)) {
         try {
           Content.Template = expressionInput.Text;
-          symRegTreeChart.Content = Content.Tree;
-          treeChart.Tree = Content.Tree;
-
-          errorLabel.Text = "Template structure successfully parsed.";
-          errorLabel.ForeColor = Color.DarkGreen;
+          PaintTree();
+          infoLabel.Text = "Template structure successfully parsed.";
+          infoLabel.ForeColor = Color.DarkGreen;
         } catch (Exception ex) {
-          errorLabel.Text = ex.Message;
-          errorLabel.ForeColor = Color.DarkRed;
+          infoLabel.Text = ex.Message;
+          infoLabel.ForeColor = Color.DarkRed;
         }
       }
     }
 
-    private void expressionInput_TextChanged(object sender, EventArgs e) {
-      errorLabel.Text = "Unparsed changes! Press parse button to save changes.";
-      errorLabel.ForeColor = Color.DarkOrange;
+    private void ExpressionInputTextChanged(object sender, EventArgs e) {
+      infoLabel.Text = "Unparsed changes! Press parse button to save changes.";
+      infoLabel.ForeColor = Color.DarkOrange;
     }
 
+
+    private void PaintTree() {
+      if(Content != null && Content.Tree != null) {
+        treeChart.Tree = Content.Tree;
+        foreach (var n in Content.Tree.IterateNodesPrefix()) {
+          if (n.Symbol is SubFunctionSymbol) {
+            var visualNode = treeChart.GetVisualSymbolicExpressionTreeNode(n);
+            visualNode.FillColor = Color.LightCyan;
+            visualNode.LineColor = Color.SlateGray;
+          }
+        }
+        treeChart.RepaintNodes();
+      }
+    }
   }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using HeuristicLab.Core;
 using HEAL.Attic;
@@ -16,12 +17,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     public string Template {
       get => template; 
       set {
-        if(template != value) {
-          template = value;
-          tree = Parser.Parse(template);
-          GetSubFunctions(Tree);
-          OnChanged();
-        }
+        template = value;
+        tree = Parser.Parse(template);
+        GetSubFunctions(Tree);
+        OnChanged();
       } 
     }
 
@@ -30,9 +29,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     public ISymbolicExpressionTree Tree => tree;
 
     [Storable]
-    public IDictionary<SubFunctionTreeNode, SubFunction> SubFunctions { get; private set; } = new Dictionary<SubFunctionTreeNode, SubFunction>();
+    public IReadOnlyDictionary<string, SubFunction> SubFunctions { get; private set; } = new Dictionary<string, SubFunction>();
 
     protected InfixExpressionParser Parser { get; set; } = new InfixExpressionParser();
+
     #endregion
 
     #region Events
@@ -56,17 +56,29 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     #endregion
 
     private void GetSubFunctions(ISymbolicExpressionTree tree) {
-      int count = 1;
-      SubFunctions.Clear();
+      var subFunctions = new Dictionary<string, SubFunction>();
       foreach (var node in tree.IterateNodesPrefix())
-        if (node is SubFunctionTreeNode subFunctionTreeNode) { 
-          var subFunction = new SubFunction() { 
-            Name = $"f{count++}({string.Join(",", subFunctionTreeNode.Arguments)})", 
-            FunctionArguments = subFunctionTreeNode.Arguments 
-          };
-          subFunctionTreeNode.SubFunction = subFunction;
-          SubFunctions.Add(subFunctionTreeNode, subFunction);
+        if (node is SubFunctionTreeNode subFunctionTreeNode) {
+          if (!subFunctionTreeNode.Arguments.Any())
+            throw new ArgumentException($"The sub-function '{subFunctionTreeNode}' requires inputs (e.g. {subFunctionTreeNode.Name}(var1, var2)).");
+
+          if (subFunctions.TryGetValue(subFunctionTreeNode.Name, out SubFunction v)) {
+            if(!v.Arguments.SequenceEqual(subFunctionTreeNode.Arguments))
+              throw new ArgumentException(
+                $"The sub-function '{v.Name}' has (at least two) different signatures " + 
+                $"({v.Name}({string.Join(",", v.Arguments)}) <> {subFunctionTreeNode.Name}({string.Join(",", subFunctionTreeNode.Arguments)})).");
+          } else {
+            var subFunction = new SubFunction() {
+              Name = subFunctionTreeNode.Name,
+              Arguments = subFunctionTreeNode.Arguments
+            };
+            subFunction.Changed += OnSubFunctionChanged;
+            subFunctions.Add(subFunction.Name, subFunction);
+          }
         }
+      SubFunctions = subFunctions;
     }
+
+    private void OnSubFunctionChanged(object sender, EventArgs e) => OnChanged();
   }
 }
