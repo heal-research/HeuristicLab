@@ -41,22 +41,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       base.OnContentChanged();
       if (Content == null) return;
       expressionInput.Text = Content.Template;
+      linearScalingCheckBox.Checked = Content.ApplyLinearScaling;
       PaintTree();
       infoLabel.Text = "";
     }
 
     private void ParseButtonClick(object sender, EventArgs e) {
-      if(!string.IsNullOrEmpty(expressionInput.Text)) {
-        try {
-          Content.Template = expressionInput.Text;
-          PaintTree();
-          infoLabel.Text = "Template structure successfully parsed.";
-          infoLabel.ForeColor = Color.DarkGreen;
-        } catch (Exception ex) {
-          infoLabel.Text = ex.Message;
-          infoLabel.ForeColor = Color.DarkRed;
-        }
-      }
+      Parse();
     }
 
     private void ExpressionInputTextChanged(object sender, EventArgs e) {
@@ -77,6 +68,30 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
         }
         treeChart.RepaintNodes();
       }
+    }
+
+    private void ExpressionInputKeyUp(object sender, KeyEventArgs e) {
+      if (e.KeyCode == Keys.Enter)
+        Parse();
+    }
+
+    private void Parse() {
+      if (!string.IsNullOrEmpty(expressionInput.Text)) {
+        try {
+          Content.Template = expressionInput.Text;
+          PaintTree();
+          infoLabel.Text = "Template structure successfully parsed.";
+          infoLabel.ForeColor = Color.DarkGreen;
+        } catch (Exception ex) {
+          infoLabel.Text = ex.Message;
+          infoLabel.ForeColor = Color.DarkRed;
+        }
+      }
+    }
+
+    private void LinearScalingCheckBoxCheckStateChanged(object sender, EventArgs e) {
+      Content.ApplyLinearScaling = linearScalingCheckBox.Checked;
+      PaintTree();
     }
   }
 }

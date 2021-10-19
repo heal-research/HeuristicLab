@@ -41,6 +41,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       set => MaximumSymbolicExpressionTreeLengthParameter.Value.Value = value;
     }
 
+    [Storable]
     public IEnumerable<string> Arguments { get; set; }
     #endregion
 
@@ -62,7 +63,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
     private void OnParameterValueChanged(object sender, EventArgs e) => Changed?.Invoke(this, EventArgs.Empty);
 
-    protected SubFunction(SubFunction original, Cloner cloner) { }
+    protected SubFunction(SubFunction original, Cloner cloner) {
+      Arguments = original.Arguments;
+    }
 
     [StorableConstructor]
     protected SubFunction(StorableConstructorFlag _) : base(_) {}

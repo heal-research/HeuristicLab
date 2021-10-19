@@ -14,8 +14,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     #region Properties
     public new SubFunctionSymbol Symbol => (SubFunctionSymbol)base.Symbol;
 
+    [Storable]
     public IEnumerable<string> Arguments { get; set; } = Enumerable.Empty<string>();
     
+    [Storable]
     public string Name { get; set; }
     #endregion
 
@@ -25,7 +27,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     [StorableConstructor]
     protected SubFunctionTreeNode(StorableConstructorFlag _) : base(_) { }
 
-    protected SubFunctionTreeNode(SubFunctionTreeNode original, Cloner cloner) : base(original, cloner) { }
+    protected SubFunctionTreeNode(SubFunctionTreeNode original, Cloner cloner) : base(original, cloner) {
+      Arguments = original.Arguments;
+      Name = (string)original.Name.Clone();
+    }
     #endregion
 
     #region Cloning

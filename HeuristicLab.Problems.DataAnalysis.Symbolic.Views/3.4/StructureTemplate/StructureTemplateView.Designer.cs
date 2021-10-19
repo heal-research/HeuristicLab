@@ -31,6 +31,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       this.parseButton = new System.Windows.Forms.Button();
       this.infoLabel = new System.Windows.Forms.Label();
       this.templateStructureGroupBox = new System.Windows.Forms.GroupBox();
+      this.linearScalingCheckBox = new System.Windows.Forms.CheckBox();
       this.treeChart = new HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views.SymbolicExpressionTreeChart();
       this.splitContainer = new System.Windows.Forms.SplitContainer();
       this.detailsGroupBox = new System.Windows.Forms.GroupBox();
@@ -47,36 +48,39 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       // 
       this.expressionInput.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.expressionInput.Location = new System.Drawing.Point(6, 19);
+      this.expressionInput.Location = new System.Drawing.Point(3, 19);
       this.expressionInput.Name = "expressionInput";
-      this.expressionInput.Size = new System.Drawing.Size(288, 20);
+      this.expressionInput.Size = new System.Drawing.Size(291, 20);
       this.expressionInput.TabIndex = 1;
       this.expressionInput.TextChanged += new System.EventHandler(this.ExpressionInputTextChanged);
+      this.expressionInput.KeyUp += new System.Windows.Forms.KeyEventHandler(this.ExpressionInputKeyUp);
       // 
       // parseButton
       // 
-      this.parseButton.Location = new System.Drawing.Point(6, 45);
+      this.parseButton.Location = new System.Drawing.Point(3, 45);
       this.parseButton.Name = "parseButton";
-      this.parseButton.Size = new System.Drawing.Size(143, 23);
+      this.parseButton.Size = new System.Drawing.Size(140, 23);
       this.parseButton.TabIndex = 3;
       this.parseButton.Text = "Parse";
       this.parseButton.UseVisualStyleBackColor = true;
       this.parseButton.Click += new System.EventHandler(this.ParseButtonClick);
       // 
-      // errorLabel
+      // infoLabel
       // 
       this.infoLabel.AutoSize = true;
-      this.infoLabel.Location = new System.Drawing.Point(155, 50);
-      this.infoLabel.Name = "errorLabel";
+      this.infoLabel.BackColor = System.Drawing.Color.White;
+      this.infoLabel.Location = new System.Drawing.Point(3, 74);
+      this.infoLabel.Name = "infoLabel";
       this.infoLabel.Size = new System.Drawing.Size(54, 13);
       this.infoLabel.TabIndex = 4;
       this.infoLabel.Text = "errorLabel";
       // 
       // templateStructureGroupBox
       // 
+      this.templateStructureGroupBox.Controls.Add(this.linearScalingCheckBox);
+      this.templateStructureGroupBox.Controls.Add(this.infoLabel);
       this.templateStructureGroupBox.Controls.Add(this.treeChart);
       this.templateStructureGroupBox.Controls.Add(this.parseButton);
-      this.templateStructureGroupBox.Controls.Add(this.infoLabel);
       this.templateStructureGroupBox.Controls.Add(this.expressionInput);
       this.templateStructureGroupBox.Dock = System.Windows.Forms.DockStyle.Fill;
       this.templateStructureGroupBox.Location = new System.Drawing.Point(0, 0);
@@ -86,6 +90,17 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       this.templateStructureGroupBox.TabStop = false;
       this.templateStructureGroupBox.Text = "Template Structure";
       // 
+      // linearScalingCheckBox
+      // 
+      this.linearScalingCheckBox.AutoSize = true;
+      this.linearScalingCheckBox.Location = new System.Drawing.Point(149, 49);
+      this.linearScalingCheckBox.Name = "linearScalingCheckBox";
+      this.linearScalingCheckBox.Size = new System.Drawing.Size(122, 17);
+      this.linearScalingCheckBox.TabIndex = 8;
+      this.linearScalingCheckBox.Text = "Apply Linear Scaling";
+      this.linearScalingCheckBox.UseVisualStyleBackColor = true;
+      this.linearScalingCheckBox.CheckStateChanged += new System.EventHandler(this.LinearScalingCheckBoxCheckStateChanged);
+      // 
       // treeChart
       // 
       this.treeChart.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -93,7 +108,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
             | System.Windows.Forms.AnchorStyles.Right)));
       this.treeChart.BackgroundColor = System.Drawing.Color.White;
       this.treeChart.LineColor = System.Drawing.Color.Black;
-      this.treeChart.Location = new System.Drawing.Point(6, 74);
+      this.treeChart.Location = new System.Drawing.Point(3, 74);
       this.treeChart.MinimumHorizontalDistance = 30;
       this.treeChart.MinimumHorizontalPadding = 20;
       this.treeChart.MinimumVerticalDistance = 30;
@@ -101,7 +116,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       this.treeChart.Name = "treeChart";
       this.treeChart.PreferredNodeHeight = 46;
       this.treeChart.PreferredNodeWidth = 70;
-      this.treeChart.Size = new System.Drawing.Size(288, 320);
+      this.treeChart.Size = new System.Drawing.Size(291, 320);
       this.treeChart.SuspendRepaint = false;
       this.treeChart.TabIndex = 7;
       this.treeChart.TextFont = new System.Drawing.Font("Times New Roman", 8F);
@@ -179,5 +194,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
     private Encodings.SymbolicExpressionTreeEncoding.Views.SymbolicExpressionTreeChart treeChart;
     private MainForm.WindowsForms.ViewHost viewHost;
     private System.Windows.Forms.GroupBox detailsGroupBox;
+    private System.Windows.Forms.CheckBox linearScalingCheckBox;
   }
 }

@@ -18,18 +18,37 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       get => template; 
       set {
         template = value;
-        tree = Parser.Parse(template);
-        GetSubFunctions(Tree);
+        Tree = Parser.Parse(template);
         OnChanged();
       } 
     }
 
     [Storable]
-    private ISymbolicExpressionTree tree;
-    public ISymbolicExpressionTree Tree => tree;
+    private ISymbolicExpressionTree treeWithoutLinearScaling;
+    [Storable]
+    private ISymbolicExpressionTree treeWithLinearScaling;
+    public ISymbolicExpressionTree Tree {
+      get => ApplyLinearScaling ? treeWithLinearScaling : treeWithoutLinearScaling;
+      private set {
+        treeWithLinearScaling = AddLinearScalingTerms(value);
+        treeWithoutLinearScaling = value;
+        SubFunctions = GetSubFunctions();
+      }
+    }
 
     [Storable]
-    public IReadOnlyDictionary<string, SubFunction> SubFunctions { get; private set; } = new Dictionary<string, SubFunction>();
+    public IReadOnlyDictionary<string, SubFunction> SubFunctions { get; private set; }
+
+    [Storable]
+    private bool applyLinearScaling = false;
+    public bool ApplyLinearScaling {
+      get => applyLinearScaling;
+      set {
+        applyLinearScaling = value;
+        //subFunctions = GetSubFunctions();
+        OnChanged();
+      }
+    }
 
     protected InfixExpressionParser Parser { get; set; } = new InfixExpressionParser();
 
@@ -55,9 +74,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       new StructureTemplate(this, cloner);
     #endregion
 
-    private void GetSubFunctions(ISymbolicExpressionTree tree) {
+    private Dictionary<string, SubFunction> GetSubFunctions() {
       var subFunctions = new Dictionary<string, SubFunction>();
-      foreach (var node in tree.IterateNodesPrefix())
+      foreach (var node in Tree.IterateNodesPrefix())
         if (node is SubFunctionTreeNode subFunctionTreeNode) {
           if (!subFunctionTreeNode.Arguments.Any())
             throw new ArgumentException($"The sub-function '{subFunctionTreeNode}' requires inputs (e.g. {subFunctionTreeNode.Name}(var1, var2)).");
@@ -76,7 +95,35 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             subFunctions.Add(subFunction.Name, subFunction);
           }
         }
-      SubFunctions = subFunctions;
+      return subFunctions;
+    }
+
+    private ISymbolicExpressionTree AddLinearScalingTerms(ISymbolicExpressionTree tree) {
+      var clonedTree = (ISymbolicExpressionTree)tree.Clone();
+      var startNode = clonedTree.Root.Subtrees.First();
+      var template = startNode.Subtrees.First();
+
+      var add = new Addition();
+      var addNode = add.CreateTreeNode();
+
+      var mul = new Multiplication();
+      var mulNode = mul.CreateTreeNode();
+
+      var c1 = new Constant();
+      var c1Node = (ConstantTreeNode)c1.CreateTreeNode();
+      c1Node.Value = 0.0;
+      var c2 = new Constant();
+      var c2Node = (ConstantTreeNode)c2.CreateTreeNode();
+      c2Node.Value = 1.0;
+      
+      addNode.AddSubtree(c1Node);
+      addNode.AddSubtree(mulNode);
+      mulNode.AddSubtree(c2Node);
+        
+      startNode.RemoveSubtree(0);
+      startNode.AddSubtree(addNode);
+      mulNode.AddSubtree(template);
+      return clonedTree;
     }
 
     private void OnSubFunctionChanged(object sender, EventArgs e) => OnChanged();
