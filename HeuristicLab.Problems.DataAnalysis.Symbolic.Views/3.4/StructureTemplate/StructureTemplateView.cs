@@ -32,7 +32,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       var visualTreeNode = sender as VisualTreeNode<ISymbolicExpressionTreeNode>;
       if(visualTreeNode != null) {
         var subFunctionTreeNode = visualTreeNode.Content as SubFunctionTreeNode;
-        if(Content.SubFunctions.TryGetValue(subFunctionTreeNode.Name, out SubFunction subFunction))
+        if(subFunctionTreeNode != null && Content.SubFunctions.TryGetValue(subFunctionTreeNode.Name, out SubFunction subFunction))
           viewHost.Content = subFunction;
       }
     }
@@ -54,7 +54,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       infoLabel.Text = "Unparsed changes! Press parse button to save changes.";
       infoLabel.ForeColor = Color.DarkOrange;
     }
-
 
     private void PaintTree() {
       if(Content != null && Content.Tree != null) {

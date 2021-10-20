@@ -51,11 +51,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
     #region Constructors
     public SubFunction() {
-      Parameters.Add(new ValueParameter<ISymbolicDataAnalysisGrammar>(GrammarParameterName, new LinearScalingGrammar()));
-      Parameters.Add(new FixedValueParameter<IntValue>(MaximumSymbolicExpressionTreeDepthParameterName, new IntValue(10)));
-      Parameters.Add(new FixedValueParameter<IntValue>(MaximumSymbolicExpressionTreeLengthParameterName, new IntValue(30)));
+      Parameters.Add(new ValueParameter<ISymbolicDataAnalysisGrammar>(GrammarParameterName, new ArithmeticExpressionGrammar()));
+      Parameters.Add(new FixedValueParameter<IntValue>(MaximumSymbolicExpressionTreeDepthParameterName, new IntValue(8)));
+      Parameters.Add(new FixedValueParameter<IntValue>(MaximumSymbolicExpressionTreeLengthParameterName, new IntValue(20)));
 
-      // TODO: separate events for each parameter
       GrammarParameter.ValueChanged += OnParameterValueChanged;
       MaximumSymbolicExpressionTreeDepthParameter.Value.ValueChanged += OnParameterValueChanged; 
       MaximumSymbolicExpressionTreeLengthParameter.Value.ValueChanged += OnParameterValueChanged;

@@ -527,6 +527,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
               }
             }
           }
+        case OpCodes.SubFunction: {
+            return Evaluate(dataset, ref row, state);
+          }
         default:
           throw new NotSupportedException();
       }

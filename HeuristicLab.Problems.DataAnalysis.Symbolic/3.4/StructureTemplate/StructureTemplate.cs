@@ -45,7 +45,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       get => applyLinearScaling;
       set {
         applyLinearScaling = value;
-        //subFunctions = GetSubFunctions();
         OnChanged();
       }
     }

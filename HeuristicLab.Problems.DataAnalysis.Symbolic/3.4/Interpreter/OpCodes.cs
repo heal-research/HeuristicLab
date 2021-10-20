@@ -78,6 +78,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     Cube = 50,
     CubeRoot = 51,
     Tanh = 52,
+    SubFunction = 53
   };
   public static class OpCodes {
     // constants for API compatibility only
@@ -133,10 +134,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     public const byte Cube = (byte)OpCode.Cube;
     public const byte CubeRoot = (byte)OpCode.CubeRoot;
     public const byte Tanh = (byte)OpCode.Tanh;
-
+    public const byte SubFunction = (byte)OpCode.SubFunction;
 
     private static Dictionary<Type, byte> symbolToOpcode = new Dictionary<Type, byte>() {
-       { typeof(Addition), OpCodes.Add },
+      { typeof(Addition), OpCodes.Add },
       { typeof(Subtraction), OpCodes.Sub },
       { typeof(Multiplication), OpCodes.Mul },
       { typeof(Division), OpCodes.Div },
@@ -188,7 +189,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       { typeof(Absolute), OpCodes.Absolute },
       { typeof(AnalyticQuotient), OpCodes.AnalyticQuotient },
       { typeof(Cube), OpCodes.Cube },
-      { typeof(CubeRoot), OpCodes.CubeRoot }
+      { typeof(CubeRoot), OpCodes.CubeRoot },
+      { typeof(SubFunctionSymbol), OpCodes.SubFunction }
     };
 
     public static byte MapSymbolToOpCode(ISymbolicExpressionTreeNode treeNode) {

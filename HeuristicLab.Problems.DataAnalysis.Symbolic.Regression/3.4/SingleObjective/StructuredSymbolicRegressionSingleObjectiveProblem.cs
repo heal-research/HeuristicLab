@@ -48,6 +48,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       get => StructureTemplateParameter.Value;
     }
 
+    public ISymbolicDataAnalysisExpressionTreeInterpreter Interpreter { get; } = new SymbolicDataAnalysisExpressionTreeInterpreter();
+
     IParameter IDataAnalysisProblem.ProblemDataParameter => ProblemDataParameter;
     IDataAnalysisProblemData IDataAnalysisProblem.ProblemData => ProblemData;
 
@@ -109,22 +111,47 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
         }
       }
 
-      if (results.TryGetValue("Best Tree", out IResult result))
-        result.Value = BuildTree(individuals[bestIdx]);
-      else
-        results.Add(new Result("Best Tree", BuildTree(individuals[bestIdx])));
+      if (results.TryGetValue("Best Tree", out IResult result)) {
+        var tree = BuildTree(individuals[bestIdx]);
+        AdjustLinearScalingParams(tree, Interpreter);
+        result.Value = tree;
+      }
+      else {
+        var tree = BuildTree(individuals[bestIdx]);
+        AdjustLinearScalingParams(tree, Interpreter);
+        results.Add(new Result("Best Tree", tree));
+      }
+        
     }
 
     public override double Evaluate(Individual individual, IRandom random) {
       var tree = BuildTree(individual);
-      var interpreter = new SymbolicDataAnalysisExpressionTreeInterpreter();
+
+      AdjustLinearScalingParams(tree, Interpreter);
       var estimationInterval = ProblemData.VariableRanges.GetInterval(ProblemData.TargetVariable);
       var quality = SymbolicRegressionSingleObjectivePearsonRSquaredEvaluator.Calculate(
-        interpreter, tree, 
+        Interpreter, tree, 
         estimationInterval.LowerBound, estimationInterval.UpperBound, 
         ProblemData, ProblemData.TrainingIndices, false);
      
       return quality;
+    }
+
+    private void AdjustLinearScalingParams(ISymbolicExpressionTree tree, ISymbolicDataAnalysisExpressionTreeInterpreter interpreter) {
+      var offsetNode = tree.Root.GetSubtree(0).GetSubtree(0);
+      var scalingNode = offsetNode.Subtrees.Where(x => !(x is ConstantTreeNode)).First();
+
+      var offsetConstantNode = (ConstantTreeNode)offsetNode.Subtrees.Where(x => x is ConstantTreeNode).First();
+      var scalingConstantNode = (ConstantTreeNode)scalingNode.Subtrees.Where(x => x is ConstantTreeNode).First();
+
+      var estimatedValues = interpreter.GetSymbolicExpressionTreeValues(tree, ProblemData.Dataset, ProblemData.TrainingIndices);
+      var targetValues = ProblemData.Dataset.GetDoubleValues(ProblemData.TargetVariable, ProblemData.TrainingIndices);
+
+      OnlineLinearScalingParameterCalculator.Calculate(estimatedValues, targetValues, out double a, out double b, out OnlineCalculatorError error);
+      if(error == OnlineCalculatorError.None) {
+        offsetConstantNode.Value = a;
+        scalingConstantNode.Value = b;
+      }
     }
 
     private ISymbolicExpressionTree BuildTree(Individual individual) {
@@ -135,15 +162,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
         if (n.Symbol is SubFunctionSymbol) {
           var subFunctionTreeNode = n as SubFunctionTreeNode;
           var subFunctionTree = individual.SymbolicExpressionTree(subFunctionTreeNode.Name);
-          var parent = n.Parent;
+          //var parent = n.Parent;
 
           // remove SubFunctionTreeNode
-          parent.RemoveSubtree(parent.IndexOfSubtree(subFunctionTreeNode));
+          //parent.RemoveSubtree(parent.IndexOfSubtree(subFunctionTreeNode));
 
           // add new tree
           var subTree = subFunctionTree.Root.GetSubtree(0)  // Start
                                             .GetSubtree(0); // Offset
-          parent.AddSubtree(subTree);
+          //parent.AddSubtree(subTree);
+          subFunctionTreeNode.AddSubtree(subTree);
         }
       }
       return templateTree;
