@@ -62,7 +62,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
     private void OnParameterValueChanged(object sender, EventArgs e) => Changed?.Invoke(this, EventArgs.Empty);
 
-    protected SubFunction(SubFunction original, Cloner cloner) {
+    protected SubFunction(SubFunction original, Cloner cloner) : base(original, cloner) {
       Arguments = original.Arguments;
     }
 

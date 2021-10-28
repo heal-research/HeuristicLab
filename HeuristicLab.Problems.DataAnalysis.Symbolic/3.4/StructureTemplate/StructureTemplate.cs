@@ -37,7 +37,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     [Storable]
-    public IReadOnlyDictionary<string, SubFunction> SubFunctions { get; private set; }
+    public IReadOnlyDictionary<string, SubFunction> SubFunctions { get; private set; } = new Dictionary<string, SubFunction>();
 
     [Storable]
     private bool applyLinearScaling = false;
@@ -65,13 +65,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     [StorableConstructor]
     protected StructureTemplate(StorableConstructorFlag _) : base(_) { }
 
-    protected StructureTemplate(StructureTemplate original, Cloner cloner) { }
+    protected StructureTemplate(StructureTemplate original, Cloner cloner) : base(original, cloner) { }
     #endregion
 
     #region Cloning
     public override IDeepCloneable Clone(Cloner cloner) =>
       new StructureTemplate(this, cloner);
     #endregion
+
+    
 
     private Dictionary<string, SubFunction> GetSubFunctions() {
       var subFunctions = new Dictionary<string, SubFunction>();

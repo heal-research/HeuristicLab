@@ -22,9 +22,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     private const string ProblemDataParameterName = "ProblemData";
     private const string StructureDefinitionParameterName = "Structure Definition";
     private const string StructureTemplateParameterName = "Structure Template";
+
+    private const string StructureTemplateDescriptionText = 
+      "Enter your expression as string in infix format into the empty input field.\n" +
+      "By checking the \"Apply Linear Scaling\" checkbox you can add the relevant scaling terms to your expression.\n" +
+      "After entering the expression click parse to build the tree.\n" +
+      "To edit the defined sub-functions, click on the coressponding colored node in the tree view.";
     #endregion
 
-    #region Parameter
+    #region Parameters
     public IValueParameter<IRegressionProblemData> ProblemDataParameter => (IValueParameter<IRegressionProblemData>)Parameters[ProblemDataParameterName];
     public IFixedValueParameter<StringValue> StructureDefinitionParameter => (IFixedValueParameter<StringValue>)Parameters[StructureDefinitionParameterName];
     public IFixedValueParameter<StructureTemplate> StructureTemplateParameter => (IFixedValueParameter<StructureTemplate>)Parameters[StructureTemplateParameterName];
@@ -68,11 +74,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       structureTemplate.Changed += OnTemplateChanged;
 
       Parameters.Add(new ValueParameter<IRegressionProblemData>(ProblemDataParameterName, problemData));
-      Parameters.Add(new FixedValueParameter<StructureTemplate>(StructureTemplateParameterName, structureTemplate));
+      Parameters.Add(new FixedValueParameter<StructureTemplate>(StructureTemplateParameterName, 
+        StructureTemplateDescriptionText, structureTemplate));
+
 
     }
 
-    public StructuredSymbolicRegressionSingleObjectiveProblem(StructuredSymbolicRegressionSingleObjectiveProblem original, Cloner cloner) { }
+    public StructuredSymbolicRegressionSingleObjectiveProblem(StructuredSymbolicRegressionSingleObjectiveProblem original, 
+      Cloner cloner) : base(original, cloner){ }
 
     [StorableConstructor]
     protected StructuredSymbolicRegressionSingleObjectiveProblem(StorableConstructorFlag _) : base(_) { }
@@ -113,12 +122,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
 
       if (results.TryGetValue("Best Tree", out IResult result)) {
         var tree = BuildTree(individuals[bestIdx]);
-        AdjustLinearScalingParams(tree, Interpreter);
+        if (StructureTemplate.ApplyLinearScaling)
+          AdjustLinearScalingParams(tree, Interpreter);
         result.Value = tree;
       }
       else {
         var tree = BuildTree(individuals[bestIdx]);
-        AdjustLinearScalingParams(tree, Interpreter);
+        if (StructureTemplate.ApplyLinearScaling)
+          AdjustLinearScalingParams(tree, Interpreter);
         results.Add(new Result("Best Tree", tree));
       }
         
@@ -127,7 +138,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     public override double Evaluate(Individual individual, IRandom random) {
       var tree = BuildTree(individual);
 
-      AdjustLinearScalingParams(tree, Interpreter);
+      if (StructureTemplate.ApplyLinearScaling)
+        AdjustLinearScalingParams(tree, Interpreter);
       var estimationInterval = ProblemData.VariableRanges.GetInterval(ProblemData.TargetVariable);
       var quality = SymbolicRegressionSingleObjectivePearsonRSquaredEvaluator.Calculate(
         Interpreter, tree, 
