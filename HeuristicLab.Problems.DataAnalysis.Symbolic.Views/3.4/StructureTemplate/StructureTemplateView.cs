@@ -75,6 +75,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
     }
 
     private void Parse() {
+      viewHost.Content = null; // reset active detail view
       if (!string.IsNullOrEmpty(expressionInput.Text)) {
         try {
           Content.Template = expressionInput.Text;
