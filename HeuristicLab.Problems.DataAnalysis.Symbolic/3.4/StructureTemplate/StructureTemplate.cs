@@ -65,7 +65,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     [StorableConstructor]
     protected StructureTemplate(StorableConstructorFlag _) : base(_) { }
 
-    protected StructureTemplate(StructureTemplate original, Cloner cloner) : base(original, cloner) { }
+    protected StructureTemplate(StructureTemplate original, Cloner cloner) : base(original, cloner) {
+      this.Tree = cloner.Clone(original.Tree);
+      this.Template = original.Template;
+      this.ApplyLinearScaling = original.ApplyLinearScaling;
+      this.SubFunctions = original.SubFunctions;
+    }
     #endregion
 
     #region Cloning
