@@ -11,17 +11,18 @@ using HeuristicLab.Problems.Instances;
 using HeuristicLab.Parameters;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
+using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
   [StorableType("7464E84B-65CC-440A-91F0-9FA920D730F9")]
   [Item(Name = "Structured Symbolic Regression Single Objective Problem (single-objective)", Description = "A problem with a structural definition and unfixed subfunctions.")]
   [Creatable(CreatableAttribute.Categories.GeneticProgrammingProblems, Priority = 150)]
-  public class StructuredSymbolicRegressionSingleObjectiveProblem : SingleObjectiveBasicProblem<MultiEncoding>, IRegressionProblem, IProblemInstanceConsumer<RegressionProblemData> {
+  public class StructuredSymbolicRegressionSingleObjectiveProblem : SingleObjectiveBasicProblem<MultiEncoding>, IRegressionProblem, IProblemInstanceConsumer<IRegressionProblemData> {
 
     #region Constants
     private const string ProblemDataParameterName = "ProblemData";
-    private const string StructureDefinitionParameterName = "Structure Definition";
     private const string StructureTemplateParameterName = "Structure Template";
+    private const string InterpreterParameterName = "Interpreter";
 
     private const string StructureTemplateDescriptionText = 
       "Enter your expression as string in infix format into the empty input field.\n" +
@@ -32,8 +33,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
 
     #region Parameters
     public IValueParameter<IRegressionProblemData> ProblemDataParameter => (IValueParameter<IRegressionProblemData>)Parameters[ProblemDataParameterName];
-    public IFixedValueParameter<StringValue> StructureDefinitionParameter => (IFixedValueParameter<StringValue>)Parameters[StructureDefinitionParameterName];
     public IFixedValueParameter<StructureTemplate> StructureTemplateParameter => (IFixedValueParameter<StructureTemplate>)Parameters[StructureTemplateParameterName];
+    public IValueParameter<ISymbolicDataAnalysisExpressionTreeInterpreter> InterpreterParameter => (IValueParameter<ISymbolicDataAnalysisExpressionTreeInterpreter>)Parameters[InterpreterParameterName];
     #endregion
 
     #region Properties
@@ -45,16 +46,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       }
     }
 
-    public string StructureDefinition {
-      get => StructureDefinitionParameter.Value.Value;
-      set => StructureDefinitionParameter.Value.Value = value;
-    }
+    public StructureTemplate StructureTemplate => StructureTemplateParameter.Value;
 
-    public StructureTemplate StructureTemplate {
-      get => StructureTemplateParameter.Value;
-    }
-
-    public ISymbolicDataAnalysisExpressionTreeInterpreter Interpreter { get; } = new SymbolicDataAnalysisExpressionTreeInterpreter();
+    public ISymbolicDataAnalysisExpressionTreeInterpreter Interpreter => InterpreterParameter.Value;
 
     IParameter IDataAnalysisProblem.ProblemDataParameter => ProblemDataParameter;
     IDataAnalysisProblemData IDataAnalysisProblem.ProblemData => ProblemData;
@@ -73,11 +67,21 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       var structureTemplate = new StructureTemplate();
       structureTemplate.Changed += OnTemplateChanged;
 
-      Parameters.Add(new ValueParameter<IRegressionProblemData>(ProblemDataParameterName, problemData));
-      Parameters.Add(new FixedValueParameter<StructureTemplate>(StructureTemplateParameterName, 
-        StructureTemplateDescriptionText, structureTemplate));
+      Parameters.Add(new ValueParameter<IRegressionProblemData>(
+        ProblemDataParameterName, 
+        problemData));
 
+      Parameters.Add(new FixedValueParameter<StructureTemplate>(
+        StructureTemplateParameterName, 
+        StructureTemplateDescriptionText, 
+        structureTemplate));
 
+      Parameters.Add(new ValueParameter<ISymbolicDataAnalysisExpressionTreeInterpreter>(
+        InterpreterParameterName, 
+        new SymbolicDataAnalysisExpressionTreeInterpreter()) 
+        { Hidden = true });
+
+      ProblemDataParameter.ValueChanged += ProblemDataParameterValueChanged;
     }
 
     public StructuredSymbolicRegressionSingleObjectiveProblem(StructuredSymbolicRegressionSingleObjectiveProblem original, 
@@ -92,6 +96,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       new StructuredSymbolicRegressionSingleObjectiveProblem(this, cloner);
     #endregion
 
+    private void ProblemDataParameterValueChanged(object sender, EventArgs e) {
+      StructureTemplate.Reset();
+      // InfoBox for Reset?
+    }
+
     private void OnTemplateChanged(object sender, EventArgs args) {
       SetupStructureTemplate();
     }
@@ -102,8 +111,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
 
       foreach (var f in StructureTemplate.SubFunctions.Values) {
         SetupVariables(f);
-        if(!Encoding.Encodings.Any(x => x.Name == f.Name)) // to prevent the same encoding twice
-          Encoding.Add(new SymbolicExpressionTreeEncoding(f.Name, f.Grammar, f.MaximumSymbolicExpressionTreeLength, f.MaximumSymbolicExpressionTreeDepth));
+        if (!Encoding.Encodings.Any(x => x.Name == f.Name)) // to prevent the same encoding twice
+          Encoding.Add(new SymbolicExpressionTreeEncoding(
+            f.Name, 
+            f.Grammar, 
+            f.MaximumSymbolicExpressionTreeLength, 
+            f.MaximumSymbolicExpressionTreeDepth));
       }
     }
 
@@ -132,7 +145,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
           AdjustLinearScalingParams(tree, Interpreter);
         results.Add(new Result("Best Tree", tree));
       }
-        
     }
 
     public override double Evaluate(Individual individual, IRandom random) {
@@ -167,6 +179,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     }
 
     private ISymbolicExpressionTree BuildTree(Individual individual) {
+      if (StructureTemplate.Tree == null)
+        throw new ArgumentException("No structure template defined!");
+
       var templateTree = (ISymbolicExpressionTree)StructureTemplate.Tree.Clone();
 
       // build main tree
@@ -174,15 +189,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
         if (n.Symbol is SubFunctionSymbol) {
           var subFunctionTreeNode = n as SubFunctionTreeNode;
           var subFunctionTree = individual.SymbolicExpressionTree(subFunctionTreeNode.Name);
-          //var parent = n.Parent;
-
-          // remove SubFunctionTreeNode
-          //parent.RemoveSubtree(parent.IndexOfSubtree(subFunctionTreeNode));
 
           // add new tree
           var subTree = subFunctionTree.Root.GetSubtree(0)  // Start
                                             .GetSubtree(0); // Offset
-          //parent.AddSubtree(subTree);
           subFunctionTreeNode.AddSubtree(subTree);
         }
       }
@@ -222,9 +232,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       varSym.Enabled = true;
     }
 
-    public void Load(RegressionProblemData data) {
-      ProblemData = data;
-      SetupStructureTemplate();
-    }
+    public void Load(IRegressionProblemData data) => ProblemData = data;
   }
 }

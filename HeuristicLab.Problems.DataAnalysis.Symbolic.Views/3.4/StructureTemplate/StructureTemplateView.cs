@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using HeuristicLab.Collections;
@@ -24,8 +25,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
     public StructureTemplateView() {
       InitializeComponent();
       infoLabel.Text = "";
+      this.Resize += StructureTemplateViewResize;
       treeChart.SymbolicExpressionTreeNodeClicked += SymbolicExpressionTreeNodeClicked;
       
+    }
+
+    private void StructureTemplateViewResize(object sender, EventArgs e) {
+      PaintTree();
     }
 
     private void SymbolicExpressionTreeNodeClicked(object sender, MouseEventArgs e) {
@@ -82,6 +88,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
           PaintTree();
           infoLabel.Text = "Template structure successfully parsed.";
           infoLabel.ForeColor = Color.DarkGreen;
+        } catch (AggregateException ex) {
+          infoLabel.Text = string.Join("\n", ex.InnerExceptions.Select(x => x.Message));
+          infoLabel.ForeColor = Color.DarkRed;
         } catch (Exception ex) {
           infoLabel.Text = ex.Message;
           infoLabel.ForeColor = Color.DarkRed;

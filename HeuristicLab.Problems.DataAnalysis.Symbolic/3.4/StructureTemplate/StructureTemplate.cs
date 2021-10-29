@@ -13,7 +13,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
     #region Properties
     [Storable]
-    private string template = "";
+    private string template;
     public string Template {
       get => template; 
       set {
@@ -37,10 +37,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     [Storable]
-    public IReadOnlyDictionary<string, SubFunction> SubFunctions { get; private set; } = new Dictionary<string, SubFunction>();
+    public IReadOnlyDictionary<string, SubFunction> SubFunctions { get; private set; }
 
     [Storable]
-    private bool applyLinearScaling = false;
+    private bool applyLinearScaling;
     public bool ApplyLinearScaling {
       get => applyLinearScaling;
       set {
@@ -60,7 +60,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     #endregion
 
     #region Constructors
-    public StructureTemplate() { }
+    public StructureTemplate() {
+      Reset();
+    }
 
     [StorableConstructor]
     protected StructureTemplate(StorableConstructorFlag _) : base(_) { }
@@ -78,7 +80,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       new StructureTemplate(this, cloner);
     #endregion
 
-    
+    public void Reset() {
+      SubFunctions = new Dictionary<string, SubFunction>();
+      treeWithoutLinearScaling = null;
+      treeWithLinearScaling = null;
+      template = "";
+      applyLinearScaling = false;
+      OnChanged();
+    }
 
     private Dictionary<string, SubFunction> GetSubFunctions() {
       var subFunctions = new Dictionary<string, SubFunction>();
