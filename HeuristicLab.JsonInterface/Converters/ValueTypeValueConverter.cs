@@ -10,8 +10,11 @@ namespace HeuristicLab.JsonInterface {
     public override bool CanConvertType(Type t) =>
       typeof(IntValue).IsAssignableFrom(t);
 
-    public override void Inject(IItem item, IJsonItem data, IJsonItemConverter root) =>
-      ((IntValue)item).Value = ((IntJsonItem)data).Value;
+    public override void Inject(IItem item, IJsonItem data, IJsonItemConverter root) {
+      if(data.Active)
+        ((IntValue)item).Value = ((IntJsonItem)data).Value;
+    }
+      
 
     public override IJsonItem Extract(IItem value, IJsonItemConverter root) =>
       new IntJsonItem() {
@@ -29,8 +32,10 @@ namespace HeuristicLab.JsonInterface {
     public override bool CanConvertType(Type t) =>
       typeof(DoubleValue).IsAssignableFrom(t);
 
-    public override void Inject(IItem item, IJsonItem data, IJsonItemConverter root) =>
-      ((DoubleValue)item).Value = ((DoubleJsonItem)data).Value;
+    public override void Inject(IItem item, IJsonItem data, IJsonItemConverter root) {
+      if (data.Active)
+        ((DoubleValue)item).Value = ((DoubleJsonItem)data).Value;
+    }
 
     public override IJsonItem Extract(IItem value, IJsonItemConverter root) =>
       new DoubleJsonItem() {
@@ -48,8 +53,10 @@ namespace HeuristicLab.JsonInterface {
     public override bool CanConvertType(Type t) =>
       typeof(PercentValue).IsAssignableFrom(t);
 
-    public override void Inject(IItem item, IJsonItem data, IJsonItemConverter root) =>
-      ((PercentValue)item).Value = ((DoubleJsonItem)data).Value;
+    public override void Inject(IItem item, IJsonItem data, IJsonItemConverter root) {
+      if (data.Active)
+        ((PercentValue)item).Value = ((DoubleJsonItem)data).Value;
+    }
 
     public override IJsonItem Extract(IItem value, IJsonItemConverter root) =>
       new DoubleJsonItem() {
@@ -67,8 +74,10 @@ namespace HeuristicLab.JsonInterface {
     public override bool CanConvertType(Type t) =>
       typeof(BoolValue).IsAssignableFrom(t);
 
-    public override void Inject(IItem item, IJsonItem data, IJsonItemConverter root) =>
-      ((BoolValue)item).Value = ((BoolJsonItem)data).Value;
+    public override void Inject(IItem item, IJsonItem data, IJsonItemConverter root) {
+      if (data.Active)
+        ((BoolValue)item).Value = ((BoolJsonItem)data).Value;
+    }
 
     public override IJsonItem Extract(IItem value, IJsonItemConverter root) =>
       new BoolJsonItem() {
@@ -84,8 +93,10 @@ namespace HeuristicLab.JsonInterface {
     public override bool CanConvertType(Type t) =>
       typeof(DateTimeValue).IsAssignableFrom(t);
 
-    public override void Inject(IItem item, IJsonItem data, IJsonItemConverter root) =>
-      ((DateTimeValue)item).Value = ((DateTimeJsonItem)data).Value;
+    public override void Inject(IItem item, IJsonItem data, IJsonItemConverter root) {
+      if (data.Active)
+        ((DateTimeValue)item).Value = ((DateTimeJsonItem)data).Value;
+    }
 
     public override IJsonItem Extract(IItem value, IJsonItemConverter root) =>
       new DateTimeJsonItem() {

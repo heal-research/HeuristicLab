@@ -12,9 +12,11 @@ namespace HeuristicLab.JsonInterface {
       (t.IsGenericType && t.GetGenericTypeDefinition() == typeof(EnumValue<>));
 
     public override void Inject(IItem item, IJsonItem data, IJsonItemConverter root) {
-      ((dynamic)item).Value = (dynamic)Enum.Parse(
-        item.GetType().GenericTypeArguments.First(),
-        ((StringJsonItem)data).Value);
+      if(data.Active) { 
+        ((dynamic)item).Value = (dynamic)Enum.Parse(
+          item.GetType().GenericTypeArguments.First(),
+          ((StringJsonItem)data).Value);
+      }
     }
       
     

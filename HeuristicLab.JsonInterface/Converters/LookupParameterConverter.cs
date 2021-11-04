@@ -9,8 +9,11 @@ namespace HeuristicLab.JsonInterface {
     public override bool CanConvertType(Type t) =>
       t.GetInterfaces().Any(x => x == typeof(ILookupParameter));
 
-    public override void Inject(IItem item, IJsonItem data, IJsonItemConverter root) =>
-      ((ILookupParameter)item).ActualName = ((ILookupJsonItem)data).ActualName as string;
+    public override void Inject(IItem item, IJsonItem data, IJsonItemConverter root) {
+      if(data.Active)
+        ((ILookupParameter)item).ActualName = ((ILookupJsonItem)data).ActualName as string;
+    }
+      
 
     public override IJsonItem Extract(IItem value, IJsonItemConverter root) {
       IParameter parameter = value as IParameter;

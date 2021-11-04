@@ -14,7 +14,7 @@ namespace HeuristicLab.JsonInterface {
       StringJsonItem cdata = data as StringJsonItem;
       IParameter parameter = item as IParameter;
       foreach (var x in GetValidValues(parameter))
-        if(x.ToString() == cdata.Value)
+        if(x.ToString() == cdata.Value && cdata.Active)
           parameter.ActualValue = x;
 
       if (parameter.ActualValue != null && parameter.ActualValue is IParameterizedItem && cdata.Children != null) {

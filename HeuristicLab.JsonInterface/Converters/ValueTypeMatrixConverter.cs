@@ -8,9 +8,11 @@ namespace HeuristicLab.JsonInterface {
     public override int Priority => 1;
 
     public override void Inject(IItem item, IJsonItem data, IJsonItemConverter root) {
-      IntMatrix mat = item as IntMatrix;
-      IntMatrixJsonItem d = data as IntMatrixJsonItem;
-      CopyMatrixData(mat, d.Value);
+      if(data.Active) {
+        IntMatrix mat = item as IntMatrix;
+        IntMatrixJsonItem d = data as IntMatrixJsonItem;
+        CopyMatrixData(mat, d.Value);
+      }
     }
 
     public override IJsonItem Extract(IItem value, IJsonItemConverter root) =>
@@ -27,9 +29,11 @@ namespace HeuristicLab.JsonInterface {
     public override int Priority => 1;
 
     public override void Inject(IItem item, IJsonItem data, IJsonItemConverter root) {
-      DoubleMatrix mat = item as DoubleMatrix;
-      DoubleMatrixJsonItem d = data as DoubleMatrixJsonItem;
-      CopyMatrixData(mat, d.Value);
+      if(data.Active) {
+        DoubleMatrix mat = item as DoubleMatrix;
+        DoubleMatrixJsonItem d = data as DoubleMatrixJsonItem;
+        CopyMatrixData(mat, d.Value);
+      }
     }
 
     public override IJsonItem Extract(IItem value, IJsonItemConverter root) =>
@@ -48,9 +52,11 @@ namespace HeuristicLab.JsonInterface {
     public override int Priority => 2;
 
     public override void Inject(IItem item, IJsonItem data, IJsonItemConverter root) {
-      PercentMatrix mat = item as PercentMatrix;
-      DoubleMatrixJsonItem d = data as DoubleMatrixJsonItem;
-      CopyMatrixData(mat, d.Value);
+      if(data.Active) {
+        PercentMatrix mat = item as PercentMatrix;
+        DoubleMatrixJsonItem d = data as DoubleMatrixJsonItem;
+        CopyMatrixData(mat, d.Value);
+      }
     }
 
     public override IJsonItem Extract(IItem value, IJsonItemConverter root) =>
@@ -67,9 +73,11 @@ namespace HeuristicLab.JsonInterface {
     public override int Priority => 1;
 
     public override void Inject(IItem item, IJsonItem data, IJsonItemConverter root) {
-      BoolMatrix mat = item as BoolMatrix;
-      BoolMatrixJsonItem d = data as BoolMatrixJsonItem;
-      CopyMatrixData(mat, d.Value);
+      if(data.Active) {
+        BoolMatrix mat = item as BoolMatrix;
+        BoolMatrixJsonItem d = data as BoolMatrixJsonItem;
+        CopyMatrixData(mat, d.Value);
+      }
     }
 
     public override IJsonItem Extract(IItem value, IJsonItemConverter root) =>

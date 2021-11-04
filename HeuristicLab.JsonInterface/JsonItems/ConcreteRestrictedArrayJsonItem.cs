@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using HEAL.Attic;
+using Newtonsoft.Json.Linq;
 
 namespace HeuristicLab.JsonInterface {
   [StorableType("4333B6C0-26F7-41BA-A297-071AB50307F9")]
@@ -25,6 +26,13 @@ namespace HeuristicLab.JsonInterface {
         return ValidationResult.Successful();
       else
         return ValidationResult.Faulty(errors);
+    }
+
+    public override void SetJObject(JObject jObject) {
+      base.SetJObject(jObject);
+      ConcreteRestrictedItems =
+        (jObject[nameof(IConcreteRestrictedJsonItem<T>.ConcreteRestrictedItems)]?
+        .ToObject<IEnumerable<T>>());
     }
 
     public ConcreteRestrictedArrayJsonItem() { }

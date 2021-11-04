@@ -11,14 +11,16 @@ namespace HeuristicLab.JsonInterface {
       typeof(IntArray).IsAssignableFrom(t);
 
     public override void Inject(IItem item, IJsonItem data, IJsonItemConverter root) {
-      IntArray arr = item as IntArray;
-      IntArrayJsonItem intArrayItem = data as IntArrayJsonItem;
-      bool resizeTmp = arr.Resizable;
-      arr.Resizable = true;
-      arr.Length = intArrayItem.Value.Length;
-      for (int i = 0; i < intArrayItem.Value.Length; ++i)
-        arr[i] = intArrayItem.Value[i];
-      arr.Resizable = resizeTmp;
+      if(data.Active) {
+        IntArray arr = item as IntArray;
+        IntArrayJsonItem intArrayItem = data as IntArrayJsonItem;
+        bool resizeTmp = arr.Resizable;
+        arr.Resizable = true;
+        arr.Length = intArrayItem.Value.Length;
+        for (int i = 0; i < intArrayItem.Value.Length; ++i)
+          arr[i] = intArrayItem.Value[i];
+        arr.Resizable = resizeTmp;
+      }
     }
 
     public override IJsonItem Extract(IItem value, IJsonItemConverter root) =>
@@ -38,14 +40,16 @@ namespace HeuristicLab.JsonInterface {
       typeof(DoubleArray).IsAssignableFrom(t);
 
     public override void Inject(IItem item, IJsonItem data, IJsonItemConverter root) {
-      DoubleArray arr = item as DoubleArray;
-      DoubleArrayJsonItem doubleArrayItem = data as DoubleArrayJsonItem;
-      bool resizeTmp = arr.Resizable;
-      arr.Resizable = true;
-      arr.Length = doubleArrayItem.Value.Length;
-      for (int i = 0; i < doubleArrayItem.Value.Length; ++i)
-        arr[i] = doubleArrayItem.Value[i];
-      arr.Resizable = resizeTmp;
+      if(data.Active) {
+        DoubleArray arr = item as DoubleArray;
+        DoubleArrayJsonItem doubleArrayItem = data as DoubleArrayJsonItem;
+        bool resizeTmp = arr.Resizable;
+        arr.Resizable = true;
+        arr.Length = doubleArrayItem.Value.Length;
+        for (int i = 0; i < doubleArrayItem.Value.Length; ++i)
+          arr[i] = doubleArrayItem.Value[i];
+        arr.Resizable = resizeTmp;
+      }
     }
 
     public override IJsonItem Extract(IItem value, IJsonItemConverter root) =>
@@ -65,14 +69,16 @@ namespace HeuristicLab.JsonInterface {
       typeof(PercentArray).IsAssignableFrom(t);
 
     public override void Inject(IItem item, IJsonItem data, IJsonItemConverter root) {
-      PercentArray arr = item as PercentArray;
-      DoubleArrayJsonItem doubleArrayItem = data as DoubleArrayJsonItem;
-      bool resizeTmp = arr.Resizable;
-      arr.Resizable = true;
-      arr.Length = doubleArrayItem.Value.Length;
-      for (int i = 0; i < doubleArrayItem.Value.Length; ++i)
-        arr[i] = doubleArrayItem.Value[i];
-      arr.Resizable = resizeTmp;
+      if(data.Active) {
+        PercentArray arr = item as PercentArray;
+        DoubleArrayJsonItem doubleArrayItem = data as DoubleArrayJsonItem;
+        bool resizeTmp = arr.Resizable;
+        arr.Resizable = true;
+        arr.Length = doubleArrayItem.Value.Length;
+        for (int i = 0; i < doubleArrayItem.Value.Length; ++i)
+          arr[i] = doubleArrayItem.Value[i];
+        arr.Resizable = resizeTmp;
+      }
     }
 
     public override IJsonItem Extract(IItem value, IJsonItemConverter root) =>
@@ -92,14 +98,16 @@ namespace HeuristicLab.JsonInterface {
       typeof(BoolArray).IsAssignableFrom(t);
 
     public override void Inject(IItem item, IJsonItem data, IJsonItemConverter root) {
-      BoolArray arr = item as BoolArray;
-      BoolArrayJsonItem boolArrayItem = data as BoolArrayJsonItem;
-      bool resizeTmp = arr.Resizable;
-      arr.Resizable = true;
-      arr.Length = boolArrayItem.Value.Length;
-      for(int i = 0; i < boolArrayItem.Value.Length; ++i)
-        arr[i] = boolArrayItem.Value[i];
-      arr.Resizable = resizeTmp;
+      if(data.Active) {
+        BoolArray arr = item as BoolArray;
+        BoolArrayJsonItem boolArrayItem = data as BoolArrayJsonItem;
+        bool resizeTmp = arr.Resizable;
+        arr.Resizable = true;
+        arr.Length = boolArrayItem.Value.Length;
+        for (int i = 0; i < boolArrayItem.Value.Length; ++i)
+          arr[i] = boolArrayItem.Value[i];
+        arr.Resizable = resizeTmp;
+      }
     }
 
     public override IJsonItem Extract(IItem value, IJsonItemConverter root) =>

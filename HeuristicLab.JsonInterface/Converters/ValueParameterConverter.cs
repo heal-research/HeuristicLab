@@ -12,7 +12,7 @@ namespace HeuristicLab.JsonInterface {
     public override void Inject(IItem value, IJsonItem data, IJsonItemConverter root) {
       IParameter parameter = value as IParameter;
 
-      if (parameter.ActualValue == null)
+      if (parameter.ActualValue == null && data.Active)
         parameter.ActualValue = Instantiate(parameter.DataType);
       root.Inject(parameter.ActualValue, data, root);
     }
