@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using HEAL.Attic;
+using Newtonsoft.Json.Linq;
 
 namespace HeuristicLab.JsonInterface {
   [StorableType("4B3B7E23-4317-4804-BB51-88ABFD58CD03")]
@@ -15,6 +16,13 @@ namespace HeuristicLab.JsonInterface {
       return ValidationResult.Faulty(
         $"[{Path}]: Value {Value} is not one of the allowed values: " +
         $"'{ string.Join(",", ConcreteRestrictedItems.Select(s => s.ToString()).ToArray()) }'.");
+    }
+
+    public override void SetJObject(JObject jObject) {
+      base.SetJObject(jObject);
+      ConcreteRestrictedItems =
+        (jObject[nameof(IConcreteRestrictedJsonItem<T>.ConcreteRestrictedItems)]?
+        .ToObject<IEnumerable<T>>());
     }
 
     public ConcreteRestrictedValueJsonItem() { }

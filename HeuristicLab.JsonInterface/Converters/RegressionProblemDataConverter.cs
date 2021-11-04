@@ -21,43 +21,61 @@ namespace HeuristicLab.JsonInterface {
     public override bool CanConvertType(Type t) => t == typeof(ValueParameter<IRegressionProblemData>);
 
     public override void Inject(IItem item, IJsonItem data, IJsonItemConverter root) {
+      if (data.Children.All(x => !x.Active))
+        return;
+
       var parameter = item as ValueParameter<IRegressionProblemData>;
 
-      DoubleMatrixJsonItem dataset = null;
-      StringJsonItem targetVariable = null;
-      IntRangeJsonItem testPartition = null;
-      IntRangeJsonItem trainingPartition = null;
-      StringArrayJsonItem allowedInputVariables = null;
+      DoubleMatrixJsonItem datasetItem = null;
+      StringJsonItem targetVariableItem = null;
+      IntRangeJsonItem testPartitionItem = null;
+      IntRangeJsonItem trainingPartitionItem = null;
+      StringArrayJsonItem allowedInputVariablesItem = null;
 
       // get all child items
       foreach (var child in data.Children) {
+        if (!child.Active)
+          continue;
+
         if (child.Path.EndsWith(Dataset))
-          dataset = child as DoubleMatrixJsonItem;
+          datasetItem = child as DoubleMatrixJsonItem;
         else if (child.Path.EndsWith(TargetVariable))
-          targetVariable = child as StringJsonItem;
+          targetVariableItem = child as StringJsonItem;
         else if (child.Path.EndsWith(TestPartition))
-          testPartition = child as IntRangeJsonItem;
+          testPartitionItem = child as IntRangeJsonItem;
         else if (child.Path.EndsWith(TrainingPartition))
-          trainingPartition = child as IntRangeJsonItem;
+          trainingPartitionItem = child as IntRangeJsonItem;
         else if (child.Path.EndsWith(AllowedInputVariables))
-          allowedInputVariables = child as StringArrayJsonItem;
+          allowedInputVariablesItem = child as StringArrayJsonItem;
       }
 
       // check data
-      if(!dataset.ColumnNames.Any(x => x == targetVariable.Value)) {
-        throw new Exception($"The value of the target variable ('{targetVariable.Value}') has no matching row name value of the dataset.");
+      if(!datasetItem.ColumnNames.Any(x => x == targetVariableItem.Value)) {
+        throw new Exception($"The value of the target variable ('{targetVariableItem.Value}') has no matching row name value of the dataset.");
       }
 
-      foreach(var v in allowedInputVariables.Value) {
-        if(!dataset.ColumnNames.Any(x => x == v))
+      foreach(var v in allowedInputVariablesItem.Value) {
+        if(!datasetItem.ColumnNames.Any(x => x == v))
           throw new Exception($"The value of the input variable ('{v}') has no matching row name value of the dataset.");
       }
 
       // create the new problemData object
+      var dataset = datasetItem == null ? 
+        parameter.Value.Dataset : 
+        new Dataset(datasetItem.ColumnNames, datasetItem.Value);
+
+      var allowedInputVariables = allowedInputVariablesItem == null ? 
+        parameter.Value.AllowedInputVariables : 
+        allowedInputVariablesItem.Value;
+
+      var targetVariable = targetVariableItem == null ?
+        parameter.Value.TargetVariable :
+        targetVariableItem.Value;
+
       var problemData = new RegressionProblemData(
-        new Dataset(dataset.ColumnNames, dataset.Value), 
-        allowedInputVariables.Value, 
-        targetVariable.Value);
+        dataset,
+        allowedInputVariables,
+        targetVariable);
 
       // set the new problemData
       parameter.Value = problemData;

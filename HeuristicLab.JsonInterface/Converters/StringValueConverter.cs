@@ -9,8 +9,11 @@ namespace HeuristicLab.JsonInterface {
     public override bool CanConvertType(Type t) =>
       typeof(StringValue).IsAssignableFrom(t);
 
-    public override void Inject(IItem item, IJsonItem data, IJsonItemConverter root) =>
-      ((StringValue)item).Value = ((StringJsonItem)data).Value;
+    public override void Inject(IItem item, IJsonItem data, IJsonItemConverter root) {
+      if(data.Active)
+        ((StringValue)item).Value = ((StringJsonItem)data).Value;
+    }
+      
 
     public override IJsonItem Extract(IItem value, IJsonItemConverter root) =>
       new StringJsonItem() {

@@ -13,8 +13,10 @@ namespace HeuristicLab.JsonInterface {
     public override void Inject(IItem item, IJsonItem data, IJsonItemConverter root) {
       IntRange range = item as IntRange;
       IntRangeJsonItem cdata = data as IntRangeJsonItem;
-      range.Start = cdata.MinValue;
-      range.End = cdata.MaxValue;
+      if(data.Active) {
+        range.Start = cdata.MinValue;
+        range.End = cdata.MaxValue;
+      }
     }
 
     public override IJsonItem Extract(IItem value, IJsonItemConverter root) {
@@ -39,8 +41,10 @@ namespace HeuristicLab.JsonInterface {
     public override void Inject(IItem item, IJsonItem data, IJsonItemConverter root) {
       DoubleRange range = item as DoubleRange;
       DoubleRangeJsonItem cdata = data as DoubleRangeJsonItem;
-      range.Start = cdata.MinValue;
-      range.End = cdata.MaxValue;
+      if (data.Active) {
+        range.Start = cdata.MinValue;
+        range.End = cdata.MaxValue;
+      }
     }
 
     public override IJsonItem Extract(IItem value, IJsonItemConverter root) {

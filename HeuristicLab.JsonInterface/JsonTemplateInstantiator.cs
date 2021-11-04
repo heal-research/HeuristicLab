@@ -106,12 +106,7 @@ namespace HeuristicLab.JsonInterface {
         var rcModifier = (IRunCollectionModifier)Activator.CreateInstance(type);
         var rcModifierItem = JsonItemConverter.Extract(rcModifier);
 
-        foreach (JObject param in parameters) {
-          var path = param[nameof(IJsonItem.Path)].ToString();
-          foreach (var item in rcModifierItem)
-            if (item.Path == path)
-              item.SetJObject(param);
-        }
+        SetJObjects(rcModifierItem, parameters);        
 
         JsonItemConverter.Inject(rcModifier, rcModifierItem);
         runCollectionModifiers.Add(rcModifier);
@@ -123,17 +118,25 @@ namespace HeuristicLab.JsonInterface {
       IJsonItem root = JsonItemConverter.Extract(optimizer);
       Objects.Add(root.Path, root);
 
-      foreach (JObject obj in Template[Constants.Parameters]) {
-        string path = obj.Property(nameof(IJsonItem.Path)).Value.ToString();
-        foreach(var tmp in root) {
-          if(tmp.Path == path) {
-            tmp.SetJObject(obj);
-            Objects.Add(tmp.Path, tmp);
+      foreach (var kvp in SetJObjects(root, Template[Constants.Parameters]))
+        Objects.Add(kvp);
+    }
+
+    private IDictionary<string, IJsonItem> SetJObjects(IJsonItem root, JToken parameters) {
+      var dict = new Dictionary<string, IJsonItem>();
+      foreach (JObject obj in parameters) {
+        var path = obj[nameof(IJsonItem.Path)].ToString();
+        foreach (var item in root) {
+          if (item.Path == path) {
+            item.SetJObject(obj);
+            item.Active = true;
+            dict.Add(item.Path, item);
           }
         }
       }
+      return dict;
     }
-    
+
     private void MergeTemplateWithConfig() {
       foreach (JObject obj in Config) {
         // build item from config object

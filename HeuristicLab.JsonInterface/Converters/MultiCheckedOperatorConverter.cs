@@ -16,7 +16,7 @@ namespace HeuristicLab.JsonInterface {
       foreach (var op in val.Operators) {
         IJsonItem childItem = GetChildItem(op.Name, data);
         if(childItem != null) {
-          if(childItem is BoolJsonItem boolJsonItem) {
+          if(childItem is BoolJsonItem boolJsonItem && childItem.Active) {
             val.Operators.SetItemCheckedState(op, boolJsonItem.Value);
           }
           root.Inject((IItem)op, childItem, root);

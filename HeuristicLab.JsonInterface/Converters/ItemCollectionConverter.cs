@@ -39,8 +39,11 @@ namespace HeuristicLab.JsonInterface {
 
       foreach (var i in listItem.Value) {
         var tmp = Instantiate(genericType);
-        root.Inject(tmp, i, root);
-        collection.Add((dynamic)tmp);
+        if (data.Active) {
+          i.Active = true;
+          root.Inject(tmp, i, root);
+          collection.Add((dynamic)tmp);
+        }
       }
     }
   }

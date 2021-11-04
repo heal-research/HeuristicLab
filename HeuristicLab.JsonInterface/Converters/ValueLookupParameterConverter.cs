@@ -12,7 +12,8 @@ namespace HeuristicLab.JsonInterface {
     public override void Inject(IItem item, IJsonItem data, IJsonItemConverter root) {
       IValueLookupParameter param = item as IValueLookupParameter;
       IValueLookupJsonItem lookupItem = data as IValueLookupJsonItem;
-      param.ActualName = lookupItem.ActualName;
+      if(data.Active)
+        param.ActualName = lookupItem.ActualName;
       if (param.Value != null && lookupItem.ActualValue != null)
         root.Inject(param.Value, lookupItem.ActualValue, root);
     }

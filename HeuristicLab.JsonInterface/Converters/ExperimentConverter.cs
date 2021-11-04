@@ -41,7 +41,7 @@ namespace HeuristicLab.JsonInterface {
       OptimizerList optimizers = experiment.Optimizers;
       if (data.Children != null) {
         foreach (var i in data.Children) {
-          if (i.Path.EndsWith("NumberOfWorkers") && i is IntJsonItem worker) {
+          if (i.Path.EndsWith("NumberOfWorkers") && i is IntJsonItem worker && i.Active) {
             experiment.NumberOfWorkers = worker.Value;
           } else {
             var optimizer = optimizers.Find(o => i.Path.EndsWith(o.Name));
