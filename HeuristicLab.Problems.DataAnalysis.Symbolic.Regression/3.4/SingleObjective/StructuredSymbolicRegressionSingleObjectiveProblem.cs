@@ -20,6 +20,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
   public class StructuredSymbolicRegressionSingleObjectiveProblem : SingleObjectiveBasicProblem<MultiEncoding>, IRegressionProblem, IProblemInstanceConsumer<IRegressionProblemData> {
 
     #region Constants
+    private const string TreeEvaluatorParameterName = "TreeEvaluator";
     private const string ProblemDataParameterName = "ProblemData";
     private const string StructureTemplateParameterName = "Structure Template";
     private const string InterpreterParameterName = "Interpreter";
@@ -36,6 +37,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     #endregion
 
     #region Parameters
+    public IConstrainedValueParameter<SymbolicRegressionSingleObjectiveEvaluator> TreeEvaluatorParameter => (IConstrainedValueParameter<SymbolicRegressionSingleObjectiveEvaluator>)Parameters[TreeEvaluatorParameterName];
     public IValueParameter<IRegressionProblemData> ProblemDataParameter => (IValueParameter<IRegressionProblemData>)Parameters[ProblemDataParameterName];
     public IFixedValueParameter<StructureTemplate> StructureTemplateParameter => (IFixedValueParameter<StructureTemplate>)Parameters[StructureTemplateParameterName];
     public IValueParameter<ISymbolicDataAnalysisExpressionTreeInterpreter> InterpreterParameter => (IValueParameter<ISymbolicDataAnalysisExpressionTreeInterpreter>)Parameters[InterpreterParameterName];
@@ -44,6 +46,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     #endregion
 
     #region Properties
+
     public IRegressionProblemData ProblemData {
       get => ProblemDataParameter.Value;
       set {
@@ -61,7 +64,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
 
     public DoubleLimit EstimationLimits => EstimationLimitsParameter.Value;
 
-    public override bool Maximization => true;
+    public override bool Maximization => false;
     #endregion
 
     #region EventHandlers
@@ -78,22 +81,40 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       var structureTemplate = new StructureTemplate();
       structureTemplate.Changed += OnTemplateChanged;
 
+      var evaluators = new ItemSet<SymbolicRegressionSingleObjectiveEvaluator>(
+        ApplicationManager.Manager.GetInstances<SymbolicRegressionSingleObjectiveEvaluator>()
+        .Where(x => x.Maximization == Maximization));
+
+      Parameters.Add(new ConstrainedValueParameter<SymbolicRegressionSingleObjectiveEvaluator>(
+        TreeEvaluatorParameterName, 
+        evaluators,
+        evaluators.First()));
+
       Parameters.Add(new ValueParameter<IRegressionProblemData>(
         ProblemDataParameterName,
         problemData));
+      ProblemDataParameter.ValueChanged += ProblemDataParameterValueChanged;
+
       Parameters.Add(new FixedValueParameter<StructureTemplate>(
         StructureTemplateParameterName,
         StructureTemplateDescriptionText,
         structureTemplate));
+      
       Parameters.Add(new ValueParameter<ISymbolicDataAnalysisExpressionTreeInterpreter>(
         InterpreterParameterName,
         new SymbolicDataAnalysisExpressionTreeInterpreter()) { Hidden = true });
+      
       Parameters.Add(new FixedValueParameter<DoubleLimit>(
         EstimationLimitsParameterName,
         new DoubleLimit(targetInterval.LowerBound - estimationWidth, targetInterval.UpperBound + estimationWidth)));
-      Parameters.Add(new ResultParameter<ISymbolicRegressionSolution>(BestTrainingSolutionParameterName, ""));
+      EstimationLimitsParameter.Hidden = true;
 
-      ProblemDataParameter.ValueChanged += ProblemDataParameterValueChanged;
+      Parameters.Add(new ResultParameter<ISymbolicRegressionSolution>(BestTrainingSolutionParameterName, ""));
+      this.BestTrainingSolutionParameter.Hidden = true;
+
+      this.EvaluatorParameter.Hidden = true;
+
+     
 
       Operators.Add(new SymbolicDataAnalysisVariableFrequencyAnalyzer());
       Operators.Add(new MinAverageMaxSymbolicExpressionTreeLengthAnalyzer());
@@ -166,11 +187,46 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
 
       individual[SymbolicExpressionTreeName] = tree;
 
-      var quality = SymbolicRegressionSingleObjectivePearsonRSquaredEvaluator.Calculate(
+      //TreeEvaluatorParameter.Value.EstimationLimitsParameter.ActualValue = EstimationLimits;
+      //TreeEvaluatorParameter.Value.EstimationLimitsParameter.Value = EstimationLimits;
+      //var quality = TreeEvaluatorParameter.Value.Evaluate(new ExecutionContext(null, this, new Scope("Test")), tree, ProblemData, ProblemData.TrainingIndices);
+
+      var quality = double.MaxValue;
+      var evaluatorGUID = TreeEvaluatorParameter.Value.GetType().GUID;
+
+      // TODO: use Evaluate method instead of static Calculate -> a fake ExecutionContext is needed
+      if (evaluatorGUID == typeof(NMSESingleObjectiveConstraintsEvaluator).GUID) {
+        quality = NMSESingleObjectiveConstraintsEvaluator.Calculate(
+        Interpreter, tree,
+        EstimationLimits.Lower, EstimationLimits.Upper,
+        ProblemData, ProblemData.TrainingIndices, new IntervalArithBoundsEstimator());
+      } else if (evaluatorGUID == typeof(SymbolicRegressionLogResidualEvaluator).GUID) {
+        quality = SymbolicRegressionLogResidualEvaluator.Calculate(
+        Interpreter, tree,
+        EstimationLimits.Lower, EstimationLimits.Upper,
+        ProblemData, ProblemData.TrainingIndices);
+      } else if (evaluatorGUID == typeof(SymbolicRegressionMeanRelativeErrorEvaluator).GUID) {
+        quality = SymbolicRegressionMeanRelativeErrorEvaluator.Calculate(
+        Interpreter, tree,
+        EstimationLimits.Lower, EstimationLimits.Upper,
+        ProblemData, ProblemData.TrainingIndices);
+      } else if (evaluatorGUID == typeof(SymbolicRegressionSingleObjectiveMaxAbsoluteErrorEvaluator).GUID) {
+        quality = SymbolicRegressionSingleObjectiveMaxAbsoluteErrorEvaluator.Calculate(
         Interpreter, tree,
         EstimationLimits.Lower, EstimationLimits.Upper,
         ProblemData, ProblemData.TrainingIndices, false);
-
+      } else if (evaluatorGUID == typeof(SymbolicRegressionSingleObjectiveMeanAbsoluteErrorEvaluator).GUID) {
+        quality = SymbolicRegressionSingleObjectiveMeanAbsoluteErrorEvaluator.Calculate(
+        Interpreter, tree,
+        EstimationLimits.Lower, EstimationLimits.Upper,
+        ProblemData, ProblemData.TrainingIndices, false);
+      } else { // SymbolicRegressionSingleObjectiveMeanSquaredErrorEvaluator
+        quality = SymbolicRegressionSingleObjectiveMeanSquaredErrorEvaluator.Calculate(
+        Interpreter, tree,
+        EstimationLimits.Lower, EstimationLimits.Upper,
+        ProblemData, ProblemData.TrainingIndices, false);
+      }
+    
       return quality;
     }
 
