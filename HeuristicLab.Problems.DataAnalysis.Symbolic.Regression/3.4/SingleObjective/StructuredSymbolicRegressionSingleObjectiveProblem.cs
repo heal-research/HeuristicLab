@@ -12,6 +12,8 @@ using HeuristicLab.Parameters;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.PluginInfrastructure;
+using HeuristicLab.Problems.Instances.DataAnalysis.Regression.Asadzadeh;
+using HeuristicLab.Problems.Instances.DataAnalysis;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
   [StorableType("7464E84B-65CC-440A-91F0-9FA920D730F9")]
@@ -73,8 +75,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
 
     #region Constructors & Cloning
     public StructuredSymbolicRegressionSingleObjectiveProblem() {
-      var problemData = new ShapeConstrainedRegressionProblemData();
-      var targetInterval = problemData.VariableRanges.GetInterval(problemData.TargetVariable);
+      var provider = new AsadzadehProvider();
+      var descriptor = new Asadzadeh1();
+      var problemData = provider.LoadData(descriptor);
+      var shapeConstraintProblemData = new ShapeConstrainedRegressionProblemData(problemData);
+
+
+      var targetInterval = shapeConstraintProblemData.VariableRanges.GetInterval(shapeConstraintProblemData.TargetVariable);
       var estimationWidth = targetInterval.Width * 10;
 
 
@@ -92,7 +99,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
 
       Parameters.Add(new ValueParameter<IRegressionProblemData>(
         ProblemDataParameterName,
-        problemData));
+        shapeConstraintProblemData));
       ProblemDataParameter.ValueChanged += ProblemDataParameterValueChanged;
 
       Parameters.Add(new FixedValueParameter<StructureTemplate>(
@@ -118,10 +125,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
 
       Operators.Add(new SymbolicDataAnalysisVariableFrequencyAnalyzer());
       Operators.Add(new MinAverageMaxSymbolicExpressionTreeLengthAnalyzer());
-      //TODO change to value lookup
-      //Operators.Add(new SymbolicExpressionTreeLengthAnalyzer());
       Operators.Add(new SymbolicExpressionSymbolFrequencyAnalyzer());
 
+      StructureTemplate.Template = 
+        "(" +
+          "(210000 / (210000 + h)) * ((sigma_y * t * t) / (wR * Rt * t)) + " +
+          "PlasticHardening(_) - Elasticity(_)" +
+        ")" +
+        " * C(_)";
     }
 
     public StructuredSymbolicRegressionSingleObjectiveProblem(StructuredSymbolicRegressionSingleObjectiveProblem original,

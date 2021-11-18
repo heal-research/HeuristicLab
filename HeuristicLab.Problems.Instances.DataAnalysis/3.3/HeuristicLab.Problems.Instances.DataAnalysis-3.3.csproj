@@ -154,6 +154,8 @@
     <Compile Include="Classification\ClassificationDataDescriptor.cs" />
     <Compile Include="Regression\ArtificialRegressionDataDescriptor.cs" />
     <Compile Include="Regression\ArtificialRegressionInstanceProvider.cs" />
+    <Compile Include="Regression\Asadzadeh\Asadzadeh1.cs" />
+    <Compile Include="Regression\Asadzadeh\AsadzadehProvider.cs" />
     <Compile Include="Regression\CSV\RegressionCSVInstanceProvider.cs" />
     <Compile Include="Regression\FeatureSelection\FeatureSelectionRegressionProblemData.cs" />
     <Compile Include="Regression\FeatureSelection\FeatureSelection.cs" />
