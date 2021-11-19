@@ -11,6 +11,22 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
     private readonly Interval d = new Interval(1, 3);
     private readonly Interval e = new Interval(4, 6);
 
+    private void CheckLowerAndUpperBoundOfInterval(Interval expected, Interval calculated) {
+      var lowerBoundExpected = expected.LowerBound;
+      var upperBoundExpected = expected.UpperBound;
+      var lowerBoundCalculated = calculated.LowerBound;
+      var upperBoundCalculated = calculated.UpperBound;
+
+      if(double.IsNaN(lowerBoundExpected) && double.IsNaN(lowerBoundCalculated)) {
+        Assert.IsTrue(double.IsNaN(lowerBoundExpected) && double.IsNaN(lowerBoundCalculated));
+      } else if (double.IsNaN(upperBoundExpected) && double.IsNaN(upperBoundCalculated)) {
+        Assert.IsTrue(double.IsNaN(upperBoundExpected) && double.IsNaN(upperBoundCalculated));
+      } else {
+        Assert.AreEqual(lowerBoundExpected, lowerBoundCalculated, 1e-9);
+        Assert.AreEqual(upperBoundExpected, upperBoundCalculated, 1e-9);
+      } 
+    }
+
     [TestMethod]
     [TestCategory("Problems.DataAnalysis")]
     [TestProperty("Time", "short")]
@@ -32,11 +48,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
       //subtract   [x1,x2] − [y1,y2] = [x1 − y2,x2 − y1]
 
       //[-1, 1] - [-2, 2] = [-3, 3]
-      Assert.AreEqual<Interval>(Interval.Subtract(a, b), new Interval(-3, 3));
+      CheckLowerAndUpperBoundOfInterval(Interval.Subtract(a, b), new Interval(-3, 3));
       //([-1, 1] - [-2, 2]) - [0, 3] = [-6, 3]
-      Assert.AreEqual<Interval>(Interval.Subtract(Interval.Subtract(a, b), c), new Interval(-6, 3));
+      CheckLowerAndUpperBoundOfInterval(Interval.Subtract(Interval.Subtract(a, b), c), new Interval(-6, 3));
       //([-1, 1] - [0, 3]) - [-2, 2] = [-6, 3]
-      Assert.AreEqual<Interval>(Interval.Subtract(Interval.Subtract(a, c), b), new Interval(-6, 3));
+      CheckLowerAndUpperBoundOfInterval(Interval.Subtract(Interval.Subtract(a, c), b), new Interval(-6, 3));
     }
 
     [TestMethod]
@@ -46,14 +62,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
       //multiply   [x1,x2] * [y1,y2] = [min(x1*y1,x1*y2,x2*y1,x2*y2),max(x1*y1,x1*y2,x2*y1,x2*y2)]
 
       //[-1, 1] * [-2, 2] = [-2, 2]
-      Assert.AreEqual<Interval>(Interval.Multiply(a, b), new Interval(-2, 2));
+      CheckLowerAndUpperBoundOfInterval(Interval.Multiply(a, b), new Interval(-2, 2));
       //([-1, 1] * [-2, 2]) * [0, 3] = [-6, 6]
-      Assert.AreEqual<Interval>(Interval.Multiply(Interval.Multiply(a, b), c), new Interval(-6, 6));
+      CheckLowerAndUpperBoundOfInterval(Interval.Multiply(Interval.Multiply(a, b), c), new Interval(-6, 6));
       //([-1, 1] * [0, 3]) * [-2, 2] = [-6, 6]
-      Assert.AreEqual<Interval>(Interval.Multiply(Interval.Multiply(a, c), b), new Interval(-6, 6));
+      CheckLowerAndUpperBoundOfInterval(Interval.Multiply(Interval.Multiply(a, c), b), new Interval(-6, 6));
 
       // [-2, 0] * [-2, 0]  = [0, 4]
-      Assert.AreEqual<Interval>(new Interval(0, 4), Interval.Multiply(new Interval(-2, 0), new Interval(-2, 0)));
+      CheckLowerAndUpperBoundOfInterval(new Interval(0, 4), Interval.Multiply(new Interval(-2, 0), new Interval(-2, 0)));
     }
 
     [TestMethod]
@@ -63,18 +79,18 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
       //divide  [x1, x2] / [y1, y2] = [x1, x2] * (1/[y1, y2]), where 1 / [y1,y2] = [1 / y2,1 / y1] if 0 not in [y_1, y_2].
 
       //[4, 6] / [1, 3] = [4/3, 6]
-      Assert.AreEqual<Interval>(Interval.Divide(e, d), new Interval(4.0 / 3.0, 6));
+      CheckLowerAndUpperBoundOfInterval(Interval.Divide(e, d), new Interval(4.0 / 3.0, 6));
       //([4, 6] / [1, 3]) / [1, 3] = [4/9, 6]
-      Assert.AreEqual<Interval>(Interval.Divide(Interval.Divide(e, d), d), new Interval(4.0 / 9.0, 6));
+      CheckLowerAndUpperBoundOfInterval(Interval.Divide(Interval.Divide(e, d), d), new Interval(4.0 / 9.0, 6));
       //[4, 6] / [0, 3] = [4/3, +Inf]
-      Assert.AreEqual<Interval>(Interval.Divide(e, c), new Interval(4.0 / 3.0, double.PositiveInfinity));
+      CheckLowerAndUpperBoundOfInterval(Interval.Divide(e, c), new Interval(4.0 / 3.0, double.PositiveInfinity));
       //[-1, 1] / [0, 3] = [+Inf, -Inf]
-      Assert.AreEqual<Interval>(Interval.Divide(a, c), new Interval(double.NegativeInfinity, double.PositiveInfinity));
+      CheckLowerAndUpperBoundOfInterval(Interval.Divide(a, c), new Interval(double.NegativeInfinity, double.PositiveInfinity));
       //Devision by 0 ==> IsInfiniteOrUndefined == true
       Assert.IsTrue(Interval.Divide(e, c).IsInfiniteOrUndefined);
       //Devision by 0 ==> IsInfiniteOrUndefined == true
       Assert.IsTrue(Interval.Divide(a, c).IsInfiniteOrUndefined);
-      Assert.AreEqual<Interval>(Interval.Divide(d, b), new Interval(double.NegativeInfinity, double.PositiveInfinity));
+      CheckLowerAndUpperBoundOfInterval(Interval.Divide(d, b), new Interval(double.NegativeInfinity, double.PositiveInfinity));
     }
 
     [TestMethod]
@@ -83,16 +99,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
     public void SineIntervalTest() {
       //sine depends on interval
       //sin([0, 2*pi]) = [-1, 1]
-      Assert.AreEqual<Interval>(Interval.Sine(new Interval(0, 2 * Math.PI)), new Interval(-1, 1));
+      CheckLowerAndUpperBoundOfInterval(Interval.Sine(new Interval(0, 2 * Math.PI)), new Interval(-1, 1));
       //sin([-pi/2, pi/2]) = [sin(-pi/2), sin(pi/2)]
-      Assert.AreEqual<Interval>(Interval.Sine(new Interval(-1 * Math.PI / 2, Math.PI / 2)), new Interval(-1, 1));
+      CheckLowerAndUpperBoundOfInterval(Interval.Sine(new Interval(-1 * Math.PI / 2, Math.PI / 2)), new Interval(-1, 1));
       //sin([0, pi/2]) = [sin(0), sin(pi/2)]
-      Assert.AreEqual<Interval>(Interval.Sine(new Interval(0, Math.PI / 2)), new Interval(0, 1));
+      CheckLowerAndUpperBoundOfInterval(Interval.Sine(new Interval(0, Math.PI / 2)), new Interval(0, 1));
       //sin([pi, 3*pi/2]) = [sin(pi), sin(3*pi/2)]
-      Assert.AreEqual<Interval>(Interval.Sine(new Interval(Math.PI, 3 * Math.PI / 2)), new Interval(-1, 0));
-      Assert.AreEqual<Interval>(Interval.Sine(new Interval(1, 2)), new Interval(Math.Min(Math.Sin(1), Math.Sin(2)), 1));
-      Assert.AreEqual<Interval>(Interval.Sine(new Interval(1, 3)), new Interval(Math.Min(Math.Sin(1), Math.Sin(3)), 1));
-      Assert.AreEqual<Interval>(Interval.Sine(new Interval(Math.PI, 5 * Math.PI / 2)), new Interval(-1, 1));
+      CheckLowerAndUpperBoundOfInterval(Interval.Sine(new Interval(Math.PI, 3 * Math.PI / 2)), new Interval(-1, 0));
+      CheckLowerAndUpperBoundOfInterval(Interval.Sine(new Interval(1, 2)), new Interval(Math.Min(Math.Sin(1), Math.Sin(2)), 1));
+      CheckLowerAndUpperBoundOfInterval(Interval.Sine(new Interval(1, 3)), new Interval(Math.Min(Math.Sin(1), Math.Sin(3)), 1));
+      CheckLowerAndUpperBoundOfInterval(Interval.Sine(new Interval(Math.PI, 5 * Math.PI / 2)), new Interval(-1, 1));
     }
 
     [TestMethod]
@@ -100,8 +116,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
     [TestProperty("Time", "short")]
     public void CosineIntervalTest() {
       //Cosine uses sine Interval.Sine(Interval.Subtract(a, new Interval(Math.PI / 2, Math.PI / 2)));
-      Assert.AreEqual<Interval>(Interval.Cosine(new Interval(0, 2 * Math.PI)), new Interval(-1, 1));
-      Assert.AreEqual<Interval>(new Interval(-1, 1), Interval.Cosine(new Interval(Math.PI, 4 * Math.PI / 2)));
+      CheckLowerAndUpperBoundOfInterval(Interval.Cosine(new Interval(0, 2 * Math.PI)), new Interval(-1, 1));
+      CheckLowerAndUpperBoundOfInterval(new Interval(-1, 1), Interval.Cosine(new Interval(Math.PI, 4 * Math.PI / 2)));
     }
 
     [TestMethod]
@@ -109,12 +125,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
     [TestProperty("Time", "short")]
     public void LogIntervalTest() {
       //Log([3, 5]) = [log(3), log(5)]
-      Assert.AreEqual<Interval>(new Interval(Math.Log(3), Math.Log(5)), Interval.Logarithm(new Interval(3, 5)));
+      CheckLowerAndUpperBoundOfInterval(new Interval(Math.Log(3), Math.Log(5)), Interval.Logarithm(new Interval(3, 5)));
       //Log([0.5, 1]) = [log(0.5), log(1)]
-      Assert.AreEqual<Interval>(new Interval(Math.Log(0.5), 0), Interval.Logarithm(new Interval(0.5, 1)));
+      CheckLowerAndUpperBoundOfInterval(new Interval(Math.Log(0.5), 0), Interval.Logarithm(new Interval(0.5, 1)));
       //Log([-1, 5]) = [NaN, log(5)]
       var result = Interval.Logarithm(new Interval(-1, 5));
-      Assert.AreEqual<Interval>(new Interval(double.NaN, Math.Log(5)),result);
+      CheckLowerAndUpperBoundOfInterval(new Interval(double.NaN, Math.Log(5)),result);
       Assert.IsTrue(result.IsInfiniteOrUndefined);
     }
 
@@ -124,7 +140,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
     [TestProperty("Time", "short")]
     public void ExponentialIntervalTest() {
       //Exp([0, 1]) = [exp(0), exp(1)]
-      Assert.AreEqual<Interval>(new Interval(1, Math.Exp(1)), Interval.Exponential(new Interval(0, 1)));
+      CheckLowerAndUpperBoundOfInterval(new Interval(1, Math.Exp(1)), Interval.Exponential(new Interval(0, 1)));
     }
 
 
@@ -132,35 +148,35 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
     [TestCategory("Problems.DataAnalysis")]
     [TestProperty("Time", "short")]
     public void SquareIntervalTest() {
-      Assert.AreEqual<Interval>(new Interval(1, 4), Interval.Square(new Interval(1, 2)));
-      Assert.AreEqual<Interval>(new Interval(1, 4), Interval.Square(new Interval(-2, -1)));
-      Assert.AreEqual<Interval>(new Interval(0, 4), Interval.Square(new Interval(-2, 2)));
+      CheckLowerAndUpperBoundOfInterval(new Interval(1, 4), Interval.Square(new Interval(1, 2)));
+      CheckLowerAndUpperBoundOfInterval(new Interval(1, 4), Interval.Square(new Interval(-2, -1)));
+      CheckLowerAndUpperBoundOfInterval(new Interval(0, 4), Interval.Square(new Interval(-2, 2)));
     }
 
     [TestMethod]
     [TestCategory("Problems.DataAnalysis")]
     [TestProperty("Time", "short")]
     public void SquarerootIntervalTest() {
-      Assert.AreEqual<Interval>(new Interval(-2, 2), Interval.SquareRoot(new Interval(1, 4)));
-      Assert.AreEqual<Interval>(new Interval(double.NaN, double.NaN), Interval.SquareRoot(new Interval(-4, -1)));
+      CheckLowerAndUpperBoundOfInterval(new Interval(-2, 2), Interval.SquareRoot(new Interval(1, 4)));
+      CheckLowerAndUpperBoundOfInterval(new Interval(double.NaN, double.NaN), Interval.SquareRoot(new Interval(-4, -1)));
     }
 
     [TestMethod]
     [TestCategory("Problems.DataAnalysis")]
     [TestProperty("Time", "short")]
     public void CubeIntervalTest() {
-      Assert.AreEqual<Interval>(new Interval(1, 8), Interval.Cube(new Interval(1, 2)));
-      Assert.AreEqual<Interval>(new Interval(-8, -1), Interval.Cube(new Interval(-2, -1)));
-      Assert.AreEqual<Interval>(new Interval(-8, 8), Interval.Cube(new Interval(-2, 2)));
+      CheckLowerAndUpperBoundOfInterval(new Interval(1, 8), Interval.Cube(new Interval(1, 2)));
+      CheckLowerAndUpperBoundOfInterval(new Interval(-8, -1), Interval.Cube(new Interval(-2, -1)));
+      CheckLowerAndUpperBoundOfInterval(new Interval(-8, 8), Interval.Cube(new Interval(-2, 2)));
     }
 
     [TestMethod]
     [TestCategory("Problems.DataAnalysis")]
     [TestProperty("Time", "short")]
     public void CubeRootIntervalTest() {
-      Assert.AreEqual<Interval>(new Interval(1, 2), Interval.CubicRoot(new Interval(1, 8)));
-      Assert.AreEqual<Interval>(new Interval(-2, -2), Interval.CubicRoot(new Interval(-8, -8)));
-      Assert.AreEqual<Interval>(new Interval(-2, 2), Interval.CubicRoot(new Interval(-8, 8)));
+      CheckLowerAndUpperBoundOfInterval(new Interval(1, 2), Interval.CubicRoot(new Interval(1, 8)));
+      CheckLowerAndUpperBoundOfInterval(new Interval(-2, -2), Interval.CubicRoot(new Interval(-8, -8)));
+      CheckLowerAndUpperBoundOfInterval(new Interval(-2, 2), Interval.CubicRoot(new Interval(-8, 8)));
       Assert.AreEqual(new Interval(2, 2), Interval.CubicRoot(new Interval(8, 8)));
       Assert.AreEqual(new Interval(-Math.Pow(6, 1.0 / 3), 2), Interval.CubicRoot(new Interval(-6, 8)));
       Assert.AreEqual(new Interval(2, 2), Interval.CubicRoot(new Interval(8, 8)));
@@ -203,9 +219,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
       //Assert.AreEqual(new Interval(aPos.LowerBound/Math.Sqrt(17), aPos.UpperBound/Math.Sqrt(5)), Interval.AnalyticalQuotient(aPos, bNeg));
       //Assert.AreEqual(new Interval(aZero.LowerBound/Math.Sqrt(5), aZero.UpperBound/Math.Sqrt(5)), Interval.AnalyticalQuotient(aZero, bNeg));
       //Assert.AreEqual(new Interval(aNeg.LowerBound/Math.Sqrt(5), aNeg.UpperBound/Math.Sqrt(17)), Interval.AnalyticalQuotient(aNeg, bNeg));
-      Assert.AreEqual(new Interval(double.NegativeInfinity, double.PositiveInfinity), Interval.AnalyticalQuotient(aPos, bZero));
-      Assert.AreEqual(new Interval(double.NegativeInfinity, double.PositiveInfinity), Interval.AnalyticalQuotient(aPos, bPos));
-      Assert.AreEqual(new Interval(double.NegativeInfinity, double.PositiveInfinity), Interval.AnalyticalQuotient(aZero, bNeg));
+      Assert.AreEqual(new Interval(double.NegativeInfinity, double.PositiveInfinity), Interval.AnalyticQuotient(aPos, bZero));
+      Assert.AreEqual(new Interval(double.NegativeInfinity, double.PositiveInfinity), Interval.AnalyticQuotient(aPos, bPos));
+      Assert.AreEqual(new Interval(double.NegativeInfinity, double.PositiveInfinity), Interval.AnalyticQuotient(aZero, bNeg));
     }
 
     [TestMethod]
@@ -306,6 +322,50 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
       Assert.AreEqual(valuesInterval, Interval.GetInterval(values));
       Assert.AreEqual(valuesNanInterval, Interval.GetInterval(valuesNan));
       Assert.AreEqual(valuesInfInterval, Interval.GetInterval(valuesInf));
+    }
+
+    [TestMethod]
+    [TestCategory("Problems.DataAnalysis")]
+    [TestProperty("Time", "short")]
+    public void GeometricTest() {
+      CheckLowerAndUpperBoundOfInterval(new Interval(-1, -0.936456687290796), Interval.Cosine(new Interval(3, 3.5)));
+      CheckLowerAndUpperBoundOfInterval(new Interval(-1, -0.936456687290796), Interval.Cosine(new Interval(-3.5, -3)));
+      CheckLowerAndUpperBoundOfInterval(new Interval(-1, 1), Interval.Cosine(new Interval(-3.5, 3)));
+      CheckLowerAndUpperBoundOfInterval(new Interval(-0.839071529076452, 0.843853958732493), Interval.Cosine(new Interval(10, 12)));
+      CheckLowerAndUpperBoundOfInterval(new Interval(0.136737218207833, 0.907446781450197), Interval.Cosine(new Interval(13, 14)));
+      CheckLowerAndUpperBoundOfInterval(new Interval(-0.839071529076452, 1), Interval.Cosine(new Interval(10, 14)));
+      CheckLowerAndUpperBoundOfInterval(new Interval(-1, 0.136737218207833), Interval.Cosine(new Interval(14, 16)));
+      CheckLowerAndUpperBoundOfInterval(new Interval(-0.839071529076452, 0.004425697988051), Interval.Cosine(new Interval(-11, -10)));
+      CheckLowerAndUpperBoundOfInterval(new Interval(0.136737218207833, 0.907446781450197), Interval.Cosine(new Interval(-14, -13)));
+      CheckLowerAndUpperBoundOfInterval(new Interval(-1, 0.136737218207833), Interval.Cosine(new Interval(-16, -14)));
+      CheckLowerAndUpperBoundOfInterval(new Interval(0.101585703696621, 1), Interval.Cosine(new Interval(-102, -100)));
+      CheckLowerAndUpperBoundOfInterval(new Interval(-1, 1), Interval.Cosine(new Interval(4.6e15, 4.7e15)));
+      CheckLowerAndUpperBoundOfInterval(new Interval(0.87758256189037265, 0.87758256189037276), Interval.Cosine(new Interval(0.5, 0.5)));
+      CheckLowerAndUpperBoundOfInterval(new Interval(-0.09904103659872825, 0.8775825618903728), Interval.Cosine(new Interval(0.5, 1.67)));
+      CheckLowerAndUpperBoundOfInterval(new Interval(-1.0, 0.77556587851025016), Interval.Cosine(new Interval(2.1, 5.6)));
+      CheckLowerAndUpperBoundOfInterval(new Interval(-1.0, 1.0), Interval.Cosine(new Interval(0.5, 8.5)));
+      CheckLowerAndUpperBoundOfInterval(new Interval(-1.0, -0.09904103659872801), Interval.Cosine(new Interval(1.67, 3.2)));
+
+      CheckLowerAndUpperBoundOfInterval(new Interval(double.NegativeInfinity, double.PositiveInfinity), Interval.Tangens(new Interval(double.NegativeInfinity, double.PositiveInfinity)));
+      CheckLowerAndUpperBoundOfInterval(new Interval(0, 1.55740772465490223051), Interval.Tangens(new Interval(0, 1)));
+      CheckLowerAndUpperBoundOfInterval(new Interval(-1.55740772465490223051, 0), Interval.Tangens(new Interval(-1, 0)));
+      CheckLowerAndUpperBoundOfInterval(new Interval(double.NegativeInfinity, double.PositiveInfinity), Interval.Tangens(new Interval(-2, -1)));
+      CheckLowerAndUpperBoundOfInterval(new Interval(double.NegativeInfinity, double.PositiveInfinity), Interval.Tangens(new Interval(202, 203)));
+      CheckLowerAndUpperBoundOfInterval(new Interval(0.54630248984379048, 0.5463024898437906), Interval.Tangens(new Interval(0.5, 0.5)));
+      CheckLowerAndUpperBoundOfInterval(new Interval(double.NegativeInfinity, double.PositiveInfinity), Interval.Tangens(new Interval(0.5,
+        1.67)));
+
+      CheckLowerAndUpperBoundOfInterval(new Interval(double.NegativeInfinity, double.PositiveInfinity), Interval.Tangens(new Interval(
+        6.638314112824137, 8.38263151220128)));
+
+      CheckLowerAndUpperBoundOfInterval(new Interval(0.47942553860420295, 0.47942553860420301), Interval.Sine(new Interval(0.5, 0.5)));
+      CheckLowerAndUpperBoundOfInterval(new Interval(4.7942553860420295e-01, 1.0), Interval.Sine(new Interval(0.5, 1.67)));
+      CheckLowerAndUpperBoundOfInterval(new Interval(-5.8374143427580093e-02, 9.9508334981018021e-01), Interval.Sine(new Interval(1.67,
+        3.2)));
+      CheckLowerAndUpperBoundOfInterval(new Interval(-1.0, 0.863209366648874), Interval.Sine(new Interval(2.1, 5.6)));
+      CheckLowerAndUpperBoundOfInterval(new Interval(-1.0, 1.0), Interval.Sine(new Interval(0.5, 8.5)));
+      CheckLowerAndUpperBoundOfInterval(new Interval(-1.0, 0.9775301176650971), Interval.Sine(new Interval(-4.5, 0.1)));
+      CheckLowerAndUpperBoundOfInterval(new Interval(-1.0, 1.0), Interval.Sine(new Interval(1.3, 6.3)));
     }
 
     [TestMethod]

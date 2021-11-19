@@ -37,16 +37,16 @@ public class RFClassificationCrossValidationScript : HeuristicLab.Scripting.CSha
   int seed = 3141519) {
     double rmsError, outOfBagRmsError, relClassificationError, outOfBagRelClassificationError;
     bestParameters = RandomForestUtil.GridSearch(problemData, numberOfFolds, shuffleFolds, randomForestParameterRanges, seed, maximumDegreeOfParallelism);
-    var model = RandomForestModel.CreateClassificationModel(problemData, problemData.TrainingIndices, bestParameters.N, bestParameters.R, bestParameters.M, seed,
-                                                            out rmsError, out outOfBagRmsError, out relClassificationError, out outOfBagRelClassificationError);
+    var model = RandomForestClassification.CreateRandomForestClassificationModel(problemData, problemData.TrainingIndices, bestParameters.N, bestParameters.R, bestParameters.M, seed,
+                                                                                 out rmsError, out relClassificationError, out outOfBagRmsError, out outOfBagRelClassificationError);
     return (RandomForestClassificationSolution)model.CreateClassificationSolution(problemData);
   }
 
   private static RandomForestClassificationSolution GridSearch(IClassificationProblemData problemData, out RFParameter bestParameters, int seed = 3141519) {
     double rmsError, outOfBagRmsError, relClassificationError, outOfBagRelClassificationError;
     bestParameters = RandomForestUtil.GridSearch(problemData, randomForestParameterRanges, seed, maximumDegreeOfParallelism);
-    var model = RandomForestModel.CreateClassificationModel(problemData, problemData.TrainingIndices, bestParameters.N, bestParameters.R, bestParameters.M, seed,
-                                                            out rmsError, out outOfBagRmsError, out relClassificationError, out outOfBagRelClassificationError);
+    var model = RandomForestClassification.CreateRandomForestClassificationModel(problemData, problemData.TrainingIndices, bestParameters.N, bestParameters.R, bestParameters.M, seed,
+                                                                                 out rmsError, out relClassificationError, out outOfBagRmsError, out outOfBagRelClassificationError);
     return (RandomForestClassificationSolution)model.CreateClassificationSolution(problemData);
   }
 

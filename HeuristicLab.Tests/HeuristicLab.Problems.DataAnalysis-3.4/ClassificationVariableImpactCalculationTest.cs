@@ -213,9 +213,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
     }
     private Dictionary<string, double> GetExpectedValuesForIrisKNNModel() {
       Dictionary<string, double> expectedImpacts = new Dictionary<string, double>();
-      expectedImpacts.Add("petal_length", 0.21);
-      expectedImpacts.Add("petal_width", 0.25);
-      expectedImpacts.Add("sepal_length", 0.05);
+      expectedImpacts.Add("petal_length", 0.22);
+      expectedImpacts.Add("petal_width", 0.35);
+      expectedImpacts.Add("sepal_length", 0.15);
       expectedImpacts.Add("sepal_width", 0.05);
 
       return expectedImpacts;
