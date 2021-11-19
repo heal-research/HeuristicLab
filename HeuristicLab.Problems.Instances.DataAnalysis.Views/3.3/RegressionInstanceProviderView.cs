@@ -48,17 +48,25 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
           var activeView = (IContentView)MainFormManager.MainForm.ActiveView;
           var content = activeView.Content;
           // lock active view and show progress bar
+          IProgress progress = null;
           try {
-            var progress = Progress.Show(content, "Loading problem instance.");
+            progress = Progress.Show(content, "Loading problem instance.");
 
-            Content.ProgressChanged += (o, args) => { progress.ProgressValue = args.ProgressPercentage / 100.0; };
+            Content.ProgressChanged += (o, args) => {
+              lock (progress) {
+                if (progress.ProgressState == ProgressState.Started)
+                  progress.ProgressValue = args.ProgressPercentage / 100.0;
+              }
+            };
 
             instance = Content.ImportData(importTypeDialog.Path, importTypeDialog.ImportType, importTypeDialog.CSVFormat);
           } catch (Exception ex) {
             ErrorWhileParsing(ex);
             return;
           } finally {
-            Progress.Hide(content);
+            lock (progress) {
+              Progress.Hide(content);
+            }
           }
 
           try {

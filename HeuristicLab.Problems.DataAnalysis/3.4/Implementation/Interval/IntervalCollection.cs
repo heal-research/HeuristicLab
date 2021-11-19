@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -33,22 +33,35 @@ namespace HeuristicLab.Problems.DataAnalysis {
     public static new System.Drawing.Image StaticItemImage {
       get => HeuristicLab.Common.Resources.VSImageLibrary.Object;
     }
-    private IDictionary<string, Interval> intervals { get; } = new Dictionary<string, Interval>();
 
-    [Storable(Name = "StorableIntervalInformation")]
+    private IDictionary<string, Interval> intervals { get; set; } = new Dictionary<string, Interval>();
+
+    [Storable(OldName = "StorableIntervalInformation")]
     private KeyValuePair<string, double[]>[] StorableIntervalInformation {
-      get {
-        var l = new List<KeyValuePair<string, double[]>>();
-        foreach (var varInt in intervals)
-
-          l.Add(new KeyValuePair<string, double[]>(varInt.Key,
-            new double[] { varInt.Value.LowerBound, varInt.Value.UpperBound }));
-        return l.ToArray();
-      }
-
       set {
         foreach (var varInt in value)
           intervals.Add(varInt.Key, new Interval(varInt.Value[0], varInt.Value[1]));
+      }
+    }
+
+    [Storable]
+    private object[] StorableIntervals {
+      get {
+        var names = intervals.Keys.ToArray();
+        var lowerBounds = intervals.Values.Select(i => i.LowerBound).ToArray();
+        var upperBounds = intervals.Values.Select(i => i.UpperBound).ToArray();
+
+        return new object[] { names, lowerBounds, upperBounds };
+      }
+
+      set {
+        var names = (string[])value[0];
+        var lowerBounds = (double[])value[1];
+        var upperBounds = (double[])value[2];
+
+        for (int i = 0; i < names.Length; i++) {
+          intervals.Add(names[i], new Interval(lowerBounds[i], upperBounds[i]));
+        }
       }
     }
 
@@ -79,17 +92,24 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     public void SetInterval(string identifier, Interval interval) {
       intervals[identifier] = interval;
+      RaiseChanged();
     }
 
     public void AddInterval(string identifier, Interval interval) {
       intervals.Add(identifier, interval);
+      RaiseChanged();
     }
 
     public void DeleteInterval(string identifier) {
       intervals.Remove(identifier);
+      RaiseChanged();
     }
 
     public IReadOnlyDictionary<string, Interval> GetReadonlyDictionary() {
+      return intervals.ToDictionary(pair => pair.Key, pair => pair.Value);
+    }
+
+    public IDictionary<string, Interval> GetDictionary() {
       return intervals.ToDictionary(pair => pair.Key, pair => pair.Value);
     }
 
@@ -97,6 +117,14 @@ namespace HeuristicLab.Problems.DataAnalysis {
       foreach (var variableInterval in intervals)
         yield return Tuple.Create(variableInterval.Key, variableInterval.Value);
     }
+
+    public event EventHandler Changed;
+    private void RaiseChanged() {
+      var handler = Changed;
+      if (handler != null)
+        handler(this, EventArgs.Empty);
+    }
+
   }
 }
 

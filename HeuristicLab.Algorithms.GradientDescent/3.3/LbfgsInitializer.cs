@@ -89,16 +89,16 @@ namespace HeuristicLab.Algorithms.GradientDescent {
     public override IOperation Apply() {
       double[] initialPoint = Point.ToArray();
       int n = initialPoint.Length;
-      alglib.minlbfgs.minlbfgsstate state = new alglib.minlbfgs.minlbfgsstate();
+      alglib.minlbfgsstate state = null;
       if (ApproximateGradients.Value) {
-        alglib.minlbfgs.minlbfgscreatef(n, Math.Min(n, 10), initialPoint, 1E-5, state);
+        alglib.minlbfgscreatef(n, Math.Min(n, 10), initialPoint, 1E-5, out state);
       } else {
-        alglib.minlbfgs.minlbfgscreate(n, Math.Min(n, 10), initialPoint, state);
+        alglib.minlbfgscreate(n, Math.Min(n, 10), initialPoint, out state);
       }
-      alglib.minlbfgs.minlbfgssetcond(state, 0.0, 0, 0, Iterations.Value);
-      alglib.minlbfgs.minlbfgssetxrep(state, true);
+      alglib.minlbfgssetcond(state, 0.0, 0, 0, Iterations.Value);
+      alglib.minlbfgssetxrep(state, true);
       if (GradientStepSizeParameter.ActualValue != null && GradientStepSizeParameter.ActualValue.Value > 0)
-        alglib.minlbfgs.minlbfgssetgradientcheck(state, GradientStepSizeParameter.ActualValue.Value);
+        alglib.minlbfgsoptguardgradient(state, GradientStepSizeParameter.ActualValue.Value);
 
       PointParameter.ActualValue = new RealVector(initialPoint);
       StateParameter.ActualValue = new LbfgsState(state);

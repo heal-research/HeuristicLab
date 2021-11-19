@@ -87,8 +87,8 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
 
     private static double RoundDown(this double value, int decimalRank) {
       if (decimalRank > 0) {
-        var floor = (int)Math.Floor(value);
-        var pow = (int)Math.Pow(10, decimalRank);
+        var floor = Math.Floor(value);
+        var pow = Math.Pow(10, decimalRank);
         var mod = Mod(floor, pow);
         return floor - mod;
       }
@@ -97,8 +97,8 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
 
     private static double RoundUp(this double value, int decimalRank) {
       if (decimalRank > 0) {
-        var ceil = (int)Math.Ceiling(value);
-        var pow = (int)Math.Pow(10, decimalRank);
+        var ceil = Math.Ceiling(value);
+        var pow = Math.Pow(10, decimalRank);
         var mod = Mod(ceil, pow);
         return ceil - mod + pow;
       }

@@ -178,6 +178,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
     }
 
     private void UpdateProgressValue() {
+      if (Disposing || IsDisposed) return;
       if (InvokeRequired) {
         Invoke((Action)UpdateProgressValue);
         return;

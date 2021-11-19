@@ -39,6 +39,9 @@ namespace HeuristicLab.Problems.DataAnalysis {
     private const string TestMeanSquaredErrorResultName = "Mean squared error (test)";
     private const string TrainingRSquaredResultName = "Pearson's R² (training)";
     private const string TestRSquaredResultName = "Pearson's R² (test)";
+    private const string TrainingNormalizedGiniCoefficientResultName = "Norm. Gini coeff. (training, discriminant values)";
+    private const string TestNormalizedGiniCoefficientResultName = "Norm. Gini coeff. (test, discriminant values)";
+
 
     public new IDiscriminantFunctionClassificationModel Model {
       get { return (IDiscriminantFunctionClassificationModel)base.Model; }
@@ -70,6 +73,14 @@ namespace HeuristicLab.Problems.DataAnalysis {
       get { return ((DoubleValue)this[TestRSquaredResultName].Value).Value; }
       private set { ((DoubleValue)this[TestRSquaredResultName].Value).Value = value; }
     }
+    public double TrainingNormalizedGiniCoefficientForDiscriminantValues {
+      get { return ((DoubleValue)this[TrainingNormalizedGiniCoefficientResultName].Value).Value; }
+      protected set { ((DoubleValue)this[TrainingNormalizedGiniCoefficientResultName].Value).Value = value; }
+    }
+    public double TestNormalizedGiniCoefficientForDiscriminantValues {
+      get { return ((DoubleValue)this[TestNormalizedGiniCoefficientResultName].Value).Value; }
+      protected set { ((DoubleValue)this[TestNormalizedGiniCoefficientResultName].Value).Value = value; }
+    }
     #endregion
 
     [StorableConstructor]
@@ -84,11 +95,30 @@ namespace HeuristicLab.Problems.DataAnalysis {
       Add(new Result(TestMeanSquaredErrorResultName, "Mean of squared errors of the model on the test partition", new DoubleValue()));
       Add(new Result(TrainingRSquaredResultName, "Squared Pearson's correlation coefficient of the model output and the actual values on the training partition", new DoubleValue()));
       Add(new Result(TestRSquaredResultName, "Squared Pearson's correlation coefficient of the model output and the actual values on the test partition", new DoubleValue()));
+      Add(new Result(TrainingNormalizedGiniCoefficientResultName, "Normalized Gini coefficient of the discriminant values produced by the model on the training partition.", new DoubleValue()));
+      Add(new Result(TestNormalizedGiniCoefficientResultName, "Normalized Gini coefficient of the discriminant values produced by the model on the test partition.", new DoubleValue()));
       RegisterEventHandler();
     }
 
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
+      #region backwards compatibility
+      if (!ContainsKey(TrainingNormalizedGiniCoefficientResultName)) {
+        Add(new Result(TrainingNormalizedGiniCoefficientResultName, "Normalized Gini coefficient of the discriminant values produced by the model on the training partition.", new DoubleValue()));
+        Add(new Result(TestNormalizedGiniCoefficientResultName, "Normalized Gini coefficient of the discriminant values produced by the model on the test partition.", new DoubleValue()));
+        double[] estimatedTrainingValues = EstimatedTrainingValues.ToArray(); // cache values
+        double[] originalTrainingValues = ProblemData.Dataset.GetDoubleValues(ProblemData.TargetVariable, ProblemData.TrainingIndices).ToArray();
+        double[] estimatedTestValues = EstimatedTestValues.ToArray(); // cache values
+        double[] originalTestValues = ProblemData.Dataset.GetDoubleValues(ProblemData.TargetVariable, ProblemData.TestIndices).ToArray();
+        double trainingNormalizedGini = NormalizedGiniCalculator.Calculate(originalTrainingValues, estimatedTrainingValues, out var errorState);
+        if (errorState != OnlineCalculatorError.None) trainingNormalizedGini = double.NaN;
+        double testNormalizedGini = NormalizedGiniCalculator.Calculate(originalTestValues, estimatedTestValues, out errorState);
+        if (errorState != OnlineCalculatorError.None) testNormalizedGini = double.NaN;
+
+        TrainingNormalizedGiniCoefficientForDiscriminantValues = trainingNormalizedGini;
+        TestNormalizedGiniCoefficientForDiscriminantValues = testNormalizedGini;
+      }
+      #endregion
       RegisterEventHandler();
     }
 
@@ -105,17 +135,17 @@ namespace HeuristicLab.Problems.DataAnalysis {
       TestMeanSquaredError = errorState == OnlineCalculatorError.None ? testMSE : double.NaN;
 
       double trainingR = OnlinePearsonsRCalculator.Calculate(originalTrainingValues, estimatedTrainingValues, out errorState);
-      TrainingRSquared = errorState == OnlineCalculatorError.None ? trainingR*trainingR : double.NaN;
+      TrainingRSquared = errorState == OnlineCalculatorError.None ? trainingR * trainingR : double.NaN;
       double testR = OnlinePearsonsRCalculator.Calculate(originalTestValues, estimatedTestValues, out errorState);
-      TestRSquared = errorState == OnlineCalculatorError.None ? testR*testR : double.NaN;
+      TestRSquared = errorState == OnlineCalculatorError.None ? testR * testR : double.NaN;
 
       double trainingNormalizedGini = NormalizedGiniCalculator.Calculate(originalTrainingValues, estimatedTrainingValues, out errorState);
       if (errorState != OnlineCalculatorError.None) trainingNormalizedGini = double.NaN;
       double testNormalizedGini = NormalizedGiniCalculator.Calculate(originalTestValues, estimatedTestValues, out errorState);
       if (errorState != OnlineCalculatorError.None) testNormalizedGini = double.NaN;
 
-      TrainingNormalizedGiniCoefficient = trainingNormalizedGini;
-      TestNormalizedGiniCoefficient = testNormalizedGini;
+      TrainingNormalizedGiniCoefficientForDiscriminantValues = trainingNormalizedGini;
+      TestNormalizedGiniCoefficientForDiscriminantValues = testNormalizedGini;
     }
 
     private void RegisterEventHandler() {

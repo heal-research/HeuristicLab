@@ -113,7 +113,7 @@ namespace HeuristicLab.Algorithms.GradientDescent {
       state.State.f = f;
       if (!ApproximateGradients.Value) {
         var g = QualityGradients.Select(gi => sign * gi).ToArray();
-        state.State.g = g;
+        state.State.innerobj.g = g;
       }
       return base.Apply();
     }

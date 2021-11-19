@@ -34,6 +34,8 @@ using HEAL.Attic;
 using HeuristicLab.Problems.DataAnalysis;
 using HeuristicLab.Problems.DataAnalysis.Symbolic;
 using HeuristicLab.Random;
+using HeuristicLab.Problems.DataAnalysis.Symbolic.Regression;
+using HeuristicLab.Problems.DataAnalysis.Symbolic.Classification;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   [Item("Cross Validation (CV)", "Cross-validation wrapper for data analysis algorithms.")]
@@ -337,6 +339,16 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
               symbolicProblem.FitnessCalculationPartition.Start = SamplesStart.Value;
               symbolicProblem.FitnessCalculationPartition.End = SamplesEnd.Value;
             }
+
+            // We need to set the estimation limits because they are recalculated by the problem
+            // whenever the data partitions change.
+            // Instead of explicitly handling all types we could also check the parameters-collection 
+            // for a parameter with name "EstimationLimits".
+            SetEstimationLimits(problem, new[] { typeof(SymbolicRegressionSingleObjectiveProblem),
+                                                 typeof(SymbolicRegressionMultiObjectiveProblem),
+                                                 typeof(SymbolicClassificationSingleObjectiveProblem),
+                                                 typeof(SymbolicClassificationMultiObjectiveProblem) });
+
             clonedAlgorithm.Prepare();
             clonedAlgorithms.Add(clonedAlgorithm);
           }
@@ -508,13 +520,13 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       var aggregatedResults = new List<IResult>();
       foreach (KeyValuePair<string, List<IClassificationSolution>> solutions in resultSolutions) {
         // at least one algorithm (GBT with logistic regression loss) produces a classification solution even though the original problem is a regression problem.
-        var targetVariable = solutions.Value.First().ProblemData.TargetVariable;
         var dataset = (Dataset)Problem.ProblemData.Dataset;
         if (ShuffleSamples.Value) {
           var random = new FastRandom(seed);
           dataset = dataset.Shuffle(random);
         }
-        var problemDataClone = new ClassificationProblemData(dataset, Problem.ProblemData.AllowedInputVariables, targetVariable);
+        var problemData = (IClassificationProblemData)Problem.ProblemData;
+        var problemDataClone = new ClassificationProblemData(dataset, problemData.AllowedInputVariables, problemData.TargetVariable, problemData.ClassNames, problemData.PositiveClass);
         // set partitions of problem data clone correctly
         problemDataClone.TrainingPartition.Start = SamplesStart.Value; problemDataClone.TrainingPartition.End = SamplesEnd.Value;
         problemDataClone.TestPartition.Start = SamplesStart.Value; problemDataClone.TestPartition.End = SamplesEnd.Value;
@@ -808,5 +820,20 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       if (handler != null) handler(this, EventArgs.Empty);
     }
     #endregion
+
+    #region helper
+
+    private void SetEstimationLimits(IDataAnalysisProblem problem, Type[] types) {
+      foreach (var type in types) {
+        if (type.IsAssignableFrom(problem.GetType())) {
+          var originalLimits = (DoubleLimit)Problem.Parameters["EstimationLimits"].ActualValue;  // problem is a clone of Problem
+          var limits = (DoubleLimit)problem.Parameters["EstimationLimits"].ActualValue;
+          limits.Lower = originalLimits.Lower;
+          limits.Upper = originalLimits.Upper;
+        }
+      }
+    }
+
+    #endregion 
   }
 }

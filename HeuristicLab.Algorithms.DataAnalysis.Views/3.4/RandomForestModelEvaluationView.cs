@@ -78,7 +78,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
 
     private IContent CreateModel(int idx) {
       idx -= 1;
-      var rfModel = Content.Model as RandomForestModel;
+      var rfModel = Content.Model as IRandomForestModel;
       if (rfModel == null) return null;
       var regProblemData = Content.ProblemData as IRegressionProblemData;
       var classProblemData = Content.ProblemData as IClassificationProblemData;

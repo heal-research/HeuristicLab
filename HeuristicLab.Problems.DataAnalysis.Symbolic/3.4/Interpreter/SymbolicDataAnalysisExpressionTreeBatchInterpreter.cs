@@ -221,7 +221,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     private double[] GetValues(ISymbolicExpressionTree tree, IDataset dataset, int[] rows) {
-      if (cachedData == null || cachedDataset != dataset) {
+      if (cachedData == null || cachedDataset != dataset || cachedDataset is ModifiableDataset) {
         InitCache(dataset);
       }
 

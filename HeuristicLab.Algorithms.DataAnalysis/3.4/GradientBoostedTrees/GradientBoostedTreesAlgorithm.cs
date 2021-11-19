@@ -280,7 +280,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
           var classificationModel = new DiscriminantFunctionClassificationModel(model,
             new AccuracyMaximizationThresholdCalculator());
           var classificationProblemData = new ClassificationProblemData(problemData.Dataset,
-            problemData.AllowedInputVariables, problemData.TargetVariable, problemData.Transformations);
+            problemData.AllowedInputVariables, problemData.TargetVariable, transformations: problemData.Transformations);
           classificationProblemData.TrainingPartition.Start = Problem.ProblemData.TrainingPartition.Start;
           classificationProblemData.TrainingPartition.End = Problem.ProblemData.TrainingPartition.End;
           classificationProblemData.TestPartition.Start = Problem.ProblemData.TestPartition.Start;

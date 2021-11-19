@@ -67,12 +67,12 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
       double[,] K = CalculateCovariance(xs, l);
 
       // decompose
-      alglib.trfac.spdmatrixcholesky(ref K, nRows, false);
+      alglib.spdmatrixcholesky(ref K, nRows, false);
 
 
       // calc y = Lu
       var y = new double[u.Length];
-      alglib.ablas.rmatrixmv(nRows, nRows, K, 0, 0, 0, u, 0, ref y, 0);
+      alglib.rmatrixmv(nRows, nRows, K, 0, 0, 0, u, 0, ref y, 0);
 
       // calculate relevance by removing dimensions
       relevance = CalculateRelevance(y, u, xs, l);
@@ -95,7 +95,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
         var changedK = CalculateCovariance(xs, changedL);
 
         var yChanged = new double[u.Length];
-        alglib.ablas.rmatrixmv(nRows, nRows, changedK, 0, 0, 0, u, 0, ref yChanged, 0);
+        alglib.rmatrixmv(nRows, nRows, changedK, 0, 0, 0, u, 0, ref yChanged, 0);
 
         OnlineCalculatorError error;
         var mse = OnlineMeanSquaredErrorCalculator.Calculate(y, yChanged, out error);

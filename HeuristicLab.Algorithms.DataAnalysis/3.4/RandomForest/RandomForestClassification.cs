@@ -206,16 +206,15 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       for (int row = 0; row < nRows; row++) {
         inputMatrix[row, nColumns - 1] = classIndices[inputMatrix[row, nColumns - 1]];
       }
-
-      alglib.dfreport rep;
-      var dForest = RandomForestUtil.CreateRandomForestModel(seed, inputMatrix, nTrees, r, m, nClasses, out rep);
+      
+      var dForest = RandomForestUtil.CreateRandomForestModel(seed, inputMatrix, nTrees, r, m, nClasses, out var rep);
 
       rmsError = rep.rmserror;
       outOfBagRmsError = rep.oobrmserror;
       relClassificationError = rep.relclserror;
       outOfBagRelClassificationError = rep.oobrelclserror;
 
-      return new RandomForestModelFull(dForest, problemData.TargetVariable, problemData.AllowedInputVariables, classValues);
+      return new RandomForestModelFull(dForest, nTrees, problemData.TargetVariable, problemData.AllowedInputVariables, classValues);
     }
     #endregion
   }

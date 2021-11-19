@@ -118,7 +118,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       limitView.Content.Upper = axisMax;
 
       // create dataset of problemData input variables and model input variables
-      // necessary workaround to have the variables in the occuring order
+      // necessary workaround to have the variables in the occurring order
       var inputvariables =
         new HashSet<string>(Content.ProblemData.AllowedInputVariables.Union(Content.Model.VariablesUsedForPrediction));
       var allowedInputVariables =
@@ -236,6 +236,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       rowNrNumericUpDown.Maximum = Content.ProblemData.Dataset.Rows - 1;
 
       RecalculateAndRelayoutCharts();
+    }
+
+    public async Task AddSolution(IRegressionSolution solution) {
+      foreach (var chart in partialDependencePlots.Values) {
+        await chart.AddSolutionAsync(solution);
+      }
     }
 
     private void SharedFixedVariables_ItemChanged(object sender, EventArgs<int, int> e) {

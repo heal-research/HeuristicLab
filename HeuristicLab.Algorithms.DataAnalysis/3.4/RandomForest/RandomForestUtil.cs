@@ -21,6 +21,8 @@
 
 #endregion
 
+extern alias alglib_3_7;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -94,24 +96,44 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     public static void AssertInputMatrix(double[,] inputMatrix) {
-      if (inputMatrix.ContainsNanOrInfinity())
-        throw new NotSupportedException("Random forest modeling does not support NaN or infinity values in the input dataset.");
+      foreach(var val in inputMatrix) if(double.IsNaN(val))
+        throw new NotSupportedException("Random forest modeling does not support NaN values in the input dataset.");
     }
 
     internal static alglib.decisionforest CreateRandomForestModel(int seed, double[,] inputMatrix, int nTrees, double r, double m, int nClasses, out alglib.dfreport rep) {
       RandomForestUtil.AssertParameters(r, m);
       RandomForestUtil.AssertInputMatrix(inputMatrix);
 
+      int nRows = inputMatrix.GetLength(0);
+      int nColumns = inputMatrix.GetLength(1);
+
+      alglib.dfbuildercreate(out var dfbuilder);
+      alglib.dfbuildersetdataset(dfbuilder, inputMatrix, nRows, nColumns - 1, nClasses);
+      alglib.dfbuildersetimportancenone(dfbuilder); // do not calculate importance (TODO add this feature)
+      alglib.dfbuildersetrdfalgo(dfbuilder, 0); // only one algorithm supported in version 3.17
+      alglib.dfbuildersetrdfsplitstrength(dfbuilder, 2); // 0 = split at the random position, fastest one
+                                                         // 1 = split at the middle of the range
+                                                         // 2 = strong split at the best point of the range (default)
+      alglib.dfbuildersetrndvarsratio(dfbuilder, m);
+      alglib.dfbuildersetsubsampleratio(dfbuilder, r);
+      alglib.dfbuildersetseed(dfbuilder, seed);
+      alglib.dfbuilderbuildrandomforest(dfbuilder, nTrees, out var dForest, out rep);
+      return dForest;
+    }
+    internal static alglib_3_7.alglib.decisionforest CreateRandomForestModelAlglib_3_7(int seed, double[,] inputMatrix, int nTrees, double r, double m, int nClasses, out alglib_3_7.alglib.dfreport rep) {
+      RandomForestUtil.AssertParameters(r, m);
+      RandomForestUtil.AssertInputMatrix(inputMatrix);
+
       int info = 0;
-      alglib.math.rndobject = new System.Random(seed);
-      var dForest = new alglib.decisionforest();
-      rep = new alglib.dfreport();
+      alglib_3_7.alglib.math.rndobject = new System.Random(seed);
+      var dForest = new alglib_3_7.alglib.decisionforest();
+      rep = new alglib_3_7.alglib.dfreport();
       int nRows = inputMatrix.GetLength(0);
       int nColumns = inputMatrix.GetLength(1);
       int sampleSize = Math.Max((int)Math.Round(r * nRows), 1);
       int nFeatures = Math.Max((int)Math.Round(m * (nColumns - 1)), 1);
 
-      alglib.dforest.dfbuildinternal(inputMatrix, nRows, nColumns - 1, nClasses, nTrees, sampleSize, nFeatures, alglib.dforest.dfusestrongsplits + alglib.dforest.dfuseevs, ref info, dForest.innerobj, rep.innerobj);
+      alglib_3_7.alglib.dforest.dfbuildinternal(inputMatrix, nRows, nColumns - 1, nClasses, nTrees, sampleSize, nFeatures, alglib_3_7.alglib.dforest.dfusestrongsplits + alglib_3_7.alglib.dforest.dfuseevs, ref info, dForest.innerobj, rep.innerobj);
       if (info != 1) throw new ArgumentException("Error in calculation of random forest model");
       return dForest;
     }
@@ -122,10 +144,10 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       var ds = problemData.Dataset;
       var targetVariable = GetTargetVariableName(problemData);
       foreach (var tuple in partitions) {
-        double rmsError, avgRelError, outOfBagAvgRelError, outOfBagRmsError;
         var trainingRandomForestPartition = tuple.Item1;
         var testRandomForestPartition = tuple.Item2;
-        var model = RandomForestModel.CreateRegressionModel(problemData, trainingRandomForestPartition, nTrees, r, m, seed, out rmsError, out avgRelError, out outOfBagRmsError, out outOfBagAvgRelError);
+        var model = RandomForestRegression.CreateRandomForestRegressionModel(problemData, trainingRandomForestPartition, nTrees, r, m, seed,
+                                                                             out var rmsError, out var avgRelError, out var outOfBagRmsError, out var outOfBagAvgRelError);
         var estimatedValues = model.GetEstimatedValues(ds, testRandomForestPartition);
         var targetValues = ds.GetDoubleValues(targetVariable, testRandomForestPartition);
         OnlineCalculatorError calculatorError;
@@ -142,10 +164,10 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       var ds = problemData.Dataset;
       var targetVariable = GetTargetVariableName(problemData);
       foreach (var tuple in partitions) {
-        double rmsError, avgRelError, outOfBagAvgRelError, outOfBagRmsError;
         var trainingRandomForestPartition = tuple.Item1;
         var testRandomForestPartition = tuple.Item2;
-        var model = RandomForestModel.CreateClassificationModel(problemData, trainingRandomForestPartition, nTrees, r, m, seed, out rmsError, out avgRelError, out outOfBagRmsError, out outOfBagAvgRelError);
+        var model = RandomForestClassification.CreateRandomForestClassificationModel(problemData, trainingRandomForestPartition, nTrees, r, m, seed,
+                                                                                     out var rmsError, out var avgRelError, out var outOfBagRmsError, out var outOfBagAvgRelError);
         var estimatedValues = model.GetEstimatedClassValues(ds, testRandomForestPartition);
         var targetValues = ds.GetDoubleValues(targetVariable, testRandomForestPartition);
         OnlineCalculatorError calculatorError;
@@ -175,8 +197,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         var parameterValues = parameterCombination.ToList();
         var parameters = new RFParameter();
         for (int i = 0; i < setters.Count; ++i) { setters[i](parameters, parameterValues[i]); }
-        double rmsError, outOfBagRmsError, avgRelError, outOfBagAvgRelError;
-        RandomForestModel.CreateRegressionModel(problemData, problemData.TrainingIndices, parameters.N, parameters.R, parameters.M, seed, out rmsError, out outOfBagRmsError, out avgRelError, out outOfBagAvgRelError);
+        RandomForestRegression.CreateRandomForestRegressionModel(problemData, problemData.TrainingIndices, parameters.N, parameters.R, parameters.M, seed,
+                                                                 out var rmsError, out var avgRelError, out var outOfBagRmsError, out var outOfBagAvgRelError);
 
         lock (locker) {
           if (bestOutOfBagRmsError > outOfBagRmsError) {
@@ -207,9 +229,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         var parameterValues = parameterCombination.ToList();
         var parameters = new RFParameter();
         for (int i = 0; i < setters.Count; ++i) { setters[i](parameters, parameterValues[i]); }
-        double rmsError, outOfBagRmsError, avgRelError, outOfBagAvgRelError;
-        RandomForestModel.CreateClassificationModel(problemData, problemData.TrainingIndices, parameters.N, parameters.R, parameters.M, seed,
-                                                                out rmsError, out outOfBagRmsError, out avgRelError, out outOfBagAvgRelError);
+        RandomForestClassification.CreateRandomForestClassificationModel(problemData, problemData.TrainingIndices, parameters.N, parameters.R, parameters.M, seed,
+                                                                         out var rmsError, out var avgRelError, out var outOfBagRmsError, out var outOfBagAvgRelError);
 
         lock (locker) {
           if (bestOutOfBagRmsError > outOfBagRmsError) {
@@ -226,12 +247,11 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     /// </summary>
     /// <param name="problemData">The regression problem data</param>
     /// <param name="numberOfFolds">The number of folds for crossvalidation</param>
-    /// <param name="shuffleFolds">Specifies whether the folds should be shuffled</param>
     /// <param name="parameterRanges">The ranges for each parameter in the grid search</param>
     /// <param name="seed">The random seed (required by the random forest model)</param>
     /// <param name="maxDegreeOfParallelism">The maximum allowed number of threads (to parallelize the grid search)</param>
     /// <returns>The best parameter values found by the grid search</returns>
-    public static RFParameter GridSearch(IRegressionProblemData problemData, int numberOfFolds, bool shuffleFolds, Dictionary<string, IEnumerable<double>> parameterRanges, int seed = 12345, int maxDegreeOfParallelism = 1) {
+    public static RFParameter GridSearch(IRegressionProblemData problemData, int numberOfFolds, Dictionary<string, IEnumerable<double>> parameterRanges, int seed = 12345, int maxDegreeOfParallelism = 1) {
       DoubleValue mse = new DoubleValue(Double.MaxValue);
       RFParameter bestParameter = new RFParameter();
 

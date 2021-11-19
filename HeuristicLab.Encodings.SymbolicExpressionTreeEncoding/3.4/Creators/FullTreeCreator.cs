@@ -43,11 +43,6 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     }
 
 
-    protected override ISymbolicExpressionTree Create(IRandom random) {
-      return Create(random, ClonedSymbolicExpressionTreeGrammarParameter.ActualValue,
-          MaximumSymbolicExpressionTreeLengthParameter.ActualValue.Value, MaximumSymbolicExpressionTreeDepthParameter.ActualValue.Value);
-    }
-
     public override ISymbolicExpressionTree CreateTree(IRandom random, ISymbolicExpressionGrammar grammar, int maxTreeLength, int maxTreeDepth) {
       return Create(random, grammar, maxTreeLength, maxTreeDepth);
     }

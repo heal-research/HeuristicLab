@@ -25,13 +25,14 @@ using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableType("E9876DF8-ACFA-41C8-93B7-FA40C57CE459")]
   public abstract class SymbolicDataAnalysisMultiObjectiveProblem<T, U> : SymbolicDataAnalysisProblem<T, U>, ISymbolicDataAnalysisMultiObjectiveProblem
-    where T : class,IDataAnalysisProblemData
+    where T : class, IDataAnalysisProblemData
     where U : class, ISymbolicDataAnalysisMultiObjectiveEvaluator<T> {
     private const string MaximizationParameterName = "Maximization";
     private const string BestKnownQualityParameterName = "BestKnownQuality";
@@ -100,6 +101,21 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       foreach (var op in Operators.OfType<ISymbolicDataAnalysisMultiObjectiveAnalyzer>()) {
         op.QualitiesParameter.ActualName = Evaluator.QualitiesParameter.ActualName;
         op.MaximizationParameter.ActualName = MaximizationParameterName;
+      }
+
+      // these two crossover operators are compatible with single-objective problems only so we remove them from the operators collection
+      bool pred(IItem x) {
+        return x is SymbolicDataAnalysisExpressionDeterministicBestCrossover<T> || x is SymbolicDataAnalysisExpressionContextAwareCrossover<T>;
+      };
+      Operators.RemoveAll(pred);
+      // if a multi crossover is present, remove them from its operator collection
+      var cx = Operators.FirstOrDefault(x => x is MultiSymbolicDataAnalysisExpressionCrossover<T>);
+      if (cx != null) {
+        var multiCrossover = (MultiSymbolicDataAnalysisExpressionCrossover<T>)cx;
+        var items = multiCrossover.Operators.Where(pred).Cast<ISymbolicExpressionTreeCrossover>().ToList();
+        foreach (var item in items) {
+          multiCrossover.Operators.Remove(item);
+        }
       }
     }
 

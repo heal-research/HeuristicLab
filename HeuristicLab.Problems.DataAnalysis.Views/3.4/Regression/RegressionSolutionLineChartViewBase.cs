@@ -80,7 +80,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         this.chart.Series.Add(ESTIMATEDVALUES_TRAINING_SERIES_NAME);
         this.chart.Series[ESTIMATEDVALUES_TRAINING_SERIES_NAME].LegendText = ESTIMATEDVALUES_TRAINING_SERIES_NAME;
         this.chart.Series[ESTIMATEDVALUES_TRAINING_SERIES_NAME].ChartType = SeriesChartType.FastLine;
-        this.chart.Series[ESTIMATEDVALUES_TRAINING_SERIES_NAME].EmptyPointStyle.Color = this.chart.Series[ESTIMATEDVALUES_TRAINING_SERIES_NAME].Color;
         int[] trainingIdx;
         double[] trainingY;
         GetTrainingSeries(out trainingIdx, out trainingY);
@@ -119,7 +118,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         axisY.Title = Content.ProblemData.TargetVariable;
         double min = double.MaxValue, max = double.MinValue;
         foreach (var point in chart.Series.SelectMany(x => x.Points)) {
-          if (!point.YValues.Any() || double.IsInfinity(point.YValues[0]) || double.IsNaN(point.YValues[0]))
+          if (point.IsEmpty || !point.YValues.Any() || double.IsInfinity(point.YValues[0]) || double.IsNaN(point.YValues[0]))
             continue;
           var y = point.YValues[0];
           if (y < min)

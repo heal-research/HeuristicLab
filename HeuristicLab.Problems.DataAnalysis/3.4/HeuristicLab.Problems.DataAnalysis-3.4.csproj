@@ -98,8 +98,9 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ALGLIB-3.7.0, Version=3.7.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
-      <HintPath>..\..\bin\ALGLIB-3.7.0.dll</HintPath>
+    <Reference Include="ALGLIB-3.17.0, Version=3.17.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\bin\ALGLIB-3.17.0.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
@@ -117,6 +118,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Implementation\SupervisedDataAnalysisProblemData.cs" />
     <Compile Include="Interfaces\ISupervisedDataAnalysisModel.cs" />
     <Compile Include="Interfaces\ISupervisedDataAnalysisProblem.cs" />
     <Compile Include="Interfaces\ISupervisedDataAnalysisProblemData.cs" />
@@ -147,6 +149,10 @@
     <Compile Include="Implementation\Regression\ConfidenceBoundRegressionSolution.cs" />
     <Compile Include="Implementation\Regression\ConstantRegressionModel.cs" />
     <Compile Include="Implementation\Regression\ConstantRegressionSolution.cs" />
+    <Compile Include="Implementation\Regression\ShapeConstrainedRegressionProblem.cs" />
+    <Compile Include="Implementation\Regression\ShapeConstrainedRegressionProblemData.cs" />
+    <Compile Include="Implementation\Regression\ShapeConstraint.cs" />
+    <Compile Include="Implementation\Regression\ShapeConstraints.cs" />
     <Compile Include="Implementation\Regression\RegressionEnsembleProblemData.cs" />
     <Compile Include="Implementation\Regression\RegressionEnsembleModel.cs">
       <SubType>Code</SubType>
@@ -154,6 +160,7 @@
     <Compile Include="Implementation\Regression\RegressionEnsembleSolution.cs" />
     <Compile Include="Implementation\Regression\RegressionModel.cs" />
     <Compile Include="Implementation\Regression\RegressionSolutionVariableImpactsCalculator.cs" />
+    <Compile Include="Implementation\Regression\ShapeConstraintsParser.cs" />
     <Compile Include="Implementation\TimeSeriesPrognosis\Models\ConstantTimeSeriesPrognosisModel.cs" />
     <Compile Include="Implementation\TimeSeriesPrognosis\Models\TimeSeriesPrognosisAutoRegressiveModel.cs" />
     <Compile Include="Implementation\TimeSeriesPrognosis\TimeSeriesPrognosisProblem.cs" />
@@ -189,6 +196,8 @@
     </Compile>
     <Compile Include="Interfaces\Regression\IRegressionEnsembleSolution.cs" />
     <Compile Include="Implementation\Regression\RegressionSolutionBase.cs" />
+    <Compile Include="Interfaces\Regression\IShapeConstrainedRegressionProblem.cs" />
+    <Compile Include="Interfaces\Regression\IShapeConstrainedRegressionProblemData.cs" />
     <Compile Include="Interfaces\TimeSeriesPrognosis\IOnlineTimeSeriesCalculator.cs" />
     <Compile Include="Interfaces\TimeSeriesPrognosis\ITimeSeriesPrognosisModel.cs" />
     <Compile Include="Interfaces\TimeSeriesPrognosis\ITimeSeriesPrognosisProblem.cs" />

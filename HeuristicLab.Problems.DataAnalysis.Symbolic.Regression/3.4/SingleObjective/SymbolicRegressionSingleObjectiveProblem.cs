@@ -55,12 +55,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     }
     public override IDeepCloneable Clone(Cloner cloner) { return new SymbolicRegressionSingleObjectiveProblem(this, cloner); }
 
-    public SymbolicRegressionSingleObjectiveProblem()
-      : base(new RegressionProblemData(), new SymbolicRegressionSingleObjectivePearsonRSquaredEvaluator()) {
+    public SymbolicRegressionSingleObjectiveProblem() : this(new RegressionProblemData(), new SymbolicRegressionSingleObjectivePearsonRSquaredEvaluator()) {
+    }
+
+    public SymbolicRegressionSingleObjectiveProblem(IRegressionProblemData problemData, ISymbolicRegressionSingleObjectiveEvaluator evaluator) : base(problemData, evaluator) {
       Parameters.Add(new FixedValueParameter<DoubleLimit>(EstimationLimitsParameterName, EstimationLimitsParameterDescription));
 
       EstimationLimitsParameter.Hidden = true;
-
 
       ApplyLinearScalingParameter.Value.Value = true;
       Maximization.Value = true;
@@ -71,6 +72,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       ConfigureGrammarSymbols();
       InitializeOperators();
       UpdateEstimationLimits();
+
     }
 
     [StorableHook(HookType.AfterDeserialization)]
@@ -86,8 +88,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
         Operators.Add(new SymbolicRegressionSingleObjectiveValidationParetoBestSolutionAnalyzer());
         changed = true;
       }
-      if (!Operators.OfType<SymbolicRegressionSolutionsAnalyzer>().Any()) {
-        Operators.Add(new SymbolicRegressionSolutionsAnalyzer());
+      if (!Operators.OfType<SolutionQualityAnalyzer>().Any()) {
+        Operators.Add(new SolutionQualityAnalyzer());
+        changed = true;
+      }
+
+      if (!Operators.OfType<ShapeConstraintsAnalyzer>().Any()) {
+        Operators.Add(new ShapeConstraintsAnalyzer());
         changed = true;
       }
       if (changed) {
@@ -110,8 +117,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       Operators.Add(new SymbolicRegressionSingleObjectiveOverfittingAnalyzer());
       Operators.Add(new SymbolicRegressionSingleObjectiveTrainingParetoBestSolutionAnalyzer());
       Operators.Add(new SymbolicRegressionSingleObjectiveValidationParetoBestSolutionAnalyzer());
-      Operators.Add(new SymbolicRegressionSolutionsAnalyzer());
+      Operators.Add(new SolutionQualityAnalyzer());
       Operators.Add(new SymbolicExpressionTreePhenotypicSimilarityCalculator());
+      Operators.Add(new ShapeConstraintsAnalyzer());
       Operators.Add(new SymbolicRegressionPhenotypicDiversityAnalyzer(Operators.OfType<SymbolicExpressionTreePhenotypicSimilarityCalculator>()) { DiversityResultName = "Phenotypic Diversity" });
       ParameterizeOperators();
     }

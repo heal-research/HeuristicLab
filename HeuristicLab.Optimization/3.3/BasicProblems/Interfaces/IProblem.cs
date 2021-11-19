@@ -31,9 +31,6 @@ namespace HeuristicLab.Optimization {
   /// Interface to represent an optimization problem.
   /// </summary>
   public interface IProblem : IResultsProducingItem, IStorableContent {
-    //TODO extract into interface? ResultsProducingItems? Problem and Algorithm 
-    //ResultCollection Results { get; }
-
     event EventHandler Reset;
   }
 

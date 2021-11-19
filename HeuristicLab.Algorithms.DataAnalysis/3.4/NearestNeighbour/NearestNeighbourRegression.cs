@@ -40,14 +40,10 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     private const string KParameterName = "K";
     private const string NearestNeighbourRegressionModelResultName = "Nearest neighbour regression solution";
     private const string WeightsParameterName = "Weights";
-    private const string SelfMatchParameterName = "SelfMatch";
 
     #region parameter properties
     public IFixedValueParameter<IntValue> KParameter {
       get { return (IFixedValueParameter<IntValue>)Parameters[KParameterName]; }
-    }
-    public IFixedValueParameter<BoolValue> SelfMatchParameter {
-      get { return (IFixedValueParameter<BoolValue>)Parameters[SelfMatchParameterName]; }
     }
     public IValueParameter<DoubleArray> WeightsParameter {
       get { return (IValueParameter<DoubleArray>)Parameters[WeightsParameterName]; }
@@ -60,10 +56,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         if (value <= 0) throw new ArgumentException("K must be larger than zero.", "K");
         else KParameter.Value.Value = value;
       }
-    }
-    public bool SelfMatch {
-      get { return SelfMatchParameter.Value.Value; }
-      set { SelfMatchParameter.Value.Value = value; }
     }
     public DoubleArray Weights {
       get { return WeightsParameter.Value; }
@@ -80,7 +72,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       : base() {
       Parameters.Add(new FixedValueParameter<IntValue>(KParameterName, "The number of nearest neighbours to consider for regression.", new IntValue(3)));
       Parameters.Add(new OptionalValueParameter<DoubleArray>(WeightsParameterName, "Optional: use weights to specify individual scaling values for all features. If not set the weights are calculated automatically (each feature is scaled to unit variance)"));
-      Parameters.Add(new FixedValueParameter<BoolValue>(SelfMatchParameterName, "Should we use equal points for classification?", new BoolValue(false)));
       Problem = new RegressionProblem();
     }
 
@@ -90,9 +81,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       #region Backwards compatible code, remove with 3.4
       if (!Parameters.ContainsKey(WeightsParameterName)) {
         Parameters.Add(new OptionalValueParameter<DoubleArray>(WeightsParameterName, "Optional: use weights to specify individual scaling values for all features. If not set the weights are calculated automatically (each feature is scaled to unit variance)"));
-      }
-      if (!Parameters.ContainsKey(SelfMatchParameterName)) {
-        Parameters.Add(new FixedValueParameter<BoolValue>(SelfMatchParameterName, "Should we use equal points for classification?", new BoolValue(false)));
       }
       #endregion
     }
@@ -105,20 +93,19 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     protected override void Run(CancellationToken cancellationToken) {
       double[] weights = null;
       if (Weights != null) weights = Weights.CloneAsArray();
-      var solution = CreateNearestNeighbourRegressionSolution(Problem.ProblemData, K, SelfMatch, weights);
+      var solution = CreateNearestNeighbourRegressionSolution(Problem.ProblemData, K, weights);
       Results.Add(new Result(NearestNeighbourRegressionModelResultName, "The nearest neighbour regression solution.", solution));
     }
 
-    public static IRegressionSolution CreateNearestNeighbourRegressionSolution(IRegressionProblemData problemData, int k, bool selfMatch = false, double[] weights = null) {
+    public static IRegressionSolution CreateNearestNeighbourRegressionSolution(IRegressionProblemData problemData, int k, double[] weights = null) {
       var clonedProblemData = (IRegressionProblemData)problemData.Clone();
-      return new NearestNeighbourRegressionSolution(Train(problemData, k, selfMatch, weights), clonedProblemData);
+      return new NearestNeighbourRegressionSolution(Train(problemData, k, weights), clonedProblemData);
     }
 
-    public static INearestNeighbourModel Train(IRegressionProblemData problemData, int k, bool selfMatch = false, double[] weights = null) {
+    public static INearestNeighbourModel Train(IRegressionProblemData problemData, int k, double[] weights = null) {
       return new NearestNeighbourModel(problemData.Dataset,
         problemData.TrainingIndices,
         k,
-        selfMatch,
         problemData.TargetVariable,
         problemData.AllowedInputVariables,
         weights);

@@ -30,7 +30,7 @@ using HeuristicLab.Problems.DataAnalysis;
 using HeuristicLab.Problems.DataAnalysis.Symbolic;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
-  [StorableType("9C797DF0-1169-4381-A732-6DAB90802839")]
+  [StorableType("55412E08-DAD4-4C2E-9181-C142E7EA9474")]
   [Item("RandomForestModelFull", "Represents a random forest for regression and classification.")]
   public sealed class RandomForestModelFull : ClassificationModel, IRandomForestModel {
 
@@ -41,54 +41,32 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     [Storable]
     private double[] classValues;
 
+    public int NumClasses => classValues == null ? 0 : classValues.Length;
+
     [Storable]
     private string[] inputVariables;
 
+    [Storable]
     public int NumberOfTrees {
-      get { return RandomForestNTrees; }
+      get; private set;
     }
 
     // not persisted
     private alglib.decisionforest randomForest;
 
     [Storable]
-    private int RandomForestBufSize {
-      get { return randomForest.innerobj.bufsize; }
-      set { randomForest.innerobj.bufsize = value; }
-    }
-    [Storable]
-    private int RandomForestNClasses {
-      get { return randomForest.innerobj.nclasses; }
-      set { randomForest.innerobj.nclasses = value; }
-    }
-    [Storable]
-    private int RandomForestNTrees {
-      get { return randomForest.innerobj.ntrees; }
-      set { randomForest.innerobj.ntrees = value; }
-    }
-    [Storable]
-    private int RandomForestNVars {
-      get { return randomForest.innerobj.nvars; }
-      set { randomForest.innerobj.nvars = value; }
-    }
-    [Storable]
-    private double[] RandomForestTrees {
-      get { return randomForest.innerobj.trees; }
-      set { randomForest.innerobj.trees = value; }
+    private string RandomForestSerialized {
+      get { alglib.dfserialize(randomForest, out var serialized); return serialized; }
+      set { if (value != null) alglib.dfunserialize(value, out randomForest); }
     }
 
     [StorableConstructor]
-    private RandomForestModelFull(StorableConstructorFlag _) : base(_) {
-      randomForest = new alglib.decisionforest();
-    }
+    private RandomForestModelFull(StorableConstructorFlag _) : base(_) { }
 
     private RandomForestModelFull(RandomForestModelFull original, Cloner cloner) : base(original, cloner) {
-      randomForest = new alglib.decisionforest();
-      randomForest.innerobj.bufsize = original.randomForest.innerobj.bufsize;
-      randomForest.innerobj.nclasses = original.randomForest.innerobj.nclasses;
-      randomForest.innerobj.ntrees = original.randomForest.innerobj.ntrees;
-      randomForest.innerobj.nvars = original.randomForest.innerobj.nvars;
-      randomForest.innerobj.trees = (double[])original.randomForest.innerobj.trees.Clone();
+      if (original.randomForest != null)
+        randomForest = (alglib.decisionforest)original.randomForest.make_copy();
+      NumberOfTrees = original.NumberOfTrees;
 
       // following fields are immutable so we don't need to clone them
       inputVariables = original.inputVariables;
@@ -98,11 +76,12 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       return new RandomForestModelFull(this, cloner);
     }
 
-    public RandomForestModelFull(alglib.decisionforest decisionForest, string targetVariable, IEnumerable<string> inputVariables, IEnumerable<double> classValues = null) : base(targetVariable) {
+    public RandomForestModelFull(alglib.decisionforest decisionForest, int nTrees, string targetVariable, IEnumerable<string> inputVariables, IEnumerable<double> classValues = null) : base(targetVariable) {
       this.name = ItemName;
       this.description = ItemDescription;
 
-      randomForest = decisionForest;
+      randomForest = (alglib.decisionforest)decisionForest.make_copy();
+      NumberOfTrees = nTrees;
 
       this.inputVariables = inputVariables.ToArray();
 
@@ -146,11 +125,12 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       double[] x = new double[columns];
       double[] y = new double[1];
 
+      alglib.dfcreatebuffer(randomForest, out var buf);
       for (int row = 0; row < n; row++) {
         for (int column = 0; column < columns; column++) {
           x[column] = inputData[row, column];
         }
-        alglib.dfprocess(randomForest, x, ref y);
+        alglib.dftsprocess(randomForest, buf, x, ref y); // thread-safe process (as long as separate buffers are used)
         yield return y[0];
       }
     }
@@ -167,7 +147,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         for (int column = 0; column < columns; column++) {
           x[column] = inputData[row, column];
         }
-        alglib.dforest.dfprocessraw(randomForest.innerobj, x, ref ys);
+        lock (randomForest)
+          alglib.dforest.dfprocessraw(randomForest.innerobj, x, ref ys, null);
         yield return ys.VariancePop();
       }
     }
@@ -179,13 +160,14 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       int n = inputData.GetLength(0);
       int columns = inputData.GetLength(1);
       double[] x = new double[columns];
-      double[] y = new double[randomForest.innerobj.nclasses];
+      double[] y = new double[NumClasses];
 
+      alglib.dfcreatebuffer(randomForest, out var buf);
       for (int row = 0; row < n; row++) {
         for (int column = 0; column < columns; column++) {
           x[column] = inputData[row, column];
         }
-        alglib.dfprocess(randomForest, x, ref y);
+        alglib.dftsprocess(randomForest, buf, x, ref y);
         // find class for with the largest probability value
         int maxProbClassIndex = 0;
         double maxProb = y[0];

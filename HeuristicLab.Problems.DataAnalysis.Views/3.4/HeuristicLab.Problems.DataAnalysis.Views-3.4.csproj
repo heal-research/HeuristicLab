@@ -98,9 +98,14 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ALGLIB-3.7.0, Version=3.7.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
-      <HintPath>..\..\bin\ALGLIB-3.7.0.dll</HintPath>
+    <Reference Include="ALGLIB-3.17.0, Version=3.17.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\bin\ALGLIB-3.17.0.dll</HintPath>
       <Private>False</Private>
+    </Reference>
+    <Reference Include="HEAL.Attic, Version=1.5.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\bin\HEAL.Attic.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
@@ -221,12 +226,6 @@
     </Compile>
     <Compile Include="Interfaces\IDataPreprocessorStarter.cs" />
     <Compile Include="Interfaces\IPartialDependencePlot.cs" />
-    <Compile Include="IntervalCollectionView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="IntervalCollectionView.Designer.cs">
-      <DependentUpon>IntervalCollectionView.cs</DependentUpon>
-    </Compile>
     <Compile Include="MenuItems\ChangeDataOfOptimizersMenuItem.cs" />
     <Compile Include="MenuItems\ShrinkDataAnalysisRunsMenuItem.cs" />
     <Compile Include="ModifiableDatasetView.cs">
@@ -242,6 +241,11 @@
     <Compile Include="ProblemDataView.Designer.cs">
       <DependentUpon>ProblemDataView.cs</DependentUpon>
     </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Regression\ConfidenceRegressionSolutionEstimatedValuesView.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -253,6 +257,12 @@
     </Compile>
     <Compile Include="Regression\ConfidenceRegressionSolutionLineChartView.Designer.cs">
       <DependentUpon>ConfidenceRegressionSolutionLineChartView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Regression\IntervalCollectionView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Regression\IntervalCollectionView.Designer.cs">
+      <DependentUpon>IntervalCollectionView.cs</DependentUpon>
     </Compile>
     <Compile Include="Regression\RegressionEnsembleSolutionModelWeightsView.cs">
       <SubType>UserControl</SubType>
@@ -343,6 +353,24 @@
     </Compile>
     <Compile Include="Regression\RegressionSolutionScatterPlotView.Designer.cs">
       <DependentUpon>RegressionSolutionScatterPlotView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Regression\RunCollectionPartialDependencePlotView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Regression\RunCollectionPartialDependencePlotView.Designer.cs">
+      <DependentUpon>RunCollectionPartialDependencePlotView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Regression\ShapeConstraintsView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Regression\ShapeConstraintsView.Designer.cs">
+      <DependentUpon>ShapeConstraintsView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Regression\ShapeConstraintView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Regression\ShapeConstraintView.Designer.cs">
+      <DependentUpon>ShapeConstraintView.cs</DependentUpon>
     </Compile>
     <Compile Include="Solution Views\ClassificationSolutionView.cs">
       <SubType>UserControl</SubType>
@@ -563,16 +591,6 @@
       <Name>HeuristicLab.PluginInfrastructure-3.3</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Problems.DataAnalysis.Symbolic.Regression\3.4\HeuristicLab.Problems.DataAnalysis.Symbolic.Regression-3.4.csproj">
-      <Project>{5AC82412-911B-4FA2-A013-EDC5E3F3FCC2}</Project>
-      <Name>HeuristicLab.Problems.DataAnalysis.Symbolic.Regression-3.4</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Problems.DataAnalysis.Symbolic\3.4\HeuristicLab.Problems.DataAnalysis.Symbolic-3.4.csproj">
-      <Project>{3D28463F-EC96-4D82-AFEE-38BE91A0CA00}</Project>
-      <Name>HeuristicLab.Problems.DataAnalysis.Symbolic-3.4</Name>
-      <Private>False</Private>
-    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Problems.DataAnalysis\3.4\HeuristicLab.Problems.DataAnalysis-3.4.csproj">
       <Project>{DF87C13E-A889-46FF-8153-66DCAA8C5674}</Project>
       <Name>HeuristicLab.Problems.DataAnalysis-3.4</Name>
@@ -605,13 +623,14 @@
     <EmbeddedResource Include="FeatureCorrelation\AbstractFeatureCorrelationView.resx">
       <DependentUpon>AbstractFeatureCorrelationView.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="HEAL.Attic, Version=1.0.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\bin\HEAL.Attic.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
+    <EmbeddedResource Include="Resources\shapeConstraintsHelp.rtf" />
+    <None Include="Resources\VS2008ImageLibrary_Annotations_Information.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

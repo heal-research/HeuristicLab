@@ -258,6 +258,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       if (node.Symbol is CubeRoot) {
         return cbrt(ConvertToAutoDiff(node.GetSubtree(0)));
       }
+      if (node.Symbol is Power) {
+        var powerNode = node.GetSubtree(1) as ConstantTreeNode;
+        if (powerNode == null)
+          throw new NotSupportedException("Only integer powers are allowed in parameter optimization. Try to use exp() and log() instead of the power symbol.");
+        var intPower = Math.Truncate(powerNode.Value);
+        if (intPower != powerNode.Value)
+          throw new NotSupportedException("Only integer powers are allowed in parameter optimization. Try to use exp() and log() instead of the power symbol.");
+        return AutoDiff.TermBuilder.Power(ConvertToAutoDiff(node.GetSubtree(0)), intPower);
+      }
       if (node.Symbol is Sine) {
         return sin(
           ConvertToAutoDiff(node.GetSubtree(0)));
@@ -339,7 +348,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           !(n.Symbol is Absolute) &&
           !(n.Symbol is AnalyticQuotient) &&
           !(n.Symbol is Cube) &&
-          !(n.Symbol is CubeRoot)
+          !(n.Symbol is CubeRoot) &&
+          !(n.Symbol is Power)
         select n).Any();
       return !containsUnknownSymbol;
     }

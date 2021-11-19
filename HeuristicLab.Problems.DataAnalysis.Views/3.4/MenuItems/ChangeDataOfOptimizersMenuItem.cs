@@ -101,7 +101,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
 
         MainFormManager.MainForm.ShowContent(newOptimizer);
       }
-
     }
 
     private void ChangeProblemData(IAlgorithm algorithm, IDataAnalysisProblemData problemData) {
@@ -109,7 +108,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       if (problemData == null) throw new ArgumentNullException("problemData");
 
       dynamic problem = algorithm.Problem;
-      problem.ProblemData = (dynamic) problemData;
+      problem.ProblemData = (dynamic)problemData;
     }
   }
 }

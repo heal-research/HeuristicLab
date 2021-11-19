@@ -783,6 +783,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         return MakeSquare(node.GetSubtree(0)); // sqr(abs(x)) = sqr(x)
       } else if (IsExp(node)) {
         return MakeExp(MakeProduct(node.GetSubtree(0), MakeConstant(2.0))); // sqr(exp(x)) = exp(2x)
+      } else if (IsSquare(node)) {
+        return MakePower(node.GetSubtree(0), MakeConstant(4));
       } else if (IsCube(node)) {
         return MakePower(node.GetSubtree(0), MakeConstant(6));
       } else {
@@ -808,6 +810,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         return MakeExp(MakeProduct(node.GetSubtree(0), MakeConstant(3)));
       } else if (IsSquare(node)) {
         return MakePower(node.GetSubtree(0), MakeConstant(6));
+      } else if (IsCube(node)) {
+        return MakePower(node.GetSubtree(0), MakeConstant(9));
       } else {
         var cubeNode = cubeSymbol.CreateTreeNode();
         cubeNode.AddSubtree(node);
@@ -932,13 +936,18 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       } else if (IsConstant(b)) {
         var constB = b as ConstantTreeNode;
         var constBValue = Math.Round(constB.Value);
-        if (constBValue.IsAlmost(1.0)) {
+        if (constBValue == 1.0) {
+          // root(a, 1) => a
           return a;
-        } else if (constBValue.IsAlmost(0.0)) {
-          return MakeConstant(1.0);
-        } else if (constBValue.IsAlmost(-1.0)) {
+        } else if (constBValue == 0.0) {
+          // root(a, 0) is not defined 
+          //return MakeConstant(1.0);
+          return MakeConstant(double.NaN);
+        } else if (constBValue == -1.0) {
+          // root(a, -1) => a^(-1/1) => 1/a
           return MakeFraction(MakeConstant(1.0), a);
         } else if (constBValue < 0) {
+          // root(a, -b) => a^(-1/b) => (1/a)^(1/b) => root(1, b) / root(a, b) => 1 / root(a, b)
           var rootNode = rootSymbol.CreateTreeNode();
           rootNode.AddSubtree(a);
           rootNode.AddSubtree(MakeConstant(-1.0 * constBValue));
@@ -986,13 +995,17 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       } else if (IsConstant(b)) {
         var constB = b as ConstantTreeNode;
         double exponent = Math.Round(constB.Value);
-        if (exponent.IsAlmost(0.0)) {
+        if (exponent == 0.0) {
+          // a^0 => 1
           return MakeConstant(1.0);
-        } else if (exponent.IsAlmost(1.0)) {
+        } else if (exponent == 1.0) {
+          // a^1 => a
           return a;
-        } else if (exponent.IsAlmost(-1.0)) {
+        } else if (exponent == -1.0) {
+          // a^-1 => 1/a
           return MakeFraction(MakeConstant(1.0), a);
         } else if (exponent < 0) {
+          // a^-b => (1/a)^b => 1/(a^b)
           var powNode = powSymbol.CreateTreeNode();
           powNode.AddSubtree(a);
           powNode.AddSubtree(MakeConstant(-1.0 * exponent));
@@ -1017,7 +1030,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       if (IsConstant(a) && IsConstant(b)) {
         // fold constants
         return MakeConstant(((ConstantTreeNode)a).Value / ((ConstantTreeNode)b).Value);
-      } else if ((IsConstant(a) && !((ConstantTreeNode)a).Value.IsAlmost(1.0))) {
+      } else if ((IsConstant(a) && ((ConstantTreeNode)a).Value != 1.0)) {
+        // a / x => (a * 1/a) / (x * 1/a) => 1 / (x * 1/a)
         return MakeFraction(MakeConstant(1.0), MakeProduct(b, Invert(a)));
       } else if (IsVariableBase(a) && IsConstant(b)) {
         // merge constant values into variable weights
@@ -1093,7 +1107,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         // c + x => x + c
         // b is not constant => make sure constant is on the right
         return MakeSum(b, a);
-      } else if (IsConstant(b) && ((ConstantTreeNode)b).Value.IsAlmost(0.0)) {
+      } else if (IsConstant(b) && ((ConstantTreeNode)b).Value == 0.0) {
         // x + 0 => x
         return a;
       } else if (IsFactor(a) && IsConstant(b)) {
@@ -1209,7 +1223,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       }
       foreach (var unchangedSubtree in unchangedSubtrees)
         sum.AddSubtree(unchangedSubtree);
-      if (!constant.IsAlmost(0.0)) {
+      if (constant != 0.0) {
         sum.AddSubtree(MakeConstant(constant));
       }
     }
@@ -1267,10 +1281,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         var wi = Array.IndexOf(varValues, node1.VariableValue);
         if (wi < 0) throw new ArgumentException();
         return MakeBinFactor(node1.Symbol, node1.VariableName, node1.VariableValue, node1.Weight * node0.Weights[wi]);
-      } else if (IsConstant(b) && ((ConstantTreeNode)b).Value.IsAlmost(1.0)) {
+      } else if (IsConstant(b) && ((ConstantTreeNode)b).Value == 1.0) {
         // $ * 1.0 => $
         return a;
-      } else if (IsConstant(b) && ((ConstantTreeNode)b).Value.IsAlmost(0.0)) {
+      } else if (IsConstant(b) && ((ConstantTreeNode)b).Value == 0.0) {
         return MakeConstant(0);
       } else if (IsConstant(b) && IsVariableBase(a)) {
         // multiply constants into variables weights
@@ -1418,7 +1432,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       foreach (var unchangedSubtree in unchangedSubtrees)
         prod.AddSubtree(unchangedSubtree);
 
-      if (!constantProduct.IsAlmost(1.0)) {
+      if (constantProduct != 1.0) {
         prod.AddSubtree(MakeConstant(constantProduct));
       }
     }

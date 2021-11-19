@@ -19,6 +19,8 @@
  */
 #endregion
 
+extern alias alglib_3_7;
+using alglib_3_7;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -199,7 +201,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       avgRelError = rep.avgrelerror;
       outOfBagAvgRelError = rep.oobavgrelerror;
 
-      return new RandomForestModelFull(dForest, problemData.TargetVariable, problemData.AllowedInputVariables);
+      return new RandomForestModelFull(dForest, nTrees, problemData.TargetVariable, problemData.AllowedInputVariables);
     }
 
     #endregion

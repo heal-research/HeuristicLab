@@ -185,6 +185,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       IEnumerable<string> allowedInputVariables = problemData.AllowedInputVariables;
       IEnumerable<int> rows = problemData.TrainingIndices;
       double[,] inputMatrix = dataset.ToArray(allowedInputVariables.Concat(new string[] { targetVariable }), rows);
+      int nRows = inputMatrix.GetLength(0);
       if (inputMatrix.ContainsNanOrInfinity())
         throw new NotSupportedException("Neural network regression does not support NaN or infinity values in the input dataset.");
 
@@ -196,12 +197,10 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       } else if (nLayers == 2) {
         alglib.mlpcreate2(allowedInputVariables.Count(), nHiddenNodes1, nHiddenNodes2, 1, out multiLayerPerceptron);
       } else throw new ArgumentException("Number of layers must be zero, one, or two.", "nLayers");
-      alglib.mlpreport rep;
-      int nRows = inputMatrix.GetLength(0);
 
       int info;
       // using mlptrainlm instead of mlptraines or mlptrainbfgs because only one parameter is necessary
-      alglib.mlptrainlm(multiLayerPerceptron, inputMatrix, nRows, decay, restarts, out info, out rep);
+      alglib.mlptrainlm(multiLayerPerceptron, inputMatrix, nRows, decay, restarts, out info, out _);
       if (info != 2) throw new ArgumentException("Error in calculation of neural network regression solution");
 
       rmsError = alglib.mlprmserror(multiLayerPerceptron, inputMatrix, nRows);

@@ -268,14 +268,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
           matrix[row, numberOfRuns + 1] = Math.Round(variableImpactsOverRuns[row].Average(), 3);
           matrix[row, numberOfRuns + 2] = Math.Round(variableImpactsOverRuns[row].StandardDeviation(), 3);
 
-          double leftTail = 0; double rightTail = 0; double bothTails = 0;
           // calc differences of impacts for current variable and reference variable
           double[] z = new double[referenceImpacts.Count];
           for (int i = 0; i < z.Length; i++) {
             z[i] = variableImpactsOverRuns[row][i] - referenceImpacts[i];
           }
           // wilcoxon signed rank test is used because the impact values of two variables in a single run are not independent
-          alglib.wsr.wilcoxonsignedranktest(z, z.Length, 0, ref bothTails, ref leftTail, ref rightTail);
+          alglib.wilcoxonsignedranktest(z, z.Length, 0, out var bothTails, out var leftTail, out var rightTail);
           matrix[row, numberOfRuns + 3] = Math.Round(bothTails, 4);
         }
       }

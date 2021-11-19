@@ -19,11 +19,16 @@
  */
 #endregion
 
+using System.Collections.Generic;
 using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis {
   [StorableType("5CE2C127-E046-496E-BD98-80DC9F4631A6")]
   public interface ISupervisedDataAnalysisProblemData : IDataAnalysisProblemData {
     string TargetVariable { get; set; }
+
+    IEnumerable<double> TargetVariableValues { get; }
+    IEnumerable<double> TargetVariableTrainingValues { get; }
+    IEnumerable<double> TargetVariableTestValues { get; }
   }
 }

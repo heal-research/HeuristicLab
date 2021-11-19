@@ -57,6 +57,10 @@ If you use `base`=1 you will get a linear interpolation.")]
       return new GeneralizedExponentialDiscreteDoubleValueModifier(this, cloner);
     }
 
+    protected override double Modify(double value, double startValue, double endValue, int index, int startIndex, int endIndex) {
+      return Apply(value, startValue, endValue, index, startIndex, endIndex, Base);
+    }
+
     /// <summary>
     /// Calculates a new value based on exponential decay or growth.
     /// </summary>
@@ -68,12 +72,12 @@ If you use `base`=1 you will get a linear interpolation.")]
     /// <param name="startIndex">The initial index.</param>
     /// <param name="endIndex">The final index.</param>
     /// <returns>The new value.</returns>
-    protected override double Modify(double value, double startValue, double endValue, int index, int startIndex, int endIndex) {
-      if (Base <= 0)
+    public static double Apply(double value, double startValue, double endValue, int index, int startIndex, int endIndex, double @base) {
+      if (@base <= 0)
         throw new ArgumentException("Base must be > 0.");
-      if (Base == 1.0)
-        return startValue + (endValue - startValue)*(index - startIndex)/(endIndex - startIndex);
-      return startValue + (endValue - startValue)*(Math.Pow(Base, 1.0*(index-startIndex)/(endIndex-startIndex)) - 1)/(Base - 1);
+      if (@base == 1.0)
+        return startValue + (endValue - startValue) * (index - startIndex) / (endIndex - startIndex);
+      return startValue + (endValue - startValue) * (Math.Pow(@base, 1.0 * (index - startIndex) / (endIndex - startIndex)) - 1) / (@base - 1);
     }
   }
 }

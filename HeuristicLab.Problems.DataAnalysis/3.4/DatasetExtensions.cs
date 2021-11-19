@@ -95,6 +95,28 @@ namespace HeuristicLab.Problems.DataAnalysis {
       return matrix;
     }
 
+    public static IntervalCollection GetVariableRanges(this IDataset dataset, bool ignoreNaNs = true) {
+      IntervalCollection variableRanges = new IntervalCollection();
+      foreach (var variable in dataset.DoubleVariables) { // ranges can only be calculated for double variables
+        var values = dataset.GetDoubleValues(variable);
+
+        if (ignoreNaNs) {
+          values = values.Where(v => !double.IsNaN(v));
+
+          if (!values.Any()) { //handle values with only NaNs explicitly
+            var emptyInterval = new Interval(double.NaN, double.NaN);
+            variableRanges.AddInterval(variable, emptyInterval);
+            continue;
+          }
+        }
+
+        var interval = Interval.GetInterval(values);
+        variableRanges.AddInterval(variable, interval);
+      }
+
+      return variableRanges;
+    }
+
     public static IEnumerable<KeyValuePair<string, IEnumerable<string>>> GetFactorVariableValues(
       this IDataset ds, IEnumerable<string> factorVariables, IEnumerable<int> rows) {
       return from factor in factorVariables
