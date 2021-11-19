@@ -163,6 +163,9 @@
     <Compile Include="Interfaces\ICharacteristicCalculator.cs" />
     <Compile Include="Interfaces\ILocalImprovementAlgorithmOperator.cs" />
     <Compile Include="Interfaces\IMultiObjectiveOperator.cs" />
+    <Compile Include="Parameters\AlgorithmLookupParameter.cs" />
+    <Compile Include="Parameters\MultiObjectiveProblemLookupParameter.cs" />
+    <Compile Include="Parameters\ProblemLookupParameter.cs" />
     <Compile Include="Results\IResultsProducingItem.cs" />
     <Compile Include="MultiObjective\CrowdingCalculator.cs" />
     <Compile Include="MultiObjective\DominationCalculator.cs" />

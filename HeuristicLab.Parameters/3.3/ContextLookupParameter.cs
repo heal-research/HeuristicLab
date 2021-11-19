@@ -6,7 +6,7 @@ using HeuristicLab.Core;
 namespace HeuristicLab.Parameters {
   [Item("ContextLookupParameter", "A parameter that looks up contexts by type.")]
   [StorableType("4ac189c8-6cf3-48fd-bf79-392d35a872db")]
-  public class ContextLookupParameter<T> : ContextParameter, IContextLookupParameter<T>
+  public abstract class ContextLookupParameter<T> : ContextParameter, IContextLookupParameter<T>
       where T : class, IParameterizedItem {
 
     public new T ActualValue {
@@ -16,12 +16,10 @@ namespace HeuristicLab.Parameters {
     [StorableConstructor]
     protected ContextLookupParameter(StorableConstructorFlag _) : base(_) { }
     protected ContextLookupParameter(ContextLookupParameter<T> original, Cloner cloner) : base(original, cloner) { }
-    public ContextLookupParameter() : base("ContextLookup." + typeof(T).Name, string.Empty, typeof(T)) {
+    protected ContextLookupParameter() : this("ContextLookup." + typeof(T).Name) { }
+    protected ContextLookupParameter(string name) : this(name, string.Empty) { }
+    protected ContextLookupParameter(string name, string description) : base(name, description, typeof(T)) {
       Hidden = true;
-    }
-
-    public override IDeepCloneable Clone(Cloner cloner) {
-      return new ContextLookupParameter<T>(this, cloner);
     }
 
     protected override IItem GetActualValueFromContext() {
