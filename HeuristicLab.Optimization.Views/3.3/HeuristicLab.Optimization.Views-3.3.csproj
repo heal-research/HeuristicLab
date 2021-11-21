@@ -310,6 +310,18 @@
     <Compile Include="RunCollectionViews\RunCollectionChartAggregationView.Designer.cs">
       <DependentUpon>RunCollectionChartAggregationView.cs</DependentUpon>
     </Compile>
+    <Compile Include="MultiObjectiveEvaluationResultView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="MultiObjectiveEvaluationResultView.Designer.cs">
+      <DependentUpon>MultiObjectiveEvaluationResultView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SingleObjectiveEvaluationResultView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="SingleObjectiveEvaluationResultView.Designer.cs">
+      <DependentUpon>SingleObjectiveEvaluationResultView.cs</DependentUpon>
+    </Compile>
     <Compile Include="SolutionContextView.cs">
       <SubType>UserControl</SubType>
     </Compile>
