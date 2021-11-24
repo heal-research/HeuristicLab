@@ -126,7 +126,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             break;
           }
         case OpCodes.Constant: {
-            var constTreeNode = (ConstantTreeNode)currentInstr.dynamicNode;
+            var constTreeNode = (NumTreeNode)currentInstr.dynamicNode;
             result = new Interval(constTreeNode.Value, constTreeNode.Value);
             break;
           }
@@ -323,7 +323,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         from n in tree.Root.GetSubtree(0).IterateNodesPrefix()
         where
           !(n.Symbol is Variable) &&
-          !(n.Symbol is Constant) &&
+          !(n.Symbol is Num) &&
+          !(n.Symbol is RealConstant) &&
           !(n.Symbol is StartSymbol) &&
           !(n.Symbol is Addition) &&
           !(n.Symbol is Subtraction) &&

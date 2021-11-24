@@ -278,7 +278,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             code[i].data = dataset.GetReadOnlyDoubleValues(variable.VariableName).ToArray();
             cachedData[variable.VariableName] = code[i].data;
           }
-        } else if (node is ConstantTreeNode constant) {
+        } else if (node is NumTreeNode constant) {
           code[i].value = constant.Value;
           for (int j = 0; j < BATCHSIZE; ++j)
             code[i].buf[j] = code[i].value;

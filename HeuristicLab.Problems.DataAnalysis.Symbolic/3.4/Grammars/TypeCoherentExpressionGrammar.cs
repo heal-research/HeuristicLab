@@ -104,9 +104,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       var integral = new Integral();
       var derivative = new Derivative();
 
-      var constant = new Constant();
+      var constant = new Num();
       constant.MinValue = -20;
       constant.MaxValue = 20;
+      var number = new RealConstant();
+      number.MinValue = -20;
+      number.MaxValue = 20;
       var variableSymbol = new Variable();
       var binFactorVariable = new BinaryFactorVariable();
       var factorVariable = new FactorVariable();
@@ -120,7 +123,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       var exponentialAndLogarithmicSymbols = new GroupSymbol(ExponentialFunctionsName, new List<ISymbol> { exp, log });
       var specialFunctions = new GroupSymbol(SpecialFunctionsName, new List<ISymbol> { abs, airyA, airyB, bessel, cosineIntegral, dawson, erf, expIntegralEi,
         fresnelCosineIntegral,fresnelSineIntegral,gamma,hypCosineIntegral,hypSineIntegral,norm, psi, sineIntegral, analyticalQuotient});
-      var terminalSymbols = new GroupSymbol(TerminalsName, new List<ISymbol> { constant, variableSymbol, binFactorVariable, factorVariable });
+      var terminalSymbols = new GroupSymbol(TerminalsName, new List<ISymbol> { constant, number, variableSymbol, binFactorVariable, factorVariable });
       var realValuedSymbols = new GroupSymbol(RealValuedSymbolsName, new List<ISymbol>() { arithmeticSymbols, trigonometricSymbols, exponentialAndLogarithmicSymbols, specialFunctions, terminalSymbols });
 
       var powerSymbols = new GroupSymbol(PowerFunctionsName, new List<ISymbol> { square, pow, sqrt, root, cube, cubeRoot });

@@ -61,7 +61,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation.GP {
       var and = new And();
       var or = new Or();
       var not = new Not();
-      var constant = new Constant();
+      var constant = new Num();
       constant.MinValue = -20;
       constant.MaxValue = 20;
       variableSymbol = new HeuristicLab.Problems.DataAnalysis.Symbolic.Variable();

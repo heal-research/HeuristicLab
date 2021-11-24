@@ -185,10 +185,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             result = Interval.Multiply(variableInterval, weightInterval);
             break;
           }
-        case OpCodes.Constant: {
-            var constTreeNode = (ConstantTreeNode)currentInstr.dynamicNode;
+        case OpCodes.Number: {
+            var constTreeNode = (NumTreeNode)currentInstr.dynamicNode;
             result = new Interval(constTreeNode.Value, constTreeNode.Value);
             break;
+          }
+        case OpCodes.Constant: {
+          var constTreeNode = (RealConstantTreeNode)currentInstr.dynamicNode;
+          result = new Interval(constTreeNode.Value, constTreeNode.Value);
+          break;
           }
         case OpCodes.Add: {
             result = Evaluate(instructions, ref instructionCounter, nodeIntervals, variableIntervals);
@@ -323,7 +328,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       foreach (var n in tree.Root.GetSubtree(0).IterateNodesPrefix()) {
         if (
           !(n.Symbol is Variable) &&
-          !(n.Symbol is Constant) &&
+          !(n.Symbol is Num) &&
           !(n.Symbol is StartSymbol) &&
           !(n.Symbol is Addition) &&
           !(n.Symbol is Subtraction) &&
@@ -345,7 +350,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
         else if (n.Symbol is Power) {
           // only integer exponents are supported
-          var exp = n.GetSubtree(1) as ConstantTreeNode;
+          var exp = n.GetSubtree(1) as NumTreeNode;
           if (exp == null || exp.Value != Math.Truncate(exp.Value)) return false;
         }
       }

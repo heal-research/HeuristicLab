@@ -496,9 +496,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             return ((IList<double>)currentInstr.data)[actualRow] * laggedVariableTreeNode.Weight;
           }
         case OpCodes.Constant: {
-            var constTreeNode = (ConstantTreeNode)currentInstr.dynamicNode;
+            var constTreeNode = (NumTreeNode)currentInstr.dynamicNode;
             return constTreeNode.Value;
           }
+        case OpCodes.Number: {
+          var numberTreeNode = (RealConstantTreeNode) currentInstr.dynamicNode;
+          return numberTreeNode.Value;
+        }
 
         //mkommend: this symbol uses the logistic function f(x) = 1 / (1 + e^(-alpha * x) ) 
         //to determine the relative amounts of the true and false branch see http://en.wikipedia.org/wiki/Logistic_function

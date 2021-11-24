@@ -171,7 +171,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
       for (int i = 0; i < nodes.Count; ++i) {
         var node = nodes[i];
-        if (node is ConstantTreeNode) continue;
+        if (node is NumTreeNode) continue;
 
         double impactValue, replacementValue;
         double newQualityForImpacts;
@@ -180,7 +180,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         if (PruneOnlyZeroImpactNodes && !impactValue.IsAlmost(0.0)) continue;
         if (!PruneOnlyZeroImpactNodes && impactValue > NodeImpactThreshold) continue;
 
-        var constantNode = (ConstantTreeNode)node.Grammar.GetSymbol("Constant").CreateTreeNode();
+        var constantNode = (NumTreeNode)node.Grammar.GetSymbol("Num").CreateTreeNode();
         constantNode.Value = replacementValue;
 
         var length = node.GetLength();

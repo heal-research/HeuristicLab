@@ -119,7 +119,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression.Views {
     }
 
     private void ChangeVariableValue(string variableName, double value) {
-      foreach (var constNode in variableNodes[variableName].Cast<ConstantTreeNode>())
+      foreach (var constNode in variableNodes[variableName].Cast<NumTreeNode>())
         constNode.Value = value;
 
       UpdateResponseSeries();
@@ -222,7 +222,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression.Views {
       UpdateResponseSeries();
     }
 
-    private ISymbolicExpressionTreeNode MakeProduct(ConstantTreeNode c, double weight) {
+    private ISymbolicExpressionTreeNode MakeProduct(NumTreeNode c, double weight) {
       var mul = new Multiplication();
       var prod = mul.CreateTreeNode();
       prod.AddSubtree(MakeConstantTreeNode(weight));
@@ -230,13 +230,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression.Views {
       return prod;
     }
 
-    private ConstantTreeNode MakeConstantTreeNode(double value) {
-      Constant constant = new Constant();
-      constant.MinValue = value - 1;
-      constant.MaxValue = value + 1;
-      ConstantTreeNode constantTreeNode = (ConstantTreeNode)constant.CreateTreeNode();
-      constantTreeNode.Value = value;
-      return constantTreeNode;
+    private NumTreeNode MakeConstantTreeNode(double value) {
+      Num num = new Num();
+      num.MinValue = value - 1;
+      num.MaxValue = value + 1;
+      NumTreeNode numTreeNode = (NumTreeNode)num.CreateTreeNode();
+      numTreeNode.Value = value;
+      return numTreeNode;
     }
   }
 }

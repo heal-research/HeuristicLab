@@ -144,8 +144,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     private AutoDiff.Term ConvertToAutoDiff(ISymbolicExpressionTreeNode node) {
-      if (node.Symbol is Constant) {
-        initialConstants.Add(((ConstantTreeNode)node).Value);
+      if (node.Symbol is Num) {
+        initialConstants.Add(((NumTreeNode)node).Value);
+        var var = new AutoDiff.Variable();
+        variables.Add(var);
+        return var;
+      }
+
+      if (node.Symbol is RealConstant) {
+        initialConstants.Add(((RealConstantTreeNode)node).Value);
         var var = new AutoDiff.Variable();
         variables.Add(var);
         return var;
@@ -259,7 +266,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         return cbrt(ConvertToAutoDiff(node.GetSubtree(0)));
       }
       if (node.Symbol is Power) {
-        var powerNode = node.GetSubtree(1) as ConstantTreeNode;
+        var powerNode = node.GetSubtree(1) as NumTreeNode;
         if (powerNode == null)
           throw new NotSupportedException("Only integer powers are allowed in parameter optimization. Try to use exp() and log() instead of the power symbol.");
         var intPower = Math.Truncate(powerNode.Value);
@@ -329,7 +336,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           !(n.Symbol is BinaryFactorVariable) &&
           !(n.Symbol is FactorVariable) &&
           !(n.Symbol is LaggedVariable) &&
-          !(n.Symbol is Constant) &&
+          !(n.Symbol is Num) &&
+          !(n.Symbol is RealConstant) &&
           !(n.Symbol is Addition) &&
           !(n.Symbol is Subtraction) &&
           !(n.Symbol is Multiplication) &&

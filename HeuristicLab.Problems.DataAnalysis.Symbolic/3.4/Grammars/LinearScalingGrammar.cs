@@ -65,9 +65,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       var cbrt = new CubeRoot();
       var abs = new Absolute();
       var aq = new AnalyticQuotient();
-      var constant = new Constant();
+      var constant = new Num();
       constant.MinValue = -20;
       constant.MaxValue = 20;
+      var number = new RealConstant();
+      number.MinValue = -20;
+      number.MaxValue = 20;
       var variableSymbol = new Variable();
 
       #endregion
@@ -77,7 +80,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       var scaling = new Multiplication { Name = "Scaling" };
       //all other symbols
       var allSymbols = new List<Symbol> {
-        add, sub, mul, div, constant, variableSymbol, sin, cos, tan, log, square, sqrt, cube, cbrt, exp,
+        add, sub, mul, div, constant, number, variableSymbol, sin, cos, tan, log, square, sqrt, cube, cbrt, exp,
         tanh, aq, abs
       };
 
@@ -85,7 +88,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       var univariateFuncs = new List<Symbol> { sin, cos, tan, tanh, exp, log, abs, square, cube, sqrt, cbrt };
       var realValueSymbols = new List<Symbol> {
          add, sub, mul, div, sin, cos, tan, tanh, exp, log, aq, abs, square, cube, sqrt, cbrt,
-         variableSymbol, constant,
+         variableSymbol, constant, number
         };
 
 

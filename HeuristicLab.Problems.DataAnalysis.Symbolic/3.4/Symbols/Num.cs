@@ -26,8 +26,8 @@ using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HEAL.Attic;
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableType("5CD355EA-36E4-4E43-B8C4-9E9CF4CBC860")]
-  [Item("Constant", "Represents a constant value.")]
-  public sealed class Constant : Symbol {
+  [Item("Num", "Represents a constant value.")]
+  public sealed class Num : Symbol {
     #region Properties
     [Storable]
     private double minValue;
@@ -99,8 +99,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     #endregion
 
     [StorableConstructor]
-    private Constant(StorableConstructorFlag _) : base(_) { }
-    private Constant(Constant original, Cloner cloner)
+    private Num(StorableConstructorFlag _) : base(_) { }
+    private Num(Num original, Cloner cloner)
       : base(original, cloner) {
       minValue = original.minValue;
       maxValue = original.maxValue;
@@ -108,8 +108,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       manipulatorSigma = original.manipulatorSigma;
       multiplicativeManipulatorSigma = original.multiplicativeManipulatorSigma;
     }
-    public Constant()
-      : base("Constant", "Represents a constant value.") {
+    public Num()
+      : base("Num", "Represents a constant value.") {
       manipulatorMu = 0.0;
       manipulatorSigma = 1.0;
       multiplicativeManipulatorSigma = 0.03;
@@ -118,11 +118,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     public override ISymbolicExpressionTreeNode CreateTreeNode() {
-      return new ConstantTreeNode(this);
+      return new NumTreeNode(this);
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new Constant(this, cloner);
+      return new Num(this, cloner);
     }
   }
 }

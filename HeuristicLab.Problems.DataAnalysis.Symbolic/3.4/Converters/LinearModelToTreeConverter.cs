@@ -57,7 +57,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       }
 
       if (@const!=0.0) {
-        ConstantTreeNode cNode = (ConstantTreeNode)new Constant().CreateTreeNode();
+        NumTreeNode cNode = (NumTreeNode)new Num().CreateTreeNode();
         cNode.Value = @const;
         add.AddSubtree(cNode);
       }
@@ -98,7 +98,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       }
 
       if (!@const.IsAlmost(0.0)) {
-        ConstantTreeNode cNode = (ConstantTreeNode)new Constant().CreateTreeNode();
+        NumTreeNode cNode = (NumTreeNode)new Num().CreateTreeNode();
         cNode.Value = @const;
         addition.AddSubtree(cNode);
       }
@@ -129,7 +129,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       }
 
       if (!@const.IsAlmost(0.0)) {
-        ConstantTreeNode cNode = (ConstantTreeNode)new Constant().CreateTreeNode();
+        NumTreeNode cNode = (NumTreeNode)new Num().CreateTreeNode();
         cNode.Value = @const;
         addition.AddSubtree(cNode);
       }

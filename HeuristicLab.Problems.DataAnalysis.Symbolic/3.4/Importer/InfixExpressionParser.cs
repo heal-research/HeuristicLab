@@ -56,7 +56,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   /// ident         =  '_' | letter { '_' | letter | digit }
   /// </summary>
   public sealed class InfixExpressionParser {
-    private enum TokenType { Operator, Identifier, Number, LeftPar, RightPar, LeftBracket, RightBracket, Comma, Eq, End, NA };
+    private enum TokenType { Operator, Identifier, Number, LeftPar, RightPar, LeftBracket, RightBracket, LeftAngleBracket, RightAngleBracket, Comma, Eq, End, NA };
     private class Token {
       internal double doubleVal;
       internal string strVal;
@@ -81,7 +81,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     internal static readonly BidirectionalLookup<string, ISymbol>
       knownSymbols = new BidirectionalLookup<string, ISymbol>(StringComparer.InvariantCulture, new SymbolComparer());
 
-    private Constant constant = new Constant();
+    private Num num = new Num();
+    private RealConstant realConstant = new RealConstant();
     private Variable variable = new Variable();
     private BinaryFactorVariable binaryFactorVar = new BinaryFactorVariable();
     private FactorVariable factorVar = new FactorVariable();
@@ -264,6 +265,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         } else if (str[pos] == ',') {
           pos++;
           yield return new Token { TokenType = TokenType.Comma, strVal = "," };
+        } else if (str[pos] == '<') {
+          pos++;
+          yield return new Token {TokenType = TokenType.LeftAngleBracket, strVal = "<"};
+        } else if (str[pos] == '>') {
+          pos++;
+          yield return new Token {TokenType = TokenType.RightAngleBracket, strVal = ">"};
         } else {
           throw new ArgumentException("Invalid character: " + str[pos]);
         }
@@ -325,7 +332,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           var sumNeg = GetSymbol("+").CreateTreeNode();
           foreach (var negTerm in negTerms) sumNeg.AddSubtree(negTerm);
 
-          var constNode = (ConstantTreeNode)constant.CreateTreeNode();
+          var constNode = (NumTreeNode)num.CreateTreeNode();
           constNode.Value = -1.0;
           var prod = GetSymbol("*").CreateTreeNode();
           prod.AddSubtree(constNode);
@@ -523,9 +530,22 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             return varNode;
           }
         }
+      } else if (next.TokenType == TokenType.LeftAngleBracket) {
+        var leftAngleBracket = tokens.Dequeue();
+        if (leftAngleBracket.TokenType != TokenType.LeftAngleBracket)
+          throw new ArgumentException("opening bracket < expected");
+
+        var idTok = tokens.Dequeue();
+        if (idTok.TokenType != TokenType.Identifier || idTok.strVal.ToLower() != "num")
+          throw new ArgumentException("string 'num' expected");
+        var rightAngleBracket = tokens.Dequeue();
+        if (rightAngleBracket.TokenType != TokenType.RightAngleBracket)
+          throw new ArgumentException("closing bracket > expected");
+        var numNode = (NumTreeNode)num.CreateTreeNode();
+        return numNode;
       } else if (next.TokenType == TokenType.Number) {
         var numTok = tokens.Dequeue();
-        var constNode = (ConstantTreeNode)constant.CreateTreeNode();
+        var constNode = (RealConstantTreeNode)realConstant.CreateTreeNode();
         constNode.Value = numTok.doubleVal;
         return constNode;
       } else {

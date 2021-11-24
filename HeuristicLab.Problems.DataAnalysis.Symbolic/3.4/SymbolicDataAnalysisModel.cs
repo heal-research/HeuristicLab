@@ -114,16 +114,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       double beta = linearScalingCalculator.Beta;
       if (linearScalingCalculator.ErrorState != OnlineCalculatorError.None) return;
 
-      ConstantTreeNode alphaTreeNode = null;
-      ConstantTreeNode betaTreeNode = null;
+      NumTreeNode alphaTreeNode = null;
+      NumTreeNode betaTreeNode = null;
       // check if model has a structure that can be re-used for scaling
       var startNode = SymbolicExpressionTree.Root.GetSubtree(0);
       var addNode = startNode.GetSubtree(0);
       if (addNode.Symbol is Addition && addNode.SubtreeCount == 2) {
-        alphaTreeNode = (ConstantTreeNode)addNode.Subtrees.LastOrDefault(n => n is ConstantTreeNode);
+        alphaTreeNode = (NumTreeNode)addNode.Subtrees.LastOrDefault(n => n is NumTreeNode);
         var mulNode = addNode.Subtrees.FirstOrDefault(n => n.Symbol is Multiplication);
         if (mulNode != null) {
-          betaTreeNode = (ConstantTreeNode)mulNode.Subtrees.LastOrDefault(n => n is ConstantTreeNode);
+          betaTreeNode = (NumTreeNode)mulNode.Subtrees.LastOrDefault(n => n is NumTreeNode);
         }
       }
       // if tree structure matches the structure necessary for linear scaling then reuse the existing tree nodes
@@ -166,7 +166,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     private static ISymbolicExpressionTreeNode MakeConstant(double c) {
-      var node = (ConstantTreeNode)(new Constant()).CreateTreeNode();
+      var node = (NumTreeNode)(new Num()).CreateTreeNode();
       node.Value = c;
       return node;
     }

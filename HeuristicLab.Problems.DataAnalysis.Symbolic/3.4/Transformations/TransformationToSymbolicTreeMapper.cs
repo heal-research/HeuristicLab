@@ -278,8 +278,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       return additionNode;
     }
 
-    private ConstantTreeNode CreateConstantTreeNode(string description, double value) {
-      return new ConstantTreeNode(new Constant()) { Value = value };
+    private NumTreeNode CreateConstantTreeNode(string description, double value) {
+      return new NumTreeNode(new Num()) { Value = value };
     }
 
     private VariableTreeNode CreateVariableTreeNode(string name, string description) {

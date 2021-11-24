@@ -157,7 +157,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       #region switch opcode
       switch (opcode) {
         case OpCodes.Constant: {
-            var constantTreeNode = (ConstantTreeNode)node;
+            var constantTreeNode = (NumTreeNode)node;
             return Expression.Constant(constantTreeNode.Value);
           }
         case OpCodes.Variable: {

@@ -26,9 +26,9 @@ using HEAL.Attic;
 using HeuristicLab.Random;
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableType("247DBD04-18F2-4184-B6F5-6E283BF06FD0")]
-  public sealed class ConstantTreeNode : SymbolicExpressionTreeTerminalNode {
-    public new Constant Symbol {
-      get { return (Constant)base.Symbol; }
+  public sealed class NumTreeNode : SymbolicExpressionTreeTerminalNode {
+    public new Num Symbol {
+      get { return (Num)base.Symbol; }
     }
 
     private double constantValue;
@@ -39,15 +39,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     [StorableConstructor]
-    private ConstantTreeNode(StorableConstructorFlag _) : base(_) { }
+    private NumTreeNode(StorableConstructorFlag _) : base(_) { }
 
-    private ConstantTreeNode(ConstantTreeNode original, Cloner cloner)
+    private NumTreeNode(NumTreeNode original, Cloner cloner)
       : base(original, cloner) {
       constantValue = original.constantValue;
     }
 
-    private ConstantTreeNode() : base() { }
-    public ConstantTreeNode(Constant constantSymbol) : base(constantSymbol) { }
+    private NumTreeNode() : base() { }
+    public NumTreeNode(Num numSymbol) : base(numSymbol) { }
 
     public override bool HasLocalParameters {
       get {
@@ -73,11 +73,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new ConstantTreeNode(this, cloner);
+      return new NumTreeNode(this, cloner);
     }
 
     public override string ToString() {
-      return constantValue.ToString("E4");
+      return $"<{constantValue:E4}>";
+      // return constantValue.ToString("E4");
     }
   }
 }
