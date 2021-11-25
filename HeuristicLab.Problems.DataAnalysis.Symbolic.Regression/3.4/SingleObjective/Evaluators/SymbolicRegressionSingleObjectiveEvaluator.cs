@@ -21,12 +21,23 @@
 
 using HeuristicLab.Common;
 using HEAL.Attic;
+using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
+using System.Collections.Generic;
+
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
   [StorableType("7EB90F03-4385-474F-BDE7-3B133E8FEAAB")]
   public abstract class SymbolicRegressionSingleObjectiveEvaluator : SymbolicDataAnalysisSingleObjectiveEvaluator<IRegressionProblemData>, ISymbolicRegressionSingleObjectiveEvaluator {  
     [StorableConstructor]
     protected SymbolicRegressionSingleObjectiveEvaluator(StorableConstructorFlag _) : base(_) { }
     protected SymbolicRegressionSingleObjectiveEvaluator(SymbolicRegressionSingleObjectiveEvaluator original, Cloner cloner) : base(original, cloner) { }
-    protected SymbolicRegressionSingleObjectiveEvaluator(): base() {}    
+    protected SymbolicRegressionSingleObjectiveEvaluator(): base() {}
+    public abstract double Evaluate(
+      IRegressionProblemData problemData,
+      ISymbolicExpressionTree tree,
+      ISymbolicDataAnalysisExpressionTreeInterpreter interpreter,
+      IEnumerable<int> rows = null,
+      bool applyLinearScaling = true,
+      double lowerEstimationLimit = double.MinValue,
+      double upperEstimationLimit = double.MaxValue);
   }
 }

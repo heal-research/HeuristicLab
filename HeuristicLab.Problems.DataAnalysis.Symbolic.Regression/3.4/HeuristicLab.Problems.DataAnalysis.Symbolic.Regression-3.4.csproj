@@ -266,6 +266,10 @@
       <Name>HeuristicLab.Problems.Instances-3.3</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Random\3.3\HeuristicLab.Random-3.3.csproj">
+      <Project>{f4539fb6-4708-40c9-be64-0a1390aea197}</Project>
+      <Name>HeuristicLab.Random-3.3</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="HEAL.Attic, Version=1.0.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">

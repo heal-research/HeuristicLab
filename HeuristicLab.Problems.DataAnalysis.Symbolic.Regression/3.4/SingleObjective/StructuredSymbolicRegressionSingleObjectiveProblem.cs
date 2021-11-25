@@ -30,6 +30,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     private const string BestTrainingSolutionParameterName = "Best Training Solution";
 
     private const string SymbolicExpressionTreeName = "SymbolicExpressionTree";
+    private const string VariableName = "Variable";
 
     private const string StructureTemplateDescriptionText =
       "Enter your expression as string in infix format into the empty input field.\n" +
@@ -93,7 +94,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
         .Where(x => x.Maximization == Maximization));
 
       Parameters.Add(new ConstrainedValueParameter<SymbolicRegressionSingleObjectiveEvaluator>(
-        TreeEvaluatorParameterName, 
+        TreeEvaluatorParameterName,
         evaluators,
         evaluators.First()));
 
@@ -113,16 +114,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       
       Parameters.Add(new FixedValueParameter<DoubleLimit>(
         EstimationLimitsParameterName,
-        new DoubleLimit(targetInterval.LowerBound - estimationWidth, targetInterval.UpperBound + estimationWidth)));
-      EstimationLimitsParameter.Hidden = true;
+        new DoubleLimit(targetInterval.LowerBound - estimationWidth, targetInterval.UpperBound + estimationWidth)) { Hidden = true });
 
-      Parameters.Add(new ResultParameter<ISymbolicRegressionSolution>(BestTrainingSolutionParameterName, ""));
-      this.BestTrainingSolutionParameter.Hidden = true;
+      Parameters.Add(new ResultParameter<ISymbolicRegressionSolution>(BestTrainingSolutionParameterName, "") { Hidden = true });
 
       this.EvaluatorParameter.Hidden = true;
-
-     
-
+      
       Operators.Add(new SymbolicDataAnalysisVariableFrequencyAnalyzer());
       Operators.Add(new MinAverageMaxSymbolicExpressionTreeLengthAnalyzer());
       Operators.Add(new SymbolicExpressionSymbolFrequencyAnalyzer());
@@ -174,8 +171,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     public override void Analyze(Individual[] individuals, double[] qualities, ResultCollection results, IRandom random) {
       base.Analyze(individuals, qualities, results, random);
 
-      var orderedIndividuals = individuals.Zip(qualities, (i, q) => new { Individual = i, Quality = q }).OrderBy(z => z.Quality);
-      var best = Maximization ? orderedIndividuals.Last().Individual : orderedIndividuals.First().Individual;
+      var best = GetBestIndividual(individuals, qualities).Item1;
 
       if (!results.ContainsKey(BestTrainingSolutionParameter.ActualName)) {
         results.Add(new Result(BestTrainingSolutionParameter.ActualName, typeof(SymbolicRegressionSolution)));
@@ -198,47 +194,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
 
       individual[SymbolicExpressionTreeName] = tree;
 
-      //TreeEvaluatorParameter.Value.EstimationLimitsParameter.ActualValue = EstimationLimits;
-      //TreeEvaluatorParameter.Value.EstimationLimitsParameter.Value = EstimationLimits;
-      //var quality = TreeEvaluatorParameter.Value.Evaluate(new ExecutionContext(null, this, new Scope("Test")), tree, ProblemData, ProblemData.TrainingIndices);
-
-      var quality = double.MaxValue;
-      var evaluatorGUID = TreeEvaluatorParameter.Value.GetType().GUID;
-
-      // TODO: use Evaluate method instead of static Calculate -> a fake ExecutionContext is needed
-      if (evaluatorGUID == typeof(NMSESingleObjectiveConstraintsEvaluator).GUID) {
-        quality = NMSESingleObjectiveConstraintsEvaluator.Calculate(
-        Interpreter, tree,
-        EstimationLimits.Lower, EstimationLimits.Upper,
-        ProblemData, ProblemData.TrainingIndices, new IntervalArithBoundsEstimator());
-      } else if (evaluatorGUID == typeof(SymbolicRegressionLogResidualEvaluator).GUID) {
-        quality = SymbolicRegressionLogResidualEvaluator.Calculate(
-        Interpreter, tree,
-        EstimationLimits.Lower, EstimationLimits.Upper,
-        ProblemData, ProblemData.TrainingIndices);
-      } else if (evaluatorGUID == typeof(SymbolicRegressionMeanRelativeErrorEvaluator).GUID) {
-        quality = SymbolicRegressionMeanRelativeErrorEvaluator.Calculate(
-        Interpreter, tree,
-        EstimationLimits.Lower, EstimationLimits.Upper,
-        ProblemData, ProblemData.TrainingIndices);
-      } else if (evaluatorGUID == typeof(SymbolicRegressionSingleObjectiveMaxAbsoluteErrorEvaluator).GUID) {
-        quality = SymbolicRegressionSingleObjectiveMaxAbsoluteErrorEvaluator.Calculate(
-        Interpreter, tree,
-        EstimationLimits.Lower, EstimationLimits.Upper,
-        ProblemData, ProblemData.TrainingIndices, false);
-      } else if (evaluatorGUID == typeof(SymbolicRegressionSingleObjectiveMeanAbsoluteErrorEvaluator).GUID) {
-        quality = SymbolicRegressionSingleObjectiveMeanAbsoluteErrorEvaluator.Calculate(
-        Interpreter, tree,
-        EstimationLimits.Lower, EstimationLimits.Upper,
-        ProblemData, ProblemData.TrainingIndices, false);
-      } else { // SymbolicRegressionSingleObjectiveMeanSquaredErrorEvaluator
-        quality = SymbolicRegressionSingleObjectiveMeanSquaredErrorEvaluator.Calculate(
-        Interpreter, tree,
-        EstimationLimits.Lower, EstimationLimits.Upper,
-        ProblemData, ProblemData.TrainingIndices, false);
-      }
-    
-      return quality;
+      return TreeEvaluatorParameter.Value.Evaluate(
+        ProblemData, 
+        tree, 
+        Interpreter,
+        ProblemData.TrainingIndices,
+        StructureTemplate.ApplyLinearScaling,
+        EstimationLimits.Lower, 
+        EstimationLimits.Upper);
     }
 
     private static void AdjustLinearScalingParams(IRegressionProblemData problemData, ISymbolicExpressionTree tree, ISymbolicDataAnalysisExpressionTreeInterpreter interpreter) {
@@ -279,7 +242,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     }
 
     private void SetupVariables(SubFunction subFunction) {
-      var varSym = (Variable)subFunction.Grammar.GetSymbol("Variable");
+      var varSym = (Variable)subFunction.Grammar.GetSymbol(VariableName);
       if (varSym == null) {
         varSym = new Variable();
         subFunction.Grammar.AddSymbol(varSym);

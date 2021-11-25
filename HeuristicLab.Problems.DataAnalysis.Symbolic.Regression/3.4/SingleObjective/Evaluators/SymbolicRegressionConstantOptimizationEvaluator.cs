@@ -29,6 +29,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
+using HeuristicLab.Random;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
   [Item("Constant Optimization Evaluator", "Calculates Pearson R² of a symbolic regression solution and optimizes the constant used.")]
@@ -176,6 +177,60 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       return base.InstrumentedApply();
     }
 
+    public override double Evaluate(IRegressionProblemData problemData,
+      ISymbolicExpressionTree solution,
+      ISymbolicDataAnalysisExpressionTreeInterpreter interpreter,
+      IEnumerable<int> rows = null,
+      bool applyLinearScaling = true,
+      double lowerEstimationLimit = double.MinValue,
+      double upperEstimationLimit = double.MaxValue) {
+
+
+      var random = RandomParameter?.Value ?? new MersenneTwister((uint)DateTime.Now.Millisecond);
+      double quality;
+
+      var propability = random.NextDouble();
+      if (propability < ConstantOptimizationProbability.Value) {
+        var counter = new EvaluationsCounter();
+        quality = OptimizeConstants(
+          interpreter, 
+          solution, 
+          problemData,
+          rows ?? problemData.TrainingIndices, 
+          applyLinearScaling, 
+          ConstantOptimizationIterations.Value, 
+          updateVariableWeights: UpdateVariableWeights, 
+          lowerEstimationLimit: lowerEstimationLimit, 
+          upperEstimationLimit: upperEstimationLimit, 
+          updateConstantsInTree: UpdateConstantsInTree, 
+          counter: counter);
+
+        if (ConstantOptimizationRowsPercentage.Value != RelativeNumberOfEvaluatedSamplesParameter.ActualValue.Value) {
+          var evaluationRows = GenerateRowsToEvaluate();
+          quality = SymbolicRegressionSingleObjectivePearsonRSquaredEvaluator.Calculate(
+            interpreter, 
+            solution, 
+            lowerEstimationLimit, 
+            upperEstimationLimit, 
+            problemData, 
+            evaluationRows, 
+            applyLinearScaling);
+        }
+
+      } else {
+        var evaluationRows = GenerateRowsToEvaluate();
+        quality = SymbolicRegressionSingleObjectivePearsonRSquaredEvaluator.Calculate(
+          interpreter, 
+          solution,
+          lowerEstimationLimit,
+          upperEstimationLimit,
+          problemData,
+          evaluationRows,
+          applyLinearScaling);
+      }
+      return quality;
+    }
+
     public override double Evaluate(IExecutionContext context, ISymbolicExpressionTree tree, IRegressionProblemData problemData, IEnumerable<int> rows) {
       SymbolicDataAnalysisTreeInterpreterParameter.ExecutionContext = context;
       EstimationLimitsParameter.ExecutionContext = context;
@@ -310,7 +365,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
         VariableTreeNodeBase variableTreeNodeBase = node as VariableTreeNodeBase;
         FactorVariableTreeNode factorVarTreeNode = node as FactorVariableTreeNode;
         if (constantTreeNode != null) {
-          if (constantTreeNode.Parent.Symbol is Power 
+          if (constantTreeNode.Parent.Symbol is Power
               && constantTreeNode.Parent.GetSubtree(1) == constantTreeNode) continue; // exponents in powers are not optimizated (see TreeToAutoDiffTermConverter)
           constantTreeNode.Value = constants[i++];
         } else if (updateVariableWeights && variableTreeNodeBase != null)

@@ -232,5 +232,69 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
 
       return nmse;
     }
+
+    public override double Evaluate(IRegressionProblemData problemData,
+      ISymbolicExpressionTree solution,
+      ISymbolicDataAnalysisExpressionTreeInterpreter interpreter,
+      IEnumerable<int> rows = null,
+      bool applyLinearScaling = true,
+      double lowerEstimationLimit = double.MinValue,
+      double upperEstimationLimit = double.MaxValue) {
+
+      if (OptimizeParameters) {
+        SymbolicRegressionConstantOptimizationEvaluator.OptimizeConstants(
+          interpreter, 
+          solution, 
+          problemData, 
+          rows,
+          false, 
+          ConstantOptimizationIterations, 
+          true,
+          lowerEstimationLimit, 
+          upperEstimationLimit);
+      } else {
+        if (applyLinearScaling) {
+          var rootNode = new ProgramRootSymbol().CreateTreeNode();
+          var startNode = new StartSymbol().CreateTreeNode();
+          var offset = solution.Root.GetSubtree(0) //Start
+                                    .GetSubtree(0); //Offset
+          var scaling = offset.GetSubtree(0);
+
+          //Check if tree contains offset and scaling nodes
+          if (!(offset.Symbol is Addition) || !(scaling.Symbol is Multiplication))
+            throw new ArgumentException($"{ItemName} can only be used with LinearScalingGrammar.");
+
+          var t = (ISymbolicExpressionTreeNode)scaling.GetSubtree(0).Clone();
+          rootNode.AddSubtree(startNode);
+          startNode.AddSubtree(t);
+          var newTree = new SymbolicExpressionTree(rootNode);
+
+          //calculate alpha and beta for scaling
+          var estimatedValues = interpreter.GetSymbolicExpressionTreeValues(newTree, problemData.Dataset, rows);
+
+          var targetValues = problemData.Dataset.GetDoubleValues(problemData.TargetVariable, rows);
+          OnlineLinearScalingParameterCalculator.Calculate(estimatedValues, targetValues, out var alpha, out var beta,
+            out var errorState);
+
+          if (errorState == OnlineCalculatorError.None) {
+            //Set alpha and beta to the scaling nodes from ia grammar
+            var offsetParameter = offset.GetSubtree(1) as ConstantTreeNode;
+            offsetParameter.Value = alpha;
+            var scalingParameter = scaling.GetSubtree(1) as ConstantTreeNode;
+            scalingParameter.Value = beta;
+          }
+        } // else: alpha and beta are evolved
+      }
+      return Calculate(
+        interpreter, 
+        solution, 
+        lowerEstimationLimit, 
+        upperEstimationLimit, 
+        problemData, 
+        rows ?? problemData.TrainingIndices,
+        BoundsEstimator,
+        UseSoftConstraints,
+        PenalityFactor);
+    }
   }
 }

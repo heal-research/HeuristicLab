@@ -83,5 +83,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
 
       return mse;
     }
+
+    public override double Evaluate(IRegressionProblemData problemData,
+      ISymbolicExpressionTree solution,
+      ISymbolicDataAnalysisExpressionTreeInterpreter interpreter,
+      IEnumerable<int> rows = null,
+      bool applyLinearScaling = true,
+      double lowerEstimationLimit = double.MinValue,
+      double upperEstimationLimit = double.MaxValue) {
+      return Calculate(interpreter, solution, lowerEstimationLimit, upperEstimationLimit, problemData, rows ?? problemData.TrainingIndices, applyLinearScaling);
+    }
   }
 }
