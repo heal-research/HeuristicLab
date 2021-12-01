@@ -56,14 +56,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
     private void allowedSymbolsCombo_SelectedIndexChanged(object sender, EventArgs e) {
       var combo = (ComboBox)sender;
       var symbol = combo.Items[combo.SelectedIndex];
-      if (symbol is Constant) {
+      if (symbol is Number) {
         // add controls to the dialog for changing the constant value
         variableNameLabel.Visible = false;
         variableNamesCombo.Visible = false;
         variableWeightLabel.Visible = false;
         variableWeightTextBox.Visible = false;
-        constantValueLabel.Visible = true;
-        constantValueTextBox.Visible = true;
+        numberValueLabel.Visible = true;
+        numberValueTextBox.Visible = true;
       } else if (symbol is VariableBase) {
         var variableSymbol = (VariableBase)symbol;
         if (variableSymbol.VariableNames.Any()) {
@@ -79,16 +79,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
         variableNameLabel.Visible = true;
         variableWeightLabel.Visible = true;
         variableWeightTextBox.Visible = true;
-        constantValueLabel.Visible = false;
-        constantValueTextBox.Visible = false;
+        numberValueLabel.Visible = false;
+        numberValueTextBox.Visible = false;
         // add controls to the dialog for changing the variable name or weight
       } else {
         variableNameLabel.Visible = false;
         variableNamesCombo.Visible = false;
         variableWeightLabel.Visible = false;
         variableWeightTextBox.Visible = false;
-        constantValueLabel.Visible = false;
-        constantValueTextBox.Visible = false;
+        numberValueLabel.Visible = false;
+        numberValueTextBox.Visible = false;
       }
     }
 
@@ -101,12 +101,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       variableWeightTextBox.SelectAll();
     }
 
-    private void constantValueTextBox_Validating(object sender, CancelEventArgs e) {
+    private void numberValueTextBox_Validating(object sender, CancelEventArgs e) {
       string errorMessage;
-      if (ValidateDoubleValue(constantValueTextBox.Text, out errorMessage)) return;
+      if (ValidateDoubleValue(numberValueTextBox.Text, out errorMessage)) return;
       e.Cancel = true;
-      errorProvider.SetError(constantValueTextBox, errorMessage);
-      constantValueTextBox.SelectAll();
+      errorProvider.SetError(numberValueTextBox, errorMessage);
+      numberValueTextBox.SelectAll();
     }
 
     private static bool ValidateDoubleValue(string value, out string errorMessage) {

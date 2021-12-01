@@ -188,17 +188,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         strBuilder.Append(@" \neg \left( ");
       } else if (node.Symbol is IfThenElse) {
         strBuilder.Append(@" \operatorname{if}  \left( ");
-      } else if (node.Symbol is Constant) {
-        var constName = "c_{" + constIndex + "}";
+      } else if (node.Symbol is INumericSymbol numNode) {
+        var numName = "c_{" + constIndex + "}";
         constIndex++;
-        var constNode = node as ConstantTreeNode;
-        if (constNode.Value.IsAlmost(1.0)) {
+        var numericNode = node as INumericTreeNode;
+        if (numericNode.Value.IsAlmost(1.0)) {
           strBuilder.Append("1 ");
         } else {
-          strBuilder.Append(constName);
-          constants.Add(new KeyValuePair<string, double>(constName, constNode.Value));
+          strBuilder.Append(numName);
+          constants.Add(new KeyValuePair<string, double>(numName, numericNode.Value));
         }
-
       } else if (node.Symbol is FactorVariable) {
         var factorNode = node as FactorVariableTreeNode;
         var constName = "c_{" + constIndex + "}";
@@ -470,8 +469,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         strBuilder.Append(@" \right) ");
       } else if (node.Symbol is IfThenElse) {
         strBuilder.Append(@" \right) ");
+      } else if (node.Symbol is Number) {
       } else if (node.Symbol is Constant) {
-      } else if (node.Symbol is LaggedVariable) {
+      }else if (node.Symbol is LaggedVariable) {
       } else if (node.Symbol is Variable) {
       } else if (node.Symbol is FactorVariable) {
       } else if (node.Symbol is BinaryFactorVariable) {

@@ -202,7 +202,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
         } catch (OperationCanceledException) { }
 
         var replacementValues = impactAndReplacementValues.ToDictionary(x => x.Key, x => x.Value.Item2);
-        foreach (var pair in replacementValues.Where(pair => !(pair.Key is ConstantTreeNode))) {
+        foreach (var pair in replacementValues.Where(pair => !(pair.Key is NumberTreeNode))) {
           foldedNodes[pair.Key] = MakeConstantTreeNode(pair.Value);
         }
         
@@ -249,9 +249,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       return tree;
     }
 
-    private static ConstantTreeNode MakeConstantTreeNode(double value) {
-      var constant = new Constant { MinValue = value - 1, MaxValue = value + 1 };
-      var constantTreeNode = (ConstantTreeNode)constant.CreateTreeNode();
+    private static NumberTreeNode MakeConstantTreeNode(double value) {
+      var constant = new Number { MinValue = value - 1, MaxValue = value + 1 };
+      var constantTreeNode = (NumberTreeNode)constant.CreateTreeNode();
       constantTreeNode.Value = value;
       return constantTreeNode;
     }
@@ -296,7 +296,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       foreach (ISymbolicExpressionTreeNode treeNode in Content.Model.SymbolicExpressionTree.IterateNodesPostfix()) {
         VisualTreeNode<ISymbolicExpressionTreeNode> visualTree = treeChart.GetVisualSymbolicExpressionTreeNode(treeNode);
 
-        if (!(treeNode is ConstantTreeNode) && nodeImpacts.ContainsKey(treeNode)) {
+        if (!(treeNode is NumberTreeNode) && nodeImpacts.ContainsKey(treeNode)) {
           visualTree.ToolTip = visualTree.Content.ToString();
           double impact = nodeImpacts[treeNode];
 
@@ -313,7 +313,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
             visualTree.FillColor = Color.FromArgb((int)(impact / max * 255), Color.Green);
           }
           visualTree.ToolTip += Environment.NewLine + "Node impact: " + impact;
-          var constantReplacementNode = foldedNodes[treeNode] as ConstantTreeNode;
+          var constantReplacementNode = foldedNodes[treeNode] as NumberTreeNode;
           if (constantReplacementNode != null) {
             visualTree.ToolTip += Environment.NewLine + "Replacement value: " + constantReplacementNode.Value;
           }
@@ -323,7 +323,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
             visualTree.ToolTip += String.Format($"{Environment.NewLine}Intervals: [{nodeIntervals[treeNode].LowerBound:G5} ... {nodeIntervals[treeNode].UpperBound:G5}]");
           if (changedNodes.ContainsKey(treeNode)) {
             visualTree.LineColor = Color.DodgerBlue;
-          } else if (treeNode is ConstantTreeNode && foldedNodes.ContainsKey(treeNode)) {
+          } else if (treeNode is NumberTreeNode && foldedNodes.ContainsKey(treeNode)) {
             visualTree.LineColor = Color.DarkOrange;
           }
         }

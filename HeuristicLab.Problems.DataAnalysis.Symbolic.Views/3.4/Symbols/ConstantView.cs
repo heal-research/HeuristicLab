@@ -26,11 +26,11 @@ using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
-  [View("Constant View")]
-  [Content(typeof(Constant), true)]
+  [View("Number View")]
+  [Content(typeof(Number), true)]
   public partial class ConstantView : SymbolView {
-    public new Constant Content {
-      get { return (Constant)base.Content; }
+    public new Number Content {
+      get { return (Number)base.Content; }
       set { base.Content = value; }
     }
 

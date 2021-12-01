@@ -133,9 +133,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           stringBuilder.Append(")");
         }
         stringBuilder.Append("))");
-      } else if (symbol is Constant) {
-        ConstantTreeNode constantTreeNode = node as ConstantTreeNode;
-        stringBuilder.Append(constantTreeNode.Value.ToString(CultureInfo.InvariantCulture));
+      } else if (symbol is INumericSymbol numNode) {
+        var numTreeNode = node as INumericTreeNode;
+        stringBuilder.Append(numTreeNode.Value.ToString(CultureInfo.InvariantCulture));
       } else if (symbol is Cosine) {
         stringBuilder.Append("COS(");
         stringBuilder.Append(FormatRecursively(node.GetSubtree(0)));

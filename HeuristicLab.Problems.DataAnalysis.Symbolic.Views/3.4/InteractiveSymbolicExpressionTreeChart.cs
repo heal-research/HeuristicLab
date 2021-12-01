@@ -103,9 +103,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
 
         var symbol = dialog.SelectedSymbol;
         var node = symbol.CreateTreeNode();
-        if (node is ConstantTreeNode) {
-          var constant = node as ConstantTreeNode;
-          constant.Value = double.Parse(dialog.constantValueTextBox.Text);
+        if (node is NumberTreeNode) {
+          var number = node as NumberTreeNode;
+          number.Value = double.Parse(dialog.numberValueTextBox.Text);
         } else if (node is VariableTreeNode) {
           var variable = node as VariableTreeNode;
           variable.Weight = double.Parse(dialog.variableWeightTextBox.Text);
@@ -132,8 +132,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
 
       ISymbolicExpressionTreeNode newNode = null;
       var result = DialogResult.Cancel;
-      if (node is ConstantTreeNode) {
-        using (var dialog = new ConstantNodeEditDialog(node)) {
+      if (node is NumberTreeNode) {
+        using (var dialog = new NumberNodeEditDialog(node)) {
           dialog.ShowDialog(this);
           newNode = dialog.NewNode;
           result = dialog.DialogResult;
@@ -199,7 +199,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       if (!(lastOp == EditOp.CopySubtree || lastOp == EditOp.CutSubtree)) return;
       // check if the copied/cut node (stored in the tempNode) can be inserted as a child of the current selected node
       var node = currSelected.Content;
-      if (node is ConstantTreeNode || node is VariableTreeNode) return;
+      if (node is NumberTreeNode || node is VariableTreeNode) return;
       // check if the currently selected node can accept the copied node as a child 
       // no need to check the grammar, an arity check will do just fine here
       if (node.Symbol.MaximumArity <= node.SubtreeCount) return;

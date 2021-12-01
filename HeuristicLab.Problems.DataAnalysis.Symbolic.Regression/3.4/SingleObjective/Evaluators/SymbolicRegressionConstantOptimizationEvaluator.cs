@@ -31,7 +31,7 @@ using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
-  [Item("Num Optimization Evaluator", "Calculates Pearson R² of a symbolic regression solution and optimizes the constant used.")]
+  [Item("Constant Optimization Evaluator", "Calculates Pearson R² of a symbolic regression solution and optimizes the constant used.")]
   [StorableType("24B68851-036D-4446-BD6F-3823E9028FF4")]
   public class SymbolicRegressionConstantOptimizationEvaluator : SymbolicRegressionSingleObjectiveEvaluator {
     private const string ConstantOptimizationIterationsParameterName = "ConstantOptimizationIterations";
@@ -306,13 +306,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     private static void UpdateConstants(ISymbolicExpressionTree tree, double[] constants, bool updateVariableWeights) {
       int i = 0;
       foreach (var node in tree.Root.IterateNodesPrefix().OfType<SymbolicExpressionTreeTerminalNode>()) {
-        NumTreeNode numTreeNode = node as NumTreeNode;
+        NumberTreeNode numberTreeNode = node as NumberTreeNode;
         VariableTreeNodeBase variableTreeNodeBase = node as VariableTreeNodeBase;
         FactorVariableTreeNode factorVarTreeNode = node as FactorVariableTreeNode;
-        if (numTreeNode != null) {
-          if (numTreeNode.Parent.Symbol is Power 
-              && numTreeNode.Parent.GetSubtree(1) == numTreeNode) continue; // exponents in powers are not optimizated (see TreeToAutoDiffTermConverter)
-          numTreeNode.Value = constants[i++];
+        if (numberTreeNode != null) {
+          if (numberTreeNode.Parent.Symbol is Power 
+              && numberTreeNode.Parent.GetSubtree(1) == numberTreeNode) continue; // exponents in powers are not optimizated (see TreeToAutoDiffTermConverter)
+          numberTreeNode.Value = constants[i++];
         } else if (updateVariableWeights && variableTreeNodeBase != null)
           variableTreeNodeBase.Weight = constants[i++];
         else if (factorVarTreeNode != null) {

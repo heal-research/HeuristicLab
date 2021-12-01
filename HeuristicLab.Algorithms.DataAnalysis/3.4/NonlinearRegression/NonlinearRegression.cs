@@ -122,7 +122,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     public NonlinearRegression()
       : base() {
       Problem = new RegressionProblem();
-      Parameters.Add(new FixedValueParameter<StringValue>(ModelStructureParameterName, "The function for which the parameters must be fit (only numeric constants are tuned).", new StringValue("1.0 * x*x + 0.0")));
+      Parameters.Add(new FixedValueParameter<StringValue>(ModelStructureParameterName, "The function for which the parameters must be fit (only numeric constants are tuned).", new StringValue("<num> * x*x + 0.0")));
       Parameters.Add(new FixedValueParameter<IntValue>(IterationsParameterName, "The maximum number of iterations for constants optimization.", new IntValue(200)));
       Parameters.Add(new FixedValueParameter<IntValue>(RestartsParameterName, "The number of independent random restarts (>0)", new IntValue(10)));
       Parameters.Add(new FixedValueParameter<IntValue>(SeedParameterName, "The PRNG seed value.", new IntValue()));
@@ -266,7 +266,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
       // initialize constants randomly
       if (rand != null) {
-        foreach (var node in tree.IterateNodesPrefix().OfType<ConstantTreeNode>()) {
+        foreach (var node in tree.IterateNodesPrefix().OfType<NumberTreeNode>()) {
           double f = Math.Exp(NormalDistributedRandom.NextDouble(rand, 0, 1));
           double s = rand.NextDouble() < 0.5 ? -1 : 1;
           node.Value = s * node.Value * f;

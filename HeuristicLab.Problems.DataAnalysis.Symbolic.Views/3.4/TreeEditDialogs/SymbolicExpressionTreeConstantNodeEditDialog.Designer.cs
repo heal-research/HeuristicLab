@@ -20,7 +20,7 @@
 #endregion
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
-  partial class ConstantNodeEditDialog {
+  partial class NumberNodeEditDialog {
     /// <summary>
     /// Required designer variable.
     /// </summary>
@@ -120,7 +120,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       this.cancelButton.UseVisualStyleBackColor = true;
       this.cancelButton.Click += new System.EventHandler(this.cancelButton_Click);
       // 
-      // ConstantNodeEditDialog
+      // NumberNodeEditDialog
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -137,12 +137,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
       this.MaximizeBox = false;
       this.MinimizeBox = false;
-      this.Name = "ConstantNodeEditDialog";
+      this.Name = "NumberNodeEditDialog";
       this.ShowIcon = false;
       this.ShowInTaskbar = false;
       this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
       this.Text = "Edit constant value";
-      this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.ConstantNodeEditDialog_KeyDown);
+      this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.NumberNodeEditDialog_KeyDown);
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
       this.ResumeLayout(false);
       this.PerformLayout();

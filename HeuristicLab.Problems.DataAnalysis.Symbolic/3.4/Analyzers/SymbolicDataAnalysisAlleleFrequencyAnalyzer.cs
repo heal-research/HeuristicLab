@@ -87,6 +87,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       if (d == 0) return "";
       StringBuilder builder = new StringBuilder();
       var varTreeNode = tree as VariableTreeNode;
+      var numTreeNode = tree as NumberTreeNode;
       var constTreeNode = tree as ConstantTreeNode;
       var factorVarTreeNode = tree as FactorVariableTreeNode;
       var binFactorVarTreeNode = tree as BinaryFactorVariableTreeNode;
@@ -96,7 +97,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         builder.Append("(factor " + factorVarTreeNode.VariableName);
       } else if (binFactorVarTreeNode != null) {
         builder.Append("(factor " + binFactorVarTreeNode.VariableName + "=" + binFactorVarTreeNode.VariableValue);
-      } else if (constTreeNode != null) {
+      } else if (numTreeNode != null || constTreeNode != null) {
         builder.Append("(const");
       } else {
         builder.Append("(" + tree.ToString());

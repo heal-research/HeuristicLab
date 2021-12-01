@@ -53,7 +53,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           FormatRecursively(node.Subtrees.First(), strBuilder, numberFormat, formatString, constants);
 
           var power = node.GetSubtree(1);
-          if(power is ConstantTreeNode constNode && Math.Truncate(constNode.Value) == constNode.Value) {
+          if(power is NumberTreeNode constNode && Math.Truncate(constNode.Value) == constNode.Value) {
             strBuilder.Append(" ").Append(token).Append(" ").Append(constNode.Value.ToString(formatString, numberFormat));
           } else {
             strBuilder.Append(" ").Append(token).Append(" ");
@@ -140,8 +140,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           AppendVariableName(strBuilder, factorNode.VariableValue);
 
           if (!factorNode.Weight.IsAlmost(1.0)) strBuilder.Append(")");
-        } else if (node.Symbol is Constant) {
-          var constNode = node as ConstantTreeNode;
+        } else if (node.Symbol is Number) {
+          var constNode = node as NumberTreeNode;
           if (constants == null && constNode.Value < 0) {
             strBuilder.Append("(").Append(constNode.Value.ToString(formatString, numberFormat))
                       .Append(")"); // (-1
@@ -203,7 +203,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     /// Produces an infix expression for a given expression tree.
     /// </summary>
     /// <param name="symbolicExpressionTree">The tree representation of the expression.</param>
-    /// <param name="numberFormat">Number format that should be used for numeric parameters (e.g. NumberFormatInfo.InvariantInfo (default)).</param>
+    /// <param name="numberFormat">Constant format that should be used for numeric parameters (e.g. NumberFormatInfo.InvariantInfo (default)).</param>
     /// <param name="formatString">The format string for numeric parameters (e.g. \"G4\" to limit to 4 digits, default is \"G\")</param>
     /// <returns>Infix expression</returns>
     public string Format(ISymbolicExpressionTree symbolicExpressionTree, NumberFormatInfo numberFormat,

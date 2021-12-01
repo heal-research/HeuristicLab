@@ -117,9 +117,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       var variableCondition = new VariableCondition();
       variableCondition.InitialFrequency = 0.0;
 
-      var constant = new Num();
-      constant.MinValue = -20;
-      constant.MaxValue = 20;
+      var number = new Number();
+      number.MinValue = -20;
+      number.MaxValue = 20;
       var variableSymbol = new HeuristicLab.Problems.DataAnalysis.Symbolic.Variable();
       var binFactorVariable = new BinaryFactorVariable();
       var factorVariable = new FactorVariable();
@@ -129,20 +129,18 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       autoregressiveVariable.InitialFrequency = 0.0;
       autoregressiveVariable.Enabled = false;
 
-      var number = new RealConstant();
-      number.MinValue = -20;
-      number.MaxValue = 20;
+      var constant = new Constant();
 
       var allSymbols = new List<Symbol>() { add, sub, mul, div, aq, mean, abs, sin, cos, tan, log, square, cube, pow, sqrt, cubeRoot, root, exp, tanh,
         airyA, airyB, bessel, cosineIntegral, dawson, erf, expIntegralEi, fresnelCosineIntegral, fresnelSineIntegral, gamma, hypCosineIntegral, hypSineIntegral, norm, psi, sineIntegral,
-        @if, gt, lt, and, or, not,xor, timeLag, integral, derivative, constant, number, variableSymbol, binFactorVariable, factorVariable, laggedVariable,autoregressiveVariable, variableCondition };
+        @if, gt, lt, and, or, not,xor, timeLag, integral, derivative, number, constant, variableSymbol, binFactorVariable, factorVariable, laggedVariable,autoregressiveVariable, variableCondition };
       var unaryFunctionSymbols = new List<Symbol>() { abs, square, sqrt, cube, cubeRoot, sin, cos, tan, log, exp, tanh, not, timeLag, integral, derivative,
         airyA, airyB, bessel, cosineIntegral, dawson, erf, expIntegralEi, fresnelCosineIntegral, fresnelSineIntegral, gamma, hypCosineIntegral, hypSineIntegral, norm, psi, sineIntegral
       };
 
       var binaryFunctionSymbols = new List<Symbol>() { pow, root, gt, lt, aq, variableCondition };
       var ternarySymbols = new List<Symbol>() { add, sub, mul, div, mean, and, or, xor };
-      var terminalSymbols = new List<Symbol>() { variableSymbol, binFactorVariable, factorVariable, constant, number, laggedVariable, autoregressiveVariable };
+      var terminalSymbols = new List<Symbol>() { variableSymbol, binFactorVariable, factorVariable, number, constant, laggedVariable, autoregressiveVariable };
 
       foreach (var symb in allSymbols)
         AddSymbol(symb);

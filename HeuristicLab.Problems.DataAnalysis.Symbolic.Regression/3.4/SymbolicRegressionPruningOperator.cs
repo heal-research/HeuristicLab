@@ -90,7 +90,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
 
       for (int i = 0; i < nodes.Count; ++i) {
         var node = nodes[i];
-        if (node is ConstantTreeNode) continue;
+        if (node is NumberTreeNode) continue;
 
         double impactValue, replacementValue;
         double newQualityForImpactsCalculation;
@@ -99,7 +99,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
         if (pruneOnlyZeroImpactNodes && !impactValue.IsAlmost(0.0)) continue;
         if (!pruneOnlyZeroImpactNodes && impactValue > nodeImpactThreshold) continue;
 
-        var constantNode = (ConstantTreeNode)node.Grammar.GetSymbol("Constant").CreateTreeNode();
+        var constantNode = (NumberTreeNode)node.Grammar.GetSymbol("Number").CreateTreeNode();
         constantNode.Value = replacementValue;
 
         ReplaceWithConstant(node, constantNode);

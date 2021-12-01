@@ -122,9 +122,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
             out var errorState);
           if (errorState == OnlineCalculatorError.None) {
             //Set alpha and beta to the scaling nodes from ia grammar
-            var offsetParameter = offset.GetSubtree(1) as ConstantTreeNode;
+            var offsetParameter = offset.GetSubtree(1) as NumberTreeNode;
             offsetParameter.Value = alpha;
-            var scalingParameter = scaling.GetSubtree(1) as ConstantTreeNode;
+            var scalingParameter = scaling.GetSubtree(1) as NumberTreeNode;
             scalingParameter.Value = beta;
           }
         } // else alpha and beta are evolved

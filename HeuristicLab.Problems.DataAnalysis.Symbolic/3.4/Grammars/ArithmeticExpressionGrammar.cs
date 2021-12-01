@@ -48,17 +48,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       var sub = new Subtraction();
       var mul = new Multiplication();
       var div = new Division();
-      var constant = new Num();
-      constant.MinValue = -20;
-      constant.MaxValue = 20;
-      var number = new RealConstant();
+      var number = new Number();
       number.MinValue = -20;
       number.MaxValue = 20;
+      var constant = new Constant();
       var variableSymbol = new HeuristicLab.Problems.DataAnalysis.Symbolic.Variable();
       var binFactorVariableSymbol = new BinaryFactorVariable();
       var factorVariableSymbol = new FactorVariable();
 
-      var allSymbols = new List<Symbol>() { add, sub, mul, div, constant, number, variableSymbol, binFactorVariableSymbol, factorVariableSymbol };
+      var allSymbols = new List<Symbol>() { add, sub, mul, div, number, constant, variableSymbol, binFactorVariableSymbol, factorVariableSymbol };
       var functionSymbols = new List<Symbol>() { add, sub, mul, div };
 
       foreach (var symb in allSymbols)
@@ -67,8 +65,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       foreach (var funSymb in functionSymbols) {
         SetSubtreeCount(funSymb, 1, 3);
       }
-      SetSubtreeCount(constant, 0, 0);
       SetSubtreeCount(number, 0, 0);
+      SetSubtreeCount(constant, 0, 0);
       SetSubtreeCount(variableSymbol, 0, 0);
       SetSubtreeCount(binFactorVariableSymbol, 0, 0);
       SetSubtreeCount(factorVariableSymbol, 0, 0);

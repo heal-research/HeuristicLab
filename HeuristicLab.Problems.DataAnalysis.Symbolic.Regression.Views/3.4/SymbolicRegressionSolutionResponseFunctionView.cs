@@ -119,8 +119,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression.Views {
     }
 
     private void ChangeVariableValue(string variableName, double value) {
-      foreach (var constNode in variableNodes[variableName].Cast<NumTreeNode>())
-        constNode.Value = value;
+      foreach (var numNode in variableNodes[variableName].Cast<NumberTreeNode>())
+        numNode.Value = value;
 
       UpdateResponseSeries();
     }
@@ -209,7 +209,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression.Views {
             variableNodes.Add(varNode.VariableName, new List<ISymbolicExpressionTreeNode>());
 
           int childIndex = varNode.Parent.IndexOfSubtree(varNode);
-          var replacementNode = MakeConstantTreeNode(medianValues[varNode.VariableName]);
+          var replacementNode = MakeNumberTreeNode(medianValues[varNode.VariableName]);
           var parent = varNode.Parent;
           parent.RemoveSubtree(childIndex);
           parent.InsertSubtree(childIndex, MakeProduct(replacementNode, varNode.Weight));
@@ -222,21 +222,21 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression.Views {
       UpdateResponseSeries();
     }
 
-    private ISymbolicExpressionTreeNode MakeProduct(NumTreeNode c, double weight) {
+    private ISymbolicExpressionTreeNode MakeProduct(NumberTreeNode c, double weight) {
       var mul = new Multiplication();
       var prod = mul.CreateTreeNode();
-      prod.AddSubtree(MakeConstantTreeNode(weight));
+      prod.AddSubtree(MakeNumberTreeNode(weight));
       prod.AddSubtree(c);
       return prod;
     }
 
-    private NumTreeNode MakeConstantTreeNode(double value) {
-      Num num = new Num();
-      num.MinValue = value - 1;
-      num.MaxValue = value + 1;
-      NumTreeNode numTreeNode = (NumTreeNode)num.CreateTreeNode();
-      numTreeNode.Value = value;
-      return numTreeNode;
+    private NumberTreeNode MakeNumberTreeNode(double value) {
+      Number number = new Number();
+      number.MinValue = value - 1;
+      number.MaxValue = value + 1;
+      NumberTreeNode numberTreeNode = (NumberTreeNode)number.CreateTreeNode();
+      numberTreeNode.Value = value;
+      return numberTreeNode;
     }
   }
 }
