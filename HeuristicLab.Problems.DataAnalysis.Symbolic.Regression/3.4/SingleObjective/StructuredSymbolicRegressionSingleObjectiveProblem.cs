@@ -107,11 +107,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
         StructureTemplateParameterName,
         StructureTemplateDescriptionText,
         structureTemplate));
-      
+
       Parameters.Add(new ValueParameter<ISymbolicDataAnalysisExpressionTreeInterpreter>(
         InterpreterParameterName,
         new SymbolicDataAnalysisExpressionTreeInterpreter()) { Hidden = true });
-      
+
       Parameters.Add(new FixedValueParameter<DoubleLimit>(
         EstimationLimitsParameterName,
         new DoubleLimit(targetInterval.LowerBound - estimationWidth, targetInterval.UpperBound + estimationWidth)) { Hidden = true });
@@ -119,12 +119,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       Parameters.Add(new ResultParameter<ISymbolicRegressionSolution>(BestTrainingSolutionParameterName, "") { Hidden = true });
 
       this.EvaluatorParameter.Hidden = true;
-      
+
       Operators.Add(new SymbolicDataAnalysisVariableFrequencyAnalyzer());
       Operators.Add(new MinAverageMaxSymbolicExpressionTreeLengthAnalyzer());
       Operators.Add(new SymbolicExpressionSymbolFrequencyAnalyzer());
 
-      StructureTemplate.Template = 
+      StructureTemplate.Template =
         "(" +
           "(210000 / (210000 + h)) * ((sigma_y * t * t) / (wR * Rt * t)) + " +
           "PlasticHardening(_) - Elasticity(_)" +
@@ -195,12 +195,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       individual[SymbolicExpressionTreeName] = tree;
 
       return TreeEvaluatorParameter.Value.Evaluate(
-        ProblemData, 
-        tree, 
+        ProblemData,
+        tree,
         Interpreter,
         ProblemData.TrainingIndices,
         StructureTemplate.ApplyLinearScaling,
-        EstimationLimits.Lower, 
+        EstimationLimits.Lower,
         EstimationLimits.Upper);
     }
 
@@ -274,6 +274,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       varSym.Enabled = true;
     }
 
-    public void Load(IRegressionProblemData data) => ProblemData = data;
+    public void Load(IRegressionProblemData data) {
+      ProblemData = data;
+      StructureTemplate.Template = "f(_)";
+    }
   }
 }

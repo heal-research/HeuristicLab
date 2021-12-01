@@ -205,7 +205,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
           updateConstantsInTree: UpdateConstantsInTree, 
           counter: counter);
 
-        if (ConstantOptimizationRowsPercentage.Value != RelativeNumberOfEvaluatedSamplesParameter.ActualValue.Value) {
+        if (ConstantOptimizationRowsPercentage.Value != RelativeNumberOfEvaluatedSamplesParameter.ActualValue.Value) { //TODO: remove this?
           var evaluationRows = GenerateRowsToEvaluate();
           quality = SymbolicRegressionSingleObjectivePearsonRSquaredEvaluator.Calculate(
             interpreter, 

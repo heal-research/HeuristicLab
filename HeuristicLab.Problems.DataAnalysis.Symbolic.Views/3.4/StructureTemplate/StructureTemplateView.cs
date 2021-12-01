@@ -1,4 +1,4 @@
-﻿using System;
+﻿ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -26,8 +26,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       InitializeComponent();
       infoLabel.Text = "";
       this.Resize += StructureTemplateViewResize;
+      splitContainer.SplitterMoved += SplitContainerSplitterMoved;
       treeChart.SymbolicExpressionTreeNodeClicked += SymbolicExpressionTreeNodeClicked;
       
+    }
+
+    private void SplitContainerSplitterMoved(object sender, EventArgs e) {
+      PaintTree();
     }
 
     private void StructureTemplateViewResize(object sender, EventArgs e) {
@@ -47,7 +52,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       base.OnContentChanged();
       if (Content == null) return;
       expressionInput.Text = Content.Template;
-      linearScalingCheckBox.Checked = Content.ApplyLinearScaling;
+      linearScalingCheckBox.Checked = Content.ApplyLinearScaling; 
       PaintTree();
       infoLabel.Text = "";
     }

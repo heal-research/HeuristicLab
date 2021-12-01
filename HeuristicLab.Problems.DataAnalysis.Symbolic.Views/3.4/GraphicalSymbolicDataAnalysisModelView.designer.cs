@@ -19,6 +19,8 @@
  */
 #endregion
 
+using System.Drawing;
+
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
   partial class GraphicalSymbolicDataAnalysisModelView {
     /// <summary> 
@@ -44,27 +46,26 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
-      this.symbolicExpressionTreeView = new HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views.GraphicalSymbolicExpressionTreeView();
+      this.symbolicExpressionTreeChart = new HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views.SymbolicExpressionTreeChart();
       this.SuspendLayout();
       // 
       // expressionTreeView
       // 
-      this.symbolicExpressionTreeView.AllowDrop = true;
-      this.symbolicExpressionTreeView.Caption = "Graphical SymbolicExpressionTree View";
-      this.symbolicExpressionTreeView.Content = null;
-      this.symbolicExpressionTreeView.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.symbolicExpressionTreeView.Location = new System.Drawing.Point(0, 0);
-      this.symbolicExpressionTreeView.Name = "expressionTreeView";
-      this.symbolicExpressionTreeView.ReadOnly = false;
-      this.symbolicExpressionTreeView.Size = new System.Drawing.Size(352, 413);
-      this.symbolicExpressionTreeView.TabIndex = 0;
+      this.symbolicExpressionTreeChart.AllowDrop = true;
+      this.symbolicExpressionTreeChart.Tree = null;
+      this.symbolicExpressionTreeChart.TextFont = new System.Drawing.Font(FontFamily.GenericSerif, 8F);
+      this.symbolicExpressionTreeChart.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.symbolicExpressionTreeChart.Location = new System.Drawing.Point(0, 0);
+      this.symbolicExpressionTreeChart.Name = "expressionTreeChart";
+      this.symbolicExpressionTreeChart.Size = new System.Drawing.Size(352, 413);
+      this.symbolicExpressionTreeChart.TabIndex = 0;
       // 
       // SymbolicExpressionModelView
       // 
       this.AllowDrop = true;
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
-      this.Controls.Add(this.symbolicExpressionTreeView);
+      this.Controls.Add(this.symbolicExpressionTreeChart);
       this.Name = "SymbolicExpressionModelView";
       this.Size = new System.Drawing.Size(352, 413);
       this.ResumeLayout(false);
@@ -72,7 +73,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
     }
 
     #endregion
-    private HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views.GraphicalSymbolicExpressionTreeView symbolicExpressionTreeView;
+    private HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views.SymbolicExpressionTreeChart symbolicExpressionTreeChart;
 
   }
 }
