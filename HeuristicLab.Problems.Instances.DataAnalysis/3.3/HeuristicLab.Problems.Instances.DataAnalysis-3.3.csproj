@@ -154,8 +154,6 @@
     <Compile Include="Classification\ClassificationDataDescriptor.cs" />
     <Compile Include="Regression\ArtificialRegressionDataDescriptor.cs" />
     <Compile Include="Regression\ArtificialRegressionInstanceProvider.cs" />
-    <Compile Include="Regression\Asadzadeh\Asadzadeh1.cs" />
-    <Compile Include="Regression\Asadzadeh\AsadzadehProvider.cs" />
     <Compile Include="Regression\CSV\RegressionCSVInstanceProvider.cs" />
     <Compile Include="Regression\FeatureSelection\FeatureSelectionRegressionProblemData.cs" />
     <Compile Include="Regression\FeatureSelection\FeatureSelection.cs" />
@@ -300,6 +298,7 @@
     <Compile Include="Regression\Physics\FluidDynamics.cs" />
     <Compile Include="Regression\Physics\PhysicsInstanceProvider.cs" />
     <Compile Include="Regression\Physics\RocketFuelFlow.cs" />
+    <Compile Include="Regression\Physics\SheetBendingProcess.cs" />
     <Compile Include="Regression\VariableNetworks\LinearVariableNetwork.cs" />
     <Compile Include="Regression\VariableNetworks\GaussianProcessVariableNetwork.cs" />
     <Compile Include="Regression\VariableNetworks\VariableNetwork.cs" />

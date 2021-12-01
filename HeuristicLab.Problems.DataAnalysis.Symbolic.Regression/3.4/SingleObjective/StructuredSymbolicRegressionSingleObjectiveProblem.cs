@@ -12,7 +12,6 @@ using HeuristicLab.Parameters;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.PluginInfrastructure;
-using HeuristicLab.Problems.Instances.DataAnalysis.Regression.Asadzadeh;
 using HeuristicLab.Problems.Instances.DataAnalysis;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
@@ -76,8 +75,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
 
     #region Constructors & Cloning
     public StructuredSymbolicRegressionSingleObjectiveProblem() {
-      var provider = new AsadzadehProvider();
-      var descriptor = new Asadzadeh1();
+      var provider = new PhysicsInstanceProvider();
+      var descriptor = new SheetBendingProcess();
       var problemData = provider.LoadData(descriptor);
       var shapeConstraintProblemData = new ShapeConstrainedRegressionProblemData(problemData);
 
