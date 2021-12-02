@@ -46,17 +46,26 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     public SymbolicRegressionMeanRelativeErrorEvaluator() : base() { }
 
     public override IOperation InstrumentedApply() {
-      var solution = SymbolicExpressionTreeParameter.ActualValue;
+      var tree = SymbolicExpressionTreeParameter.ActualValue;
       IEnumerable<int> rows = GenerateRowsToEvaluate();
 
-      double quality = Calculate(SymbolicDataAnalysisTreeInterpreterParameter.ActualValue, solution, EstimationLimitsParameter.ActualValue.Lower, EstimationLimitsParameter.ActualValue.Upper, ProblemDataParameter.ActualValue, rows);
+      double quality = Calculate(
+        tree, ProblemDataParameter.ActualValue, rows,
+        SymbolicDataAnalysisTreeInterpreterParameter.ActualValue,
+        EstimationLimitsParameter.ActualValue.Lower, 
+        EstimationLimitsParameter.ActualValue.Upper);
       QualityParameter.ActualValue = new DoubleValue(quality);
 
       return base.InstrumentedApply();
     }
 
-    public static double Calculate(ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, ISymbolicExpressionTree solution, double lowerEstimationLimit, double upperEstimationLimit, IRegressionProblemData problemData, IEnumerable<int> rows) {
-      IEnumerable<double> estimatedValues = interpreter.GetSymbolicExpressionTreeValues(solution, problemData.Dataset, rows);
+    public static double Calculate(
+      ISymbolicExpressionTree tree, 
+      IRegressionProblemData problemData, 
+      IEnumerable<int> rows, 
+      ISymbolicDataAnalysisExpressionTreeInterpreter interpreter,
+      double lowerEstimationLimit, double upperEstimationLimit) {
+      IEnumerable<double> estimatedValues = interpreter.GetSymbolicExpressionTreeValues(tree, problemData.Dataset, rows);
       IEnumerable<double> targetValues = problemData.Dataset.GetDoubleValues(problemData.TargetVariable, rows);
       IEnumerable<double> boundedEstimatedValues = estimatedValues.LimitToRange(lowerEstimationLimit, upperEstimationLimit);
 
@@ -75,7 +84,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       SymbolicDataAnalysisTreeInterpreterParameter.ExecutionContext = context;
       EstimationLimitsParameter.ExecutionContext = context;
 
-      double mre = Calculate(SymbolicDataAnalysisTreeInterpreterParameter.ActualValue, tree, EstimationLimitsParameter.ActualValue.Lower, EstimationLimitsParameter.ActualValue.Upper, problemData, rows);
+      double mre = Calculate(
+        tree, problemData, rows,
+        SymbolicDataAnalysisTreeInterpreterParameter.ActualValue,
+        EstimationLimitsParameter.ActualValue.Lower, 
+        EstimationLimitsParameter.ActualValue.Upper);
 
       SymbolicDataAnalysisTreeInterpreterParameter.ExecutionContext = null;
       EstimationLimitsParameter.ExecutionContext = null;
@@ -83,14 +96,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       return mre;
     }
 
-    public override double Evaluate(IRegressionProblemData problemData,
-      ISymbolicExpressionTree solution,
+    public override double Evaluate(
+      ISymbolicExpressionTree tree,
+      IRegressionProblemData problemData,
+      IEnumerable<int> rows,
       ISymbolicDataAnalysisExpressionTreeInterpreter interpreter,
-      IEnumerable<int> rows = null,
       bool applyLinearScaling = true,
       double lowerEstimationLimit = double.MinValue,
       double upperEstimationLimit = double.MaxValue) {
-      return Calculate(interpreter, solution, lowerEstimationLimit, upperEstimationLimit, problemData, rows ?? problemData.TrainingIndices);
+      return Calculate(tree, problemData, rows, interpreter, lowerEstimationLimit, upperEstimationLimit);
     }
   }
 }

@@ -61,11 +61,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       return base.InstrumentedApply();
     }
 
-    public static double[] Calculate(ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, ISymbolicExpressionTree solution, double lowerEstimationLimit, double upperEstimationLimit, IRegressionProblemData problemData, IEnumerable<int> rows, bool applyLinearScaling, int decimalPlaces) {
-      double r2 = SymbolicRegressionSingleObjectivePearsonRSquaredEvaluator.Calculate(interpreter, solution, lowerEstimationLimit, upperEstimationLimit, problemData, rows, applyLinearScaling);
+    public static double[] Calculate(ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, ISymbolicExpressionTree tree, double lowerEstimationLimit, double upperEstimationLimit, IRegressionProblemData problemData, IEnumerable<int> rows, bool applyLinearScaling, int decimalPlaces) {
+      double r2 = SymbolicRegressionSingleObjectivePearsonRSquaredEvaluator.Calculate(
+        tree, problemData, rows, interpreter, applyLinearScaling,
+        lowerEstimationLimit, upperEstimationLimit);
       if (decimalPlaces >= 0)
         r2 = Math.Round(r2, decimalPlaces);
-      return new double[2] { r2, solution.IterateNodesPostfix().OfType<IVariableTreeNode>().Count() }; // count the number of variables
+      return new double[2] { r2, tree.IterateNodesPostfix().OfType<IVariableTreeNode>().Count() }; // count the number of variables
     }
 
     public override double[] Evaluate(IExecutionContext context, ISymbolicExpressionTree tree, IRegressionProblemData problemData, IEnumerable<int> rows) {

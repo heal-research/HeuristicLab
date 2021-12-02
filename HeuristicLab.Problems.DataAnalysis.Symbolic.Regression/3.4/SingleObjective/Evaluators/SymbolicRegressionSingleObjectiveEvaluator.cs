@@ -32,10 +32,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     protected SymbolicRegressionSingleObjectiveEvaluator(SymbolicRegressionSingleObjectiveEvaluator original, Cloner cloner) : base(original, cloner) { }
     protected SymbolicRegressionSingleObjectiveEvaluator(): base() {}
     public abstract double Evaluate(
-      IRegressionProblemData problemData,
       ISymbolicExpressionTree tree,
+      IRegressionProblemData problemData,
+      IEnumerable<int> rows,
       ISymbolicDataAnalysisExpressionTreeInterpreter interpreter,
-      IEnumerable<int> rows = null,
       bool applyLinearScaling = true,
       double lowerEstimationLimit = double.MinValue,
       double upperEstimationLimit = double.MaxValue);

@@ -193,11 +193,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
 
       individual[SymbolicExpressionTreeName] = tree;
 
+      if(TreeEvaluatorParameter.Value is SymbolicRegressionConstantOptimizationEvaluator)
+        TreeEvaluatorParameter.Value.RandomParameter.Value = random;
+
       return TreeEvaluatorParameter.Value.Evaluate(
-        ProblemData,
-        tree,
-        Interpreter,
+        tree, ProblemData,
         ProblemData.TrainingIndices,
+        Interpreter,
         StructureTemplate.ApplyLinearScaling,
         EstimationLimits.Lower,
         EstimationLimits.Upper);
