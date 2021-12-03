@@ -140,7 +140,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       var offset = tree.Root.GetSubtree(0) //Start
                             .GetSubtree(0); //Offset
       var scaling = offset.GetSubtree(0);
-
+      
       //Check if tree contains offset and scaling nodes
       if (!(offset.Symbol is Addition) || !(scaling.Symbol is Multiplication))
         throw new ArgumentException($"Shape Constraints Evaluation can only be used with LinearScalingGrammar.");
@@ -154,8 +154,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       var estimatedValues = interpreter.GetSymbolicExpressionTreeValues(newTree, problemData.Dataset, rows);
 
       var targetValues = problemData.Dataset.GetDoubleValues(problemData.TargetVariable, rows);
-      OnlineLinearScalingParameterCalculator.Calculate(estimatedValues, targetValues, out var alpha, out var beta,
-        out var errorState);
+      OnlineLinearScalingParameterCalculator.Calculate(estimatedValues, targetValues, out var alpha, out var beta, out var errorState);
       if (errorState == OnlineCalculatorError.None) {
         //Set alpha and beta to the scaling nodes from ia grammar
         var offsetParameter = offset.GetSubtree(1) as ConstantTreeNode;
@@ -248,15 +247,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
         SymbolicRegressionConstantOptimizationEvaluator.OptimizeConstants(
           interpreter, tree, 
           problemData, rows,
-          applyLinearScaling: false, // OptimizeConstants deletes the scaling terms -> wrong estimations
+          applyLinearScaling: false, // Tree already contains scaling terms
           ConstantOptimizationIterations, 
           updateVariableWeights: true,
           lowerEstimationLimit, 
           upperEstimationLimit);
       
-      if (applyLinearScaling) // extra scaling terms, which are included in tree
-        CalcLinearScalingTerms(tree, problemData, rows, interpreter);
-
+      else if (applyLinearScaling) // extra scaling terms, which are included in tree
+        CalcLinearScalingTerms(tree, problemData, rows, interpreter); 
+      
       return Calculate(
         tree, problemData,
         rows, interpreter, 

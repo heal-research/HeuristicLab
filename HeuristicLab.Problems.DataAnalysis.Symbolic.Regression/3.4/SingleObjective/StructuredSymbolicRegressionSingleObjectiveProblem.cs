@@ -193,8 +193,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
 
       individual[SymbolicExpressionTreeName] = tree;
 
-      if(TreeEvaluatorParameter.Value is SymbolicRegressionConstantOptimizationEvaluator)
-        TreeEvaluatorParameter.Value.RandomParameter.Value = random;
+      // dpiringe: needed when Maximization = true
+      if (TreeEvaluatorParameter.Value is SymbolicRegressionConstantOptimizationEvaluator constantOptEvaluator) {
+        constantOptEvaluator.RandomParameter.Value = random;
+        constantOptEvaluator.RelativeNumberOfEvaluatedSamplesParameter.Value = 
+          (PercentValue)constantOptEvaluator.ConstantOptimizationRowsPercentage.Clone();
+      }
 
       return TreeEvaluatorParameter.Value.Evaluate(
         tree, ProblemData,

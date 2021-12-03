@@ -58,7 +58,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       return base.InstrumentedApply();
     }
 
-    //TODO: refactor like evaluate method
     public static double Calculate(
       ISymbolicExpressionTree tree, 
       IRegressionProblemData problemData, 

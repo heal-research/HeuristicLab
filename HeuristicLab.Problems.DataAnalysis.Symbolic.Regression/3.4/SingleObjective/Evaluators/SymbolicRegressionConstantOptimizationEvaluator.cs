@@ -201,10 +201,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
 
       var propability = random.NextDouble();
       if (propability < ConstantOptimizationProbability.Value) {
-        IEnumerable<int> constantOptimizationRows = GenerateRowsToEvaluate(ConstantOptimizationRowsPercentage.Value);
         quality = OptimizeConstants(
           interpreter, tree,
-          problemData, constantOptimizationRows,
+          problemData, rows,
           applyLinearScaling,
           ConstantOptimizationIterations.Value,
           updateVariableWeights: UpdateVariableWeights,

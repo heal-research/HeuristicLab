@@ -302,6 +302,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           return t * alpha + beta;
         } else return ConvertToAutoDiff(node.GetSubtree(0));
       }
+      if (node.Symbol is SubFunctionSymbol) {
+        return ConvertToAutoDiff(node.GetSubtree(0));
+      }
       throw new ConversionException();
     }
 
@@ -349,7 +352,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           !(n.Symbol is AnalyticQuotient) &&
           !(n.Symbol is Cube) &&
           !(n.Symbol is CubeRoot) &&
-          !(n.Symbol is Power)
+          !(n.Symbol is Power) &&
+          !(n.Symbol is SubFunctionSymbol)
         select n).Any();
       return !containsUnknownSymbol;
     }
