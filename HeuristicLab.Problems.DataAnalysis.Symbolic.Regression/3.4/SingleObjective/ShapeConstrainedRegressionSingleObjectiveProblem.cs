@@ -27,12 +27,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
   [Item("Shape-constrained symbolic regression problem (single-objective)", "Represents a single-objective shape-constrained regression problem.")]
   [StorableType("B35ADCA7-E902-4BEE-9DDE-DF8BBC1E27FE")]
   [Creatable(CreatableAttribute.Categories.GeneticProgrammingProblems, Priority = 150)]
-  public class ShapeConstrainedRegressionSingleObjectiveProblem : SymbolicRegressionSingleObjectiveProblem {
+  public class ShapeConstrainedRegressionSingleObjectiveProblem : SymbolicRegressionSingleObjectiveProblem, IShapeConstrainedRegressionProblem {
     [StorableConstructor]
     protected ShapeConstrainedRegressionSingleObjectiveProblem(StorableConstructorFlag _) : base(_) { }
     protected ShapeConstrainedRegressionSingleObjectiveProblem(ShapeConstrainedRegressionSingleObjectiveProblem original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) { return new ShapeConstrainedRegressionSingleObjectiveProblem(this, cloner); }
 
+    public ShapeConstrainedRegressionProblemData ShapeConstrainedRegressionProblemData {
+      get => (ShapeConstrainedRegressionProblemData)ProblemData;
+      set => ProblemData = value;
+    }
     public ShapeConstrainedRegressionSingleObjectiveProblem()
       : base(new ShapeConstrainedRegressionProblemData(), new NMSESingleObjectiveConstraintsEvaluator(), new SymbolicDataAnalysisExpressionTreeCreator()) {
 
@@ -50,11 +54,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     }
 
     public override void Load(IRegressionProblemData data) {
-      var scProblemData = new ShapeConstrainedRegressionProblemData(data.Dataset, data.AllowedInputVariables, data.TargetVariable,
-                                                                    data.TrainingPartition, data.TestPartition) {
-        Name = data.Name,
-        Description = data.Description
-      };
+      if (data is ShapeConstrainedRegressionProblemData scProblemData) {
+      } else {
+        scProblemData = new ShapeConstrainedRegressionProblemData(data.Dataset, data.AllowedInputVariables, data.TargetVariable,
+                                                                  data.TrainingPartition, data.TestPartition) {
+          Name = data.Name,
+          Description = data.Description
+        };
+      }
 
       base.Load(scProblemData);
     }
