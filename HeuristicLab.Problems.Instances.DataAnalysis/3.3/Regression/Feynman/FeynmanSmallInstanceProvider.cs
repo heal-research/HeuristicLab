@@ -34,7 +34,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
       var rand = new MersenneTwister((uint)Seed);
 
 
-      var noiseRatio = new double?[] { null, 0.1, 0.3, 1 };
+      var noiseRatio = new double?[] { null, 0.1, 0.25, 0.50, 0.75 };
 
       #region types
       var descriptorTypes = new Type[] {
