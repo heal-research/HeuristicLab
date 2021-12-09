@@ -144,7 +144,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     public ShapeConstrainedRegressionProblemData(IRegressionProblemData regressionProblemData)
       : this(regressionProblemData.Dataset, regressionProblemData.AllowedInputVariables, regressionProblemData.TargetVariable,
           regressionProblemData.TrainingPartition, regressionProblemData.TestPartition, regressionProblemData.Transformations,
-          (regressionProblemData is ShapeConstrainedRegressionProblemData) ? ((ShapeConstrainedRegressionProblemData)regressionProblemData).ShapeConstraints : null, 
+          (regressionProblemData is ShapeConstrainedRegressionProblemData) ? ((ShapeConstrainedRegressionProblemData)regressionProblemData).ShapeConstraints : null,
           regressionProblemData.VariableRanges) {
     }
 
@@ -158,8 +158,10 @@ namespace HeuristicLab.Problems.DataAnalysis {
       TestPartition.End = testPartition.End;
       if (sc == null) sc = new ShapeConstraints();
       Parameters.Add(new FixedValueParameter<ShapeConstraints>(ShapeConstraintsParameterName, "Specifies the shape constraints for the regression problem.", (ShapeConstraints)sc.Clone()));
-      foreach (var entry in variableRanges.GetVariableIntervals())
-        VariableRanges.SetInterval(entry.Item1, entry.Item2);
+      if (variableRanges != null) {
+        foreach (var entry in variableRanges.GetVariableIntervals())
+          VariableRanges.SetInterval(entry.Item1, entry.Item2);
+      }
       RegisterEventHandlers();
     }
 
