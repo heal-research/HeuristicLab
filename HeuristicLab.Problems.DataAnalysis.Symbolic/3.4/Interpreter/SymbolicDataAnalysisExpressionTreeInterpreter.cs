@@ -496,11 +496,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             return ((IList<double>)currentInstr.data)[actualRow] * laggedVariableTreeNode.Weight;
           }
         case OpCodes.Constant: {
-            var constTreeNode = (NumTreeNode)currentInstr.dynamicNode;
+            var constTreeNode = (ConstantTreeNode)currentInstr.dynamicNode;
             return constTreeNode.Value;
           }
         case OpCodes.Number: {
-          var numberTreeNode = (RealConstantTreeNode) currentInstr.dynamicNode;
+          var numberTreeNode = (NumberTreeNode) currentInstr.dynamicNode;
           return numberTreeNode.Value;
         }
 

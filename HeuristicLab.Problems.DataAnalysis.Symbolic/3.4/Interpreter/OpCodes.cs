@@ -45,7 +45,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     Call = 17,
     Variable = 18,
     LagVariable = 19,
-    Num = 20,
+    Number = 20,
     Arg = 21,
     Power = 22,
     Root = 23,
@@ -101,7 +101,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     public const byte Call = (byte)OpCode.Call;
     public const byte Variable = (byte)OpCode.Variable;
     public const byte LagVariable = (byte)OpCode.LagVariable;
-    public const byte Number = (byte)OpCode.Num;
+    public const byte Number = (byte)OpCode.Number;
     public const byte Constant = (byte) OpCode.Constant;
     public const byte Arg = (byte)OpCode.Arg;
     public const byte Power = (byte)OpCode.Power;
@@ -160,8 +160,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       { typeof(Variable), OpCodes.Variable },
       { typeof(LaggedVariable), OpCodes.LagVariable },
       { typeof(AutoregressiveTargetVariable),OpCodes.LagVariable},
-      { typeof(Num), OpCodes.Number },
-      { typeof(RealConstant), OpCodes.Constant },
+      { typeof(Number), OpCodes.Number },
+      { typeof(Constant), OpCodes.Constant },
       { typeof(Argument), OpCodes.Arg },
       { typeof(Power),OpCodes.Power},
       { typeof(Root),OpCodes.Root},

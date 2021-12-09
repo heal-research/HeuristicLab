@@ -105,9 +105,9 @@ namespace HeuristicLab.Problems.ExternalEvaluation.GP {
         if (node.Symbol is HeuristicLab.Problems.DataAnalysis.Symbolic.Variable) {
           var varNode = node as VariableTreeNode;
           strBuilder.AppendFormat("(* {0} {1})", varNode.VariableName, varNode.Weight.ToString("g17", CultureInfo.InvariantCulture));
-        } else if (node.Symbol is Num) {
-          var constNode = node as NumTreeNode;
-          strBuilder.Append(constNode.Value.ToString("g17", CultureInfo.InvariantCulture));
+        } else if (node.Symbol is INumericSymbol) {
+          var numericNode = node as INumericTreeNode;
+          strBuilder.Append(numericNode.Value.ToString("g17", CultureInfo.InvariantCulture));
         } else {
           throw new NotSupportedException("Formatting of symbol: " + node.Symbol + " not supported for external evaluation.");
         }

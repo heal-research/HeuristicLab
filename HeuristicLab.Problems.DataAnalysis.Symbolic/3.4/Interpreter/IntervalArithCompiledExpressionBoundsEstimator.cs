@@ -115,8 +115,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         from n in tree.Root.GetSubtree(0).IterateNodesPrefix()
         where
           !(n.Symbol is Variable) &&
-          !(n.Symbol is Num) &&
-          !(n.Symbol is RealConstant) &&
+          !(n.Symbol is Number) &&
+          !(n.Symbol is Constant) &&
           !(n.Symbol is StartSymbol) &&
           !(n.Symbol is Addition) &&
           !(n.Symbol is Subtraction) &&
@@ -154,7 +154,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             );
           }
         case OpCodes.Constant: {
-            var v = (node as NumTreeNode).Value;
+            var v = (node as NumberTreeNode).Value;
+            // we have to make an interval out of the constant because this may be the root of the tree (and we are expected to return an Interval)
+            return Expression.Constant(new Interval(v, v), typeof(Interval));
+          }
+        case OpCodes.Number: {
+            var v = (node as NumberTreeNode).Value;
             // we have to make an interval out of the constant because this may be the root of the tree (and we are expected to return an Interval)
             return Expression.Constant(new Interval(v, v), typeof(Interval));
           }

@@ -171,7 +171,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
       for (int i = 0; i < nodes.Count; ++i) {
         var node = nodes[i];
-        if (node is NumTreeNode) continue;
+        if (node is INumericTreeNode) continue;
 
         double impactValue, replacementValue;
         double newQualityForImpacts;
@@ -180,11 +180,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         if (PruneOnlyZeroImpactNodes && !impactValue.IsAlmost(0.0)) continue;
         if (!PruneOnlyZeroImpactNodes && impactValue > NodeImpactThreshold) continue;
 
-        var constantNode = (NumTreeNode)node.Grammar.GetSymbol("Num").CreateTreeNode();
-        constantNode.Value = replacementValue;
+        var numberNode = (NumberTreeNode)node.Grammar.GetSymbol("Number").CreateTreeNode();
+        numberNode.Value = replacementValue;
 
         var length = node.GetLength();
-        ReplaceWithConstant(node, constantNode);
+        ReplaceWithConstant(node, numberNode);
         i += length - 1; // skip subtrees under the node that was folded
 
         prunedSubtrees++;

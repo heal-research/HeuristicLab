@@ -51,8 +51,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         return 1;
 
       // at this point we know a and b are not variables
-      var ca = a as ConstantTreeNode;
-      var cb = b as ConstantTreeNode;
+      var ca = a as INumericTreeNode;
+      var cb = b as INumericTreeNode;
 
       if (ca != null && cb != null)
         return ca.Value.CompareTo(cb.Value);

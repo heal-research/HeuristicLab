@@ -79,7 +79,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         case OpCodes.Power:
         case OpCodes.Root: {
             double complexity = CalculateComplexity(node.GetSubtree(0));
-            var exponent = node.GetSubtree(1) as NumTreeNode;
+            var exponent = node.GetSubtree(1) as INumericTreeNode;
             if (exponent != null) {
               double expVal = exponent.Value;
               if (expVal < 0) expVal = Math.Abs(expVal);

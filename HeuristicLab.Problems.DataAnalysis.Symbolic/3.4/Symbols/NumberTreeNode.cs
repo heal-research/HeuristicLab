@@ -26,34 +26,25 @@ using HEAL.Attic;
 using HeuristicLab.Random;
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableType("247DBD04-18F2-4184-B6F5-6E283BF06FD0")]
-  public sealed class NumTreeNode : SymbolicExpressionTreeTerminalNode {
-    public new Num Symbol {
-      get { return (Num)base.Symbol; }
-    }
+  public sealed class NumberTreeNode : SymbolicExpressionTreeTerminalNode, INumericTreeNode {
+    public new Number Symbol => (Number)base.Symbol;
 
-    private double constantValue;
     [Storable]
-    public double Value {
-      get { return constantValue; }
-      set { constantValue = value; }
-    }
+    public double Value { get; set; }
 
     [StorableConstructor]
-    private NumTreeNode(StorableConstructorFlag _) : base(_) { }
+    private NumberTreeNode(StorableConstructorFlag _) : base(_) { }
 
-    private NumTreeNode(NumTreeNode original, Cloner cloner)
+    private NumberTreeNode(NumberTreeNode original, Cloner cloner)
       : base(original, cloner) {
-      constantValue = original.constantValue;
+      Value = original.Value;
     }
 
-    private NumTreeNode() : base() { }
-    public NumTreeNode(Num numSymbol) : base(numSymbol) { }
+    private NumberTreeNode() : base() { }
+    public NumberTreeNode(Number numberSymbol) : base(numberSymbol) { }
 
-    public override bool HasLocalParameters {
-      get {
-        return true;
-      }
-    }
+    public override bool HasLocalParameters => true;
+
     public override void ResetLocalParameters(IRandom random) {
       base.ResetLocalParameters(random);
       var range = Symbol.MaxValue - Symbol.MinValue;
@@ -64,21 +55,20 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       base.ShakeLocalParameters(random, shakingFactor);
       // 50% additive & 50% multiplicative
       if (random.NextDouble() < 0.5) {
-        double x = NormalDistributedRandom.NextDouble(random, Symbol.ManipulatorMu, Symbol.ManipulatorSigma);
+        var x = NormalDistributedRandom.NextDouble(random, Symbol.ManipulatorMu, Symbol.ManipulatorSigma);
         Value = Value + x * shakingFactor;
       } else {
-        double x = NormalDistributedRandom.NextDouble(random, 1.0, Symbol.MultiplicativeManipulatorSigma);
+        var x = NormalDistributedRandom.NextDouble(random, 1.0, Symbol.MultiplicativeManipulatorSigma);
         Value = Value * x;
       }
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new NumTreeNode(this, cloner);
+      return new NumberTreeNode(this, cloner);
     }
 
     public override string ToString() {
-      return $"<{constantValue:E4}>";
-      // return constantValue.ToString("E4");
+      return $"{Value:E4}";
     }
   }
 }

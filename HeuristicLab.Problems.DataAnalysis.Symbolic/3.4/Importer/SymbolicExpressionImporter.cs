@@ -84,7 +84,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         {"BINFACTOR", new BinaryFactorVariable()}
       };
 
-    Num num = new Num();
+    Number number = new Number();
+    Constant constant = new Constant();
     Variable variable = new Variable();
     LaggedVariable laggedVariable = new LaggedVariable();
     Defun defun = new Defun();
@@ -160,7 +161,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         Expect(Token.RPAR, tokens);
         return tree;
       } else if (tokens.Peek().Symbol == TokenSymbol.NUMBER) {
-        NumTreeNode t = (NumTreeNode)num.CreateTreeNode();
+        var t = (INumericTreeNode)number.CreateTreeNode();
         t.Value = tokens.Dequeue().DoubleValue;
         return t;
       } else throw new FormatException("Expected function or constant symbol");

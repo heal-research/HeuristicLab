@@ -58,8 +58,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       foreach (var repValue in CalculateReplacementValues(node, model.SymbolicExpressionTree, model.Interpreter, problemData.Dataset, rows)) {
         tempModelParentNode.RemoveSubtree(i);
 
-        var constantNode = new NumTreeNode(new Num()) { Value = repValue };
-        tempModelParentNode.InsertSubtree(i, constantNode);
+        var numberNode = new NumberTreeNode(new Number()) { Value = repValue };
+        tempModelParentNode.InsertSubtree(i, numberNode);
 
         newQualityForImpactsCalculation = CalculateQualityForImpacts(tempModel, problemData, rows);
 
@@ -79,11 +79,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     protected IEnumerable<double> CalculateReplacementValues(ISymbolicExpressionTreeNode node, ISymbolicExpressionTree sourceTree, ISymbolicDataAnalysisExpressionTreeInterpreter interpreter,
       IDataset dataset, IEnumerable<int> rows) {
       //optimization: constant nodes return always the same value
-      NumTreeNode numNode = node as NumTreeNode;
+      NumberTreeNode numberNode = node as NumberTreeNode;
       BinaryFactorVariableTreeNode binaryFactorNode = node as BinaryFactorVariableTreeNode;
       FactorVariableTreeNode factorNode = node as FactorVariableTreeNode;
-      if (numNode != null) {
-        yield return numNode.Value;
+      if (numberNode != null) {
+        yield return numberNode.Value;
       } else if (binaryFactorNode != null) {
         // valid replacements are either all off or all on
         yield return 0;

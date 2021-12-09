@@ -85,9 +85,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
         return (!MatchVariableNames || va.VariableName.Equals(vb.VariableName)) && (!MatchVariableWeights || va.Weight.Equals(vb.Weight));
       }
-      var ca = a as ConstantTreeNode;
-      if (ca != null) {
-        var cb = b as ConstantTreeNode;
+
+      if (a is INumericTreeNode ca) {
+        var cb = b as INumericTreeNode;
         if (cb == null) return false;
         return (!MatchConstantValues || ca.Value.Equals(cb.Value));
       }

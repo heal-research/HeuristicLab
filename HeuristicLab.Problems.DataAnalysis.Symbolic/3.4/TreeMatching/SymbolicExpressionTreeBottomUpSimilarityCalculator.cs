@@ -210,7 +210,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       if (node.SubtreeCount > 0)
         return node.Symbol.Name;
 
-      if (node is ConstantTreeNode constant)
+      if (node is INumericTreeNode constant)
         return MatchConstantValues ? constant.Value.ToString(CultureInfo.InvariantCulture) : constant.Symbol.Name;
 
       if (node is VariableTreeNode variable)
