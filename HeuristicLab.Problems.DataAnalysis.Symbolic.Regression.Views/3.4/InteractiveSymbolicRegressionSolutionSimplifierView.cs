@@ -41,7 +41,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression.Views {
       base.SetEnabledStateOfControls();
 
       var tree = Content?.Model?.SymbolicExpressionTree;
-      btnOptimizeConstants.Enabled = tree != null && SymbolicRegressionConstantOptimizationEvaluator.CanOptimizeConstants(tree);
+      btnOptimizeConstants.Enabled = tree != null && SymbolicRegressionParameterOptimizationEvaluator.CanOptimizeParameters(tree);
     }
 
     protected override void UpdateModel(ISymbolicExpressionTree tree) {
@@ -63,7 +63,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression.Views {
 
       do {
         prevResult = result;
-        result = SymbolicRegressionConstantOptimizationEvaluator.OptimizeConstants(model.Interpreter, tree, regressionProblemData, regressionProblemData.TrainingIndices,
+        result = SymbolicRegressionParameterOptimizationEvaluator.OptimizeParameters(model.Interpreter, tree, regressionProblemData, regressionProblemData.TrainingIndices,
           applyLinearScaling: true, maxIterations: constOptIterations, updateVariableWeights: true, lowerEstimationLimit: model.LowerEstimationLimit, upperEstimationLimit: model.UpperEstimationLimit,
           iterationCallback: (args, func, obj) => {
             double newProgressValue = progress.ProgressValue + (1.0 / (constOptIterations + 2) / maxRepetitions); // (constOptIterations + 2) iterations are reported

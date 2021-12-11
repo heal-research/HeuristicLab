@@ -35,6 +35,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     private static readonly Addition addSymbol = new Addition();
     private static readonly Multiplication mulSymbol = new Multiplication();
     private static readonly Division divSymbol = new Division();
+    private static readonly Number numberSymbol = new Number();
     private static readonly Constant constSymbol = new Constant();
     private static readonly Absolute absSymbol = new Absolute();
     private static readonly Logarithm logSymbol = new Logarithm();
@@ -239,10 +240,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       return node is BinaryFactorVariableTreeNode;
     }
 
+    private static bool IsNumber(ISymbolicExpressionTreeNode node) {
+      return node.Symbol is Number;
+    }
+
     private static bool IsConstant(ISymbolicExpressionTreeNode node) {
       return node.Symbol is Constant;
     }
-
     // dynamic
     private static bool IsTimeLag(ISymbolicExpressionTreeNode node) {
       return node.Symbol is TimeLag;
@@ -260,7 +264,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     /// <param name="original"></param>
     /// <returns></returns>
     public static ISymbolicExpressionTreeNode GetSimplifiedTree(ISymbolicExpressionTreeNode original) {
-      if (IsConstant(original) || IsVariableBase(original)) {
+      if (IsNumber(original) || IsConstant(original) || IsVariableBase(original)) {
         return (ISymbolicExpressionTreeNode)original.Clone();
       } else if (IsAbsolute(original)) {
         return SimplifyAbsolute(original);
@@ -334,7 +338,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       foreach (var simplifiedSubtree in simplifiedSubtrees) {
         clone.AddSubtree(simplifiedSubtree);
       }
-      if (simplifiedSubtrees.TrueForAll(t => IsConstant(t))) {
+      if (simplifiedSubtrees.TrueForAll(IsNumber)) {
         SimplifyConstantExpression(clone);
       }
       return clone;
@@ -500,7 +504,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     private static ISymbolicExpressionTreeNode SimplifyIntegral(ISymbolicExpressionTreeNode original) {
       var laggedTreeNode = original as ILaggedTreeNode;
       var simplifiedSubtree = GetSimplifiedTree(original.GetSubtree(0));
-      if (IsConstant(simplifiedSubtree)) {
+      if (IsNumber(simplifiedSubtree)) {
         return GetSimplifiedTree(MakeProduct(simplifiedSubtree, MakeConstant(-laggedTreeNode.Lag)));
       } else {
         return MakeIntegral(simplifiedSubtree, laggedTreeNode.Lag);
@@ -513,7 +517,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
     private static ISymbolicExpressionTreeNode MakeTimeLag(ISymbolicExpressionTreeNode subtree, int lag) {
       if (lag == 0) return subtree;
-      if (IsConstant(subtree)) return subtree;
+      if (IsNumber(subtree)) return subtree;
       var lagNode = (LaggedTreeNode)timeLagSymbol.CreateTreeNode();
       lagNode.Lag = lag;
       lagNode.AddSubtree(subtree);
@@ -533,8 +537,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     private static ISymbolicExpressionTreeNode MakeNot(ISymbolicExpressionTreeNode t) {
-      if (IsConstant(t)) {
-        var constNode = t as ConstantTreeNode;
+      if (IsNumber(t)) {
+        var constNode = t as NumberTreeNode;
         if (constNode.Value > 0) return MakeConstant(-1.0);
         else return MakeConstant(1.0);
       } else if (IsNot(t)) {
@@ -554,18 +558,18 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     private static ISymbolicExpressionTreeNode MakeOr(ISymbolicExpressionTreeNode a, ISymbolicExpressionTreeNode b) {
-      if (IsConstant(a) && IsConstant(b)) {
-        var constA = a as ConstantTreeNode;
-        var constB = b as ConstantTreeNode;
+      if (IsNumber(a) && IsNumber(b)) {
+        var constA = a as NumberTreeNode;
+        var constB = b as NumberTreeNode;
         if (constA.Value > 0.0 || constB.Value > 0.0) {
           return MakeConstant(1.0);
         } else {
           return MakeConstant(-1.0);
         }
-      } else if (IsConstant(a)) {
+      } else if (IsNumber(a)) {
         return MakeOr(b, a);
-      } else if (IsConstant(b)) {
-        var constT = b as ConstantTreeNode;
+      } else if (IsNumber(b)) {
+        var constT = b as NumberTreeNode;
         if (constT.Value > 0.0) {
           // boolean expression is necessarily true
           return MakeConstant(1.0);
@@ -584,18 +588,18 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     private static ISymbolicExpressionTreeNode MakeAnd(ISymbolicExpressionTreeNode a, ISymbolicExpressionTreeNode b) {
-      if (IsConstant(a) && IsConstant(b)) {
-        var constA = a as ConstantTreeNode;
-        var constB = b as ConstantTreeNode;
+      if (IsNumber(a) && IsNumber(b)) {
+        var constA = a as NumberTreeNode;
+        var constB = b as NumberTreeNode;
         if (constA.Value > 0.0 && constB.Value > 0.0) {
           return MakeConstant(1.0);
         } else {
           return MakeConstant(-1.0);
         }
-      } else if (IsConstant(a)) {
+      } else if (IsNumber(a)) {
         return MakeAnd(b, a);
-      } else if (IsConstant(b)) {
-        var constB = b as ConstantTreeNode;
+      } else if (IsNumber(b)) {
+        var constB = b as NumberTreeNode;
         if (constB.Value > 0.0) {
           // the constant value has no effect on the result of the boolean condition so we can drop the constant term
           var andNode = andSymbol.CreateTreeNode();
@@ -615,9 +619,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
     private static ISymbolicExpressionTreeNode MakeLessThan(ISymbolicExpressionTreeNode leftSide,
       ISymbolicExpressionTreeNode rightSide) {
-      if (IsConstant(leftSide) && IsConstant(rightSide)) {
-        var lsConst = leftSide as ConstantTreeNode;
-        var rsConst = rightSide as ConstantTreeNode;
+      if (IsNumber(leftSide) && IsNumber(rightSide)) {
+        var lsConst = leftSide as NumberTreeNode;
+        var rsConst = rightSide as NumberTreeNode;
         if (lsConst.Value < rsConst.Value) return MakeConstant(1.0);
         else return MakeConstant(-1.0);
       } else {
@@ -630,9 +634,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
     private static ISymbolicExpressionTreeNode MakeGreaterThan(ISymbolicExpressionTreeNode leftSide,
       ISymbolicExpressionTreeNode rightSide) {
-      if (IsConstant(leftSide) && IsConstant(rightSide)) {
-        var lsConst = leftSide as ConstantTreeNode;
-        var rsConst = rightSide as ConstantTreeNode;
+      if (IsNumber(leftSide) && IsNumber(rightSide)) {
+        var lsConst = leftSide as NumberTreeNode;
+        var rsConst = rightSide as NumberTreeNode;
         if (lsConst.Value > rsConst.Value) return MakeConstant(1.0);
         else return MakeConstant(-1.0);
       } else {
@@ -645,8 +649,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
     private static ISymbolicExpressionTreeNode MakeIfThenElse(ISymbolicExpressionTreeNode condition,
       ISymbolicExpressionTreeNode trueBranch, ISymbolicExpressionTreeNode falseBranch) {
-      if (IsConstant(condition)) {
-        var constT = condition as ConstantTreeNode;
+      if (IsNumber(condition)) {
+        var constT = condition as NumberTreeNode;
         if (constT.Value > 0.0) return trueBranch;
         else return falseBranch;
       } else {
@@ -666,8 +670,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     private static ISymbolicExpressionTreeNode MakeSine(ISymbolicExpressionTreeNode node) {
-      if (IsConstant(node)) {
-        var constT = node as ConstantTreeNode;
+      if (IsNumber(node)) {
+        var constT = node as NumberTreeNode;
         return MakeConstant(Math.Sin(constT.Value));
       } else if (IsFactor(node)) {
         var factor = node as FactorVariableTreeNode;
@@ -683,8 +687,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     private static ISymbolicExpressionTreeNode MakeTangent(ISymbolicExpressionTreeNode node) {
-      if (IsConstant(node)) {
-        var constT = node as ConstantTreeNode;
+      if (IsNumber(node)) {
+        var constT = node as NumberTreeNode;
         return MakeConstant(Math.Tan(constT.Value));
       } else if (IsFactor(node)) {
         var factor = node as FactorVariableTreeNode;
@@ -700,8 +704,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     private static ISymbolicExpressionTreeNode MakeCosine(ISymbolicExpressionTreeNode node) {
-      if (IsConstant(node)) {
-        var constT = node as ConstantTreeNode;
+      if (IsNumber(node)) {
+        var constT = node as NumberTreeNode;
         return MakeConstant(Math.Cos(constT.Value));
       } else if (IsFactor(node)) {
         var factor = node as FactorVariableTreeNode;
@@ -719,8 +723,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     private static ISymbolicExpressionTreeNode MakeExp(ISymbolicExpressionTreeNode node) {
-      if (IsConstant(node)) {
-        var constT = node as ConstantTreeNode;
+      if (IsNumber(node)) {
+        var constT = node as NumberTreeNode;
         return MakeConstant(Math.Exp(constT.Value));
       } else if (IsFactor(node)) {
         var factNode = node as FactorVariableTreeNode;
@@ -743,8 +747,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       }
     }
     private static ISymbolicExpressionTreeNode MakeLog(ISymbolicExpressionTreeNode node) {
-      if (IsConstant(node)) {
-        var constT = node as ConstantTreeNode;
+      if (IsNumber(node)) {
+        var constT = node as NumberTreeNode;
         return MakeConstant(Math.Log(constT.Value));
       } else if (IsFactor(node)) {
         var factNode = node as FactorVariableTreeNode;
@@ -761,8 +765,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     private static ISymbolicExpressionTreeNode MakeSquare(ISymbolicExpressionTreeNode node) {
-      if (IsConstant(node)) {
-        var constT = node as ConstantTreeNode;
+      if (IsNumber(node)) {
+        var constT = node as NumberTreeNode;
         return MakeConstant(constT.Value * constT.Value);
       } else if (IsFactor(node)) {
         var factNode = node as FactorVariableTreeNode;
@@ -795,8 +799,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     private static ISymbolicExpressionTreeNode MakeCube(ISymbolicExpressionTreeNode node) {
-      if (IsConstant(node)) {
-        var constT = node as ConstantTreeNode;
+      if (IsNumber(node)) {
+        var constT = node as NumberTreeNode;
         return MakeConstant(constT.Value * constT.Value * constT.Value);
       } else if (IsFactor(node)) {
         var factNode = node as FactorVariableTreeNode;
@@ -820,8 +824,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     private static ISymbolicExpressionTreeNode MakeAbs(ISymbolicExpressionTreeNode node) {
-      if (IsConstant(node)) {
-        var constT = node as ConstantTreeNode;
+      if (IsNumber(node)) {
+        var constT = node as NumberTreeNode;
         return MakeConstant(Math.Abs(constT.Value));
       } else if (IsFactor(node)) {
         var factNode = node as FactorVariableTreeNode;
@@ -852,8 +856,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
     // constant folding only
     private static ISymbolicExpressionTreeNode MakeAnalyticalQuotient(ISymbolicExpressionTreeNode a, ISymbolicExpressionTreeNode b) {
-      if (IsConstant(b)) {
-        var c = b as ConstantTreeNode;
+      if (IsNumber(b)) {
+        var c = b as NumberTreeNode;
         return MakeFraction(a, MakeConstant(Math.Sqrt(1.0 + c.Value * c.Value)));
       } else if (IsFactor(b)) {
         var factNode = b as FactorVariableTreeNode;
@@ -870,8 +874,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     private static ISymbolicExpressionTreeNode MakeSquareRoot(ISymbolicExpressionTreeNode node) {
-      if (IsConstant(node)) {
-        var constT = node as ConstantTreeNode;
+      if (IsNumber(node)) {
+        var constT = node as NumberTreeNode;
         return MakeConstant(Math.Sqrt(constT.Value));
       } else if (IsFactor(node)) {
         var factNode = node as FactorVariableTreeNode;
@@ -889,8 +893,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     private static ISymbolicExpressionTreeNode MakeCubeRoot(ISymbolicExpressionTreeNode node) {
-      if (IsConstant(node)) {
-        var constT = node as ConstantTreeNode;
+      if (IsNumber(node)) {
+        var constT = node as NumberTreeNode;
         return MakeConstant(Math.Pow(constT.Value, 1.0 / 3.0));
       } else if (IsFactor(node)) {
         var factNode = node as FactorVariableTreeNode;
@@ -908,33 +912,33 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     private static ISymbolicExpressionTreeNode MakeRoot(ISymbolicExpressionTreeNode a, ISymbolicExpressionTreeNode b) {
-      if (IsConstant(a) && IsConstant(b)) {
-        var constA = a as ConstantTreeNode;
-        var constB = b as ConstantTreeNode;
+      if (IsNumber(a) && IsNumber(b)) {
+        var constA = a as NumberTreeNode;
+        var constB = b as NumberTreeNode;
         return MakeConstant(Math.Pow(constA.Value, 1.0 / Math.Round(constB.Value)));
-      } else if (IsFactor(a) && IsConstant(b)) {
+      } else if (IsFactor(a) && IsNumber(b)) {
         var factNode = a as FactorVariableTreeNode;
-        var constNode = b as ConstantTreeNode;
+        var constNode = b as NumberTreeNode;
         return MakeFactor(factNode.Symbol, factNode.VariableName,
           factNode.Weights.Select(w => Math.Pow(w, 1.0 / Math.Round(constNode.Value))));
-      } else if (IsBinFactor(a) && IsConstant(b)) {
+      } else if (IsBinFactor(a) && IsNumber(b)) {
         var binFactor = a as BinaryFactorVariableTreeNode;
-        var constNode = b as ConstantTreeNode;
+        var constNode = b as NumberTreeNode;
         return MakeBinFactor(binFactor.Symbol, binFactor.VariableName, binFactor.VariableValue, Math.Pow(binFactor.Weight, 1.0 / Math.Round(constNode.Value)));
-      } else if (IsConstant(a) && IsFactor(b)) {
-        var constNode = a as ConstantTreeNode;
+      } else if (IsNumber(a) && IsFactor(b)) {
+        var constNode = a as NumberTreeNode;
         var factNode = b as FactorVariableTreeNode;
         return MakeFactor(factNode.Symbol, factNode.VariableName, factNode.Weights.Select(w => Math.Pow(constNode.Value, 1.0 / Math.Round(w))));
-      } else if (IsConstant(a) && IsBinFactor(b)) {
-        var constNode = a as ConstantTreeNode;
+      } else if (IsNumber(a) && IsBinFactor(b)) {
+        var constNode = a as NumberTreeNode;
         var factNode = b as BinaryFactorVariableTreeNode;
         return MakeBinFactor(factNode.Symbol, factNode.VariableName, factNode.VariableValue, Math.Pow(constNode.Value, 1.0 / Math.Round(factNode.Weight)));
       } else if (IsFactor(a) && IsFactor(b) && AreSameTypeAndVariable(a, b)) {
         var node0 = a as FactorVariableTreeNode;
         var node1 = b as FactorVariableTreeNode;
         return MakeFactor(node0.Symbol, node0.VariableName, node0.Weights.Zip(node1.Weights, (u, v) => Math.Pow(u, 1.0 / Math.Round(v))));
-      } else if (IsConstant(b)) {
-        var constB = b as ConstantTreeNode;
+      } else if (IsNumber(b)) {
+        var constB = b as NumberTreeNode;
         var constBValue = Math.Round(constB.Value);
         if (constBValue == 1.0) {
           // root(a, 1) => a
@@ -968,32 +972,32 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
 
     private static ISymbolicExpressionTreeNode MakePower(ISymbolicExpressionTreeNode a, ISymbolicExpressionTreeNode b) {
-      if (IsConstant(a) && IsConstant(b)) {
-        var constA = a as ConstantTreeNode;
-        var constB = b as ConstantTreeNode;
+      if (IsNumber(a) && IsNumber(b)) {
+        var constA = a as NumberTreeNode;
+        var constB = b as NumberTreeNode;
         return MakeConstant(Math.Pow(constA.Value, Math.Round(constB.Value)));
-      } else if (IsFactor(a) && IsConstant(b)) {
+      } else if (IsFactor(a) && IsNumber(b)) {
         var factNode = a as FactorVariableTreeNode;
-        var constNode = b as ConstantTreeNode;
+        var constNode = b as NumberTreeNode;
         return MakeFactor(factNode.Symbol, factNode.VariableName, factNode.Weights.Select(w => Math.Pow(w, Math.Round(constNode.Value))));
-      } else if (IsBinFactor(a) && IsConstant(b)) {
+      } else if (IsBinFactor(a) && IsNumber(b)) {
         var binFactor = a as BinaryFactorVariableTreeNode;
-        var constNode = b as ConstantTreeNode;
+        var constNode = b as NumberTreeNode;
         return MakeBinFactor(binFactor.Symbol, binFactor.VariableName, binFactor.VariableValue, Math.Pow(binFactor.Weight, Math.Round(constNode.Value)));
-      } else if (IsConstant(a) && IsFactor(b)) {
-        var constNode = a as ConstantTreeNode;
+      } else if (IsNumber(a) && IsFactor(b)) {
+        var constNode = a as NumberTreeNode;
         var factNode = b as FactorVariableTreeNode;
         return MakeFactor(factNode.Symbol, factNode.VariableName, factNode.Weights.Select(w => Math.Pow(constNode.Value, Math.Round(w))));
-      } else if (IsConstant(a) && IsBinFactor(b)) {
-        var constNode = a as ConstantTreeNode;
+      } else if (IsNumber(a) && IsBinFactor(b)) {
+        var constNode = a as NumberTreeNode;
         var factNode = b as BinaryFactorVariableTreeNode;
         return MakeBinFactor(factNode.Symbol, factNode.VariableName, factNode.VariableValue, Math.Pow(constNode.Value, Math.Round(factNode.Weight)));
       } else if (IsFactor(a) && IsFactor(b) && AreSameTypeAndVariable(a, b)) {
         var node0 = a as FactorVariableTreeNode;
         var node1 = b as FactorVariableTreeNode;
         return MakeFactor(node0.Symbol, node0.VariableName, node0.Weights.Zip(node1.Weights, (u, v) => Math.Pow(u, Math.Round(v))));
-      } else if (IsConstant(b)) {
-        var constB = b as ConstantTreeNode;
+      } else if (IsNumber(b)) {
+        var constB = b as NumberTreeNode;
         double exponent = Math.Round(constB.Value);
         if (exponent == 0.0) {
           // a^0 => 1
@@ -1027,24 +1031,24 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
     // MakeFraction, MakeProduct and MakeSum take two already simplified trees and create a new simplified tree
     private static ISymbolicExpressionTreeNode MakeFraction(ISymbolicExpressionTreeNode a, ISymbolicExpressionTreeNode b) {
-      if (IsConstant(a) && IsConstant(b)) {
+      if (IsNumber(a) && IsNumber(b)) {
         // fold constants
-        return MakeConstant(((ConstantTreeNode)a).Value / ((ConstantTreeNode)b).Value);
-      } else if ((IsConstant(a) && ((ConstantTreeNode)a).Value != 1.0)) {
+        return MakeConstant(((NumberTreeNode)a).Value / ((NumberTreeNode)b).Value);
+      } else if ((IsNumber(a) && ((NumberTreeNode)a).Value != 1.0)) {
         // a / x => (a * 1/a) / (x * 1/a) => 1 / (x * 1/a)
         return MakeFraction(MakeConstant(1.0), MakeProduct(b, Invert(a)));
-      } else if (IsVariableBase(a) && IsConstant(b)) {
+      } else if (IsVariableBase(a) && IsNumber(b)) {
         // merge constant values into variable weights
-        var constB = ((ConstantTreeNode)b).Value;
+        var constB = ((NumberTreeNode)b).Value;
         ((VariableTreeNodeBase)a).Weight /= constB;
         return a;
-      } else if (IsFactor(a) && IsConstant(b)) {
+      } else if (IsFactor(a) && IsNumber(b)) {
         var factNode = a as FactorVariableTreeNode;
-        var constNode = b as ConstantTreeNode;
+        var constNode = b as NumberTreeNode;
         return MakeFactor(factNode.Symbol, factNode.VariableName, factNode.Weights.Select(w => w / constNode.Value));
-      } else if (IsBinFactor(a) && IsConstant(b)) {
+      } else if (IsBinFactor(a) && IsNumber(b)) {
         var factNode = a as BinaryFactorVariableTreeNode;
-        var constNode = b as ConstantTreeNode;
+        var constNode = b as NumberTreeNode;
         return MakeBinFactor(factNode.Symbol, factNode.VariableName, factNode.VariableValue, factNode.Weight / constNode.Value);
       } else if (IsFactor(a) && IsFactor(b) && AreSameTypeAndVariable(a, b)) {
         var node0 = a as FactorVariableTreeNode;
@@ -1069,14 +1073,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         var aVar = a as VariableTreeNode;
         var bVar = b as VariableTreeNode;
         return MakeConstant(aVar.Weight / bVar.Weight);
-      } else if (IsAddition(a) && IsConstant(b)) {
+      } else if (IsAddition(a) && IsNumber(b)) {
         return a.Subtrees
           .Select(x => GetSimplifiedTree(x))
           .Select(x => MakeFraction(x, GetSimplifiedTree(b)))
           .Aggregate((c, d) => MakeSum(c, d));
-      } else if (IsMultiplication(a) && IsConstant(b)) {
+      } else if (IsMultiplication(a) && IsNumber(b)) {
         return MakeProduct(a, Invert(b));
-      } else if (IsDivision(a) && IsConstant(b)) {
+      } else if (IsDivision(a) && IsNumber(b)) {
         // (a1 / a2) / c => (a1 / (a2 * c))
         return MakeFraction(a.GetSubtree(0), MakeProduct(a.GetSubtree(1), b));
       } else if (IsDivision(a) && IsDivision(b)) {
@@ -1099,20 +1103,20 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     private static ISymbolicExpressionTreeNode MakeSum(ISymbolicExpressionTreeNode a, ISymbolicExpressionTreeNode b) {
-      if (IsConstant(a) && IsConstant(b)) {
+      if (IsNumber(a) && IsNumber(b)) {
         // fold constants
-        ((ConstantTreeNode)a).Value += ((ConstantTreeNode)b).Value;
+        ((NumberTreeNode)a).Value += ((NumberTreeNode)b).Value;
         return a;
-      } else if (IsConstant(a)) {
+      } else if (IsNumber(a)) {
         // c + x => x + c
         // b is not constant => make sure constant is on the right
         return MakeSum(b, a);
-      } else if (IsConstant(b) && ((ConstantTreeNode)b).Value == 0.0) {
+      } else if (IsNumber(b) && ((NumberTreeNode)b).Value == 0.0) {
         // x + 0 => x
         return a;
-      } else if (IsFactor(a) && IsConstant(b)) {
+      } else if (IsFactor(a) && IsNumber(b)) {
         var factNode = a as FactorVariableTreeNode;
-        var constNode = b as ConstantTreeNode;
+        var constNode = b as NumberTreeNode;
         return MakeFactor(factNode.Symbol, factNode.VariableName, factNode.Weights.Select((w) => w + constNode.Value));
       } else if (IsFactor(a) && IsFactor(b) && AreSameTypeAndVariable(a, b)) {
         var node0 = a as FactorVariableTreeNode;
@@ -1137,9 +1141,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         // add all sub trees except for the last
         for (int i = 0; i < a.Subtrees.Count() - 1; i++) add.AddSubtree(a.GetSubtree(i));
         for (int i = 0; i < b.Subtrees.Count() - 1; i++) add.AddSubtree(b.GetSubtree(i));
-        if (IsConstant(a.Subtrees.Last()) && IsConstant(b.Subtrees.Last())) {
+        if (IsNumber(a.Subtrees.Last()) && IsNumber(b.Subtrees.Last())) {
           add.AddSubtree(MakeSum(a.Subtrees.Last(), b.Subtrees.Last()));
-        } else if (IsConstant(a.Subtrees.Last())) {
+        } else if (IsNumber(a.Subtrees.Last())) {
           add.AddSubtree(b.Subtrees.Last());
           add.AddSubtree(a.Subtrees.Last());
         } else {
@@ -1154,12 +1158,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         }
       } else if (IsAddition(b)) {
         return MakeSum(b, a);
-      } else if (IsAddition(a) && IsConstant(b)) {
+      } else if (IsAddition(a) && IsNumber(b)) {
         // a is an addition and b is a constant => append b to a and make sure the constants are merged
         var add = addSymbol.CreateTreeNode();
         // add all sub trees except for the last
         for (int i = 0; i < a.Subtrees.Count() - 1; i++) add.AddSubtree(a.GetSubtree(i));
-        if (IsConstant(a.Subtrees.Last()))
+        if (IsNumber(a.Subtrees.Last()))
           add.AddSubtree(MakeSum(a.Subtrees.Last(), b));
         else {
           add.AddSubtree(a.Subtrees.Last());
@@ -1200,9 +1204,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
                             where node.SubtreeCount == 0
                             group node by GroupId(node) into g
                             select g;
-      var constant = (from node in subtrees.OfType<ConstantTreeNode>()
+      var constant = (from node in subtrees.OfType<NumberTreeNode>()
                       select node.Value).DefaultIfEmpty(0.0).Sum();
-      var unchangedSubtrees = subtrees.Where(t => t.SubtreeCount > 0 || !(t is IVariableTreeNode) && !(t is ConstantTreeNode));
+      var unchangedSubtrees = subtrees.Where(t => t.SubtreeCount > 0 || !(t is IVariableTreeNode) && !(t is NumberTreeNode));
 
       foreach (var variableNodeGroup in groupedVarNodes) {
         var firstNode = variableNodeGroup.First();
@@ -1249,10 +1253,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
 
     private static ISymbolicExpressionTreeNode MakeProduct(ISymbolicExpressionTreeNode a, ISymbolicExpressionTreeNode b) {
-      if (IsConstant(a) && IsConstant(b)) {
+      if (IsNumber(a) && IsNumber(b)) {
         // fold constants
-        return MakeConstant(((ConstantTreeNode)a).Value * ((ConstantTreeNode)b).Value);
-      } else if (IsConstant(a)) {
+        return MakeConstant(((NumberTreeNode)a).Value * ((NumberTreeNode)b).Value);
+      } else if (IsNumber(a)) {
         // a * $ => $ * a
         return MakeProduct(b, a);
       } else if (IsFactor(a) && IsFactor(b) && AreSameTypeAndVariable(a, b)) {
@@ -1263,13 +1267,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         var node0 = a as BinaryFactorVariableTreeNode;
         var node1 = b as BinaryFactorVariableTreeNode;
         return MakeBinFactor(node0.Symbol, node0.VariableName, node0.VariableValue, node0.Weight * node1.Weight);
-      } else if (IsFactor(a) && IsConstant(b)) {
+      } else if (IsFactor(a) && IsNumber(b)) {
         var node0 = a as FactorVariableTreeNode;
-        var node1 = b as ConstantTreeNode;
+        var node1 = b as NumberTreeNode;
         return MakeFactor(node0.Symbol, node0.VariableName, node0.Weights.Select(w => w * node1.Value));
-      } else if (IsBinFactor(a) && IsConstant(b)) {
+      } else if (IsBinFactor(a) && IsNumber(b)) {
         var node0 = a as BinaryFactorVariableTreeNode;
-        var node1 = b as ConstantTreeNode;
+        var node1 = b as NumberTreeNode;
         return MakeBinFactor(node0.Symbol, node0.VariableName, node0.VariableValue, node0.Weight * node1.Value);
       } else if (IsBinFactor(a) && IsFactor(b)) {
         return MakeProduct(b, a);
@@ -1281,16 +1285,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         var wi = Array.IndexOf(varValues, node1.VariableValue);
         if (wi < 0) throw new ArgumentException();
         return MakeBinFactor(node1.Symbol, node1.VariableName, node1.VariableValue, node1.Weight * node0.Weights[wi]);
-      } else if (IsConstant(b) && ((ConstantTreeNode)b).Value == 1.0) {
+      } else if (IsNumber(b) && ((NumberTreeNode)b).Value == 1.0) {
         // $ * 1.0 => $
         return a;
-      } else if (IsConstant(b) && ((ConstantTreeNode)b).Value == 0.0) {
+      } else if (IsNumber(b) && ((NumberTreeNode)b).Value == 0.0) {
         return MakeConstant(0);
-      } else if (IsConstant(b) && IsVariableBase(a)) {
+      } else if (IsNumber(b) && IsVariableBase(a)) {
         // multiply constants into variables weights
-        ((VariableTreeNodeBase)a).Weight *= ((ConstantTreeNode)b).Value;
+        ((VariableTreeNodeBase)a).Weight *= ((NumberTreeNode)b).Value;
         return a;
-      } else if (IsConstant(b) && IsAddition(a) ||
+      } else if (IsNumber(b) && IsAddition(a) ||
           IsFactor(b) && IsAddition(a) ||
           IsBinFactor(b) && IsAddition(a)) {
         // multiply constants into additions
@@ -1320,8 +1324,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         return a;
       } else if (IsAbsolute(a) && IsAbsolute(b)) {
         return MakeAbs(MakeProduct(a.GetSubtree(0), b.GetSubtree(0)));
-      } else if (IsAbsolute(a) && IsConstant(b)) {
-        var constNode = b as ConstantTreeNode;
+      } else if (IsAbsolute(a) && IsNumber(b)) {
+        var constNode = b as NumberTreeNode;
         var posF = Math.Abs(constNode.Value);
         if (constNode.Value > 0) {
           return MakeAbs(MakeProduct(a.GetSubtree(0), MakeConstant(posF)));
@@ -1390,13 +1394,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
                             select g;
       var constantProduct = (from node in subtrees.OfType<VariableTreeNodeBase>()
                              select node.Weight)
-        .Concat(from node in subtrees.OfType<ConstantTreeNode>()
+        .Concat(from node in subtrees.OfType<NumberTreeNode>()
                 select node.Value)
         .DefaultIfEmpty(1.0)
         .Aggregate((c1, c2) => c1 * c2);
 
       var unchangedSubtrees = from tree in subtrees
-                              where tree.SubtreeCount > 0 || !(tree is IVariableTreeNode) && !(tree is ConstantTreeNode)
+                              where tree.SubtreeCount > 0 || !(tree is IVariableTreeNode) && !(tree is NumberTreeNode)
                               select tree;
 
       foreach (var variableNodeGroup in groupedVarNodes) {
@@ -1445,8 +1449,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     /// <param name="x"></param>
     /// <returns>-x</returns>
     private static ISymbolicExpressionTreeNode Negate(ISymbolicExpressionTreeNode x) {
-      if (IsConstant(x)) {
-        ((ConstantTreeNode)x).Value *= -1;
+      if (IsNumber(x)) {
+        ((NumberTreeNode)x).Value *= -1;
       } else if (IsVariableBase(x)) {
         var variableTree = (VariableTreeNodeBase)x;
         variableTree.Weight *= -1.0;
@@ -1482,8 +1486,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     /// <param name="x"></param>
     /// <returns></returns>
     private static ISymbolicExpressionTreeNode Invert(ISymbolicExpressionTreeNode x) {
-      if (IsConstant(x)) {
-        return MakeConstant(1.0 / ((ConstantTreeNode)x).Value);
+      if (IsNumber(x)) {
+        return MakeConstant(1.0 / ((NumberTreeNode)x).Value);
       } else if (IsFactor(x)) {
         var factorNode = (FactorVariableTreeNode)x;
         return MakeFactor(factorNode.Symbol, factorNode.VariableName, factorNode.Weights.Select(w => 1.0 / w));
@@ -1496,9 +1500,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     private static ISymbolicExpressionTreeNode MakeConstant(double value) {
-      ConstantTreeNode constantTreeNode = (ConstantTreeNode)(constSymbol.CreateTreeNode());
-      constantTreeNode.Value = value;
-      return constantTreeNode;
+      NumberTreeNode numberTreeNode = (NumberTreeNode)(numberSymbol.CreateTreeNode());
+      numberTreeNode.Value = value;
+      return numberTreeNode;
     }
 
     private static ISymbolicExpressionTreeNode MakeFactor(FactorVariable sy, string variableName, IEnumerable<double> weights) {

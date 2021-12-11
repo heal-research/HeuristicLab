@@ -89,11 +89,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       var estimationLimits = EstimationLimitsParameter.ActualValue;
       var applyLinearScaling = ApplyLinearScalingParameter.ActualValue.Value;
 
-      if (UseConstantOptimization) {
-        SymbolicRegressionConstantOptimizationEvaluator.OptimizeConstants(interpreter, tree, problemData, rows,
+      if (UseParameterOptimization) {
+        SymbolicRegressionParameterOptimizationEvaluator.OptimizeParameters(interpreter, tree, problemData, rows,
           false,
-          ConstantOptimizationIterations,
-          ConstantOptimizationUpdateVariableWeights,
+          ParameterOptimizationIterations,
+          ParameterOptimizationUpdateVariableWeights,
           estimationLimits.Lower,
           estimationLimits.Upper);
       } else {

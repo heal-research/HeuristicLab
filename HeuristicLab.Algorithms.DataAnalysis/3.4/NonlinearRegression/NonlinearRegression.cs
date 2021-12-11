@@ -262,7 +262,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         }
       }
 
-      if (!SymbolicRegressionConstantOptimizationEvaluator.CanOptimizeConstants(tree)) throw new ArgumentException("The optimizer does not support the specified model structure.");
+      if (!SymbolicRegressionParameterOptimizationEvaluator.CanOptimizeParameters(tree)) throw new ArgumentException("The optimizer does not support the specified model structure.");
 
       // initialize constants randomly
       if (rand != null) {
@@ -274,9 +274,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       }
       var interpreter = new SymbolicDataAnalysisExpressionTreeLinearInterpreter();
 
-      SymbolicRegressionConstantOptimizationEvaluator.OptimizeConstants(interpreter, tree, problemData, problemData.TrainingIndices,
+      SymbolicRegressionParameterOptimizationEvaluator.OptimizeParameters(interpreter, tree, problemData, problemData.TrainingIndices,
         applyLinearScaling: applyLinearScaling, maxIterations: maxIterations,
-        updateVariableWeights: false, updateConstantsInTree: true);
+        updateVariableWeights: false, updateParametersInTree: true);
 
       var model = new SymbolicRegressionModel(problemData.TargetVariable, tree, (ISymbolicDataAnalysisExpressionTreeInterpreter)interpreter.Clone());
       if (applyLinearScaling)

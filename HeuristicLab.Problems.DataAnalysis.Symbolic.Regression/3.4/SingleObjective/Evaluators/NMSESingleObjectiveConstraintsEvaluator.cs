@@ -45,7 +45,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     public IFixedValueParameter<BoolValue> OptimizerParametersParameter =>
       (IFixedValueParameter<BoolValue>)Parameters[OptimizeParametersParameterName];
 
-    public IFixedValueParameter<IntValue> ConstantOptimizationIterationsParameter =>
+    public IFixedValueParameter<IntValue> ParameterOptimizationIterationsParameter =>
       (IFixedValueParameter<IntValue>)Parameters[ParameterOptimizationIterationsParameterName];
 
     public IFixedValueParameter<BoolValue> UseSoftConstraintsParameter =>
@@ -61,9 +61,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       set => OptimizerParametersParameter.Value.Value = value;
     }
 
-    public int ConstantOptimizationIterations {
-      get => ConstantOptimizationIterationsParameter.Value.Value;
-      set => ConstantOptimizationIterationsParameter.Value.Value = value;
+    public int ParameterOptimizationIterations {
+      get => ParameterOptimizationIterationsParameter.Value.Value;
+      set => ParameterOptimizationIterationsParameter.Value.Value = value;
     }
 
     public bool UseSoftConstraints {
@@ -108,7 +108,17 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     }
 
     [StorableHook(HookType.AfterDeserialization)]
-    private void AfterDeserialization() { }
+    private void AfterDeserialization() {
+      if (!Parameters.ContainsKey(ParameterOptimizationIterationsParameterName)) {
+        if (Parameters.ContainsKey("ParameterOptimizationIterations")) {
+          Parameters.Add(new FixedValueParameter<IntValue>(ParameterOptimizationIterationsParameterName, "Define how many parameter optimization steps should be performed (default: 10).", (IntValue)Parameters["ParameterOptimizationIterations"].ActualValue));
+          Parameters.Remove("ParameterOptimizationIterations");
+        } else {
+          Parameters.Add(new FixedValueParameter<IntValue>(ParameterOptimizationIterationsParameterName, "Define how many parameter optimization steps should be performed (default: 10).", new IntValue(10)));
+        }
+      }
+
+    }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new NMSESingleObjectiveConstraintsEvaluator(this, cloner);
@@ -125,8 +135,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       var applyLinearScaling = ApplyLinearScalingParameter.ActualValue.Value;
 
       if (OptimizeParameters) {
-        SymbolicRegressionConstantOptimizationEvaluator.OptimizeConstants(interpreter, tree, problemData, rows,
-          false, ConstantOptimizationIterations, true,
+        SymbolicRegressionParameterOptimizationEvaluator.OptimizeParameters(interpreter, tree, problemData, rows,
+          false, ParameterOptimizationIterations, true,
           estimationLimits.Lower, estimationLimits.Upper);
       } else {
         if (applyLinearScaling) {

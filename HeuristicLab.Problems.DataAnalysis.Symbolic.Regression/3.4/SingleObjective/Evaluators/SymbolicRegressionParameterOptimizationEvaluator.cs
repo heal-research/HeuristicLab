@@ -31,34 +31,34 @@ using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
-  [Item("Constant Optimization Evaluator", "Calculates Pearson R² of a symbolic regression solution and optimizes the constant used.")]
+  [Item("Parameter Optimization Evaluator", "Calculates Pearson R² of a symbolic regression solution and optimizes the parameters used.")]
   [StorableType("24B68851-036D-4446-BD6F-3823E9028FF4")]
-  public class SymbolicRegressionConstantOptimizationEvaluator : SymbolicRegressionSingleObjectiveEvaluator {
-    private const string ConstantOptimizationIterationsParameterName = "ConstantOptimizationIterations";
-    private const string ConstantOptimizationImprovementParameterName = "ConstantOptimizationImprovement";
-    private const string ConstantOptimizationProbabilityParameterName = "ConstantOptimizationProbability";
-    private const string ConstantOptimizationRowsPercentageParameterName = "ConstantOptimizationRowsPercentage";
-    private const string UpdateConstantsInTreeParameterName = "UpdateConstantsInSymbolicExpressionTree";
+  public class SymbolicRegressionParameterOptimizationEvaluator : SymbolicRegressionSingleObjectiveEvaluator {
+    private const string ParameterOptimizationIterationsParameterName = "ParameterOptimizationIterations";
+    private const string ParameterOptimizationImprovementParameterName = "ParameterOptimizationImprovement";
+    private const string ParameterOptimizationProbabilityParameterName = "ParameterOptimizationProbability";
+    private const string ParameterOptimizationRowsPercentageParameterName = "ParameterOptimizationRowsPercentage";
+    private const string UpdateParametersInTreeParameterName = "UpdateParametersInSymbolicExpressionTree";
     private const string UpdateVariableWeightsParameterName = "Update Variable Weights";
 
-    private const string FunctionEvaluationsResultParameterName = "Constants Optimization Function Evaluations";
-    private const string GradientEvaluationsResultParameterName = "Constants Optimization Gradient Evaluations";
+    private const string FunctionEvaluationsResultParameterName = "Parameters Optimization Function Evaluations";
+    private const string GradientEvaluationsResultParameterName = "Parameters Optimization Gradient Evaluations";
     private const string CountEvaluationsParameterName = "Count Function and Gradient Evaluations";
 
-    public IFixedValueParameter<IntValue> ConstantOptimizationIterationsParameter {
-      get { return (IFixedValueParameter<IntValue>)Parameters[ConstantOptimizationIterationsParameterName]; }
+    public IFixedValueParameter<IntValue> ParameterOptimizationIterationsParameter {
+      get { return (IFixedValueParameter<IntValue>)Parameters[ParameterOptimizationIterationsParameterName]; }
     }
-    public IFixedValueParameter<DoubleValue> ConstantOptimizationImprovementParameter {
-      get { return (IFixedValueParameter<DoubleValue>)Parameters[ConstantOptimizationImprovementParameterName]; }
+    public IFixedValueParameter<DoubleValue> ParameterOptimizationImprovementParameter {
+      get { return (IFixedValueParameter<DoubleValue>)Parameters[ParameterOptimizationImprovementParameterName]; }
     }
-    public IFixedValueParameter<PercentValue> ConstantOptimizationProbabilityParameter {
-      get { return (IFixedValueParameter<PercentValue>)Parameters[ConstantOptimizationProbabilityParameterName]; }
+    public IFixedValueParameter<PercentValue> ParameterOptimizationProbabilityParameter {
+      get { return (IFixedValueParameter<PercentValue>)Parameters[ParameterOptimizationProbabilityParameterName]; }
     }
-    public IFixedValueParameter<PercentValue> ConstantOptimizationRowsPercentageParameter {
-      get { return (IFixedValueParameter<PercentValue>)Parameters[ConstantOptimizationRowsPercentageParameterName]; }
+    public IFixedValueParameter<PercentValue> ParameterOptimizationRowsPercentageParameter {
+      get { return (IFixedValueParameter<PercentValue>)Parameters[ParameterOptimizationRowsPercentageParameterName]; }
     }
-    public IFixedValueParameter<BoolValue> UpdateConstantsInTreeParameter {
-      get { return (IFixedValueParameter<BoolValue>)Parameters[UpdateConstantsInTreeParameterName]; }
+    public IFixedValueParameter<BoolValue> UpdateParametersInTreeParameter {
+      get { return (IFixedValueParameter<BoolValue>)Parameters[UpdateParametersInTreeParameterName]; }
     }
     public IFixedValueParameter<BoolValue> UpdateVariableWeightsParameter {
       get { return (IFixedValueParameter<BoolValue>)Parameters[UpdateVariableWeightsParameterName]; }
@@ -75,21 +75,21 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     }
 
 
-    public IntValue ConstantOptimizationIterations {
-      get { return ConstantOptimizationIterationsParameter.Value; }
+    public IntValue ParameterOptimizationIterations {
+      get { return ParameterOptimizationIterationsParameter.Value; }
     }
-    public DoubleValue ConstantOptimizationImprovement {
-      get { return ConstantOptimizationImprovementParameter.Value; }
+    public DoubleValue ParameterOptimizationImprovement {
+      get { return ParameterOptimizationImprovementParameter.Value; }
     }
-    public PercentValue ConstantOptimizationProbability {
-      get { return ConstantOptimizationProbabilityParameter.Value; }
+    public PercentValue ParameterOptimizationProbability {
+      get { return ParameterOptimizationProbabilityParameter.Value; }
     }
-    public PercentValue ConstantOptimizationRowsPercentage {
-      get { return ConstantOptimizationRowsPercentageParameter.Value; }
+    public PercentValue ParameterOptimizationRowsPercentage {
+      get { return ParameterOptimizationRowsPercentageParameter.Value; }
     }
-    public bool UpdateConstantsInTree {
-      get { return UpdateConstantsInTreeParameter.Value.Value; }
-      set { UpdateConstantsInTreeParameter.Value.Value = value; }
+    public bool UpdateParametersInTree {
+      get { return UpdateParametersInTreeParameter.Value.Value; }
+      set { UpdateParametersInTreeParameter.Value.Value = value; }
     }
 
     public bool UpdateVariableWeights {
@@ -107,55 +107,110 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     }
 
     [StorableConstructor]
-    protected SymbolicRegressionConstantOptimizationEvaluator(StorableConstructorFlag _) : base(_) { }
-    protected SymbolicRegressionConstantOptimizationEvaluator(SymbolicRegressionConstantOptimizationEvaluator original, Cloner cloner)
+    protected SymbolicRegressionParameterOptimizationEvaluator(StorableConstructorFlag _) : base(_) { }
+    protected SymbolicRegressionParameterOptimizationEvaluator(SymbolicRegressionParameterOptimizationEvaluator original, Cloner cloner)
       : base(original, cloner) {
     }
-    public SymbolicRegressionConstantOptimizationEvaluator()
+    public SymbolicRegressionParameterOptimizationEvaluator()
       : base() {
-      Parameters.Add(new FixedValueParameter<IntValue>(ConstantOptimizationIterationsParameterName, "Determines how many iterations should be calculated while optimizing the constant of a symbolic expression tree (0 indicates other or default stopping criterion).", new IntValue(10)));
-      Parameters.Add(new FixedValueParameter<DoubleValue>(ConstantOptimizationImprovementParameterName, "Determines the relative improvement which must be achieved in the constant optimization to continue with it (0 indicates other or default stopping criterion).", new DoubleValue(0)) { Hidden = true });
-      Parameters.Add(new FixedValueParameter<PercentValue>(ConstantOptimizationProbabilityParameterName, "Determines the probability that the constants are optimized", new PercentValue(1)));
-      Parameters.Add(new FixedValueParameter<PercentValue>(ConstantOptimizationRowsPercentageParameterName, "Determines the percentage of the rows which should be used for constant optimization", new PercentValue(1)));
-      Parameters.Add(new FixedValueParameter<BoolValue>(UpdateConstantsInTreeParameterName, "Determines if the constants in the tree should be overwritten by the optimized constants.", new BoolValue(true)) { Hidden = true });
+      Parameters.Add(new FixedValueParameter<IntValue>(ParameterOptimizationIterationsParameterName, "Determines how many iterations should be calculated while optimizing the parameter of a symbolic expression tree (0 indicates other or default stopping criterion).", new IntValue(10)));
+      Parameters.Add(new FixedValueParameter<DoubleValue>(ParameterOptimizationImprovementParameterName, "Determines the relative improvement which must be achieved in the parameter optimization to continue with it (0 indicates other or default stopping criterion).", new DoubleValue(0)) { Hidden = true });
+      Parameters.Add(new FixedValueParameter<PercentValue>(ParameterOptimizationProbabilityParameterName, "Determines the probability that the parameters are optimized", new PercentValue(1)));
+      Parameters.Add(new FixedValueParameter<PercentValue>(ParameterOptimizationRowsPercentageParameterName, "Determines the percentage of the rows which should be used for parameter optimization", new PercentValue(1)));
+      Parameters.Add(new FixedValueParameter<BoolValue>(UpdateParametersInTreeParameterName, "Determines if the parameters in the tree should be overwritten by the optimized parameters.", new BoolValue(true)) { Hidden = true });
       Parameters.Add(new FixedValueParameter<BoolValue>(UpdateVariableWeightsParameterName, "Determines if the variable weights in the tree should be  optimized.", new BoolValue(true)) { Hidden = true });
 
       Parameters.Add(new FixedValueParameter<BoolValue>(CountEvaluationsParameterName, "Determines if function and gradient evaluation should be counted.", new BoolValue(false)));
-      Parameters.Add(new ResultParameter<IntValue>(FunctionEvaluationsResultParameterName, "The number of function evaluations performed by the constants optimization evaluator", "Results", new IntValue()));
-      Parameters.Add(new ResultParameter<IntValue>(GradientEvaluationsResultParameterName, "The number of gradient evaluations performed by the constants optimization evaluator", "Results", new IntValue()));
+      Parameters.Add(new ResultParameter<IntValue>(FunctionEvaluationsResultParameterName, "The number of function evaluations performed by the parameters optimization evaluator", "Results", new IntValue()));
+      Parameters.Add(new ResultParameter<IntValue>(GradientEvaluationsResultParameterName, "The number of gradient evaluations performed by the parameters optimization evaluator", "Results", new IntValue()));
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new SymbolicRegressionConstantOptimizationEvaluator(this, cloner);
+      return new SymbolicRegressionParameterOptimizationEvaluator(this, cloner);
     }
 
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
-      if (!Parameters.ContainsKey(UpdateConstantsInTreeParameterName))
-        Parameters.Add(new FixedValueParameter<BoolValue>(UpdateConstantsInTreeParameterName, "Determines if the constants in the tree should be overwritten by the optimized constants.", new BoolValue(true)));
+      if (!Parameters.ContainsKey(UpdateParametersInTreeParameterName)) {
+        if (Parameters.ContainsKey("UpdateConstantsInSymbolicExpressionTree")) {
+          Parameters.Add(new FixedValueParameter<BoolValue>(UpdateParametersInTreeParameterName, "Determines if the parameters in the tree should be overwritten by the optimized parameters.", (BoolValue)Parameters["UpdateConstantsInSymbolicExpressionTree"].ActualValue));
+          Parameters.Remove("UpdateConstantsInSymbolicExpressionTree");
+        } else {
+          Parameters.Add(new FixedValueParameter<BoolValue>(UpdateParametersInTreeParameterName, "Determines if the parameters in the tree should be overwritten by the optimized parameters.", new BoolValue(true)));
+        }
+      }
+
       if (!Parameters.ContainsKey(UpdateVariableWeightsParameterName))
         Parameters.Add(new FixedValueParameter<BoolValue>(UpdateVariableWeightsParameterName, "Determines if the variable weights in the tree should be  optimized.", new BoolValue(true)));
 
       if (!Parameters.ContainsKey(CountEvaluationsParameterName))
         Parameters.Add(new FixedValueParameter<BoolValue>(CountEvaluationsParameterName, "Determines if function and gradient evaluation should be counted.", new BoolValue(false)));
 
-      if (!Parameters.ContainsKey(FunctionEvaluationsResultParameterName))
-        Parameters.Add(new ResultParameter<IntValue>(FunctionEvaluationsResultParameterName, "The number of function evaluations performed by the constants optimization evaluator", "Results", new IntValue()));
-      if (!Parameters.ContainsKey(GradientEvaluationsResultParameterName))
-        Parameters.Add(new ResultParameter<IntValue>(GradientEvaluationsResultParameterName, "The number of gradient evaluations performed by the constants optimization evaluator", "Results", new IntValue()));
+      if (!Parameters.ContainsKey(FunctionEvaluationsResultParameterName)) {
+        if (Parameters.ContainsKey("Constants Optimization Function Evaluations")) {
+          Parameters.Remove("Constants Optimization Function Evaluations");
+        }
+        Parameters.Add(new ResultParameter<IntValue>(FunctionEvaluationsResultParameterName, "The number of function evaluations performed by the parameters optimization evaluator", "Results", new IntValue()));
+      }
+
+      if (!Parameters.ContainsKey(GradientEvaluationsResultParameterName)) {
+        if (Parameters.ContainsKey("Constants Optimization Gradient Evaluations")) {
+          Parameters.Remove("Constants Optimization Gradient Evaluations");
+        }
+        Parameters.Add(new ResultParameter<IntValue>(GradientEvaluationsResultParameterName, "The number of gradient evaluations performed by the parameters optimization evaluator", "Results", new IntValue()));
+      }
+
+      if (!Parameters.ContainsKey(ParameterOptimizationIterationsParameterName)) {
+        if (Parameters.ContainsKey("ConstantOptimizationIterations")) {
+          Parameters.Add(new FixedValueParameter<IntValue>(ParameterOptimizationIterationsParameterName, "Determines how many iterations should be calculated while optimizing the parameter of a symbolic expression tree (0 indicates other or default stopping criterion).", (IntValue)Parameters["ConstantOptimizationIterations"].ActualValue));
+          Parameters.Remove("ConstantOptimizationIterations");
+        } else {
+          Parameters.Add(new FixedValueParameter<IntValue>(ParameterOptimizationIterationsParameterName, "Determines how many iterations should be calculated while optimizing the parameter of a symbolic expression tree (0 indicates other or default stopping criterion).", new IntValue(10)));
+        }
+      }
+
+      if (!Parameters.ContainsKey(ParameterOptimizationImprovementParameterName)) {
+        if (Parameters.ContainsKey("CosntantOptimizationImprovement")) {
+          Parameters.Add(new FixedValueParameter<DoubleValue>(ParameterOptimizationImprovementParameterName, "Determines the relative improvement which must be achieved in the parameter optimization to continue with it (0 indicates other or default stopping criterion).",
+            (DoubleValue)Parameters["CosntantOptimizationImprovement"].ActualValue) { Hidden = true });
+          Parameters.Remove("CosntantOptimizationImprovement");
+        } else {
+          Parameters.Add(new FixedValueParameter<DoubleValue>(ParameterOptimizationImprovementParameterName, "Determines the relative improvement which must be achieved in the parameter optimization to continue with it (0 indicates other or default stopping criterion).", new DoubleValue(0)) { Hidden = true });
+        }
+      }
+
+      if (!Parameters.ContainsKey(ParameterOptimizationProbabilityParameterName)) {
+        if (Parameters.ContainsKey("ConstantOptimizationProbability")) {
+          Parameters.Add(new FixedValueParameter<PercentValue>(ParameterOptimizationProbabilityParameterName, "Determines the probability that the parameters are optimized",
+            (PercentValue)Parameters["ConstantOptimizationProbability"].ActualValue));
+          Parameters.Remove("ConstantOptimizationProbability");
+        } else {
+          Parameters.Add(new FixedValueParameter<PercentValue>(ParameterOptimizationProbabilityParameterName, "Determines the probability that the parameters are optimized", new PercentValue(1)));
+        }
+      }
+
+      if (!Parameters.ContainsKey(ParameterOptimizationRowsPercentageParameterName)) {
+        if (Parameters.ContainsKey("ConstantOptimizationRowsPercentage")) {
+          Parameters.Add(new FixedValueParameter<PercentValue>(ParameterOptimizationRowsPercentageParameterName, "Determines the percentage of the rows which should be used for parameter optimization", (PercentValue)Parameters["ConstantOptimizationRowsPercentage"].ActualValue));
+          Parameters.Remove("ConstantOptimizationRowsPercentage");
+        } else {
+          Parameters.Add(new FixedValueParameter<PercentValue>(ParameterOptimizationRowsPercentageParameterName, "Determines the percentage of the rows which should be used for parameter optimization", new PercentValue(1)));
+        }
+        
+      }
     }
 
     private static readonly object locker = new object();
     public override IOperation InstrumentedApply() {
       var solution = SymbolicExpressionTreeParameter.ActualValue;
       double quality;
-      if (RandomParameter.ActualValue.NextDouble() < ConstantOptimizationProbability.Value) {
-        IEnumerable<int> constantOptimizationRows = GenerateRowsToEvaluate(ConstantOptimizationRowsPercentage.Value);
+      if (RandomParameter.ActualValue.NextDouble() < ParameterOptimizationProbability.Value) {
+        IEnumerable<int> parameterOptimizationRows = GenerateRowsToEvaluate(ParameterOptimizationRowsPercentage.Value);
         var counter = new EvaluationsCounter();
-        quality = OptimizeConstants(SymbolicDataAnalysisTreeInterpreterParameter.ActualValue, solution, ProblemDataParameter.ActualValue,
-           constantOptimizationRows, ApplyLinearScalingParameter.ActualValue.Value, ConstantOptimizationIterations.Value, updateVariableWeights: UpdateVariableWeights, lowerEstimationLimit: EstimationLimitsParameter.ActualValue.Lower, upperEstimationLimit: EstimationLimitsParameter.ActualValue.Upper, updateConstantsInTree: UpdateConstantsInTree, counter: counter);
+        quality = OptimizeParameters(SymbolicDataAnalysisTreeInterpreterParameter.ActualValue, solution, ProblemDataParameter.ActualValue,
+           parameterOptimizationRows, ApplyLinearScalingParameter.ActualValue.Value, ParameterOptimizationIterations.Value, updateVariableWeights: UpdateVariableWeights, lowerEstimationLimit: EstimationLimitsParameter.ActualValue.Lower, upperEstimationLimit: EstimationLimitsParameter.ActualValue.Upper, updateParametersInTree: UpdateParametersInTree, counter: counter);
 
-        if (ConstantOptimizationRowsPercentage.Value != RelativeNumberOfEvaluatedSamplesParameter.ActualValue.Value) {
+        if (ParameterOptimizationRowsPercentage.Value != RelativeNumberOfEvaluatedSamplesParameter.ActualValue.Value) {
           var evaluationRows = GenerateRowsToEvaluate();
           quality = SymbolicRegressionSingleObjectivePearsonRSquaredEvaluator.Calculate(SymbolicDataAnalysisTreeInterpreterParameter.ActualValue, solution, EstimationLimitsParameter.ActualValue.Lower, EstimationLimitsParameter.ActualValue.Upper, ProblemDataParameter.ActualValue, evaluationRows, ApplyLinearScalingParameter.ActualValue.Value);
         }
@@ -202,36 +257,36 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       public int GradientEvaluations = 0;
     }
 
-    public static double OptimizeConstants(ISymbolicDataAnalysisExpressionTreeInterpreter interpreter,
+    public static double OptimizeParameters(ISymbolicDataAnalysisExpressionTreeInterpreter interpreter,
       ISymbolicExpressionTree tree, IRegressionProblemData problemData, IEnumerable<int> rows, bool applyLinearScaling,
       int maxIterations, bool updateVariableWeights = true,
       double lowerEstimationLimit = double.MinValue, double upperEstimationLimit = double.MaxValue,
-      bool updateConstantsInTree = true, Action<double[], double, object> iterationCallback = null, EvaluationsCounter counter = null) {
+      bool updateParametersInTree = true, Action<double[], double, object> iterationCallback = null, EvaluationsCounter counter = null) {
 
-      // Numeric constants in the tree become variables for parameter optimization.
+      // Numeric parameters in the tree become variables for parameter optimization.
       // Variables in the tree become parameters (fixed values) for parameter optimization.
       // For each parameter (variable in the original tree) we store the 
       // variable name, variable value (for factor vars) and lag as a DataForVariable object.
       // A dictionary is used to find parameters
-      double[] initialConstants;
+      double[] initialParameters;
       var parameters = new List<TreeToAutoDiffTermConverter.DataForVariable>();
 
       TreeToAutoDiffTermConverter.ParametricFunction func;
       TreeToAutoDiffTermConverter.ParametricFunctionGradient func_grad;
-      if (!TreeToAutoDiffTermConverter.TryConvertToAutoDiff(tree, updateVariableWeights, applyLinearScaling, out parameters, out initialConstants, out func, out func_grad))
-        throw new NotSupportedException("Could not optimize constants of symbolic expression tree due to not supported symbols used in the tree.");
+      if (!TreeToAutoDiffTermConverter.TryConvertToAutoDiff(tree, updateVariableWeights, applyLinearScaling, out parameters, out initialParameters, out func, out func_grad))
+        throw new NotSupportedException("Could not optimize parameters of symbolic expression tree due to not supported symbols used in the tree.");
       if (parameters.Count == 0) return 0.0; // constant expressions always have a R² of 0.0 
       var parameterEntries = parameters.ToArray(); // order of entries must be the same for x
 
-      // extract inital constants
+      // extract inital parameters
       double[] c;
       if (applyLinearScaling) {
-        c = new double[initialConstants.Length + 2];
+        c = new double[initialParameters.Length + 2];
         c[0] = 0.0;
         c[1] = 1.0;
-        Array.Copy(initialConstants, 0, c, 2, initialConstants.Length);
+        Array.Copy(initialParameters, 0, c, 2, initialParameters.Length);
       } else {
-        c = (double[])initialConstants.Clone();
+        c = (double[])initialParameters.Clone();
       }
 
       double originalQuality = SymbolicRegressionSingleObjectivePearsonRSquaredEvaluator.Calculate(interpreter, tree, lowerEstimationLimit, upperEstimationLimit, problemData, rows, applyLinearScaling);
@@ -282,28 +337,28 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       counter.FunctionEvaluations += rowEvaluationsCounter.FunctionEvaluations / n;
       counter.GradientEvaluations += rowEvaluationsCounter.GradientEvaluations / n;
 
-      //retVal == -7  => constant optimization failed due to wrong gradient
+      //retVal == -7  => parameter optimization failed due to wrong gradient
       //          -8  => optimizer detected  NAN / INF  in  the target
       //                 function and/ or gradient
       if (retVal != -7 && retVal != -8) {
         if (applyLinearScaling) {
           var tmp = new double[c.Length - 2];
           Array.Copy(c, 2, tmp, 0, tmp.Length);
-          UpdateConstants(tree, tmp, updateVariableWeights);
-        } else UpdateConstants(tree, c, updateVariableWeights);
+          UpdateParameters(tree, tmp, updateVariableWeights);
+        } else UpdateParameters(tree, c, updateVariableWeights);
       }
       var quality = SymbolicRegressionSingleObjectivePearsonRSquaredEvaluator.Calculate(interpreter, tree, lowerEstimationLimit, upperEstimationLimit, problemData, rows, applyLinearScaling);
 
-      if (!updateConstantsInTree) UpdateConstants(tree, initialConstants, updateVariableWeights);
+      if (!updateParametersInTree) UpdateParameters(tree, initialParameters, updateVariableWeights);
 
       if (originalQuality - quality > 0.001 || double.IsNaN(quality)) {
-        UpdateConstants(tree, initialConstants, updateVariableWeights);
+        UpdateParameters(tree, initialParameters, updateVariableWeights);
         return originalQuality;
       }
       return quality;
     }
 
-    private static void UpdateConstants(ISymbolicExpressionTree tree, double[] constants, bool updateVariableWeights) {
+    private static void UpdateParameters(ISymbolicExpressionTree tree, double[] parameters, bool updateVariableWeights) {
       int i = 0;
       foreach (var node in tree.Root.IterateNodesPrefix().OfType<SymbolicExpressionTreeTerminalNode>()) {
         NumberTreeNode numberTreeNode = node as NumberTreeNode;
@@ -312,12 +367,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
         if (numberTreeNode != null) {
           if (numberTreeNode.Parent.Symbol is Power 
               && numberTreeNode.Parent.GetSubtree(1) == numberTreeNode) continue; // exponents in powers are not optimizated (see TreeToAutoDiffTermConverter)
-          numberTreeNode.Value = constants[i++];
+          numberTreeNode.Value = parameters[i++];
         } else if (updateVariableWeights && variableTreeNodeBase != null)
-          variableTreeNodeBase.Weight = constants[i++];
+          variableTreeNodeBase.Weight = parameters[i++];
         else if (factorVarTreeNode != null) {
           for (int j = 0; j < factorVarTreeNode.Weights.Length; j++)
-            factorVarTreeNode.Weights[j] = constants[i++];
+            factorVarTreeNode.Weights[j] = parameters[i++];
         }
       }
     }
@@ -339,7 +394,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
         counter.GradientEvaluations++;
       };
     }
-    public static bool CanOptimizeConstants(ISymbolicExpressionTree tree) {
+    public static bool CanOptimizeParameters(ISymbolicExpressionTree tree) {
       return TreeToAutoDiffTermConverter.IsCompatible(tree);
     }
   }

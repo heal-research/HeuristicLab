@@ -114,16 +114,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       double beta = linearScalingCalculator.Beta;
       if (linearScalingCalculator.ErrorState != OnlineCalculatorError.None) return;
 
-      NumTreeNode alphaTreeNode = null;
-      NumTreeNode betaTreeNode = null;
+      NumberTreeNode alphaTreeNode = null;
+      NumberTreeNode betaTreeNode = null;
       // check if model has a structure that can be re-used for scaling
       var startNode = SymbolicExpressionTree.Root.GetSubtree(0);
       var addNode = startNode.GetSubtree(0);
       if (addNode.Symbol is Addition && addNode.SubtreeCount == 2) {
-        alphaTreeNode = (NumTreeNode)addNode.Subtrees.LastOrDefault(n => n is NumTreeNode);
+        alphaTreeNode = (NumberTreeNode)addNode.Subtrees.LastOrDefault(n => n is NumberTreeNode);
         var mulNode = addNode.Subtrees.FirstOrDefault(n => n.Symbol is Multiplication);
         if (mulNode != null) {
-          betaTreeNode = (NumTreeNode)mulNode.Subtrees.LastOrDefault(n => n is NumTreeNode);
+          betaTreeNode = (NumberTreeNode)mulNode.Subtrees.LastOrDefault(n => n is NumberTreeNode);
         }
       }
       // if tree structure matches the structure necessary for linear scaling then reuse the existing tree nodes
@@ -145,7 +145,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       } else {
         var addition = new Addition();
         var node = addition.CreateTreeNode();
-        var alphaConst = MakeConstant(alpha);
+        var alphaConst = MakeNumber(alpha);
         node.AddSubtree(treeNode);
         node.AddSubtree(alphaConst);
         return node;
@@ -156,17 +156,17 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       if (beta.IsAlmost(1.0)) {
         return treeNode;
       } else {
-        var multipliciation = new Multiplication();
-        var node = multipliciation.CreateTreeNode();
-        var betaConst = MakeConstant(beta);
+        var multiplication = new Multiplication();
+        var node = multiplication.CreateTreeNode();
+        var betaConst = MakeNumber(beta);
         node.AddSubtree(treeNode);
         node.AddSubtree(betaConst);
         return node;
       }
     }
 
-    private static ISymbolicExpressionTreeNode MakeConstant(double c) {
-      var node = (NumTreeNode)(new Num()).CreateTreeNode();
+    private static ISymbolicExpressionTreeNode MakeNumber(double c) {
+      var node = (NumberTreeNode)(new Number()).CreateTreeNode();
       node.Value = c;
       return node;
     }

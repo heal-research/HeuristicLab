@@ -35,7 +35,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     private static readonly Exponential exp = new Exponential();
     private static readonly Sine sin = new Sine();
     private static readonly Cosine cos = new Cosine();
-    private static readonly Num Num = new Num();
+    private static readonly Number number = new Number();
 
     private static ISymbolicExpressionTreeNode ActualRoot(this ISymbolicExpressionTree tree) => tree.Root.GetSubtree(0).GetSubtree(0);
     public static ulong HashFunction(byte[] input) => HashUtil.DJBHash(input);
@@ -65,7 +65,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     public static HashNode<ISymbolicExpressionTreeNode> ToHashNode(this ISymbolicExpressionTreeNode node, bool strict = false) {
       var symbol = node.Symbol;
       var name = symbol.Name;
-      if (node is NumTreeNode constantNode) {
+      if (node is NumberTreeNode constantNode) {
         name = strict ? constantNode.Value.ToString() : symbol.Name;
       } else if (node is VariableTreeNode variableNode) {
         name = strict ? variableNode.Weight.ToString() + variableNode.VariableName : variableNode.VariableName;
@@ -221,8 +221,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             var variableTreeNode = (VariableTreeNode)treeNodes[i];
             variableTreeNode.VariableName = variable.VariableName;
             variableTreeNode.Weight = variable.Weight;
-          } else if (node.Data is NumTreeNode @const) {
-            var constantTreeNode = (NumTreeNode)treeNodes[i];
+          } else if (node.Data is NumberTreeNode @const) {
+            var constantTreeNode = (NumberTreeNode)treeNodes[i];
             constantTreeNode.Value = @const.Value;
           }
           continue;
@@ -284,11 +284,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           continue;
 
         var symbol = child.Data.Symbol;
-        if (child.Data is NumTreeNode firstConst) {
+        if (child.Data is NumberTreeNode firstConst) {
           // fold sibling constant nodes into the first constant
           for (int k = j + 1; k < children.Length; ++k) {
             var sibling = nodes[children[k]];
-            if (sibling.Data is NumTreeNode otherConst) {
+            if (sibling.Data is NumberTreeNode otherConst) {
               sibling.Enabled = false;
               node.Arity--;
               firstConst.Value *= otherConst.Value;
@@ -300,7 +300,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           // fold sibling constant nodes into the variable weight
           for (int k = j + 1; k < children.Length; ++k) {
             var sibling = nodes[children[k]];
-            if (sibling.Data is NumTreeNode constantNode) {
+            if (sibling.Data is NumberTreeNode constantNode) {
               sibling.Enabled = false;
               node.Arity--;
               variable.Weight *= constantNode.Value;
@@ -328,7 +328,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         }
 
         if (node.Arity == 0) { // if everything is simplified this node becomes constant
-          var constantTreeNode = Num.CreateTreeNode<NumTreeNode>();
+          var constantTreeNode = number.CreateTreeNode<NumberTreeNode>();
           constantTreeNode.Value = 1;
           nodes[i] = constantTreeNode.ToHashNode();
         } else if (node.Arity == 1) { // when i have only 1 arg left i can skip this node
@@ -343,16 +343,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
       var tmp = nodes;
 
-      if (children.All(x => tmp[x].Data.Symbol is Num)) {
-        var v = ((NumTreeNode)nodes[children.First()].Data).Value;
+      if (children.All(x => tmp[x].Data.Symbol is Number)) {
+        var v = ((NumberTreeNode)nodes[children.First()].Data).Value;
         if (node.Arity == 1) {
           v = 1 / v;
         } else if (node.Arity > 1) {
           foreach (var j in children.Skip(1)) {
-            v /= ((NumTreeNode)nodes[j].Data).Value;
+            v /= ((NumberTreeNode)nodes[j].Data).Value;
           }
         }
-        var constantTreeNode = Num.CreateTreeNode<NumTreeNode>();
+        var constantTreeNode = number.CreateTreeNode<NumberTreeNode>();
         constantTreeNode.Value = v;
         nodes[i] = constantTreeNode.ToHashNode();
         return;
@@ -367,7 +367,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           node.Arity -= 2; // nominator + denominator
         }
         if (node.Arity == 0) {
-          var constantTreeNode = Num.CreateTreeNode<NumTreeNode>();
+          var constantTreeNode = number.CreateTreeNode<NumberTreeNode>();
           constantTreeNode.Value = 1; // x / x = 1
           nodes[i] = constantTreeNode.ToHashNode();
         }
@@ -382,7 +382,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       var parentSymbol = parent.Data.Symbol;
       var childSymbol = child.Data.Symbol;
 
-      if (childSymbol is Num) {
+      if (childSymbol is Number) {
         nodes[i].Enabled = false;
       } else if ((parentSymbol is Exponential && childSymbol is Logarithm) || (parentSymbol is Logarithm && childSymbol is Exponential)) {
         child.Enabled = parent.Enabled = false;
@@ -392,11 +392,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     public static void SimplifyBinaryNode(ref HashNode<ISymbolicExpressionTreeNode>[] nodes, int i) {
       var children = nodes.IterateChildren(i);
       var tmp = nodes;
-      if (children.All(x => tmp[x].Data.Symbol is Num)) {
+      if (children.All(x => tmp[x].Data.Symbol is Number)) {
         foreach (var j in children) {
           nodes[j].Enabled = false;
         }
-        nodes[i] = Num.CreateTreeNode().ToHashNode();
+        nodes[i] = number.CreateTreeNode().ToHashNode();
       }
     }
     #endregion
