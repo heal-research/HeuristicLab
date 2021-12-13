@@ -145,9 +145,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       } else {
         var addition = new Addition();
         var node = addition.CreateTreeNode();
-        var alphaConst = MakeNumber(alpha);
+        var alphaNode = MakeNumber(alpha);
         node.AddSubtree(treeNode);
-        node.AddSubtree(alphaConst);
+        node.AddSubtree(alphaNode);
         return node;
       }
     }
@@ -158,9 +158,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       } else {
         var multiplication = new Multiplication();
         var node = multiplication.CreateTreeNode();
-        var betaConst = MakeNumber(beta);
+        var betaNode = MakeNumber(beta);
         node.AddSubtree(treeNode);
-        node.AddSubtree(betaConst);
+        node.AddSubtree(betaNode);
         return node;
       }
     }

@@ -53,8 +53,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           FormatRecursively(node.Subtrees.First(), strBuilder, numberFormat, formatString, parameters);
 
           var power = node.GetSubtree(1);
-          if(power is NumberTreeNode constNode && Math.Truncate(constNode.Value) == constNode.Value) {
-            strBuilder.Append(" ").Append(token).Append(" ").Append(constNode.Value.ToString(formatString, numberFormat));
+          if(power is INumericTreeNode numNode && Math.Truncate(numNode.Value) == numNode.Value) {
+            strBuilder.Append(" ").Append(token).Append(" ").Append(numNode.Value.ToString(formatString, numberFormat));
           } else {
             strBuilder.Append(" ").Append(token).Append(" ");
             FormatRecursively(power, strBuilder, numberFormat, formatString, parameters);
@@ -140,11 +140,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           AppendVariableName(strBuilder, factorNode.VariableValue);
 
           if (!factorNode.Weight.IsAlmost(1.0)) strBuilder.Append(")");
-        } else if (node.Symbol is Number) {
-          var numNode = node as NumberTreeNode;
+        } else if (node is INumericTreeNode numNode) {
           if (parameters == null && numNode.Value < 0) {
+            // negative value
             strBuilder.Append("(").Append(numNode.Value.ToString(formatString, numberFormat))
-                      .Append(")"); // (-1
+                      .Append(")"); 
           } else {
             AppendNumber(strBuilder, parameters, numNode.Value, formatString, numberFormat);
           }

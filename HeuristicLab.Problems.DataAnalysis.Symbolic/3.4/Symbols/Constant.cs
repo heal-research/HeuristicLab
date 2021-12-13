@@ -34,15 +34,19 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     public override int MinimumArity => minimumArity;
     public override int MaximumArity => maximumArity;
 
+    public double Value { get; set; }
+
     [StorableConstructor]
     private Constant(StorableConstructorFlag _) : base(_) { }
 
-    private Constant(Constant original, Cloner cloner) : base(original, cloner) {}
+    private Constant(Constant original, Cloner cloner) : base(original, cloner) {
+      this.Value = original.Value;
+    }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new Constant(this, cloner);
     }
 
-    public Constant() : base("Constant", "Represents a real-valued constant.") {}
+    public Constant() : base("Constant", "Represents a real-valued constant.") { }
 
     public override ISymbolicExpressionTreeNode CreateTreeNode() {
       return new ConstantTreeNode(this);

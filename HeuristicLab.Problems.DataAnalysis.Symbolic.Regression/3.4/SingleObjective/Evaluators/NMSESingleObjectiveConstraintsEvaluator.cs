@@ -96,7 +96,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
 
     public NMSESingleObjectiveConstraintsEvaluator() {
       Parameters.Add(new FixedValueParameter<BoolValue>(OptimizeParametersParameterName,
-        "Define whether optimization of numeric parameters is active or not (default: false).", new BoolValue(false)));
+        "Define whether optimization of parameters is active or not (default: false).", new BoolValue(false)));
       Parameters.Add(new FixedValueParameter<IntValue>(ParameterOptimizationIterationsParameterName,
         "Define how many parameter optimization steps should be performed (default: 10).", new IntValue(10)));
       Parameters.Add(new FixedValueParameter<BoolValue>(UseSoftConstraintsParameterName,
@@ -108,17 +108,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     }
 
     [StorableHook(HookType.AfterDeserialization)]
-    private void AfterDeserialization() {
-      if (!Parameters.ContainsKey(ParameterOptimizationIterationsParameterName)) {
-        if (Parameters.ContainsKey("ParameterOptimizationIterations")) {
-          Parameters.Add(new FixedValueParameter<IntValue>(ParameterOptimizationIterationsParameterName, "Define how many parameter optimization steps should be performed (default: 10).", (IntValue)Parameters["ParameterOptimizationIterations"].ActualValue));
-          Parameters.Remove("ParameterOptimizationIterations");
-        } else {
-          Parameters.Add(new FixedValueParameter<IntValue>(ParameterOptimizationIterationsParameterName, "Define how many parameter optimization steps should be performed (default: 10).", new IntValue(10)));
-        }
-      }
-
-    }
+    private void AfterDeserialization() { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new NMSESingleObjectiveConstraintsEvaluator(this, cloner);

@@ -27,14 +27,6 @@ using static HeuristicLab.Problems.DataAnalysis.Symbolic.SymbolicExpressionHashE
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   public static class SymbolicExpressionTreeHash {
-    private static readonly Addition add = new Addition();
-    private static readonly Subtraction sub = new Subtraction();
-    private static readonly Multiplication mul = new Multiplication();
-    private static readonly Division div = new Division();
-    private static readonly Logarithm log = new Logarithm();
-    private static readonly Exponential exp = new Exponential();
-    private static readonly Sine sin = new Sine();
-    private static readonly Cosine cos = new Cosine();
     private static readonly Number number = new Number();
 
     private static ISymbolicExpressionTreeNode ActualRoot(this ISymbolicExpressionTree tree) => tree.Root.GetSubtree(0).GetSubtree(0);
@@ -65,8 +57,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     public static HashNode<ISymbolicExpressionTreeNode> ToHashNode(this ISymbolicExpressionTreeNode node, bool strict = false) {
       var symbol = node.Symbol;
       var name = symbol.Name;
-      if (node is NumberTreeNode numNode) {
-        name = strict ? numNode.Value.ToString() : symbol.Name;
+      if (node is INumericTreeNode numNode) {
+        name = strict ? numNode.Value.ToString() : "Number";
       } else if (node is VariableTreeNode variableNode) {
         name = strict ? variableNode.Weight.ToString() + variableNode.VariableName : variableNode.VariableName;
       }
@@ -221,8 +213,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             var variableTreeNode = (VariableTreeNode)treeNodes[i];
             variableTreeNode.VariableName = variable.VariableName;
             variableTreeNode.Weight = variable.Weight;
-          } else if (node.Data is NumberTreeNode existingNumNode) {
-            var newNumNode = (NumberTreeNode)treeNodes[i];
+          } else if (node.Data is INumericTreeNode existingNumNode) {
+            var newNumNode = (INumericTreeNode)treeNodes[i];
             newNumNode.Value = existingNumNode.Value;
           }
           continue;
@@ -284,11 +276,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           continue;
 
         var symbol = child.Data.Symbol;
-        if (child.Data is NumberTreeNode firstNum) {
+        if (child.Data is INumericTreeNode firstNum) {
           // fold sibling number nodes into the first number
           for (int k = j + 1; k < children.Length; ++k) {
             var sibling = nodes[children[k]];
-            if (sibling.Data is NumberTreeNode otherNum) {
+            if (sibling.Data is INumericTreeNode otherNum) {
               sibling.Enabled = false;
               node.Arity--;
               firstNum.Value *= otherNum.Value;
@@ -300,7 +292,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           // fold sibling number nodes into the variable weight
           for (int k = j + 1; k < children.Length; ++k) {
             var sibling = nodes[children[k]];
-            if (sibling.Data is NumberTreeNode numNode) {
+            if (sibling.Data is INumericTreeNode numNode) {
               sibling.Enabled = false;
               node.Arity--;
               variable.Weight *= numNode.Value;
@@ -343,13 +335,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
       var tmp = nodes;
 
-      if (children.All(x => tmp[x].Data.Symbol is Number)) {
-        var v = ((NumberTreeNode)nodes[children.First()].Data).Value;
+      if (children.All(x => tmp[x].Data.Symbol is INumericSymbol)) {
+        var v = ((INumericTreeNode)nodes[children.First()].Data).Value;
         if (node.Arity == 1) {
           v = 1 / v;
         } else if (node.Arity > 1) {
           foreach (var j in children.Skip(1)) {
-            v /= ((NumberTreeNode)nodes[j].Data).Value;
+            v /= ((INumericTreeNode)nodes[j].Data).Value;
           }
         }
         var numNode = number.CreateTreeNode<NumberTreeNode>();
@@ -382,7 +374,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       var parentSymbol = parent.Data.Symbol;
       var childSymbol = child.Data.Symbol;
 
-      if (childSymbol is Number) {
+      if (childSymbol is INumericSymbol) {
         nodes[i].Enabled = false;
       } else if ((parentSymbol is Exponential && childSymbol is Logarithm) || (parentSymbol is Logarithm && childSymbol is Exponential)) {
         child.Enabled = parent.Enabled = false;
@@ -392,7 +384,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     public static void SimplifyBinaryNode(ref HashNode<ISymbolicExpressionTreeNode>[] nodes, int i) {
       var children = nodes.IterateChildren(i);
       var tmp = nodes;
-      if (children.All(x => tmp[x].Data.Symbol is Number)) {
+      if (children.All(x => tmp[x].Data.Symbol is INumericSymbol)) {
         foreach (var j in children) {
           nodes[j].Enabled = false;
         }

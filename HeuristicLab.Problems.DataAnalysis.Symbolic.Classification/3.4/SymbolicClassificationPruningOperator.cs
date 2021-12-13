@@ -100,7 +100,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
 
       for (int i = 0; i < nodes.Count; ++i) {
         var node = nodes[i];
-        if (node is NumberTreeNode) continue;
+        if (node is INumericTreeNode) continue;
 
         impactValuesCalculator.CalculateImpactAndReplacementValues(model, node, problemData, rows, 
           out double impactValue, out double replacementValue, out double newQualityForImpactsCalculation, qualityForImpactsCalculation);

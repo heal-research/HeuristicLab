@@ -188,7 +188,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         strBuilder.Append(@" \neg \left( ");
       } else if (node.Symbol is IfThenElse) {
         strBuilder.Append(@" \operatorname{if}  \left( ");
-      } else if (node.Symbol is INumericSymbol numNode) {
+      } else if (node.Symbol is INumericSymbol numSy) {
         var numName = "c_{" + paramIdx + "}";
         paramIdx++;
         var numericNode = node as INumericTreeNode;
@@ -471,7 +471,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         strBuilder.Append(@" \right) ");
       } else if (node.Symbol is Number) {
       } else if (node.Symbol is Constant) {
-      }else if (node.Symbol is LaggedVariable) {
+      } else if (node.Symbol is LaggedVariable) {
       } else if (node.Symbol is Variable) {
       } else if (node.Symbol is FactorVariable) {
       } else if (node.Symbol is BinaryFactorVariable) {

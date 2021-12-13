@@ -128,8 +128,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     // state for recursive transformation of trees 
-    private readonly
-    List<double> initialParamValues;
+    private readonly List<double> initialParamValues;
     private readonly Dictionary<DataForVariable, AutoDiff.Variable> parameters;
     private readonly List<AutoDiff.Variable> variables;
     private readonly bool makeVariableWeightsVariable;
@@ -150,12 +149,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         variables.Add(var);
         return var;
       }
-
       if (node.Symbol is Constant) {
-        initialParamValues.Add(((ConstantTreeNode)node).Value);
-        var var = new AutoDiff.Variable();
-        variables.Add(var);
-        return var;
+        // constants are fixed in autodiff
+        return (node as ConstantTreeNode).Value;
       }
       if (node.Symbol is Variable || node.Symbol is BinaryFactorVariable) {
         var varNode = node as VariableTreeNodeBase;
@@ -266,9 +262,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         return cbrt(ConvertToAutoDiff(node.GetSubtree(0)));
       }
       if (node.Symbol is Power) {
-        var powerNode = node.GetSubtree(1) as NumberTreeNode;
+        var powerNode = node.GetSubtree(1) as INumericTreeNode;
         if (powerNode == null)
-          throw new NotSupportedException("Only integer powers are allowed in parameter optimization. Try to use exp() and log() instead of the power symbol.");
+          throw new NotSupportedException("Only numeric powers are allowed in parameter optimization. Try to use exp() and log() instead of the power symbol.");
         var intPower = Math.Truncate(powerNode.Value);
         if (intPower != powerNode.Value)
           throw new NotSupportedException("Only integer powers are allowed in parameter optimization. Try to use exp() and log() instead of the power symbol.");
@@ -319,8 +315,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       string varName, string varValue = "", int lag = 0) {
       var data = new DataForVariable(varName, varValue, lag);
 
-      AutoDiff.Variable par = null;
-      if (!parameters.TryGetValue(data, out par)) {
+      if (!parameters.TryGetValue(data, out AutoDiff.Variable par)) {
         // not found -> create new parameter and entries in names and values lists
         par = new AutoDiff.Variable();
         parameters.Add(data, par);

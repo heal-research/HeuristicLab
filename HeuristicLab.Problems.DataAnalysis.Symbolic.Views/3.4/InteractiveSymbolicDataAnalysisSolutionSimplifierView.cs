@@ -192,7 +192,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       var tree = Content.Model.SymbolicExpressionTree;
       treeChart.Tree = tree.Root.SubtreeCount > 1 ? new SymbolicExpressionTree(tree.Root) : new SymbolicExpressionTree(tree.Root.GetSubtree(0).GetSubtree(0));
 
-      progress.Start("Calculate Impact and Replacement Values ...");
+      progress.Start("Calculate impact and replacement values ...");
       cancellationTokenSource = new CancellationTokenSource();
       progress.CanBeStopped = true;
       try {
@@ -234,8 +234,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       var impactAndReplacementValues = new Dictionary<ISymbolicExpressionTreeNode, Tuple<double, double>>();
       foreach (var node in tree.Root.GetSubtree(0).GetSubtree(0).IterateNodesPrefix()) {
         if (progress.ProgressState == ProgressState.StopRequested) continue;
-        double impactValue, replacementValue, newQualityForImpactsCalculation;
-        impactCalculator.CalculateImpactAndReplacementValues(Content.Model, node, Content.ProblemData, Content.ProblemData.TrainingIndices, out impactValue, out replacementValue, out newQualityForImpactsCalculation);
+        impactCalculator.CalculateImpactAndReplacementValues(Content.Model, node, Content.ProblemData, Content.ProblemData.TrainingIndices, 
+          out double impactValue, out double replacementValue, out _);
         double newProgressValue = progress.ProgressValue + 1.0 / (tree.Length - 2);
         progress.ProgressValue = Math.Min(newProgressValue, 1);
         impactAndReplacementValues.Add(node, new Tuple<double, double>(impactValue, replacementValue));
@@ -296,7 +296,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       foreach (ISymbolicExpressionTreeNode treeNode in Content.Model.SymbolicExpressionTree.IterateNodesPostfix()) {
         VisualTreeNode<ISymbolicExpressionTreeNode> visualTree = treeChart.GetVisualSymbolicExpressionTreeNode(treeNode);
 
-        if (!(treeNode is NumberTreeNode) && nodeImpacts.ContainsKey(treeNode)) {
+        if (!(treeNode is INumericTreeNode) && nodeImpacts.ContainsKey(treeNode)) {
           visualTree.ToolTip = visualTree.Content.ToString();
           double impact = nodeImpacts[treeNode];
 
@@ -313,16 +313,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
             visualTree.FillColor = Color.FromArgb((int)(impact / max * 255), Color.Green);
           }
           visualTree.ToolTip += Environment.NewLine + "Node impact: " + impact;
-          if (foldedNodes[treeNode] is NumberTreeNode numReplacementNode) {
+          if (foldedNodes[treeNode] is INumericTreeNode numReplacementNode) {
             visualTree.ToolTip += Environment.NewLine + "Replacement value: " + numReplacementNode.Value;
           }
         }
         if (visualTree != null) {
           if (nodeIntervals.ContainsKey(treeNode))
-            visualTree.ToolTip += String.Format($"{Environment.NewLine}Intervals: [{nodeIntervals[treeNode].LowerBound:G5} ... {nodeIntervals[treeNode].UpperBound:G5}]");
+            visualTree.ToolTip += string.Format($"{Environment.NewLine}Intervals: [{nodeIntervals[treeNode].LowerBound:G5} ... {nodeIntervals[treeNode].UpperBound:G5}]");
           if (changedNodes.ContainsKey(treeNode)) {
             visualTree.LineColor = Color.DodgerBlue;
-          } else if (treeNode is NumberTreeNode && foldedNodes.ContainsKey(treeNode)) {
+          } else if (treeNode is INumericTreeNode && foldedNodes.ContainsKey(treeNode)) {
             visualTree.LineColor = Color.DarkOrange;
           }
         }

@@ -84,8 +84,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         stringBuilder.Append(")");
       } else if (symbol is INumericSymbol) {
         var numberTreeNode = node as INumericTreeNode;
-        stringBuilder.Append(numberTreeNode?.Value.ToString(CultureInfo.InvariantCulture));
-      }else if (symbol is Cosine) {
+        stringBuilder.Append(numberTreeNode.Value.ToString(CultureInfo.InvariantCulture));
+      } else if (symbol is Cosine) {
         stringBuilder.Append(FormatRecursively(node.GetSubtree(0)));
         stringBuilder.Append(" cos");
       } else if (symbol is Cube) {

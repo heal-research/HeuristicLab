@@ -228,16 +228,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
     private static void FormatNumericTreeNode(ISymbolicExpressionTreeNode node, StringBuilder strBuilder) {
       var symbol = node.Symbol;
-      double value = 0.0;
-      if (symbol is INumericSymbol) {
-        var numNode = node as INumericTreeNode;
-        value = numNode.Value;
+      if (node is INumericTreeNode numNode) {
+        strBuilder.Append(numNode.Value.ToString("g17", CultureInfo.InvariantCulture));
       } else {
         throw new NotSupportedException("Formatting of symbol: " + symbol + " not supported for Python symbolic expression tree formatter.");
       }
-        
-
-      strBuilder.Append(value.ToString("g17", CultureInfo.InvariantCulture));
     }
 
     private static void FormatPower(ISymbolicExpressionTreeNode node, StringBuilder strBuilder, string exponent) {

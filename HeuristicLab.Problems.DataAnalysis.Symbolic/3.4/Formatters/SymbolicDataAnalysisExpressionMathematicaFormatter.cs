@@ -131,7 +131,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           strBuilder.AppendFormat("Times[{0}, {1}]", varNode.VariableName, varNode.Weight.ToString("G17", CultureInfo.InvariantCulture));
         } else if (node.Symbol is INumericSymbol) {
           var numNode = node as INumericTreeNode;
-          strBuilder.Append(numNode?.Value.ToString("G17", CultureInfo.InvariantCulture));
+          strBuilder.Append(numNode.Value.ToString("G17", CultureInfo.InvariantCulture));
         } else if (node.Symbol is FactorVariable) {
           var factorNode = node as FactorVariableTreeNode;
           strBuilder.AppendFormat("Switch[{0},", factorNode.VariableName);

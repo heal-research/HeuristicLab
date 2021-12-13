@@ -26,11 +26,11 @@ using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
-  [View("Number View")]
-  [Content(typeof(Number), true)]
+  [View("Constant View")]
+  [Content(typeof(Constant), true)]
   public partial class ConstantView : SymbolView {
-    public new Number Content {
-      get { return (Number)base.Content; }
+    public new Constant Content {
+      get { return (Constant)base.Content; }
       set { base.Content = value; }
     }
 
@@ -42,7 +42,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       base.RegisterContentEvents();
       Content.Changed += new EventHandler(Content_Changed);
     }
-
+    
     protected override void DeregisterContentEvents() {
       base.DeregisterContentEvents();
       Content.Changed -= new EventHandler(Content_Changed);
@@ -55,14 +55,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
 
     protected override void SetEnabledStateOfControls() {
       base.SetEnabledStateOfControls();
-      minValueTextBox.Enabled = Content != null;
-      minValueTextBox.ReadOnly = ReadOnly;
-      maxValueTextBox.Enabled = Content != null;
-      maxValueTextBox.ReadOnly = ReadOnly;
-      additiveChangeSigmaTextBox.Enabled = Content != null;
-      additiveChangeSigmaTextBox.ReadOnly = ReadOnly;
-      multiplicativeChangeSigmaTextBox.Enabled = Content != null;
-      multiplicativeChangeSigmaTextBox.ReadOnly = ReadOnly;
+      valueTextBox.Enabled = Content != null;
+      valueTextBox.ReadOnly = ReadOnly;
     }
 
     #region content event handlers
@@ -72,42 +66,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
     #endregion
 
     #region control event handlers
-    private void minValueTextBox_TextChanged(object sender, EventArgs e) {
-      double min;
-      if (double.TryParse(minValueTextBox.Text, out min)) {
-        Content.MinValue = min;
-        errorProvider.SetError(minValueTextBox, string.Empty);
+    private void valueTextBox_TextChanged(object sender, EventArgs e) {
+      double val;
+      if (double.TryParse(valueTextBox.Text, out val)) {
+        Content.Value = val;
+        errorProvider.SetError(valueTextBox, string.Empty);
       } else {
-        errorProvider.SetError(minValueTextBox, "Invalid value");
-      }
-    }
-    private void maxValueTextBox_TextChanged(object sender, EventArgs e) {
-      double max;
-      if (double.TryParse(maxValueTextBox.Text, out max)) {
-        Content.MaxValue = max;
-        errorProvider.SetError(maxValueTextBox, string.Empty);
-      } else {
-        errorProvider.SetError(maxValueTextBox, "Invalid value");
-      }
-    }
-
-    private void additiveChangeSigmaTextBox_TextChanged(object sender, EventArgs e) {
-      double sigma;
-      if (double.TryParse(additiveChangeSigmaTextBox.Text, out sigma) && sigma >= 0.0) {
-        Content.ManipulatorSigma = sigma;
-        errorProvider.SetError(additiveChangeSigmaTextBox, string.Empty);
-      } else {
-        errorProvider.SetError(additiveChangeSigmaTextBox, "Invalid value");
-      }
-    }
-
-    private void multiplicativeChangeSigmaTextBox_TextChanged(object sender, EventArgs e) {
-      double sigma;
-      if (double.TryParse(multiplicativeChangeSigmaTextBox.Text, out sigma) && sigma >= 0.0) {
-        Content.MultiplicativeManipulatorSigma = sigma;
-        errorProvider.SetError(multiplicativeChangeSigmaTextBox, string.Empty);
-      } else {
-        errorProvider.SetError(multiplicativeChangeSigmaTextBox, "Invalid value");
+        errorProvider.SetError(valueTextBox, "Invalid value");
       }
     }
     #endregion
@@ -115,16 +80,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
     #region helpers
     private void UpdateControl() {
       if (Content == null) {
-        minValueTextBox.Text = string.Empty;
-        maxValueTextBox.Text = string.Empty;
-        minValueTextBox.Text = string.Empty;
-        multiplicativeChangeSigmaTextBox.Text = string.Empty;
-        additiveChangeSigmaTextBox.Text = string.Empty;
+        valueTextBox.Text = string.Empty;
       } else {
-        minValueTextBox.Text = Content.MinValue.ToString();
-        maxValueTextBox.Text = Content.MaxValue.ToString();
-        additiveChangeSigmaTextBox.Text = Content.ManipulatorSigma.ToString();
-        multiplicativeChangeSigmaTextBox.Text = Content.MultiplicativeManipulatorSigma.ToString();
+        valueTextBox.Text = Content.Value.ToString("g17");
       }
       SetEnabledStateOfControls();
     }

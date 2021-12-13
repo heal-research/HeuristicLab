@@ -24,8 +24,6 @@ using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableType("3CD759AF-A45E-4B70-BDCF-66AF1A03BAD8")]
-  public interface INumericSymbol : ISymbol {
-
-  }
+  public interface INumericSymbol : ISymbol { }
 
 }
