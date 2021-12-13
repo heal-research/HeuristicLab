@@ -238,10 +238,10 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       return new SymbolicRegressionModel(TargetVariable, new SymbolicExpressionTree(rootNode), new SymbolicDataAnalysisExpressionTreeLinearInterpreter());
     }
 
-    private ISymbolicExpressionTreeNode CreateSymbolicRegressionTreeRecursive(TreeNode[] treeNodes, int nodeIdx, VariableCondition varCondSy, Number constSy) {
+    private ISymbolicExpressionTreeNode CreateSymbolicRegressionTreeRecursive(TreeNode[] treeNodes, int nodeIdx, VariableCondition varCondSy, Number numSy) {
       var curNode = treeNodes[nodeIdx];
       if (curNode.VarName == TreeNode.NO_VARIABLE) {
-        var node = (NumberTreeNode)constSy.CreateTreeNode();
+        var node = (NumberTreeNode)numSy.CreateTreeNode();
         node.Value = curNode.Val;
         return node;
       } else {
@@ -249,8 +249,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         node.VariableName = curNode.VarName;
         node.Threshold = curNode.Val;
 
-        var left = CreateSymbolicRegressionTreeRecursive(treeNodes, curNode.LeftIdx, varCondSy, constSy);
-        var right = CreateSymbolicRegressionTreeRecursive(treeNodes, curNode.RightIdx, varCondSy, constSy);
+        var left = CreateSymbolicRegressionTreeRecursive(treeNodes, curNode.LeftIdx, varCondSy, numSy);
+        var right = CreateSymbolicRegressionTreeRecursive(treeNodes, curNode.RightIdx, varCondSy, numSy);
         node.AddSubtree(left);
         node.AddSubtree(right);
         return node;

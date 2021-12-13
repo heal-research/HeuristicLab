@@ -57,7 +57,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       var combo = (ComboBox)sender;
       var symbol = combo.Items[combo.SelectedIndex];
       if (symbol is Number) {
-        // add controls to the dialog for changing the constant value
+        // add controls to the dialog for changing the number value
         variableNameLabel.Visible = false;
         variableNamesCombo.Visible = false;
         variableWeightLabel.Visible = false;

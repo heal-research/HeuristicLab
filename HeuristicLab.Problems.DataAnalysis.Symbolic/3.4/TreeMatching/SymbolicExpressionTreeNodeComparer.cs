@@ -27,7 +27,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableType("eabf848e-d10c-499e-8c48-c771232ede0e")]
   // this comparer considers that a < b if the type of a is "greater" than the type of b, for example:
   // - A function node is "greater" than a terminal node
-  // - A variable terminal is "greater" than a constant terminal
+  // - A variable terminal is "greater" than a numeric terminal
   // - used for bringing subtrees to a "canonical" form when the operation allows reordering of arguments
   public class SymbolicExpressionTreeNodeComparer : ISymbolicExpressionTreeNodeComparer {
     public static int CompareNodes(ISymbolicExpressionTreeNode a, ISymbolicExpressionTreeNode b) {

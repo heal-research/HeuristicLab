@@ -141,7 +141,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       this.ShowIcon = false;
       this.ShowInTaskbar = false;
       this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-      this.Text = "Edit constant value";
+      this.Text = "Edit number value";
       this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.NumberNodeEditDialog_KeyDown);
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
       this.ResumeLayout(false);

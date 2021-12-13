@@ -25,7 +25,7 @@ using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableType("F91000E6-B041-4648-A9E8-595228F957FA")]
-  public sealed class ConstantTreeNode : SymbolicExpressionTreeTerminalNode, INumericTreeNode{
+  public sealed class ConstantTreeNode : SymbolicExpressionTreeTerminalNode, INumericTreeNode {
 
     public new Constant Symbol => (Constant) base.Symbol;
 

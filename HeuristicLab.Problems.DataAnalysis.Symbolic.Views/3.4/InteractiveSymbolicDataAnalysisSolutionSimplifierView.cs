@@ -108,7 +108,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
     }
 
     // the optimizer always assumes 2 children for multiplication and addition nodes
-    // thus, we enforce that the tree stays valid so that the constant optimization won't throw an exception
+    // thus, we enforce that the tree stays valid so that the parameter optimization won't throw an exception
     // by returning 2 as the minimum allowed arity for addition and multiplication symbols
     private readonly Func<ISymbol, int> GetMinArity = symbol => {
       var min = symbol.MinimumArity;
@@ -129,11 +129,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       }
 
       if (valid) {
-        btnOptimizeConstants.Enabled = true;
+        btnOptimizeParameters.Enabled = true;
         btnSimplify.Enabled = true;
         treeStatusValue.Visible = false;
       } else {
-        btnOptimizeConstants.Enabled = false;
+        btnOptimizeParameters.Enabled = false;
         btnSimplify.Enabled = false;
         treeStatusValue.Visible = true;
       }
@@ -203,7 +203,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
 
         var replacementValues = impactAndReplacementValues.ToDictionary(x => x.Key, x => x.Value.Item2);
         foreach (var pair in replacementValues.Where(pair => !(pair.Key is NumberTreeNode))) {
-          foldedNodes[pair.Key] = MakeConstantTreeNode(pair.Value);
+          foldedNodes[pair.Key] = MakeNumberTreeNode(pair.Value);
         }
         
         foreach (var pair in impactAndReplacementValues) {
@@ -245,15 +245,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
 
     protected abstract void UpdateModel(ISymbolicExpressionTree tree);
 
-    protected virtual ISymbolicExpressionTree OptimizeConstants(ISymbolicExpressionTree tree, IProgress progress) {
+    protected virtual ISymbolicExpressionTree OptimizeParameters(ISymbolicExpressionTree tree, IProgress progress) {
       return tree;
     }
 
-    private static NumberTreeNode MakeConstantTreeNode(double value) {
-      var constant = new Number { MinValue = value - 1, MaxValue = value + 1 };
-      var constantTreeNode = (NumberTreeNode)constant.CreateTreeNode();
-      constantTreeNode.Value = value;
-      return constantTreeNode;
+    private static NumberTreeNode MakeNumberTreeNode(double value) {
+      var num = new Number { MinValue = value - 1, MaxValue = value + 1 };
+      var numTreeNode = (NumberTreeNode)num.CreateTreeNode();
+      numTreeNode.Value = value;
+      return numTreeNode;
     }
 
     private void treeChart_SymbolicExpressionTreeNodeDoubleClicked(object sender, MouseEventArgs e) {
@@ -313,9 +313,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
             visualTree.FillColor = Color.FromArgb((int)(impact / max * 255), Color.Green);
           }
           visualTree.ToolTip += Environment.NewLine + "Node impact: " + impact;
-          var constantReplacementNode = foldedNodes[treeNode] as NumberTreeNode;
-          if (constantReplacementNode != null) {
-            visualTree.ToolTip += Environment.NewLine + "Replacement value: " + constantReplacementNode.Value;
+          if (foldedNodes[treeNode] is NumberTreeNode numReplacementNode) {
+            visualTree.ToolTip += Environment.NewLine + "Replacement value: " + numReplacementNode.Value;
           }
         }
         if (visualTree != null) {
@@ -336,14 +335,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       UpdateModel(simplifiedExpressionTree);
     }
 
-    private async void btnOptimizeConstants_Click(object sender, EventArgs e) {
-      progress.Start("Optimizing Constants ...");
+    private async void btnOptimizeParameters_Click(object sender, EventArgs e) {
+      progress.Start("Optimizing parameters ...");
       cancellationTokenSource = new CancellationTokenSource();
       progress.CanBeStopped = true;
       try {
         var tree = (ISymbolicExpressionTree)Content.Model.SymbolicExpressionTree.Clone();
 
-        var newTree = await Task.Run(() => OptimizeConstants(tree, progress));
+        var newTree = await Task.Run(() => OptimizeParameters(tree, progress));
         try {
           await Task.Delay(300, cancellationTokenSource.Token); // wait for progressbar to finish animation
         } catch (OperationCanceledException) { }

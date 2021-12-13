@@ -101,7 +101,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     #endregion
 
     public static bool TryConvertToAutoDiff(ISymbolicExpressionTree tree, bool makeVariableWeightsVariable, bool addLinearScalingTerms,
-      out List<DataForVariable> parameters, out double[] initialConstants,
+      out List<DataForVariable> parameters, out double[] initialParamValues,
       out ParametricFunction func,
       out ParametricFunctionGradient func_grad) {
 
@@ -114,7 +114,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         var compiledTerm = term.Compile(transformator.variables.ToArray(),
           parameterEntries.Select(kvp => kvp.Value).ToArray());
         parameters = new List<DataForVariable>(parameterEntries.Select(kvp => kvp.Key));
-        initialConstants = transformator.initialConstants.ToArray();
+        initialParamValues = transformator.initialParamValues.ToArray();
         func = (vars, @params) => compiledTerm.Evaluate(vars, @params);
         func_grad = (vars, @params) => compiledTerm.Differentiate(vars, @params);
         return true;
@@ -122,14 +122,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         func = null;
         func_grad = null;
         parameters = null;
-        initialConstants = null;
+        initialParamValues = null;
       }
       return false;
     }
 
     // state for recursive transformation of trees 
     private readonly
-    List<double> initialConstants;
+    List<double> initialParamValues;
     private readonly Dictionary<DataForVariable, AutoDiff.Variable> parameters;
     private readonly List<AutoDiff.Variable> variables;
     private readonly bool makeVariableWeightsVariable;
@@ -138,21 +138,21 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     private TreeToAutoDiffTermConverter(bool makeVariableWeightsVariable, bool addLinearScalingTerms) {
       this.makeVariableWeightsVariable = makeVariableWeightsVariable;
       this.addLinearScalingTerms = addLinearScalingTerms;
-      this.initialConstants = new List<double>();
+      this.initialParamValues = new List<double>();
       this.parameters = new Dictionary<DataForVariable, AutoDiff.Variable>();
       this.variables = new List<AutoDiff.Variable>();
     }
 
     private AutoDiff.Term ConvertToAutoDiff(ISymbolicExpressionTreeNode node) {
       if (node.Symbol is Number) {
-        initialConstants.Add(((NumberTreeNode)node).Value);
+        initialParamValues.Add(((NumberTreeNode)node).Value);
         var var = new AutoDiff.Variable();
         variables.Add(var);
         return var;
       }
 
       if (node.Symbol is Constant) {
-        initialConstants.Add(((ConstantTreeNode)node).Value);
+        initialParamValues.Add(((ConstantTreeNode)node).Value);
         var var = new AutoDiff.Variable();
         variables.Add(var);
         return var;
@@ -165,7 +165,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         var par = FindOrCreateParameter(parameters, varNode.VariableName, varValue);
 
         if (makeVariableWeightsVariable) {
-          initialConstants.Add(varNode.Weight);
+          initialParamValues.Add(varNode.Weight);
           var w = new AutoDiff.Variable();
           variables.Add(w);
           return AutoDiff.TermBuilder.Product(w, par);
@@ -179,7 +179,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         foreach (var variableValue in factorVarNode.Symbol.GetVariableValues(factorVarNode.VariableName)) {
           var par = FindOrCreateParameter(parameters, factorVarNode.VariableName, variableValue);
 
-          initialConstants.Add(factorVarNode.GetValue(variableValue));
+          initialParamValues.Add(factorVarNode.GetValue(variableValue));
           var wVar = new AutoDiff.Variable();
           variables.Add(wVar);
 
@@ -192,7 +192,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         var par = FindOrCreateParameter(parameters, varNode.VariableName, string.Empty, varNode.Lag);
 
         if (makeVariableWeightsVariable) {
-          initialConstants.Add(varNode.Weight);
+          initialParamValues.Add(varNode.Weight);
           var w = new AutoDiff.Variable();
           variables.Add(w);
           return AutoDiff.TermBuilder.Product(w, par);

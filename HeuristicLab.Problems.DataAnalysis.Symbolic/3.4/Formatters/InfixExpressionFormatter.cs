@@ -32,42 +32,42 @@ using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   public static class BaseInfixExpressionFormatter {
     public static void FormatRecursively(ISymbolicExpressionTreeNode node, StringBuilder strBuilder,
-                                          NumberFormatInfo numberFormat, string formatString, List<KeyValuePair<string, double>> constants = null) {
+                                          NumberFormatInfo numberFormat, string formatString, List<KeyValuePair<string, double>> parameters = null) {
       if (node.SubtreeCount > 1) {
         var token = GetToken(node.Symbol);
         // operators
         if (token == "+" || token == "-" || token == "OR" || token == "XOR" ||
             token == "*" || token == "/" || token == "AND") {
           strBuilder.Append("(");
-          FormatRecursively(node.Subtrees.First(), strBuilder, numberFormat, formatString, constants);
+          FormatRecursively(node.Subtrees.First(), strBuilder, numberFormat, formatString, parameters);
 
           foreach (var subtree in node.Subtrees.Skip(1)) {
             strBuilder.Append(" ").Append(token).Append(" ");
-            FormatRecursively(subtree, strBuilder, numberFormat, formatString, constants);
+            FormatRecursively(subtree, strBuilder, numberFormat, formatString, parameters);
           }
 
           strBuilder.Append(")");
         } else if (token == "^") {
           // handle integer powers directly
           strBuilder.Append("(");
-          FormatRecursively(node.Subtrees.First(), strBuilder, numberFormat, formatString, constants);
+          FormatRecursively(node.Subtrees.First(), strBuilder, numberFormat, formatString, parameters);
 
           var power = node.GetSubtree(1);
           if(power is NumberTreeNode constNode && Math.Truncate(constNode.Value) == constNode.Value) {
             strBuilder.Append(" ").Append(token).Append(" ").Append(constNode.Value.ToString(formatString, numberFormat));
           } else {
             strBuilder.Append(" ").Append(token).Append(" ");
-            FormatRecursively(power, strBuilder, numberFormat, formatString, constants);
+            FormatRecursively(power, strBuilder, numberFormat, formatString, parameters);
           }
 
           strBuilder.Append(")");
         } else {
           // function with multiple arguments
           strBuilder.Append(token).Append("(");
-          FormatRecursively(node.Subtrees.First(), strBuilder, numberFormat, formatString, constants);
+          FormatRecursively(node.Subtrees.First(), strBuilder, numberFormat, formatString, parameters);
           foreach (var subtree in node.Subtrees.Skip(1)) {
             strBuilder.Append(", ");
-            FormatRecursively(subtree, strBuilder, numberFormat, formatString, constants);
+            FormatRecursively(subtree, strBuilder, numberFormat, formatString, parameters);
           }
 
           strBuilder.Append(")");
@@ -76,17 +76,17 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         var token = GetToken(node.Symbol);
         if (token == "-" || token == "NOT") {
           strBuilder.Append("(").Append(token).Append("(");
-          FormatRecursively(node.GetSubtree(0), strBuilder, numberFormat, formatString, constants);
+          FormatRecursively(node.GetSubtree(0), strBuilder, numberFormat, formatString, parameters);
           strBuilder.Append("))");
         } else if (token == "/") {
           strBuilder.Append("1/");
-          FormatRecursively(node.GetSubtree(0), strBuilder, numberFormat, formatString, constants);
+          FormatRecursively(node.GetSubtree(0), strBuilder, numberFormat, formatString, parameters);
         } else if (token == "+" || token == "*") {
-          FormatRecursively(node.GetSubtree(0), strBuilder, numberFormat, formatString, constants);
+          FormatRecursively(node.GetSubtree(0), strBuilder, numberFormat, formatString, parameters);
         } else {
           // function with only one argument
           strBuilder.Append(token).Append("(");
-          FormatRecursively(node.GetSubtree(0), strBuilder, numberFormat, formatString, constants);
+          FormatRecursively(node.GetSubtree(0), strBuilder, numberFormat, formatString, parameters);
           strBuilder.Append(")");
         }
       } else {
@@ -95,7 +95,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           var varNode = node as LaggedVariableTreeNode;
           if (!varNode.Weight.IsAlmost(1.0)) {
             strBuilder.Append("(");
-            AppendConstant(strBuilder, constants, varNode.Weight, formatString, numberFormat);
+            AppendNumber(strBuilder, parameters, varNode.Weight, formatString, numberFormat);
             strBuilder.Append("*");
           }
 
@@ -109,7 +109,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           var varNode = node as VariableTreeNode;
           if (!varNode.Weight.IsAlmost(1.0)) {
             strBuilder.Append("(");
-            AppendConstant(strBuilder, constants, varNode.Weight, formatString, numberFormat);
+            AppendNumber(strBuilder, parameters, varNode.Weight, formatString, numberFormat);
             strBuilder.Append("*");
           }
 
@@ -123,14 +123,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           strBuilder.Append("[");
           for (int i = 0; i < factorNode.Weights.Length; i++) {
             if (i > 0) strBuilder.Append(", ");
-            AppendConstant(strBuilder, constants, factorNode.Weights[i], formatString, numberFormat);
+            AppendNumber(strBuilder, parameters, factorNode.Weights[i], formatString, numberFormat);
           }
           strBuilder.Append("]");
         } else if (node.Symbol is BinaryFactorVariable) {
           var factorNode = node as BinaryFactorVariableTreeNode;
           if (!factorNode.Weight.IsAlmost(1.0)) {
             strBuilder.Append("(");
-            AppendConstant(strBuilder, constants, factorNode.Weight, formatString, numberFormat);
+            AppendNumber(strBuilder, parameters, factorNode.Weight, formatString, numberFormat);
 
             strBuilder.Append("*");
           }
@@ -141,22 +141,22 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
           if (!factorNode.Weight.IsAlmost(1.0)) strBuilder.Append(")");
         } else if (node.Symbol is Number) {
-          var constNode = node as NumberTreeNode;
-          if (constants == null && constNode.Value < 0) {
-            strBuilder.Append("(").Append(constNode.Value.ToString(formatString, numberFormat))
+          var numNode = node as NumberTreeNode;
+          if (parameters == null && numNode.Value < 0) {
+            strBuilder.Append("(").Append(numNode.Value.ToString(formatString, numberFormat))
                       .Append(")"); // (-1
           } else {
-            AppendConstant(strBuilder, constants, constNode.Value, formatString, numberFormat);
+            AppendNumber(strBuilder, parameters, numNode.Value, formatString, numberFormat);
           }
         }
       }
     }
 
-    private static void AppendConstant(StringBuilder strBuilder, List<KeyValuePair<string, double>> constants, double value, string formatString, NumberFormatInfo numberFormat) {
-      if (constants != null) {
-        string constantKey = $"c_{constants.Count}";
-        strBuilder.AppendFormat(CultureInfo.InvariantCulture, "{0}", constantKey);
-        constants.Add(new KeyValuePair<string, double>(constantKey, value));
+    private static void AppendNumber(StringBuilder strBuilder, List<KeyValuePair<string, double>> parameters, double value, string formatString, NumberFormatInfo numberFormat) {
+      if (parameters != null) {
+        string paramKey = $"c_{parameters.Count}";
+        strBuilder.AppendFormat(CultureInfo.InvariantCulture, "{0}", paramKey);
+        parameters.Add(new KeyValuePair<string, double>(paramKey, value));
       } else {
         strBuilder.Append(value.ToString(formatString, numberFormat));
       }
@@ -203,8 +203,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     /// Produces an infix expression for a given expression tree.
     /// </summary>
     /// <param name="symbolicExpressionTree">The tree representation of the expression.</param>
-    /// <param name="numberFormat">Constant format that should be used for numeric parameters (e.g. NumberFormatInfo.InvariantInfo (default)).</param>
-    /// <param name="formatString">The format string for numeric parameters (e.g. \"G4\" to limit to 4 digits, default is \"G\")</param>
+    /// <param name="numberFormat">Number format that should be used for parameters (e.g. NumberFormatInfo.InvariantInfo (default)).</param>
+    /// <param name="formatString">The format string for parameters (e.g. \"G4\" to limit to 4 digits, default is \"G\")</param>
     /// <returns>Infix expression</returns>
     public string Format(ISymbolicExpressionTree symbolicExpressionTree, NumberFormatInfo numberFormat,
                          string formatString = "G") {
@@ -240,17 +240,17 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
     public string Format(ISymbolicExpressionTree symbolicExpressionTree) {
       StringBuilder strBuilder = new StringBuilder();
-      var constants = new List<KeyValuePair<string, double>>();
+      var parameters = new List<KeyValuePair<string, double>>();
       BaseInfixExpressionFormatter.FormatRecursively(symbolicExpressionTree.Root.GetSubtree(0).GetSubtree(0),
-        strBuilder, NumberFormatInfo.InvariantInfo, "G", constants);
+        strBuilder, NumberFormatInfo.InvariantInfo, "G", parameters);
       strBuilder.Append($"{Environment.NewLine}{Environment.NewLine}");
 
-      int maxDigits = GetDigits(constants.Count);
-      int padding = constants.Max(x => x.Value.ToString("F12", CultureInfo.InvariantCulture).Length);
-      foreach (var constant in constants) {
-        int digits = GetDigits(Int32.Parse(constant.Key.Substring(2)));
-        strBuilder.Append($"{constant.Key}{new String(' ', maxDigits - digits)} = " +
-                          string.Format($"{{0,{padding}:F12}}", constant.Value, CultureInfo.InvariantCulture) +
+      int maxDigits = GetDigits(parameters.Count);
+      int padding = parameters.Max(x => x.Value.ToString("F12", CultureInfo.InvariantCulture).Length);
+      foreach (var param in parameters) {
+        int digits = GetDigits(int.Parse(param.Key.Substring(2)));
+        strBuilder.Append($"{param.Key}{new string(' ', maxDigits - digits)} = " +
+                          string.Format($"{{0,{padding}:F12}}", param.Value, CultureInfo.InvariantCulture) +
                           Environment.NewLine);
       }
 

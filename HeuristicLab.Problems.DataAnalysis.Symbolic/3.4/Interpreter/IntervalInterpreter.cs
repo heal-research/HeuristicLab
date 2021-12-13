@@ -185,14 +185,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             result = Interval.Multiply(variableInterval, weightInterval);
             break;
           }
-        case OpCodes.Number: {
-            var numberTreeNode = (NumberTreeNode)currentInstr.dynamicNode;
-            result = new Interval(numberTreeNode.Value, numberTreeNode.Value);
-            break;
-          }
+        case OpCodes.Number: // fall through
         case OpCodes.Constant: {
-          var constTreeNode = (ConstantTreeNode)currentInstr.dynamicNode;
-          result = new Interval(constTreeNode.Value, constTreeNode.Value);
+          var numericTreeNode = (INumericTreeNode)currentInstr.dynamicNode;
+          result = new Interval(numericTreeNode.Value, numericTreeNode.Value);
           break;
           }
         case OpCodes.Add: {

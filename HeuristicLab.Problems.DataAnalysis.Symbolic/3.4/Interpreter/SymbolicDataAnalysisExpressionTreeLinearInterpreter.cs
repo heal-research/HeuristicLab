@@ -415,15 +415,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         var instr = code[i];
         #region opcode switch
         switch (instr.opCode) {
-          case OpCodes.Number: {
-              var numberTreeNode = (NumberTreeNode)instr.dynamicNode;
-              instr.value = numberTreeNode.Value;
-              instr.skip = true; // the value is already set so this instruction should be skipped in the evaluation phase
-            }
-            break;
+          case OpCodes.Number: // fall through
           case OpCodes.Constant: {
-            var constTreeNode = (ConstantTreeNode)instr.dynamicNode;
-            instr.value = constTreeNode.Value;
+            var numericTreeNode = (INumericTreeNode)instr.dynamicNode;
+            instr.value = numericTreeNode.Value;
             instr.skip = true; // the value is already set so this instruction should be skipped in the evaluation phase
             }
             break;

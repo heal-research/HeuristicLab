@@ -87,8 +87,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       if (d == 0) return "";
       StringBuilder builder = new StringBuilder();
       var varTreeNode = tree as VariableTreeNode;
-      var numTreeNode = tree as NumberTreeNode;
-      var constTreeNode = tree as ConstantTreeNode;
       var factorVarTreeNode = tree as FactorVariableTreeNode;
       var binFactorVarTreeNode = tree as BinaryFactorVariableTreeNode;
       if (varTreeNode != null) {
@@ -97,8 +95,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         builder.Append("(factor " + factorVarTreeNode.VariableName);
       } else if (binFactorVarTreeNode != null) {
         builder.Append("(factor " + binFactorVarTreeNode.VariableName + "=" + binFactorVarTreeNode.VariableValue);
-      } else if (numTreeNode != null || constTreeNode != null) {
-        builder.Append("(const");
+      } else if (tree is INumericTreeNode) {
+        builder.Append("(num"); // numbers and constants are treated as equivalent here, the value does not matter
       } else {
         builder.Append("(" + tree.ToString());
       }

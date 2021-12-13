@@ -495,13 +495,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             if (actualRow < 0 || actualRow >= dataset.Rows) { return double.NaN; }
             return ((IList<double>)currentInstr.data)[actualRow] * laggedVariableTreeNode.Weight;
           }
-        case OpCodes.Constant: {
-            var constTreeNode = (ConstantTreeNode)currentInstr.dynamicNode;
-            return constTreeNode.Value;
-          }
+        case OpCodes.Constant:  // fall through
         case OpCodes.Number: {
-          var numberTreeNode = (NumberTreeNode) currentInstr.dynamicNode;
-          return numberTreeNode.Value;
+          var numericTreeNode = (INumericTreeNode) currentInstr.dynamicNode;
+          return numericTreeNode.Value;
         }
 
         //mkommend: this symbol uses the logistic function f(x) = 1 / (1 + e^(-alpha * x) ) 

@@ -210,7 +210,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       return new SymbolicExpressionTree(root);
     }
 
-    private ISymbolicExpressionTreeNode CreateRegressionTreeRec(double[] trees, int offset, int k, Number constSy, VariableCondition varCondSy) {
+    private ISymbolicExpressionTreeNode CreateRegressionTreeRec(double[] trees, int offset, int k, Number numSy, VariableCondition varCondSy) {
 
       // alglib source for evaluation of one tree (dfprocessinternal)
       // offs = 0
@@ -239,8 +239,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       //   }
       // }
 
-      if ((double)(trees[k]) == (double)(-1)) {
-        var numNode = (NumberTreeNode)constSy.CreateTreeNode();
+      if (trees[k] == -1) {
+        var numNode = (NumberTreeNode)numSy.CreateTreeNode();
         numNode.Value = trees[k + 1];
         return numNode;
       } else {
@@ -249,8 +249,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         condNode.Threshold = trees[k + 1];
         condNode.Slope = double.PositiveInfinity;
 
-        var left = CreateRegressionTreeRec(trees, offset, k + 3, constSy, varCondSy);
-        var right = CreateRegressionTreeRec(trees, offset, offset + (int)Math.Round(trees[k + 2]), constSy, varCondSy);
+        var left = CreateRegressionTreeRec(trees, offset, k + 3, numSy, varCondSy);
+        var right = CreateRegressionTreeRec(trees, offset, offset + (int)Math.Round(trees[k + 2]), numSy, varCondSy);
 
         condNode.AddSubtree(left); // not 100% correct because interpreter uses: if(x <= thres) left() else right() and RF uses if(x < thres) left() else right() (see above)
         condNode.AddSubtree(right);

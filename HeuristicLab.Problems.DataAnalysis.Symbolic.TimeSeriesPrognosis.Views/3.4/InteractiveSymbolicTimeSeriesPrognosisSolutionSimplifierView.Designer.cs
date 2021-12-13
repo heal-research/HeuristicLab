@@ -52,7 +52,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis.Views 
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.Name = "InteractiveSymbolicTimeSeriesPrognosisSolutionSimplifierView";
       this.Size = new System.Drawing.Size(564, 348);
-      this.btnOptimizeConstants.Enabled = false;
+      this.btnOptimizeParameters.Enabled = false;
       this.ResumeLayout(false);
     }
 

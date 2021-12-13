@@ -103,7 +103,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.TimeSeries {
       alglib.lrreport ar = new alglib.lrreport();
       int nRows = inputMatrix.GetLength(0);
       int nFeatures = inputMatrix.GetLength(1) - 1;
-      double[] coefficients = new double[nFeatures + 1]; // last coefficient is for the constant
+      double[] coefficients = new double[nFeatures + 1]; // last coefficient is for the offset
 
       int retVal = 1;
       alglib.lrbuild(inputMatrix, nRows, nFeatures, out retVal, out lm, out ar);

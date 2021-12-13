@@ -122,8 +122,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     public NonlinearRegression()
       : base() {
       Problem = new RegressionProblem();
-      Parameters.Add(new FixedValueParameter<StringValue>(ModelStructureParameterName, "The function for which the parameters must be fit (only numeric constants are tuned).", new StringValue("<num> * x*x + 0.0")));
-      Parameters.Add(new FixedValueParameter<IntValue>(IterationsParameterName, "The maximum number of iterations for constants optimization.", new IntValue(200)));
+      Parameters.Add(new FixedValueParameter<StringValue>(ModelStructureParameterName, "The expression for which the <num> parameters should be fit.", new StringValue("<num> * x*x + 0.0")));
+      Parameters.Add(new FixedValueParameter<IntValue>(IterationsParameterName, "The maximum number of iterations for parameter optimization.", new IntValue(200)));
       Parameters.Add(new FixedValueParameter<IntValue>(RestartsParameterName, "The number of independent random restarts (>0)", new IntValue(10)));
       Parameters.Add(new FixedValueParameter<IntValue>(SeedParameterName, "The PRNG seed value.", new IntValue()));
       Parameters.Add(new FixedValueParameter<BoolValue>(SetSeedRandomlyParameterName, "Switch to determine if the random number seed should be initialized randomly.", new BoolValue(true)));
@@ -209,15 +209,15 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     /// <summary>
-    /// Fits a model to the data by optimizing the numeric constants.
+    /// Fits a model to the data by optimizing parameters.
     /// Model is specified as infix expression containing variable names and numbers. 
-    /// The starting point for the numeric constants is initialized randomly if a random number generator is specified (~N(0,1)). Otherwise the user specified constants are
+    /// The starting values for the parameters are initialized randomly if a random number generator is specified (~N(0,1)). Otherwise the user specified values are
     /// used as a starting point. 
     /// </summary>-
     /// <param name="problemData">Training and test data</param>
     /// <param name="modelStructure">The function as infix expression</param>
-    /// <param name="maxIterations">Number of constant optimization iterations (using Levenberg-Marquardt algorithm)</param>
-    /// <param name="random">Optional random number generator for random initialization of numeric constants.</param>
+    /// <param name="maxIterations">Number of Levenberg-Marquardt iterations</param>
+    /// <param name="random">Optional random number generator for random initialization of parameters.</param>
     /// <returns></returns>
     public static ISymbolicRegressionSolution CreateRegressionSolution(IRegressionProblemData problemData, string modelStructure, int maxIterations, bool applyLinearScaling, IRandom rand = null) {
       var parser = new InfixExpressionParser();
@@ -264,7 +264,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
       if (!SymbolicRegressionParameterOptimizationEvaluator.CanOptimizeParameters(tree)) throw new ArgumentException("The optimizer does not support the specified model structure.");
 
-      // initialize constants randomly
+      // initialize parameters randomly
       if (rand != null) {
         foreach (var node in tree.IterateNodesPrefix().OfType<NumberTreeNode>()) {
           double f = Math.Exp(NormalDistributedRandom.NextDouble(rand, 0, 1));

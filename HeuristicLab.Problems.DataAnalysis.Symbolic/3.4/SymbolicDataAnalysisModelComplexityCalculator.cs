@@ -35,6 +35,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       if (node.Symbol is StartSymbol) node = node.GetSubtree(0);
 
       switch (OpCodes.MapSymbolToOpCode(node)) {
+        case OpCodes.Number: // fall through
         case OpCodes.Constant: {
             return 1;
           }

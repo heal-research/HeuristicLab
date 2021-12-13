@@ -92,17 +92,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
         var node = nodes[i];
         if (node is NumberTreeNode) continue;
 
-        double impactValue, replacementValue;
-        double newQualityForImpactsCalculation;
-        impactValuesCalculator.CalculateImpactAndReplacementValues(model, node, problemData, rows, out impactValue, out replacementValue, out newQualityForImpactsCalculation, qualityForImpactsCalculation);
+        impactValuesCalculator.CalculateImpactAndReplacementValues(model, node, problemData, rows, 
+          out double impactValue, out double replacementValue, out double newQualityForImpactsCalculation, qualityForImpactsCalculation);
 
         if (pruneOnlyZeroImpactNodes && !impactValue.IsAlmost(0.0)) continue;
         if (!pruneOnlyZeroImpactNodes && impactValue > nodeImpactThreshold) continue;
 
-        var constantNode = (NumberTreeNode)node.Grammar.GetSymbol("Number").CreateTreeNode();
-        constantNode.Value = replacementValue;
+        var numNode = (NumberTreeNode)node.Grammar.GetSymbol("Number").CreateTreeNode();
+        numNode.Value = replacementValue;
 
-        ReplaceWithConstant(node, constantNode);
+        ReplaceWithNumber(node, numNode);
         i += node.GetLength() - 1; // skip subtrees under the node that was folded
 
         qualityForImpactsCalculation = newQualityForImpactsCalculation;

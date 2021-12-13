@@ -85,13 +85,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       };
 
     Number number = new Number();
-    Constant constant = new Constant();
     Variable variable = new Variable();
     LaggedVariable laggedVariable = new LaggedVariable();
     Defun defun = new Defun();
     TimeLag timeLag = new TimeLag();
     Integral integral = new Integral();
-    FactorVariable factorVar = new FactorVariable();
     BinaryFactorVariable binFactorVar = new BinaryFactorVariable();
 
     ProgramRootSymbol programRootSymbol = new ProgramRootSymbol();
@@ -164,7 +162,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         var t = (INumericTreeNode)number.CreateTreeNode();
         t.Value = tokens.Dequeue().DoubleValue;
         return t;
-      } else throw new FormatException("Expected function or constant symbol");
+      } else throw new FormatException("Expected function or number symbol");
     }
 
     private ISymbolicExpressionTreeNode ParseInvoke(Queue<Token> tokens) {

@@ -50,7 +50,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       if (NewNode == null)
         throw new ArgumentException("Node is not a number.");
       else {
-        this.Text = "Edit constant";
+        this.Text = "Edit number";
         newValueTextBox.Text = oldValueTextBox.Text = Math.Round(numberTreeNode.Value, 4).ToString();
       }
     }

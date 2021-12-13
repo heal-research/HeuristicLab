@@ -26,8 +26,8 @@ using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableType("44E03792-5E65-4C70-99B2-7849B8927E28")]
-  [Item("Constant", "Represents a constant number.")]
-  public sealed class Constant : Symbol, INumericSymbol{
+  [Item("Constant", "Represents a real-valued constant.")]
+  public sealed class Constant : Symbol, INumericSymbol {
     private const int minimumArity = 0;
     private const int maximumArity = 0;
 
@@ -42,7 +42,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       return new Constant(this, cloner);
     }
 
-    public Constant() : base("Constant", "Represents a constant number.") {}
+    public Constant() : base("Constant", "Represents a real-valued constant.") {}
 
     public override ISymbolicExpressionTreeNode CreateTreeNode() {
       return new ConstantTreeNode(this);

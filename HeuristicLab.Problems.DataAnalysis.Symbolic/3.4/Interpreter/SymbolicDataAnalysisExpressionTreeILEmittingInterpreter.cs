@@ -710,13 +710,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             il.MarkLabel(normalResult);
             return;
           }
-        case OpCodes.Number: {
-            NumberTreeNode numberNode = (NumberTreeNode)currentInstr.dynamicNode;
-            il.Emit(System.Reflection.Emit.OpCodes.Ldc_R8, numberNode.Value);
-            return;
-          }
+        case OpCodes.Number: // fall through
         case OpCodes.Constant: {
-          ConstantTreeNode constNode = (ConstantTreeNode) currentInstr.dynamicNode;
+          var constNode = (INumericTreeNode) currentInstr.dynamicNode;
           il.Emit(System.Reflection.Emit.OpCodes.Ldc_R8, constNode.Value);
           return;
         }

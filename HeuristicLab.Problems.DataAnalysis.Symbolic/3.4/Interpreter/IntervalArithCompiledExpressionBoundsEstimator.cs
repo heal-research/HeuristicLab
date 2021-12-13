@@ -153,14 +153,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
               Expression.ArrayIndex(args, Expression.Constant(index, typeof(int)))
             );
           }
-        case OpCodes.Constant: {
-            var v = (node as NumberTreeNode).Value;
-            // we have to make an interval out of the constant because this may be the root of the tree (and we are expected to return an Interval)
-            return Expression.Constant(new Interval(v, v), typeof(Interval));
-          }
+        case OpCodes.Constant: // fall through
         case OpCodes.Number: {
-            var v = (node as NumberTreeNode).Value;
-            // we have to make an interval out of the constant because this may be the root of the tree (and we are expected to return an Interval)
+            var v = (node as INumericTreeNode).Value;
+            // we have to make an interval out of the number because this may be the root of the tree (and we are expected to return an Interval)
             return Expression.Constant(new Interval(v, v), typeof(Interval));
           }
         case OpCodes.Add: {

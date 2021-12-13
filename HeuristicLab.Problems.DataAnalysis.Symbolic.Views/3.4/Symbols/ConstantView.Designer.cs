@@ -96,7 +96,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       this.weightNuLabel.Size = new System.Drawing.Size(56, 13);
       this.weightNuLabel.TabIndex = 0;
       this.weightNuLabel.Text = "Min value:";
-      this.toolTip.SetToolTip(this.weightNuLabel, "The minimal value to use for random initialization of constants.");
+      this.toolTip.SetToolTip(this.weightNuLabel, "The minimal value to use for random initialization of numbers.");
       // 
       // minValueTextBox
       // 
@@ -107,7 +107,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       this.minValueTextBox.Name = "minValueTextBox";
       this.minValueTextBox.Size = new System.Drawing.Size(300, 20);
       this.minValueTextBox.TabIndex = 1;
-      this.toolTip.SetToolTip(this.minValueTextBox, "The minimal value to use for random initialization of constants.");
+      this.toolTip.SetToolTip(this.minValueTextBox, "The minimal value to use for random initialization of numbers.");
       this.minValueTextBox.TextChanged += new System.EventHandler(this.minValueTextBox_TextChanged);
       // 
       // initializationGroupBox
@@ -133,7 +133,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       this.weightSigmaLabel.Size = new System.Drawing.Size(59, 13);
       this.weightSigmaLabel.TabIndex = 2;
       this.weightSigmaLabel.Text = "Max value:";
-      this.toolTip.SetToolTip(this.weightSigmaLabel, "The maximal value to use for random initialization of constants.");
+      this.toolTip.SetToolTip(this.weightSigmaLabel, "The maximal value to use for random initialization of numbers.");
       // 
       // maxValueTextBox
       // 
@@ -144,7 +144,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       this.maxValueTextBox.Name = "maxValueTextBox";
       this.maxValueTextBox.Size = new System.Drawing.Size(300, 20);
       this.maxValueTextBox.TabIndex = 3;
-      this.toolTip.SetToolTip(this.maxValueTextBox, "The maximal value to use for random initialization of constants.");
+      this.toolTip.SetToolTip(this.maxValueTextBox, "The maximal value to use for random initialization of numbers.");
       this.maxValueTextBox.TextChanged += new System.EventHandler(this.maxValueTextBox_TextChanged);
       // 
       // mutationGroupBox

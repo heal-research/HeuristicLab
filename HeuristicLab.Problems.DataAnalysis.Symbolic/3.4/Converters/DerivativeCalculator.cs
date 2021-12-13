@@ -41,7 +41,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     private static readonly Number numberSy = new Number();
-    private static readonly Constant constSy = new Constant();
     private static readonly Addition addSy = new Addition();
     private static readonly Subtraction subSy = new Subtraction();
     private static readonly Multiplication mulSy = new Multiplication();

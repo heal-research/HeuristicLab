@@ -41,7 +41,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression.Views {
       base.SetEnabledStateOfControls();
 
       var tree = Content?.Model?.SymbolicExpressionTree;
-      btnOptimizeConstants.Enabled = tree != null && SymbolicRegressionParameterOptimizationEvaluator.CanOptimizeParameters(tree);
+      btnOptimizeParameters.Enabled = tree != null && SymbolicRegressionParameterOptimizationEvaluator.CanOptimizeParameters(tree);
     }
 
     protected override void UpdateModel(ISymbolicExpressionTree tree) {
@@ -50,8 +50,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression.Views {
       Content.Model = model;
     }
 
-    protected override ISymbolicExpressionTree OptimizeConstants(ISymbolicExpressionTree tree, IProgress progress) {
-      const int constOptIterations = 50;
+    protected override ISymbolicExpressionTree OptimizeParameters(ISymbolicExpressionTree tree, IProgress progress) {
+      const int iterations = 50;
       const int maxRepetitions = 100;
       const double minimumImprovement = 1e-10;
       var regressionProblemData = Content.ProblemData;
@@ -64,9 +64,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression.Views {
       do {
         prevResult = result;
         result = SymbolicRegressionParameterOptimizationEvaluator.OptimizeParameters(model.Interpreter, tree, regressionProblemData, regressionProblemData.TrainingIndices,
-          applyLinearScaling: true, maxIterations: constOptIterations, updateVariableWeights: true, lowerEstimationLimit: model.LowerEstimationLimit, upperEstimationLimit: model.UpperEstimationLimit,
+          applyLinearScaling: true, maxIterations: iterations, updateVariableWeights: true, lowerEstimationLimit: model.LowerEstimationLimit, upperEstimationLimit: model.UpperEstimationLimit,
           iterationCallback: (args, func, obj) => {
-            double newProgressValue = progress.ProgressValue + (1.0 / (constOptIterations + 2) / maxRepetitions); // (constOptIterations + 2) iterations are reported
+            double newProgressValue = progress.ProgressValue + (1.0 / (iterations + 2) / maxRepetitions); // (iterations + 2) iterations are reported
             progress.ProgressValue = Math.Min(newProgressValue, 1.0);
           });
         reps++;

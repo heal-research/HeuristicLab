@@ -78,8 +78,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
     protected IEnumerable<double> CalculateReplacementValues(ISymbolicExpressionTreeNode node, ISymbolicExpressionTree sourceTree, ISymbolicDataAnalysisExpressionTreeInterpreter interpreter,
       IDataset dataset, IEnumerable<int> rows) {
-      //optimization: constant nodes return always the same value
-      NumberTreeNode numberNode = node as NumberTreeNode;
+      var numberNode = node as INumericTreeNode;
       BinaryFactorVariableTreeNode binaryFactorNode = node as BinaryFactorVariableTreeNode;
       FactorVariableTreeNode factorNode = node as FactorVariableTreeNode;
       if (numberNode != null) {

@@ -53,7 +53,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       this.treeStatusValue = new System.Windows.Forms.Label();
       this.flowLayoutPanel = new System.Windows.Forms.FlowLayoutPanel();
       this.btnSimplify = new System.Windows.Forms.Button();
-      this.btnOptimizeConstants = new System.Windows.Forms.Button();
+      this.btnOptimizeParameters = new System.Windows.Forms.Button();
       this.grpViewHost = new System.Windows.Forms.GroupBox();
       this.treeChart = new HeuristicLab.Problems.DataAnalysis.Symbolic.Views.InteractiveSymbolicExpressionTreeChart();
       this.toolTip = new System.Windows.Forms.ToolTip(this.components);
@@ -131,7 +131,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       this.flowLayoutPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.flowLayoutPanel.Controls.Add(this.btnSimplify);
-      this.flowLayoutPanel.Controls.Add(this.btnOptimizeConstants);
+      this.flowLayoutPanel.Controls.Add(this.btnOptimizeParameters);
       this.flowLayoutPanel.Location = new System.Drawing.Point(6, 370);
       this.flowLayoutPanel.Name = "flowLayoutPanel";
       this.flowLayoutPanel.Size = new System.Drawing.Size(204, 29);
@@ -152,21 +152,21 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       this.btnSimplify.UseVisualStyleBackColor = true;
       this.btnSimplify.Click += new System.EventHandler(this.btnSimplify_Click);
       // 
-      // btnOptimizeConstants
+      // btnOptimizeParameters
       // 
-      this.btnOptimizeConstants.AutoSize = true;
-      this.btnOptimizeConstants.Enabled = false;
-      this.btnOptimizeConstants.Image = HeuristicLab.Common.Resources.VSImageLibrary.Performance;
-      this.btnOptimizeConstants.Location = new System.Drawing.Point(89, 3);
-      this.btnOptimizeConstants.Name = "btnOptimizeConstants";
-      this.btnOptimizeConstants.Size = new System.Drawing.Size(80, 24);
-      this.btnOptimizeConstants.TabIndex = 2;
-      this.btnOptimizeConstants.Text = "Optimize";
-      this.btnOptimizeConstants.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-      this.toolTip.SetToolTip(this.btnOptimizeConstants, "Optimizes the numerical constants of the model. \r\nIf the algorithm converges, opt" +
+      this.btnOptimizeParameters.AutoSize = true;
+      this.btnOptimizeParameters.Enabled = false;
+      this.btnOptimizeParameters.Image = HeuristicLab.Common.Resources.VSImageLibrary.Performance;
+      this.btnOptimizeParameters.Location = new System.Drawing.Point(89, 3);
+      this.btnOptimizeParameters.Name = "btnOptimizeParameters";
+      this.btnOptimizeParameters.Size = new System.Drawing.Size(80, 24);
+      this.btnOptimizeParameters.TabIndex = 2;
+      this.btnOptimizeParameters.Text = "Optimize";
+      this.btnOptimizeParameters.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+      this.toolTip.SetToolTip(this.btnOptimizeParameters, "Optimizes the parameters of the model. \r\nIf the algorithm converges, opt" +
         "imization is stopped.");
-      this.btnOptimizeConstants.UseVisualStyleBackColor = true;
-      this.btnOptimizeConstants.Click += new System.EventHandler(this.btnOptimizeConstants_Click);
+      this.btnOptimizeParameters.UseVisualStyleBackColor = true;
+      this.btnOptimizeParameters.Click += new System.EventHandler(this.btnOptimizeParameters_Click);
       // 
       // grpViewHost
       // 
@@ -227,7 +227,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
     private System.Windows.Forms.GroupBox grpViewHost;
     private System.Windows.Forms.Button btnSimplify;
     private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel;
-    protected System.Windows.Forms.Button btnOptimizeConstants;
+    protected System.Windows.Forms.Button btnOptimizeParameters;
     private System.Windows.Forms.Label treeStatusValue;
     private System.Windows.Forms.ToolTip toolTip;
   }
