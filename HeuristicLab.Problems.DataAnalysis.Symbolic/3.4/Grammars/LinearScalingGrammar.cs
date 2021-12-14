@@ -129,6 +129,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       Symbols.First(s => s is Cube).Enabled = false;
       Symbols.First(s => s is CubeRoot).Enabled = false;
       Symbols.First(s => s is Absolute).Enabled = false;
+      Symbols.First(s => s is Constant).Enabled = false;
     }
   }
 }

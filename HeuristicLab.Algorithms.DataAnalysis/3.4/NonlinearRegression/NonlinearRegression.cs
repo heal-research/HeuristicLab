@@ -122,7 +122,11 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     public NonlinearRegression()
       : base() {
       Problem = new RegressionProblem();
-      Parameters.Add(new FixedValueParameter<StringValue>(ModelStructureParameterName, "The expression for which the <num> parameters should be fit.", new StringValue("<num> * x*x + 0.0")));
+      Parameters.Add(new FixedValueParameter<StringValue>(ModelStructureParameterName, 
+        "The expression for which the <num> parameters should be fit.\n " +
+        "Defined constants will not be modified.\n " +
+        "Modifiable numbers are specified with <num>. To specify a default value within this number symbol, a default value can be declared by e.g. <num=1.0>.", 
+        new StringValue("<num> * x*x + 0.0")));
       Parameters.Add(new FixedValueParameter<IntValue>(IterationsParameterName, "The maximum number of iterations for parameter optimization.", new IntValue(200)));
       Parameters.Add(new FixedValueParameter<IntValue>(RestartsParameterName, "The number of independent random restarts (>0)", new IntValue(10)));
       Parameters.Add(new FixedValueParameter<IntValue>(SeedParameterName, "The PRNG seed value.", new IntValue()));

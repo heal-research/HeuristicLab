@@ -20,6 +20,7 @@
 #endregion
 
 using System.Collections.Generic;
+using System.Linq;
 using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -102,6 +103,8 @@ namespace HeuristicLab.Problems.ExternalEvaluation.GP {
             AddAllowedChildSymbol(parent, child, i);
           }
       }
+
+      Symbols.First(s => s is Constant).Enabled = false;
     }
   }
 }

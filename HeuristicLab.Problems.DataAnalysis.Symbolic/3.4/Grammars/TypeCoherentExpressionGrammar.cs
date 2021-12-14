@@ -249,6 +249,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       Symbols.First(s => s.Name == SpecialFunctionsName).Enabled = false;
       Symbols.First(s => s.Name == ConditionalSymbolsName).Enabled = false;
       Symbols.First(s => s.Name == TimeSeriesSymbolsName).Enabled = false;
+      Symbols.First(s => s is Constant).Enabled = false;
     }
 
     public void ConfigureAsDefaultClassificationGrammar() {
@@ -262,6 +263,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       Symbols.First(s => s.Name == SpecialFunctionsName).Enabled = false;
       Symbols.First(s => s.Name == PowerFunctionsName).Enabled = false;
       Symbols.First(s => s.Name == TimeSeriesSymbolsName).Enabled = false;
+      Symbols.First(s => s is Constant).Enabled = false;
     }
 
     public void ConfigureAsDefaultTimeSeriesPrognosisGrammar() {
@@ -278,6 +280,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       Symbols.First(s => s is Derivative).Enabled = false;
       Symbols.First(s => s is Integral).Enabled = false;
       Symbols.First(s => s is TimeLag).Enabled = false;
+      Symbols.First(s => s is Constant).Enabled = false;
     }
   }
 }
