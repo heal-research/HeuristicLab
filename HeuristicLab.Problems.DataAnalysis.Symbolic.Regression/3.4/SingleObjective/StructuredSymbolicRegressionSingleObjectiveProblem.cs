@@ -35,7 +35,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       "Enter your expression as string in infix format into the empty input field.\n" +
       "By checking the \"Apply Linear Scaling\" checkbox you can add the relevant scaling terms to your expression.\n" +
       "After entering the expression click parse to build the tree.\n" +
-      "To edit the defined sub-functions, click on the coressponding colored node in the tree view.";
+      "To edit the defined sub-functions, click on the corresponding-colored node in the tree view.\n" +
+      "Check the info box besides the input field for more information.";
     #endregion
 
     #region Parameters

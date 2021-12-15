@@ -107,5 +107,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       Content.ApplyLinearScaling = linearScalingCheckBox.Checked;
       PaintTree();
     }
+
+    private void helpButton_DoubleClick(object sender, EventArgs e) {
+      using (InfoBox dialog = new InfoBox("Help for structure template",
+        "HeuristicLab.Problems.DataAnalysis.Symbolic.Views.Resources.structureTemplateHelp.rtf",
+        this)) {
+        dialog.ShowDialog(this);
+      }
+    }
   }
 }
