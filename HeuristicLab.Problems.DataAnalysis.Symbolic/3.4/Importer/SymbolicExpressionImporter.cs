@@ -96,7 +96,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     StartSymbol startSymbol = new StartSymbol();
 
     public ISymbolicExpressionTree Import(string str) {
-      str = str.Replace("(", " ( ").Replace(")", " ) ");
+      str = str.Replace("(", " ( ").Replace(")", " ) ")
+        .Replace("<", " < ").Replace(">", " > ")
+        .Replace("=", " = ");
       ISymbolicExpressionTreeNode root = programRootSymbol.CreateTreeNode();
       ISymbolicExpressionTreeNode start = startSymbol.CreateTreeNode();
       ISymbolicExpressionTreeNode mainBranch = ParseSexp(new Queue<Token>(GetTokenStream(str)));
@@ -158,9 +160,24 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         }
         Expect(Token.RPAR, tokens);
         return tree;
-      } else if (tokens.Peek().Symbol == TokenSymbol.NUMBER) {
+      } else if (tokens.Peek().Symbol == TokenSymbol.CONSTANT) {
         var t = (INumericTreeNode)number.CreateTreeNode();
         t.Value = tokens.Dequeue().DoubleValue;
+        return t;
+      } else if (tokens.Peek().Symbol == TokenSymbol.LBRACKET) {
+        Expect(Token.LBRACKET, tokens);
+        Expect(Token.NUM, tokens);
+        var t = (INumericTreeNode)number.CreateTreeNode();
+        if (tokens.Peek().Symbol == TokenSymbol.EQ) {
+          Expect(Token.EQ, tokens);
+          var initValToken = tokens.Dequeue();
+          if(initValToken.Symbol == TokenSymbol.CONSTANT) {
+            t.Value = initValToken.DoubleValue;
+          } else {
+            throw new FormatException("Expected a real value");
+          }
+        }
+        Expect(Token.RBRACKET, tokens);
         return t;
       } else throw new FormatException("Expected function or number symbol");
     }
@@ -223,7 +240,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       t.VariableName = varNameTok.StringValue;
 
       var weights = new List<double>();
-      while (tokens.Peek().Symbol == TokenSymbol.NUMBER) {
+      while (tokens.Peek().Symbol == TokenSymbol.CONSTANT) {
         weights.Add(tokens.Dequeue().DoubleValue);
       }
 
@@ -251,7 +268,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       t.VariableValue = varValTok.StringValue;
 
       var weightTok = tokens.Dequeue();
-      Debug.Assert(weightTok.Symbol == TokenSymbol.NUMBER);
+      Debug.Assert(weightTok.Symbol == TokenSymbol.CONSTANT);
       t.Weight = weightTok.DoubleValue;
 
       return t;
@@ -269,7 +286,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     private ISymbolicExpressionTreeNode CreateTree(Token token) {
-      if (token.Symbol != TokenSymbol.SYMB) throw new FormatException("Expected function symbol, but got: " + token.StringValue);
+      if (token.Symbol != TokenSymbol.SYMB &&
+          token.Symbol != TokenSymbol.LBRACKET &&  // LBRACKET and RBRACKET are used for <num=..> and as LT, GT operators
+          token.Symbol != TokenSymbol.RBRACKET  
+          ) throw new FormatException("Expected function symbol, but got: " + token.StringValue);
       return knownSymbols[token.StringValue].CreateTreeNode();
     }
 
