@@ -27,7 +27,8 @@ enum OpCodes : uint8_t
     AnalyticalQuotient = 49,
     Cube               = 50,
     CubeRoot           = 51,
-    Tanh               = 52
+    Tanh               = 52,
+    SubFunction        = 53
 };
 
 struct instruction

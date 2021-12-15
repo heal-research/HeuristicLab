@@ -179,10 +179,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
               Tan(instr.buf, code[c].buf);
               break;
             }
+
           case OpCodes.Tanh: {
               Tanh(instr.buf, code[c].buf);
               break;
             }
+
           case OpCodes.Absolute: {
               Absolute(instr.buf, code[c].buf);
               break;
@@ -191,6 +193,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           case OpCodes.AnalyticQuotient: {
               Load(instr.buf, code[c].buf);
               AnalyticQuotient(instr.buf, code[c + 1].buf);
+              break;
+            }
+
+          case OpCodes.SubFunction: {
+              Load(instr.buf, code[c].buf);
               break;
             }
           default: throw new NotSupportedException($"This interpreter does not support {(OpCode)instr.opcode}");

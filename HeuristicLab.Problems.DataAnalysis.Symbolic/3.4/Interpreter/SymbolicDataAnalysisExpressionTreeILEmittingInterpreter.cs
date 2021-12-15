@@ -722,6 +722,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             throw new NotSupportedException("Interpretation of symbol " + currentInstr.dynamicNode.Symbol.Name +
                                             " is not supported by the SymbolicDataAnalysisTreeILEmittingInterpreter");
           }
+        case OpCodes.SubFunction: {
+          CompileInstructions(il, state, ds);
+          return;
+        }
         default:
           throw new NotSupportedException("Interpretation of symbol " + currentInstr.dynamicNode.Symbol.Name +
                                           " is not supported by the SymbolicDataAnalysisTreeILEmittingInterpreter");

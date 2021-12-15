@@ -660,6 +660,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
               Expression.Multiply(falseBranch, Expression.Subtract(Expression.Constant(1), p))
               );
           }
+        case OpCodes.SubFunction: {
+          return MakeExpr(node.GetSubtree(0), variableIndices, row, columns);
+        }
         default:
           throw new NotSupportedException("Unsupported symbol: " + node.Symbol);
       }
