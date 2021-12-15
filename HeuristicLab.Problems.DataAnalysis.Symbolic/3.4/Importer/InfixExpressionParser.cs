@@ -557,9 +557,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         return numNode;
       } else if (next.TokenType == TokenType.Number) {
         var numTok = tokens.Dequeue();
-        var constNode = (ConstantTreeNode)constant.CreateTreeNode();
+        var constSy = new Constant {Value = numTok.doubleVal};
+        return constSy.CreateTreeNode();
+        /*var constNode = (ConstantTreeNode)constant.CreateTreeNode();
         constNode.Value = numTok.doubleVal;
-        return constNode;
+        return constNode;*/
       } else {
         throw new ArgumentException(string.Format("unexpected token in expression {0}", next.strVal));
       }
