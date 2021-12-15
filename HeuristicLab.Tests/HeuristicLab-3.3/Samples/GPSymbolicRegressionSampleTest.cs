@@ -109,12 +109,12 @@ namespace HeuristicLab.Tests {
       varSymbol.WeightManipulatorMu = 0.0;
       varSymbol.WeightManipulatorSigma = 0.05;
       varSymbol.MultiplicativeWeightManipulatorSigma = 0.03;
-      var constSymbol = grammar.Symbols.OfType<Constant>().Single();
-      constSymbol.MaxValue = 20;
-      constSymbol.MinValue = -20;
-      constSymbol.ManipulatorMu = 0.0;
-      constSymbol.ManipulatorSigma = 1;
-      constSymbol.MultiplicativeManipulatorSigma = 0.03;
+      var numSymbol = grammar.Symbols.OfType<Number>().Single();
+      numSymbol.MaxValue = 20;
+      numSymbol.MinValue = -20;
+      numSymbol.ManipulatorMu = 0.0;
+      numSymbol.ManipulatorSigma = 1;
+      numSymbol.MultiplicativeManipulatorSigma = 0.03;
       symbRegProblem.SymbolicExpressionTreeGrammar = grammar;
 
       // configure remaining problem parameters

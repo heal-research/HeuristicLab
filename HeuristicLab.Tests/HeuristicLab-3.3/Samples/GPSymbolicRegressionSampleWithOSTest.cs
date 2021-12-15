@@ -183,8 +183,8 @@ namespace HeuristicLab.Tests {
       problem.MaximumFunctionDefinitions.Value = 0;
       problem.MaximumFunctionArguments.Value = 0;
 
-      var evaluator = new SymbolicRegressionConstantOptimizationEvaluator();
-      evaluator.ConstantOptimizationIterations.Value = 5;
+      var evaluator = new SymbolicRegressionParameterOptimizationEvaluator();
+      evaluator.ParameterOptimizationIterations.Value = 5;
       problem.EvaluatorParameter.Value = evaluator;
       problem.RelativeNumberOfEvaluatedSamplesParameter.Hidden = true;
       problem.SolutionCreatorParameter.Hidden = true;
