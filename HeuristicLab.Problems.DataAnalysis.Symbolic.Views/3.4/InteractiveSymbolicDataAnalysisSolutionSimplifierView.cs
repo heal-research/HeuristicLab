@@ -202,7 +202,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
         } catch (OperationCanceledException) { }
 
         var replacementValues = impactAndReplacementValues.ToDictionary(x => x.Key, x => x.Value.Item2);
-        foreach (var pair in replacementValues.Where(pair => !(pair.Key is NumberTreeNode))) {
+        foreach (var pair in replacementValues.Where(pair => !(pair.Key is INumericTreeNode))) {
           foldedNodes[pair.Key] = MakeNumberTreeNode(pair.Value);
         }
         
