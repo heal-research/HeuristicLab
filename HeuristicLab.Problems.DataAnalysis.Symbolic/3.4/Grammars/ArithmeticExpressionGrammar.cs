@@ -52,6 +52,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       number.MinValue = -20;
       number.MaxValue = 20;
       var constant = new Constant();
+      constant.Enabled = false;
       var variableSymbol = new HeuristicLab.Problems.DataAnalysis.Symbolic.Variable();
       var binFactorVariableSymbol = new BinaryFactorVariable();
       var factorVariableSymbol = new FactorVariable();

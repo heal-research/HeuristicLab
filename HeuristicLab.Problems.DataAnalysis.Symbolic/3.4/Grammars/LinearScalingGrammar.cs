@@ -69,6 +69,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       number.MinValue = -20;
       number.MaxValue = 20;
       var constant = new Constant();
+      constant.Enabled = false;
       var variableSymbol = new Variable();
 
       #endregion

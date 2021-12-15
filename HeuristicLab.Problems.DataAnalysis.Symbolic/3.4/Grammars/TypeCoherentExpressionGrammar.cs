@@ -108,6 +108,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       number.MinValue = -20;
       number.MaxValue = 20;
       var constant = new Constant();
+      constant.Enabled = false;
       var variableSymbol = new Variable();
       var binFactorVariable = new BinaryFactorVariable();
       var factorVariable = new FactorVariable();
@@ -194,6 +195,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       AddAllowedChildSymbol(powerSymbols, laggedVariable, 0);
       AddAllowedChildSymbol(powerSymbols, autoregressiveVariable, 0);
       AddAllowedChildSymbol(powerSymbols, number, 1);
+      AddAllowedChildSymbol(powerSymbols, constant, 1);
 
       AddAllowedChildSymbol(square, realValuedSymbols, 0);
       AddAllowedChildSymbol(square, conditionSymbols, 0);
@@ -249,7 +251,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       Symbols.First(s => s.Name == SpecialFunctionsName).Enabled = false;
       Symbols.First(s => s.Name == ConditionalSymbolsName).Enabled = false;
       Symbols.First(s => s.Name == TimeSeriesSymbolsName).Enabled = false;
-      Symbols.First(s => s is Number).Enabled = false;
+      Symbols.First(s => s is Constant).Enabled = false;
     }
 
     public void ConfigureAsDefaultClassificationGrammar() {
@@ -263,7 +265,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       Symbols.First(s => s.Name == SpecialFunctionsName).Enabled = false;
       Symbols.First(s => s.Name == PowerFunctionsName).Enabled = false;
       Symbols.First(s => s.Name == TimeSeriesSymbolsName).Enabled = false;
-      Symbols.First(s => s is Number).Enabled = false;
+      Symbols.First(s => s is Constant).Enabled = false;
     }
 
     public void ConfigureAsDefaultTimeSeriesPrognosisGrammar() {
@@ -280,7 +282,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       Symbols.First(s => s is Derivative).Enabled = false;
       Symbols.First(s => s is Integral).Enabled = false;
       Symbols.First(s => s is TimeLag).Enabled = false;
-      Symbols.First(s => s is Number).Enabled = false;
+      Symbols.First(s => s is Constant).Enabled = false;
     }
   }
 }
