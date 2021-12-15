@@ -76,7 +76,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
       grammar.ConfigureAsDefaultRegressionGrammar();
       var twister = new MersenneTwister(31415);
       var ds = Util.CreateRandomDataset(twister, Rows, Columns);
-      var trees = Util.CreateRandomTrees(twister, ds, grammar, N, 1, 100, 0, 0);
+      var trees = Util.CreateRandomTrees(twister, ds, grammar, N, 100);
 
       double s = 0;
       var sw = new Stopwatch();
@@ -114,7 +114,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
       grammar.ConfigureAsDefaultRegressionGrammar();
       var twister = new MersenneTwister(31415);
       var ds = Util.CreateRandomDataset(twister, Rows, Columns);
-      var trees = Util.CreateRandomTrees(twister, ds, grammar, N, 1, 100, 0, 0);
+      var trees = Util.CreateRandomTrees(twister, ds, grammar, N, 100);
 
       var similarityCalculator = new SymbolicExpressionTreeBottomUpSimilarityCalculator { MatchParameterValues = strict, MatchVariableWeights = strict };
       var bottomUpSimilarity = 0d;

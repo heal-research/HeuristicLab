@@ -140,7 +140,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
       var grammar = new TypeCoherentExpressionGrammar();
       grammar.ConfigureAsDefaultRegressionGrammar();
 
-      var randomTrees = Util.CreateRandomTrees(twister, dataset, grammar, N, 1, 100, 0, 0);
+      var randomTrees = Util.CreateRandomTrees(twister, dataset, grammar, N, 100);
       foreach (ISymbolicExpressionTree tree in randomTrees) {
         Util.InitTree(tree, twister, new List<string>(dataset.VariableNames));
       }
@@ -154,7 +154,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
       var dataset = Util.CreateRandomDataset(twister, Rows, Columns);
 
       var grammar = new FullFunctionalExpressionGrammar();
-      var randomTrees = Util.CreateRandomTrees(twister, dataset, grammar, N, 1, 100, 0, 0);
+      var randomTrees = Util.CreateRandomTrees(twister, dataset, grammar, N, 100);
       foreach (ISymbolicExpressionTree tree in randomTrees) {
         Util.InitTree(tree, twister, new List<string>(dataset.VariableNames));
       }
@@ -168,7 +168,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
       var dataset = Util.CreateRandomDataset(twister, Rows, Columns);
 
       var grammar = new ArithmeticExpressionGrammar();
-      var randomTrees = Util.CreateRandomTrees(twister, dataset, grammar, N, 1, 100, 0, 0);
+      var randomTrees = Util.CreateRandomTrees(twister, dataset, grammar, N, 100);
       foreach (SymbolicExpressionTree tree in randomTrees) {
         Util.InitTree(tree, twister, new List<string>(dataset.VariableNames));
       }
@@ -248,7 +248,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
       };
 
       var rows = Enumerable.Range(0, numRows).ToList();
-      var randomTrees = Util.CreateRandomTrees(twister, dataset, grammar, N, 1, 10, 0, 0);
+      var randomTrees = Util.CreateRandomTrees(twister, dataset, grammar, N, 10);
       foreach (ISymbolicExpressionTree tree in randomTrees) {
         Util.InitTree(tree, twister, new List<string>(dataset.VariableNames));
       }
@@ -298,7 +298,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
       grammar.Symbols.First(x => x is Root).Enabled = false;
       grammar.Symbols.First(x => x is Power).Enabled = false;
 
-      var randomTrees = Util.CreateRandomTrees(twister, dataset, grammar, N, 1, 10, 0, 0);
+      var randomTrees = Util.CreateRandomTrees(twister, dataset, grammar, N, 10);
       foreach (ISymbolicExpressionTree tree in randomTrees) {
         Util.InitTree(tree, twister, new List<string>(dataset.VariableNames));
       }
