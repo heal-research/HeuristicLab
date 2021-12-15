@@ -34,7 +34,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace HeuristicLab.Tests {
   [TestClass]
   public class ShapeConstrainedRegressionSampleTest {
-    private const string SampleFileName = "GA_Shape_Constrained_Regression";
+    private const string SampleFileName = "GP_Shape_Constrained_Regression";
     private static readonly ProtoBufSerializer serializer = new ProtoBufSerializer();
 
     [TestMethod]
@@ -56,6 +56,15 @@ namespace HeuristicLab.Tests {
         Assert.AreEqual(3359.91748220025, SamplesUtils.GetDoubleResult(ga, "CurrentWorstQuality"), 1E-8);
         Assert.AreEqual(150200, SamplesUtils.GetIntResult(ga, "EvaluatedSolutions"));
       }
+    }
+
+    [TestMethod]
+    [TestCategory("Samples.Create")]
+    [TestProperty("Time", "medium")]
+    public void CreateShapeConstrainedRegressionSampleTest() {
+      var ga = CreateShapeConstrainedRegressionSample();
+      string path = Path.Combine(SamplesUtils.SamplesDirectory, SampleFileName + SamplesUtils.SampleFileExtension);
+      serializer.Serialize(ga, path);
     }
 
     public static GeneticAlgorithm CreateShapeConstrainedRegressionSample() {
@@ -81,7 +90,7 @@ namespace HeuristicLab.Tests {
 
 
       #region Algorithm Configuration
-      alg.Name = "Genetic Programming - Shape constrained Regression";
+      alg.Name = "Genetic Programming - Shape-constrained Regression";
       alg.Description = "A standard genetic programming algorithm to solve a shape constrained regression problem (Radiated gravitational wave power - Feynman instance)";
       alg.Problem = problem;
 
@@ -92,6 +101,7 @@ namespace HeuristicLab.Tests {
       #endregion
 
       alg.Engine = new ParallelEngine.ParallelEngine();
+
       return alg;
     }
   }
