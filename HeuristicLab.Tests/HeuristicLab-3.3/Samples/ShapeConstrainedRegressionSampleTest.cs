@@ -46,9 +46,9 @@ namespace HeuristicLab.Tests {
       SamplesUtils.RunAlgorithm(ga);
 
       if (Environment.Is64BitProcess) {
-        Assert.AreEqual(0.355347729912352, SamplesUtils.GetDoubleResult(ga, "BestQuality"), 1E-8);
-        Assert.AreEqual(27.6606834433137, SamplesUtils.GetDoubleResult(ga, "CurrentAverageQuality"), 1E-8);
-        Assert.AreEqual(3359.91748220025, SamplesUtils.GetDoubleResult(ga, "CurrentWorstQuality"), 1E-8);
+        Assert.AreEqual(0.035536903914644882, SamplesUtils.GetDoubleResult(ga, "BestQuality"), 1E-8);
+        Assert.AreEqual(26.707437555596698, SamplesUtils.GetDoubleResult(ga, "CurrentAverageQuality"), 1E-8);
+        Assert.AreEqual(3294.1754151628993, SamplesUtils.GetDoubleResult(ga, "CurrentWorstQuality"), 1E-8);
         Assert.AreEqual(150200, SamplesUtils.GetIntResult(ga, "EvaluatedSolutions"));
       } else {
         Assert.AreEqual(0.317642788600248, SamplesUtils.GetDoubleResult(ga, "BestQuality"), 1E-8);
