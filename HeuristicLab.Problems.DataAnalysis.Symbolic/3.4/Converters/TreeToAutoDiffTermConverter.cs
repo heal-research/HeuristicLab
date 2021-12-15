@@ -101,7 +101,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     #endregion
 
     public static bool TryConvertToAutoDiff(ISymbolicExpressionTree tree, bool makeVariableWeightsVariable, bool addLinearScalingTerms,
-      out List<DataForVariable> parameters, out double[] initialConstants,
+      out List<DataForVariable> parameters, out double[] initialParamValues,
       out ParametricFunction func,
       out ParametricFunctionGradient func_grad) {
 
@@ -114,7 +114,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         var compiledTerm = term.Compile(transformator.variables.ToArray(),
           parameterEntries.Select(kvp => kvp.Value).ToArray());
         parameters = new List<DataForVariable>(parameterEntries.Select(kvp => kvp.Key));
-        initialConstants = transformator.initialConstants.ToArray();
+        initialParamValues = transformator.initialParamValues.ToArray();
         func = (vars, @params) => compiledTerm.Evaluate(vars, @params);
         func_grad = (vars, @params) => compiledTerm.Differentiate(vars, @params);
         return true;
@@ -122,14 +122,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         func = null;
         func_grad = null;
         parameters = null;
-        initialConstants = null;
+        initialParamValues = null;
       }
       return false;
     }
 
     // state for recursive transformation of trees 
-    private readonly
-    List<double> initialConstants;
+    private readonly List<double> initialParamValues;
     private readonly Dictionary<DataForVariable, AutoDiff.Variable> parameters;
     private readonly List<AutoDiff.Variable> variables;
     private readonly bool makeVariableWeightsVariable;
@@ -138,17 +137,21 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     private TreeToAutoDiffTermConverter(bool makeVariableWeightsVariable, bool addLinearScalingTerms) {
       this.makeVariableWeightsVariable = makeVariableWeightsVariable;
       this.addLinearScalingTerms = addLinearScalingTerms;
-      this.initialConstants = new List<double>();
+      this.initialParamValues = new List<double>();
       this.parameters = new Dictionary<DataForVariable, AutoDiff.Variable>();
       this.variables = new List<AutoDiff.Variable>();
     }
 
     private AutoDiff.Term ConvertToAutoDiff(ISymbolicExpressionTreeNode node) {
-      if (node.Symbol is Constant) {
-        initialConstants.Add(((ConstantTreeNode)node).Value);
+      if (node.Symbol is Number) {
+        initialParamValues.Add(((NumberTreeNode)node).Value);
         var var = new AutoDiff.Variable();
         variables.Add(var);
         return var;
+      }
+      if (node.Symbol is Constant) {
+        // constants are fixed in autodiff
+        return (node as ConstantTreeNode).Value;
       }
       if (node.Symbol is Variable || node.Symbol is BinaryFactorVariable) {
         var varNode = node as VariableTreeNodeBase;
@@ -158,7 +161,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         var par = FindOrCreateParameter(parameters, varNode.VariableName, varValue);
 
         if (makeVariableWeightsVariable) {
-          initialConstants.Add(varNode.Weight);
+          initialParamValues.Add(varNode.Weight);
           var w = new AutoDiff.Variable();
           variables.Add(w);
           return AutoDiff.TermBuilder.Product(w, par);
@@ -172,7 +175,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         foreach (var variableValue in factorVarNode.Symbol.GetVariableValues(factorVarNode.VariableName)) {
           var par = FindOrCreateParameter(parameters, factorVarNode.VariableName, variableValue);
 
-          initialConstants.Add(factorVarNode.GetValue(variableValue));
+          initialParamValues.Add(factorVarNode.GetValue(variableValue));
           var wVar = new AutoDiff.Variable();
           variables.Add(wVar);
 
@@ -185,7 +188,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         var par = FindOrCreateParameter(parameters, varNode.VariableName, string.Empty, varNode.Lag);
 
         if (makeVariableWeightsVariable) {
-          initialConstants.Add(varNode.Weight);
+          initialParamValues.Add(varNode.Weight);
           var w = new AutoDiff.Variable();
           variables.Add(w);
           return AutoDiff.TermBuilder.Product(w, par);
@@ -259,9 +262,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         return cbrt(ConvertToAutoDiff(node.GetSubtree(0)));
       }
       if (node.Symbol is Power) {
-        var powerNode = node.GetSubtree(1) as ConstantTreeNode;
+        var powerNode = node.GetSubtree(1) as INumericTreeNode;
         if (powerNode == null)
-          throw new NotSupportedException("Only integer powers are allowed in parameter optimization. Try to use exp() and log() instead of the power symbol.");
+          throw new NotSupportedException("Only numeric powers are allowed in parameter optimization. Try to use exp() and log() instead of the power symbol.");
         var intPower = Math.Truncate(powerNode.Value);
         if (intPower != powerNode.Value)
           throw new NotSupportedException("Only integer powers are allowed in parameter optimization. Try to use exp() and log() instead of the power symbol.");
@@ -312,8 +315,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       string varName, string varValue = "", int lag = 0) {
       var data = new DataForVariable(varName, varValue, lag);
 
-      AutoDiff.Variable par = null;
-      if (!parameters.TryGetValue(data, out par)) {
+      if (!parameters.TryGetValue(data, out AutoDiff.Variable par)) {
         // not found -> create new parameter and entries in names and values lists
         par = new AutoDiff.Variable();
         parameters.Add(data, par);
@@ -329,6 +331,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           !(n.Symbol is BinaryFactorVariable) &&
           !(n.Symbol is FactorVariable) &&
           !(n.Symbol is LaggedVariable) &&
+          !(n.Symbol is Number) &&
           !(n.Symbol is Constant) &&
           !(n.Symbol is Addition) &&
           !(n.Symbol is Subtraction) &&

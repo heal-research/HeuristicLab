@@ -63,21 +63,21 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       // 
       this.insertNodeToolStripMenuItem.Name = "insertNodeToolStripMenuItem";
       this.insertNodeToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
-      this.insertNodeToolStripMenuItem.Text = "Insert Node";
+      this.insertNodeToolStripMenuItem.Text = "Insert node";
       this.insertNodeToolStripMenuItem.Click += new System.EventHandler(this.insertNodeToolStripMenuItem_Click);
       // 
       // changeNodeToolStripMenuItem
       // 
       this.changeNodeToolStripMenuItem.Name = "changeNodeToolStripMenuItem";
       this.changeNodeToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
-      this.changeNodeToolStripMenuItem.Text = "Change Node";
+      this.changeNodeToolStripMenuItem.Text = "Change node";
       this.changeNodeToolStripMenuItem.Click += new System.EventHandler(this.changeNodeToolStripMenuItem_Click);
       // 
       // cutToolStripMenuItem
       // 
       this.cutToolStripMenuItem.Name = "cutToolStripMenuItem";
       this.cutToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
-      this.cutToolStripMenuItem.Text = "Cut Subtree";
+      this.cutToolStripMenuItem.Text = "Cut subtree";
       this.cutToolStripMenuItem.Click += new System.EventHandler(this.cutToolStripMenuItem_Click);
       // 
       // removeToolStripMenuItem
@@ -108,7 +108,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       // 
       this.pasteToolStripMenuItem.Name = "pasteToolStripMenuItem";
       this.pasteToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
-      this.pasteToolStripMenuItem.Text = "Paste Subtree";
+      this.pasteToolStripMenuItem.Text = "Paste subtree";
       this.pasteToolStripMenuItem.Click += new System.EventHandler(this.pasteToolStripMenuItem_Clicked);
       // 
       // toolStripSeparator
@@ -120,7 +120,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       // 
       this.copyToolStripMenuItem.Name = "copyToolStripMenuItem";
       this.copyToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
-      this.copyToolStripMenuItem.Text = "Copy Subtree";
+      this.copyToolStripMenuItem.Text = "Copy subtree";
       this.copyToolStripMenuItem.Click += new System.EventHandler(this.copyToolStripMenuItem_Click);
       // 
       // toolStripSeparator1

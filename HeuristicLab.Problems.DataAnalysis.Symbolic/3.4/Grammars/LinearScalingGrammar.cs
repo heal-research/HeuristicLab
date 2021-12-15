@@ -65,9 +65,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       var cbrt = new CubeRoot();
       var abs = new Absolute();
       var aq = new AnalyticQuotient();
+      var number = new Number();
+      number.MinValue = -20;
+      number.MaxValue = 20;
       var constant = new Constant();
-      constant.MinValue = -20;
-      constant.MaxValue = 20;
+      constant.Enabled = false;
       var variableSymbol = new Variable();
 
       #endregion
@@ -77,7 +79,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       var scaling = new Multiplication { Name = "Scaling" };
       //all other symbols
       var allSymbols = new List<Symbol> {
-        add, sub, mul, div, constant, variableSymbol, sin, cos, tan, log, square, sqrt, cube, cbrt, exp,
+        add, sub, mul, div, number, constant, variableSymbol, sin, cos, tan, log, square, sqrt, cube, cbrt, exp,
         tanh, aq, abs
       };
 
@@ -85,7 +87,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       var univariateFuncs = new List<Symbol> { sin, cos, tan, tanh, exp, log, abs, square, cube, sqrt, cbrt };
       var realValueSymbols = new List<Symbol> {
          add, sub, mul, div, sin, cos, tan, tanh, exp, log, aq, abs, square, cube, sqrt, cbrt,
-         variableSymbol, constant,
+         variableSymbol, number, constant
         };
 
 
@@ -112,11 +114,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
       //Define childs for offset
       AddAllowedChildSymbol(offset, scaling, 0);
-      AddAllowedChildSymbol(offset, constant, 1);
+      AddAllowedChildSymbol(offset, number, 1);
 
       //Define childs for scaling
       foreach (var symb in allSymbols) AddAllowedChildSymbol(scaling, symb, 0);
-      AddAllowedChildSymbol(scaling, constant, 1);
+      AddAllowedChildSymbol(scaling, number, 1);
 
       //Define childs for realvalue symbols
       foreach (var symb in realValueSymbols) {
@@ -128,6 +130,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       Symbols.First(s => s is Cube).Enabled = false;
       Symbols.First(s => s is CubeRoot).Enabled = false;
       Symbols.First(s => s is Absolute).Enabled = false;
+      Symbols.First(s => s is Constant).Enabled = false;
     }
   }
 }

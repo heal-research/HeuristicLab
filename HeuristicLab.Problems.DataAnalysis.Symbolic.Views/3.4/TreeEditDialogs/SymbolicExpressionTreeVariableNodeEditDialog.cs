@@ -59,7 +59,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
 
     private void InitializeFields() {
       if (NewNode == null)
-        throw new ArgumentException("Node is not a constant.");
+        throw new ArgumentException("Node is not a variable node.");
       else {
         this.Text = "Edit variable";
         newValueTextBox.Text = oldValueTextBox.Text = Math.Round(variableTreeNode.Weight, 4).ToString();

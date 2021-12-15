@@ -45,7 +45,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     public IFixedValueParameter<BoolValue> OptimizerParametersParameter =>
       (IFixedValueParameter<BoolValue>)Parameters[OptimizeParametersParameterName];
 
-    public IFixedValueParameter<IntValue> ConstantOptimizationIterationsParameter =>
+    public IFixedValueParameter<IntValue> ParameterOptimizationIterationsParameter =>
       (IFixedValueParameter<IntValue>)Parameters[ParameterOptimizationIterationsParameterName];
 
     public IFixedValueParameter<BoolValue> UseSoftConstraintsParameter =>
@@ -61,9 +61,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       set => OptimizerParametersParameter.Value.Value = value;
     }
 
-    public int ConstantOptimizationIterations {
-      get => ConstantOptimizationIterationsParameter.Value.Value;
-      set => ConstantOptimizationIterationsParameter.Value.Value = value;
+    public int ParameterOptimizationIterations {
+      get => ParameterOptimizationIterationsParameter.Value.Value;
+      set => ParameterOptimizationIterationsParameter.Value.Value = value;
     }
 
     public bool UseSoftConstraints {
@@ -96,7 +96,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
 
     public NMSESingleObjectiveConstraintsEvaluator() {
       Parameters.Add(new FixedValueParameter<BoolValue>(OptimizeParametersParameterName,
-        "Define whether optimization of numeric parameters is active or not (default: false).", new BoolValue(false)));
+        "Define whether optimization of parameters is active or not (default: false).", new BoolValue(false)));
       Parameters.Add(new FixedValueParameter<IntValue>(ParameterOptimizationIterationsParameterName,
         "Define how many parameter optimization steps should be performed (default: 10).", new IntValue(10)));
       Parameters.Add(new FixedValueParameter<BoolValue>(UseSoftConstraintsParameterName,
@@ -125,8 +125,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       var applyLinearScaling = ApplyLinearScalingParameter.ActualValue.Value;
 
       if (OptimizeParameters) {
-        SymbolicRegressionConstantOptimizationEvaluator.OptimizeConstants(interpreter, tree, problemData, rows,
-          false, ConstantOptimizationIterations, true,
+        SymbolicRegressionParameterOptimizationEvaluator.OptimizeParameters(interpreter, tree, problemData, rows,
+          false, ParameterOptimizationIterations, true,
           estimationLimits.Lower, estimationLimits.Upper);
       } else {
         if (applyLinearScaling) {
@@ -154,9 +154,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
 
           if (errorState == OnlineCalculatorError.None) {
             //Set alpha and beta to the scaling nodes from ia grammar
-            var offsetParameter = offset.GetSubtree(1) as ConstantTreeNode;
+            var offsetParameter = offset.GetSubtree(1) as NumberTreeNode;
             offsetParameter.Value = alpha;
-            var scalingParameter = scaling.GetSubtree(1) as ConstantTreeNode;
+            var scalingParameter = scaling.GetSubtree(1) as NumberTreeNode;
             scalingParameter.Value = beta;
           }
         } // else: alpha and beta are evolved

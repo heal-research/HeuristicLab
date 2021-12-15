@@ -1,4 +1,4 @@
-#region License Information
+﻿#region License Information
 /* HeuristicLab
  * Copyright (C) Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
@@ -19,110 +19,37 @@
  */
 #endregion
 
-using System;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HEAL.Attic;
-namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
-  [StorableType("5CD355EA-36E4-4E43-B8C4-9E9CF4CBC860")]
-  [Item("Constant", "Represents a constant value.")]
-  public sealed class Constant : Symbol {
-    #region Properties
-    [Storable]
-    private double minValue;
-    public double MinValue {
-      get { return minValue; }
-      set {
-        if (value != minValue) {
-          minValue = value;
-          OnChanged(EventArgs.Empty);
-        }
-      }
-    }
-    [Storable]
-    private double maxValue;
-    public double MaxValue {
-      get { return maxValue; }
-      set {
-        if (value != maxValue) {
-          maxValue = value;
-          OnChanged(EventArgs.Empty);
-        }
-      }
-    }
-    [Storable]
-    private double manipulatorMu;
-    public double ManipulatorMu {
-      get { return manipulatorMu; }
-      set {
-        if (value != manipulatorMu) {
-          manipulatorMu = value;
-          OnChanged(EventArgs.Empty);
-        }
-      }
-    }
-    [Storable]
-    private double manipulatorSigma;
-    public double ManipulatorSigma {
-      get { return manipulatorSigma; }
-      set {
-        if (value < 0) throw new ArgumentException();
-        if (value != manipulatorSigma) {
-          manipulatorSigma = value;
-          OnChanged(EventArgs.Empty);
-        }
-      }
-    }
-    [Storable(DefaultValue = 0.0)]
-    private double multiplicativeManipulatorSigma;
-    public double MultiplicativeManipulatorSigma {
-      get { return multiplicativeManipulatorSigma; }
-      set {
-        if (value < 0) throw new ArgumentException();
-        if (value != multiplicativeManipulatorSigma) {
-          multiplicativeManipulatorSigma = value;
-          OnChanged(EventArgs.Empty);
-        }
-      }
-    }
 
+namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
+  [StorableType("44E03792-5E65-4C70-99B2-7849B8927E28")]
+  [Item("Constant", "Represents a real-valued constant.")]
+  public sealed class Constant : Symbol, INumericSymbol {
     private const int minimumArity = 0;
     private const int maximumArity = 0;
 
-    public override int MinimumArity {
-      get { return minimumArity; }
-    }
-    public override int MaximumArity {
-      get { return maximumArity; }
-    }
-    #endregion
+    public override int MinimumArity => minimumArity;
+    public override int MaximumArity => maximumArity;
+
+    public double Value { get; set; }
 
     [StorableConstructor]
     private Constant(StorableConstructorFlag _) : base(_) { }
-    private Constant(Constant original, Cloner cloner)
-      : base(original, cloner) {
-      minValue = original.minValue;
-      maxValue = original.maxValue;
-      manipulatorMu = original.manipulatorMu;
-      manipulatorSigma = original.manipulatorSigma;
-      multiplicativeManipulatorSigma = original.multiplicativeManipulatorSigma;
+
+    private Constant(Constant original, Cloner cloner) : base(original, cloner) {
+      this.Value = original.Value;
     }
-    public Constant()
-      : base("Constant", "Represents a constant value.") {
-      manipulatorMu = 0.0;
-      manipulatorSigma = 1.0;
-      multiplicativeManipulatorSigma = 0.03;
-      minValue = -20.0;
-      maxValue = 20.0;
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new Constant(this, cloner);
     }
+
+    public Constant() : base("Constant", "Represents a real-valued constant.") { }
 
     public override ISymbolicExpressionTreeNode CreateTreeNode() {
       return new ConstantTreeNode(this);
-    }
-
-    public override IDeepCloneable Clone(Cloner cloner) {
-      return new Constant(this, cloner);
     }
   }
 }

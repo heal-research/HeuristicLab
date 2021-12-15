@@ -100,18 +100,18 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
 
       for (int i = 0; i < nodes.Count; ++i) {
         var node = nodes[i];
-        if (node is ConstantTreeNode) continue;
+        if (node is INumericTreeNode) continue;
 
-        double impactValue, replacementValue, newQualityForImpactsCalculation;
-        impactValuesCalculator.CalculateImpactAndReplacementValues(model, node, problemData, rows, out impactValue, out replacementValue, out newQualityForImpactsCalculation, qualityForImpactsCalculation);
+        impactValuesCalculator.CalculateImpactAndReplacementValues(model, node, problemData, rows, 
+          out double impactValue, out double replacementValue, out double newQualityForImpactsCalculation, qualityForImpactsCalculation);
 
         if (pruneOnlyZeroImpactNodes && !impactValue.IsAlmost(0.0)) continue;
         if (!pruneOnlyZeroImpactNodes && impactValue > nodeImpactThreshold) continue;
 
-        var constantNode = (ConstantTreeNode)node.Grammar.GetSymbol("Constant").CreateTreeNode();
-        constantNode.Value = replacementValue;
+        var numberNode = (NumberTreeNode)node.Grammar.GetSymbol("Number").CreateTreeNode();
+        numberNode.Value = replacementValue;
 
-        ReplaceWithConstant(node, constantNode);
+        ReplaceWithNumber(node, numberNode);
         i += node.GetLength() - 1; // skip subtrees under the node that was folded
 
         qualityForImpactsCalculation = newQualityForImpactsCalculation;

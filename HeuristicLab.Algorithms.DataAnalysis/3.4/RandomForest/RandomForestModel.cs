@@ -219,10 +219,10 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         offset = offset + (int)Math.Round(rf.innerobj.trees[offset]);
       }
 
-      var constSy = new Constant();
+      var numSy = new Number();
       var varCondSy = new VariableCondition() { IgnoreSlope = true };
 
-      var node = CreateRegressionTreeRec(rf.innerobj.trees, offset, offset + 1, constSy, varCondSy);
+      var node = CreateRegressionTreeRec(rf.innerobj.trees, offset, offset + 1, numSy, varCondSy);
 
       var startNode = new StartSymbol().CreateTreeNode();
       startNode.AddSubtree(node);
@@ -231,7 +231,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       return new SymbolicExpressionTree(root);
     }
 
-    private ISymbolicExpressionTreeNode CreateRegressionTreeRec(double[] trees, int offset, int k, Constant constSy, VariableCondition varCondSy) {
+    private ISymbolicExpressionTreeNode CreateRegressionTreeRec(double[] trees, int offset, int k, Number numSy, VariableCondition varCondSy) {
 
       // alglib source for evaluation of one tree (dfprocessinternal)
       // offs = 0
@@ -261,17 +261,17 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       // }
 
       if ((double)(trees[k]) == (double)(-1)) {
-        var constNode = (ConstantTreeNode)constSy.CreateTreeNode();
-        constNode.Value = trees[k + 1];
-        return constNode;
+        var numNode = (NumberTreeNode)numSy.CreateTreeNode();
+        numNode.Value = trees[k + 1];
+        return numNode;
       } else {
         var condNode = (VariableConditionTreeNode)varCondSy.CreateTreeNode();
         condNode.VariableName = AllowedInputVariables[(int)Math.Round(trees[k])];
         condNode.Threshold = trees[k + 1];
         condNode.Slope = double.PositiveInfinity;
 
-        var left = CreateRegressionTreeRec(trees, offset, k + 3, constSy, varCondSy);
-        var right = CreateRegressionTreeRec(trees, offset, offset + (int)Math.Round(trees[k + 2]), constSy, varCondSy);
+        var left = CreateRegressionTreeRec(trees, offset, k + 3, numSy, varCondSy);
+        var right = CreateRegressionTreeRec(trees, offset, offset + (int)Math.Round(trees[k + 2]), numSy, varCondSy);
 
         condNode.AddSubtree(left); // not 100% correct because interpreter uses: if(x <= thres) left() else right() and RF uses if(x < thres) left() else right() (see above)
         condNode.AddSubtree(right);

@@ -20,36 +20,10 @@
 #endregion
 
 using HEAL.Attic;
-using HeuristicLab.Common;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
-  [StorableType("F91000E6-B041-4648-A9E8-595228F957FA")]
-  public sealed class ConstantTreeNode : SymbolicExpressionTreeTerminalNode, INumericTreeNode {
+  [StorableType("3CD759AF-A45E-4B70-BDCF-66AF1A03BAD8")]
+  public interface INumericSymbol : ISymbol { }
 
-    public new Constant Symbol => (Constant) base.Symbol;
-
-    public double Value { 
-      get => Symbol.Value;
-      set => throw new System.NotSupportedException("Cannot change the value of a constant.");
-    }
-
-    [StorableConstructor]
-    private ConstantTreeNode(StorableConstructorFlag _) : base(_) { }
-
-    private ConstantTreeNode(ConstantTreeNode original, Cloner cloner)
-      : base(original, cloner) {
-    }
-
-    private ConstantTreeNode() : base() { }
-    public ConstantTreeNode(Constant constantSymbol) : base(constantSymbol) { }
-
-    public override IDeepCloneable Clone(Cloner cloner) {
-      return new ConstantTreeNode(this, cloner);
-    }
-
-    public override string ToString() {
-      return $"{Value:E4}";
-    }
-  }
 }

@@ -81,8 +81,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         if (node is VariableTreeNode variable) {
           code[i].weight = variable.Weight;
           code[i].data = cachedData[variable.VariableName].AddrOfPinnedObject();
-        } else if (node is ConstantTreeNode constant) {
-          code[i].value = constant.Value;
+        } else if (node is INumericTreeNode numeric) {
+          code[i].value = numeric.Value;
         }
 
         code[i].childIndex = c;

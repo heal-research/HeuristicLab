@@ -20,6 +20,7 @@
 #endregion
 
 using System.Collections.Generic;
+using System.Linq;
 using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -61,12 +62,13 @@ namespace HeuristicLab.Problems.ExternalEvaluation.GP {
       var and = new And();
       var or = new Or();
       var not = new Not();
+      var number = new Number();
+      number.MinValue = -20;
+      number.MaxValue = 20;
       var constant = new Constant();
-      constant.MinValue = -20;
-      constant.MaxValue = 20;
       variableSymbol = new HeuristicLab.Problems.DataAnalysis.Symbolic.Variable();
 
-      var allSymbols = new List<Symbol>() { add, sub, mul, div, mean, sin, cos, tan, log, exp, @if, gt, lt, and, or, not, constant, variableSymbol };
+      var allSymbols = new List<Symbol>() { add, sub, mul, div, mean, sin, cos, tan, log, exp, @if, gt, lt, and, or, not, number, constant, variableSymbol };
       var unaryFunctionSymbols = new List<Symbol>() { sin, cos, tan, log, exp, not };
       var binaryFunctionSymbols = new List<Symbol>() { gt, lt };
       var functionSymbols = new List<Symbol>() { add, sub, mul, div, mean, and, or };
@@ -85,7 +87,8 @@ namespace HeuristicLab.Problems.ExternalEvaluation.GP {
       }
 
       SetSubtreeCount(@if, 3, 3);
-      SetSubtreeCount(constant, 0, 0);
+      SetSubtreeCount(number, 0, 0);
+      SetSubtreeCount(constant,0, 0);
       SetSubtreeCount(variableSymbol, 0, 0);
 
       // allow each symbol as child of the start symbol
@@ -100,6 +103,8 @@ namespace HeuristicLab.Problems.ExternalEvaluation.GP {
             AddAllowedChildSymbol(parent, child, i);
           }
       }
+
+      Symbols.First(s => s is Constant).Enabled = false;
     }
   }
 }

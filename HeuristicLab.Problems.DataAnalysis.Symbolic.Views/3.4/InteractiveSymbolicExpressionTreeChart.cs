@@ -27,8 +27,8 @@ using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
-  internal delegate void
-  ModifyTree(ISymbolicExpressionTree tree, ISymbolicExpressionTreeNode node, ISymbolicExpressionTreeNode oldChild, ISymbolicExpressionTreeNode newChild, bool removeSubtree = true);
+  internal delegate void ModifyTree(ISymbolicExpressionTree tree, ISymbolicExpressionTreeNode node, ISymbolicExpressionTreeNode oldChild, ISymbolicExpressionTreeNode newChild, 
+                                    bool removeSubtree = true);
 
   internal sealed partial class InteractiveSymbolicExpressionTreeChart : SymbolicExpressionTreeChart {
     private ISymbolicExpressionTreeNode tempNode; // node in clipboard (to be cut/copy/pasted etc)
@@ -81,7 +81,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
     }
 
     protected override void OnSymbolicExpressionTreeNodeClicked(object sender, MouseEventArgs e) {
-      currSelected = (VisualTreeNode<ISymbolicExpressionTreeNode>)sender; ;
+      currSelected = (VisualTreeNode<ISymbolicExpressionTreeNode>)sender;
       base.OnSymbolicExpressionTreeNodeClicked(sender, e);
     }
 
@@ -103,9 +103,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
 
         var symbol = dialog.SelectedSymbol;
         var node = symbol.CreateTreeNode();
-        if (node is ConstantTreeNode) {
-          var constant = node as ConstantTreeNode;
-          constant.Value = double.Parse(dialog.constantValueTextBox.Text);
+        if (node is INumericTreeNode numTreeNode) {
+          numTreeNode.Value = double.Parse(dialog.numberValueTextBox.Text);
         } else if (node is VariableTreeNode) {
           var variable = node as VariableTreeNode;
           variable.Weight = double.Parse(dialog.variableWeightTextBox.Text);
@@ -132,8 +131,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
 
       ISymbolicExpressionTreeNode newNode = null;
       var result = DialogResult.Cancel;
-      if (node is ConstantTreeNode) {
-        using (var dialog = new ConstantNodeEditDialog(node)) {
+      if (node is INumericTreeNode) {
+        using (var dialog = new NumberNodeEditDialog(node)) {
           dialog.ShowDialog(this);
           newNode = dialog.NewNode;
           result = dialog.DialogResult;
@@ -199,7 +198,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       if (!(lastOp == EditOp.CopySubtree || lastOp == EditOp.CutSubtree)) return;
       // check if the copied/cut node (stored in the tempNode) can be inserted as a child of the current selected node
       var node = currSelected.Content;
-      if (node is ConstantTreeNode || node is VariableTreeNode) return;
+      if (node is INumericTreeNode || node is VariableTreeNode) return;
       // check if the currently selected node can accept the copied node as a child 
       // no need to check the grammar, an arity check will do just fine here
       if (node.Symbol.MaximumArity <= node.SubtreeCount) return;

@@ -83,14 +83,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
       // k * x
       var multiplicationNode = new Multiplication().CreateTreeNode();
-      var kNode = CreateConstantTreeNode("k", kValue);
+      var kNode = CreateNumber("k", kValue);
       var xNode = CreateVariableTreeNode(column, "x");
       multiplicationNode.AddSubtree(kNode);
       multiplicationNode.AddSubtree(xNode);
 
       // ( k * x ) + d
       var additionNode = new Addition().CreateTreeNode();
-      var dNode = CreateConstantTreeNode("d", dValue);
+      var dNode = CreateNumber("d", dValue);
       additionNode.AddSubtree(multiplicationNode);
       additionNode.AddSubtree(dNode);
 
@@ -104,14 +104,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
       // x - d
       var substractionNode = new Subtraction().CreateTreeNode();
-      var dNode = CreateConstantTreeNode("d", dValue);
+      var dNode = CreateNumber("d", dValue);
       var xNode = CreateVariableTreeNode(column, "x");
       substractionNode.AddSubtree(xNode);
       substractionNode.AddSubtree(dNode);
 
       // ( x - d ) / k
       var divisionNode = new Division().CreateTreeNode();
-      var kNode = CreateConstantTreeNode("k", kValue);
+      var kNode = CreateNumber("k", kValue);
       divisionNode.AddSubtree(substractionNode);
       divisionNode.AddSubtree(kNode);
 
@@ -156,7 +156,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       // x ^ exp
       var powerNode = new Power().CreateTreeNode();
       var xNode = CreateVariableTreeNode(column, "x");
-      var expNode = CreateConstantTreeNode("exp", expValue);
+      var expNode = CreateNumber("exp", expValue);
       powerNode.AddSubtree(xNode);
       powerNode.AddSubtree(expNode);
 
@@ -170,7 +170,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       // rt(x, b)
       var rootNode = new Root().CreateTreeNode();
       var xNode = CreateVariableTreeNode(column, "x");
-      var bNode = CreateConstantTreeNode("b", expValue);
+      var bNode = CreateNumber("b", expValue);
       rootNode.AddSubtree(xNode);
       rootNode.AddSubtree(bNode);
 
@@ -219,7 +219,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     private ISymbolicExpressionTreeNode GenTreeLog_x_b(double b) {
       // log(x, b)
       var logNode = new Logarithm().CreateTreeNode();
-      var bNode = CreateConstantTreeNode("b", b);
+      var bNode = CreateNumber("b", b);
       var xNode = CreateVariableTreeNode(column, "x");
       logNode.AddSubtree(xNode);
       logNode.AddSubtree(bNode);
@@ -230,7 +230,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     private ISymbolicExpressionTreeNode GenTreePow_b_x(double b) {
       // b ^ x
       var powerNode = new Power().CreateTreeNode();
-      var bNode = CreateConstantTreeNode("b", b);
+      var bNode = CreateNumber("b", b);
       var xNode = CreateVariableTreeNode(column, "x");
       powerNode.AddSubtree(bNode);
       powerNode.AddSubtree(xNode);
@@ -241,7 +241,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     private ISymbolicExpressionTreeNode GenTreeDiv_1_x() {
       // 1 / x
       var divNode = new Division().CreateTreeNode();
-      var oneNode = CreateConstantTreeNode("1", 1.0);
+      var oneNode = CreateNumber("1", 1.0);
       var xNode = CreateVariableTreeNode(column, "x");
       divNode.AddSubtree(oneNode);
       divNode.AddSubtree(xNode);
@@ -253,33 +253,33 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       // x - m_org
       var substractionNode = new Subtraction().CreateTreeNode();
       var xNode = CreateVariableTreeNode(variable, "x");
-      var m_orgNode = CreateConstantTreeNode("m_org", m_org);
+      var m_orgNode = CreateNumber("m_org", m_org);
       substractionNode.AddSubtree(xNode);
       substractionNode.AddSubtree(m_orgNode);
 
       // (x - m_org) / s_org
       var divisionNode = new Division().CreateTreeNode();
-      var s_orgNode = CreateConstantTreeNode("s_org", s_org);
+      var s_orgNode = CreateNumber("s_org", s_org);
       divisionNode.AddSubtree(substractionNode);
       divisionNode.AddSubtree(s_orgNode);
 
       // ((x - m_org) / s_org ) * s_tar
       var multiplicationNode = new Multiplication().CreateTreeNode();
-      var s_tarNode = CreateConstantTreeNode("s_tar", s_tar);
+      var s_tarNode = CreateNumber("s_tar", s_tar);
       multiplicationNode.AddSubtree(divisionNode);
       multiplicationNode.AddSubtree(s_tarNode);
 
       // ((x - m_org) / s_org ) * s_tar + m_tar
       var additionNode = new Addition().CreateTreeNode();
-      var m_tarNode = CreateConstantTreeNode("m_tar", m_tar);
+      var m_tarNode = CreateNumber("m_tar", m_tar);
       additionNode.AddSubtree(multiplicationNode);
       additionNode.AddSubtree(m_tarNode);
 
       return additionNode;
     }
 
-    private ConstantTreeNode CreateConstantTreeNode(string description, double value) {
-      return new ConstantTreeNode(new Constant()) { Value = value };
+    private NumberTreeNode CreateNumber(string description, double value) {
+      return new NumberTreeNode(new Number()) { Value = value };
     }
 
     private VariableTreeNode CreateVariableTreeNode(string name, string description) {

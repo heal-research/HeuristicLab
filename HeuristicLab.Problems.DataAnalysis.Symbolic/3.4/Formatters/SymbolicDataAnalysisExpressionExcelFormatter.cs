@@ -46,12 +46,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
     private string GetExcelColumnName(int columnNumber) {
       int dividend = columnNumber;
-      string columnName = String.Empty;
+      string columnName = string.Empty;
 
       while (dividend > 0) {
         int modulo = (dividend - 1) % 26;
         columnName = System.Convert.ToChar(65 + modulo) + columnName;
-        dividend = (int)((dividend - modulo) / 26);
+        dividend = (dividend - modulo) / 26;
       }
 
       return columnName;
@@ -133,9 +133,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           stringBuilder.Append(")");
         }
         stringBuilder.Append("))");
-      } else if (symbol is Constant) {
-        ConstantTreeNode constantTreeNode = node as ConstantTreeNode;
-        stringBuilder.Append(constantTreeNode.Value.ToString(CultureInfo.InvariantCulture));
+      } else if (symbol is INumericSymbol numSy) {
+        var numTreeNode = node as INumericTreeNode;
+        stringBuilder.Append(numTreeNode.Value.ToString(CultureInfo.InvariantCulture));
       } else if (symbol is Cosine) {
         stringBuilder.Append("COS(");
         stringBuilder.Append(FormatRecursively(node.GetSubtree(0)));

@@ -56,7 +56,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   /// ident         =  '_' | letter { '_' | letter | digit }
   /// </summary>
   public sealed class InfixExpressionParser {
-    private enum TokenType { Operator, Identifier, Number, LeftPar, RightPar, LeftBracket, RightBracket, Comma, Eq, End, NA };
+    private enum TokenType { Operator, Identifier, Number, LeftPar, RightPar, LeftBracket, RightBracket, LeftAngleBracket, RightAngleBracket, Comma, Eq, End, NA };
     private class Token {
       internal double doubleVal;
       internal string strVal;
@@ -81,6 +81,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     internal static readonly BidirectionalLookup<string, ISymbol>
       knownSymbols = new BidirectionalLookup<string, ISymbol>(StringComparer.InvariantCulture, new SymbolComparer());
 
+    private Number number = new Number();
     private Constant constant = new Constant();
     private Variable variable = new Variable();
     private BinaryFactorVariable binaryFactorVar = new BinaryFactorVariable();
@@ -179,7 +180,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             && str[pos] != ')'
             && str[pos] != ']'
             && str[pos] != '}'
-            && str[pos] != ',') {
+            && str[pos] != ','
+            && str[pos] != '>') {
             sb.Append(str[pos]);
             pos++;
           }
@@ -264,6 +266,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         } else if (str[pos] == ',') {
           pos++;
           yield return new Token { TokenType = TokenType.Comma, strVal = "," };
+        } else if (str[pos] == '<') {
+          pos++;
+          yield return new Token {TokenType = TokenType.LeftAngleBracket, strVal = "<"};
+        } else if (str[pos] == '>') {
+          pos++;
+          yield return new Token {TokenType = TokenType.RightAngleBracket, strVal = ">"};
         } else {
           throw new ArgumentException("Invalid character: " + str[pos]);
         }
@@ -325,7 +333,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           var sumNeg = GetSymbol("+").CreateTreeNode();
           foreach (var negTerm in negTerms) sumNeg.AddSubtree(negTerm);
 
-          var constNode = (ConstantTreeNode)constant.CreateTreeNode();
+          var constNode = (NumberTreeNode)number.CreateTreeNode();
           constNode.Value = -1.0;
           var prod = GetSymbol("*").CreateTreeNode();
           prod.AddSubtree(constNode);
@@ -523,11 +531,37 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             return varNode;
           }
         }
+      } else if (next.TokenType == TokenType.LeftAngleBracket) {
+        Token numberTok = null;
+        var leftAngleBracket = tokens.Dequeue();
+        if (leftAngleBracket.TokenType != TokenType.LeftAngleBracket)
+          throw new ArgumentException("opening bracket < expected");
+
+        var idTok = tokens.Dequeue();
+        if (idTok.TokenType != TokenType.Identifier || idTok.strVal.ToLower() != "num")
+          throw new ArgumentException("string 'num' expected");
+
+        if (tokens.Peek().TokenType == TokenType.Eq) {
+          var equalTok = tokens.Dequeue();
+          if (tokens.Peek().TokenType != TokenType.Number)
+            throw new ArgumentException("No value for number specified.");
+
+          numberTok = tokens.Dequeue();
+        }
+
+        var rightAngleBracket = tokens.Dequeue();
+        if (rightAngleBracket.TokenType != TokenType.RightAngleBracket)
+          throw new ArgumentException("closing bracket > expected");
+        var numNode = (NumberTreeNode)number.CreateTreeNode();
+        if (numberTok != null) numNode.Value = numberTok.doubleVal;
+        return numNode;
       } else if (next.TokenType == TokenType.Number) {
         var numTok = tokens.Dequeue();
-        var constNode = (ConstantTreeNode)constant.CreateTreeNode();
+        var constSy = new Constant {Value = numTok.doubleVal};
+        return constSy.CreateTreeNode();
+        /*var constNode = (ConstantTreeNode)constant.CreateTreeNode();
         constNode.Value = numTok.doubleVal;
-        return constNode;
+        return constNode;*/
       } else {
         throw new ArgumentException(string.Format("unexpected token in expression {0}", next.strVal));
       }

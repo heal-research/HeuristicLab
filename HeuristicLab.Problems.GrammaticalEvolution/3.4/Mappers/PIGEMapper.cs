@@ -41,8 +41,8 @@ namespace HeuristicLab.Problems.GrammaticalEvolution {
   ///   𝜋GE codons consist of (nont, rule) tuples, where nont may be one value from an "order"
   ///   integer vector and rule may be one value from a "content" integer vector.
   ///   
-  ///   Order:   NT   = nont % Num. NT      ... determines, which non-terminal to expand next
-  ///   Content: Rule = rule % Num. Rules   ... rule determination as with standard GE mappers
+  ///   Order:   NT   = nont % Number. NT      ... determines, which non-terminal to expand next
+  ///   Content: Rule = rule % Number. Rules   ... rule determination as with standard GE mappers
   /// 
   /// Four mutation and crossover strategies possible:
   ///  * Order-only:    only "order" vector is modified, "content" vector is fixed (1:0),
@@ -154,12 +154,12 @@ namespace HeuristicLab.Problems.GrammaticalEvolution {
           nonTerminals.RemoveAt(0);
           current.AddSubtree(GetRandomTerminalNode(current, grammar, random));
         } else {
-          // Order:   NT   = nont % Num. NT
+          // Order:   NT   = nont % Number. NT
           int nt = NontVector[genotypeIndex] % nonTerminals.Count;
           ISymbolicExpressionTreeNode current = nonTerminals[nt];
           nonTerminals.RemoveAt(nt);
 
-          // Content: Rule = rule % Num. Rules
+          // Content: Rule = rule % Number. Rules
           ISymbolicExpressionTreeNode newNode = GetNewChildNode(current, genotype, grammar, genotypeIndex, random);
           int arity = SampleArity(random, newNode, grammar);
 

@@ -201,8 +201,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         FormatNode(node, strBuilder, infixSymbol: " < ");
       else if (node is VariableTreeNode)
         FormatVariableTreeNode(node, strBuilder);
-      else if (node is ConstantTreeNode)
-        FormatConstantTreeNode(node, strBuilder);
+      else if (node is INumericTreeNode)
+        FormatNumericTreeNode(node, strBuilder);
       else
         throw new NotSupportedException("Formatting of symbol: " + symbol + " not supported for Python symbolic expression tree formatter.");
     }
@@ -226,9 +226,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       strBuilder.Append($"{formattedVariable} * {variableWeight}");
     }
 
-    private static void FormatConstantTreeNode(ISymbolicExpressionTreeNode node, StringBuilder strBuilder) {
-      var constNode = node as ConstantTreeNode;
-      strBuilder.Append(constNode.Value.ToString("g17", CultureInfo.InvariantCulture));
+    private static void FormatNumericTreeNode(ISymbolicExpressionTreeNode node, StringBuilder strBuilder) {
+      var symbol = node.Symbol;
+      if (node is INumericTreeNode numNode) {
+        strBuilder.Append(numNode.Value.ToString("g17", CultureInfo.InvariantCulture));
+      } else {
+        throw new NotSupportedException("Formatting of symbol: " + symbol + " not supported for Python symbolic expression tree formatter.");
+      }
     }
 
     private static void FormatPower(ISymbolicExpressionTreeNode node, StringBuilder strBuilder, string exponent) {
