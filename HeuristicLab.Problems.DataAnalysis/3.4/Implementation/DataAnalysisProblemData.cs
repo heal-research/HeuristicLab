@@ -188,7 +188,11 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
       if (variableRanges == null) {
         variableRanges = Dataset.GetVariableRanges();
+      }else {
+        foreach (var entry in variableRanges.GetVariableIntervals())
+          VariableRanges.SetInterval(entry.Item1, entry.Item2);
       }
+
       Parameters.Add(new FixedValueParameter<IntervalCollection>(VariableRangesParameterName, variableRanges));
 
       TransformationsParameter.Hidden = true;

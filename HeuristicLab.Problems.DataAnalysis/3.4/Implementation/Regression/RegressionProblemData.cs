@@ -157,15 +157,11 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
 
     public RegressionProblemData(IDataset dataset, IEnumerable<string> allowedInputVariables, string targetVariable,
-      IEnumerable<ITransformation> transformations = null/*,
-      IntervalCollection variableRanges = null*/)
-      : base(dataset, allowedInputVariables, transformations ?? Enumerable.Empty<ITransformation>()) {
+      IEnumerable<ITransformation> transformations = null,  IntervalCollection variableRanges = null)
+      : base(dataset, allowedInputVariables, transformations, variableRanges) {
       var variables = InputVariables.Select(x => x.AsReadOnly()).ToList();
       Parameters.Add(new ConstrainedValueParameter<StringValue>(TargetVariableParameterName, new ItemSet<StringValue>(variables), variables.Where(x => x.Value == targetVariable).First()));
-      /*if (variableRanges == null) {
-        variableRanges = Dataset.GetVariableRanges();
-      }
-      Parameters.Add(new FixedValueParameter<IntervalCollection>(VariableRangesParameterName, variableRanges));*/
+     
     }
     private void RegisterParameterEvents() {
       TargetVariableParameter.ValueChanged += new EventHandler(Parameter_ValueChanged);

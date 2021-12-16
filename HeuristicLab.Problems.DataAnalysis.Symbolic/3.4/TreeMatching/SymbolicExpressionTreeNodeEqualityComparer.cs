@@ -32,7 +32,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     protected SymbolicExpressionTreeNodeEqualityComparer(StorableConstructorFlag _) : base(_) { }
     protected SymbolicExpressionTreeNodeEqualityComparer(SymbolicExpressionTreeNodeEqualityComparer original, Cloner cloner)
       : base(original, cloner) {
-      matchParameterValues = original.matchParameterValues;
+      matchNumericValues = original.matchNumericValues;
       matchVariableNames = original.matchVariableNames;
       matchVariableWeights = original.matchVariableWeights;
     }
@@ -40,10 +40,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
     // more flexible matching criteria 
     [Storable]
-    private bool matchParameterValues;
+    private bool matchNumericValues;
     public bool MatchParameterValues {
-      get { return matchParameterValues; }
-      set { matchParameterValues = value; }
+      get { return matchNumericValues; }
+      set { matchNumericValues = value; }
     }
 
     [Storable]
@@ -65,7 +65,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     public SymbolicExpressionTreeNodeEqualityComparer() {
-      matchParameterValues = true;
+      matchNumericValues = true;
       matchVariableNames = true;
       matchVariableWeights = true;
     }
