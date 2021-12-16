@@ -28,12 +28,12 @@ using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
   public partial class NumberNodeEditDialog : Form {
-    private INumericTreeNode numberTreeNode;
-    public INumericTreeNode NewNode {
+    private NumberTreeNode numberTreeNode;
+    public NumberTreeNode NewNode {
       get { return numberTreeNode; }
       set {
         if (InvokeRequired)
-          Invoke(new Action<SymbolicExpressionTreeNode>(x => numberTreeNode = (INumericTreeNode)x), value);
+          Invoke(new Action<SymbolicExpressionTreeNode>(x => numberTreeNode = (NumberTreeNode)x), value);
         else
           numberTreeNode = value;
       }
@@ -42,7 +42,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
     public NumberNodeEditDialog(ISymbolicExpressionTreeNode node) {
       InitializeComponent();
       oldValueTextBox.TabStop = false; // cannot receive focus using tab key
-      NewNode = (INumericTreeNode)node;
+      NewNode = (NumberTreeNode)node;
       InitializeFields();
     }
 
@@ -102,7 +102,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       var value = double.Parse(newValueTextBox.Text);
       // we impose an extra validation condition: that the new value is different from the original value
       if (numberTreeNode.Value.Equals(value)) return;
-
       numberTreeNode.Value = value;
       DialogResult = DialogResult.OK;
       var dialogValidated = DialogValidated;

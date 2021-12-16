@@ -214,7 +214,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             variableTreeNode.VariableName = variable.VariableName;
             variableTreeNode.Weight = variable.Weight;
           } else if (node.Data is INumericTreeNode existingNumNode) {
-            var newNumNode = (INumericTreeNode)treeNodes[i];
+            var newNumNode = (NumberTreeNode)treeNodes[i];
             newNumNode.Value = existingNumNode.Value;
           }
           continue;
@@ -276,7 +276,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           continue;
 
         var symbol = child.Data.Symbol;
-        if (child.Data is INumericTreeNode firstNum) {
+        if (child.Data is NumberTreeNode firstNum) {
           // fold sibling number nodes into the first number
           for (int k = j + 1; k < children.Length; ++k) {
             var sibling = nodes[children[k]];

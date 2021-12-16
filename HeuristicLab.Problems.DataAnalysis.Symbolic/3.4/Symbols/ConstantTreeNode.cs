@@ -29,10 +29,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
     public new Constant Symbol => (Constant) base.Symbol;
 
-    public double Value { 
-      get => Symbol.Value;
-      set => throw new System.NotSupportedException("Cannot change the value of a constant.");
-    }
+    public double Value => Symbol.Value;
 
     [StorableConstructor]
     private ConstantTreeNode(StorableConstructorFlag _) : base(_) { }

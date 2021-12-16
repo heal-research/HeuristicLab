@@ -103,7 +103,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
 
         var symbol = dialog.SelectedSymbol;
         var node = symbol.CreateTreeNode();
-        if (node is INumericTreeNode numTreeNode) {
+        if (node is NumberTreeNode numTreeNode) {
           numTreeNode.Value = double.Parse(dialog.numberValueTextBox.Text);
         } else if (node is VariableTreeNode) {
           var variable = node as VariableTreeNode;
@@ -131,7 +131,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
 
       ISymbolicExpressionTreeNode newNode = null;
       var result = DialogResult.Cancel;
-      if (node is INumericTreeNode) {
+      if (node is NumberTreeNode) {
         using (var dialog = new NumberNodeEditDialog(node)) {
           dialog.ShowDialog(this);
           newNode = dialog.NewNode;
