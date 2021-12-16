@@ -161,13 +161,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         Expect(Token.RPAR, tokens);
         return tree;
       } else if (tokens.Peek().Symbol == TokenSymbol.CONSTANT) {
-        var t = (INumericTreeNode)number.CreateTreeNode();
-        t.Value = tokens.Dequeue().DoubleValue;
-        return t;
+        var value = tokens.Dequeue().DoubleValue;
+        var constant = new Constant() { Value = value };
+        return constant.CreateTreeNode();
       } else if (tokens.Peek().Symbol == TokenSymbol.LBRACKET) {
         Expect(Token.LBRACKET, tokens);
         Expect(Token.NUM, tokens);
-        var t = (INumericTreeNode)number.CreateTreeNode();
+        var t = (NumberTreeNode)number.CreateTreeNode();
         if (tokens.Peek().Symbol == TokenSymbol.EQ) {
           Expect(Token.EQ, tokens);
           var initValToken = tokens.Dequeue();

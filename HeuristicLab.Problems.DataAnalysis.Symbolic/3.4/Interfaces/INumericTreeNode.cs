@@ -25,6 +25,6 @@ using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableType("194AFEE6-96E2-4F53-A5AD-D3CCFE928AE5")]
   public interface INumericTreeNode : ISymbolicExpressionTreeNode {
-    double Value { get; set; }
+    double Value { get; }
   }
 }
