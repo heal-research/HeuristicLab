@@ -40,7 +40,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     public SymbolicExpressionTreeBottomUpSimilarityCalculator() { }
     protected override bool IsCommutative { get { return true; } }
 
-    public bool MatchParameterValues { get; set; }
+    public bool MatchNumericValues { get; set; }
     public bool MatchVariableWeights { get; set; }
 
     [StorableConstructor]
@@ -73,7 +73,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     public static NodeMap ComputeBottomUpMapping(ISymbolicExpressionTreeNode n1, ISymbolicExpressionTreeNode n2, bool strict = false) {
-      var calculator = new SymbolicExpressionTreeBottomUpSimilarityCalculator { MatchParameterValues = strict, MatchVariableWeights = strict };
+      var calculator = new SymbolicExpressionTreeBottomUpSimilarityCalculator { MatchNumericValues = strict, MatchVariableWeights = strict };
       return calculator.ComputeBottomUpMapping(n1, n2);
     }
     #endregion
@@ -210,7 +210,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         return node.Symbol.Name;
 
       if (node is INumericTreeNode numNode)
-        return MatchParameterValues ? numNode.Value.ToString(CultureInfo.InvariantCulture) : "Numeric";
+        return MatchNumericValues ? numNode.Value.ToString(CultureInfo.InvariantCulture) : "Numeric";
 
       if (node is VariableTreeNode variable)
         return MatchVariableWeights ? variable.Weight + variable.VariableName : variable.VariableName;
