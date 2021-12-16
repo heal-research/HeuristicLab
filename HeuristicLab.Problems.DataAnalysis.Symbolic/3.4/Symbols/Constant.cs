@@ -34,6 +34,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     public override int MinimumArity => minimumArity;
     public override int MaximumArity => maximumArity;
 
+    [Storable]
     public double Value { get; set; }
 
     [StorableConstructor]
