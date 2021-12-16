@@ -152,6 +152,7 @@
     <Compile Include="Analyzers\SymbolicDataAnalysisSingleObjectiveTrainingBestSolutionAnalyzer.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Converters\ConstantsToNumberConverter.cs" />
     <Compile Include="Converters\LinearModelToTreeConverter.cs" />
     <Compile Include="Converters\TreeSimplifier.cs" />
     <Compile Include="Converters\DerivativeCalculator.cs" />
