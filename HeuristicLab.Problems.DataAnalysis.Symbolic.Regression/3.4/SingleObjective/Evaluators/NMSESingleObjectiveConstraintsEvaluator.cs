@@ -45,7 +45,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     public IFixedValueParameter<BoolValue> OptimizerParametersParameter =>
       (IFixedValueParameter<BoolValue>)Parameters[OptimizeParametersParameterName];
 
-    public IFixedValueParameter<IntValue> ConstantOptimizationIterationsParameter =>
+    public IFixedValueParameter<IntValue> ParameterOptimizationIterationsParameter =>
       (IFixedValueParameter<IntValue>)Parameters[ParameterOptimizationIterationsParameterName];
 
     public IFixedValueParameter<BoolValue> UseSoftConstraintsParameter =>
@@ -61,9 +61,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       set => OptimizerParametersParameter.Value.Value = value;
     }
 
-    public int ConstantOptimizationIterations {
-      get => ConstantOptimizationIterationsParameter.Value.Value;
-      set => ConstantOptimizationIterationsParameter.Value.Value = value;
+    public int ParameterOptimizationIterations {
+      get => ParameterOptimizationIterationsParameter.Value.Value;
+      set => ParameterOptimizationIterationsParameter.Value.Value = value;
     }
 
     public bool UseSoftConstraints {
@@ -96,7 +96,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
 
     public NMSESingleObjectiveConstraintsEvaluator() {
       Parameters.Add(new FixedValueParameter<BoolValue>(OptimizeParametersParameterName,
-        "Define whether optimization of numeric parameters is active or not (default: false).", new BoolValue(false)));
+        "Define whether optimization of parameters is active or not (default: false).", new BoolValue(false)));
       Parameters.Add(new FixedValueParameter<IntValue>(ParameterOptimizationIterationsParameterName,
         "Define how many parameter optimization steps should be performed (default: 10).", new IntValue(10)));
       Parameters.Add(new FixedValueParameter<BoolValue>(UseSoftConstraintsParameterName,
@@ -131,19 +131,19 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     }
 
     private static void CalcLinearScalingTerms(
-      ISymbolicExpressionTree tree, 
+      ISymbolicExpressionTree tree,
       IRegressionProblemData problemData,
-      IEnumerable<int> rows, 
+      IEnumerable<int> rows,
       ISymbolicDataAnalysisExpressionTreeInterpreter interpreter) {
       var rootNode = new ProgramRootSymbol().CreateTreeNode();
       var startNode = new StartSymbol().CreateTreeNode();
       var offset = tree.Root.GetSubtree(0) //Start
                             .GetSubtree(0); //Offset
       var scaling = offset.GetSubtree(0);
-      
+
       //Check if tree contains offset and scaling nodes
       if (!(offset.Symbol is Addition) || !(scaling.Symbol is Multiplication))
-        throw new ArgumentException($"Shape Constraints Evaluation can only be used with LinearScalingGrammar.");
+        throw new ArgumentException($"Scaling can only be used with LinearScalingGrammar.");
 
       var t = (ISymbolicExpressionTreeNode)scaling.GetSubtree(0).Clone();
       rootNode.AddSubtree(startNode);
@@ -154,12 +154,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       var estimatedValues = interpreter.GetSymbolicExpressionTreeValues(newTree, problemData.Dataset, rows);
 
       var targetValues = problemData.Dataset.GetDoubleValues(problemData.TargetVariable, rows);
-      OnlineLinearScalingParameterCalculator.Calculate(estimatedValues, targetValues, out var alpha, out var beta, out var errorState);
+      OnlineLinearScalingParameterCalculator.Calculate(estimatedValues, targetValues, out var alpha, out var beta,
+        out var errorState);
+
       if (errorState == OnlineCalculatorError.None) {
-        //Set alpha and beta to the scaling nodes from ia grammar
-        var offsetParameter = offset.GetSubtree(1) as ConstantTreeNode;
+        //Set alpha and beta to the scaling nodes from grammar
+        var offsetParameter = offset.GetSubtree(1) as NumberTreeNode;
         offsetParameter.Value = alpha;
-        var scalingParameter = scaling.GetSubtree(1) as ConstantTreeNode;
+        var scalingParameter = scaling.GetSubtree(1) as NumberTreeNode;
         scalingParameter.Value = beta;
       }
     }
@@ -192,7 +194,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       // infinite/NaN constraints
       if (constraintViolations.Any(x => double.IsNaN(x) || double.IsInfinity(x)))
         return 1.0;
-      
+
       // hard constraints
       if (!useSoftConstraints) {
         if (constraintViolations.Any(x => x > 0.0))
@@ -219,12 +221,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       ApplyLinearScalingParameter.ExecutionContext = context;
 
       var nmse = Calculate(
-        tree, problemData, rows, 
+        tree, problemData, rows,
         SymbolicDataAnalysisTreeInterpreterParameter.ActualValue,
-        EstimationLimitsParameter.ActualValue.Lower, 
+        EstimationLimitsParameter.ActualValue.Lower,
         EstimationLimitsParameter.ActualValue.Upper,
-        BoundsEstimator, 
-        UseSoftConstraints, 
+        BoundsEstimator,
+        UseSoftConstraints,
         PenalityFactor);
 
       SymbolicDataAnalysisTreeInterpreterParameter.ExecutionContext = null;
@@ -244,23 +246,23 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       double upperEstimationLimit = double.MaxValue) {
 
       if (OptimizeParameters)
-        SymbolicRegressionConstantOptimizationEvaluator.OptimizeConstants(
-          interpreter, tree, 
+        SymbolicRegressionParameterOptimizationEvaluator.OptimizeParameters(
+          interpreter, tree,
           problemData, rows,
           applyLinearScaling: false, // Tree already contains scaling terms
-          ConstantOptimizationIterations, 
+          ParameterOptimizationIterations,
           updateVariableWeights: true,
-          lowerEstimationLimit, 
+          lowerEstimationLimit,
           upperEstimationLimit);
-      
+
       else if (applyLinearScaling) // extra scaling terms, which are included in tree
-        CalcLinearScalingTerms(tree, problemData, rows, interpreter); 
-      
+        CalcLinearScalingTerms(tree, problemData, rows, interpreter);
+
       return Calculate(
         tree, problemData,
-        rows, interpreter, 
-        lowerEstimationLimit, 
-        upperEstimationLimit, 
+        rows, interpreter,
+        lowerEstimationLimit,
+        upperEstimationLimit,
         BoundsEstimator,
         UseSoftConstraints,
         PenalityFactor);

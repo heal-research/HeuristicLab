@@ -710,11 +710,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             il.MarkLabel(normalResult);
             return;
           }
+        case OpCodes.Number: // fall through
         case OpCodes.Constant: {
-            ConstantTreeNode constNode = (ConstantTreeNode)currentInstr.dynamicNode;
-            il.Emit(System.Reflection.Emit.OpCodes.Ldc_R8, constNode.Value);
-            return;
-          }
+          var constNode = (INumericTreeNode) currentInstr.dynamicNode;
+          il.Emit(System.Reflection.Emit.OpCodes.Ldc_R8, constNode.Value);
+          return;
+        }
 
         //mkommend: this symbol uses the logistic function f(x) = 1 / (1 + e^(-alpha * x) ) 
         //to determine the relative amounts of the true and false branch see http://en.wikipedia.org/wiki/Logistic_function

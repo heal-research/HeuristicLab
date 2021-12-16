@@ -145,6 +145,18 @@
       <DependentUpon>SymbolicDataAnalysisModelMathView.cs</DependentUpon>
     </Compile>
     <Compile Include="Plugin.cs" />
+    <Compile Include="Symbols\ConstantView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Symbols\ConstantView.Designer.cs">
+      <DependentUpon>ConstantView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Symbols\NumberView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Symbols\NumberView.Designer.cs">
+      <DependentUpon>NumberView.cs</DependentUpon>
+    </Compile>
     <Compile Include="TextualSymbolicDataAnalysisModelView.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -162,12 +174,6 @@
     </Compile>
     <Compile Include="GraphicalSymbolicDataAnalysisModelView.designer.cs">
       <DependentUpon>GraphicalSymbolicDataAnalysisModelView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Symbols\ConstantView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Symbols\ConstantView.Designer.cs">
-      <DependentUpon>ConstantView.cs</DependentUpon>
     </Compile>
     <Compile Include="Symbols\LaggedVariableView.cs">
       <SubType>UserControl</SubType>

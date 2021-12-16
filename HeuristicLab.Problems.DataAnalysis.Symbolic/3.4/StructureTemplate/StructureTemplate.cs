@@ -1,9 +1,9 @@
 ﻿using System;
-using System.Linq;
 using System.Collections.Generic;
-using HeuristicLab.Core;
+using System.Linq;
 using HEAL.Attic;
 using HeuristicLab.Common;
+using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
@@ -15,12 +15,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     [Storable]
     private string template;
     public string Template {
-      get => template; 
+      get => template;
       set {
         template = value;
         Tree = Parser.Parse(template);
         OnChanged();
-      } 
+      }
     }
 
     [Storable]
@@ -55,7 +55,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
     #region Events
     public event EventHandler Changed;
-    
+
     private void OnChanged() => Changed?.Invoke(this, EventArgs.Empty);
     #endregion
 
@@ -99,7 +99,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           if (subFunctions.TryGetValue(subFunctionTreeNode.Name, out SubFunction v)) {
             if(!v.Arguments.SequenceEqual(subFunctionTreeNode.Arguments))
               throw new ArgumentException(
-                $"The sub-function '{v.Name}' has (at least two) different signatures " + 
+                $"The sub-function '{v.Name}' has (at least two) different signatures " +
                 $"({v.Name}({string.Join(",", v.Arguments)}) <> {subFunctionTreeNode.Name}({string.Join(",", subFunctionTreeNode.Arguments)})).");
           } else {
             var subFunction = new SubFunction() {
@@ -124,17 +124,17 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       var mul = new Multiplication();
       var mulNode = mul.CreateTreeNode();
 
-      var c1 = new Constant();
-      var c1Node = (ConstantTreeNode)c1.CreateTreeNode();
-      c1Node.Value = 0.0;
-      var c2 = new Constant();
-      var c2Node = (ConstantTreeNode)c2.CreateTreeNode();
-      c2Node.Value = 1.0;
-      
-      addNode.AddSubtree(c1Node);
+      var offset = new Number();
+      var offsetNode = (NumberTreeNode)offset.CreateTreeNode();
+      offsetNode.Value = 0.0;
+      var scale = new Number();
+      var scaleNode = (NumberTreeNode)scale.CreateTreeNode();
+      scaleNode.Value = 1.0;
+
+      addNode.AddSubtree(offsetNode);
       addNode.AddSubtree(mulNode);
-      mulNode.AddSubtree(c2Node);
-        
+      mulNode.AddSubtree(scaleNode);
+
       startNode.RemoveSubtree(0);
       startNode.AddSubtree(addNode);
       mulNode.AddSubtree(template);

@@ -23,6 +23,7 @@ using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis {
   [StorableType("C6E9D32A-7727-487E-859C-DF24EDCC5922")]
-  public interface  IShapeConstrainedRegressionProblem : IDataAnalysisProblem<IShapeConstrainedRegressionProblemData> {
+  public interface IShapeConstrainedRegressionProblem : IRegressionProblem {
+    ShapeConstrainedRegressionProblemData ShapeConstrainedRegressionProblemData { get; set; }
   }
 }

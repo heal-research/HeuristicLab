@@ -1,17 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using HeuristicLab.Core;
-using HeuristicLab.Optimization;
 using HEAL.Attic;
 using HeuristicLab.Common;
-using HeuristicLab.Problems.Instances;
-using HeuristicLab.Parameters;
+using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
+using HeuristicLab.Optimization;
+using HeuristicLab.Parameters;
 using HeuristicLab.PluginInfrastructure;
+using HeuristicLab.Problems.Instances;
 using HeuristicLab.Problems.Instances.DataAnalysis;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
@@ -195,10 +193,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       individual[SymbolicExpressionTreeName] = tree;
 
       // dpiringe: needed when Maximization = true
-      if (TreeEvaluatorParameter.Value is SymbolicRegressionConstantOptimizationEvaluator constantOptEvaluator) {
+      if (TreeEvaluatorParameter.Value is SymbolicRegressionParameterOptimizationEvaluator constantOptEvaluator) {
         constantOptEvaluator.RandomParameter.Value = random;
-        constantOptEvaluator.RelativeNumberOfEvaluatedSamplesParameter.Value = 
-          (PercentValue)constantOptEvaluator.ConstantOptimizationRowsPercentage.Clone();
+        constantOptEvaluator.RelativeNumberOfEvaluatedSamplesParameter.Value =
+          (PercentValue)constantOptEvaluator.ParameterOptimizationRowsPercentage.Clone();
       }
 
       return TreeEvaluatorParameter.Value.Evaluate(
@@ -212,18 +210,18 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
 
     private static void AdjustLinearScalingParams(IRegressionProblemData problemData, ISymbolicExpressionTree tree, ISymbolicDataAnalysisExpressionTreeInterpreter interpreter) {
       var offsetNode = tree.Root.GetSubtree(0).GetSubtree(0);
-      var scalingNode = offsetNode.Subtrees.Where(x => !(x is ConstantTreeNode)).First();
+      var scalingNode = offsetNode.Subtrees.Where(x => !(x is NumberTreeNode)).First();
 
-      var offsetConstantNode = (ConstantTreeNode)offsetNode.Subtrees.Where(x => x is ConstantTreeNode).First();
-      var scalingConstantNode = (ConstantTreeNode)scalingNode.Subtrees.Where(x => x is ConstantTreeNode).First();
+      var offsetNumberNode = (NumberTreeNode)offsetNode.Subtrees.Where(x => x is NumberTreeNode).First();
+      var scalingNumberNode = (NumberTreeNode)scalingNode.Subtrees.Where(x => x is NumberTreeNode).First();
 
       var estimatedValues = interpreter.GetSymbolicExpressionTreeValues(tree, problemData.Dataset, problemData.TrainingIndices);
       var targetValues = problemData.Dataset.GetDoubleValues(problemData.TargetVariable, problemData.TrainingIndices);
 
       OnlineLinearScalingParameterCalculator.Calculate(estimatedValues, targetValues, out double a, out double b, out OnlineCalculatorError error);
       if (error == OnlineCalculatorError.None) {
-        offsetConstantNode.Value = a;
-        scalingConstantNode.Value = b;
+        offsetNumberNode.Value = a;
+        scalingNumberNode.Value = b;
       }
     }
 

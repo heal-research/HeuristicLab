@@ -34,21 +34,20 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis.Tests 
           var varNode = node as VariableTreeNode;
           varNode.Weight = twister.NextDouble() * 20.0 - 10.0;
           varNode.VariableName = varNames[twister.Next(varNames.Count)];
-        } else if (node is ConstantTreeNode) {
-          var constantNode = node as ConstantTreeNode;
-          constantNode.Value = twister.NextDouble() * 20.0 - 10.0;
+        } else if (node is NumberTreeNode) {
+          var numNode = node as NumberTreeNode;
+          numNode.Value = twister.NextDouble() * 20.0 - 10.0;
         }
       }
     }
 
 
     public static ISymbolicExpressionTree[] CreateRandomTrees(MersenneTwister twister, Dataset dataset, ISymbolicExpressionGrammar grammar, int popSize) {
-      return CreateRandomTrees(twister, dataset, grammar, popSize, 1, 200, 3, 3);
+      return CreateRandomTrees(twister, dataset, grammar, popSize, 200);
     }
 
     public static ISymbolicExpressionTree[] CreateRandomTrees(MersenneTwister twister, Dataset dataset, ISymbolicExpressionGrammar grammar,
-      int popSize, int minSize, int maxSize,
-      int maxFunctionDefinitions, int maxFunctionArguments) {
+      int popSize, int maxSize) {
       foreach (Variable variableSymbol in grammar.Symbols.OfType<Variable>()) {
         variableSymbol.VariableNames = dataset.VariableNames.Skip(1);
       }

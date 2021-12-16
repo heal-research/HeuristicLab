@@ -22,10 +22,20 @@
 using System.Globalization;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
-  internal enum TokenSymbol { LPAR, RPAR, SYMB, NUMBER };
+  internal enum TokenSymbol {
+    LPAR, RPAR, SYMB, CONSTANT,
+    NUM, // num
+    EQ,  // =
+    LBRACKET, // <
+    RBRACKET  // >
+  };
   internal class Token {
     public static readonly Token LPAR = Token.Parse("(");
     public static readonly Token RPAR = Token.Parse(")");
+    public static readonly Token LBRACKET = Token.Parse("<");
+    public static readonly Token RBRACKET = Token.Parse(">");
+    public static readonly Token EQ = Token.Parse("=");
+    public static readonly Token NUM = Token.Parse("num");
 
     public TokenSymbol Symbol { get; set; }
     public string StringValue { get; set; }
@@ -45,18 +55,25 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
     public static Token Parse(string strToken) {
       strToken = strToken.Trim();
-      Token t = new Token();
+      var t = new Token();
       t.StringValue = strToken.Trim();
-      double temp;
       if (strToken == "") {
         t = null;
       } else if (strToken == "(") {
         t.Symbol = TokenSymbol.LPAR;
       } else if (strToken == ")") {
         t.Symbol = TokenSymbol.RPAR;
-      } else if (double.TryParse(strToken, NumberStyles.Float, CultureInfo.InvariantCulture.NumberFormat, out temp)) {
-        t.Symbol = TokenSymbol.NUMBER;
-        t.DoubleValue = double.Parse(strToken, CultureInfo.InvariantCulture.NumberFormat);
+      } else if (strToken == "<") {
+        t.Symbol = TokenSymbol.LBRACKET;
+      } else if (strToken == ">") {
+        t.Symbol = TokenSymbol.RBRACKET;
+      } else if (strToken == "=") {
+        t.Symbol = TokenSymbol.EQ;
+      } else if (strToken.ToLower() == "num") {
+        t.Symbol = TokenSymbol.NUM;
+      } else if (double.TryParse(strToken, NumberStyles.Float, CultureInfo.InvariantCulture.NumberFormat, out var val)) {
+        t.Symbol = TokenSymbol.CONSTANT;
+        t.DoubleValue = val;
       } else {
         t.Symbol = TokenSymbol.SYMB;
         t.StringValue = t.StringValue.ToUpper();

@@ -35,6 +35,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       if (node.Symbol is StartSymbol) node = node.GetSubtree(0);
 
       switch (OpCodes.MapSymbolToOpCode(node)) {
+        case OpCodes.Number: // fall through
         case OpCodes.Constant: {
             return 1;
           }
@@ -79,7 +80,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         case OpCodes.Power:
         case OpCodes.Root: {
             double complexity = CalculateComplexity(node.GetSubtree(0));
-            var exponent = node.GetSubtree(1) as ConstantTreeNode;
+            var exponent = node.GetSubtree(1) as INumericTreeNode;
             if (exponent != null) {
               double expVal = exponent.Value;
               if (expVal < 0) expVal = Math.Abs(expVal);

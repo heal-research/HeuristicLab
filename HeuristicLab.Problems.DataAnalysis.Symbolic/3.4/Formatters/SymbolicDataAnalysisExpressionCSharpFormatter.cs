@@ -161,9 +161,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         if (node is VariableTreeNode) {
           var varNode = node as VariableTreeNode;
           strBuilder.AppendFormat("{0} * {1}", VariableName2Identifier(varNode.VariableName), varNode.Weight.ToString("g17", CultureInfo.InvariantCulture));
-        } else if (node is ConstantTreeNode) {
-          var constNode = node as ConstantTreeNode;
-          strBuilder.Append(constNode.Value.ToString("g17", CultureInfo.InvariantCulture));
+        } else if (node is INumericTreeNode numNode) {
+          strBuilder.Append(numNode.Value.ToString("g17", CultureInfo.InvariantCulture));
         } else if (node.Symbol is FactorVariable) {
           var factorNode = node as FactorVariableTreeNode;
           FormatFactor(factorNode, strBuilder);
@@ -310,9 +309,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     private void GenerateFactorSource(StringBuilder strBuilder) {
-      strBuilder.AppendLine("private static double EvaluateFactor(string factorValue, string[] factorValues, double[] constants) {");
+      strBuilder.AppendLine("private static double EvaluateFactor(string factorValue, string[] factorValues, double[] parameters) {");
       strBuilder.AppendLine("   for(int i=0;i<factorValues.Length;i++) " +
-                            "      if(factorValues[i] == factorValue) return constants[i];" +
+                            "      if(factorValues[i] == factorValue) return parameters[i];" +
                             "   throw new ArgumentException();");
       strBuilder.AppendLine("}");
     }

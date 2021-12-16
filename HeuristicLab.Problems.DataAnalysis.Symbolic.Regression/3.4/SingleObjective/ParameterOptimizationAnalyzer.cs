@@ -31,15 +31,15 @@ using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
   /// <summary>
-  /// An operator that optimizes the constants for the best symbolic expression tress in the current generation.
+  /// An operator that optimizes the parameters for the best symbolic expression tress in the current generation.
   /// </summary>
-  [Item("ConstantOptimizationAnalyzer", "An operator that performs a constant optimization on the best symbolic expression trees.")]
+  [Item("ParameterOptimizationAnalyzer", "An operator that performs a parameter optimization on the best symbolic expression trees.")]
   [StorableType("9FB87E7B-A9E2-49DD-A92A-78BD9FC17916")]
-  public sealed class ConstantOptimizationAnalyzer : SymbolicDataAnalysisSingleObjectiveAnalyzer, IStatefulItem {
+  public sealed class ParameterOptimizationAnalyzer : SymbolicDataAnalysisSingleObjectiveAnalyzer, IStatefulItem {
     private const string PercentageOfBestSolutionsParameterName = "PercentageOfBestSolutions";
-    private const string ConstantOptimizationEvaluatorParameterName = "ConstantOptimizationOperator";
+    private const string ParameterOptimizationEvaluatorParameterName = "ParameterOptimizationOperator";
 
-    private const string DataTableNameConstantOptimizationImprovement = "Constant Optimization Improvement";
+    private const string DataTableNameParameterOptimizationImprovement = "Parameter Optimization Improvement";
     private const string DataRowNameMinimumImprovement = "Minimum improvement";
     private const string DataRowNameMedianImprovement = "Median improvement";
     private const string DataRowNameAverageImprovement = "Average improvement";
@@ -50,52 +50,64 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       get { return (IFixedValueParameter<PercentValue>)Parameters[PercentageOfBestSolutionsParameterName]; }
     }
 
-    public IFixedValueParameter<SymbolicRegressionConstantOptimizationEvaluator> ConstantOptimizationEvaluatorParameter {
-      get { return (IFixedValueParameter<SymbolicRegressionConstantOptimizationEvaluator>)Parameters[ConstantOptimizationEvaluatorParameterName]; }
+    public IFixedValueParameter<SymbolicRegressionParameterOptimizationEvaluator> ParameterOptimizationEvaluatorParameter {
+      get { return (IFixedValueParameter<SymbolicRegressionParameterOptimizationEvaluator>)Parameters[ParameterOptimizationEvaluatorParameterName]; }
     }
     #endregion
 
     #region properties
-    public SymbolicRegressionConstantOptimizationEvaluator ConstantOptimizationEvaluator {
-      get { return ConstantOptimizationEvaluatorParameter.Value; }
+    public SymbolicRegressionParameterOptimizationEvaluator ParameterOptimizationEvaluator {
+      get { return ParameterOptimizationEvaluatorParameter.Value; }
     }
     public double PercentageOfBestSolutions {
       get { return PercentageOfBestSolutionsParameter.Value.Value; }
     }
 
-    private DataTable ConstantOptimizationImprovementDataTable {
+    private DataTable ParameterOptimizationImprovementDataTable {
       get {
         IResult result;
-        ResultCollection.TryGetValue(DataTableNameConstantOptimizationImprovement, out result);
+        ResultCollection.TryGetValue(DataTableNameParameterOptimizationImprovement, out result);
         if (result == null) return null;
         return (DataTable)result.Value;
       }
     }
     private DataRow MinimumImprovement {
-      get { return ConstantOptimizationImprovementDataTable.Rows[DataRowNameMinimumImprovement]; }
+      get { return ParameterOptimizationImprovementDataTable.Rows[DataRowNameMinimumImprovement]; }
     }
     private DataRow MedianImprovement {
-      get { return ConstantOptimizationImprovementDataTable.Rows[DataRowNameMedianImprovement]; }
+      get { return ParameterOptimizationImprovementDataTable.Rows[DataRowNameMedianImprovement]; }
     }
     private DataRow AverageImprovement {
-      get { return ConstantOptimizationImprovementDataTable.Rows[DataRowNameAverageImprovement]; }
+      get { return ParameterOptimizationImprovementDataTable.Rows[DataRowNameAverageImprovement]; }
     }
     private DataRow MaximumImprovement {
-      get { return ConstantOptimizationImprovementDataTable.Rows[DataRowNameMaximumImprovement]; }
+      get { return ParameterOptimizationImprovementDataTable.Rows[DataRowNameMaximumImprovement]; }
     }
     #endregion
 
     [StorableConstructor]
-    private ConstantOptimizationAnalyzer(StorableConstructorFlag _) : base(_) { }
-    private ConstantOptimizationAnalyzer(ConstantOptimizationAnalyzer original, Cloner cloner) : base(original, cloner) { }
-    public override IDeepCloneable Clone(Cloner cloner) { return new ConstantOptimizationAnalyzer(this, cloner); }
-    public ConstantOptimizationAnalyzer()
+    private ParameterOptimizationAnalyzer(StorableConstructorFlag _) : base(_) { }
+    private ParameterOptimizationAnalyzer(ParameterOptimizationAnalyzer original, Cloner cloner) : base(original, cloner) { }
+    public override IDeepCloneable Clone(Cloner cloner) { return new ParameterOptimizationAnalyzer(this, cloner); }
+    public ParameterOptimizationAnalyzer()
       : base() {
       Parameters.Add(new FixedValueParameter<PercentValue>(PercentageOfBestSolutionsParameterName, "The percentage of the top solutions which should be analyzed.", new PercentValue(0.1)));
-      Parameters.Add(new FixedValueParameter<SymbolicRegressionConstantOptimizationEvaluator>(ConstantOptimizationEvaluatorParameterName, "The operator used to perform the constant optimization"));
+      Parameters.Add(new FixedValueParameter<SymbolicRegressionParameterOptimizationEvaluator>(ParameterOptimizationEvaluatorParameterName, "The operator used to perform the parameter optimization"));
 
       //Changed the ActualName of the EvaluationPartitionParameter so that it matches the parameter name of symbolic regression problems.
-      ConstantOptimizationEvaluator.EvaluationPartitionParameter.ActualName = "FitnessCalculationPartition";
+      ParameterOptimizationEvaluator.EvaluationPartitionParameter.ActualName = "FitnessCalculationPartition";
+    }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      if (!Parameters.ContainsKey(ParameterOptimizationEvaluatorParameterName)) {
+        if (Parameters.ContainsKey("ConstantOptimizationOperator")) {
+          Parameters.Add(new FixedValueParameter<SymbolicRegressionParameterOptimizationEvaluator>(ParameterOptimizationEvaluatorParameterName, "The operator used to perform the parameter optimization"));
+          Parameters.Remove("ConstantOptimizationOperator");
+        } else {
+          Parameters.Add(new FixedValueParameter<SymbolicRegressionParameterOptimizationEvaluator>(ParameterOptimizationEvaluatorParameterName, "The operator used to perform the parameter optimization"));
+        }
+      }
     }
 
 
@@ -133,20 +145,20 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
         OperationCollection operationCollection = new OperationCollection();
         operationCollection.Parallel = true;
         foreach (var scopeIndex in scopeIndexes) {
-          var childOperation = ExecutionContext.CreateChildOperation(ConstantOptimizationEvaluator, ExecutionContext.Scope.SubScopes[scopeIndex]);
+          var childOperation = ExecutionContext.CreateChildOperation(ParameterOptimizationEvaluator, ExecutionContext.Scope.SubScopes[scopeIndex]);
           operationCollection.Add(childOperation);
         }
 
         return new OperationCollection { operationCollection, ExecutionContext.CreateOperation(this) };
       }
 
-      //code executed to analyze results of constant optimization
+      //code executed to analyze results of parameter optimization
       double[] qualitiesAfterCoOp = scopeIndexes.Select(x => Quality[x].Value).ToArray();
       var qualityImprovement = qualitiesBeforeCoOp.Zip(qualitiesAfterCoOp, (b, a) => a - b).ToArray();
 
-      if (!ResultCollection.ContainsKey(DataTableNameConstantOptimizationImprovement)) {
-        var dataTable = new DataTable(DataTableNameConstantOptimizationImprovement);
-        ResultCollection.Add(new Result(DataTableNameConstantOptimizationImprovement, dataTable));
+      if (!ResultCollection.ContainsKey(DataTableNameParameterOptimizationImprovement)) {
+        var dataTable = new DataTable(DataTableNameParameterOptimizationImprovement);
+        ResultCollection.Add(new Result(DataTableNameParameterOptimizationImprovement, dataTable));
         dataTable.VisualProperties.YAxisTitle = "R²";
 
         dataTable.Rows.Add(new DataRow(DataRowNameMinimumImprovement));

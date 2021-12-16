@@ -52,7 +52,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression.Views {
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
       this.Name = "InteractiveSymbolicRegressionSolutionSimplifierView";
       this.Size = new System.Drawing.Size(564, 348);
-      this.btnOptimizeConstants.Enabled = true;
+      this.btnOptimizeParameters.Enabled = true;
       this.ResumeLayout(false);
     }
 

@@ -43,7 +43,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Creators {
     private const string MaximumSymbolicExpressionTreeLengthParameterName = "MaximumSymbolicExpressionTreeLength";
     private const string MaximumSymbolicExpressionTreeDepthParameterName = "MaximumSymbolicExpressionTreeDepth";
     private const string SymbolicExpressionTreeGrammarParameterName = "SymbolicExpressionTreeGrammar";
-    private const string ClonedSymbolicExpressionTreeGrammarParameterName = "ClonedSymbolicExpressionTreeGrammar";
 
     public override bool CanChangeName {
       get { return false; }
@@ -65,9 +64,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Creators {
     public IValueLookupParameter<ISymbolicExpressionGrammar> SymbolicExpressionTreeGrammarParameter {
       get { return (IValueLookupParameter<ISymbolicExpressionGrammar>)Parameters[SymbolicExpressionTreeGrammarParameterName]; }
     }
-    public ILookupParameter<ISymbolicExpressionGrammar> ClonedSymbolicExpressionTreeGrammarParameter {
-      get { return (ILookupParameter<ISymbolicExpressionGrammar>)Parameters[ClonedSymbolicExpressionTreeGrammarParameterName]; }
-    }
     #endregion
 
     [StorableConstructor]
@@ -79,8 +75,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Creators {
       Parameters.Add(new LookupParameter<ISymbolicExpressionTree>(SymbolicExpressionTreeParameterName, "The symbolic expression tree on which the operator should be applied."));
       Parameters.Add(new ValueLookupParameter<IntValue>(MaximumSymbolicExpressionTreeLengthParameterName, "The maximal length (number of nodes) of the symbolic expression tree."));
       Parameters.Add(new ValueLookupParameter<IntValue>(MaximumSymbolicExpressionTreeDepthParameterName, "The maximal depth of the symbolic expression tree (a tree with one node has depth = 0)."));
-      Parameters.Add(new ValueLookupParameter<ISymbolicExpressionGrammar>(SymbolicExpressionTreeGrammarParameterName, "The tree grammar that defines the correct syntax of symbolic expression trees that should be created."));
-      Parameters.Add(new LookupParameter<ISymbolicExpressionGrammar>(ClonedSymbolicExpressionTreeGrammarParameterName, "An immutable clone of the concrete grammar that is actually used to create and manipulate trees."));
+      Parameters.Add(new ValueLookupParameter<ISymbolicExpressionGrammar>(SymbolicExpressionTreeGrammarParameterName, "The tree grammar that defines the correct syntax of symbolic expression trees that should be created."));      
 
       List<ISymbolicDataAnalysisSolutionCreator> list = new List<ISymbolicDataAnalysisSolutionCreator>();
       foreach (Type type in ApplicationManager.Manager.GetTypes(typeof(ISymbolicDataAnalysisSolutionCreator))) {
@@ -95,17 +90,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Creators {
 
     }
 
-    public override IOperation InstrumentedApply() {
-      if (ClonedSymbolicExpressionTreeGrammarParameter.ActualValue == null) {
-        SymbolicExpressionTreeGrammarParameter.ActualValue.ReadOnly = true;
-        IScope globalScope = ExecutionContext.Scope;
-        while (globalScope.Parent != null)
-          globalScope = globalScope.Parent;
-
-        globalScope.Variables.Add(new Core.Variable(ClonedSymbolicExpressionTreeGrammarParameterName, (ISymbolicExpressionGrammar)SymbolicExpressionTreeGrammarParameter.ActualValue.Clone()));
-      }
-      return base.InstrumentedApply();
-    }
 
     public ISymbolicExpressionTree CreateTree(IRandom random, ISymbolicExpressionGrammar grammar, int maxTreeLength, int maxTreeDepth) {
       double sum = Operators.CheckedItems.Sum(o => Probabilities[o.Index]);

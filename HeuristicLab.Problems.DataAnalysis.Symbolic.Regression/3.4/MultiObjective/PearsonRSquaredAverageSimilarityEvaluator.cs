@@ -75,8 +75,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       var estimationLimits = EstimationLimitsParameter.ActualValue;
       var applyLinearScaling = ApplyLinearScalingParameter.ActualValue.Value;
 
-      if (UseConstantOptimization) {
-        SymbolicRegressionConstantOptimizationEvaluator.OptimizeConstants(interpreter, tree, problemData, rows, applyLinearScaling, ConstantOptimizationIterations, updateVariableWeights: ConstantOptimizationUpdateVariableWeights, lowerEstimationLimit: estimationLimits.Lower, upperEstimationLimit: estimationLimits.Upper);
+      if (UseParameterOptimization) {
+        SymbolicRegressionParameterOptimizationEvaluator.OptimizeParameters(interpreter, tree, problemData, rows, applyLinearScaling, ParameterOptimizationIterations, updateVariableWeights: ParameterOptimizationUpdateVariableWeights, lowerEstimationLimit: estimationLimits.Lower, upperEstimationLimit: estimationLimits.Upper);
       }
 
       double r2 = SymbolicRegressionSingleObjectivePearsonRSquaredEvaluator.Calculate(
@@ -109,7 +109,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       var applyLinearScaling = ApplyLinearScalingParameter.ActualValue.Value;
 
       double r2 = SymbolicRegressionSingleObjectivePearsonRSquaredEvaluator.Calculate(
-        tree, problemData, rows, 
+        tree, problemData, rows,
         SymbolicDataAnalysisTreeInterpreterParameter.ActualValue,
         applyLinearScaling,
         estimationLimits.Lower, estimationLimits.Upper);

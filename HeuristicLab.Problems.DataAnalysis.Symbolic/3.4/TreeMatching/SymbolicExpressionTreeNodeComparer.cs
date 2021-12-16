@@ -21,13 +21,11 @@
 
 using System;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
-  [StorableType("eabf848e-d10c-499e-8c48-c771232ede0e")]
   // this comparer considers that a < b if the type of a is "greater" than the type of b, for example:
   // - A function node is "greater" than a terminal node
-  // - A variable terminal is "greater" than a constant terminal
+  // - A variable terminal is "greater" than a numeric terminal
   // - used for bringing subtrees to a "canonical" form when the operation allows reordering of arguments
   public class SymbolicExpressionTreeNodeComparer : ISymbolicExpressionTreeNodeComparer {
     public static int CompareNodes(ISymbolicExpressionTreeNode a, ISymbolicExpressionTreeNode b) {
@@ -51,8 +49,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         return 1;
 
       // at this point we know a and b are not variables
-      var ca = a as ConstantTreeNode;
-      var cb = b as ConstantTreeNode;
+      var ca = a as INumericTreeNode;
+      var cb = b as INumericTreeNode;
 
       if (ca != null && cb != null)
         return ca.Value.CompareTo(cb.Value);

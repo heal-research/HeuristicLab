@@ -89,11 +89,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       var estimationLimits = EstimationLimitsParameter.ActualValue;
       var applyLinearScaling = ApplyLinearScalingParameter.ActualValue.Value;
 
-      if (UseConstantOptimization) {
-        SymbolicRegressionConstantOptimizationEvaluator.OptimizeConstants(interpreter, tree, problemData, rows,
+      if (UseParameterOptimization) {
+        SymbolicRegressionParameterOptimizationEvaluator.OptimizeParameters(interpreter, tree, problemData, rows,
           false,
-          ConstantOptimizationIterations,
-          ConstantOptimizationUpdateVariableWeights,
+          ParameterOptimizationIterations,
+          ParameterOptimizationUpdateVariableWeights,
           estimationLimits.Lower,
           estimationLimits.Upper);
       } else {
@@ -104,7 +104,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
                                 .GetSubtree(0); //Offset
           var scaling = offset.GetSubtree(0);
 
-          //Check if tree contains offset and scaling nodes
+          // Check if tree contains offset and scaling nodes
           if (!(offset.Symbol is Addition) || !(scaling.Symbol is Multiplication))
             throw new ArgumentException($"{ItemName} can only be used with LinearScalingGrammar.");
 
@@ -114,17 +114,17 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
           startNode.AddSubtree(t);
           var newTree = new SymbolicExpressionTree(rootNode);
 
-          //calculate alpha and beta for scaling
+          // calculate alpha and beta for scaling
           var estimatedValues = interpreter.GetSymbolicExpressionTreeValues(newTree, problemData.Dataset, rows);
 
           var targetValues = problemData.Dataset.GetDoubleValues(problemData.TargetVariable, rows);
           OnlineLinearScalingParameterCalculator.Calculate(estimatedValues, targetValues, out var alpha, out var beta,
             out var errorState);
           if (errorState == OnlineCalculatorError.None) {
-            //Set alpha and beta to the scaling nodes from ia grammar
-            var offsetParameter = offset.GetSubtree(1) as ConstantTreeNode;
+            // Set alpha and beta to the scaling nodes from linear scaling grammar
+            var offsetParameter = offset.GetSubtree(1) as NumberTreeNode;
             offsetParameter.Value = alpha;
-            var scalingParameter = scaling.GetSubtree(1) as ConstantTreeNode;
+            var scalingParameter = scaling.GetSubtree(1) as NumberTreeNode;
             scalingParameter.Value = beta;
           }
         } // else alpha and beta are evolved
@@ -161,7 +161,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       ISymbolicExpressionTree solution, double lowerEstimationLimit,
       double upperEstimationLimit,
       IRegressionProblemData problemData, IEnumerable<int> rows, IBoundsEstimator estimator, int decimalPlaces) {
-      OnlineCalculatorError errorState;
       var estimatedValues = interpreter.GetSymbolicExpressionTreeValues(solution, problemData.Dataset, rows);
       var targetValues = problemData.Dataset.GetDoubleValues(problemData.TargetVariable, rows);
       var constraints = Enumerable.Empty<ShapeConstraint>();
@@ -173,7 +172,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       double nmse;
 
       var boundedEstimatedValues = estimatedValues.LimitToRange(lowerEstimationLimit, upperEstimationLimit);
-      nmse = OnlineNormalizedMeanSquaredErrorCalculator.Calculate(targetValues, boundedEstimatedValues, out errorState);
+      nmse = OnlineNormalizedMeanSquaredErrorCalculator.Calculate(targetValues, boundedEstimatedValues, out OnlineCalculatorError errorState);
 
       if (errorState != OnlineCalculatorError.None) nmse = 1.0;
 

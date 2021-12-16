@@ -51,8 +51,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       this.variableNameLabel = new System.Windows.Forms.Label();
       this.variableNamesCombo = new System.Windows.Forms.ComboBox();
       this.variableWeightTextBox = new System.Windows.Forms.TextBox();
-      this.constantValueTextBox = new System.Windows.Forms.TextBox();
-      this.constantValueLabel = new System.Windows.Forms.Label();
+      this.numberValueTextBox = new System.Windows.Forms.TextBox();
+      this.numberValueLabel = new System.Windows.Forms.Label();
       this.errorProvider = new System.Windows.Forms.ErrorProvider(this.components);
       this.okButton = new System.Windows.Forms.Button();
       this.cancelButton = new System.Windows.Forms.Button();
@@ -120,25 +120,25 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       this.variableWeightTextBox.Visible = false;
       this.variableWeightTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.variableWeightTextBox_Validating);
       // 
-      // constantValueTextBox
+      // numberValueTextBox
       // 
-      this.constantValueTextBox.Location = new System.Drawing.Point(101, 37);
-      this.constantValueTextBox.Name = "constantValueTextBox";
-      this.constantValueTextBox.Size = new System.Drawing.Size(127, 20);
-      this.constantValueTextBox.TabIndex = 7;
-      this.constantValueTextBox.Text = "0.0";
-      this.constantValueTextBox.Visible = false;
-      this.constantValueTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.constantValueTextBox_Validating);
+      this.numberValueTextBox.Location = new System.Drawing.Point(101, 37);
+      this.numberValueTextBox.Name = "numberValueTextBox";
+      this.numberValueTextBox.Size = new System.Drawing.Size(127, 20);
+      this.numberValueTextBox.TabIndex = 7;
+      this.numberValueTextBox.Text = "0.0";
+      this.numberValueTextBox.Visible = false;
+      this.numberValueTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.numberValueTextBox_Validating);
       // 
-      // constantValueLabel
+      // numberValueLabel
       // 
-      this.constantValueLabel.AutoSize = true;
-      this.constantValueLabel.Location = new System.Drawing.Point(19, 40);
-      this.constantValueLabel.Name = "constantValueLabel";
-      this.constantValueLabel.Size = new System.Drawing.Size(34, 13);
-      this.constantValueLabel.TabIndex = 8;
-      this.constantValueLabel.Text = "Value";
-      this.constantValueLabel.Visible = false;
+      this.numberValueLabel.AutoSize = true;
+      this.numberValueLabel.Location = new System.Drawing.Point(19, 40);
+      this.numberValueLabel.Name = "numberValueLabel";
+      this.numberValueLabel.Size = new System.Drawing.Size(34, 13);
+      this.numberValueLabel.TabIndex = 8;
+      this.numberValueLabel.Text = "Value";
+      this.numberValueLabel.Visible = false;
       // 
       // errorProvider
       // 
@@ -186,8 +186,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       this.Controls.Add(this.variableNameTextBox);
       this.Controls.Add(this.cancelButton);
       this.Controls.Add(this.okButton);
-      this.Controls.Add(this.constantValueLabel);
-      this.Controls.Add(this.constantValueTextBox);
+      this.Controls.Add(this.numberValueLabel);
+      this.Controls.Add(this.numberValueTextBox);
       this.Controls.Add(this.variableWeightTextBox);
       this.Controls.Add(this.variableNamesCombo);
       this.Controls.Add(this.variableNameLabel);
@@ -210,9 +210,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
     private System.Windows.Forms.ComboBox allowedSymbolsCombo;
     private System.Windows.Forms.Label variableWeightLabel;
     private System.Windows.Forms.Label variableNameLabel;
-    private System.Windows.Forms.Label constantValueLabel;
+    private System.Windows.Forms.Label numberValueLabel;
     private System.Windows.Forms.ErrorProvider errorProvider;
-    internal System.Windows.Forms.TextBox constantValueTextBox;
+    internal System.Windows.Forms.TextBox numberValueTextBox;
     internal System.Windows.Forms.TextBox variableWeightTextBox;
     internal System.Windows.Forms.ComboBox variableNamesCombo;
     private System.Windows.Forms.Button cancelButton;

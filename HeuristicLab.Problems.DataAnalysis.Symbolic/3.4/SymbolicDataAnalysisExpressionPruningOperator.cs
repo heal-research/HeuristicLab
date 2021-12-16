@@ -32,7 +32,7 @@ using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableType("DBE27385-2E8C-4314-88B4-F96A5240FC9D")]
-  [Item("SymbolicExpressionTreePruningOperator", "An operator that replaces introns with constant values in a symbolic expression tree.")]
+  [Item("SymbolicExpressionTreePruningOperator", "An operator that replaces sub-trees with small impacts with numbers in a symbolic expression tree.")]
   public abstract class SymbolicDataAnalysisExpressionPruningOperator : SingleSuccessorOperator, ISymbolicExpressionTreeOperator {
     #region parameter names
     private const string ProblemDataParameterName = "ProblemData";
@@ -171,20 +171,19 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
       for (int i = 0; i < nodes.Count; ++i) {
         var node = nodes[i];
-        if (node is ConstantTreeNode) continue;
+        if (node is INumericTreeNode) continue;
 
-        double impactValue, replacementValue;
-        double newQualityForImpacts;
-        ImpactValuesCalculator.CalculateImpactAndReplacementValues(model, node, problemData, rows, out impactValue, out replacementValue, out newQualityForImpacts, qualityForImpactsCalculation);
+        ImpactValuesCalculator.CalculateImpactAndReplacementValues(model, node, problemData, rows, 
+          out double impactValue, out double replacementValue, out double newQualityForImpacts, qualityForImpactsCalculation);
 
         if (PruneOnlyZeroImpactNodes && !impactValue.IsAlmost(0.0)) continue;
         if (!PruneOnlyZeroImpactNodes && impactValue > NodeImpactThreshold) continue;
 
-        var constantNode = (ConstantTreeNode)node.Grammar.GetSymbol("Constant").CreateTreeNode();
-        constantNode.Value = replacementValue;
+        var numberNode = (NumberTreeNode)node.Grammar.GetSymbol("Number").CreateTreeNode();
+        numberNode.Value = replacementValue;
 
         var length = node.GetLength();
-        ReplaceWithConstant(node, constantNode);
+        ReplaceWithNumber(node, numberNode);
         i += length - 1; // skip subtrees under the node that was folded
 
         prunedSubtrees++;
@@ -204,7 +203,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       return base.Apply();
     }
 
-    protected static void ReplaceWithConstant(ISymbolicExpressionTreeNode original, ISymbolicExpressionTreeNode replacement) {
+    protected static void ReplaceWithNumber(ISymbolicExpressionTreeNode original, ISymbolicExpressionTreeNode replacement) {
       var parent = original.Parent;
       var i = parent.IndexOfSubtree(original);
       parent.RemoveSubtree(i);

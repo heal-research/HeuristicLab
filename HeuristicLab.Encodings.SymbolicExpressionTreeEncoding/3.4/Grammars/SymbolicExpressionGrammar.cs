@@ -190,19 +190,8 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
 
     public event EventHandler ReadOnlyChanged;
     protected virtual void OnReadOnlyChanged() {
-      var handler = ReadOnlyChanged;
-      if (handler != null)
-        handler(this, EventArgs.Empty);
+      ReadOnlyChanged?.Invoke(this, EventArgs.Empty);
     }
-
-    #region IStatefulItem methods
-    void IStatefulItem.InitializeState() {
-      ReadOnly = false;
-    }
-    void IStatefulItem.ClearState() {
-      ReadOnly = false;
-    }
-    #endregion
 
     public sealed override void AddAllowedChildSymbol(ISymbol parent, ISymbol child) {
       if (ReadOnly) throw new InvalidOperationException();

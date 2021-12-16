@@ -26,7 +26,7 @@ using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   [StorableType("1f6afcbe-b309-44e2-8d35-2d33eaeb9649")]
-  public interface ISymbolicExpressionGrammar : ISymbolicExpressionGrammarBase, IStatefulItem {
+  public interface ISymbolicExpressionGrammar : ISymbolicExpressionGrammarBase {
     ISymbol ProgramRootSymbol { get; }
     ISymbol StartSymbol { get; }
 

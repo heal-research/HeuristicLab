@@ -416,7 +416,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression {
 
       var addNode = new Addition().CreateTreeNode();
       var mulNode = new Multiplication().CreateTreeNode();
-      var scaleNode = (ConstantTreeNode)new Constant().CreateTreeNode(); // all models are scaled using the same nu
+      var scaleNode = (NumberTreeNode)new Number().CreateTreeNode(); // all models are scaled using the same nu
       scaleNode.Value = nu;
 
       foreach (var m in symbModels) {
