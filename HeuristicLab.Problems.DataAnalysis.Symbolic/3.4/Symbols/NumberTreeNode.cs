@@ -43,6 +43,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     private NumberTreeNode() : base() { }
     public NumberTreeNode(Number numberSymbol) : base(numberSymbol) { }
 
+    public NumberTreeNode(double value) : this(new Number()) {
+      Value = value;
+    }
+
     public override bool HasLocalParameters => true;
 
     public override void ResetLocalParameters(IRandom random) {
