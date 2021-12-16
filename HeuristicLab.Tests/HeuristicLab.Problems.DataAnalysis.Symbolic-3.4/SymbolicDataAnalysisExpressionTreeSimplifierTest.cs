@@ -286,7 +286,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
     private void AssertEqualAfterSimplification(string original, string expected) {
       var formatter = new SymbolicExpressionTreeStringFormatter();
       var importer = new SymbolicExpressionImporter();
-      var actualTree = TreeSimplifier.Simplify(importer.Import(original));
+      var originalTree = importer.Import(original);
+      originalTree = ConstantsToNumberConverter.Convert(originalTree);
+      var actualTree = TreeSimplifier.Simplify(originalTree);
       var expectedTree = importer.Import(expected);
       Assert.AreEqual(formatter.Format(expectedTree), formatter.Format(actualTree));
 
