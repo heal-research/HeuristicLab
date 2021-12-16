@@ -79,13 +79,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       var problemData = provider.LoadData(descriptor);
       var shapeConstraintProblemData = new ShapeConstrainedRegressionProblemData(problemData);
 
-
       var targetInterval = shapeConstraintProblemData.VariableRanges.GetInterval(shapeConstraintProblemData.TargetVariable);
       var estimationWidth = targetInterval.Width * 10;
 
-
       var structureTemplate = new StructureTemplate();
-      structureTemplate.Changed += OnTemplateChanged;
 
       var evaluators = new ItemSet<SymbolicRegressionSingleObjectiveEvaluator>(
         ApplicationManager.Manager.GetInstances<SymbolicRegressionSingleObjectiveEvaluator>()
@@ -99,7 +96,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       Parameters.Add(new ValueParameter<IRegressionProblemData>(
         ProblemDataParameterName,
         shapeConstraintProblemData));
-      ProblemDataParameter.ValueChanged += ProblemDataParameterValueChanged;
 
       Parameters.Add(new FixedValueParameter<StructureTemplate>(
         StructureTemplateParameterName,
@@ -122,6 +118,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       Operators.Add(new MinAverageMaxSymbolicExpressionTreeLengthAnalyzer());
       Operators.Add(new SymbolicExpressionSymbolFrequencyAnalyzer());
 
+      RegisterEventHandlers();
       StructureTemplate.Template =
         "(" +
           "(210000 / (210000 + h)) * ((sigma_y * t * t) / (wR * Rt * t)) + " +
@@ -131,10 +128,20 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     }
 
     public StructuredSymbolicRegressionSingleObjectiveProblem(StructuredSymbolicRegressionSingleObjectiveProblem original,
-      Cloner cloner) : base(original, cloner) { }
+      Cloner cloner) : base(original, cloner) {
+      ProblemDataParameter.ValueChanged += ProblemDataParameterValueChanged;
+      RegisterEventHandlers();
+    }
 
     [StorableConstructor]
     protected StructuredSymbolicRegressionSingleObjectiveProblem(StorableConstructorFlag _) : base(_) { }
+
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      RegisterEventHandlers();
+    }
+
     #endregion
 
     #region Cloning
@@ -147,6 +154,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       // InfoBox for Reset?
     }
 
+    private void RegisterEventHandlers() {
+      if (StructureTemplate != null) {
+        StructureTemplate.Changed += OnTemplateChanged;
+      }
+
+      ProblemDataParameter.ValueChanged += ProblemDataParameterValueChanged;
+    }
+
     private void OnTemplateChanged(object sender, EventArgs args) {
       SetupStructureTemplate();
     }
@@ -155,7 +170,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       foreach (var e in Encoding.Encodings.ToArray())
         Encoding.Remove(e);
 
-      foreach (var f in StructureTemplate.SubFunctions.Values) {
+      foreach (var f in StructureTemplate.SubFunctions) {
         SetupVariables(f);
         if (!Encoding.Encodings.Any(x => x.Name == f.Name)) // to prevent the same encoding twice
           Encoding.Add(new SymbolicExpressionTreeEncoding(

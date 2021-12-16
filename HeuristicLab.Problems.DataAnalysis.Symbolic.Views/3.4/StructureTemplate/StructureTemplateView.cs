@@ -43,8 +43,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       var visualTreeNode = sender as VisualTreeNode<ISymbolicExpressionTreeNode>;
       if(visualTreeNode != null) {
         var subFunctionTreeNode = visualTreeNode.Content as SubFunctionTreeNode;
-        if(subFunctionTreeNode != null && Content.SubFunctions.TryGetValue(subFunctionTreeNode.Name, out SubFunction subFunction))
-          viewHost.Content = subFunction;
+        var selectedSubFunction = Content.SubFunctions.Where(x => x.Name == subFunctionTreeNode.Name).FirstOrDefault();
+        if(subFunctionTreeNode != null && selectedSubFunction != null)
+          viewHost.Content = selectedSubFunction;
       }
     }
 

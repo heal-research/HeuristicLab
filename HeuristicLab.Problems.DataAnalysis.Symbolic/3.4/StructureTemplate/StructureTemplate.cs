@@ -32,12 +32,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       private set {
         treeWithLinearScaling = AddLinearScalingTerms(value);
         treeWithoutLinearScaling = value;
-        SubFunctions = GetSubFunctions();
+        subFunctions = GetSubFunctions();
       }
     }
 
     [Storable]
-    public IReadOnlyDictionary<string, SubFunction> SubFunctions { get; private set; }
+    private IList<SubFunction> subFunctions = new List<SubFunction>();
+    public IEnumerable<SubFunction> SubFunctions => subFunctions;
 
     [Storable]
     private bool applyLinearScaling;
@@ -71,7 +72,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       this.Tree = cloner.Clone(original.Tree);
       this.Template = original.Template;
       this.ApplyLinearScaling = original.ApplyLinearScaling;
-      this.SubFunctions = original.SubFunctions;
+      this.subFunctions = original.subFunctions.Select(cloner.Clone).ToList();
+      RegisterEventHandlers();
+    }
+
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      RegisterEventHandlers();
     }
     #endregion
 
@@ -81,7 +89,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     #endregion
 
     public void Reset() {
-      SubFunctions = new Dictionary<string, SubFunction>();
+      subFunctions = new List<SubFunction>();
       treeWithoutLinearScaling = null;
       treeWithLinearScaling = null;
       template = "";
@@ -89,28 +97,37 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       OnChanged();
     }
 
-    private Dictionary<string, SubFunction> GetSubFunctions() {
-      var subFunctions = new Dictionary<string, SubFunction>();
+    private IList<SubFunction> GetSubFunctions() {
+      var subFunctions = new List<SubFunction>();
       foreach (var node in Tree.IterateNodesPrefix())
         if (node is SubFunctionTreeNode subFunctionTreeNode) {
           if (!subFunctionTreeNode.Arguments.Any())
             throw new ArgumentException($"The sub-function '{subFunctionTreeNode}' requires inputs (e.g. {subFunctionTreeNode.Name}(var1, var2)).");
 
-          if (subFunctions.TryGetValue(subFunctionTreeNode.Name, out SubFunction v)) {
-            if(!v.Arguments.SequenceEqual(subFunctionTreeNode.Arguments))
+          var existingSubFunction = subFunctions.Where(x => x.Name == subFunctionTreeNode.Name).FirstOrDefault();
+          if (existingSubFunction != null) {
+            // an existing subFunction needs the same signature
+            if(!existingSubFunction.Arguments.SequenceEqual(subFunctionTreeNode.Arguments))
               throw new ArgumentException(
-                $"The sub-function '{v.Name}' has (at least two) different signatures " +
-                $"({v.Name}({string.Join(",", v.Arguments)}) <> {subFunctionTreeNode.Name}({string.Join(",", subFunctionTreeNode.Arguments)})).");
+                $"The sub-function '{existingSubFunction.Name}' has (at least two) different signatures " +
+                $"({existingSubFunction.Name}({string.Join(",", existingSubFunction.Arguments)}) <> " +
+                $"{subFunctionTreeNode.Name}({string.Join(",", subFunctionTreeNode.Arguments)})).");
           } else {
             var subFunction = new SubFunction() {
               Name = subFunctionTreeNode.Name,
               Arguments = subFunctionTreeNode.Arguments
             };
             subFunction.Changed += OnSubFunctionChanged;
-            subFunctions.Add(subFunction.Name, subFunction);
+            subFunctions.Add(subFunction);
           }
         }
       return subFunctions;
+    }
+
+    private void RegisterEventHandlers() {
+      foreach(var sf in SubFunctions) {
+        sf.Changed += OnSubFunctionChanged;
+      }
     }
 
     private ISymbolicExpressionTree AddLinearScalingTerms(ISymbolicExpressionTree tree) {
