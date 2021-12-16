@@ -150,6 +150,12 @@ namespace HeuristicLab.Parameters {
       return new ValueLookupParameter<T>(this, cloner);
     }
 
+    protected override IItem GetActualValue() {
+      if (ExecutionContext == null)
+        return Value;
+      return base.GetActualValue();
+    }
+
     public override string ToString() {
       if (Value != null)
         return Name + ": " + Value.ToString();
