@@ -81,7 +81,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
       double s = 0;
       var sw = new Stopwatch();
 
-      var similarityCalculator = new SymbolicExpressionTreeBottomUpSimilarityCalculator { MatchVariableWeights = false, MatchParameterValues = false };
+      var similarityCalculator = new SymbolicExpressionTreeBottomUpSimilarityCalculator { MatchVariableWeights = false, MatchNumericValues = false };
 
       sw.Start();
       for (int i = 0; i < trees.Length - 1; ++i) {
@@ -116,7 +116,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
       var ds = Util.CreateRandomDataset(twister, Rows, Columns);
       var trees = Util.CreateRandomTrees(twister, ds, grammar, N, 100);
 
-      var similarityCalculator = new SymbolicExpressionTreeBottomUpSimilarityCalculator { MatchParameterValues = strict, MatchVariableWeights = strict };
+      var similarityCalculator = new SymbolicExpressionTreeBottomUpSimilarityCalculator { MatchNumericValues = strict, MatchVariableWeights = strict };
       var bottomUpSimilarity = 0d;
       for (int i = 0; i < trees.Length - 1; ++i) {
         for (int j = i + 1; j < trees.Length; ++j) {
