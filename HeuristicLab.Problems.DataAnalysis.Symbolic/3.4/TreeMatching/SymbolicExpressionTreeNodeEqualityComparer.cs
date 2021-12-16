@@ -41,7 +41,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     // more flexible matching criteria 
     [Storable]
     private bool matchNumericValues;
-    public bool MatchParameterValues {
+    public bool MatchNumericValues {
       get { return matchNumericValues; }
       set { matchNumericValues = value; }
     }
@@ -89,7 +89,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       if (a is INumericTreeNode ca) {
         var cb = b as INumericTreeNode;
         if (cb == null) return false;
-        return (!MatchParameterValues || ca.Value.Equals(cb.Value));
+        return (!MatchNumericValues || ca.Value.Equals(cb.Value));
       }
       return false;
     }
