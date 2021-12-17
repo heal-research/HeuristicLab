@@ -22,6 +22,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       this.expressionInput = new System.Windows.Forms.TextBox();
       this.splitContainer = new System.Windows.Forms.SplitContainer();
       this.toolTip = new System.Windows.Forms.ToolTip(this.components);
+      this.errorLabel = new System.Windows.Forms.Label();
       this.detailsGroupBox.SuspendLayout();
       this.templateStructureGroupBox.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
@@ -57,6 +58,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       // 
       // templateStructureGroupBox
       // 
+      this.templateStructureGroupBox.Controls.Add(this.errorLabel);
       this.templateStructureGroupBox.Controls.Add(this.linearScalingCheckBox);
       this.templateStructureGroupBox.Controls.Add(this.infoLabel);
       this.templateStructureGroupBox.Controls.Add(this.treeChart);
@@ -85,14 +87,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       // 
       this.infoLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
       this.infoLabel.BackColor = System.Drawing.Color.White;
-      this.infoLabel.Image = ((System.Drawing.Image)(resources.GetObject("infoLabel.Image")));
+      this.infoLabel.Image = HeuristicLab.Common.Resources.VSImageLibrary.Information;
       this.infoLabel.Location = new System.Drawing.Point(275, 22);
       this.infoLabel.Name = "infoLabel";
       this.infoLabel.Size = new System.Drawing.Size(15, 15);
       this.infoLabel.TabIndex = 4;
       this.infoLabel.Text = "    ";
       this.toolTip.SetToolTip(this.infoLabel, "Double-click to open description.");
-      this.infoLabel.DoubleClick += new System.EventHandler(this.helpButton_DoubleClick);
+      this.infoLabel.DoubleClick += new System.EventHandler(this.HelpButtonDoubleClick);
       // 
       // treeChart
       // 
@@ -156,6 +158,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       this.splitContainer.SplitterDistance = 300;
       this.splitContainer.TabIndex = 10;
       // 
+      // errorLabel
+      // 
+      this.errorLabel.AutoSize = true;
+      this.errorLabel.BackColor = System.Drawing.Color.White;
+      this.errorLabel.Location = new System.Drawing.Point(3, 74);
+      this.errorLabel.Name = "errorLabel";
+      this.errorLabel.Size = new System.Drawing.Size(0, 13);
+      this.errorLabel.TabIndex = 9;
+      // 
       // StructureTemplateView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -186,5 +197,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
     private System.Windows.Forms.SplitContainer splitContainer;
     private System.ComponentModel.IContainer components;
     private ToolTip toolTip;
+    private Label errorLabel;
   }
 }

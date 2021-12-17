@@ -24,7 +24,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
 
     public StructureTemplateView() {
       InitializeComponent();
-      infoLabel.Text = "";
+      errorLabel.Text = "";
       this.Resize += StructureTemplateViewResize;
       splitContainer.SplitterMoved += SplitContainerSplitterMoved;
       treeChart.SymbolicExpressionTreeNodeClicked += SymbolicExpressionTreeNodeClicked;
@@ -49,13 +49,20 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       }
     }
 
+    protected override void SetEnabledStateOfControls() {
+      base.SetEnabledStateOfControls();
+      parseButton.Enabled = Content != null && !Locked && !ReadOnly;
+      linearScalingCheckBox.Enabled = Content != null && !Locked && !ReadOnly;
+      expressionInput.Enabled = Content != null && !Locked && !ReadOnly;
+    }
+
     protected override void OnContentChanged() {
       base.OnContentChanged();
       if (Content == null) return;
       expressionInput.Text = Content.Template;
       linearScalingCheckBox.Checked = Content.ApplyLinearScaling; 
       PaintTree();
-      infoLabel.Text = "";
+      errorLabel.Text = "";
     }
 
     private void ParseButtonClick(object sender, EventArgs e) {
@@ -63,8 +70,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
     }
 
     private void ExpressionInputTextChanged(object sender, EventArgs e) {
-      infoLabel.Text = "Unparsed changes! Press parse button to save changes.";
-      infoLabel.ForeColor = Color.DarkOrange;
+      errorLabel.Text = "Unparsed changes! Press parse button to save changes.";
+      errorLabel.ForeColor = Color.DarkOrange;
     }
 
     private void PaintTree() {
@@ -92,14 +99,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
         try {
           Content.Template = expressionInput.Text;
           PaintTree();
-          infoLabel.Text = "Template structure successfully parsed.";
-          infoLabel.ForeColor = Color.DarkGreen;
+          errorLabel.Text = "Template structure successfully parsed.";
+          errorLabel.ForeColor = Color.DarkGreen;
         } catch (AggregateException ex) {
-          infoLabel.Text = string.Join("\n", ex.InnerExceptions.Select(x => x.Message));
-          infoLabel.ForeColor = Color.DarkRed;
+          errorLabel.Text = string.Join("\n", ex.InnerExceptions.Select(x => x.Message));
+          errorLabel.ForeColor = Color.DarkRed;
         } catch (Exception ex) {
-          infoLabel.Text = ex.Message;
-          infoLabel.ForeColor = Color.DarkRed;
+          errorLabel.Text = ex.Message;
+          errorLabel.ForeColor = Color.DarkRed;
         }
       }
     }
@@ -109,7 +116,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       PaintTree();
     }
 
-    private void helpButton_DoubleClick(object sender, EventArgs e) {
+    private void HelpButtonDoubleClick(object sender, EventArgs e) {
       using (InfoBox dialog = new InfoBox("Help for structure template",
         "HeuristicLab.Problems.DataAnalysis.Symbolic.Views.Resources.structureTemplateHelp.rtf",
         this)) {
