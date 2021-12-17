@@ -79,9 +79,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       var problemData = provider.LoadData(descriptor);
       var shapeConstraintProblemData = new ShapeConstrainedRegressionProblemData(problemData);
 
-      var targetInterval = shapeConstraintProblemData.VariableRanges.GetInterval(shapeConstraintProblemData.TargetVariable);
-      var estimationWidth = targetInterval.Width * 10;
-
       var structureTemplate = new StructureTemplate();
 
       var evaluators = new ItemSet<SymbolicRegressionSingleObjectiveEvaluator>(
@@ -108,7 +105,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
 
       Parameters.Add(new FixedValueParameter<DoubleLimit>(
         EstimationLimitsParameterName,
-        new DoubleLimit(targetInterval.LowerBound - estimationWidth, targetInterval.UpperBound + estimationWidth)) { Hidden = true });
+        new DoubleLimit(double.NegativeInfinity, double.PositiveInfinity)) { Hidden = true });
 
       Parameters.Add(new ResultParameter<ISymbolicRegressionSolution>(BestTrainingSolutionParameterName, "") { Hidden = true });
 
@@ -172,13 +169,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
 
       foreach (var f in StructureTemplate.SubFunctions) {
         SetupVariables(f);
-        if (!Encoding.Encodings.Any(x => x.Name == f.Name)) // to prevent the same encoding twice
-          Encoding.Add(new SymbolicExpressionTreeEncoding(
-            f.Name,
-            f.Grammar,
-            f.MaximumSymbolicExpressionTreeLength,
-            f.MaximumSymbolicExpressionTreeDepth));
+        // to prevent the same encoding twice
+        if (!Encoding.Encodings.Any(x => x.Name == f.Name)) 
+          Encoding.Add(CreateEncoding(f));
       }
+
+      ParameterizeEncoding();
     }
 
     public override void Analyze(Individual[] individuals, double[] qualities, ResultCollection results, IRandom random) {
@@ -260,6 +256,24 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       return templateTree;
     }
 
+    private SymbolicExpressionTreeEncoding CreateEncoding(SubFunction subFunction) {
+      var encoding = new SymbolicExpressionTreeEncoding(
+            subFunction.Name,
+            subFunction.Grammar,
+            subFunction.MaximumSymbolicExpressionTreeLength,
+            subFunction.MaximumSymbolicExpressionTreeDepth);
+      return encoding;
+    }
+
+    private void ParameterizeEncoding() {
+      var manipulator = (IParameterizedItem)Encoding.Operators.OfType<MultiEncodingManipulator>().FirstOrDefault();
+      if (manipulator != null) {
+        foreach (var param in manipulator.Parameters.OfType<ConstrainedValueParameter<IManipulator>>()) {
+          var m = param.ValidValues.OfType<MultiSymbolicExpressionTreeManipulator>().FirstOrDefault();
+          param.Value = m == null ? param.ValidValues.First() : m;
+        }
+      }
+    }
     private void SetupVariables(SubFunction subFunction) {
       var varSym = (Variable)subFunction.Grammar.GetSymbol(VariableName);
       if (varSym == null) {
@@ -295,7 +309,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
 
     public void Load(IRegressionProblemData data) {
       ProblemData = data;
-      StructureTemplate.Template = "f(_)";
     }
   }
 }

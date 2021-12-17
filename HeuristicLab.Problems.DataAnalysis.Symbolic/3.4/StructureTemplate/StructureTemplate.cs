@@ -92,8 +92,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       subFunctions = new List<SubFunction>();
       treeWithoutLinearScaling = null;
       treeWithLinearScaling = null;
-      template = "";
       applyLinearScaling = false;
+      Template = "f(_)";
       OnChanged();
     }
 
