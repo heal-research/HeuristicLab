@@ -29,14 +29,14 @@ namespace HeuristicLab.Tests {
       SamplesUtils.RunAlgorithm(ga);
 
       if (Environment.Is64BitProcess) {
-        Assert.AreEqual(4.2920235018589167E-05, SamplesUtils.GetDoubleResult(ga, "BestQuality"), 1E-8);
-        Assert.AreEqual(54.076796020975593, SamplesUtils.GetDoubleResult(ga, "CurrentAverageQuality"), 1E-8);
-        Assert.AreEqual(5104.3828108493908, SamplesUtils.GetDoubleResult(ga, "CurrentWorstQuality"), 1E-8);
+        Assert.AreEqual(1.2142319244409949E-06, SamplesUtils.GetDoubleResult(ga, "BestQuality"), 1E-8);
+        Assert.AreEqual(120.13505532841884, SamplesUtils.GetDoubleResult(ga, "CurrentAverageQuality"), 1E-8);
+        Assert.AreEqual(8322.6086777405562, SamplesUtils.GetDoubleResult(ga, "CurrentWorstQuality"), 1E-8);
         Assert.AreEqual(5050, SamplesUtils.GetIntResult(ga, "EvaluatedSolutions"));
       } else {
-        Assert.AreEqual(4.29202350185872E-05, SamplesUtils.GetDoubleResult(ga, "BestQuality"), 1E-8);
-        Assert.AreEqual(54.076796020975593, SamplesUtils.GetDoubleResult(ga, "CurrentAverageQuality"), 1E-8);
-        Assert.AreEqual(5104.3828108493908, SamplesUtils.GetDoubleResult(ga, "CurrentWorstQuality"), 1E-8);
+        Assert.AreEqual(1.2142319244408615E-06, SamplesUtils.GetDoubleResult(ga, "BestQuality"), 1E-8);
+        Assert.AreEqual(120.135055328418, SamplesUtils.GetDoubleResult(ga, "CurrentAverageQuality"), 1E-8);
+        Assert.AreEqual(8322.6086777405562, SamplesUtils.GetDoubleResult(ga, "CurrentWorstQuality"), 1E-8);
         Assert.AreEqual(5050, SamplesUtils.GetIntResult(ga, "EvaluatedSolutions"));
       }
     }
