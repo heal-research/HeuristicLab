@@ -278,6 +278,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         parameters.Add(new KeyValuePair<string, double>(const2Name, conditionTreeNode.Threshold));
         paramIdx++;
         strBuilder.Append(@" \left( " + p + @"\cdot ");
+      } else if (node.Symbol is SubFunctionSymbol) {
+        // to nothing, skip symbol
       } else {
         throw new NotImplementedException("Export of " + node.Symbol + " is not implemented.");
       }
@@ -386,6 +388,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         parameters.Add(new KeyValuePair<string, double>(const2Name, conditionTreeNode.Threshold));
         paramIdx++;
         strBuilder.Append(@" +  \left( 1 - " + p + @" \right) \cdot ");
+      } else if (node.Symbol is SubFunctionSymbol) {
+        throw new InvalidOperationException();
       } else {
         throw new NotImplementedException("Export of " + node.Symbol + " is not implemented.");
       }
@@ -510,6 +514,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         strBuilder.Append(@" \right) ");
       } else if (node.Symbol is VariableCondition) {
         strBuilder.Append(@"\right) ");
+      } else if (node.Symbol is SubFunctionSymbol) {
       } else {
         throw new NotImplementedException("Export of " + node.Symbol + " is not implemented.");
       }

@@ -53,7 +53,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           FormatRecursively(node.Subtrees.First(), strBuilder, numberFormat, formatString, parameters);
 
           var power = node.GetSubtree(1);
-          if(power is INumericTreeNode numNode && Math.Truncate(numNode.Value) == numNode.Value) {
+          if (power is INumericTreeNode numNode && Math.Truncate(numNode.Value) == numNode.Value) {
             strBuilder.Append(" ").Append(token).Append(" ").Append(numNode.Value.ToString(formatString, numberFormat));
           } else {
             strBuilder.Append(" ").Append(token).Append(" ");
@@ -72,6 +72,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
           strBuilder.Append(")");
         }
+      } else if (node.Symbol is SubFunctionSymbol) {
+        FormatRecursively(node.GetSubtree(0), strBuilder, numberFormat, formatString, parameters);
       } else if (node.SubtreeCount == 1) {
         var token = GetToken(node.Symbol);
         if (token == "-" || token == "NOT") {
@@ -144,7 +146,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           if (parameters == null && numNode.Value < 0) {
             // negative value
             strBuilder.Append("(").Append(numNode.Value.ToString(formatString, numberFormat))
-                      .Append(")"); 
+                      .Append(")");
           } else {
             AppendNumber(strBuilder, parameters, numNode.Value, formatString, numberFormat);
           }

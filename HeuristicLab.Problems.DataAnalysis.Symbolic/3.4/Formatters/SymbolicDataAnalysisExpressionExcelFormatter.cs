@@ -309,6 +309,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         stringBuilder.Append(") < (");
         stringBuilder.Append(FormatRecursively(node.GetSubtree(1)));
         stringBuilder.Append("), 1.0, -1.0)");
+      } else if (symbol is SubFunctionSymbol) {
+        stringBuilder.Append(FormatRecursively(node.GetSubtree(0)));
       } else {
         throw new NotImplementedException("Excel export of " + node.Symbol + " is not implemented.");
       }

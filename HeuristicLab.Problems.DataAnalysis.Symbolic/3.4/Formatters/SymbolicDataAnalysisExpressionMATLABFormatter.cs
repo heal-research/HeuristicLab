@@ -387,6 +387,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         currentLag += laggedNode.Lag;
         stringBuilder.Append(FormatRecursively(node.GetSubtree(0)));
         currentLag -= laggedNode.Lag;
+      } else if (symbol is SubFunctionSymbol) {
+        stringBuilder.Append(FormatRecursively(node.GetSubtree(0)));
       } else {
         stringBuilder.Append("ERROR");
       }

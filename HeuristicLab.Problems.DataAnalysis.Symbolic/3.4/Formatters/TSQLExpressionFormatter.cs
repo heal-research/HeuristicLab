@@ -156,6 +156,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           FormatFunction(level, node, "POWER", strBuilder);
         } else if (node.Symbol is Root) {
           FormatRoot(level, node, strBuilder);
+        } else if (node.Symbol is SubFunctionSymbol) {
+          FormatRecursively(level, node.GetSubtree(0), strBuilder);
         } else {
           throw new NotSupportedException("Formatting of symbol: " + node.Symbol + " not supported for TSQL symbolic expression tree formatter.");
         }

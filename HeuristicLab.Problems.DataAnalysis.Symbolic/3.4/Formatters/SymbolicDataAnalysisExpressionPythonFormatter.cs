@@ -203,6 +203,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         FormatVariableTreeNode(node, strBuilder);
       else if (node is INumericTreeNode)
         FormatNumericTreeNode(node, strBuilder);
+      else if (symbol is SubFunctionSymbol)
+        FormatRecursively(node.GetSubtree(0), strBuilder);
       else
         throw new NotSupportedException("Formatting of symbol: " + symbol + " not supported for Python symbolic expression tree formatter.");
     }

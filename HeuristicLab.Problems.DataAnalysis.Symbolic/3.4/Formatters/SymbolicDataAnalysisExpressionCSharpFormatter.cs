@@ -154,6 +154,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           strBuilder.Append(" / Math.Sqrt(1 + Math.Pow(");
           FormatRecursively(node.GetSubtree(1), strBuilder);
           strBuilder.Append(" , 2) ) )");
+        } else if (node.Symbol is SubFunctionSymbol) {
+          FormatRecursively(node.GetSubtree(0), strBuilder);
         } else {
           throw new NotSupportedException("Formatting of symbol: " + node.Symbol + " not supported for C# symbolic expression tree formatter.");
         }

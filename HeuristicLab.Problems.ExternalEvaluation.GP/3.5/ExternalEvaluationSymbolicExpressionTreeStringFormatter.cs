@@ -57,7 +57,9 @@ namespace HeuristicLab.Problems.ExternalEvaluation.GP {
     private string FormatRecursively(ISymbolicExpressionTreeNode node, int indentLength) {
       StringBuilder strBuilder = new StringBuilder();
       if (Indent) strBuilder.Append(' ', indentLength);
-      if (node.Subtrees.Any()) { // internal node
+      if(node.Symbol is SubFunctionSymbol) {
+        return FormatRecursively(node.GetSubtree(0), indentLength);
+      } else if (node.Subtrees.Any()) { // internal node
         strBuilder.Append("(");
         if (node.Symbol is Addition) {
           strBuilder.AppendLine("+");
