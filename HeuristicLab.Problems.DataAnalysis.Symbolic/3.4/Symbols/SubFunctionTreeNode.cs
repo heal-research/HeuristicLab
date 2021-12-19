@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableType("05130B5F-0125-4367-A4E9-C42D1085024E")]
-  public class SubFunctionTreeNode : SymbolicExpressionTreeNode {
+  public sealed class SubFunctionTreeNode : SymbolicExpressionTreeNode {
 
     #region Properties
     public new SubFunctionSymbol Symbol => (SubFunctionSymbol)base.Symbol;
@@ -25,9 +22,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     public SubFunctionTreeNode(SubFunctionSymbol symbol) : base(symbol) { }
 
     [StorableConstructor]
-    protected SubFunctionTreeNode(StorableConstructorFlag _) : base(_) { }
+    private SubFunctionTreeNode(StorableConstructorFlag _) : base(_) { }
 
-    protected SubFunctionTreeNode(SubFunctionTreeNode original, Cloner cloner) : base(original, cloner) {
+    private SubFunctionTreeNode(SubFunctionTreeNode original, Cloner cloner) : base(original, cloner) {
       Arguments = original.Arguments;
       Name = (string)original.Name.Clone();
     }
@@ -42,6 +39,5 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         return base.ToString();
       return $"{Name}({string.Join(",", Arguments)})";
     }
-    
   }
 }
