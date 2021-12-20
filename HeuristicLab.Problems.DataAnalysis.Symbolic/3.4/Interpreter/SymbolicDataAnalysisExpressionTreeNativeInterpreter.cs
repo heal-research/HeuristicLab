@@ -102,6 +102,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
     private static readonly HashSet<byte> supportedOpCodes = new HashSet<byte>() {
       (byte)OpCode.Constant,
+      (byte)OpCode.Number,
       (byte)OpCode.Variable,
       (byte)OpCode.Add,
       (byte)OpCode.Sub,

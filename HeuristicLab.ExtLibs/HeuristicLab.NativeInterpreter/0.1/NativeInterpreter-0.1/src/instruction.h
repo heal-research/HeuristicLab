@@ -18,7 +18,7 @@ enum OpCodes : uint8_t
     Log                = 8,
     Exp                = 9,
     Var                = 18,
-    Const              = 20,
+    Number             = 20,
     Power              = 22,
     Root               = 23,
     Square             = 28,
@@ -28,7 +28,8 @@ enum OpCodes : uint8_t
     Cube               = 50,
     CubeRoot           = 51,
     Tanh               = 52,
-    SubFunction        = 53
+    SubFunction        = 53,
+    Constant           = 54
 };
 
 struct instruction

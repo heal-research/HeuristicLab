@@ -11,7 +11,8 @@ inline double evaluate(instruction *code, int len, int row) noexcept
         instruction &in = code[i];
         switch (in.opcode)
         {
-            case OpCodes::Const: /* nothing to do */ break;
+            case OpCodes::Number: /* nothing to do */ break;
+            case OpCodes::Constant: /* nothing to do */ break;
             case OpCodes::Var:
                 {
                     in.value = in.weight * in.data[row];
@@ -169,7 +170,8 @@ inline void evaluate(instruction* code, int len, int* __restrict rows, int rowIn
                     load_data(in, rows, rowIndex, batchSize); // buffer data
                     break;
                 }
-            case OpCodes::Const: /* nothing to do because buffers for constants are already set */ break;
+            case OpCodes::Number: /* nothing to do because buffers for numbers are already set */ break;
+            case OpCodes::Constant: /* nothing to do because buffers for constants are already set */ break;
             case OpCodes::Add:
                 {
                     load(in.buf, code[in.childIndex].buf);
