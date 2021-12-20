@@ -101,7 +101,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
 
       Parameters.Add(new ValueParameter<ISymbolicDataAnalysisExpressionTreeInterpreter>(
         InterpreterParameterName,
-        new SymbolicDataAnalysisExpressionTreeInterpreter()) { Hidden = true });
+        new SymbolicDataAnalysisExpressionTreeBatchInterpreter()) { Hidden = true });
 
       Parameters.Add(new FixedValueParameter<DoubleLimit>(
         EstimationLimitsParameterName,
