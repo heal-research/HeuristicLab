@@ -78,7 +78,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     Cube = 50,
     CubeRoot = 51,
     Tanh = 52,
-    Constant = 53
+    Constant = 54
   };
   public static class OpCodes {
     // constants for API compatibility only

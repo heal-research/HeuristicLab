@@ -31,7 +31,7 @@ void __cdecl GetValuesVectorized(instruction* code, int codeLength, int* rows, i
         instruction& in = code[i];
         in.buf = buffer + (i * BATCHSIZE);
 
-        if (in.opcode == OpCodes::Const)
+        if (in.opcode == OpCodes::Constant || in.opcode == OpCodes::Number)
         {
             load(in.buf, in.value);
         }
