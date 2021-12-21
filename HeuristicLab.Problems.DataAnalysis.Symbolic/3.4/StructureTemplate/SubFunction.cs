@@ -74,5 +74,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     public override IDeepCloneable Clone(Cloner cloner) =>
       new SubFunction(this, cloner);
     #endregion
+
+    public override string ToString() => $"{Name}({string.Join(",", Arguments)})";
+
+    public override int GetHashCode() => ToString().GetHashCode();
+
+    public override bool Equals(object obj) => (obj is SubFunction other) && other.ToString() == ToString();
   }
 }

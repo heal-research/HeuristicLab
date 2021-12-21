@@ -32,7 +32,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       private set {
         treeWithLinearScaling = AddLinearScalingTerms(value);
         treeWithoutLinearScaling = value;
-        subFunctions = GetSubFunctions();
+
+        var newFunctions = GetSubFunctions();
+        var oldFunctions = subFunctions?.Intersect(newFunctions) 
+                           ?? Enumerable.Empty<SubFunction>();
+        // adds new functions and keeps the old ones (if they match)
+        subFunctions = newFunctions.Except(oldFunctions).Concat(oldFunctions).ToList();
       }
     }
 
