@@ -60,17 +60,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
 
 
       Assert.AreEqual("LOG(3)",formatter.Format(parser.Parse("log(3)")));
-      Assert.AreEqual("LOG((-(3)))",formatter.Format(parser.Parse("log(-3)")));   // should produce log(-3) as output
+      Assert.AreEqual("LOG(-3)",formatter.Format(parser.Parse("log(-3)")));
       Assert.AreEqual("EXP(3)",formatter.Format(parser.Parse("exp(3)")));
-      Assert.AreEqual("EXP((-(3)))",formatter.Format(parser.Parse("exp(-3)")));  // should produce exp(-3) as output
+      Assert.AreEqual("EXP(-3)",formatter.Format(parser.Parse("exp(-3)")));
       Assert.AreEqual("SQRT(3)", formatter.Format(parser.Parse("sqrt(3)")));
 
-      Assert.AreEqual("SQR((-(3)))", formatter.Format(parser.Parse("sqr((-3))")));  // should produce sqr((-3)) as output
+      Assert.AreEqual("SQR(-3)", formatter.Format(parser.Parse("sqr((-3))")));
 
-      Assert.AreEqual("((3 * 1/3) + (2 * 1/2) + (1 * 1/1))",formatter.Format(parser.Parse("3/3+2/2+1/1"))); // ((3 * 1 / 3) + (2 * 1 / 2) + (1 * 1 / 1))
-      Assert.AreEqual("(30 + 20 + 10 + ((-1) * (3 + 2 + 1)))", formatter.Format(parser.Parse("-3+30-2+20-1+10")));   //  not (30 + 20 + 10 + ((-1) * (3 + 2 + 1)))
-      // round trip
-      Assert.AreEqual("(30 + 20 + 10 + ((-(1)) * (3 + 2 + 1)))", formatter.Format(parser.Parse(formatter.Format(parser.Parse("-3+30-2+20-1+10")))));   // not (30 + 20 + 10 + ((-(1)) * (3 + 2 + 1)))
+      Assert.AreEqual("((3/3) + (2/2) + (1/1))",formatter.Format(parser.Parse("3/3+2/2+1/1")));
+      Assert.AreEqual("-3 + 30 - 2 + 20 - 1 + 10", formatter.Format(parser.Parse("-3+30-2+20-1+10")));
 
       Assert.AreEqual("'x1'",formatter.Format(parser.Parse("\"x1\"")));
       Assert.AreEqual("'var name'",formatter.Format(parser.Parse("\'var name\'")));
@@ -90,12 +88,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
       Assert.AreEqual("(3.1 ^ 2.1)",formatter.Format(parser.Parse("POW(3.1, 2.1)")));
       Assert.AreEqual("(3.1 ^ 2.1)",formatter.Format(parser.Parse("POW(3.1 , 2.1)")));
       Assert.AreEqual("(3.1 ^ 2.1)",formatter.Format(parser.Parse("POW(3.1 ,2.1)")));
-      Assert.AreEqual("((-(3.1)) ^ (-(2.1)))",formatter.Format(parser.Parse("POW(-3.1 , - 2.1)")));
+      Assert.AreEqual("-3.1 ^ -2.1",formatter.Format(parser.Parse("POW(-3.1 , - 2.1)")));
       Assert.AreEqual("ROOT(3, 2)",formatter.Format(parser.Parse("ROOT(3, 2)")));
       Assert.AreEqual("ROOT(3.1, 2.1)",formatter.Format(parser.Parse("ROOT(3.1, 2.1)")));
       Assert.AreEqual("ROOT(3.1, 2.1)",formatter.Format(parser.Parse("ROOT(3.1 , 2.1)")));
       Assert.AreEqual("ROOT(3.1, 2.1)",formatter.Format(parser.Parse("ROOT(3.1 ,2.1)")));
-      Assert.AreEqual("ROOT((-(3.1)), (-(2.1)))", formatter.Format(parser.Parse("ROOT(-3.1 , - 2.1)")));
+      Assert.AreEqual("ROOT(-3.1, -2.1)", formatter.Format(parser.Parse("ROOT(-3.1 , - 2.1)")));
 
       Assert.AreEqual("IF(GT(0, 1), 1, 0)",formatter.Format(parser.Parse("IF(GT( 0, 1), 1, 0)")));
       Assert.AreEqual("IF(LT(0, 1), 1, 0)",formatter.Format(parser.Parse("IF(LT(0,1), 1 , 0)")));
