@@ -106,12 +106,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     }
 
     private void TrainingHorizonTextBox_KeyDown(object sender, KeyEventArgs e) {
-      if ((e.KeyCode == Keys.Enter) || (e.KeyCode == Keys.Return))
+      if ((e.KeyCode == Keys.Enter) || (e.KeyCode == Keys.Return)) {
         TrainingHorizonLabel.Select();  // select label to validate data
-
-      if (e.KeyCode == Keys.Escape) {
+        e.SuppressKeyPress = true;
+      } else if (e.KeyCode == Keys.Escape) {
         TrainingHorizonTextBox.Text = Content.TrainingHorizon.ToString();
         TrainingHorizonLabel.Select();  // select label to validate data
+        e.SuppressKeyPress = true;
       }
     }
 
@@ -131,12 +132,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     }
 
     private void TestHorizonTextBox_KeyDown(object sender, KeyEventArgs e) {
-      if ((e.KeyCode == Keys.Enter) || (e.KeyCode == Keys.Return))
+      if ((e.KeyCode == Keys.Enter) || (e.KeyCode == Keys.Return)) {
         TestHorizonLabel.Select();  // select label to validate data
-
-      if (e.KeyCode == Keys.Escape) {
+        e.SuppressKeyPress = true;
+      } else if (e.KeyCode == Keys.Escape) {
         TestHorizonTextBox.Text = Content.TestHorizon.ToString();
         TestHorizonLabel.Select();  // select label to validate data
+        e.SuppressKeyPress = true;
       }
     }
     #endregion

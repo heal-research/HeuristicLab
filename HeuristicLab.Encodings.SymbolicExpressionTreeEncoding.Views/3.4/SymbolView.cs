@@ -69,12 +69,13 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
 
     #region control event handlers
     private void initialFrequencyTextBox_KeyDown(object sender, KeyEventArgs e) {
-      if ((e.KeyCode == Keys.Enter) || (e.KeyCode == Keys.Return))
+      if ((e.KeyCode == Keys.Enter) || (e.KeyCode == Keys.Return)) {
         initialFrequencyLabel.Select();  // select label to validate data
-
-      if (e.KeyCode == Keys.Escape) {
+        e.SuppressKeyPress = true;
+      } else  if (e.KeyCode == Keys.Escape) {
         initialFrequencyTextBox.Text = Content.InitialFrequency.ToString();
         initialFrequencyLabel.Select();  // select label to validate data
+        e.SuppressKeyPress = true;
       }
     }
     private void initialFrequencyTextBox_Validating(object sender, CancelEventArgs e) {

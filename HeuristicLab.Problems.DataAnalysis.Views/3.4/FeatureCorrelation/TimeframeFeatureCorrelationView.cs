@@ -69,11 +69,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     private void TimeframeTextbox_KeyDown(object sender, System.Windows.Forms.KeyEventArgs e) {
       if (e.KeyCode == Keys.Enter || e.KeyCode == Keys.Return) {
         timeFrameLabel.Select();  // select label to validate data
-      }
-
-      if (e.KeyCode == Keys.Escape) {
+        e.SuppressKeyPress = true;
+      } else  if (e.KeyCode == Keys.Escape) {
         timeframeTextbox.Text = lastFramesValue;
         timeFrameLabel.Select();  // select label to validate data
+        e.SuppressKeyPress = true;
       }
     }
     private void TimeframeTextbox_Validated(object sender, System.EventArgs e) {
