@@ -36,9 +36,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       if (node.SubtreeCount > 1) {
         var token = GetToken(node.Symbol);
         // operators
-        if (token == "+" || token == "-" || token == "OR" || token == "XOR" ||
-            token == "*" || token == "/" || token == "AND") {
-          strBuilder.Append("(");
+        if (token == "+" || token == "-" || token == "OR" || token == "XOR") {
+          var parenthesisRequired = false;
+          if (node.Parent != null && node.Parent.SubtreeCount > 1) {
+            var parentOp = GetToken(node.Parent.Symbol);
+            if (parentOp != "+" && parentOp != "-" && parentOp != "OR" && parentOp != "XOR")
+              parenthesisRequired = true;
+          }
+          if (parenthesisRequired) strBuilder.Append("(");
           FormatRecursively(node.Subtrees.First(), strBuilder, numberFormat, formatString, parameters);
 
           foreach (var subtree in node.Subtrees.Skip(1)) {
@@ -46,21 +51,32 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             FormatRecursively(subtree, strBuilder, numberFormat, formatString, parameters);
           }
 
-          strBuilder.Append(")");
+          if (parenthesisRequired) strBuilder.Append(")");
+        } else if (token == "*" || token == "/" || token == "AND") {
+          FormatRecursively(node.Subtrees.First(), strBuilder, numberFormat, formatString, parameters);
+
+          foreach (var subtree in node.Subtrees.Skip(1)) {
+            strBuilder.Append(" ").Append(token).Append(" ");
+            // a / b * c => a / (b * C)
+            if (subtree.SubtreeCount > 1 && token == "/" && GetToken(subtree.Symbol) == "*") {
+              strBuilder.Append("(");
+              FormatRecursively(subtree, strBuilder, numberFormat, formatString, parameters);
+              strBuilder.Append(")");
+            } else {
+              FormatRecursively(subtree, strBuilder, numberFormat, formatString, parameters);
+            }
+          }
         } else if (token == "^") {
           // handle integer powers directly
-          strBuilder.Append("(");
           FormatRecursively(node.Subtrees.First(), strBuilder, numberFormat, formatString, parameters);
 
           var power = node.GetSubtree(1);
-          if(power is INumericTreeNode numNode && Math.Truncate(numNode.Value) == numNode.Value) {
+          if (power is INumericTreeNode numNode && Math.Truncate(numNode.Value) == numNode.Value) {
             strBuilder.Append(" ").Append(token).Append(" ").Append(numNode.Value.ToString(formatString, numberFormat));
           } else {
             strBuilder.Append(" ").Append(token).Append(" ");
             FormatRecursively(power, strBuilder, numberFormat, formatString, parameters);
           }
-
-          strBuilder.Append(")");
         } else {
           // function with multiple arguments
           strBuilder.Append(token).Append("(");
@@ -75,9 +91,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       } else if (node.SubtreeCount == 1) {
         var token = GetToken(node.Symbol);
         if (token == "-" || token == "NOT") {
-          strBuilder.Append("(").Append(token).Append("(");
+          strBuilder.Append(token);
           FormatRecursively(node.GetSubtree(0), strBuilder, numberFormat, formatString, parameters);
-          strBuilder.Append("))");
         } else if (token == "/") {
           strBuilder.Append("1/");
           FormatRecursively(node.GetSubtree(0), strBuilder, numberFormat, formatString, parameters);
@@ -94,7 +109,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         if (node.Symbol is LaggedVariable) {
           var varNode = node as LaggedVariableTreeNode;
           if (!varNode.Weight.IsAlmost(1.0)) {
-            strBuilder.Append("(");
             AppendNumber(strBuilder, parameters, varNode.Weight, formatString, numberFormat);
             strBuilder.Append("*");
           }
@@ -104,18 +118,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           strBuilder.Append(", ")
                     .AppendFormat(numberFormat, "{0}", varNode.Lag)
                     .Append(")");
-          if (!varNode.Weight.IsAlmost(1.0)) strBuilder.Append(")");
         } else if (node.Symbol is Variable) {
           var varNode = node as VariableTreeNode;
           if (!varNode.Weight.IsAlmost(1.0)) {
-            strBuilder.Append("(");
             AppendNumber(strBuilder, parameters, varNode.Weight, formatString, numberFormat);
             strBuilder.Append("*");
           }
-
           AppendVariableName(strBuilder, varNode.VariableName);
-
-          if (!varNode.Weight.IsAlmost(1.0)) strBuilder.Append(")");
         } else if (node.Symbol is FactorVariable) {
           var factorNode = node as FactorVariableTreeNode;
           AppendVariableName(strBuilder, factorNode.VariableName);
@@ -129,22 +138,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         } else if (node.Symbol is BinaryFactorVariable) {
           var factorNode = node as BinaryFactorVariableTreeNode;
           if (!factorNode.Weight.IsAlmost(1.0)) {
-            strBuilder.Append("(");
             AppendNumber(strBuilder, parameters, factorNode.Weight, formatString, numberFormat);
-
             strBuilder.Append("*");
           }
-
           AppendVariableName(strBuilder, factorNode.VariableName);
           strBuilder.Append(" = ");
           AppendVariableName(strBuilder, factorNode.VariableValue);
-
-          if (!factorNode.Weight.IsAlmost(1.0)) strBuilder.Append(")");
         } else if (node is INumericTreeNode numNode) {
           if (parameters == null && numNode.Value < 0) {
             // negative value
-            strBuilder.Append("(").Append(numNode.Value.ToString(formatString, numberFormat))
-                      .Append(")"); 
+            strBuilder.Append(numNode.Value.ToString(formatString, numberFormat));
           } else {
             AppendNumber(strBuilder, parameters, numNode.Value, formatString, numberFormat);
           }

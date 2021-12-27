@@ -42,12 +42,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
       Assert.AreEqual("0", Derive("<num=10>*x", "y"));
       Assert.AreEqual("20", Derive("<num=10>*x+<num=20>*y", "y"));
       Assert.AreEqual("6", Derive("<num=2>*<num=3>*x", "x"));
-      Assert.AreEqual("10 * 'y'", Derive("<num=10>*x*y+<num=20>*y", "x"));
-      Assert.AreEqual("(1 / (SQR('x') * (-1)))", Derive("1/x", "x"));
-      Assert.AreEqual("'y' / (SQR('x') * -1)", Derive("y/x", "x"));
-      Assert.AreEqual("(-2*'x' + -1) * ('a' + 'b') / SQR('x' + 'x' * 'x')",
+      Assert.AreEqual("10*'y'", Derive("<num=10>*x*y+<num=20>*y", "x"));
+      Assert.AreEqual("1 * -1 / SQR('x')", Derive("1/x", "x"));
+      Assert.AreEqual("-1*'y' / SQR('x')", Derive("y/x", "x"));
+      Assert.AreEqual("('a' + 'b') * (-2*'x' + -1) / SQR('x' + 'x' * 'x')",
         Derive("(a+b)/(x+x*x)", "x"));
-      Assert.AreEqual("(-2*'x' + -1) * ('a' + 'b') / SQR('x' + SQR('x'))", Derive("(a+b)/(x+SQR(x))", "x"));
+      Assert.AreEqual("('a' + 'b') * (-2*'x' + -1) / SQR('x' + SQR('x'))", Derive("(a+b)/(x+SQR(x))", "x"));
       Assert.AreEqual("EXP('x')", Derive("exp(x)", "x"));
       Assert.AreEqual("EXP(3*'x') * 3", Derive("exp(<num=3>*x)", "x"));
       Assert.AreEqual("1 / 'x'", Derive("log(x)", "x"));
@@ -66,7 +66,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
 
 
       Assert.AreEqual("'a' * 'b' * 'c'", Derive("a*b*c*d", "d"));
-      Assert.AreEqual("'a' / ('b' * 'c' * SQR('d') * -1)", Derive("a/b/c/d", "d"));
+      Assert.AreEqual("'b' * 'c' * -1*'a' / (SQR('b') * SQR('c') * SQR('d'))", Derive("a/b/c/d", "d")); // TODO simplifier should be able to simplify this
 
       Assert.AreEqual("'x' * (SQR(TANH(SQR('x'))) * -1 + 1) * 2", Derive("tanh(sqr(x))", "x")); // (2*'x'*(1 - SQR(TANH(SQR('x'))))
 
@@ -83,7 +83,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
         start.AddSubtree(div);
         root.AddSubtree(start);
         var t = new SymbolicExpressionTree(root);
-        Assert.AreEqual("(1 / (SQR('x') * (-1)))",
+        Assert.AreEqual("1 / (SQR('x') * -1)",
           formatter.Format(DerivativeCalculator.Derive(t, "x")));
       }
 
