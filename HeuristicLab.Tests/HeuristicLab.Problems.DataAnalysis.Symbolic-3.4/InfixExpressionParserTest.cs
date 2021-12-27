@@ -50,25 +50,40 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
       Assert.AreEqual("123000",formatter.Format(parser.Parse("123.0E+3")));
 
       Assert.AreEqual("(3.1415 + 2)",formatter.Format(parser.Parse("3.1415+2.0")));
-      Assert.AreEqual("(3.1415 * 1/2)",formatter.Format(parser.Parse("3.1415/2.0")));
+      Assert.AreEqual("(3.1415 / 2)",formatter.Format(parser.Parse("3.1415/2.0")));
       Assert.AreEqual("(3.1415 * 2)",formatter.Format(parser.Parse("3.1415*2.0")));
-      Assert.AreEqual("(3.1415 + (-(2)))", formatter.Format(parser.Parse("3.1415-2.0")));
+      Assert.AreEqual("(3.1415 - 2)", formatter.Format(parser.Parse("3.1415-2.0")));
       // round-trip
-      Assert.AreEqual("(3.1415 + (-(2)))",formatter.Format(parser.Parse(formatter.Format(parser.Parse("3.1415-2.0")))));
+      Assert.AreEqual("(3.1415 - 2)",formatter.Format(parser.Parse(formatter.Format(parser.Parse("3.1415-2.0")))));
       Assert.AreEqual("(3.1415 + 2)",formatter.Format(parser.Parse("3.1415+(2.0)")));
       Assert.AreEqual("(3.1415 + 2)", formatter.Format(parser.Parse("(3.1415+(2.0))")));
 
 
       Assert.AreEqual("LOG(3)",formatter.Format(parser.Parse("log(3)")));
-      Assert.AreEqual("LOG(-3)",formatter.Format(parser.Parse("log(-3)")));
+      Assert.AreEqual("LOG((-3))",formatter.Format(parser.Parse("log(-3)")));
       Assert.AreEqual("EXP(3)",formatter.Format(parser.Parse("exp(3)")));
-      Assert.AreEqual("EXP(-3)",formatter.Format(parser.Parse("exp(-3)")));
+      Assert.AreEqual("EXP((-3))",formatter.Format(parser.Parse("exp(-3)")));
       Assert.AreEqual("SQRT(3)", formatter.Format(parser.Parse("sqrt(3)")));
 
-      Assert.AreEqual("SQR(-3)", formatter.Format(parser.Parse("sqr((-3))")));
+      Assert.AreEqual("SQR((-3))", formatter.Format(parser.Parse("sqr((-3))")));
 
-      Assert.AreEqual("((3/3) + (2/2) + (1/1))",formatter.Format(parser.Parse("3/3+2/2+1/1")));
-      Assert.AreEqual("-3 + 30 - 2 + 20 - 1 + 10", formatter.Format(parser.Parse("-3+30-2+20-1+10")));
+      Assert.AreEqual("((3 / 3) + (2 / 2) + (1 / 1))",formatter.Format(parser.Parse("3/3+2/2+1/1")));
+      Assert.AreEqual("((((((-3) + 30) - 2) + 20) - 1) + 10)", formatter.Format(parser.Parse("-3+30-2+20-1+10")));
+
+      // 'flattening' of nested addition, subtraction, multiplication, or division
+      Assert.AreEqual("(1 + 2 + 3 + 4)", formatter.Format(parser.Parse("1 + 2 + 3 + 4")));
+      Assert.AreEqual("(1 - 2 - 3 - 4)", formatter.Format(parser.Parse("1 - 2 - 3 - 4")));
+      Assert.AreEqual("(1 * 2 * 3 * 4)", formatter.Format(parser.Parse("1 * 2 * 3 * 4")));
+      Assert.AreEqual("(1 / 2 / 3 / 4)", formatter.Format(parser.Parse("1 / 2 / 3 / 4")));
+
+      // signed variables / constants
+      Assert.AreEqual("(-1*'x1')", formatter.Format(parser.Parse("-x1")));
+      Assert.AreEqual("1", formatter.Format(parser.Parse("--1.0")));
+      Assert.AreEqual("1", formatter.Format(parser.Parse("----1.0")));
+      Assert.AreEqual("1", formatter.Format(parser.Parse("-+-1.0")));
+      Assert.AreEqual("1", formatter.Format(parser.Parse("+-+-1.0")));
+      Assert.AreEqual("((-3) + (-1))", formatter.Format(parser.Parse("-3 + -1.0")));
+
 
       Assert.AreEqual("'x1'",formatter.Format(parser.Parse("\"x1\"")));
       Assert.AreEqual("'var name'",formatter.Format(parser.Parse("\'var name\'")));
@@ -88,12 +103,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
       Assert.AreEqual("(3.1 ^ 2.1)",formatter.Format(parser.Parse("POW(3.1, 2.1)")));
       Assert.AreEqual("(3.1 ^ 2.1)",formatter.Format(parser.Parse("POW(3.1 , 2.1)")));
       Assert.AreEqual("(3.1 ^ 2.1)",formatter.Format(parser.Parse("POW(3.1 ,2.1)")));
-      Assert.AreEqual("-3.1 ^ -2.1",formatter.Format(parser.Parse("POW(-3.1 , - 2.1)")));
+      Assert.AreEqual("((-3.1) ^ (-2.1))",formatter.Format(parser.Parse("POW(-3.1 , - 2.1)")));
       Assert.AreEqual("ROOT(3, 2)",formatter.Format(parser.Parse("ROOT(3, 2)")));
       Assert.AreEqual("ROOT(3.1, 2.1)",formatter.Format(parser.Parse("ROOT(3.1, 2.1)")));
       Assert.AreEqual("ROOT(3.1, 2.1)",formatter.Format(parser.Parse("ROOT(3.1 , 2.1)")));
       Assert.AreEqual("ROOT(3.1, 2.1)",formatter.Format(parser.Parse("ROOT(3.1 ,2.1)")));
-      Assert.AreEqual("ROOT(-3.1, -2.1)", formatter.Format(parser.Parse("ROOT(-3.1 , - 2.1)")));
+      Assert.AreEqual("ROOT((-3.1), (-2.1))", formatter.Format(parser.Parse("ROOT(-3.1 , -2.1)")));
 
       Assert.AreEqual("IF(GT(0, 1), 1, 0)",formatter.Format(parser.Parse("IF(GT( 0, 1), 1, 0)")));
       Assert.AreEqual("IF(LT(0, 1), 1, 0)",formatter.Format(parser.Parse("IF(LT(0,1), 1 , 0)")));
@@ -116,8 +131,19 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
       Assert.AreEqual("'x' = 'val'",formatter.Format(parser.Parse("x = 'val'")));
       Assert.AreEqual("'x' = 'val'",formatter.Format(parser.Parse("x = \"val\"")));
       Assert.AreEqual("(1 * 'x' = 'val')",formatter.Format(parser.Parse("1.0 * x = val")));
-      Assert.AreEqual("(-((1 * 'x' = 'val')))",formatter.Format(parser.Parse("-1.0 * x = val")));
+      Assert.AreEqual("((-1) * 'x' = 'val')",formatter.Format(parser.Parse("-1.0 * x = val")));
       Assert.AreEqual("((1 * 'x' = 'val1') + 'y' = 'val2')", formatter.Format(parser.Parse("+1.0 * \"x\" = val1 + y = \"val2\"")));
+
+      // numeric parameters
+      Assert.AreEqual("0", formatter.Format(parser.Parse("<num>"))); // default initial value is zero
+      Assert.AreEqual("0", formatter.Format(parser.Parse("< num >")));
+      Assert.AreEqual("1", formatter.Format(parser.Parse("< num=1.0>")));
+      Assert.AreEqual("1", formatter.Format(parser.Parse("< num = 1.0>")));
+      Assert.AreEqual("(-1)", formatter.Format(parser.Parse("< num =-1.0>")));
+      Assert.AreEqual("(-1)", formatter.Format(parser.Parse("< num = - 1.0>")));
+      
+      // numeric parameter with sign
+      Assert.AreEqual("1", formatter.Format(parser.Parse("-<num=-1.0>")));
     }
   }
 }
