@@ -376,12 +376,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     private void FoldLeftRecursive(ISymbolicExpressionTreeNode parent) {
-      if (parent.SubtreeCount > 0) {
+      if (parent.SubtreeCount > 1) {
         var child = parent.GetSubtree(0);
         FoldLeftRecursive(child);
-        if(parent.Symbol == child.Symbol) {
+        if (parent.Symbol == child.Symbol && IsAssociative(parent.Symbol)) {
           parent.RemoveSubtree(0);
-          for(int i=0;i<child.SubtreeCount; i++) {
+          for (int i = 0; i < child.SubtreeCount; i++) {
             parent.InsertSubtree(i, child.GetSubtree(i));
           }
         }
@@ -442,7 +442,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       } else if (next.TokenType == TokenType.LeftAngleBracket) {
         // '<' 'num' [ '=' ['+'|'-'] number ] '>'
         return ParseNumber(tokens);
-      } else if(next.TokenType == TokenType.Operator && (next.strVal == "-" || next.strVal == "+")) {
+      } else if (next.TokenType == TokenType.Operator && (next.strVal == "-" || next.strVal == "+")) {
         // ['+' | '-' ] SimpleFact
         if (tokens.Dequeue().strVal == "-") {
           var arg = ParseSimpleFact(tokens);
@@ -498,8 +498,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         var sign = 1.0;
         if (next.strVal == "+" || next.strVal == "-") {
           if (tokens.Dequeue().strVal == "-") sign = -1.0;
-        } 
-        if(tokens.Peek().TokenType != TokenType.Number) {
+        }
+        if (tokens.Peek().TokenType != TokenType.Number) {
           throw new ArgumentException("Expected number.");
         }
         numberTok = tokens.Dequeue();
@@ -630,6 +630,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         exprList.Add(ParseExpr(tokens));
       }
       return exprList.ToArray();
+    }
+
+    private bool IsAssociative(ISymbol sy) {
+      return sy == GetSymbol("+") || sy == GetSymbol("-") ||
+             sy == GetSymbol("*") || sy == GetSymbol("/") ||
+             sy == GetSymbol("AND") || sy == GetSymbol("OR") || sy == GetSymbol("XOR");
     }
   }
 }

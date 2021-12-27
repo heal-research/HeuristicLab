@@ -144,6 +144,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
       
       // numeric parameter with sign
       Assert.AreEqual("1", formatter.Format(parser.Parse("-<num=-1.0>")));
+
+      // nested functions
+      Assert.AreEqual("SIN(SIN(SIN('X1')))", formatter.Format(parser.Parse("SIN(SIN(SIN(X1)))")));
     }
   }
 }
