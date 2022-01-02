@@ -157,6 +157,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           var f = (ISymbolicExpressionTreeNode)newPower.GetSubtree(0).Clone();
           var newExponent = (NumberTreeNode)numberSy.CreateTreeNode();
           newExponent.Value = ((NumberTreeNode)newPower.GetSubtree(1)).Value - 1;
+          newPower.RemoveSubtree(1);
+          newPower.AddSubtree(newExponent);
           return Product(Product(CreateNumber(exponent.Value), newPower), Derive(f, variableName));
         } else throw new NotSupportedException("Cannot derive non-integer powers");
       }
