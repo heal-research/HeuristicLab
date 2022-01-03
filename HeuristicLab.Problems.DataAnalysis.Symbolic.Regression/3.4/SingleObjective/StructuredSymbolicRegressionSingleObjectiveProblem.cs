@@ -198,17 +198,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     public override double Evaluate(Individual individual, IRandom random) {
       var tree = BuildTree(individual);
 
-      if (StructureTemplate.ApplyLinearScaling)
+      if (StructureTemplate.ApplyLinearScaling) {
         AdjustLinearScalingParams(ProblemData, tree, Interpreter);
+      }
 
       individual[SymbolicExpressionTreeName] = tree;
-
-      // dpiringe: needed when Maximization = true
-      if (TreeEvaluatorParameter.Value is SymbolicRegressionParameterOptimizationEvaluator constantOptEvaluator) {
-        constantOptEvaluator.RandomParameter.Value = random;
-        constantOptEvaluator.RelativeNumberOfEvaluatedSamplesParameter.Value =
-          (PercentValue)constantOptEvaluator.ParameterOptimizationRowsPercentage.Clone();
-      }
 
       return TreeEvaluatorParameter.Value.Evaluate(
         tree, ProblemData,
