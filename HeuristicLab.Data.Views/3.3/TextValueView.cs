@@ -85,12 +85,13 @@ namespace HeuristicLab.Data.Views {
     }
 
     protected virtual void valueTextBox_KeyDown(object sender, KeyEventArgs e) {
-      if (e.Shift && (e.KeyCode == Keys.Enter || e.KeyCode == Keys.Return))
+      if (e.Shift && (e.KeyCode == Keys.Enter || e.KeyCode == Keys.Return)) {
         valueLabel.Select();  // select label to validate data
-
-      if (e.KeyCode == Keys.Escape) {
+        e.SuppressKeyPress = true;
+      } else if (e.KeyCode == Keys.Escape) {
         valueTextBox.Text = Content.GetValue();
         valueLabel.Select();  // select label to validate data
+        e.SuppressKeyPress = true;
       }
     }
     protected virtual void valueTextBox_Validating(object sender, CancelEventArgs e) {

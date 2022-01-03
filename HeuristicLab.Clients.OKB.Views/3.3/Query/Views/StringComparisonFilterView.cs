@@ -81,11 +81,13 @@ namespace HeuristicLab.Clients.OKB.Query {
     }
 
     private void valueTextBox_KeyDown(object sender, KeyEventArgs e) {
-      if ((e.KeyCode == Keys.Enter) || (e.KeyCode == Keys.Return))
+      if ((e.KeyCode == Keys.Enter) || (e.KeyCode == Keys.Return)) {
         label.Focus();  // set focus on label to validate data
-      if (e.KeyCode == Keys.Escape) {
+        e.SuppressKeyPress = true;
+      } else if (e.KeyCode == Keys.Escape) {
         valueTextBox.Text = Content.Value;
         label.Focus();  // set focus on label to validate data
+        e.SuppressKeyPress = true;
       }
     }
     private void valueTextBox_Validated(object sender, System.EventArgs e) {
