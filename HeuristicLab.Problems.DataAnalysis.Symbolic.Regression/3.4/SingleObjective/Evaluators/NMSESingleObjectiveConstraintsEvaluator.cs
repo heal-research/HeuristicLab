@@ -299,12 +299,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       if (counter == null) counter = new EvaluationsCounter();
       var rowEvaluationsCounter = new EvaluationsCounter();
 
-      alglib.lsfitstate state;
-      alglib.lsfitreport rep;
-      int retVal;
+      alglib.minlmreport rep;
 
       IDataset ds = problemData.Dataset;
-      double[,] x = new double[rows.Count(), parameters.Count];
+      int n = rows.Count();
+      int k = parameters.Count;
+
+      double[,] x = new double[n, k];
       int row = 0;
       foreach (var r in rows) {
         int col = 0;
@@ -319,20 +320,18 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
         row++;
       }
       double[] y = ds.GetDoubleValues(problemData.TargetVariable, rows).ToArray();
-      int n = x.GetLength(0);
-      int m = x.GetLength(1);
-      int k = c.Length;
 
-      alglib.ndimensional_pfunc function_cx_1_func = CreatePFunc(func);
-      alglib.ndimensional_pgrad function_cx_1_grad = CreatePGrad(func_grad);
+
       alglib.ndimensional_rep xrep = (p, f, obj) => iterationCallback(p, f, obj);
 
       try {
-        alglib.lsfitcreatefg(x, y, c, n, m, k, false, out state);
-        alglib.lsfitsetcond(state, 0.0, maxIterations);
-        alglib.lsfitsetxrep(state, iterationCallback != null);
-        alglib.lsfitfit(state, function_cx_1_func, function_cx_1_grad, xrep, rowEvaluationsCounter);
-        alglib.lsfitresults(state, out retVal, out c, out rep);
+        alglib.minlmcreatevj(y.Length, c, out var lmstate);
+        alglib.minlmsetcond(lmstate, 0.0, maxIterations);
+        alglib.minlmsetxrep(lmstate, iterationCallback != null);
+        // alglib.minlmoptguardgradient(lmstate, 1e-5); // for debugging gradient calculation
+        alglib.minlmoptimize(lmstate, CreateFunc(func, x, y), CreateJac(func_grad, x, y), xrep, rowEvaluationsCounter);
+        alglib.minlmresults(lmstate, out c, out rep);
+        // alglib.minlmoptguardresults(lmstate, out var optGuardReport);
       } catch (ArithmeticException) {
         return originalQuality;
       } catch (alglib.alglibexception) {
@@ -342,10 +341,21 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       counter.FunctionEvaluations += rowEvaluationsCounter.FunctionEvaluations / n;
       counter.GradientEvaluations += rowEvaluationsCounter.GradientEvaluations / n;
 
-      //retVal == -7  => parameter optimization failed due to wrong gradient
-      //          -8  => optimizer detected  NAN / INF  in  the target
-      //                 function and/ or gradient
-      if (retVal != -7 && retVal != -8) {
+      // * TerminationType, completetion code:
+      //     * -8    optimizer detected NAN/INF values either in the function itself,
+      //             or in its Jacobian
+      //     * -5    inappropriate solver was used:
+      //             * solver created with minlmcreatefgh() used  on  problem  with
+      //               general linear constraints (set with minlmsetlc() call).
+      //     * -3    constraints are inconsistent
+      //     *  2    relative step is no more than EpsX.
+      //     *  5    MaxIts steps was taken
+      //     *  7    stopping conditions are too stringent,
+      //             further improvement is impossible
+      //     *  8    terminated   by  user  who  called  MinLMRequestTermination().
+      //             X contains point which was "current accepted" when termination
+      //             request was submitted.
+      if (rep.terminationtype < 0) {
         UpdateParameters(tree, c, updateVariableWeights);
       }
       var quality = SymbolicRegressionSingleObjectiveMeanSquaredErrorEvaluator.Calculate(
@@ -381,21 +391,36 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       }
     }
 
-    private static alglib.ndimensional_pfunc CreatePFunc(TreeToAutoDiffTermConverter.ParametricFunction func) {
-      return (double[] c, double[] x, ref double fx, object o) => {
-        fx = func(c, x);
+    private static alglib.ndimensional_fvec CreateFunc(TreeToAutoDiffTermConverter.ParametricFunction func, double[,] x, double[] y) {
+      int d = x.GetLength(1);
+      // row buffer
+      var xi = new double[d];
+      // function must return residuals, alglib optimizes resid²
+      return (double[] c, double[] resid, object o) => {
+        for (int i = 0; i < y.Length; i++) {
+          Buffer.BlockCopy(x, i * d * sizeof(double), xi, 0, d*sizeof(double)); // copy row. We are using BlockCopy instead of Array.Copy because x has rank 2
+          resid[i] = func(c, xi) - y[i];
+        }
         var counter = (EvaluationsCounter)o;
-        counter.FunctionEvaluations++;
+        counter.FunctionEvaluations += y.Length;
       };
     }
 
-    private static alglib.ndimensional_pgrad CreatePGrad(TreeToAutoDiffTermConverter.ParametricFunctionGradient func_grad) {
-      return (double[] c, double[] x, ref double fx, double[] grad, object o) => {
-        var tuple = func_grad(c, x);
-        fx = tuple.Item2;
-        Array.Copy(tuple.Item1, grad, grad.Length);
+    private static alglib.ndimensional_jac CreateJac(TreeToAutoDiffTermConverter.ParametricFunctionGradient func_grad, double[,] x, double[] y) {
+      int numParams = x.GetLength(1);
+      // row buffer
+      var xi = new double[numParams];
+      return (double[] c, double[] resid, double[,] jac, object o) => {
+        int numVars = c.Length;
+        for (int i = 0; i < y.Length; i++) {
+          Buffer.BlockCopy(x, i * numParams * sizeof(double), xi, 0, numParams * sizeof(double)); // copy row
+          var tuple = func_grad(c, xi);
+          resid[i] = tuple.Item2 - y[i];
+          Buffer.BlockCopy(tuple.Item1, 0, jac, i * numVars * sizeof(double), numVars * sizeof(double)); // copy the gradient to jac. BlockCopy because jac has rank 2.
+        }
         var counter = (EvaluationsCounter)o;
-        counter.GradientEvaluations++;
+        counter.FunctionEvaluations += y.Length;
+        counter.GradientEvaluations += y.Length;
       };
     }
 
