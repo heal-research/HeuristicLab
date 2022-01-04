@@ -56,6 +56,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       }
     }
 
+    public SymbolicRegressionSingleObjectiveEvaluator TreeEvaluator => TreeEvaluatorParameter.Value;
+
     public StructureTemplate StructureTemplate => StructureTemplateParameter.Value;
 
     public ISymbolicDataAnalysisExpressionTreeInterpreter Interpreter => InterpreterParameter.Value;
@@ -198,13 +200,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     public override double Evaluate(Individual individual, IRandom random) {
       var tree = BuildTree(individual);
 
-      if (StructureTemplate.ApplyLinearScaling) {
+      // NMSEConstraintsEvaluator sets linear scaling terms itself
+      if (StructureTemplate.ApplyLinearScaling && !(TreeEvaluator is NMSESingleObjectiveConstraintsEvaluator)) {
         AdjustLinearScalingParams(ProblemData, tree, Interpreter);
       }
 
       individual[SymbolicExpressionTreeName] = tree;
 
-      return TreeEvaluatorParameter.Value.Evaluate(
+      return TreeEvaluator.Evaluate(
         tree, ProblemData,
         ProblemData.TrainingIndices,
         Interpreter,

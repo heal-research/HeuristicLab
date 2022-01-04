@@ -246,10 +246,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       double upperEstimationLimit = double.MaxValue) {
 
       if (OptimizeParameters)
-        SymbolicRegressionParameterOptimizationEvaluator.OptimizeParameters(
+        Optimize(
           interpreter, tree,
           problemData, rows,
-          applyLinearScaling: false, // Tree already contains scaling terms
           ParameterOptimizationIterations,
           updateVariableWeights: true,
           lowerEstimationLimit,
@@ -266,6 +265,143 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
         BoundsEstimator,
         UseSoftConstraints,
         PenalityFactor);
+    }
+
+    public static double Optimize(ISymbolicDataAnalysisExpressionTreeInterpreter interpreter,
+          ISymbolicExpressionTree tree, IRegressionProblemData problemData, IEnumerable<int> rows,
+          int maxIterations, bool updateVariableWeights = true,
+          double lowerEstimationLimit = double.MinValue, double upperEstimationLimit = double.MaxValue,
+          bool updateParametersInTree = true, Action<double[], double, object> iterationCallback = null, EvaluationsCounter counter = null) {
+
+      // Numeric parameters in the tree become variables for parameter optimization.
+      // Variables in the tree become parameters (fixed values) for parameter optimization.
+      // For each parameter (variable in the original tree) we store the 
+      // variable name, variable value (for factor vars) and lag as a DataForVariable object.
+      // A dictionary is used to find parameters
+      double[] initialParameters;
+      var parameters = new List<TreeToAutoDiffTermConverter.DataForVariable>();
+
+      TreeToAutoDiffTermConverter.ParametricFunction func;
+      TreeToAutoDiffTermConverter.ParametricFunctionGradient func_grad;
+      if (!TreeToAutoDiffTermConverter.TryConvertToAutoDiff(tree, updateVariableWeights, addLinearScalingTerms: false, out parameters, out initialParameters, out func, out func_grad))
+        throw new NotSupportedException("Could not optimize parameters of symbolic expression tree due to not supported symbols used in the tree.");
+      var parameterEntries = parameters.ToArray(); // order of entries must be the same for x
+
+      // extract inital parameters
+      double[] c = (double[])initialParameters.Clone();
+
+      double originalQuality = SymbolicRegressionSingleObjectiveMeanSquaredErrorEvaluator.Calculate(
+        tree, problemData, rows,
+        interpreter, applyLinearScaling: false,
+        lowerEstimationLimit,
+        upperEstimationLimit);
+
+      if (counter == null) counter = new EvaluationsCounter();
+      var rowEvaluationsCounter = new EvaluationsCounter();
+
+      alglib.lsfitstate state;
+      alglib.lsfitreport rep;
+      int retVal;
+
+      IDataset ds = problemData.Dataset;
+      double[,] x = new double[rows.Count(), parameters.Count];
+      int row = 0;
+      foreach (var r in rows) {
+        int col = 0;
+        foreach (var info in parameterEntries) {
+          if (ds.VariableHasType<double>(info.variableName)) {
+            x[row, col] = ds.GetDoubleValue(info.variableName, r + info.lag);
+          } else if (ds.VariableHasType<string>(info.variableName)) {
+            x[row, col] = ds.GetStringValue(info.variableName, r) == info.variableValue ? 1 : 0;
+          } else throw new InvalidProgramException("found a variable of unknown type");
+          col++;
+        }
+        row++;
+      }
+      double[] y = ds.GetDoubleValues(problemData.TargetVariable, rows).ToArray();
+      int n = x.GetLength(0);
+      int m = x.GetLength(1);
+      int k = c.Length;
+
+      alglib.ndimensional_pfunc function_cx_1_func = CreatePFunc(func);
+      alglib.ndimensional_pgrad function_cx_1_grad = CreatePGrad(func_grad);
+      alglib.ndimensional_rep xrep = (p, f, obj) => iterationCallback(p, f, obj);
+
+      try {
+        alglib.lsfitcreatefg(x, y, c, n, m, k, false, out state);
+        alglib.lsfitsetcond(state, 0.0, maxIterations);
+        alglib.lsfitsetxrep(state, iterationCallback != null);
+        alglib.lsfitfit(state, function_cx_1_func, function_cx_1_grad, xrep, rowEvaluationsCounter);
+        alglib.lsfitresults(state, out retVal, out c, out rep);
+      } catch (ArithmeticException) {
+        return originalQuality;
+      } catch (alglib.alglibexception) {
+        return originalQuality;
+      }
+
+      counter.FunctionEvaluations += rowEvaluationsCounter.FunctionEvaluations / n;
+      counter.GradientEvaluations += rowEvaluationsCounter.GradientEvaluations / n;
+
+      //retVal == -7  => parameter optimization failed due to wrong gradient
+      //          -8  => optimizer detected  NAN / INF  in  the target
+      //                 function and/ or gradient
+      if (retVal != -7 && retVal != -8) {
+        UpdateParameters(tree, c, updateVariableWeights);
+      }
+      var quality = SymbolicRegressionSingleObjectiveMeanSquaredErrorEvaluator.Calculate(
+        tree, problemData, rows,
+        interpreter, applyLinearScaling: false,
+        lowerEstimationLimit, upperEstimationLimit);
+
+      if (!updateParametersInTree) UpdateParameters(tree, initialParameters, updateVariableWeights);
+
+      if (originalQuality < quality || double.IsNaN(quality)) {
+        UpdateParameters(tree, initialParameters, updateVariableWeights);
+        return originalQuality;
+      }
+      return quality;
+    }
+
+    private static void UpdateParameters(ISymbolicExpressionTree tree, double[] parameters, bool updateVariableWeights) {
+      int i = 0;
+      foreach (var node in tree.Root.IterateNodesPrefix().OfType<SymbolicExpressionTreeTerminalNode>()) {
+        NumberTreeNode numberTreeNode = node as NumberTreeNode;
+        VariableTreeNodeBase variableTreeNodeBase = node as VariableTreeNodeBase;
+        FactorVariableTreeNode factorVarTreeNode = node as FactorVariableTreeNode;
+        if (numberTreeNode != null) {
+          if (numberTreeNode.Parent.Symbol is Power
+              && numberTreeNode.Parent.GetSubtree(1) == numberTreeNode) continue; // exponents in powers are not optimizated (see TreeToAutoDiffTermConverter)
+          numberTreeNode.Value = parameters[i++];
+        } else if (updateVariableWeights && variableTreeNodeBase != null)
+          variableTreeNodeBase.Weight = parameters[i++];
+        else if (factorVarTreeNode != null) {
+          for (int j = 0; j < factorVarTreeNode.Weights.Length; j++)
+            factorVarTreeNode.Weights[j] = parameters[i++];
+        }
+      }
+    }
+
+    private static alglib.ndimensional_pfunc CreatePFunc(TreeToAutoDiffTermConverter.ParametricFunction func) {
+      return (double[] c, double[] x, ref double fx, object o) => {
+        fx = func(c, x);
+        var counter = (EvaluationsCounter)o;
+        counter.FunctionEvaluations++;
+      };
+    }
+
+    private static alglib.ndimensional_pgrad CreatePGrad(TreeToAutoDiffTermConverter.ParametricFunctionGradient func_grad) {
+      return (double[] c, double[] x, ref double fx, double[] grad, object o) => {
+        var tuple = func_grad(c, x);
+        fx = tuple.Item2;
+        Array.Copy(tuple.Item1, grad, grad.Length);
+        var counter = (EvaluationsCounter)o;
+        counter.GradientEvaluations++;
+      };
+    }
+
+    public class EvaluationsCounter {
+      public int FunctionEvaluations = 0;
+      public int GradientEvaluations = 0;
     }
   }
 }
