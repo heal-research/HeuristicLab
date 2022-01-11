@@ -128,7 +128,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
 
     public StructuredSymbolicRegressionSingleObjectiveProblem(StructuredSymbolicRegressionSingleObjectiveProblem original,
       Cloner cloner) : base(original, cloner) {
-      ProblemDataParameter.ValueChanged += ProblemDataParameterValueChanged;
       RegisterEventHandlers();
     }
 

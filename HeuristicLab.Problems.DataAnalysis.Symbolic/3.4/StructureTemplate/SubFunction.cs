@@ -54,26 +54,40 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       Parameters.Add(new ValueParameter<ISymbolicDataAnalysisGrammar>(GrammarParameterName, new ArithmeticExpressionGrammar()));
       Parameters.Add(new FixedValueParameter<IntValue>(MaximumSymbolicExpressionTreeDepthParameterName, new IntValue(8)));
       Parameters.Add(new FixedValueParameter<IntValue>(MaximumSymbolicExpressionTreeLengthParameterName, new IntValue(20)));
-
-      GrammarParameter.ValueChanged += OnParameterValueChanged;
-      MaximumSymbolicExpressionTreeDepthParameter.Value.ValueChanged += OnParameterValueChanged; 
-      MaximumSymbolicExpressionTreeLengthParameter.Value.ValueChanged += OnParameterValueChanged;
+      RegisterEventHandlers();
     }
-
-    private void OnParameterValueChanged(object sender, EventArgs e) => Changed?.Invoke(this, EventArgs.Empty);
 
     protected SubFunction(SubFunction original, Cloner cloner) : base(original, cloner) {
       Arguments = original.Arguments;
+      RegisterEventHandlers();
     }
 
     [StorableConstructor]
-    protected SubFunction(StorableConstructorFlag _) : base(_) {}
+    protected SubFunction(StorableConstructorFlag _) : base(_) { }
+
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      RegisterEventHandlers();
+    }
     #endregion
 
     #region Cloning
     public override IDeepCloneable Clone(Cloner cloner) =>
       new SubFunction(this, cloner);
     #endregion
+
+    #region Event Handling
+    private void RegisterEventHandlers() {
+      GrammarParameter.ValueChanged += OnParameterValueChanged;
+      MaximumSymbolicExpressionTreeDepthParameter.Value.ValueChanged += OnParameterValueChanged;
+      MaximumSymbolicExpressionTreeLengthParameter.Value.ValueChanged += OnParameterValueChanged;
+    }
+
+    private void OnParameterValueChanged(object sender, EventArgs e) =>
+      Changed?.Invoke(this, EventArgs.Empty);
+    #endregion
+
 
     public override string ToString() => $"{Name}({string.Join(",", Arguments)})";
 
