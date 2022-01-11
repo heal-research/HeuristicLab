@@ -253,7 +253,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
           updateVariableWeights: true,
           lowerEstimationLimit,
           upperEstimationLimit);
-
       else if (applyLinearScaling) // extra scaling terms, which are included in tree
         CalcLinearScalingTerms(tree, problemData, rows, interpreter);
 
@@ -341,7 +340,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       counter.FunctionEvaluations += rowEvaluationsCounter.FunctionEvaluations / n;
       counter.GradientEvaluations += rowEvaluationsCounter.GradientEvaluations / n;
 
-      // * TerminationType, completetion code:
+      // * TerminationType, completion code:
       //     * -8    optimizer detected NAN/INF values either in the function itself,
       //             or in its Jacobian
       //     * -5    inappropriate solver was used:
@@ -355,7 +354,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       //     *  8    terminated   by  user  who  called  MinLMRequestTermination().
       //             X contains point which was "current accepted" when termination
       //             request was submitted.
-      if (rep.terminationtype < 0) {
+      if (rep.terminationtype > 0) {
         UpdateParameters(tree, c, updateVariableWeights);
       }
       var quality = SymbolicRegressionSingleObjectiveMeanSquaredErrorEvaluator.Calculate(
@@ -398,7 +397,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       // function must return residuals, alglib optimizes resid²
       return (double[] c, double[] resid, object o) => {
         for (int i = 0; i < y.Length; i++) {
-          Buffer.BlockCopy(x, i * d * sizeof(double), xi, 0, d*sizeof(double)); // copy row. We are using BlockCopy instead of Array.Copy because x has rank 2
+          Buffer.BlockCopy(x, i * d * sizeof(double), xi, 0, d * sizeof(double)); // copy row. We are using BlockCopy instead of Array.Copy because x has rank 2
           resid[i] = func(c, xi) - y[i];
         }
         var counter = (EvaluationsCounter)o;
