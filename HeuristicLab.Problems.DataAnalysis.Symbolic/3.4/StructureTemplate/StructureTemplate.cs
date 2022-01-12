@@ -17,24 +17,26 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     public string Template {
       get => template;
       set {
+        if (value == template) return;
+
         template = value;
-        Tree = Parser.Parse(template);
+        var parsedTree = Parser.Parse(template);
+        if (applyLinearScaling)
+          parsedTree = AddLinearScalingTerms(parsedTree);
+        Tree = parsedTree;
         OnChanged();
       }
     }
 
     [Storable]
-    private ISymbolicExpressionTree treeWithoutLinearScaling;
-    [Storable]
-    private ISymbolicExpressionTree treeWithLinearScaling;
+    private ISymbolicExpressionTree tree;
     public ISymbolicExpressionTree Tree {
-      get => ApplyLinearScaling ? treeWithLinearScaling : treeWithoutLinearScaling;
+      get => tree;
       private set {
-        treeWithLinearScaling = AddLinearScalingTerms(value);
-        treeWithoutLinearScaling = value;
+        tree = value;
 
         var newFunctions = GetSubFunctions();
-        var oldFunctions = subFunctions?.Intersect(newFunctions) 
+        var oldFunctions = subFunctions?.Intersect(newFunctions)
                            ?? Enumerable.Empty<SubFunction>();
         // adds new functions and keeps the old ones (if they match)
         subFunctions = newFunctions.Except(oldFunctions).Concat(oldFunctions).ToList();
@@ -50,7 +52,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     public bool ApplyLinearScaling {
       get => applyLinearScaling;
       set {
+        if (value == applyLinearScaling) return;
+
         applyLinearScaling = value;
+        if (applyLinearScaling) Tree = AddLinearScalingTerms(Tree);
+        else Tree = RemoveLinearScalingTerms(Tree);
+
         OnChanged();
       }
     }
@@ -74,9 +81,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     protected StructureTemplate(StorableConstructorFlag _) : base(_) { }
 
     protected StructureTemplate(StructureTemplate original, Cloner cloner) : base(original, cloner) {
-      this.Tree = cloner.Clone(original.Tree);
-      this.Template = original.Template;
-      this.ApplyLinearScaling = original.ApplyLinearScaling;
+      this.tree = cloner.Clone(original.tree);
+      this.template = original.Template;
+      this.applyLinearScaling = original.ApplyLinearScaling;
       this.subFunctions = original.subFunctions.Select(cloner.Clone).ToList();
       RegisterEventHandlers();
     }
@@ -95,11 +102,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
     public void Reset() {
       subFunctions = new List<SubFunction>();
-      treeWithoutLinearScaling = null;
-      treeWithLinearScaling = null;
-      applyLinearScaling = false;
+      tree = null;
       Template = "f(_)";
-      OnChanged();
     }
 
     private IList<SubFunction> GetSubFunctions() {
@@ -111,8 +115,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
           var existingSubFunction = subFunctions.Where(x => x.Name == subFunctionTreeNode.Name).FirstOrDefault();
           if (existingSubFunction != null) {
-            // an existing subFunction needs the same signature
-            if(!existingSubFunction.Arguments.SequenceEqual(subFunctionTreeNode.Arguments))
+            // an existing subFunction must have the same signature
+            if (!existingSubFunction.Arguments.SequenceEqual(subFunctionTreeNode.Arguments))
               throw new ArgumentException(
                 $"The sub-function '{existingSubFunction.Name}' has (at least two) different signatures " +
                 $"({existingSubFunction.Name}({string.Join(",", existingSubFunction.Arguments)}) <> " +
@@ -130,28 +134,20 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     private void RegisterEventHandlers() {
-      foreach(var sf in SubFunctions) {
+      foreach (var sf in SubFunctions) {
         sf.Changed += OnSubFunctionChanged;
       }
     }
 
-    private ISymbolicExpressionTree AddLinearScalingTerms(ISymbolicExpressionTree tree) {
+    private static ISymbolicExpressionTree AddLinearScalingTerms(ISymbolicExpressionTree tree) {
       var clonedTree = (ISymbolicExpressionTree)tree.Clone();
       var startNode = clonedTree.Root.Subtrees.First();
       var template = startNode.Subtrees.First();
 
-      var add = new Addition();
-      var addNode = add.CreateTreeNode();
-
-      var mul = new Multiplication();
-      var mulNode = mul.CreateTreeNode();
-
-      var offset = new Number();
-      var offsetNode = (NumberTreeNode)offset.CreateTreeNode();
-      offsetNode.Value = 0.0;
-      var scale = new Number();
-      var scaleNode = (NumberTreeNode)scale.CreateTreeNode();
-      scaleNode.Value = 1.0;
+      var addNode = new Addition().CreateTreeNode();
+      var mulNode = new Multiplication().CreateTreeNode();
+      var offsetNode = new NumberTreeNode(0.0);
+      var scaleNode = new NumberTreeNode(1.0);
 
       addNode.AddSubtree(offsetNode);
       addNode.AddSubtree(mulNode);
@@ -160,6 +156,30 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       startNode.RemoveSubtree(0);
       startNode.AddSubtree(addNode);
       mulNode.AddSubtree(template);
+      return clonedTree;
+    }
+
+    private static ISymbolicExpressionTree RemoveLinearScalingTerms(ISymbolicExpressionTree tree) {
+      var clonedTree = (ISymbolicExpressionTree)tree.Clone();
+      var startNode = clonedTree.Root.Subtrees.First();
+
+      //check for scaling terms
+      var addNode = startNode.GetSubtree(0);
+      var offsetNode = addNode.GetSubtree(0);
+      var mulNode = addNode.GetSubtree(1);
+      var scaleNode = mulNode.GetSubtree(0);
+      var templateNode = mulNode.GetSubtree(1);
+
+      var error = false;
+      if (addNode.Symbol is not Addition) error = true;
+      if (mulNode.Symbol is not Multiplication) error = true;
+      if (offsetNode is not NumberTreeNode offset || offset.Value != 0.0) error = true;
+      if (scaleNode is not NumberTreeNode scale || scale.Value != 1.0) error = true;
+      if (error) throw new ArgumentException("Scaling terms cannot be found.");
+
+      startNode.RemoveSubtree(0);
+      startNode.AddSubtree(templateNode);
+
       return clonedTree;
     }
 
