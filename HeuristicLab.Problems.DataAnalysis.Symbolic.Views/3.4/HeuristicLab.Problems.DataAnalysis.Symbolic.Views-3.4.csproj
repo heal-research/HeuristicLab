@@ -132,12 +132,6 @@
     <Compile Include="StructureTemplate\StructureTemplateView.Designer.cs">
       <DependentUpon>StructureTemplateView.cs</DependentUpon>
     </Compile>
-    <Compile Include="StructureTemplate\SubFunctionListView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="StructureTemplate\SubFunctionListView.Designer.cs">
-      <DependentUpon>SubFunctionListView.cs</DependentUpon>
-    </Compile>
     <Compile Include="SymbolicDataAnalysisModelMathView.cs">
       <SubType>UserControl</SubType>
     </Compile>
