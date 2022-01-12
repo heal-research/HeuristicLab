@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using HeuristicLab.Core;
 using HEAL.Attic;
 using HeuristicLab.Common;
-using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Parameters;
+using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Parameters;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableType("598B5DCB-95AC-465A-920B-E1E6DACFFA4B")]
@@ -64,6 +61,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
     [StorableConstructor]
     protected SubFunction(StorableConstructorFlag _) : base(_) { }
+    public override IDeepCloneable Clone(Cloner cloner) =>
+      new SubFunction(this, cloner);
 
 
     [StorableHook(HookType.AfterDeserialization)]
@@ -72,10 +71,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
     #endregion
 
-    #region Cloning
-    public override IDeepCloneable Clone(Cloner cloner) =>
-      new SubFunction(this, cloner);
-    #endregion
 
     #region Event Handling
     private void RegisterEventHandlers() {
@@ -94,5 +89,33 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     public override int GetHashCode() => ToString().GetHashCode();
 
     public override bool Equals(object obj) => (obj is SubFunction other) && other.ToString() == ToString();
+
+    public void SetupVariables(IEnumerable<string> inputVariables) {
+      var allowedInputVariables = new List<string>(inputVariables);
+
+      foreach (var varSym in Grammar.Symbols.OfType<Variable>()) {
+        // set all variables
+        varSym.AllVariableNames = allowedInputVariables;
+
+        // set all allowed variables
+        if (Arguments.Contains("_")) {
+          varSym.VariableNames = allowedInputVariables;
+        } else {
+          var vars = new List<string>();
+          var exceptions = new List<Exception>();
+          foreach (var arg in Arguments) {
+            if (allowedInputVariables.Contains(arg))
+              vars.Add(arg);
+            else
+              exceptions.Add(new ArgumentException($"The argument '{arg}' for sub-function '{Name}' is not a valid variable."));
+          }
+          if (exceptions.Any())
+            throw new AggregateException(exceptions);
+          varSym.VariableNames = vars;
+        }
+
+        varSym.Enabled = true;
+      }
+    }
   }
 }
