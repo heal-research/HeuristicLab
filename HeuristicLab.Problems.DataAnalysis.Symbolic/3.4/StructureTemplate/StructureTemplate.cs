@@ -28,6 +28,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       }
     }
 
+    private ISymbolicExpressionTree _oldTree;
+    [Storable(OldName = "treeWithoutLinearScaling")]
+    private ISymbolicExpressionTree _OldTreeW {
+      set => _oldTree = value;
+    }
+
     [Storable]
     private ISymbolicExpressionTree tree;
     public ISymbolicExpressionTree Tree {
@@ -91,6 +97,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
+      if (Tree == null && _oldTree != null) {
+        if (ApplyLinearScaling) _oldTree = AddLinearScalingTerms(_oldTree);
+        Tree = _oldTree;
+        _oldTree = null;
+      }
+
       RegisterEventHandlers();
     }
     #endregion
