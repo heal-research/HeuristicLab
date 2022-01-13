@@ -187,6 +187,7 @@
     <Compile Include="Interpreter\SymbolicDataAnalysisExpressionTreeBatchInterpreter.cs" />
     <Compile Include="Interpreter\SymbolicDataAnalysisExpressionTreeNativeInterpreter.cs" />
     <Compile Include="IntervalUtil.cs" />
+    <Compile Include="LinearScaling.cs" />
     <Compile Include="Selectors\DiversitySelector.cs" />
     <Compile Include="StructureTemplate\StructureTemplate.cs" />
     <Compile Include="StructureTemplate\SubFunction.cs" />

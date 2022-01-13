@@ -269,8 +269,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       var tree = BuildTree(templateTree, individual);
 
       // NMSEConstraintsEvaluator sets linear scaling terms itself
-      if (StructureTemplate.ApplyLinearScaling && !(TreeEvaluator is NMSESingleObjectiveConstraintsEvaluator)) {
-        AdjustLinearScalingParams(ProblemData, tree, Interpreter);
+      if (ApplyLinearScaling && !(TreeEvaluator is NMSESingleObjectiveConstraintsEvaluator)) {
+        LinearScaling.AdjustLinearScalingParams(ProblemData, tree, Interpreter);
       }
 
       individual[SymbolicExpressionTreeName] = tree;
@@ -298,28 +298,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       }
       return resolvedTree;
     }
-
-    private static void AdjustLinearScalingParams(IRegressionProblemData problemData, ISymbolicExpressionTree tree, ISymbolicDataAnalysisExpressionTreeInterpreter interpreter) {
-      var offsetNode = tree.Root.GetSubtree(0).GetSubtree(0);
-      var scalingNode = offsetNode.Subtrees.Where(x => !(x is NumberTreeNode)).First();
-
-      var offsetNumberNode = (NumberTreeNode)offsetNode.Subtrees.Where(x => x is NumberTreeNode).First();
-      var scalingNumberNode = (NumberTreeNode)scalingNode.Subtrees.Where(x => x is NumberTreeNode).First();
-
-      var estimatedValues = interpreter.GetSymbolicExpressionTreeValues(tree, problemData.Dataset, problemData.TrainingIndices);
-      var targetValues = problemData.Dataset.GetDoubleValues(problemData.TargetVariable, problemData.TrainingIndices);
-
-      OnlineLinearScalingParameterCalculator.Calculate(estimatedValues, targetValues, out double a, out double b, out OnlineCalculatorError error);
-      if (error == OnlineCalculatorError.None) {
-        offsetNumberNode.Value = a;
-        scalingNumberNode.Value = b;
-      }
-    }
-
-
-
-
-
 
     public void Load(IRegressionProblemData data) {
       ProblemData = data;

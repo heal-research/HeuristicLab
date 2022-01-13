@@ -43,7 +43,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         template = value;
         var parsedTree = Parser.Parse(template);
         if (applyLinearScaling)
-          parsedTree = AddLinearScalingTerms(parsedTree);
+          parsedTree = LinearScaling.AddLinearScalingTerms(parsedTree);
         Tree = parsedTree;
         OnChanged();
       }
@@ -82,8 +82,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         if (value == applyLinearScaling) return;
 
         applyLinearScaling = value;
-        if (applyLinearScaling) Tree = AddLinearScalingTerms(Tree);
-        else Tree = RemoveLinearScalingTerms(Tree);
+        if (applyLinearScaling) LinearScaling.AddLinearScalingTerms(Tree);
+        else LinearScaling.RemoveLinearScalingTerms(Tree);
 
         OnChanged();
       }
@@ -119,7 +119,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
       if (Tree == null && _oldTree != null) {
-        if (ApplyLinearScaling) _oldTree = AddLinearScalingTerms(_oldTree);
+        if (ApplyLinearScaling) _oldTree = LinearScaling.AddLinearScalingTerms(_oldTree);
         Tree = _oldTree;
         _oldTree = null;
       }
@@ -171,51 +171,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         sf.Changed += OnSubFunctionChanged;
       }
     }
-
-    private static ISymbolicExpressionTree AddLinearScalingTerms(ISymbolicExpressionTree tree) {
-      var clonedTree = (ISymbolicExpressionTree)tree.Clone();
-      var startNode = clonedTree.Root.Subtrees.First();
-      var template = startNode.Subtrees.First();
-
-      var addNode = new Addition().CreateTreeNode();
-      var mulNode = new Multiplication().CreateTreeNode();
-      var offsetNode = new NumberTreeNode(0.0);
-      var scaleNode = new NumberTreeNode(1.0);
-
-      addNode.AddSubtree(offsetNode);
-      addNode.AddSubtree(mulNode);
-      mulNode.AddSubtree(scaleNode);
-
-      startNode.RemoveSubtree(0);
-      startNode.AddSubtree(addNode);
-      mulNode.AddSubtree(template);
-      return clonedTree;
-    }
-
-    private static ISymbolicExpressionTree RemoveLinearScalingTerms(ISymbolicExpressionTree tree) {
-      var clonedTree = (ISymbolicExpressionTree)tree.Clone();
-      var startNode = clonedTree.Root.Subtrees.First();
-
-      //check for scaling terms
-      var addNode = startNode.GetSubtree(0);
-      var offsetNode = addNode.GetSubtree(0);
-      var mulNode = addNode.GetSubtree(1);
-      var scaleNode = mulNode.GetSubtree(0);
-      var templateNode = mulNode.GetSubtree(1);
-
-      var error = false;
-      if (addNode.Symbol is not Addition) error = true;
-      if (mulNode.Symbol is not Multiplication) error = true;
-      if (offsetNode is not NumberTreeNode offset || offset.Value != 0.0) error = true;
-      if (scaleNode is not NumberTreeNode scale || scale.Value != 1.0) error = true;
-      if (error) throw new ArgumentException("Scaling terms cannot be found.");
-
-      startNode.RemoveSubtree(0);
-      startNode.AddSubtree(templateNode);
-
-      return clonedTree;
-    }
-
     private void OnSubFunctionChanged(object sender, EventArgs e) => OnChanged();
   }
 }
