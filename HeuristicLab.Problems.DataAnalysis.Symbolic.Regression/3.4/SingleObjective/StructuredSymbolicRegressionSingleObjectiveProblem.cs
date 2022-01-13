@@ -28,7 +28,6 @@ using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Problems.Instances;
 using HeuristicLab.Problems.Instances.DataAnalysis;
 
@@ -39,7 +38,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
   public class StructuredSymbolicRegressionSingleObjectiveProblem : SingleObjectiveBasicProblem<MultiEncoding>, IRegressionProblem, IProblemInstanceConsumer<IRegressionProblemData> {
 
     #region Constants
-    private const string TreeEvaluatorParameterName = "TreeEvaluator";
     private const string ProblemDataParameterName = "ProblemData";
     private const string StructureTemplateParameterName = "Structure Template";
     private const string InterpreterParameterName = "Interpreter";
@@ -59,7 +57,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     #endregion
 
     #region Parameters
-    public IConstrainedValueParameter<SymbolicRegressionSingleObjectiveEvaluator> TreeEvaluatorParameter => (IConstrainedValueParameter<SymbolicRegressionSingleObjectiveEvaluator>)Parameters[TreeEvaluatorParameterName];
     public IValueParameter<IRegressionProblemData> ProblemDataParameter => (IValueParameter<IRegressionProblemData>)Parameters[ProblemDataParameterName];
     public IFixedValueParameter<StructureTemplate> StructureTemplateParameter => (IFixedValueParameter<StructureTemplate>)Parameters[StructureTemplateParameterName];
     public IValueParameter<ISymbolicDataAnalysisExpressionTreeInterpreter> InterpreterParameter => (IValueParameter<ISymbolicDataAnalysisExpressionTreeInterpreter>)Parameters[InterpreterParameterName];
@@ -79,8 +76,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
         ProblemDataChanged?.Invoke(this, EventArgs.Empty);
       }
     }
-
-    public SymbolicRegressionSingleObjectiveEvaluator TreeEvaluator => TreeEvaluatorParameter.Value;
 
     public StructureTemplate StructureTemplate => StructureTemplateParameter.Value;
 
@@ -116,15 +111,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       var shapeConstraintProblemData = new ShapeConstrainedRegressionProblemData(problemData);
 
       var structureTemplate = new StructureTemplate();
-
-      var evaluators = new ItemSet<SymbolicRegressionSingleObjectiveEvaluator>(
-        ApplicationManager.Manager.GetInstances<SymbolicRegressionSingleObjectiveEvaluator>()
-        .Where(x => x.Maximization == Maximization));
-
-      Parameters.Add(new ConstrainedValueParameter<SymbolicRegressionSingleObjectiveEvaluator>(
-        TreeEvaluatorParameterName,
-        evaluators,
-        evaluators.First()));
 
       Parameters.Add(new ValueParameter<IRegressionProblemData>(
         ProblemDataParameterName,
@@ -201,9 +187,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
 
       ProblemDataParameter.ValueChanged += ProblemDataParameterValueChanged;
       ApplyLinearScalingParameter.Value.ValueChanged += (o, e) => StructureTemplate.ApplyLinearScaling = ApplyLinearScaling;
-      OptimizeParametersParameter.Value.ValueChanged += (o, e) => {
-        if (OptimizeParameters) ApplyLinearScaling = true;
-      };
+      //OptimizeParametersParameter.Value.ValueChanged += (o, e) => {
+      //  if (OptimizeParameters) ApplyLinearScaling = true;
+      //};
 
     }
 
@@ -266,22 +252,41 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       if (templateTree == null)
         throw new ArgumentException("No structure template defined!");
 
+      //create tree where all functions have been resolved (integrated)
       var tree = BuildTree(templateTree, individual);
+      individual[SymbolicExpressionTreeName] = tree;
 
-      // NMSEConstraintsEvaluator sets linear scaling terms itself
-      if (ApplyLinearScaling && !(TreeEvaluator is NMSESingleObjectiveConstraintsEvaluator)) {
+      if (OptimizeParameters) {
+        ParameterOptimization.OptimizeTreeParameters(ProblemData, tree, interpreter: Interpreter);
+      } else if (ApplyLinearScaling) {
         LinearScaling.AdjustLinearScalingParams(ProblemData, tree, Interpreter);
       }
 
-      individual[SymbolicExpressionTreeName] = tree;
+      //calculate NMSE
+      var estimatedValues = Interpreter.GetSymbolicExpressionTreeValues(tree, ProblemData.Dataset, ProblemData.TrainingIndices);
+      var boundedEstimatedValues = estimatedValues.LimitToRange(EstimationLimits.Lower, EstimationLimits.Upper);
+      var targetValues = ProblemData.TargetVariableTrainingValues;
+      var nmse = OnlineNormalizedMeanSquaredErrorCalculator.Calculate(targetValues, boundedEstimatedValues, out var errorState);
+      if (errorState != OnlineCalculatorError.None)
+        nmse = 1.0;
 
-      return TreeEvaluator.Evaluate(
-        tree, ProblemData,
-        ProblemData.TrainingIndices,
-        Interpreter,
-        StructureTemplate.ApplyLinearScaling,
-        EstimationLimits.Lower,
-        EstimationLimits.Upper);
+      //evaluate constraints
+      var constraints = Enumerable.Empty<ShapeConstraint>();
+      if (ProblemData is ShapeConstrainedRegressionProblemData scProbData)
+        constraints = scProbData.ShapeConstraints.EnabledConstraints;
+      if (constraints.Any()) {
+        var boundsEstimator = new IntervalArithBoundsEstimator();
+        var constraintViolations = IntervalUtil.GetConstraintViolations(constraints, boundsEstimator, ProblemData.VariableRanges, tree);
+
+        // infinite/NaN constraints
+        if (constraintViolations.Any(x => double.IsNaN(x) || double.IsInfinity(x)))
+          nmse = 1.0;
+
+        if (constraintViolations.Any(x => x > 0.0))
+          nmse = 1.0;
+      }
+
+      return nmse;
     }
 
     private static ISymbolicExpressionTree BuildTree(ISymbolicExpressionTree template, Individual individual) {
