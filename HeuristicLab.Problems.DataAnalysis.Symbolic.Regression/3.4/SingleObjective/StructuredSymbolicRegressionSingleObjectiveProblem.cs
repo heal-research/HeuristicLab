@@ -1,8 +1,30 @@
-﻿using System;
+﻿#region License Information
+/* HeuristicLab
+ * Copyright (C) Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ *
+ * This file is part of HeuristicLab.
+ *
+ * HeuristicLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * HeuristicLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
+ */
+#endregion
+
+using System;
 using System.Linq;
 using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
+using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
@@ -23,6 +45,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     private const string InterpreterParameterName = "Interpreter";
     private const string EstimationLimitsParameterName = "EstimationLimits";
     private const string BestTrainingSolutionParameterName = "Best Training Solution";
+    private const string ApplyLinearScalingParameterName = "Apply Linear Scaling";
+    private const string OptimizeParametersParameterName = "Optimize Parameters";
 
     private const string SymbolicExpressionTreeName = "SymbolicExpressionTree";
 
@@ -41,6 +65,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     public IValueParameter<ISymbolicDataAnalysisExpressionTreeInterpreter> InterpreterParameter => (IValueParameter<ISymbolicDataAnalysisExpressionTreeInterpreter>)Parameters[InterpreterParameterName];
     public IFixedValueParameter<DoubleLimit> EstimationLimitsParameter => (IFixedValueParameter<DoubleLimit>)Parameters[EstimationLimitsParameterName];
     public IResultParameter<ISymbolicRegressionSolution> BestTrainingSolutionParameter => (IResultParameter<ISymbolicRegressionSolution>)Parameters[BestTrainingSolutionParameterName];
+
+    public IFixedValueParameter<BoolValue> ApplyLinearScalingParameter => (IFixedValueParameter<BoolValue>)Parameters[ApplyLinearScalingParameterName];
+    public IFixedValueParameter<BoolValue> OptimizeParametersParameter => (IFixedValueParameter<BoolValue>)Parameters[OptimizeParametersParameterName];
     #endregion
 
     #region Properties
@@ -63,6 +90,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     IDataAnalysisProblemData IDataAnalysisProblem.ProblemData => ProblemData;
 
     public DoubleLimit EstimationLimits => EstimationLimitsParameter.Value;
+
+    public bool ApplyLinearScaling {
+      get => ApplyLinearScalingParameter.Value.Value;
+      set => ApplyLinearScalingParameter.Value.Value = value;
+    }
+
+    public bool OptimizeParameters {
+      get => OptimizeParametersParameter.Value.Value;
+      set => OptimizeParametersParameter.Value.Value = value;
+    }
 
     public override bool Maximization => false;
     #endregion
@@ -98,14 +135,20 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
         StructureTemplateDescriptionText,
         structureTemplate));
 
+      Parameters.Add(new FixedValueParameter<BoolValue>(
+        ApplyLinearScalingParameterName, new BoolValue(true)
+        ));
+
+      Parameters.Add(new FixedValueParameter<BoolValue>(
+        OptimizeParametersParameterName, new BoolValue(true)
+        ));
+
       Parameters.Add(new ValueParameter<ISymbolicDataAnalysisExpressionTreeInterpreter>(
         InterpreterParameterName,
         new SymbolicDataAnalysisExpressionTreeBatchInterpreter()) { Hidden = true });
-
       Parameters.Add(new FixedValueParameter<DoubleLimit>(
         EstimationLimitsParameterName,
         new DoubleLimit(double.NegativeInfinity, double.PositiveInfinity)) { Hidden = true });
-
       Parameters.Add(new ResultParameter<ISymbolicRegressionSolution>(BestTrainingSolutionParameterName, "") { Hidden = true });
 
       this.EvaluatorParameter.Hidden = true;
@@ -115,6 +158,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       Operators.Add(new SymbolicExpressionSymbolFrequencyAnalyzer());
 
       RegisterEventHandlers();
+
+      StructureTemplate.ApplyLinearScaling = ApplyLinearScaling;
       StructureTemplate.Template =
         "(" +
           "(210000 / (210000 + h)) * ((sigma_y * t * t) / (wR * Rt * t)) + " +
@@ -136,6 +181,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
 
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
+      if (!Parameters.ContainsKey(ApplyLinearScalingParameterName)) {
+        Parameters.Add(new FixedValueParameter<BoolValue>(ApplyLinearScalingParameterName, new BoolValue(StructureTemplate.ApplyLinearScaling)));
+      }
+
+      if (!Parameters.ContainsKey(OptimizeParametersParameterName)) {
+        Parameters.Add(new FixedValueParameter<BoolValue>(OptimizeParametersParameterName, new BoolValue(false)));
+      }
+
       RegisterEventHandlers();
     }
 
@@ -147,6 +200,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       }
 
       ProblemDataParameter.ValueChanged += ProblemDataParameterValueChanged;
+      ApplyLinearScalingParameter.Value.ValueChanged += (o, e) => StructureTemplate.ApplyLinearScaling = ApplyLinearScaling;
+      OptimizeParametersParameter.Value.ValueChanged += (o, e) => {
+        if (OptimizeParameters) ApplyLinearScaling = true;
+      };
+
     }
 
     private void ProblemDataParameterValueChanged(object sender, EventArgs e) {
@@ -155,6 +213,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     }
 
     private void OnTemplateChanged(object sender, EventArgs args) {
+      ApplyLinearScaling = StructureTemplate.ApplyLinearScaling;
       SetupEncoding();
     }
 
@@ -164,8 +223,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
 
       foreach (var subFunction in StructureTemplate.SubFunctions) {
         subFunction.SetupVariables(ProblemData.AllowedInputVariables);
-        // to prevent the same encoding twice
-        if (Encoding.Encodings.Any(x => x.Name == subFunction.Name)) continue; // duplicate subfunction
+        // prevent the same encoding twice
+        if (Encoding.Encodings.Any(x => x.Name == subFunction.Name)) continue;
 
         var encoding = new SymbolicExpressionTreeEncoding(
           subFunction.Name,
@@ -195,7 +254,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       }
 
       var tree = (ISymbolicExpressionTree)best[SymbolicExpressionTreeName];
-
       var model = new SymbolicRegressionModel(ProblemData.TargetVariable, tree, Interpreter);
       var solution = model.CreateRegressionSolution(ProblemData);
 
@@ -226,6 +284,21 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
         EstimationLimits.Upper);
     }
 
+    private static ISymbolicExpressionTree BuildTree(ISymbolicExpressionTree template, Individual individual) {
+      var resolvedTree = (ISymbolicExpressionTree)template.Clone();
+      // build main tree
+      foreach (var subFunctionTreeNode in resolvedTree.IterateNodesPrefix().OfType<SubFunctionTreeNode>()) {
+        var subFunctionTree = individual.SymbolicExpressionTree(subFunctionTreeNode.Name);
+
+        // extract function tree
+        var subTree = subFunctionTree.Root.GetSubtree(0)  // StartSymbol
+                                          .GetSubtree(0); // First Symbol
+        subTree = (ISymbolicExpressionTreeNode)subTree.Clone();
+        subFunctionTreeNode.AddSubtree(subTree);
+      }
+      return resolvedTree;
+    }
+
     private static void AdjustLinearScalingParams(IRegressionProblemData problemData, ISymbolicExpressionTree tree, ISymbolicDataAnalysisExpressionTreeInterpreter interpreter) {
       var offsetNode = tree.Root.GetSubtree(0).GetSubtree(0);
       var scalingNode = offsetNode.Subtrees.Where(x => !(x is NumberTreeNode)).First();
@@ -243,21 +316,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       }
     }
 
-    private static ISymbolicExpressionTree BuildTree(ISymbolicExpressionTree template, Individual individual) {
-      var resolvedTree = (ISymbolicExpressionTree)template.Clone();
 
-      // build main tree
-      foreach (var subFunctionTreeNode in resolvedTree.IterateNodesPrefix().OfType<SubFunctionTreeNode>()) {
-        var subFunctionTree = individual.SymbolicExpressionTree(subFunctionTreeNode.Name);
 
-        // extract function tree
-        var subTree = subFunctionTree.Root.GetSubtree(0)  // StartSymbol
-                                          .GetSubtree(0); // First Symbol
-        subTree = (ISymbolicExpressionTreeNode)subTree.Clone();
-        subFunctionTreeNode.AddSubtree(subTree);
-      }
-      return resolvedTree;
-    }
+
 
 
     public void Load(IRegressionProblemData data) {

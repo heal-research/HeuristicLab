@@ -286,7 +286,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
         throw new NotSupportedException("Could not optimize parameters of symbolic expression tree due to not supported symbols used in the tree.");
       var parameterEntries = parameters.ToArray(); // order of entries must be the same for x
 
-      // extract inital parameters
+      // extract initial parameters
       double[] c = (double[])initialParameters.Clone();
 
       double originalQuality = SymbolicRegressionSingleObjectiveMeanSquaredErrorEvaluator.Calculate(
@@ -379,7 +379,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
         FactorVariableTreeNode factorVarTreeNode = node as FactorVariableTreeNode;
         if (numberTreeNode != null) {
           if (numberTreeNode.Parent.Symbol is Power
-              && numberTreeNode.Parent.GetSubtree(1) == numberTreeNode) continue; // exponents in powers are not optimizated (see TreeToAutoDiffTermConverter)
+              && numberTreeNode.Parent.GetSubtree(1) == numberTreeNode) continue; // exponents in powers are not optimized (see TreeToAutoDiffTermConverter)
           numberTreeNode.Value = parameters[i++];
         } else if (updateVariableWeights && variableTreeNodeBase != null)
           variableTreeNodeBase.Weight = parameters[i++];
