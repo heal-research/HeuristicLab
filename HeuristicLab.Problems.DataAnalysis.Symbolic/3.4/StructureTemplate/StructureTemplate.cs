@@ -63,11 +63,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         containsNumericParameters = null;
         tree = value;
 
-        var newFunctions = GetSubFunctions();
+        var newFunctions = CreateSubFunctions(tree);
         var oldFunctions = subFunctions?.Intersect(newFunctions)
                            ?? Enumerable.Empty<SubFunction>();
         // adds new functions and keeps the old ones (if they match)
-        subFunctions = newFunctions.Except(oldFunctions).Concat(oldFunctions).ToList();
+        var functionsToAdd = newFunctions.Except(oldFunctions);
+        subFunctions = functionsToAdd.Concat(oldFunctions).ToList();
+        RegisterSubFunctionEventHandlers(functionsToAdd);
       }
     }
 
@@ -123,7 +125,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       this.template = original.Template;
       this.applyLinearScaling = original.ApplyLinearScaling;
       this.subFunctions = original.subFunctions.Select(cloner.Clone).ToList();
-      RegisterEventHandlers();
+      RegisterSubFunctionEventHandlers(SubFunctions);
     }
 
 
@@ -135,7 +137,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         _oldTree = null;
       }
 
-      RegisterEventHandlers();
+      RegisterSubFunctionEventHandlers(SubFunctions);
     }
     #endregion
 
@@ -150,9 +152,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       Template = "f(_)";
     }
 
-    private IList<SubFunction> GetSubFunctions() {
+    private static IList<SubFunction> CreateSubFunctions(ISymbolicExpressionTree tree) {
       var subFunctions = new List<SubFunction>();
-      foreach (var node in Tree.IterateNodesPrefix())
+      foreach (var node in tree.IterateNodesPrefix())
         if (node is SubFunctionTreeNode subFunctionTreeNode) {
           if (!subFunctionTreeNode.Arguments.Any())
             throw new ArgumentException($"The sub-function '{subFunctionTreeNode}' requires inputs (e.g. {subFunctionTreeNode.Name}(var1, var2)).");
@@ -170,18 +172,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
               Name = subFunctionTreeNode.Name,
               Arguments = subFunctionTreeNode.Arguments
             };
-            subFunction.Changed += OnSubFunctionChanged;
             subFunctions.Add(subFunction);
           }
         }
       return subFunctions;
     }
 
-    private void RegisterEventHandlers() {
-      foreach (var sf in SubFunctions) {
-        sf.Changed += OnSubFunctionChanged;
+    private void RegisterSubFunctionEventHandlers(IEnumerable<SubFunction> subFunctions) {
+      foreach (var sf in subFunctions) {
+        sf.Changed += (o, e) => OnChanged();
       }
-    }
-    private void OnSubFunctionChanged(object sender, EventArgs e) => OnChanged();
+    }    
   }
 }
