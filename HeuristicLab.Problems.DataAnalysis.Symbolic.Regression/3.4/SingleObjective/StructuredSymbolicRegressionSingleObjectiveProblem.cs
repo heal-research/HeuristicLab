@@ -25,6 +25,7 @@ using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
@@ -47,6 +48,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     private const string OptimizeParametersParameterName = "Optimize Parameters";
 
     private const string SymbolicExpressionTreeName = "SymbolicExpressionTree";
+    private const string NumericParametersEncoding = "Numeric Parameters";
 
     private const string StructureTemplateDescriptionText =
       "Enter your expression as string in infix format into the empty input field.\n" +
@@ -187,10 +189,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
 
       ProblemDataParameter.ValueChanged += ProblemDataParameterValueChanged;
       ApplyLinearScalingParameter.Value.ValueChanged += (o, e) => StructureTemplate.ApplyLinearScaling = ApplyLinearScaling;
-      //OptimizeParametersParameter.Value.ValueChanged += (o, e) => {
-      //  if (OptimizeParameters) ApplyLinearScaling = true;
-      //};
-
     }
 
     private void ProblemDataParameterValueChanged(object sender, EventArgs e) {
@@ -207,6 +205,20 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       foreach (var e in Encoding.Encodings.ToArray())
         Encoding.Remove(e);
 
+
+      var templateNumberTreeNodes = StructureTemplate.Tree.IterateNodesPrefix().OfType<NumberTreeNode>();
+      if (templateNumberTreeNodes.Any()) {
+        var templateParameterValues = templateNumberTreeNodes.Select(n => n.Value).ToArray();
+        var encoding = new RealVectorEncoding(NumericParametersEncoding, templateParameterValues.Length);
+
+        var creator = encoding.Operators.OfType<NormalDistributedRealVectorCreator>().First();
+        creator.MeanParameter.Value = new RealVector(templateParameterValues);
+        creator.SigmaParameter.Value = new DoubleArray(templateParameterValues.Length);
+        encoding.SolutionCreator = creator;
+
+        Encoding.Add(encoding);
+      }
+
       foreach (var subFunction in StructureTemplate.SubFunctions) {
         subFunction.SetupVariables(ProblemData.AllowedInputVariables);
         // prevent the same encoding twice
@@ -220,13 +232,27 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
         Encoding.Add(encoding);
       }
 
-      //set multi manipulator as default manipulator for all encoding parts
-      var manipulator = (IParameterizedItem)Encoding.Operators.OfType<MultiEncodingManipulator>().FirstOrDefault();
-      if (manipulator != null) {
-        foreach (var param in manipulator.Parameters.OfType<ConstrainedValueParameter<IManipulator>>()) {
-          var m = param.ValidValues.OfType<MultiSymbolicExpressionTreeManipulator>().FirstOrDefault();
-          param.Value = m == null ? param.ValidValues.First() : m;
+      //set single point crossover for numeric parameters
+      var multiCrossover = (IParameterizedItem)Encoding.Operators.OfType<MultiEncodingCrossover>().First();
+      foreach (var param in multiCrossover.Parameters.OfType<ConstrainedValueParameter<ICrossover>>()) {
+        var singlePointCrossover = param.ValidValues.OfType<SinglePointCrossover>().FirstOrDefault();
+        param.Value = singlePointCrossover ?? param.ValidValues.First();
+      }
+
+      //adapt crossover probability for subtree crossover
+      foreach (var param in multiCrossover.Parameters.OfType<ConstrainedValueParameter<ICrossover>>()) {
+        var subtreeCrossover = param.ValidValues.OfType<SubtreeCrossover>().FirstOrDefault();
+        if (subtreeCrossover != null) {
+          subtreeCrossover.CrossoverProbability = 1.0 / Encoding.Encodings.OfType<SymbolicExpressionTreeEncoding>().Count();
+          param.Value = subtreeCrossover;
         }
+      }
+
+      //set multi manipulator as default manipulator for all symbolic expression tree encoding parts
+      var manipulator = (IParameterizedItem)Encoding.Operators.OfType<MultiEncodingManipulator>().First();
+      foreach (var param in manipulator.Parameters.OfType<ConstrainedValueParameter<IManipulator>>()) {
+        var m = param.ValidValues.OfType<MultiSymbolicExpressionTreeManipulator>().FirstOrDefault();
+        param.Value = m ?? param.ValidValues.First();
       }
     }
 
@@ -252,8 +278,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       if (templateTree == null)
         throw new ArgumentException("No structure template defined!");
 
-      //create tree where all functions have been resolved (integrated)
-      var tree = BuildTree(templateTree, individual);
+      var tree = BuildTreeFromIndividual(templateTree, individual, updateNumericParameters: StructureTemplate.ContainsNumericParameters);
       individual[SymbolicExpressionTreeName] = tree;
 
       if (OptimizeParameters) {
@@ -261,6 +286,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       } else if (ApplyLinearScaling) {
         LinearScaling.AdjustLinearScalingParams(ProblemData, tree, Interpreter);
       }
+
+      UpdateIndividualFromTree(tree, individual, updateNumericParameters: StructureTemplate.ContainsNumericParameters);
 
       //calculate NMSE
       var estimatedValues = Interpreter.GetSymbolicExpressionTreeValues(tree, ProblemData.Dataset, ProblemData.TrainingIndices);
@@ -289,8 +316,21 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       return nmse;
     }
 
-    private static ISymbolicExpressionTree BuildTree(ISymbolicExpressionTree template, Individual individual) {
+    private static ISymbolicExpressionTree BuildTreeFromIndividual(ISymbolicExpressionTree template, Individual individual, bool updateNumericParameters) {
       var resolvedTree = (ISymbolicExpressionTree)template.Clone();
+
+      //set numeric parameter values
+      if (updateNumericParameters) {
+        var realVector = individual.RealVector(NumericParametersEncoding);
+        var numberTreeNodes = resolvedTree.IterateNodesPrefix().OfType<NumberTreeNode>().ToArray();
+
+        if (realVector.Length != numberTreeNodes.Length)
+          throw new InvalidOperationException("The number of numeric parameters in the tree does not match the provided numerical values.");
+
+        for (int i = 0; i < numberTreeNodes.Length; i++)
+          numberTreeNodes[i].Value = realVector[i];
+      }
+
       // build main tree
       foreach (var subFunctionTreeNode in resolvedTree.IterateNodesPrefix().OfType<SubFunctionTreeNode>()) {
         var subFunctionTree = individual.SymbolicExpressionTree(subFunctionTreeNode.Name);
@@ -302,6 +342,41 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
         subFunctionTreeNode.AddSubtree(subTree);
       }
       return resolvedTree;
+    }
+
+    private static void UpdateIndividualFromTree(ISymbolicExpressionTree tree, Individual individual, bool updateNumericParameters) {
+      var clonedTree = (ISymbolicExpressionTree)tree.Clone();
+
+      foreach (var subFunctionTreeNode in clonedTree.IterateNodesPrefix().OfType<SubFunctionTreeNode>()) {
+        var grammar = ((ISymbolicExpressionTree)individual[subFunctionTreeNode.Name]).Root.Grammar;
+        var functionTreeNode = subFunctionTreeNode.GetSubtree(0);
+        //remove function code to make numeric parameters extraction easier
+        subFunctionTreeNode.RemoveSubtree(0);
+
+
+        var rootNode = (SymbolicExpressionTreeTopLevelNode)new ProgramRootSymbol().CreateTreeNode();
+        rootNode.SetGrammar(grammar);
+
+        var startNode = (SymbolicExpressionTreeTopLevelNode)new StartSymbol().CreateTreeNode();
+        startNode.SetGrammar(grammar);
+
+        rootNode.AddSubtree(startNode);
+        startNode.AddSubtree(functionTreeNode);
+        var functionTree = new SymbolicExpressionTree(rootNode);
+        individual[subFunctionTreeNode.Name] = functionTree;
+      }
+
+      //set numeric parameter values
+      if (updateNumericParameters) {
+        var realVector = individual.RealVector(NumericParametersEncoding);
+        var numberTreeNodes = clonedTree.IterateNodesPrefix().OfType<NumberTreeNode>().ToArray();
+
+        if (realVector.Length != numberTreeNodes.Length)
+          throw new InvalidOperationException("The number of numeric parameters in the tree does not match the provided numerical values.");
+
+        for (int i = 0; i < numberTreeNodes.Length; i++)
+          realVector[i] = numberTreeNodes[i].Value;
+      }
     }
 
     public void Load(IRegressionProblemData data) {

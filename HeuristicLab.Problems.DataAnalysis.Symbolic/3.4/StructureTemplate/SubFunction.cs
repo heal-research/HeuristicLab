@@ -74,7 +74,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
     #region Event Handling
     private void RegisterEventHandlers() {
-      GrammarParameter.ValueChanged += OnParameterValueChanged;
+      GrammarParameter.ValueChanged += (o, e) => {
+        if (Grammar is TypeCoherentExpressionGrammar tceg) tceg.ConfigureAsDefaultRegressionGrammar();
+        OnParameterValueChanged(o, e);
+      };
       MaximumSymbolicExpressionTreeDepthParameter.Value.ValueChanged += OnParameterValueChanged;
       MaximumSymbolicExpressionTreeLengthParameter.Value.ValueChanged += OnParameterValueChanged;
     }

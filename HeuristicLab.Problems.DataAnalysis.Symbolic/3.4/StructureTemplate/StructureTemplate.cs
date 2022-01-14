@@ -60,6 +60,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     public ISymbolicExpressionTree Tree {
       get => tree;
       private set {
+        containsNumericParameters = null;
         tree = value;
 
         var newFunctions = GetSubFunctions();
@@ -67,6 +68,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
                            ?? Enumerable.Empty<SubFunction>();
         // adds new functions and keeps the old ones (if they match)
         subFunctions = newFunctions.Except(oldFunctions).Concat(oldFunctions).ToList();
+      }
+    }
+
+    private bool? containsNumericParameters;
+    public bool ContainsNumericParameters {
+      get {
+        if (!containsNumericParameters.HasValue)
+          containsNumericParameters = Tree.IterateNodesPrefix().OfType<NumberTreeNode>().Any();
+
+        return containsNumericParameters.Value;
       }
     }
 
