@@ -29,6 +29,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Optimization;
+using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
 using HeuristicLab.Problems.Instances;
 using HeuristicLab.Problems.Instances.DataAnalysis;
@@ -217,6 +218,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
         creator.SigmaParameter.Value = new DoubleArray(templateParameterValues.Length);
         encoding.SolutionCreator = creator;
 
+
         Encoding.Add(encoding);
       }
 
@@ -233,11 +235,19 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
         Encoding.Add(encoding);
       }
 
-      //set single point crossover for numeric parameters
+      //set single point || copy crossover for numeric parameters
       var multiCrossover = (IParameterizedItem)Encoding.Operators.OfType<MultiEncodingCrossover>().First();
       foreach (var param in multiCrossover.Parameters.OfType<ConstrainedValueParameter<ICrossover>>()) {
-        var singlePointCrossover = param.ValidValues.OfType<SinglePointCrossover>().FirstOrDefault();
-        param.Value = singlePointCrossover ?? param.ValidValues.First();
+        if (!param.Name.Contains(NumericParametersEncoding)) continue;
+
+        var singlePointCrossover = param.ValidValues.OfType<SinglePointCrossover>().First();
+        var copyCrossover = param.ValidValues.OfType<CopyCrossover>().First();
+
+        var realvectorEncoding = (RealVectorEncoding)Encoding.Encodings.Where(e => e.Name == NumericParametersEncoding).First();
+        if (realvectorEncoding.Length == 1) { //single-point crossover throws if encoding length == 1
+          param.Value = copyCrossover;
+        } else
+          param.Value = singlePointCrossover;
       }
 
       //adapt crossover probability for subtree crossover

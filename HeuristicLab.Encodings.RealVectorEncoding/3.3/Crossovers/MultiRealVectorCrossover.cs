@@ -21,6 +21,7 @@
 
 using System;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -28,7 +29,6 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Encodings.RealVectorEncoding {
@@ -66,8 +66,10 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       Parameters.Add(new ValueLookupParameter<DoubleMatrix>("Bounds", "The lower and upper bounds for each dimension of the vector."));
 
       foreach (Type type in ApplicationManager.Manager.GetTypes(typeof(IRealVectorCrossover))) {
-        if (!typeof(MultiOperator<IRealVectorCrossover>).IsAssignableFrom(type))
-          Operators.Add((IRealVectorCrossover)Activator.CreateInstance(type), true);
+        if (typeof(MultiOperator<IRealVectorCrossover>).IsAssignableFrom(type)) continue;
+        if (typeof(CopyCrossover).IsAssignableFrom(type)) continue;
+
+        Operators.Add((IRealVectorCrossover)Activator.CreateInstance(type), true);
       }
 
       SelectedOperatorParameter.ActualName = "SelectedCrossoverOperator";
