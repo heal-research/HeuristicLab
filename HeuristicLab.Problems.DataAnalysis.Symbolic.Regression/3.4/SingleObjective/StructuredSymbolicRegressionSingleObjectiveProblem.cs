@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using HEAL.Attic;
 using HeuristicLab.Common;
@@ -278,16 +279,17 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       if (templateTree == null)
         throw new ArgumentException("No structure template defined!");
 
-      var tree = BuildTreeFromIndividual(templateTree, individual, updateNumericParameters: StructureTemplate.ContainsNumericParameters);
+      var tree = BuildTreeFromIndividual(templateTree, individual, containsNumericParameters: StructureTemplate.ContainsNumericParameters);
       individual[SymbolicExpressionTreeName] = tree;
 
       if (OptimizeParameters) {
-        ParameterOptimization.OptimizeTreeParameters(ProblemData, tree, interpreter: Interpreter);
+        var excludeNodes = GetTemplateTreeNodes(tree.Root).OfType<IVariableTreeNode>();
+        ParameterOptimization.OptimizeTreeParameters(ProblemData, tree, interpreter: Interpreter, excludeNodes: excludeNodes);
       } else if (ApplyLinearScaling) {
         LinearScaling.AdjustLinearScalingParams(ProblemData, tree, Interpreter);
       }
 
-      UpdateIndividualFromTree(tree, individual, updateNumericParameters: StructureTemplate.ContainsNumericParameters);
+      UpdateIndividualFromTree(tree, individual, containsNumericParameters: StructureTemplate.ContainsNumericParameters);
 
       //calculate NMSE
       var estimatedValues = Interpreter.GetSymbolicExpressionTreeValues(tree, ProblemData.Dataset, ProblemData.TrainingIndices);
@@ -316,11 +318,24 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       return nmse;
     }
 
-    private static ISymbolicExpressionTree BuildTreeFromIndividual(ISymbolicExpressionTree template, Individual individual, bool updateNumericParameters) {
+    private static IEnumerable<ISymbolicExpressionTreeNode> GetTemplateTreeNodes(ISymbolicExpressionTreeNode rootNode) {
+      yield return rootNode;
+      foreach (var node in rootNode.Subtrees) {
+        if (node is SubFunctionTreeNode) {
+          yield return node;
+          continue;
+        }
+
+        foreach (var subNode in GetTemplateTreeNodes(node))
+          yield return subNode;
+      }
+    }
+
+    private static ISymbolicExpressionTree BuildTreeFromIndividual(ISymbolicExpressionTree template, Individual individual, bool containsNumericParameters) {
       var resolvedTree = (ISymbolicExpressionTree)template.Clone();
 
       //set numeric parameter values
-      if (updateNumericParameters) {
+      if (containsNumericParameters) {
         var realVector = individual.RealVector(NumericParametersEncoding);
         var numberTreeNodes = resolvedTree.IterateNodesPrefix().OfType<NumberTreeNode>().ToArray();
 
@@ -344,7 +359,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       return resolvedTree;
     }
 
-    private static void UpdateIndividualFromTree(ISymbolicExpressionTree tree, Individual individual, bool updateNumericParameters) {
+    private static void UpdateIndividualFromTree(ISymbolicExpressionTree tree, Individual individual, bool containsNumericParameters) {
       var clonedTree = (ISymbolicExpressionTree)tree.Clone();
 
       foreach (var subFunctionTreeNode in clonedTree.IterateNodesPrefix().OfType<SubFunctionTreeNode>()) {
@@ -356,7 +371,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
 
         var rootNode = (SymbolicExpressionTreeTopLevelNode)new ProgramRootSymbol().CreateTreeNode();
         rootNode.SetGrammar(grammar);
-
         var startNode = (SymbolicExpressionTreeTopLevelNode)new StartSymbol().CreateTreeNode();
         startNode.SetGrammar(grammar);
 
@@ -367,7 +381,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       }
 
       //set numeric parameter values
-      if (updateNumericParameters) {
+      if (containsNumericParameters) {
         var realVector = individual.RealVector(NumericParametersEncoding);
         var numberTreeNodes = clonedTree.IterateNodesPrefix().OfType<NumberTreeNode>().ToArray();
 

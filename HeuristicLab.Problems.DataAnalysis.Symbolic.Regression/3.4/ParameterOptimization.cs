@@ -26,14 +26,15 @@ using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
   public static class ParameterOptimization {
-    public static double OptimizeTreeParameters(IRegressionProblemData problemData, ISymbolicExpressionTree tree,
-      int maxIterations = 10, bool updateParametersInTree = true, bool updateVariableWeights = true,
+    public static double OptimizeTreeParameters(IRegressionProblemData problemData, ISymbolicExpressionTree tree, int maxIterations = 10,
+      bool updateParametersInTree = true, bool updateVariableWeights = true, IEnumerable<ISymbolicExpressionTreeNode> excludeNodes = null,
       double lowerEstimationLimit = double.MinValue, double upperEstimationLimit = double.MaxValue,
       IEnumerable<int> rows = null, ISymbolicDataAnalysisExpressionTreeInterpreter interpreter = null,
       Action<double[], double, object> iterationCallback = null) {
 
       if (rows == null) rows = problemData.TrainingIndices;
       if (interpreter == null) interpreter = new SymbolicDataAnalysisExpressionTreeBatchInterpreter();
+      if (excludeNodes == null) excludeNodes = Enumerable.Empty<ISymbolicExpressionTreeNode>();
 
       // Numeric parameters in the tree become variables for parameter optimization.
       // Variables in the tree become parameters (fixed values) for parameter optimization.
@@ -45,7 +46,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
 
       TreeToAutoDiffTermConverter.ParametricFunction func;
       TreeToAutoDiffTermConverter.ParametricFunctionGradient func_grad;
-      if (!TreeToAutoDiffTermConverter.TryConvertToAutoDiff(tree, updateVariableWeights, addLinearScalingTerms: false, out parameters, out initialParameters, out func, out func_grad))
+      if (!TreeToAutoDiffTermConverter.TryConvertToAutoDiff(tree,
+        updateVariableWeights, addLinearScalingTerms: false, excludeNodes,
+        out parameters, out initialParameters, out func, out func_grad))
         throw new NotSupportedException("Could not optimize parameters of symbolic expression tree due to not supported symbols used in the tree.");
       var parameterEntries = parameters.ToArray(); // order of entries must be the same for x
 
@@ -111,25 +114,26 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       //             X contains point which was "current accepted" when termination
       //             request was submitted.
       if (rep.terminationtype > 0) {
-        UpdateParameters(tree, c, updateVariableWeights);
+        UpdateParameters(tree, c, updateVariableWeights, excludeNodes);
       }
       var quality = SymbolicRegressionSingleObjectiveMeanSquaredErrorEvaluator.Calculate(
         tree, problemData, rows,
         interpreter, applyLinearScaling: false,
         lowerEstimationLimit, upperEstimationLimit);
 
-      if (!updateParametersInTree) UpdateParameters(tree, initialParameters, updateVariableWeights);
+      if (!updateParametersInTree) UpdateParameters(tree, initialParameters, updateVariableWeights, excludeNodes);
 
       if (originalQuality < quality || double.IsNaN(quality)) {
-        UpdateParameters(tree, initialParameters, updateVariableWeights);
+        UpdateParameters(tree, initialParameters, updateVariableWeights, excludeNodes);
         return originalQuality;
       }
       return quality;
     }
 
-    private static void UpdateParameters(ISymbolicExpressionTree tree, double[] parameters, bool updateVariableWeights) {
+    private static void UpdateParameters(ISymbolicExpressionTree tree, double[] parameters,
+      bool updateVariableWeights, IEnumerable<ISymbolicExpressionTreeNode> excludedNodes) {
       int i = 0;
-      foreach (var node in tree.Root.IterateNodesPrefix().OfType<SymbolicExpressionTreeTerminalNode>()) {
+      foreach (var node in tree.Root.IterateNodesPrefix().OfType<SymbolicExpressionTreeTerminalNode>().Except(excludedNodes)) {
         NumberTreeNode numberTreeNode = node as NumberTreeNode;
         VariableTreeNodeBase variableTreeNodeBase = node as VariableTreeNodeBase;
         FactorVariableTreeNode factorVarTreeNode = node as FactorVariableTreeNode;
@@ -139,7 +143,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
           numberTreeNode.Value = parameters[i++];
         } else if (updateVariableWeights && variableTreeNodeBase != null)
           variableTreeNodeBase.Weight = parameters[i++];
-        else if (factorVarTreeNode != null) {
+        else if (updateVariableWeights && factorVarTreeNode != null) {
           for (int j = 0; j < factorVarTreeNode.Weights.Length; j++)
             factorVarTreeNode.Weights[j] = parameters[i++];
         }
