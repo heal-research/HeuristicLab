@@ -84,8 +84,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
       OnlineLinearScalingParameterCalculator.Calculate(estimatedValues, targetValues, out double a, out double b, out OnlineCalculatorError error);
       if (error == OnlineCalculatorError.None) {
-        offsetNode.Value = a;
-        scaleNode.Value = b;
+        offsetNode.Value = a + b * offsetNode.Value;
+        scaleNode.Value = b * scaleNode.Value;
       }
     }
   }
