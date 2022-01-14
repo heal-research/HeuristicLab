@@ -104,17 +104,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         if (Arguments.Contains("_")) {
           varSym.VariableNames = allowedInputVariables;
         } else {
-          var vars = new List<string>();
-          var exceptions = new List<Exception>();
-          foreach (var arg in Arguments) {
-            if (allowedInputVariables.Contains(arg))
-              vars.Add(arg);
-            else
-              exceptions.Add(new ArgumentException($"The argument '{arg}' for sub-function '{Name}' is not a valid variable."));
-          }
-          if (exceptions.Any())
-            throw new AggregateException(exceptions);
-          varSym.VariableNames = vars;
+          varSym.VariableNames = Arguments.ToList();
         }
 
         varSym.Enabled = true;

@@ -40,8 +40,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       set {
         if (value == template) return;
 
+        var parsedTree = Parser.Parse(value);
+        //assignment must be done after successfully parsing the tree
         template = value;
-        var parsedTree = Parser.Parse(template);
+
         if (applyLinearScaling)
           parsedTree = LinearScaling.AddLinearScalingTerms(parsedTree);
         Tree = parsedTree;
@@ -61,15 +63,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       get => tree;
       private set {
         containsNumericParameters = null;
-        tree = value;
 
-        var newFunctions = CreateSubFunctions(tree);
+        var newFunctions = CreateSubFunctions(value);
         var oldFunctions = subFunctions?.Intersect(newFunctions)
                            ?? Enumerable.Empty<SubFunction>();
         // adds new functions and keeps the old ones (if they match)
         var functionsToAdd = newFunctions.Except(oldFunctions);
         subFunctions = functionsToAdd.Concat(oldFunctions).ToList();
         RegisterSubFunctionEventHandlers(functionsToAdd);
+
+        tree = value;
       }
     }
 
@@ -103,7 +106,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     protected InfixExpressionParser Parser { get; set; } = new InfixExpressionParser();
-
     #endregion
 
     #region Events
@@ -149,6 +151,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     public void Reset() {
       subFunctions = new List<SubFunction>();
       tree = null;
+      containsNumericParameters = null;
       Template = "f(_)";
     }
 
@@ -182,6 +185,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       foreach (var sf in subFunctions) {
         sf.Changed += (o, e) => OnChanged();
       }
-    }    
+    }
   }
 }
