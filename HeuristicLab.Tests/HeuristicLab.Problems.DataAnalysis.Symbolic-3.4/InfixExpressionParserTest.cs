@@ -21,6 +21,7 @@
 
 
 using System;
+using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
 
@@ -147,6 +148,89 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
 
       // nested functions
       Assert.AreEqual("SIN(SIN(SIN('X1')))", formatter.Format(parser.Parse("SIN(SIN(SIN(X1)))")));
+
+      {
+        // a tree with single-arity multiplication and addition
+        //   ...
+        //    *
+        //    |
+        //    +
+        //   / \
+        //  v1 v2
+        // 
+        // is still formatted as (v1 + v2) even though it is not strictly necessary
+        var root = new ProgramRootSymbol().CreateTreeNode();
+        var start = new StartSymbol().CreateTreeNode();
+        var mul = new Multiplication().CreateTreeNode();
+        var add = new Addition().CreateTreeNode();
+        var var1 = (VariableTreeNode)new Variable().CreateTreeNode(); var1.VariableName = "x1"; var1.Weight = 1.0;
+        var var2 = (VariableTreeNode)new Variable().CreateTreeNode(); var2.VariableName = "x2"; var2.Weight = 1.0;
+        add.AddSubtree(var1);
+        add.AddSubtree(var2);
+        mul.AddSubtree(add);
+        start.AddSubtree(mul);
+        root.AddSubtree(start);
+        var t = new SymbolicExpressionTree(root);
+
+        Assert.AreEqual("('x1' + 'x2')", formatter.Format(t)); // TODO parenthesis not strictly required here
+      }
+      {
+        //    *
+        //    |\
+        //    * v3
+        //    |
+        //    +
+        //   / \
+        //  v1 v2
+        // 
+        // is still formatted as (v1 + v2) even though it is not strictly necessary
+        var root = new ProgramRootSymbol().CreateTreeNode();
+        var start = new StartSymbol().CreateTreeNode();
+        var mul1 = new Multiplication().CreateTreeNode();
+        var mul2 = new Multiplication().CreateTreeNode();
+        var add = new Addition().CreateTreeNode();
+        var var1 = (VariableTreeNode)new Variable().CreateTreeNode(); var1.VariableName = "x1"; var1.Weight = 1.0;
+        var var2 = (VariableTreeNode)new Variable().CreateTreeNode(); var2.VariableName = "x2"; var2.Weight = 1.0;
+        var var3 = (VariableTreeNode)new Variable().CreateTreeNode(); var3.VariableName = "x3"; var3.Weight = 1.0;
+        add.AddSubtree(var1);
+        add.AddSubtree(var2);
+        mul2.AddSubtree(add);
+        mul1.AddSubtree(mul2);
+        mul1.AddSubtree(var3);
+        start.AddSubtree(mul1);
+        root.AddSubtree(start);
+        var t = new SymbolicExpressionTree(root);
+
+        Assert.AreEqual("('x1' + 'x2') * 'x3'", formatter.Format(t));
+      }
+
+      {
+        //   sin
+        //    |
+        //    * 
+        //    |
+        //    +
+        //   / \
+        //  v1 v2
+        // 
+        // is still formatted as (v1 + v2) even though it is not strictly necessary
+        var root = new ProgramRootSymbol().CreateTreeNode();
+        var start = new StartSymbol().CreateTreeNode();
+        var sin = new Sine().CreateTreeNode();
+        var mul = new Multiplication().CreateTreeNode();
+        var add = new Addition().CreateTreeNode();
+        var var1 = (VariableTreeNode)new Variable().CreateTreeNode(); var1.VariableName = "x1"; var1.Weight = 1.0;
+        var var2 = (VariableTreeNode)new Variable().CreateTreeNode(); var2.VariableName = "x2"; var2.Weight = 1.0;
+        add.AddSubtree(var1);
+        add.AddSubtree(var2);
+        mul.AddSubtree(add);
+        sin.AddSubtree(mul);
+        start.AddSubtree(sin);
+        root.AddSubtree(start);
+        var t = new SymbolicExpressionTree(root);
+
+        Assert.AreEqual("SIN(('x1' + 'x2'))", formatter.Format(t)); // TODO would be better to prevent double parenthesis here
+      }
     }
   }
 }

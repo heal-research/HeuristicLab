@@ -38,7 +38,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         // operators
         if (token == "+" || token == "-" || token == "OR" || token == "XOR") {
           var parenthesisRequired = false;
-          if (node.Parent != null && node.Parent.SubtreeCount > 1) {
+          if (node.Parent != null && IsOperator(node.Parent.Symbol)) {
             var parentOp = GetToken(node.Parent.Symbol);
             if (parentOp != "+" && parentOp != "-" && parentOp != "OR" && parentOp != "XOR")
               parenthesisRequired = true;
@@ -153,6 +153,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           }
         }
       }
+    }
+
+    private static bool IsOperator(ISymbol sy) {
+      return sy is Addition ||
+        sy is Subtraction ||
+        sy is Multiplication ||
+        sy is Division ||
+        sy is And ||
+        sy is Or ||
+        sy is Xor;
     }
 
     private static void AppendNumber(StringBuilder strBuilder, List<KeyValuePair<string, double>> parameters, double value, string formatString, NumberFormatInfo numberFormat) {
