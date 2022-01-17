@@ -35,7 +35,7 @@ using HeuristicLab.Problems.Instances.DataAnalysis;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
   [StorableType("7464E84B-65CC-440A-91F0-9FA920D730F9")]
-  [Item(Name = "Structured Symbolic Regression Single Objective Problem (single-objective)", Description = "A problem with a structural definition and unfixed subfunctions.")]
+  [Item(Name = "Structured Symbolic Regression Problem (single-objective)", Description = "A problem with a structural definition and variable subfunctions.")]
   [Creatable(CreatableAttribute.Categories.GeneticProgrammingProblems, Priority = 150)]
   public class StructuredSymbolicRegressionSingleObjectiveProblem : SingleObjectiveBasicProblem<MultiEncoding>, IRegressionProblem, IProblemInstanceConsumer<IRegressionProblemData> {
 
