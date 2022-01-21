@@ -29,18 +29,18 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableType("36A22322-0627-4E25-A468-F2A788AF6D46")]
   [Item("TypeCoherentExpressionGrammar", "Represents a grammar for functional expressions in which special syntactic constraints are enforced so that boolean and real-valued expressions are not mixed.")]
   public class TypeCoherentExpressionGrammar : DataAnalysisGrammar, ISymbolicDataAnalysisGrammar {
-    private const string ArithmeticFunctionsName = "Arithmetic Functions";
-    private const string TrigonometricFunctionsName = "Trigonometric Functions";
-    private const string ExponentialFunctionsName = "Exponential and Logarithmic Functions";
-    private const string RealValuedSymbolsName = "Real Valued Symbols";
-    private const string TerminalsName = "Terminals";
-    private const string PowerFunctionsName = "Power Functions";
-    private const string ConditionsName = "Conditions";
-    private const string ComparisonsName = "Comparisons";
-    private const string BooleanOperatorsName = "Boolean Operators";
-    private const string ConditionalSymbolsName = "ConditionalSymbols";
-    private const string SpecialFunctionsName = "Special Functions";
-    private const string TimeSeriesSymbolsName = "Time Series Symbols";
+    public const string ArithmeticFunctionsName = "Arithmetic Functions";
+    public const string TrigonometricFunctionsName = "Trigonometric Functions";
+    public const string ExponentialFunctionsName = "Exponential and Logarithmic Functions";
+    public const string RealValuedSymbolsName = "Real Valued Symbols";
+    public const string TerminalsName = "Terminals";
+    public const string PowerFunctionsName = "Power Functions";
+    public const string ConditionsName = "Conditions";
+    public const string ComparisonsName = "Comparisons";
+    public const string BooleanOperatorsName = "Boolean Operators";
+    public const string ConditionalSymbolsName = "ConditionalSymbols";
+    public const string SpecialFunctionsName = "Special Functions";
+    public const string TimeSeriesSymbolsName = "Time Series Symbols";
 
     [StorableConstructor]
     protected TypeCoherentExpressionGrammar(StorableConstructorFlag _) : base(_) { }

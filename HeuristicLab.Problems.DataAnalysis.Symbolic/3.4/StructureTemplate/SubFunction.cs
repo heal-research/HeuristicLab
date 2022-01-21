@@ -48,7 +48,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
     #region Constructors
     public SubFunction() {
-      Parameters.Add(new ValueParameter<ISymbolicDataAnalysisGrammar>(GrammarParameterName, new ArithmeticExpressionGrammar()));
+      var grammar = new TypeCoherentExpressionGrammar();
+      grammar.ConfigureAsDefaultRegressionGrammar();
+      grammar.Symbols.First(s => s.Name == TypeCoherentExpressionGrammar.ExponentialFunctionsName).Enabled = false;
+      Parameters.Add(new ValueParameter<ISymbolicDataAnalysisGrammar>(GrammarParameterName, grammar));
       Parameters.Add(new FixedValueParameter<IntValue>(MaximumSymbolicExpressionTreeDepthParameterName, new IntValue(8)));
       Parameters.Add(new FixedValueParameter<IntValue>(MaximumSymbolicExpressionTreeLengthParameterName, new IntValue(20)));
       RegisterEventHandlers();
@@ -70,7 +73,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       RegisterEventHandlers();
     }
     #endregion
-
 
     #region Event Handling
     private void RegisterEventHandlers() {
