@@ -141,7 +141,7 @@
     <Compile Include="SingleObjective\ShapeConstrainedRegressionSingleObjectiveProblem.cs" />
     <Compile Include="SingleObjective\SolutionQualityAnalyzer.cs" />
     <Compile Include="SingleObjective\SolutionRSquaredAnalyzer.cs" />
-    <Compile Include="SingleObjective\StructuredSymbolicRegressionSingleObjectiveProblem.cs" />
+    <Compile Include="SingleObjective\StructureTemplateSymbolicRegressionProblem.cs" />
     <Compile Include="SymbolicRegressionPhenotypicDiversityAnalyzer.cs" />
     <Compile Include="SymbolicRegressionPruningAnalyzer.cs" />
     <Compile Include="SingleObjective\Evaluators\SymbolicRegressionLogResidualEvaluator.cs" />

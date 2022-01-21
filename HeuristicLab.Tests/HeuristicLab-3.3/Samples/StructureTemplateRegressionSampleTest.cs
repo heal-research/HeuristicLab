@@ -29,14 +29,14 @@ namespace HeuristicLab.Tests {
       SamplesUtils.RunAlgorithm(ga);
 
       if (Environment.Is64BitProcess) {
-        Assert.AreEqual(1.2142319244409949E-06, SamplesUtils.GetDoubleResult(ga, "BestQuality"), 1E-8);
-        Assert.AreEqual(120.13505532841884, SamplesUtils.GetDoubleResult(ga, "CurrentAverageQuality"), 1E-8);
-        Assert.AreEqual(8322.6086777405562, SamplesUtils.GetDoubleResult(ga, "CurrentWorstQuality"), 1E-8);
+        Assert.AreEqual(5.0286947997733353E-07, SamplesUtils.GetDoubleResult(ga, "BestQuality"), 1E-8);
+        Assert.AreEqual(79.100605440090362, SamplesUtils.GetDoubleResult(ga, "CurrentAverageQuality"), 1E-8);
+        Assert.AreEqual(7905.465554758197, SamplesUtils.GetDoubleResult(ga, "CurrentWorstQuality"), 1E-8);
         Assert.AreEqual(5050, SamplesUtils.GetIntResult(ga, "EvaluatedSolutions"));
       } else {
-        Assert.AreEqual(1.2142319244408615E-06, SamplesUtils.GetDoubleResult(ga, "BestQuality"), 1E-8);
-        Assert.AreEqual(120.135055328418, SamplesUtils.GetDoubleResult(ga, "CurrentAverageQuality"), 1E-8);
-        Assert.AreEqual(8322.6086777405562, SamplesUtils.GetDoubleResult(ga, "CurrentWorstQuality"), 1E-8);
+        Assert.AreEqual(5.45285034915826E-07, SamplesUtils.GetDoubleResult(ga, "BestQuality"), 1E-8);
+        Assert.AreEqual(0.25447047591366467, SamplesUtils.GetDoubleResult(ga, "CurrentAverageQuality"), 1E-8);
+        Assert.AreEqual(23.211139545787372, SamplesUtils.GetDoubleResult(ga, "CurrentWorstQuality"), 1E-8);
         Assert.AreEqual(5050, SamplesUtils.GetIntResult(ga, "EvaluatedSolutions"));
       }
     }
@@ -54,7 +54,7 @@ namespace HeuristicLab.Tests {
       var alg = new GeneticAlgorithm();
       var provider = new PhysicsInstanceProvider(seed: 0);
       var descriptor = new SheetBendingProcess(seed: 0);
-      var problem = new StructuredSymbolicRegressionSingleObjectiveProblem();
+      var problem = new StructureTemplateSymbolicRegressionProblem();
       problem.Load(provider.LoadData(descriptor));
       problem.StructureTemplate.Template =
         "(" +
@@ -67,11 +67,6 @@ namespace HeuristicLab.Tests {
         subFunction.MaximumSymbolicExpressionTreeLength = 20;
         subFunction.Grammar = new ArithmeticExpressionGrammar();
       }
-      var evaluator = problem.TreeEvaluatorParameter.ValidValues
-        .OfType<NMSESingleObjectiveConstraintsEvaluator>()
-        .First();
-      evaluator.OptimizeParameters = true;
-      problem.TreeEvaluatorParameter.Value = evaluator;
 
       #region Algorithm Configuration
       alg.Name = "Genetic Programming - Structure Template";
