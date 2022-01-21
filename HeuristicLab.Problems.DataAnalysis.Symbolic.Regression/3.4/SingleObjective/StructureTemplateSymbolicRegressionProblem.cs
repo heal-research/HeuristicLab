@@ -37,7 +37,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
   [StorableType("7464E84B-65CC-440A-91F0-9FA920D730F9")]
   [Item(Name = "Structured Symbolic Regression Problem (single-objective)", Description = "A problem with a structural definition and variable subfunctions.")]
   [Creatable(CreatableAttribute.Categories.GeneticProgrammingProblems, Priority = 150)]
-  public class StructuredSymbolicRegressionSingleObjectiveProblem : SingleObjectiveBasicProblem<MultiEncoding>, IRegressionProblem, IProblemInstanceConsumer<IRegressionProblemData> {
+  public class StructureTemplateSymbolicRegressionProblem : SingleObjectiveBasicProblem<MultiEncoding>, IRegressionProblem, IProblemInstanceConsumer<IRegressionProblemData> {
 
     #region Constants
     private const string ProblemDataParameterName = "ProblemData";
@@ -107,7 +107,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     #endregion
 
     #region Constructors & Cloning
-    public StructuredSymbolicRegressionSingleObjectiveProblem() {
+    public StructureTemplateSymbolicRegressionProblem() {
       var provider = new PhysicsInstanceProvider();
       var descriptor = new SheetBendingProcess();
       var problemData = provider.LoadData(descriptor);
@@ -157,15 +157,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
         " * C(_)";
     }
 
-    public StructuredSymbolicRegressionSingleObjectiveProblem(StructuredSymbolicRegressionSingleObjectiveProblem original, Cloner cloner) : base(original, cloner) {
+    public StructureTemplateSymbolicRegressionProblem(StructureTemplateSymbolicRegressionProblem original, Cloner cloner) : base(original, cloner) {
       RegisterEventHandlers();
     }
 
     public override IDeepCloneable Clone(Cloner cloner) =>
-      new StructuredSymbolicRegressionSingleObjectiveProblem(this, cloner);
+      new StructureTemplateSymbolicRegressionProblem(this, cloner);
 
     [StorableConstructor]
-    protected StructuredSymbolicRegressionSingleObjectiveProblem(StorableConstructorFlag _) : base(_) { }
+    protected StructureTemplateSymbolicRegressionProblem(StorableConstructorFlag _) : base(_) { }
 
 
     [StorableHook(HookType.AfterDeserialization)]
