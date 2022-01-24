@@ -638,12 +638,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
 
       if (internalDataset.VariableHasType<double>(variableName)) {
         var v = sharedFixedVariables.GetDoubleValue(variableName, rowIndex);
-        var values = new List<double>(Enumerable.Repeat(v, internalDataset.Rows));
-        internalDataset.ReplaceVariable(variableName, values);
+        // do not use replace variable here because some processes running in parallel might iterate over the variables list
+        // internalDataset.ReplaceVariable(variableName, values);
+        for (int i = 0; i < internalDataset.Rows; i++)
+          internalDataset.SetVariableValue(v, variableName, i);
       } else if (internalDataset.VariableHasType<string>(variableName)) {
         var v = sharedFixedVariables.GetStringValue(variableName, rowIndex);
-        var values = new List<String>(Enumerable.Repeat(v, internalDataset.Rows));
-        internalDataset.ReplaceVariable(variableName, values);
+        for (int i = 0; i < internalDataset.Rows; i++)
+          internalDataset.SetVariableValue(v, variableName, i);
       } else {
         // unsupported type 
         throw new NotSupportedException();
