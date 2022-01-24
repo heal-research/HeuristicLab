@@ -23,30 +23,31 @@
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
-            this.mainPanel = new System.Windows.Forms.Panel();
-            this.SuspendLayout();
-            // 
-            // mainPanel
-            // 
-            this.mainPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.mainPanel.Location = new System.Drawing.Point(0, 0);
-            this.mainPanel.Name = "mainPanel";
-            this.mainPanel.Size = new System.Drawing.Size(490, 246);
-            this.mainPanel.TabIndex = 0;
-            // 
-            // RunCollectionPartialDependencePlotView
-            // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.mainPanel);
-            this.Name = "RunCollectionPartialDependencePlotView";
-            this.Size = new System.Drawing.Size(490, 246);
-            this.ResumeLayout(false);
+      this.tabControl = new System.Windows.Forms.TabControl();
+      this.SuspendLayout();
+      // 
+      // tabControl1
+      // 
+      this.tabControl.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.tabControl.Location = new System.Drawing.Point(0, 0);
+      this.tabControl.Name = "tabControl1";
+      this.tabControl.SelectedIndex = 0;
+      this.tabControl.Size = new System.Drawing.Size(490, 246);
+      this.tabControl.TabIndex = 0;
+      // 
+      // RunCollectionPartialDependencePlotView
+      // 
+      this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.Controls.Add(this.tabControl);
+      this.Name = "RunCollectionPartialDependencePlotView";
+      this.Size = new System.Drawing.Size(490, 246);
+      this.ResumeLayout(false);
 
     }
 
     #endregion
 
-    private System.Windows.Forms.Panel mainPanel;
+    private System.Windows.Forms.TabControl tabControl;
   }
 }

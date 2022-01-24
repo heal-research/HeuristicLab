@@ -452,19 +452,17 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       chart.ResumeRepaint(true);
     }
 
-    private Task<DoubleLimit> UpdateAllSeriesDataAsync(CancellationToken cancellationToken) {
-      var updateTasks = solutions.Select(solution => UpdateSeriesDataAsync(solution, cancellationToken));
+    private async Task<DoubleLimit> UpdateAllSeriesDataAsync(CancellationToken cancellationToken) {
+      var updateTasks = solutions.Select(solution => UpdateSeriesDataAsync(solution, cancellationToken)).ToArray();
 
-      return Task.Run(() => {
-        double min = double.MaxValue, max = double.MinValue;
-        foreach (var update in updateTasks) {
-          var limit = update.Result;
-          if (limit.Lower < min) min = limit.Lower;
-          if (limit.Upper > max) max = limit.Upper;
-        }
+      double min = double.MaxValue, max = double.MinValue;
+      foreach (var update in updateTasks) {
+        var limit = await update;
+        if (limit.Lower < min) min = limit.Lower;
+        if (limit.Upper > max) max = limit.Upper;
+      }
 
-        return new DoubleLimit(min, max);
-      }, cancellationToken);
+      return new DoubleLimit(min, max);
     }
 
     private Task<DoubleLimit> UpdateSeriesDataAsync(IRegressionSolution solution, CancellationToken cancellationToken) {
