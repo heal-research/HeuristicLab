@@ -176,6 +176,19 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       subtrees.RemoveAt(index);
       ResetCachedValues();
     }
+    public virtual void ReplaceSubtree(int index, ISymbolicExpressionTreeNode repl) {
+      subtrees[index].Parent = null;
+      subtrees[index] = repl;
+      repl.Parent = this;
+      ResetCachedValues();
+    }
+    public virtual void ReplaceSubtree(ISymbolicExpressionTreeNode old, ISymbolicExpressionTreeNode repl) {
+      var index = IndexOfSubtree(old);
+      subtrees[index].Parent = null;
+      subtrees[index] = repl;
+      repl.Parent = this;
+      ResetCachedValues();
+    }
 
     public IEnumerable<ISymbolicExpressionTreeNode> IterateNodesBreadth() {
       var list = new List<ISymbolicExpressionTreeNode>(GetLength()) { this };
