@@ -49,6 +49,8 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     void AddSubtree(ISymbolicExpressionTreeNode tree);
     void InsertSubtree(int index, ISymbolicExpressionTreeNode tree);
     void RemoveSubtree(int index);
+    void ReplaceSubtree(int index, ISymbolicExpressionTreeNode tree);
+    void ReplaceSubtree(ISymbolicExpressionTreeNode orig, ISymbolicExpressionTreeNode repl);
 
     void ResetLocalParameters(IRandom random);
     void ShakeLocalParameters(IRandom random, double shakingFactor);

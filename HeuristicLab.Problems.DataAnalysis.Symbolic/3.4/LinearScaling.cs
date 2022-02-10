@@ -47,7 +47,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
     public static void RemoveLinearScalingTerms(ISymbolicExpressionTree tree) {
       var startNode = tree.Root.GetSubtree(0);
-      ExtractScalingTerms(tree, out NumberTreeNode offsetNode, out NumberTreeNode scaleNode);
+      ExtractScalingTerms(tree, out _, out NumberTreeNode scaleNode);
 
       var evaluationNode = scaleNode.Parent.GetSubtree(1); //move up to multiplication and take second child
       startNode.RemoveSubtree(0);
@@ -66,10 +66,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
 
       var error = false;
-      if (addNode.Symbol is not Addition) error = true;
-      if (mulNode.Symbol is not Multiplication) error = true;
-      if (offsetNode is not NumberTreeNode) error = true;
-      if (scaleNode is not NumberTreeNode) error = true;
+      if (!(addNode.Symbol is Addition)) error = true;
+      if (!(mulNode.Symbol is Multiplication)) error = true;
+      if (!(offsetNode is NumberTreeNode)) error = true;
+      if (!(scaleNode is NumberTreeNode)) error = true;
       if (error) throw new ArgumentException("Scaling terms cannot be found.");
 
       offset = (NumberTreeNode)offsetNode;

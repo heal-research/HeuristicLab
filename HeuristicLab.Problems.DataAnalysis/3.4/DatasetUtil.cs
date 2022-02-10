@@ -96,8 +96,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       Dictionary<string, Interval> variableRanges = new Dictionary<string, Interval>();
 
       foreach (var variable in dataset.VariableNames) {
-        IEnumerable<double> values = null;
-
+        IEnumerable<double> values;
         if (rows == null) values = dataset.GetDoubleValues(variable);
         else values = dataset.GetDoubleValues(variable, rows);
 

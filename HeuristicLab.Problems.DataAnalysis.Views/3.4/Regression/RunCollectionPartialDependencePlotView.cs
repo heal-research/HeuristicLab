@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
@@ -19,25 +20,36 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       InitializeComponent();
     }
 
-    private static async void AddSolution(RegressionSolutionPartialDependencePlotView plot, IEnumerable<IRegressionSolution> solutions) {
-      foreach(var sol in solutions) {
-        await plot.AddSolution(sol);
-      }
-    }
-
-    protected override void OnContentChanged() {
+    protected override async void OnContentChanged() {
       base.OnContentChanged();
+      if (Content == null) {
+        tabControl.TabPages.Clear();
+        return;
+      }
+      // distinct names of results of types IRegressionSolution
+      var solutionResultNames = Content.SelectMany(run => run.Results.Where(kvp => kvp.Value is IRegressionSolution).Select(kvp => kvp.Key)).Distinct().ToArray();
 
-      if (Content == null) return;
+      foreach (var resultName in solutionResultNames) {
+        var tabPage = new TabPage(resultName);
+        tabControl.TabPages.Add(tabPage);
 
-      var solutions = Content.Select(run => (IRegressionSolution)run.Results["Best training solution"]).ToList();
-      var plot = new RegressionSolutionPartialDependencePlotView {
-        Content = solutions[0],
-        Dock = DockStyle.Fill
-      };
+        var solutions = new List<IRegressionSolution>();
+        foreach (var run in Content) {
+          // in experiments we may mix algorithms and therefore have different solution names in different runs
+          // we only combine solutions with the same name
+          if (run.Results.TryGetValue(resultName, out var sol) && sol is IRegressionSolution) {
+            solutions.Add((IRegressionSolution)sol);
+          }
+        }
+        var plot = new RegressionSolutionPartialDependencePlotView {
+          Content = solutions[0],
+          Dock = DockStyle.Fill
+        };
 
-      mainPanel.Controls.Add(plot);
-      AddSolution(plot, solutions);
+        tabPage.Controls.Add(plot);
+        for (int i = 1; i < solutions.Count; i++)
+          await plot.AddSolutionAsync(solutions[i]);
+      }
     }
   }
 }

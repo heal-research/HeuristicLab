@@ -452,19 +452,17 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       chart.ResumeRepaint(true);
     }
 
-    private Task<DoubleLimit> UpdateAllSeriesDataAsync(CancellationToken cancellationToken) {
-      var updateTasks = solutions.Select(solution => UpdateSeriesDataAsync(solution, cancellationToken));
+    private async Task<DoubleLimit> UpdateAllSeriesDataAsync(CancellationToken cancellationToken) {
+      var updateTasks = solutions.Select(solution => UpdateSeriesDataAsync(solution, cancellationToken)).ToArray();
 
-      return Task.Run(() => {
-        double min = double.MaxValue, max = double.MinValue;
-        foreach (var update in updateTasks) {
-          var limit = update.Result;
-          if (limit.Lower < min) min = limit.Lower;
-          if (limit.Upper > max) max = limit.Upper;
-        }
+      double min = double.MaxValue, max = double.MinValue;
+      foreach (var update in updateTasks) {
+        var limit = await update;
+        if (limit.Lower < min) min = limit.Lower;
+        if (limit.Upper > max) max = limit.Upper;
+      }
 
-        return new DoubleLimit(min, max);
-      }, cancellationToken);
+      return new DoubleLimit(min, max);
     }
 
     private Task<DoubleLimit> UpdateSeriesDataAsync(IRegressionSolution solution, CancellationToken cancellationToken) {
@@ -640,12 +638,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
 
       if (internalDataset.VariableHasType<double>(variableName)) {
         var v = sharedFixedVariables.GetDoubleValue(variableName, rowIndex);
-        var values = new List<double>(Enumerable.Repeat(v, internalDataset.Rows));
-        internalDataset.ReplaceVariable(variableName, values);
+        // do not use replace variable here because some processes running in parallel might iterate over the variables list
+        // internalDataset.ReplaceVariable(variableName, values);
+        for (int i = 0; i < internalDataset.Rows; i++)
+          internalDataset.SetVariableValue(v, variableName, i);
       } else if (internalDataset.VariableHasType<string>(variableName)) {
         var v = sharedFixedVariables.GetStringValue(variableName, rowIndex);
-        var values = new List<String>(Enumerable.Repeat(v, internalDataset.Rows));
-        internalDataset.ReplaceVariable(variableName, values);
+        for (int i = 0; i < internalDataset.Rows; i++)
+          internalDataset.SetVariableValue(v, variableName, i);
       } else {
         // unsupported type 
         throw new NotSupportedException();

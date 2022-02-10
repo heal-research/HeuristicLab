@@ -238,7 +238,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       RecalculateAndRelayoutCharts();
     }
 
-    public async Task AddSolution(IRegressionSolution solution) {
+    public async Task AddSolutionAsync(IRegressionSolution solution) {
       foreach (var chart in partialDependencePlots.Values) {
         await chart.AddSolutionAsync(solution);
       }
