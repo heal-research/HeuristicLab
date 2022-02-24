@@ -69,17 +69,19 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
 
     public override IOperation InstrumentedApply() {
       IEnumerable<int> rows = GenerateRowsToEvaluate();
-      var solution = SymbolicExpressionTreeParameter.ActualValue;
+      var tree = SymbolicExpressionTreeParameter.ActualValue;
       var problemData = ProblemDataParameter.ActualValue;
       var interpreter = SymbolicDataAnalysisTreeInterpreterParameter.ActualValue;
       var estimationLimits = EstimationLimitsParameter.ActualValue;
       var applyLinearScaling = ApplyLinearScalingParameter.ActualValue.Value;
 
       if (UseParameterOptimization) {
-        SymbolicRegressionParameterOptimizationEvaluator.OptimizeParameters(interpreter, solution, problemData, rows, applyLinearScaling, ParameterOptimizationIterations, updateVariableWeights: ParameterOptimizationUpdateVariableWeights, lowerEstimationLimit: estimationLimits.Lower, upperEstimationLimit: estimationLimits.Upper);
+        SymbolicRegressionParameterOptimizationEvaluator.OptimizeParameters(interpreter, tree, problemData, rows, applyLinearScaling, ParameterOptimizationIterations, updateVariableWeights: ParameterOptimizationUpdateVariableWeights, lowerEstimationLimit: estimationLimits.Lower, upperEstimationLimit: estimationLimits.Upper);
       }
 
-      double r2 = SymbolicRegressionSingleObjectivePearsonRSquaredEvaluator.Calculate(interpreter, solution, estimationLimits.Lower, estimationLimits.Upper, problemData, rows, applyLinearScaling);
+      double r2 = SymbolicRegressionSingleObjectivePearsonRSquaredEvaluator.Calculate(
+        tree, problemData, rows, interpreter, applyLinearScaling,
+        estimationLimits.Lower, estimationLimits.Upper);
 
       if (DecimalPlaces >= 0)
         r2 = Math.Round(r2, DecimalPlaces);
@@ -106,7 +108,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       var estimationLimits = EstimationLimitsParameter.ActualValue;
       var applyLinearScaling = ApplyLinearScalingParameter.ActualValue.Value;
 
-      double r2 = SymbolicRegressionSingleObjectivePearsonRSquaredEvaluator.Calculate(SymbolicDataAnalysisTreeInterpreterParameter.ActualValue, tree, estimationLimits.Lower, estimationLimits.Upper, problemData, rows, applyLinearScaling);
+      double r2 = SymbolicRegressionSingleObjectivePearsonRSquaredEvaluator.Calculate(
+        tree, problemData, rows,
+        SymbolicDataAnalysisTreeInterpreterParameter.ActualValue,
+        applyLinearScaling,
+        estimationLimits.Lower, estimationLimits.Upper);
 
       lock (locker) {
         if (AverageSimilarityParameter.ActualValue == null) {

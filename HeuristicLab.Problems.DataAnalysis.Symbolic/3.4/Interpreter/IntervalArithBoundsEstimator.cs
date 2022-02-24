@@ -248,6 +248,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
             break;
           }
+        case OpCodes.SubFunction: {
+            result = Evaluate(instructions, ref instructionCounter, nodeIntervals, variableIntervals);
+          break;
+          }
         default:
           throw new NotSupportedException(
             $"The tree contains the unknown symbol {currentInstr.dynamicNode.Symbol}");
@@ -343,7 +347,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           !(n.Symbol is CubeRoot) &&
           !(n.Symbol is Power) &&
           !(n.Symbol is Absolute) &&
-          !(n.Symbol is AnalyticQuotient)
+          !(n.Symbol is AnalyticQuotient) &&
+          !(n.Symbol is SubFunctionSymbol)
         select n).Any();
       return !containsUnknownSymbols;
     }

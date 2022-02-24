@@ -138,6 +138,11 @@ inline double evaluate(instruction *code, int len, int row) noexcept
                     in.value = x / hl_sqrt(1 + y*y);
                     break;
                 }
+            case OpCodes::SubFunction:
+                {
+                  in.value = code[in.childIndex].value;
+                  break;
+                }
             default: in.value = NAN;
         }
     }
@@ -292,8 +297,14 @@ inline void evaluate(instruction* code, int len, int* __restrict rows, int rowIn
                     analytical_quotient(in.buf, code[in.childIndex + 1].buf);
                     break;
                 }
+            case OpCodes::SubFunction:
+                {
+                  load(in.buf, code[in.childIndex].buf);
+                  break;
+                }
+
             default: load(in.buf, NAN);
-            }
+          }
     }
 }
 

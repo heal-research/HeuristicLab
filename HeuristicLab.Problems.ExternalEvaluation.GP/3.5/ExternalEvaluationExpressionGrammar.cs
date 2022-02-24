@@ -20,7 +20,6 @@
 #endregion
 
 using System.Collections.Generic;
-using System.Linq;
 using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -65,7 +64,9 @@ namespace HeuristicLab.Problems.ExternalEvaluation.GP {
       var number = new Number();
       number.MinValue = -20;
       number.MaxValue = 20;
-      var constant = new Constant();
+      var constant = new Constant() { Enabled = false };
+
+
       variableSymbol = new HeuristicLab.Problems.DataAnalysis.Symbolic.Variable();
 
       var allSymbols = new List<Symbol>() { add, sub, mul, div, mean, sin, cos, tan, log, exp, @if, gt, lt, and, or, not, number, constant, variableSymbol };
@@ -88,7 +89,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation.GP {
 
       SetSubtreeCount(@if, 3, 3);
       SetSubtreeCount(number, 0, 0);
-      SetSubtreeCount(constant,0, 0);
+      SetSubtreeCount(constant, 0, 0);
       SetSubtreeCount(variableSymbol, 0, 0);
 
       // allow each symbol as child of the start symbol
@@ -103,8 +104,6 @@ namespace HeuristicLab.Problems.ExternalEvaluation.GP {
             AddAllowedChildSymbol(parent, child, i);
           }
       }
-
-      Symbols.First(s => s is Constant).Enabled = false;
     }
   }
 }

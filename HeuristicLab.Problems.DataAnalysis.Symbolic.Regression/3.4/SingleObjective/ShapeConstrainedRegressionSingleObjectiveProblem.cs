@@ -54,8 +54,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     }
 
     public override void Load(IRegressionProblemData data) {
-      if (data is ShapeConstrainedRegressionProblemData scProblemData) {
-      } else {
+      var scProblemData = data as ShapeConstrainedRegressionProblemData;
+      if (scProblemData == null) {
         scProblemData = new ShapeConstrainedRegressionProblemData(data.Dataset, data.AllowedInputVariables, data.TargetVariable,
                                                                   data.TrainingPartition, data.TestPartition) {
           Name = data.Name,

@@ -387,6 +387,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           var state = (InterpreterState)instr.data;
           state.Reset();
           instr.value = interpreter.Evaluate(dataset, ref row, state);
+        } else if (instr.opCode == OpCodes.SubFunction) {
+          instr.value = code[instr.childIndex].value;
         } else {
           var errorText = string.Format("The {0} symbol is not supported by the linear interpreter. To support this symbol, please use the SymbolicDataAnalysisExpressionTreeInterpreter.", instr.dynamicNode.Symbol.Name);
           throw new NotSupportedException(errorText);

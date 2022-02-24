@@ -28,6 +28,7 @@ enum OpCodes : uint8_t
     Cube               = 50,
     CubeRoot           = 51,
     Tanh               = 52,
+    SubFunction        = 53,
     Constant           = 54
 };
 

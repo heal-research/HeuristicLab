@@ -34,6 +34,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     /// <summary>
     ///  Performs some basic re-writing steps to simplify the code for formatting. Tree is changed.
     ///  Removes single-argument +, * which have no effect
+    ///  Removes SubFunctions (no effect)
     ///  Replaces variables with coefficients by an explicitly multiplication
     ///  Replaces single-argument / with 1 / (..)
     ///  Replaces multi-argument +, *, /, - with nested binary operations
@@ -56,6 +57,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         parent.ReplaceSubtree(n, mul);
         mul.AddSubtree(num);
         mul.AddSubtree(varTreeNode);
+      } else if (n.Symbol is SubFunctionSymbol) {
+        parent.ReplaceSubtree(n, n.GetSubtree(0));
       } else if (n.SubtreeCount == 1 && (n.Symbol is Addition || n.Symbol is Multiplication || n.Symbol is And || n.Symbol is Or || n.Symbol is Xor)) {
         // single-argument addition or multiplication has no effect -> remove
         parent.ReplaceSubtree(n, n.GetSubtree(0));
@@ -80,8 +83,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           newChild = newOp;
         }
         parent.InsertSubtree(childIdx, newChild);
-      } else if (n.SubtreeCount == 2 && n.GetSubtree(1).SubtreeCount == 2 && 
-                 IsAssocOp(n.Symbol) && IsOperator(n.GetSubtree(1).Symbol) && 
+      } else if (n.SubtreeCount == 2 && n.GetSubtree(1).SubtreeCount == 2 &&
+                 IsAssocOp(n.Symbol) && IsOperator(n.GetSubtree(1).Symbol) &&
                  Priority(n.Symbol) == Priority(n.GetSubtree(1).Symbol)) {
         // f(x) <op> (g(x) <op> h(x))) is the same as  (f(x) <op> g(x)) <op> h(x) for associative <op>
         // which is the same as f(x) <op> g(x) <op> h(x) for left-associative <op>
@@ -103,8 +106,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     public static void FormatRecursively(ISymbolicExpressionTreeNode node, StringBuilder strBuilder,
                                           NumberFormatInfo numberFormat, string formatString, List<KeyValuePair<string, double>> parameters = null) {
       // This method assumes that the tree has been converted to binary and left-assoc form (see ConvertToBinaryLeftAssocRec). 
-      // An exception is thrown if the tree has a different shape.
-
       if (node.SubtreeCount == 0) {
         // no subtrees
         if (node.Symbol is Variable) {

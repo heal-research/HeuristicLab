@@ -183,6 +183,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         stringBuilder.Append(variableTreeNode.VariableName);
       } else if (symbol is BinaryFactorVariable || symbol is FactorVariable) {
         stringBuilder.Append("factor variables are not supported");
+      } else if (symbol is SubFunctionSymbol) {
+        stringBuilder.Append(FormatRecursively(node.GetSubtree(0)));
       } else {
         stringBuilder.Append("(");
         for (int i = 0; i < node.SubtreeCount; i++) {

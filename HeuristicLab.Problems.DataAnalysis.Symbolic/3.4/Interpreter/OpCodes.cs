@@ -21,7 +21,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
@@ -78,18 +77,19 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     Cube = 50,
     CubeRoot = 51,
     Tanh = 52,
+    SubFunction = 53,
     Constant = 54
   };
   public static class OpCodes {
     // constants for API compatibility only
     public const byte Add = (byte)OpCode.Add;
-    public const byte Sub =(byte)OpCode.Sub;
-    public const byte Mul =(byte)OpCode.Mul;
-    public const byte Div =(byte)OpCode.Div;
-    public const byte Sin =(byte)OpCode.Sin;
-    public const byte Cos =(byte)OpCode.Cos;
-    public const byte Tan =(byte)OpCode.Tan;
-    public const byte Log =(byte)OpCode.Log;
+    public const byte Sub = (byte)OpCode.Sub;
+    public const byte Mul = (byte)OpCode.Mul;
+    public const byte Div = (byte)OpCode.Div;
+    public const byte Sin = (byte)OpCode.Sin;
+    public const byte Cos = (byte)OpCode.Cos;
+    public const byte Tan = (byte)OpCode.Tan;
+    public const byte Log = (byte)OpCode.Log;
     public const byte Exp = (byte)OpCode.Exp;
     public const byte IfThenElse = (byte)OpCode.IfThenElse;
     public const byte GT = (byte)OpCode.GT;
@@ -102,7 +102,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     public const byte Variable = (byte)OpCode.Variable;
     public const byte LagVariable = (byte)OpCode.LagVariable;
     public const byte Number = (byte)OpCode.Number;
-    public const byte Constant = (byte) OpCode.Constant;
+    public const byte Constant = (byte)OpCode.Constant;
     public const byte Arg = (byte)OpCode.Arg;
     public const byte Power = (byte)OpCode.Power;
     public const byte Root = (byte)OpCode.Root;
@@ -135,10 +135,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     public const byte Cube = (byte)OpCode.Cube;
     public const byte CubeRoot = (byte)OpCode.CubeRoot;
     public const byte Tanh = (byte)OpCode.Tanh;
-
+    public const byte SubFunction = (byte)OpCode.SubFunction;
 
     private static Dictionary<Type, byte> symbolToOpcode = new Dictionary<Type, byte>() {
-       { typeof(Addition), OpCodes.Add },
+      { typeof(Addition), OpCodes.Add },
       { typeof(Subtraction), OpCodes.Sub },
       { typeof(Multiplication), OpCodes.Mul },
       { typeof(Division), OpCodes.Div },
@@ -191,7 +191,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       { typeof(Absolute), OpCodes.Absolute },
       { typeof(AnalyticQuotient), OpCodes.AnalyticQuotient },
       { typeof(Cube), OpCodes.Cube },
-      { typeof(CubeRoot), OpCodes.CubeRoot }
+      { typeof(CubeRoot), OpCodes.CubeRoot },
+      { typeof(SubFunctionSymbol), OpCodes.SubFunction }
     };
 
     public static byte MapSymbolToOpCode(ISymbolicExpressionTreeNode treeNode) {

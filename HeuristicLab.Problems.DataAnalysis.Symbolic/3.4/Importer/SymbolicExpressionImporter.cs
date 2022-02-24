@@ -171,7 +171,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         if (tokens.Peek().Symbol == TokenSymbol.EQ) {
           Expect(Token.EQ, tokens);
           var initValToken = tokens.Dequeue();
-          if(initValToken.Symbol == TokenSymbol.CONSTANT) {
+          if (initValToken.Symbol == TokenSymbol.CONSTANT) {
             t.Value = initValToken.DoubleValue;
           } else {
             throw new FormatException("Expected a real value");
@@ -288,7 +288,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     private ISymbolicExpressionTreeNode CreateTree(Token token) {
       if (token.Symbol != TokenSymbol.SYMB &&
           token.Symbol != TokenSymbol.LBRACKET &&  // LBRACKET and RBRACKET are used for <num=..> and as LT, GT operators
-          token.Symbol != TokenSymbol.RBRACKET  
+          token.Symbol != TokenSymbol.RBRACKET
           ) throw new FormatException("Expected function symbol, but got: " + token.StringValue);
       return knownSymbols[token.StringValue].CreateTreeNode();
     }

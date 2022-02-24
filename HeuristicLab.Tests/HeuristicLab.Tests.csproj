@@ -470,6 +470,7 @@
     <Compile Include="HeuristicLab-3.3\Samples\OSESGriewankSampleTest.cs" />
     <Compile Include="HeuristicLab-3.3\Samples\GAGroupingProblemSampleTest.cs" />
     <Compile Include="HeuristicLab-3.3\Samples\ShapeConstrainedRegressionSampleTest.cs" />
+    <Compile Include="HeuristicLab-3.3\Samples\StructureTemplateRegressionSampleTest.cs" />
     <Compile Include="HeuristicLab-3.3\Samples\VnsOpSampleTest.cs" />
     <Compile Include="HeuristicLab-3.3\Samples\EsGriewankSampleTest.cs" />
     <Compile Include="HeuristicLab-3.3\Samples\GaussianProcessRegressionSampleTest.cs" />

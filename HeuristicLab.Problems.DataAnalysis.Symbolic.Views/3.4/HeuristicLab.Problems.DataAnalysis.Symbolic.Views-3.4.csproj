@@ -121,6 +121,17 @@
     <Compile Include="InteractiveSymbolicExpressionTreeChart.Designer.cs">
       <DependentUpon>InteractiveSymbolicExpressionTreeChart.cs</DependentUpon>
     </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="StructureTemplate\StructureTemplateView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="StructureTemplate\StructureTemplateView.Designer.cs">
+      <DependentUpon>StructureTemplateView.cs</DependentUpon>
+    </Compile>
     <Compile Include="SymbolicDataAnalysisModelMathView.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -210,6 +221,7 @@
       <DependentUpon>RunCollectionVariableImpactView.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Resources\structureTemplateHelp.rtf" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\HeuristicLab.Collections\3.3\HeuristicLab.Collections-3.3.csproj">
@@ -309,6 +321,12 @@
     <Content Include="displayModelFrame.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -81,6 +81,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     // the lookup table is also used in the corresponding formatter
     internal static readonly BidirectionalLookup<string, ISymbol>
       knownSymbols = new BidirectionalLookup<string, ISymbol>(StringComparer.InvariantCulture, new SymbolComparer());
+    internal static readonly SubFunctionSymbol subFunctionSymbol = new SubFunctionSymbol();
 
     private Number number = new Number();
     private Constant minusOne = new Constant() { Value = -1 };
@@ -327,9 +328,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     private ISymbol GetSymbol(string tok) {
-      var symb = knownSymbols.GetByFirst(tok).FirstOrDefault();
-      if (symb == null) throw new ArgumentException(string.Format("Unknown token {0} found.", tok));
-      return symb;
+      if (knownSymbols.ContainsFirst(tok))
+        return knownSymbols.GetByFirst(tok).FirstOrDefault();
+      else
+        return subFunctionSymbol;
     }
 
     /// Term          = Fact { '*' Fact | '/' Fact }
@@ -580,6 +582,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       // handle 'lag' specifically
       if (funcNode.Symbol is LaggedVariable) {
         ParseLaggedVariable(tokens, funcNode);
+      } else if (funcNode.Symbol is SubFunctionSymbol) { // SubFunction
+        var subFunction = funcNode as SubFunctionTreeNode;
+        subFunction.Name = idTok.strVal;
+        // input arguments
+        var args = ParseArgList(tokens);
+        IList<string> arguments = new List<string>();
+        foreach (var arg in args)
+          if (arg is VariableTreeNode varTreeNode)
+            arguments.Add(varTreeNode.VariableName);
+        subFunction.Arguments = arguments;
       } else {
         // functions
         var args = ParseArgList(tokens);

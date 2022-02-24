@@ -187,7 +187,10 @@
     <Compile Include="Interpreter\SymbolicDataAnalysisExpressionTreeBatchInterpreter.cs" />
     <Compile Include="Interpreter\SymbolicDataAnalysisExpressionTreeNativeInterpreter.cs" />
     <Compile Include="IntervalUtil.cs" />
+    <Compile Include="LinearScaling.cs" />
     <Compile Include="Selectors\DiversitySelector.cs" />
+    <Compile Include="StructureTemplate\StructureTemplate.cs" />
+    <Compile Include="StructureTemplate\SubFunction.cs" />
     <Compile Include="SymbolicDataAnalysisExpressionTreeAverageSimilarityCalculator.cs" />
     <Compile Include="SymbolicDataAnalysisExpressionTreeSimplificationOperator.cs" />
     <Compile Include="SymbolicDataAnalysisModelComplexityCalculator.cs" />
@@ -255,6 +258,8 @@
     <Compile Include="Symbols\HyperbolicTangent.cs" />
     <Compile Include="Symbols\Constant.cs" />
     <Compile Include="Symbols\ConstantTreeNode.cs" />
+    <Compile Include="Symbols\SubFunctionSymbol.cs" />
+    <Compile Include="Symbols\SubFunctionTreeNode.cs" />
     <Compile Include="Symbols\VariableBase.cs" />
     <Compile Include="Symbols\VariableTreeNodeBase.cs" />
     <Compile Include="Symbols\Xor.cs" />

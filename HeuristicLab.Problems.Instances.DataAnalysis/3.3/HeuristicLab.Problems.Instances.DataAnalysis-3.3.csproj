@@ -298,6 +298,7 @@
     <Compile Include="Regression\Physics\FluidDynamics.cs" />
     <Compile Include="Regression\Physics\PhysicsInstanceProvider.cs" />
     <Compile Include="Regression\Physics\RocketFuelFlow.cs" />
+    <Compile Include="Regression\Physics\SheetBendingProcess.cs" />
     <Compile Include="Regression\VariableNetworks\LinearVariableNetwork.cs" />
     <Compile Include="Regression\VariableNetworks\GaussianProcessVariableNetwork.cs" />
     <Compile Include="Regression\VariableNetworks\VariableNetwork.cs" />

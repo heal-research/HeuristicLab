@@ -121,7 +121,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       (byte)OpCode.CubeRoot,
       (byte)OpCode.Cube,
       (byte)OpCode.Absolute,
-      (byte)OpCode.AnalyticQuotient
+      (byte)OpCode.AnalyticQuotient,
+      (byte)OpCode.SubFunction
     };
 
     public IEnumerable<double> GetSymbolicExpressionTreeValues(ISymbolicExpressionTree tree, IDataset dataset, IEnumerable<int> rows) {

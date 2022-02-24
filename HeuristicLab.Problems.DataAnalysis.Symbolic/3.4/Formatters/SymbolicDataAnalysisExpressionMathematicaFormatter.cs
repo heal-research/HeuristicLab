@@ -121,6 +121,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           FormatFunction(node, "Power", strBuilder);
         } else if (node.Symbol is Root) {
           FormatRoot(node, strBuilder);
+        } else if (node.Symbol is SubFunctionSymbol) {
+          FormatRecursively(node.GetSubtree(0), strBuilder);
         } else {
           throw new NotSupportedException("Formatting of symbol: " + node.Symbol + " is not supported.");
         }

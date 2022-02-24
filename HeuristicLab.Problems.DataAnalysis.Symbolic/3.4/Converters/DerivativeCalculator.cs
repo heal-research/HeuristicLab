@@ -199,6 +199,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         var tanh = (ISymbolicExpressionTreeNode)branch.Clone();
         return Product(fxp, Subtract(CreateNumber(1.0), Square(tanh)));
       }
+      if (branch.Symbol is SubFunctionSymbol) {
+        return Derive(branch.GetSubtree(0), variableName);
+      }
       throw new NotSupportedException(string.Format("Symbol {0} is not supported.", branch.Symbol));
     }
 
@@ -284,7 +287,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           !(n.Symbol is Sine) &&
           !(n.Symbol is Cosine) &&
           !(n.Symbol is Tangent) &&
-          !(n.Symbol is StartSymbol)
+          !(n.Symbol is StartSymbol) &&
+          !(n.Symbol is SubFunctionSymbol)
         select n).Any();
       return !containsUnknownSymbol;
     }
