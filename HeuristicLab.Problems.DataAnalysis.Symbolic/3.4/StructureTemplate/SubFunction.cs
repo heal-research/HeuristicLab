@@ -39,7 +39,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     [Storable]
-    public IEnumerable<string> Arguments { get; set; }
+    public IEnumerable<string> Arguments { get; set; } = Enumerable.Empty<string>();
     #endregion
 
     #region Events
