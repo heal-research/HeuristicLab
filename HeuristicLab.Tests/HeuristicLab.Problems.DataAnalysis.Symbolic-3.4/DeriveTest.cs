@@ -37,28 +37,28 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
       Assert.AreEqual("1", Derive("x", "x"));
       Assert.AreEqual("10", Derive("<num=10>*x", "x"));
       Assert.AreEqual("10", Derive("x*<num=10>", "x"));
-      Assert.AreEqual("2*'x'", Derive("x*x", "x"));
+      Assert.AreEqual("2 * 'x'", Derive("x*x", "x"));
       Assert.AreEqual("'x' * 'x' * 2 + 'x' * 'x'", Derive("x*x*x", "x")); // simplifier does not merge (x*x)*2 + x*x  to 3*x*x
       Assert.AreEqual("0", Derive("<num=10>*x", "y"));
       Assert.AreEqual("20", Derive("<num=10>*x+<num=20>*y", "y"));
       Assert.AreEqual("6", Derive("<num=2>*<num=3>*x", "x"));
-      Assert.AreEqual("10*'y'", Derive("<num=10>*x*y+<num=20>*y", "x"));
+      Assert.AreEqual("10 * 'y'", Derive("<num=10>*x*y+<num=20>*y", "x"));
       Assert.AreEqual("1 * -1 / SQR('x')", Derive("1/x", "x"));
-      Assert.AreEqual("-1*'y' / SQR('x')", Derive("y/x", "x"));
-      Assert.AreEqual("('a' + 'b') * (-2*'x' + -1) / SQR('x' + 'x' * 'x')",
+      Assert.AreEqual("-1 * 'y' / SQR('x')", Derive("y/x", "x"));
+      Assert.AreEqual("('a' + 'b') * (-2 * 'x' + -1) / SQR('x' + 'x' * 'x')",
         Derive("(a+b)/(x+x*x)", "x"));
-      Assert.AreEqual("('a' + 'b') * (-2*'x' + -1) / SQR('x' + SQR('x'))", Derive("(a+b)/(x+SQR(x))", "x"));
+      Assert.AreEqual("('a' + 'b') * (-2 * 'x' + -1) / SQR('x' + SQR('x'))", Derive("(a+b)/(x+SQR(x))", "x"));
       Assert.AreEqual("EXP('x')", Derive("exp(x)", "x"));
-      Assert.AreEqual("EXP(3*'x') * 3", Derive("exp(<num=3>*x)", "x"));
+      Assert.AreEqual("EXP(3 * 'x') * 3", Derive("exp(<num=3>*x)", "x"));
       Assert.AreEqual("1 / 'x'", Derive("log(x)", "x"));
       Assert.AreEqual("1 / 'x'", Derive("log(<num=3>*x)", "x"));   // 3 * 1/(3*x)
-      Assert.AreEqual("1 / ('x' + 0.333333333333333*'y')", Derive("log(<num=3>*x+y)", "x"));  // simplifier does not try to keep fractions
-      Assert.AreEqual("1 / (SQRT(3*'x' + 'y') * 0.666666666666667)", Derive("sqrt(<num=3>*x+y)", "x"));   // 3 / (2 * sqrt(3*x+y)) = 1 / ((2/3) * sqrt(3*x+y)) 
-      Assert.AreEqual("COS(3*'x') * 3", Derive("sin(<num=3>*x)", "x"));
-      Assert.AreEqual("SIN(3*'x') * -3", Derive("cos(<num=3>*x)", "x"));
-      Assert.AreEqual("1 / (SQR(COS(3*'x')) * 0.333333333333333)", Derive("tan(<num=3>*x)", "x")); // diff(tan(f(x)), x) = 1.0 / cos²(f(x)), simplifier puts constant factor into the denominator
+      Assert.AreEqual("1 / ('x' + 0.333333333333333 * 'y')", Derive("log(<num=3>*x+y)", "x"));  // simplifier does not try to keep fractions
+      Assert.AreEqual("1 / (SQRT(3 * 'x' + 'y') * 0.666666666666667)", Derive("sqrt(<num=3>*x+y)", "x"));   // 3 / (2 * sqrt(3*x+y)) = 1 / ((2/3) * sqrt(3*x+y)) 
+      Assert.AreEqual("COS(3 * 'x') * 3", Derive("sin(<num=3>*x)", "x"));
+      Assert.AreEqual("SIN(3 * 'x') * -3", Derive("cos(<num=3>*x)", "x"));
+      Assert.AreEqual("1 / (SQR(COS(3 * 'x')) * 0.333333333333333)", Derive("tan(<num=3>*x)", "x")); // diff(tan(f(x)), x) = 1.0 / cos²(f(x)), simplifier puts constant factor into the denominator
 
-      Assert.AreEqual("9*'x' / ABS(3*'x')", Derive("abs(<num=3>*x)", "x"));
+      Assert.AreEqual("9 * 'x' / ABS(3 * 'x')", Derive("abs(<num=3>*x)", "x"));
       Assert.AreEqual("SQR('x') * 3", Derive("cube(x)", "x"));
       Assert.AreEqual("1 / (SQR(CUBEROOT('x')) * 3)", Derive("cuberoot(x)", "x"));
 
@@ -66,7 +66,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
 
 
       Assert.AreEqual("'a' * 'b' * 'c'", Derive("a*b*c*d", "d"));
-      Assert.AreEqual("'b' * 'c' * -1*'a' / (SQR('b') * SQR('c') * SQR('d'))", Derive("a/b/c/d", "d")); // TODO simplifier should be able to simplify this
+      Assert.AreEqual("'b' * 'c' * (-1 * 'a') / (SQR('b') * SQR('c') * SQR('d'))", Derive("a/b/c/d", "d")); // TODO simplifier should be able to simplify this
 
       Assert.AreEqual("'x' * (SQR(TANH(SQR('x'))) * -1 + 1) * 2", Derive("tanh(sqr(x))", "x")); // (2*'x'*(1 - SQR(TANH(SQR('x'))))
 
