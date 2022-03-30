@@ -400,3 +400,5 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+/Google.ProtocolBuffers-2.4.1.473.dll
+/HeuristicLab.Problems.ExternalEvaluation/3.4/Protos/ExternalEvaluationMessages.cs
