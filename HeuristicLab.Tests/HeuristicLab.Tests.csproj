@@ -11,7 +11,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>HeuristicLab.Tests</RootNamespace>
     <AssemblyName>HeuristicLab.Tests</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <TargetFrameworkProfile />
@@ -478,6 +478,7 @@
     <Compile Include="HeuristicLab-3.3\Samples\OSESGriewankSampleTest.cs" />
     <Compile Include="HeuristicLab-3.3\Samples\GAGroupingProblemSampleTest.cs" />
     <Compile Include="HeuristicLab-3.3\Samples\ShapeConstrainedRegressionSampleTest.cs" />
+    <Compile Include="HeuristicLab-3.3\Samples\StructureTemplateRegressionSampleTest.cs" />
     <Compile Include="HeuristicLab-3.3\Samples\VnsOpSampleTest.cs" />
     <Compile Include="HeuristicLab-3.3\Samples\EsGriewankSampleTest.cs" />
     <Compile Include="HeuristicLab-3.3\Samples\GaussianProcessRegressionSampleTest.cs" />

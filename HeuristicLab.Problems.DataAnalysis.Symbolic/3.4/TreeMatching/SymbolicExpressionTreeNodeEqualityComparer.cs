@@ -32,7 +32,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     protected SymbolicExpressionTreeNodeEqualityComparer(StorableConstructorFlag _) : base(_) { }
     protected SymbolicExpressionTreeNodeEqualityComparer(SymbolicExpressionTreeNodeEqualityComparer original, Cloner cloner)
       : base(original, cloner) {
-      matchConstantValues = original.matchConstantValues;
+      matchNumericValues = original.matchNumericValues;
       matchVariableNames = original.matchVariableNames;
       matchVariableWeights = original.matchVariableWeights;
     }
@@ -40,10 +40,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
     // more flexible matching criteria 
     [Storable]
-    private bool matchConstantValues;
-    public bool MatchConstantValues {
-      get { return matchConstantValues; }
-      set { matchConstantValues = value; }
+    private bool matchNumericValues;
+    public bool MatchNumericValues {
+      get { return matchNumericValues; }
+      set { matchNumericValues = value; }
     }
 
     [Storable]
@@ -65,7 +65,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     public SymbolicExpressionTreeNodeEqualityComparer() {
-      matchConstantValues = true;
+      matchNumericValues = true;
       matchVariableNames = true;
       matchVariableWeights = true;
     }
@@ -85,11 +85,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
         return (!MatchVariableNames || va.VariableName.Equals(vb.VariableName)) && (!MatchVariableWeights || va.Weight.Equals(vb.Weight));
       }
-      var ca = a as ConstantTreeNode;
-      if (ca != null) {
-        var cb = b as ConstantTreeNode;
+
+      if (a is INumericTreeNode ca) {
+        var cb = b as INumericTreeNode;
         if (cb == null) return false;
-        return (!MatchConstantValues || ca.Value.Equals(cb.Value));
+        return (!MatchNumericValues || ca.Value.Equals(cb.Value));
       }
       return false;
     }

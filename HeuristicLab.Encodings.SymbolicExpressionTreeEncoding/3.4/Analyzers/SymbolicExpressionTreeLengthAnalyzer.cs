@@ -51,8 +51,8 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       get { return (IScopeTreeLookupParameter<ISymbolicExpressionTree>)Parameters[SymbolicExpressionTreeParameterName]; }
     }
 
-    public ILookupParameter<IntValue> MaximumSymbolicExpressionTreeLengthParameter {
-      get { return (ILookupParameter<IntValue>)Parameters[MaximumSymbolicExpressionTreeLengthParameterName]; }
+    public IValueLookupParameter<IntValue> MaximumSymbolicExpressionTreeLengthParameter {
+      get { return (IValueLookupParameter<IntValue>)Parameters[MaximumSymbolicExpressionTreeLengthParameterName]; }
     }
     public ValueLookupParameter<DataTable> SymbolicExpressionTreeLengthsParameter {
       get { return (ValueLookupParameter<DataTable>)Parameters[SymbolicExpressionTreeLengthsParameterName]; }
@@ -101,7 +101,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     public SymbolicExpressionTreeLengthAnalyzer()
       : base() {
       Parameters.Add(new ScopeTreeLookupParameter<ISymbolicExpressionTree>(SymbolicExpressionTreeParameterName, "The symbolic expression tree whose length should be calculated."));
-      Parameters.Add(new LookupParameter<IntValue>(MaximumSymbolicExpressionTreeLengthParameterName, "The maximum allowed symbolic expression tree length"));
+      Parameters.Add(new ValueLookupParameter<IntValue>(MaximumSymbolicExpressionTreeLengthParameterName, "The maximum allowed symbolic expression tree length"));
       Parameters.Add(new ValueLookupParameter<DataTable>(SymbolicExpressionTreeLengthsParameterName, "The data table to store the symbolic expression tree lengths."));
       Parameters.Add(new ValueLookupParameter<DataTableHistory>(SymbolicExpressionTreeLengthsHistoryParameterName, "The data table to store the symbolic expression tree lengths history."));
       Parameters.Add(new ValueLookupParameter<ResultCollection>(ResultsParameterName, "The results collection where the analysis values should be stored."));
@@ -117,15 +117,21 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
 
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
+      // reset MaximumSymbolicExpressionTreeLengthParameterName to ValueLookupParameter
+      if (Parameters.TryGetValue(MaximumSymbolicExpressionTreeLengthParameterName, out IParameter treeLengthParam) && !(treeLengthParam is ValueLookupParameter<IntValue>))
+        Parameters.Remove(MaximumSymbolicExpressionTreeLengthParameterName);
+      if(!Parameters.ContainsKey(MaximumSymbolicExpressionTreeLengthParameterName))
+        Parameters.Add(new ValueLookupParameter<IntValue>(MaximumSymbolicExpressionTreeLengthParameterName, "The maximum allowed symbolic expression tree length"));
+
       // check if all the parameters are present and accounted for 
-      if (!Parameters.ContainsKey(StoreHistoryParameterName)) {
+      if (!Parameters.ContainsKey(StoreHistoryParameterName))
         Parameters.Add(new ValueParameter<BoolValue>(StoreHistoryParameterName, "True if the tree lengths history of the population should be stored.", new BoolValue(false)));
-      }
-      if (!Parameters.ContainsKey(UpdateIntervalParameterName)) {
+      
+      if (!Parameters.ContainsKey(UpdateIntervalParameterName))
         Parameters.Add(new ValueParameter<IntValue>(UpdateIntervalParameterName, "The interval in which the tree length analysis should be applied.", new IntValue(1)));
-      }
+
       //necessary code to correct UpdateCounterParameter - type was changed from LookupParameter to ValueParameter
-      if (Parameters.ContainsKey(UpdateCounterParameterName) && (Parameters[UpdateCounterParameterName] is LookupParameter<IntValue>))
+      if (Parameters.TryGetValue(UpdateCounterParameterName, out IParameter updateCounterParam) && updateCounterParam is LookupParameter<IntValue>)
         Parameters.Remove(UpdateCounterParameterName);
       if (!Parameters.ContainsKey(UpdateCounterParameterName)) {
         Parameters.Add(new ValueParameter<IntValue>(UpdateCounterParameterName, "The value which counts how many times the operator was called since the last update", new IntValue(0)));

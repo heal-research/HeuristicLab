@@ -27,7 +27,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
   public class OnlineLinearScalingParameterCalculator : DeepCloneable {
 
     /// <summary>
-    /// Additive constant
+    /// Additive offset
     /// </summary>
     public double Alpha {
       get {
@@ -102,7 +102,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     /// </summary>
     /// <param name="original">Values that should be scaled</param>
     /// <param name="target">Target values to which the original values should be scaled</param>
-    /// <param name="alpha">Additive constant for the linear scaling</param>
+    /// <param name="alpha">Additive offset for the linear scaling</param>
     /// <param name="beta">Multiplicative factor for the linear scaling</param>
     /// <param name="errorState">Flag that indicates if errors occurred in the calculation of the linea scaling parameters.</param>
     public static void Calculate(IEnumerable<double> original, IEnumerable<double> target, out double alpha, out double beta, out OnlineCalculatorError errorState) {

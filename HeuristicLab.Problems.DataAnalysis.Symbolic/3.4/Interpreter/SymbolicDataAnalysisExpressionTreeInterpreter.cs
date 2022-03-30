@@ -495,10 +495,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             if (actualRow < 0 || actualRow >= dataset.Rows) { return double.NaN; }
             return ((IList<double>)currentInstr.data)[actualRow] * laggedVariableTreeNode.Weight;
           }
-        case OpCodes.Constant: {
-            var constTreeNode = (ConstantTreeNode)currentInstr.dynamicNode;
-            return constTreeNode.Value;
-          }
+        case OpCodes.Constant:  // fall through
+        case OpCodes.Number: {
+          var numericTreeNode = (INumericTreeNode) currentInstr.dynamicNode;
+          return numericTreeNode.Value;
+        }
 
         //mkommend: this symbol uses the logistic function f(x) = 1 / (1 + e^(-alpha * x) ) 
         //to determine the relative amounts of the true and false branch see http://en.wikipedia.org/wiki/Logistic_function
@@ -526,6 +527,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
                 return Evaluate(dataset, ref row, state);
               }
             }
+          }
+        case OpCodes.SubFunction: {
+            return Evaluate(dataset, ref row, state);
           }
         default:
           throw new NotSupportedException();

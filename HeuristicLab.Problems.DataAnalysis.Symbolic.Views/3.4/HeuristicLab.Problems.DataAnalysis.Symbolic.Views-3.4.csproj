@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>HeuristicLab.Problems.DataAnalysis.Symbolic.Views</RootNamespace>
     <AssemblyName>HeuristicLab.Problems.DataAnalysis.Symbolic.Views-3.4</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
@@ -121,6 +121,17 @@
     <Compile Include="InteractiveSymbolicExpressionTreeChart.Designer.cs">
       <DependentUpon>InteractiveSymbolicExpressionTreeChart.cs</DependentUpon>
     </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="StructureTemplate\StructureTemplateView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="StructureTemplate\StructureTemplateView.Designer.cs">
+      <DependentUpon>StructureTemplateView.cs</DependentUpon>
+    </Compile>
     <Compile Include="SymbolicDataAnalysisModelMathView.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -128,6 +139,18 @@
       <DependentUpon>SymbolicDataAnalysisModelMathView.cs</DependentUpon>
     </Compile>
     <Compile Include="Plugin.cs" />
+    <Compile Include="Symbols\ConstantView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Symbols\ConstantView.Designer.cs">
+      <DependentUpon>ConstantView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Symbols\NumberView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Symbols\NumberView.Designer.cs">
+      <DependentUpon>NumberView.cs</DependentUpon>
+    </Compile>
     <Compile Include="TextualSymbolicDataAnalysisModelView.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -145,12 +168,6 @@
     </Compile>
     <Compile Include="GraphicalSymbolicDataAnalysisModelView.designer.cs">
       <DependentUpon>GraphicalSymbolicDataAnalysisModelView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Symbols\ConstantView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Symbols\ConstantView.Designer.cs">
-      <DependentUpon>ConstantView.cs</DependentUpon>
     </Compile>
     <Compile Include="Symbols\LaggedVariableView.cs">
       <SubType>UserControl</SubType>
@@ -204,6 +221,7 @@
       <DependentUpon>RunCollectionVariableImpactView.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Resources\structureTemplateHelp.rtf" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\HeuristicLab.Collections\3.3\HeuristicLab.Collections-3.3.csproj">
@@ -303,6 +321,12 @@
     <Content Include="displayModelFrame.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

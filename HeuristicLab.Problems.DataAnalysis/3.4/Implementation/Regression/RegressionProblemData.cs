@@ -33,7 +33,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
   [Item("RegressionProblemData", "Represents an item containing all data defining a regression problem.")]
   public class RegressionProblemData : DataAnalysisProblemData, IRegressionProblemData, IStorableContent {
     protected const string TargetVariableParameterName = "TargetVariable";
-    protected const string VariableRangesParameterName = "VariableRanges";
+    //protected const string VariableRangesParameterName = "VariableRanges";
     public string Filename { get; set; }
 
     #region default data
@@ -98,13 +98,13 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     #region parameter properties
     public IConstrainedValueParameter<StringValue> TargetVariableParameter => (IConstrainedValueParameter<StringValue>)Parameters[TargetVariableParameterName];
-    public IFixedValueParameter<IntervalCollection> VariableRangesParameter => (IFixedValueParameter<IntervalCollection>)Parameters[VariableRangesParameterName];
+    /*public IFixedValueParameter<IntervalCollection> VariableRangesParameter => (IFixedValueParameter<IntervalCollection>)Parameters[VariableRangesParameterName];
     #endregion
 
     #region properties
     public IntervalCollection VariableRanges {
       get => VariableRangesParameter.Value;
-    }
+    }*/
 
     public string TargetVariable {
       get { return TargetVariableParameter.Value.Value; }
@@ -128,10 +128,10 @@ namespace HeuristicLab.Problems.DataAnalysis {
     protected RegressionProblemData(StorableConstructorFlag _) : base(_) { }
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
-      if (!Parameters.ContainsKey(VariableRangesParameterName)) {
+      /*if (!Parameters.ContainsKey(VariableRangesParameterName)) {
         var variableRanges = Dataset.GetVariableRanges();
         Parameters.Add(new FixedValueParameter<IntervalCollection>(VariableRangesParameterName, variableRanges));
-      }
+      }*/
 
       RegisterParameterEvents();
     }
@@ -157,15 +157,11 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
 
     public RegressionProblemData(IDataset dataset, IEnumerable<string> allowedInputVariables, string targetVariable,
-      IEnumerable<ITransformation> transformations = null,
-      IntervalCollection variableRanges = null)
-      : base(dataset, allowedInputVariables, transformations ?? Enumerable.Empty<ITransformation>()) {
+      IEnumerable<ITransformation> transformations = null,  IntervalCollection variableRanges = null)
+      : base(dataset, allowedInputVariables, transformations, variableRanges) {
       var variables = InputVariables.Select(x => x.AsReadOnly()).ToList();
       Parameters.Add(new ConstrainedValueParameter<StringValue>(TargetVariableParameterName, new ItemSet<StringValue>(variables), variables.Where(x => x.Value == targetVariable).First()));
-      if (variableRanges == null) {
-        variableRanges = Dataset.GetVariableRanges();
-      }
-      Parameters.Add(new FixedValueParameter<IntervalCollection>(VariableRangesParameterName, variableRanges));
+     
     }
     private void RegisterParameterEvents() {
       TargetVariableParameter.ValueChanged += new EventHandler(Parameter_ValueChanged);

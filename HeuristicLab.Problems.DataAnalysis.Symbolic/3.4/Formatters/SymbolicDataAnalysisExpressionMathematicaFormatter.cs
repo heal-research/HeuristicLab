@@ -121,6 +121,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           FormatFunction(node, "Power", strBuilder);
         } else if (node.Symbol is Root) {
           FormatRoot(node, strBuilder);
+        } else if (node.Symbol is SubFunctionSymbol) {
+          FormatRecursively(node.GetSubtree(0), strBuilder);
         } else {
           throw new NotSupportedException("Formatting of symbol: " + node.Symbol + " is not supported.");
         }
@@ -129,9 +131,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         if (node.Symbol is Variable) {
           var varNode = node as VariableTreeNode;
           strBuilder.AppendFormat("Times[{0}, {1}]", varNode.VariableName, varNode.Weight.ToString("G17", CultureInfo.InvariantCulture));
-        } else if (node.Symbol is Constant) {
-          var constNode = node as ConstantTreeNode;
-          strBuilder.Append(constNode.Value.ToString("G17", CultureInfo.InvariantCulture));
+        } else if (node.Symbol is INumericSymbol) {
+          var numNode = node as INumericTreeNode;
+          strBuilder.Append(numNode.Value.ToString("G17", CultureInfo.InvariantCulture));
         } else if (node.Symbol is FactorVariable) {
           var factorNode = node as FactorVariableTreeNode;
           strBuilder.AppendFormat("Switch[{0},", factorNode.VariableName);

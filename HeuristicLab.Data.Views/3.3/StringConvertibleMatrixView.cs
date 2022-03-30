@@ -226,11 +226,13 @@ namespace HeuristicLab.Data.Views {
       errorProvider.SetError(rowsTextBox, string.Empty);
     }
     private void rowsTextBox_KeyDown(object sender, KeyEventArgs e) {
-      if (e.KeyCode == Keys.Enter || e.KeyCode == Keys.Return)
+      if (e.KeyCode == Keys.Enter || e.KeyCode == Keys.Return) {
         rowsLabel.Focus();  // set focus on label to validate data
-      if (e.KeyCode == Keys.Escape) {
+        e.SuppressKeyPress = true;
+      } else if (e.KeyCode == Keys.Escape) {
         rowsTextBox.Text = Content.Rows.ToString();
         rowsLabel.Focus();  // set focus on label to validate data
+        e.SuppressKeyPress = true;
       }
     }
     private void columnsTextBox_Validating(object sender, CancelEventArgs e) {
@@ -248,11 +250,13 @@ namespace HeuristicLab.Data.Views {
       errorProvider.SetError(columnsTextBox, string.Empty);
     }
     private void columnsTextBox_KeyDown(object sender, KeyEventArgs e) {
-      if (e.KeyCode == Keys.Enter || e.KeyCode == Keys.Return)
+      if (e.KeyCode == Keys.Enter || e.KeyCode == Keys.Return) {
         columnsLabel.Focus();  // set focus on label to validate data
-      if (e.KeyCode == Keys.Escape) {
+        e.SuppressKeyPress = true;
+      } else if (e.KeyCode == Keys.Escape) {
         columnsTextBox.Text = Content.Columns.ToString();
         columnsLabel.Focus();  // set focus on label to validate data
+        e.SuppressKeyPress = true;
       }
     }
     #endregion

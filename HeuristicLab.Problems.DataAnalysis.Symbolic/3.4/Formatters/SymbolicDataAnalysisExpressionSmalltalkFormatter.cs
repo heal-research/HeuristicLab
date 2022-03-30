@@ -82,9 +82,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           stringBuilder.Append(FormatRecursively(node.GetSubtree(i)));
         }
         stringBuilder.Append(")");
-      } else if (symbol is Constant) {
-        ConstantTreeNode constantTreeNode = node as ConstantTreeNode;
-        stringBuilder.Append(constantTreeNode.Value.ToString(CultureInfo.InvariantCulture));
+      } else if (symbol is INumericSymbol) {
+        var numberTreeNode = node as INumericTreeNode;
+        stringBuilder.Append(numberTreeNode.Value.ToString(CultureInfo.InvariantCulture));
       } else if (symbol is Cosine) {
         stringBuilder.Append(FormatRecursively(node.GetSubtree(0)));
         stringBuilder.Append(" cos");
@@ -183,6 +183,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         stringBuilder.Append(variableTreeNode.VariableName);
       } else if (symbol is BinaryFactorVariable || symbol is FactorVariable) {
         stringBuilder.Append("factor variables are not supported");
+      } else if (symbol is SubFunctionSymbol) {
+        stringBuilder.Append(FormatRecursively(node.GetSubtree(0)));
       } else {
         stringBuilder.Append("(");
         for (int i = 0; i < node.SubtreeCount; i++) {

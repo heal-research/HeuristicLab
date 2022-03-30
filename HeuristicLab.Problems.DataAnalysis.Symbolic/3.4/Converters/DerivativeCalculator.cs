@@ -40,7 +40,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       return new SymbolicExpressionTree(root);
     }
 
-    private static readonly Constant constantSy = new Constant();
+    private static readonly Number numberSy = new Number();
     private static readonly Addition addSy = new Addition();
     private static readonly Subtraction subSy = new Subtraction();
     private static readonly Multiplication mulSy = new Multiplication();
@@ -51,15 +51,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     private static readonly SquareRoot sqrtSy = new SquareRoot();
 
     public static ISymbolicExpressionTreeNode Derive(ISymbolicExpressionTreeNode branch, string variableName) {
-      if (branch.Symbol is Constant) {
-        return CreateConstant(0.0);
+      if (branch.Symbol is INumericSymbol) {
+        return CreateNumber(0.0);
       }
       if (branch.Symbol is Variable) {
         var varNode = branch as VariableTreeNode;
         if (varNode.VariableName == variableName) {
-          return CreateConstant(varNode.Weight);
+          return CreateNumber(varNode.Weight);
         } else {
-          return CreateConstant(0.0);
+          return CreateNumber(0.0);
         }
       }
       if (branch.Symbol is Addition) {
@@ -101,7 +101,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         // (f/g)' = (f'g - g'f) / g²
         if (branch.SubtreeCount == 1) {
           var g = (ISymbolicExpressionTreeNode)branch.GetSubtree(0).Clone();
-          var gPrime = Product(CreateConstant(-1.0), Derive(g, variableName));
+          var gPrime = Product(CreateNumber(-1.0), Derive(g, variableName));
           var sqrNode = new Square().CreateTreeNode();
           sqrNode.AddSubtree(g);
           return Div(gPrime, sqrNode);
@@ -124,7 +124,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       }
       if (branch.Symbol is Logarithm) {
         var f = (ISymbolicExpressionTreeNode)branch.GetSubtree(0).Clone();
-        return Product(Div(CreateConstant(1.0), f), Derive(f, variableName));
+        return Product(Div(CreateNumber(1.0), f), Derive(f, variableName));
       }
       if (branch.Symbol is Exponential) {
         var f = (ISymbolicExpressionTreeNode)branch.Clone();
@@ -132,32 +132,34 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       }
       if (branch.Symbol is Square) {
         var f = (ISymbolicExpressionTreeNode)branch.GetSubtree(0).Clone();
-        return Product(Product(CreateConstant(2.0), f), Derive(f, variableName));
+        return Product(Product(CreateNumber(2.0), f), Derive(f, variableName));
       }
       if (branch.Symbol is SquareRoot) {
         var f = (ISymbolicExpressionTreeNode)branch.Clone();
         var u = (ISymbolicExpressionTreeNode)branch.GetSubtree(0).Clone();
-        return Product(Div(CreateConstant(1.0), Product(CreateConstant(2.0), f)), Derive(u, variableName));
+        return Product(Div(CreateNumber(1.0), Product(CreateNumber(2.0), f)), Derive(u, variableName));
       }
       if (branch.Symbol is CubeRoot) {
         var f = (ISymbolicExpressionTreeNode)branch.Clone();
         var u = (ISymbolicExpressionTreeNode)branch.GetSubtree(0).Clone();
-        return Product(Div(CreateConstant(1.0), Product(CreateConstant(3.0), Square(f))), Derive(u, variableName));  // 1/3 1/cbrt(f(x))^2 d/dx f(x)
+        return Product(Div(CreateNumber(1.0), Product(CreateNumber(3.0), Square(f))), Derive(u, variableName));  // 1/3 1/cbrt(f(x))^2 d/dx f(x)
       }
       if (branch.Symbol is Cube) {
         var f = (ISymbolicExpressionTreeNode)branch.GetSubtree(0).Clone();
-        return Product(Product(CreateConstant(3.0), Square(f)), Derive(f, variableName));
+        return Product(Product(CreateNumber(3.0), Square(f)), Derive(f, variableName));
       }
       if (branch.Symbol is Power) {
         // HL evaluators handle power strangely (exponent is rounded to an integer)
         // here we only support the case when the exponent is a constant integer 
-        var exponent = branch.GetSubtree(1) as ConstantTreeNode;
+        var exponent = branch.GetSubtree(1) as INumericTreeNode;
         if (exponent != null && Math.Truncate(exponent.Value) == exponent.Value) {
           var newPower = (ISymbolicExpressionTreeNode)branch.Clone();
           var f = (ISymbolicExpressionTreeNode)newPower.GetSubtree(0).Clone();
-          var newExponent = (ConstantTreeNode)newPower.GetSubtree(1);
-          newExponent.Value -= 1;
-          return Product(Product(CreateConstant(exponent.Value), newPower), Derive(f, variableName));
+          var newExponent = (NumberTreeNode)numberSy.CreateTreeNode();
+          newExponent.Value = ((NumberTreeNode)newPower.GetSubtree(1)).Value - 1;
+          newPower.RemoveSubtree(1);
+          newPower.AddSubtree(newExponent);
+          return Product(Product(CreateNumber(exponent.Value), newPower), Derive(f, variableName));
         } else throw new NotSupportedException("Cannot derive non-integer powers");
       }
       if (branch.Symbol is Absolute) {
@@ -170,7 +172,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         var a = (ISymbolicExpressionTreeNode)branch.GetSubtree(0).Clone();
         var b = (ISymbolicExpressionTreeNode)branch.GetSubtree(1).Clone();
 
-        var definition = Div(a, SquareRoot(Sum(Square(b), CreateConstant(1.0))));
+        var definition = Div(a, SquareRoot(Sum(Square(b), CreateNumber(1.0))));
         return Derive(definition, variableName);
       }
       if (branch.Symbol is Sine) {
@@ -183,7 +185,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         var u = (ISymbolicExpressionTreeNode)branch.GetSubtree(0).Clone();
         var sin = (new Sine()).CreateTreeNode();
         sin.AddSubtree(u);
-        return Product(CreateConstant(-1.0), Product(sin, Derive(u, variableName)));
+        return Product(CreateNumber(-1.0), Product(sin, Derive(u, variableName)));
       }
       if (branch.Symbol is Tangent) {
         // tan(x)' = 1 / cos²(x)
@@ -195,7 +197,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         // tanh(f(x))' = f(x)'sech²(f(x)) = f(x)'(1 - tanh²(f(x)))
         var fxp = Derive(branch.GetSubtree(0), variableName);
         var tanh = (ISymbolicExpressionTreeNode)branch.Clone();
-        return Product(fxp, Subtract(CreateConstant(1.0), Square(tanh)));
+        return Product(fxp, Subtract(CreateNumber(1.0), Square(tanh)));
+      }
+      if (branch.Symbol is SubFunctionSymbol) {
+        return Derive(branch.GetSubtree(0), variableName);
       }
       throw new NotSupportedException(string.Format("Symbol {0} is not supported.", branch.Symbol));
     }
@@ -252,10 +257,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       return sqrt;
     }
 
-    private static ISymbolicExpressionTreeNode CreateConstant(double v) {
-      var constNode = (ConstantTreeNode)constantSy.CreateTreeNode();
-      constNode.Value = v;
-      return constNode;
+    private static ISymbolicExpressionTreeNode CreateNumber(double v) {
+      var numberNode = (NumberTreeNode)numberSy.CreateTreeNode();
+      numberNode.Value = v;
+      return numberNode;
     }
 
     public static bool IsCompatible(ISymbolicExpressionTree tree) {
@@ -263,6 +268,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         from n in tree.Root.GetSubtree(0).IterateNodesPrefix()
         where
           !(n.Symbol is Variable) &&
+          !(n.Symbol is Number) &&
           !(n.Symbol is Constant) &&
           !(n.Symbol is Addition) &&
           !(n.Symbol is Subtraction) &&
@@ -281,7 +287,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           !(n.Symbol is Sine) &&
           !(n.Symbol is Cosine) &&
           !(n.Symbol is Tangent) &&
-          !(n.Symbol is StartSymbol)
+          !(n.Symbol is StartSymbol) &&
+          !(n.Symbol is SubFunctionSymbol)
         select n).Any();
       return !containsUnknownSymbol;
     }

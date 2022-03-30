@@ -156,9 +156,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       var opcode = OpCodes.MapSymbolToOpCode(node);
       #region switch opcode
       switch (opcode) {
-        case OpCodes.Constant: {
-            var constantTreeNode = (ConstantTreeNode)node;
-            return Expression.Constant(constantTreeNode.Value);
+        case OpCodes.Constant: // fall through
+        case OpCodes.Number: {
+          var numberTreeNode = (INumericTreeNode)node;
+          return Expression.Constant(numberTreeNode.Value);
           }
         case OpCodes.Variable: {
             var variableTreeNode = (VariableTreeNode)node;
@@ -660,6 +661,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
               Expression.Multiply(falseBranch, Expression.Subtract(Expression.Constant(1), p))
               );
           }
+        case OpCodes.SubFunction: {
+          return MakeExpr(node.GetSubtree(0), variableIndices, row, columns);
+        }
         default:
           throw new NotSupportedException("Unsupported symbol: " + node.Symbol);
       }

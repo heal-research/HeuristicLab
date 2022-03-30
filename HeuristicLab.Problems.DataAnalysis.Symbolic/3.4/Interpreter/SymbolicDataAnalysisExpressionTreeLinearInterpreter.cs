@@ -387,6 +387,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           var state = (InterpreterState)instr.data;
           state.Reset();
           instr.value = interpreter.Evaluate(dataset, ref row, state);
+        } else if (instr.opCode == OpCodes.SubFunction) {
+          instr.value = code[instr.childIndex].value;
         } else {
           var errorText = string.Format("The {0} symbol is not supported by the linear interpreter. To support this symbol, please use the SymbolicDataAnalysisExpressionTreeInterpreter.", instr.dynamicNode.Symbol.Name);
           throw new NotSupportedException(errorText);
@@ -415,10 +417,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         var instr = code[i];
         #region opcode switch
         switch (instr.opCode) {
+          case OpCodes.Number: // fall through
           case OpCodes.Constant: {
-              var constTreeNode = (ConstantTreeNode)instr.dynamicNode;
-              instr.value = constTreeNode.Value;
-              instr.skip = true; // the value is already set so this instruction should be skipped in the evaluation phase
+            var numericTreeNode = (INumericTreeNode)instr.dynamicNode;
+            instr.value = numericTreeNode.Value;
+            instr.skip = true; // the value is already set so this instruction should be skipped in the evaluation phase
             }
             break;
           case OpCodes.Variable: {

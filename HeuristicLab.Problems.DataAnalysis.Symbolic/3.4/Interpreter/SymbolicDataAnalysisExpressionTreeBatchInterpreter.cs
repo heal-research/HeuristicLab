@@ -83,7 +83,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
               LoadData(instr, rows, rowIndex, batchSize);
               break;
             }
-          case OpCodes.Constant: break; // nothing to do here, don't remove because we want to prevent falling into the default case here.
+          case OpCodes.Constant: // fall through
+          case OpCodes.Number: 
+            break; // nothing to do here, don't remove because we want to prevent falling into the default case here.
           case OpCodes.Add: {
               Load(instr.buf, code[c].buf);
               for (int j = 1; j < n; ++j) {
@@ -179,10 +181,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
               Tan(instr.buf, code[c].buf);
               break;
             }
+
           case OpCodes.Tanh: {
               Tanh(instr.buf, code[c].buf);
               break;
             }
+
           case OpCodes.Absolute: {
               Absolute(instr.buf, code[c].buf);
               break;
@@ -191,6 +195,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           case OpCodes.AnalyticQuotient: {
               Load(instr.buf, code[c].buf);
               AnalyticQuotient(instr.buf, code[c + 1].buf);
+              break;
+            }
+
+          case OpCodes.SubFunction: {
+              Load(instr.buf, code[c].buf);
               break;
             }
           default: throw new NotSupportedException($"This interpreter does not support {(OpCode)instr.opcode}");
@@ -278,8 +287,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             code[i].data = dataset.GetReadOnlyDoubleValues(variable.VariableName).ToArray();
             cachedData[variable.VariableName] = code[i].data;
           }
-        } else if (node is ConstantTreeNode constant) {
-          code[i].value = constant.Value;
+        } else if (node is INumericTreeNode numeric) {
+          code[i].value = numeric.Value;
           for (int j = 0; j < BATCHSIZE; ++j)
             code[i].buf[j] = code[i].value;
         }

@@ -119,8 +119,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression.Views {
     }
 
     private void ChangeVariableValue(string variableName, double value) {
-      foreach (var constNode in variableNodes[variableName].Cast<ConstantTreeNode>())
-        constNode.Value = value;
+      foreach (var numNode in variableNodes[variableName].Cast<NumberTreeNode>())
+        numNode.Value = value;
 
       UpdateResponseSeries();
     }
@@ -209,7 +209,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression.Views {
             variableNodes.Add(varNode.VariableName, new List<ISymbolicExpressionTreeNode>());
 
           int childIndex = varNode.Parent.IndexOfSubtree(varNode);
-          var replacementNode = MakeConstantTreeNode(medianValues[varNode.VariableName]);
+          var replacementNode = MakeNumberTreeNode(medianValues[varNode.VariableName]);
           var parent = varNode.Parent;
           parent.RemoveSubtree(childIndex);
           parent.InsertSubtree(childIndex, MakeProduct(replacementNode, varNode.Weight));
@@ -222,21 +222,21 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression.Views {
       UpdateResponseSeries();
     }
 
-    private ISymbolicExpressionTreeNode MakeProduct(ConstantTreeNode c, double weight) {
+    private ISymbolicExpressionTreeNode MakeProduct(NumberTreeNode c, double weight) {
       var mul = new Multiplication();
       var prod = mul.CreateTreeNode();
-      prod.AddSubtree(MakeConstantTreeNode(weight));
+      prod.AddSubtree(MakeNumberTreeNode(weight));
       prod.AddSubtree(c);
       return prod;
     }
 
-    private ConstantTreeNode MakeConstantTreeNode(double value) {
-      Constant constant = new Constant();
-      constant.MinValue = value - 1;
-      constant.MaxValue = value + 1;
-      ConstantTreeNode constantTreeNode = (ConstantTreeNode)constant.CreateTreeNode();
-      constantTreeNode.Value = value;
-      return constantTreeNode;
+    private NumberTreeNode MakeNumberTreeNode(double value) {
+      Number number = new Number();
+      number.MinValue = value - 1;
+      number.MaxValue = value + 1;
+      NumberTreeNode numberTreeNode = (NumberTreeNode)number.CreateTreeNode();
+      numberTreeNode.Value = value;
+      return numberTreeNode;
     }
   }
 }

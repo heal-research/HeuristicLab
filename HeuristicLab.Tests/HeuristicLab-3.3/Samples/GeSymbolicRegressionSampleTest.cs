@@ -112,6 +112,10 @@ namespace HeuristicLab.Tests {
       foreach (var c in consts) {
         problem.SymbolicExpressionTreeGrammar.RemoveSymbol(c);
       }
+      var numbers = problem.SymbolicExpressionTreeGrammar.AllowedSymbols.OfType<Number>().ToList();
+      foreach (var n in numbers) {
+        problem.SymbolicExpressionTreeGrammar.RemoveSymbol(n);
+      }
 
       SamplesUtils.ConfigureOsGeneticAlgorithmParameters<GenderSpecificSelector, Encodings.IntegerVectorEncoding.SinglePointCrossover, Encodings.IntegerVectorEncoding.UniformOnePositionManipulator>(
         ga, 1000, 1, 50, 0.05, 200);

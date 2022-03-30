@@ -37,9 +37,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       set { comparer.MatchVariableWeights = value; }
     }
 
-    public bool MatchConstantValues {
-      get { return comparer.MatchConstantValues; }
-      set { comparer.MatchConstantValues = value; }
+    public bool MatchParameterValues {
+      get { return comparer.MatchNumericValues; }
+      set { comparer.MatchNumericValues = value; }
     }
 
     protected override bool IsCommutative { get { return true; } }
@@ -58,15 +58,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
     public SymbolicExpressionTreeMaxCommonSubtreeSimilarityCalculator() {
       comparer = new SymbolicExpressionTreeNodeEqualityComparer {
-        MatchConstantValues = true,
+        MatchNumericValues = true,
         MatchVariableNames = true,
         MatchVariableWeights = true
       };
     }
 
-    public SymbolicExpressionTreeMaxCommonSubtreeSimilarityCalculator(bool matchVariableWeights, bool matchConstantValues) {
+    public SymbolicExpressionTreeMaxCommonSubtreeSimilarityCalculator(bool matchVariableWeights, bool matchParameterValues) {
       comparer = new SymbolicExpressionTreeNodeEqualityComparer {
-        MatchConstantValues = matchConstantValues,
+        MatchNumericValues = matchParameterValues,
         MatchVariableNames = true,
         MatchVariableWeights = matchVariableWeights
       };

@@ -92,10 +92,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
       //Generate function header
       strBuilder.Append("CREATE FUNCTION dbo.REGRESSIONMODEL(");
-      strBuilder.Append(string.Join(", ", sortedVarcharIdentifiers.Select(n => string.Format("{0} NVARCHAR(max)",n))));
+      strBuilder.Append(string.Join(", ", sortedVarcharIdentifiers.Select(n => string.Format("{0} NVARCHAR(max)", n))));
       if (varcharVarNames.Any() && floatVarNames.Any())
         strBuilder.Append(",");
-      strBuilder.Append(string.Join(", ", sortedFloatIdentifiers.Select(n => string.Format("{0} FLOAT",n))));
+      strBuilder.Append(string.Join(", ", sortedFloatIdentifiers.Select(n => string.Format("{0} FLOAT", n))));
       strBuilder.AppendLine(")");
 
       //start function body
@@ -156,6 +156,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           FormatFunction(level, node, "POWER", strBuilder);
         } else if (node.Symbol is Root) {
           FormatRoot(level, node, strBuilder);
+        } else if (node.Symbol is SubFunctionSymbol) {
+          FormatRecursively(level, node.GetSubtree(0), strBuilder);
         } else {
           throw new NotSupportedException("Formatting of symbol: " + node.Symbol + " not supported for TSQL symbolic expression tree formatter.");
         }
@@ -163,9 +165,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         if (node is VariableTreeNode) {
           var varNode = node as VariableTreeNode;
           strBuilder.AppendFormat("{0} * {1}", VariableName2Identifier(varNode.VariableName), varNode.Weight.ToString("g17", CultureInfo.InvariantCulture));
-        } else if (node is ConstantTreeNode) {
-          var constNode = node as ConstantTreeNode;
-          strBuilder.Append(constNode.Value.ToString("g17", CultureInfo.InvariantCulture));
+        } else if (node is INumericTreeNode numNode) {
+          strBuilder.Append(numNode.Value.ToString("g17", CultureInfo.InvariantCulture));
         } else if (node.Symbol is FactorVariable) {
           var factorNode = node as FactorVariableTreeNode;
           FormatFactor(level, factorNode, strBuilder);
@@ -180,9 +181,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
     private void FormatIfThenElse(int level, ISymbolicExpressionTreeNode node, StringBuilder strBuilder) {
       strBuilder.Append("CASE ISNULL((SELECT 1 WHERE");
-      FormatRecursively(level,node.GetSubtree(0), strBuilder);
+      FormatRecursively(level, node.GetSubtree(0), strBuilder);
       strBuilder.AppendLine("),0)");
-      strBuilder.AppendIndented(level,"WHEN 1 THEN ");
+      strBuilder.AppendIndented(level, "WHEN 1 THEN ");
       FormatRecursively(level, node.GetSubtree(1), strBuilder);
       strBuilder.AppendLine();
       strBuilder.AppendIndented(level, "WHEN 0 THEN ");
@@ -202,7 +203,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     private string VariableName2Identifier(string variableName) {
-      return "@"+variableName.Replace(' ', '_');
+      return "@" + variableName.Replace(' ', '_');
     }
 
     private void GenerateFooter(StringBuilder strBuilder) {

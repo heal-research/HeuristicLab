@@ -26,7 +26,6 @@ using HeuristicLab.Data;
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
   [StorableType("F96C5253-5A78-491C-95AE-78F64BD1F3B1")]
   public interface IMultiObjectiveConstraintsEvaluator : ISymbolicRegressionMultiObjectiveEvaluator {
-
     IFixedValueParameter<IntValue> NumConstraintsParameter { get; }
   }
 }

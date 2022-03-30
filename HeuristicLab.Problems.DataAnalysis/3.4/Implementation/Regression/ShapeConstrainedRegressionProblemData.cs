@@ -143,22 +143,20 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     public ShapeConstrainedRegressionProblemData(IRegressionProblemData regressionProblemData)
       : this(regressionProblemData.Dataset, regressionProblemData.AllowedInputVariables, regressionProblemData.TargetVariable,
-          regressionProblemData.TrainingPartition, regressionProblemData.TestPartition, regressionProblemData.Transformations,
-          (regressionProblemData is ShapeConstrainedRegressionProblemData) ? ((ShapeConstrainedRegressionProblemData)regressionProblemData).ShapeConstraints : null, 
-          regressionProblemData.VariableRanges) {
+          regressionProblemData.TrainingPartition, regressionProblemData.TestPartition, (regressionProblemData is ShapeConstrainedRegressionProblemData) ? ((ShapeConstrainedRegressionProblemData)regressionProblemData).ShapeConstraints : null,
+          regressionProblemData.Transformations, regressionProblemData.VariableRanges) {
     }
 
     public ShapeConstrainedRegressionProblemData(IDataset dataset, IEnumerable<string> allowedInputVariables, string targetVariable,
-                                                 IntRange trainingPartition, IntRange testPartition,
-                                                 IEnumerable<ITransformation> transformations = null, ShapeConstraints sc = null, IntervalCollection variableRanges = null)
-    : base(dataset, allowedInputVariables, targetVariable, transformations ?? Enumerable.Empty<ITransformation>(), variableRanges) {
+                                                 IntRange trainingPartition, IntRange testPartition, ShapeConstraints sc = null,
+                                                 IEnumerable<ITransformation> transformations = null,  IntervalCollection variableRanges = null)
+    : base(dataset, allowedInputVariables, targetVariable, transformations, variableRanges) {
       TrainingPartition.Start = trainingPartition.Start;
       TrainingPartition.End = trainingPartition.End;
       TestPartition.Start = testPartition.Start;
       TestPartition.End = testPartition.End;
       if (sc == null) sc = new ShapeConstraints();
       Parameters.Add(new FixedValueParameter<ShapeConstraints>(ShapeConstraintsParameterName, "Specifies the shape constraints for the regression problem.", (ShapeConstraints)sc.Clone()));
-
       RegisterEventHandlers();
     }
 

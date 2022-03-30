@@ -6,16 +6,11 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
   [TestClass]
   public class BottomUpSimilarityCalculatorTest {
-    private readonly SymbolicExpressionImporter importer = new SymbolicExpressionImporter();
     private readonly InfixExpressionParser parser = new InfixExpressionParser();
 
     private const int N = 200;
     private const int Rows = 1;
     private const int Columns = 10;
-
-    public BottomUpSimilarityCalculatorTest() {
-      var parser = new InfixExpressionParser();
-    }
 
     [TestMethod]
     [TestCategory("Problems.DataAnalysis.Symbolic")]
@@ -27,27 +22,27 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
       TestMatchedNodes("1 + 2", "2 + 1", 3, strict: true);
 
       TestMatchedNodes("1 - 1", "2 - 2", 0, strict: true);
-      TestMatchedNodes("1 - 1", "2 - 2", 4, strict: false); // 4, because of the way strings are parsed into trees by the infix parser
+      TestMatchedNodes("1 - 1", "2 - 2", 3, strict: false);
 
       TestMatchedNodes("2 - 1", "1 - 2", 2, strict: true);
-      TestMatchedNodes("2 - 1", "1 - 2", 4, strict: false);
+      TestMatchedNodes("2 - 1", "1 - 2", 3, strict: false);
 
-      TestMatchedNodes("(X1 * X2) + (X3 * X4)", "(X1 * X2) + (X3 * X4)", 7, strict: true);
-      TestMatchedNodes("(X1 * X2) + (X3 * X4)", "(X1 * X2) + (X3 * X4)", 7, strict: false);
+      TestMatchedNodes("X1 * X2 + X3 * X4", "X1 * X2 + X3 * X4", 7, strict: true);
+      TestMatchedNodes("X1 * X2 + X3 * X4", "X1 * X2 + X3 * X4", 7, strict: false);
 
-      TestMatchedNodes("(X1 * X2) + (X3 * X4)", "(X1 * X2) + (X5 * X6)", 3, strict: true);
-      TestMatchedNodes("(X1 * X2) + (X3 * X4)", "(X1 * X2) + (X5 * X6)", 3, strict: false);
+      TestMatchedNodes("X1 * X2 + X3 * X4", "X1 * X2 + X5 * X6", 3, strict: true);
+      TestMatchedNodes("X1 * X2 + X3 * X4", "X1 * X2 + X5 * X6", 3, strict: false);
 
-      TestMatchedNodes("(X1 * X2) + (X3 * X4)", "(X1 * X2) - (X5 * X6)", 3, strict: true);
-      TestMatchedNodes("(X1 * X2) + (X3 * X4)", "(X1 * X2) - (X5 * X6)", 3, strict: false);
+      TestMatchedNodes("X1 * X2 + X3 * X4", "X1 * X2 - X5 * X6", 3, strict: true);
+      TestMatchedNodes("X1 * X2 + X3 * X4", "X1 * X2 - X5 * X6", 3, strict: false);
 
       TestMatchedNodes("SIN(SIN(SIN(X1)))", "SIN(SIN(SIN(X1)))", 4, strict: true);
       TestMatchedNodes("SIN(SIN(SIN(X1)))", "COS(SIN(SIN(X1)))", 3, strict: true);
       TestMatchedNodes("SIN(SIN(SIN(X1)))", "COS(COS(SIN(X1)))", 2, strict: true);
       TestMatchedNodes("SIN(SIN(SIN(X1)))", "COS(COS(COS(X1)))", 1, strict: true);
 
-      const string lhs = "(0.006153 + (X9 * X7 * X2 * 0.229506) + (X6 * X10 * X3 * 0.924598) + (X2 * X1 * 0.951272) + (X4 * X3 * 0.992570) + (X6 * X5 * 1.027299))";
-      const string rhs = "(0.006153 + (X10 * X7 * X2 * 0.229506) + (X6 * X10 * X3 * 0.924598) + (X2 * X1 * 0.951272) + (X4 * X3 * 0.992570) + (X6 * X5 * 1.027299))";
+      const string lhs = "0.006153 + X9 * X7 * X2 * 0.229506 + X6 * X10 * X3 * 0.924598 + X2 * X1 * 0.951272 + X4 * X3 * 0.992570 + X6 * X5 * 1.027299";
+      const string rhs = "0.006153 + X10 * X7 * X2 * 0.229506 + X6 * X10 * X3 * 0.924598 + X2 * X1 * 0.951272 + X4 * X3 * 0.992570 + X6 * X5 * 1.027299";
 
       TestMatchedNodes(lhs, lhs, 24, strict: true);
       TestMatchedNodes(lhs, lhs, 24, strict: false);
@@ -76,12 +71,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
       grammar.ConfigureAsDefaultRegressionGrammar();
       var twister = new MersenneTwister(31415);
       var ds = Util.CreateRandomDataset(twister, Rows, Columns);
-      var trees = Util.CreateRandomTrees(twister, ds, grammar, N, 1, 100, 0, 0);
+      var trees = Util.CreateRandomTrees(twister, ds, grammar, N, 100);
 
       double s = 0;
       var sw = new Stopwatch();
 
-      var similarityCalculator = new SymbolicExpressionTreeBottomUpSimilarityCalculator { MatchVariableWeights = false, MatchConstantValues = false };
+      var similarityCalculator = new SymbolicExpressionTreeBottomUpSimilarityCalculator { MatchVariableWeights = false, MatchNumericValues = false };
 
       sw.Start();
       for (int i = 0; i < trees.Length - 1; ++i) {
@@ -114,9 +109,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
       grammar.ConfigureAsDefaultRegressionGrammar();
       var twister = new MersenneTwister(31415);
       var ds = Util.CreateRandomDataset(twister, Rows, Columns);
-      var trees = Util.CreateRandomTrees(twister, ds, grammar, N, 1, 100, 0, 0);
+      var trees = Util.CreateRandomTrees(twister, ds, grammar, N, 100);
 
-      var similarityCalculator = new SymbolicExpressionTreeBottomUpSimilarityCalculator { MatchConstantValues = strict, MatchVariableWeights = strict };
+      var similarityCalculator = new SymbolicExpressionTreeBottomUpSimilarityCalculator { MatchNumericValues = strict, MatchVariableWeights = strict };
       var bottomUpSimilarity = 0d;
       for (int i = 0; i < trees.Length - 1; ++i) {
         for (int j = i + 1; j < trees.Length; ++j) {

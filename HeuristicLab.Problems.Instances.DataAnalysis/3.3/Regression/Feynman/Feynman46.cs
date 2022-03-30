@@ -67,7 +67,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
         D.Add(res);
       }
 
-      var targetNoise = GetNoisyTarget(D, rand);
+      var targetNoise = ValueGenerator.GenerateNoise(D, rand, noiseRatio);
       if (targetNoise != null) data.Add(targetNoise);
 
       return data;

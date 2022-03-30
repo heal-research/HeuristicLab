@@ -30,7 +30,7 @@ using HeuristicLab.Parameters;
 
 namespace HeuristicLab.Optimization {
   [StorableType("43619638-9D00-4951-8138-8CCD0786E784")]
-  public abstract class MultiEncodingOperator<T> : Operator, IMultiEncodingOperator where T : class,IOperator {
+  public abstract class MultiEncodingOperator<T> : Operator, IMultiEncodingOperator where T : class, IOperator {
     private List<IEncoding> encodings = new List<IEncoding>();
     [Storable(Name = "Encodings")]
     private IEnumerable<IEncoding> StorableEncodings {
@@ -70,7 +70,8 @@ namespace HeuristicLab.Optimization {
     }
 
     public override IOperation Apply() {
-      var operations = Parameters.Select(p => p.ActualValue).OfType<IOperator>().Select(op => ExecutionContext.CreateChildOperation(op));
+      var operators = Parameters.OrderBy(p => p.Name).Select(p => p.ActualValue).OfType<IOperator>();
+      var operations = operators.Select(op => ExecutionContext.CreateChildOperation(op));
       return new OperationCollection(operations);
     }
 

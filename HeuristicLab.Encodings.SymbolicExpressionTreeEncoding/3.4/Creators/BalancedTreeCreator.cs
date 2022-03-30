@@ -170,13 +170,6 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       }
     }
 
-    protected override ISymbolicExpressionTree Create(IRandom random) {
-      var maxLength = MaximumSymbolicExpressionTreeLengthParameter.ActualValue.Value;
-      var maxDepth = MaximumSymbolicExpressionTreeDepthParameter.ActualValue.Value;
-      var grammar = ClonedSymbolicExpressionTreeGrammarParameter.ActualValue;
-      return Create(random, grammar, maxLength, maxDepth);
-    }
-
     #region helpers
     private class NodeInfo {
       public ISymbolicExpressionTreeNode Node;

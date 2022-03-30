@@ -29,18 +29,18 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableType("36A22322-0627-4E25-A468-F2A788AF6D46")]
   [Item("TypeCoherentExpressionGrammar", "Represents a grammar for functional expressions in which special syntactic constraints are enforced so that boolean and real-valued expressions are not mixed.")]
   public class TypeCoherentExpressionGrammar : DataAnalysisGrammar, ISymbolicDataAnalysisGrammar {
-    private const string ArithmeticFunctionsName = "Arithmetic Functions";
-    private const string TrigonometricFunctionsName = "Trigonometric Functions";
-    private const string ExponentialFunctionsName = "Exponential and Logarithmic Functions";
-    private const string RealValuedSymbolsName = "Real Valued Symbols";
-    private const string TerminalsName = "Terminals";
-    private const string PowerFunctionsName = "Power Functions";
-    private const string ConditionsName = "Conditions";
-    private const string ComparisonsName = "Comparisons";
-    private const string BooleanOperatorsName = "Boolean Operators";
-    private const string ConditionalSymbolsName = "ConditionalSymbols";
-    private const string SpecialFunctionsName = "Special Functions";
-    private const string TimeSeriesSymbolsName = "Time Series Symbols";
+    public const string ArithmeticFunctionsName = "Arithmetic Functions";
+    public const string TrigonometricFunctionsName = "Trigonometric Functions";
+    public const string ExponentialFunctionsName = "Exponential and Logarithmic Functions";
+    public const string RealValuedSymbolsName = "Real Valued Symbols";
+    public const string TerminalsName = "Terminals";
+    public const string PowerFunctionsName = "Power Functions";
+    public const string ConditionsName = "Conditions";
+    public const string ComparisonsName = "Comparisons";
+    public const string BooleanOperatorsName = "Boolean Operators";
+    public const string ConditionalSymbolsName = "ConditionalSymbols";
+    public const string SpecialFunctionsName = "Special Functions";
+    public const string TimeSeriesSymbolsName = "Time Series Symbols";
 
     [StorableConstructor]
     protected TypeCoherentExpressionGrammar(StorableConstructorFlag _) : base(_) { }
@@ -104,9 +104,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       var integral = new Integral();
       var derivative = new Derivative();
 
+      var number = new Number();
+      number.MinValue = -20;
+      number.MaxValue = 20;
       var constant = new Constant();
-      constant.MinValue = -20;
-      constant.MaxValue = 20;
+      constant.Enabled = false;
       var variableSymbol = new Variable();
       var binFactorVariable = new BinaryFactorVariable();
       var factorVariable = new FactorVariable();
@@ -120,7 +122,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       var exponentialAndLogarithmicSymbols = new GroupSymbol(ExponentialFunctionsName, new List<ISymbol> { exp, log });
       var specialFunctions = new GroupSymbol(SpecialFunctionsName, new List<ISymbol> { abs, airyA, airyB, bessel, cosineIntegral, dawson, erf, expIntegralEi,
         fresnelCosineIntegral,fresnelSineIntegral,gamma,hypCosineIntegral,hypSineIntegral,norm, psi, sineIntegral, analyticalQuotient});
-      var terminalSymbols = new GroupSymbol(TerminalsName, new List<ISymbol> { constant, variableSymbol, binFactorVariable, factorVariable });
+      var terminalSymbols = new GroupSymbol(TerminalsName, new List<ISymbol> { number, constant, variableSymbol, binFactorVariable, factorVariable });
       var realValuedSymbols = new GroupSymbol(RealValuedSymbolsName, new List<ISymbol>() { arithmeticSymbols, trigonometricSymbols, exponentialAndLogarithmicSymbols, specialFunctions, terminalSymbols });
 
       var powerSymbols = new GroupSymbol(PowerFunctionsName, new List<ISymbol> { square, pow, sqrt, root, cube, cubeRoot });
@@ -192,6 +194,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       AddAllowedChildSymbol(powerSymbols, variableSymbol, 0);
       AddAllowedChildSymbol(powerSymbols, laggedVariable, 0);
       AddAllowedChildSymbol(powerSymbols, autoregressiveVariable, 0);
+      AddAllowedChildSymbol(powerSymbols, number, 1);
       AddAllowedChildSymbol(powerSymbols, constant, 1);
 
       AddAllowedChildSymbol(square, realValuedSymbols, 0);
@@ -248,6 +251,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       Symbols.First(s => s.Name == SpecialFunctionsName).Enabled = false;
       Symbols.First(s => s.Name == ConditionalSymbolsName).Enabled = false;
       Symbols.First(s => s.Name == TimeSeriesSymbolsName).Enabled = false;
+      Symbols.First(s => s is Constant).Enabled = false;
     }
 
     public void ConfigureAsDefaultClassificationGrammar() {
@@ -261,6 +265,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       Symbols.First(s => s.Name == SpecialFunctionsName).Enabled = false;
       Symbols.First(s => s.Name == PowerFunctionsName).Enabled = false;
       Symbols.First(s => s.Name == TimeSeriesSymbolsName).Enabled = false;
+      Symbols.First(s => s is Constant).Enabled = false;
     }
 
     public void ConfigureAsDefaultTimeSeriesPrognosisGrammar() {
@@ -277,6 +282,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       Symbols.First(s => s is Derivative).Enabled = false;
       Symbols.First(s => s is Integral).Enabled = false;
       Symbols.First(s => s is TimeLag).Enabled = false;
+      Symbols.First(s => s is Constant).Enabled = false;
     }
   }
 }

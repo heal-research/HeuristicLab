@@ -4,7 +4,7 @@
     public ushort narg;
     public int childIndex;
 
-    public double value; // for constants
+    public double value; // for numbers and constants
     public double weight; // for variables
     public double[] buf;
     public double[] data; // to hold dataset data

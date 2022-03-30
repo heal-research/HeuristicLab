@@ -40,7 +40,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     public SymbolicExpressionTreeBottomUpSimilarityCalculator() { }
     protected override bool IsCommutative { get { return true; } }
 
-    public bool MatchConstantValues { get; set; }
+    public bool MatchNumericValues { get; set; }
     public bool MatchVariableWeights { get; set; }
 
     [StorableConstructor]
@@ -65,22 +65,21 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     public static double CalculateSimilarity(ISymbolicExpressionTreeNode n1, ISymbolicExpressionTreeNode n2, bool strict = false) {
-      var calculator = new SymbolicExpressionTreeBottomUpSimilarityCalculator { MatchConstantValues = strict, MatchVariableWeights = strict };
       return CalculateSimilarity(n1, n2, strict);
     }
 
-    public static Dictionary<ISymbolicExpressionTreeNode, ISymbolicExpressionTreeNode> ComputeBottomUpMapping(ISymbolicExpressionTree t1, ISymbolicExpressionTree t2, bool strict = false) {
+    public static NodeMap ComputeBottomUpMapping(ISymbolicExpressionTree t1, ISymbolicExpressionTree t2, bool strict = false) {
       return ComputeBottomUpMapping(ActualRoot(t1), ActualRoot(t2), strict);
     }
 
-    public static Dictionary<ISymbolicExpressionTreeNode, ISymbolicExpressionTreeNode> ComputeBottomUpMapping(ISymbolicExpressionTreeNode n1, ISymbolicExpressionTreeNode n2, bool strict = false) {
-      var calculator = new SymbolicExpressionTreeBottomUpSimilarityCalculator { MatchConstantValues = strict, MatchVariableWeights = strict };
+    public static NodeMap ComputeBottomUpMapping(ISymbolicExpressionTreeNode n1, ISymbolicExpressionTreeNode n2, bool strict = false) {
+      var calculator = new SymbolicExpressionTreeBottomUpSimilarityCalculator { MatchNumericValues = strict, MatchVariableWeights = strict };
       return calculator.ComputeBottomUpMapping(n1, n2);
     }
     #endregion
 
     public double CalculateSimilarity(ISymbolicExpressionTree t1, ISymbolicExpressionTree t2) {
-      return CalculateSimilarity(t1, t2, out Dictionary<ISymbolicExpressionTreeNode, ISymbolicExpressionTreeNode> map);
+      return CalculateSimilarity(t1, t2, out _);
     }
 
     public double CalculateSimilarity(ISymbolicExpressionTree t1, ISymbolicExpressionTree t2, out NodeMap map) {
@@ -109,11 +108,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       return similarity;
     }
 
-    public Dictionary<ISymbolicExpressionTreeNode, ISymbolicExpressionTreeNode> ComputeBottomUpMapping(ISymbolicExpressionTree t1, ISymbolicExpressionTree t2) {
+    public NodeMap ComputeBottomUpMapping(ISymbolicExpressionTree t1, ISymbolicExpressionTree t2) {
       return ComputeBottomUpMapping(ActualRoot(t1), ActualRoot(t2));
     }
 
-    public Dictionary<ISymbolicExpressionTreeNode, ISymbolicExpressionTreeNode> ComputeBottomUpMapping(ISymbolicExpressionTreeNode n1, ISymbolicExpressionTreeNode n2) {
+    public NodeMap ComputeBottomUpMapping(ISymbolicExpressionTreeNode n1, ISymbolicExpressionTreeNode n2) {
       var compactedGraph = Compact(n1, n2);
 
       IEnumerable<ISymbolicExpressionTreeNode> Subtrees(ISymbolicExpressionTreeNode node, bool commutative) {
@@ -210,8 +209,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       if (node.SubtreeCount > 0)
         return node.Symbol.Name;
 
-      if (node is ConstantTreeNode constant)
-        return MatchConstantValues ? constant.Value.ToString(CultureInfo.InvariantCulture) : constant.Symbol.Name;
+      if (node is INumericTreeNode numNode)
+        return MatchNumericValues ? numNode.Value.ToString(CultureInfo.InvariantCulture) : "Numeric";
 
       if (node is VariableTreeNode variable)
         return MatchVariableWeights ? variable.Weight + variable.VariableName : variable.VariableName;

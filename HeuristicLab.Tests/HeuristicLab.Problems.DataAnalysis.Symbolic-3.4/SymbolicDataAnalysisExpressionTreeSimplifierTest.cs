@@ -229,16 +229,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
       #endregion
 
       #region abs
-      AssertEqualAfterSimplification("(abs 2.0)", "2.0");
-      AssertEqualAfterSimplification("(abs -2.0)", "2.0"); // constant folding
+      AssertEqualAfterSimplification("(abs <num=2.0>)", "2.0");
+      AssertEqualAfterSimplification("(abs <num=-2.0>)", "2.0"); // constant folding
       AssertEqualAfterSimplification("(abs (exp (variable 2.0 x)))", "(exp (variable 2.0 x)))"); // exp is always positive
       AssertEqualAfterSimplification("(abs (exp (variable 2.0 x)))", "(exp (variable 2.0 x)))"); // exp is always positive
       AssertEqualAfterSimplification("(abs (sqr (variable 2.0 a)))", "(sqr (variable 2.0 a))"); // sqr is always positive
       AssertEqualAfterSimplification("(abs (sqrt (variable 2.0 a)))", "(sqrt (variable 2.0 a))"); // sqrt is always positive (for our cases)
       AssertEqualAfterSimplification("(abs (cuberoot (variable 2.0 a)))", "(cuberoot (variable 2.0 a))"); // cuberoot is always positive (for our cases)
 
-      AssertEqualAfterSimplification("(* (abs (variable 2.0 x)) 2.0)", "(abs (variable 4.0 x))");  // can multiply positive constants into abs
-      AssertEqualAfterSimplification("(* (abs (variable 2.0 x)) -2.0)", "(* (abs (variable 4.0 x)) -1.0)"); // for negative constants keep the sign
+      AssertEqualAfterSimplification("(* (abs (variable 2.0 x)) <num=2.0>)", "(abs (variable 4.0 x))");  // can multiply positive constants into abs
+      AssertEqualAfterSimplification("(* (abs (variable 2.0 x)) <num=-2.0>)", "(* (abs (variable 4.0 x)) -1.0)"); // for negative constants keep the sign
 
       AssertEqualAfterSimplification("(abs (* (variable 1.0 a) (variable 2.0 b)))", "(* (abs (variable 1.0 a)) (abs (variable 1.0 b)) 2.0))");
       AssertEqualAfterSimplification("(abs (/ (variable 1.0 a) (variable 2.0 b)))", "(/ (abs (variable 1.0 a)) (abs (variable 2.0 b))))");
@@ -264,21 +264,21 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
       #endregion
 
       #region AQ
-      AssertEqualAfterSimplification("(* (aq (variable 1.0 x) (variable 1.0 y)) 2.0)", "(aq (variable 2.0 x) (variable 1.0 y))");
-      AssertEqualAfterSimplification("(/ (aq (variable 1.0 x) (variable 1.0 y)) 2.0)", "(aq (variable 0.5 x) (variable 1.0 y))");
+      AssertEqualAfterSimplification("(* (aq (variable 1.0 x) (variable 1.0 y)) <num=2.0>)", "(aq (variable 2.0 x) (variable 1.0 y))");
+      AssertEqualAfterSimplification("(/ (aq (variable 1.0 x) (variable 1.0 y)) <num=2.0>)", "(aq (variable 0.5 x) (variable 1.0 y))");
 
       #endregion
 
       #region do not drop subtrees with small weights
-      AssertEqualAfterSimplification("(* 1e-14 (variable 1.0 a))", "(variable 1e-14 a)");
-      AssertEqualAfterSimplification("(+ (variable 1.0 a) 1e-14)", 
-                                     "(+ (variable 1.0 a) 1e-14)");
+      AssertEqualAfterSimplification("(* <num=1e-14> (variable 1.0 a))", "(variable 1e-14 a)");
+      AssertEqualAfterSimplification("(+ (variable 1.0 a) <num=1e-14>)",
+                                     "(+ (variable 1.0 a) <num=1e-14>)");
       // a scenario where a term with small weight can have large effect
-      AssertEqualAfterSimplification("(+ (* (pow (variable 1.0 a) 10) 1e-14) 1.0)",
-                                     "(+ (* (pow (variable 1.0 a) 10) 1e-14) 1.0)");
+      AssertEqualAfterSimplification("(+ (* (pow (variable 1.0 a) <num=10>) <num=1e-14>) 1.0)",
+                                     "(+ (* (pow (variable 1.0 a) <num=10>) <num=1e-14>) 1.0)");
       // a test case (from ticket #2985)
-      AssertEqualAfterSimplification("(+ (* (exp (variable 3.5861E+001 a)) 5.5606E-016) 5.9323E-002)",
-                                     "(+ (* (exp (variable 3.5861E+001 a)) 5.5606E-016) 5.9323E-002)");
+      AssertEqualAfterSimplification("(+ (* (exp (variable 3.5861E+001 a)) <num=5.5606E-016>) <num=5.9323E-002>)",
+                                     "(+ (* (exp (variable 3.5861E+001 a)) <num=5.5606E-016>) <num=5.9323E-002>)");
       #endregion
     }
 
@@ -286,7 +286,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
     private void AssertEqualAfterSimplification(string original, string expected) {
       var formatter = new SymbolicExpressionTreeStringFormatter();
       var importer = new SymbolicExpressionImporter();
-      var actualTree = TreeSimplifier.Simplify(importer.Import(original));
+      var originalTree = importer.Import(original);
+      originalTree = ConstantsToNumberConverter.Convert(originalTree);
+      var actualTree = TreeSimplifier.Simplify(originalTree);
       var expectedTree = importer.Import(expected);
       Assert.AreEqual(formatter.Format(expectedTree), formatter.Format(actualTree));
 

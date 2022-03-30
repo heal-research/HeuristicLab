@@ -89,8 +89,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
         Operators.Add(new SymbolicRegressionSingleObjectiveValidationParetoBestSolutionAnalyzer());
         changed = true;
       }
-      if (!Operators.OfType<SymbolicRegressionSolutionsAnalyzer>().Any()) {
-        Operators.Add(new SymbolicRegressionSolutionsAnalyzer());
+      if (!Operators.OfType<SolutionQualityAnalyzer>().Any()) {
+        Operators.Add(new SolutionQualityAnalyzer());
         changed = true;
       }
 
@@ -118,7 +118,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       Operators.Add(new SymbolicRegressionSingleObjectiveOverfittingAnalyzer());
       Operators.Add(new SymbolicRegressionSingleObjectiveTrainingParetoBestSolutionAnalyzer());
       Operators.Add(new SymbolicRegressionSingleObjectiveValidationParetoBestSolutionAnalyzer());
-      Operators.Add(new SymbolicRegressionSolutionsAnalyzer());
+      Operators.Add(new SolutionQualityAnalyzer());
       Operators.Add(new SymbolicExpressionTreePhenotypicSimilarityCalculator());
       Operators.Add(new ShapeConstraintsAnalyzer());
       Operators.Add(new SymbolicRegressionPhenotypicDiversityAnalyzer(Operators.OfType<SymbolicExpressionTreePhenotypicSimilarityCalculator>()) { DiversityResultName = "Phenotypic Diversity" });

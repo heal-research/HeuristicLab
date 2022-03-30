@@ -89,7 +89,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
     private ISymbolicExpressionTreeNode CreateNodeFromWeight(ISymbolicExpressionTreeNode transformationTree, VariableTreeNode variableNode) {
       var multiplicationNode = new SymbolicExpressionTreeNode(new Multiplication());
-      multiplicationNode.AddSubtree(new ConstantTreeNode(new Constant()) { Value = variableNode.Weight });
+      multiplicationNode.AddSubtree(new NumberTreeNode(new Number()) { Value = variableNode.Weight });
       multiplicationNode.AddSubtree(transformationTree);
       return multiplicationNode;
     }

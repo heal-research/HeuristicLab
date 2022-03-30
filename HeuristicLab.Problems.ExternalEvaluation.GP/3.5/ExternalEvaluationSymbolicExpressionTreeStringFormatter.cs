@@ -57,7 +57,9 @@ namespace HeuristicLab.Problems.ExternalEvaluation.GP {
     private string FormatRecursively(ISymbolicExpressionTreeNode node, int indentLength) {
       StringBuilder strBuilder = new StringBuilder();
       if (Indent) strBuilder.Append(' ', indentLength);
-      if (node.Subtrees.Any()) { // internal node
+      if(node.Symbol is SubFunctionSymbol) {
+        return FormatRecursively(node.GetSubtree(0), indentLength);
+      } else if (node.Subtrees.Any()) { // internal node
         strBuilder.Append("(");
         if (node.Symbol is Addition) {
           strBuilder.AppendLine("+");
@@ -105,9 +107,9 @@ namespace HeuristicLab.Problems.ExternalEvaluation.GP {
         if (node.Symbol is HeuristicLab.Problems.DataAnalysis.Symbolic.Variable) {
           var varNode = node as VariableTreeNode;
           strBuilder.AppendFormat("(* {0} {1})", varNode.VariableName, varNode.Weight.ToString("g17", CultureInfo.InvariantCulture));
-        } else if (node.Symbol is Constant) {
-          var constNode = node as ConstantTreeNode;
-          strBuilder.Append(constNode.Value.ToString("g17", CultureInfo.InvariantCulture));
+        } else if (node.Symbol is INumericSymbol) {
+          var numericNode = node as INumericTreeNode;
+          strBuilder.Append(numericNode.Value.ToString("g17", CultureInfo.InvariantCulture));
         } else {
           throw new NotSupportedException("Formatting of symbol: " + node.Symbol + " not supported for external evaluation.");
         }
