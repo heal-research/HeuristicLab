@@ -140,6 +140,10 @@
       <Project>{06D4A186-9319-48A0-BADE-A2058D462EEA}</Project>
       <Name>HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.4</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.JsonInterface\3.3\HeuristicLab.JsonInterface-3.3.csproj">
+      <Project>{0E3AAB5E-F152-44E0-A054-4D9A83ECEE08}</Project>
+      <Name>HeuristicLab.JsonInterface-3.3</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Optimization\3.3\HeuristicLab.Optimization-3.3.csproj">
       <Project>{14ab8d24-25bc-400c-a846-4627aa945192}</Project>
       <Name>HeuristicLab.Optimization-3.3</Name>

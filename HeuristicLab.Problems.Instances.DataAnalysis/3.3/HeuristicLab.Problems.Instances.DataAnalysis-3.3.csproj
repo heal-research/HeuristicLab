@@ -412,6 +412,10 @@
       <Name>HeuristicLab.Data-3.3</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.JsonInterface\3.3\HeuristicLab.JsonInterface-3.3.csproj">
+      <Project>{0E3AAB5E-F152-44E0-A054-4D9A83ECEE08}</Project>
+      <Name>HeuristicLab.JsonInterface-3.3</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Parameters\3.3\HeuristicLab.Parameters-3.3.csproj">
       <Project>{56F9106A-079F-4C61-92F6-86A84C2D84B7}</Project>
       <Name>HeuristicLab.Parameters-3.3</Name>

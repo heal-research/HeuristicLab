@@ -140,6 +140,10 @@
       <Project>{DDFB14DD-2A85-493C-A52D-E69729BBAEB0}</Project>
       <Name>HeuristicLab.Encodings.IntegerVectorEncoding-3.3</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.JsonInterface\3.3\HeuristicLab.JsonInterface-3.3.csproj">
+      <Project>{0E3AAB5E-F152-44E0-A054-4D9A83ECEE08}</Project>
+      <Name>HeuristicLab.JsonInterface-3.3</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.MainForm.WindowsForms\3.3\HeuristicLab.MainForm.WindowsForms-3.3.csproj">
       <Project>{AB687BBE-1BFE-476B-906D-44237135431D}</Project>
       <Name>HeuristicLab.MainForm.WindowsForms-3.3</Name>

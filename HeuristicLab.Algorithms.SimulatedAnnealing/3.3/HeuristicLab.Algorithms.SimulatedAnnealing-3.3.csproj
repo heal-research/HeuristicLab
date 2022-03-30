@@ -150,6 +150,10 @@
       <Name>HeuristicLab.Data-3.3</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.JsonInterface\3.3\HeuristicLab.JsonInterface-3.3.csproj">
+      <Project>{0E3AAB5E-F152-44E0-A054-4D9A83ECEE08}</Project>
+      <Name>HeuristicLab.JsonInterface-3.3</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Operators\3.3\HeuristicLab.Operators-3.3.csproj">
       <Project>{23DA7FF4-D5B8-41B6-AA96-F0561D24F3EE}</Project>
       <Name>HeuristicLab.Operators-3.3</Name>
