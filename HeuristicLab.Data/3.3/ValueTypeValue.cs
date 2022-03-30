@@ -24,11 +24,12 @@ using System.Drawing;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HEAL.Attic;
+using HeuristicLab.JsonInterface;
 
 namespace HeuristicLab.Data {
   [Item("ValueTypeValue", "An abstract base class for representing values of value types.")]
   [StorableType("A78FF29D-A796-463F-A93F-2528A382D99E")]
-  public abstract class ValueTypeValue<T> : Item where T : struct {
+  public abstract class ValueTypeValue<T> : Item, IJsonConvertable where T : struct {
     public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.ValueType; }
     }
@@ -83,6 +84,19 @@ namespace HeuristicLab.Data {
       if (ValueChanged != null)
         ValueChanged(this, EventArgs.Empty);
       OnToStringChanged();
+    }
+
+    public void Inject(JsonItem data, JsonItemConverter converter) {
+      Value = data.GetProperty<T>(nameof(Value));
+    }
+
+    public JsonItem Extract(JsonItemConverter converter) {
+      var item = new EmptyJsonItem(ItemName, this, converter) {
+        Name = ItemName,
+        Description = ItemDescription
+      };
+      item.AddProperty<T>(nameof(Value), Value);
+      return item;
     }
   }
 }

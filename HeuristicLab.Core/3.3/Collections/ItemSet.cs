@@ -26,11 +26,12 @@ using System.Linq;
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
 using HEAL.Attic;
+using HeuristicLab.JsonInterface;
 
 namespace HeuristicLab.Core {
   [StorableType("C2660C9F-3886-458E-80DF-06EEE9BB3C21")]
   [Item("ItemSet", "Represents a set of items.")]
-  public class ItemSet<T> : ObservableSet<T>, IItemSet<T> where T : class, IItem {
+  public class ItemSet<T> : ObservableSet<T>, IItemSet<T>, IJsonConvertable where T : class, IItem {
     public virtual string ItemName {
       get { return ItemAttribute.GetName(this.GetType()); }
     }
@@ -82,6 +83,20 @@ namespace HeuristicLab.Core {
     protected virtual void OnToStringChanged() {
       EventHandler handler = ToStringChanged;
       if (handler != null) handler(this, EventArgs.Empty);
+    }
+
+    public void Inject(JsonItem data, JsonItemConverter converter) {
+      foreach (var i in this)
+        if (i is IJsonConvertable convertable)
+          converter.ConvertFromJson(convertable, data.GetChild(convertable.ToString()));
+    }
+
+    public JsonItem Extract(JsonItemConverter converter) {
+      var item = new EmptyJsonItem(this, converter);
+      foreach(var i in this)
+        if (i is IJsonConvertable convertable)
+          item.AddChild(convertable.ToString(), converter.ConvertToJson(convertable));
+      return item;
     }
   }
 }

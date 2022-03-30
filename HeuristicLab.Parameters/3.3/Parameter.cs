@@ -24,6 +24,7 @@ using System.Drawing;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HEAL.Attic;
+using HeuristicLab.JsonInterface;
 
 namespace HeuristicLab.Parameters {
   /// <summary>
@@ -31,7 +32,7 @@ namespace HeuristicLab.Parameters {
   /// </summary>
   [Item("Parameter", "A base class for parameters.")]
   [StorableType("EB8A33BD-466A-4035-8544-8F86E5FDA458")]
-  public abstract class Parameter : NamedItem, IParameter {
+  public abstract class Parameter : NamedItem, IParameter, IJsonConvertable {
     public override Image ItemImage {
       get {
         if ((dataType != null) && (typeof(IOperator).IsAssignableFrom(dataType)))
@@ -108,5 +109,9 @@ namespace HeuristicLab.Parameters {
       EventHandler handler = HiddenChanged;
       if (handler != null) handler(this, EventArgs.Empty);
     }
+
+    public abstract void Inject(JsonItem data, JsonItemConverter converter);
+
+    public abstract JsonItem Extract(JsonItemConverter converter);
   }
 }

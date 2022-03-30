@@ -24,6 +24,7 @@ using System.Drawing;
 using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
+using HeuristicLab.JsonInterface;
 
 namespace HeuristicLab.Parameters {
   /// <summary>
@@ -200,6 +201,23 @@ namespace HeuristicLab.Parameters {
     }
     private void Value_ToStringChanged(object sender, EventArgs e) {
       OnToStringChanged();
+    }
+	
+	public override void Inject(JsonItem data, JsonItemConverter converter) {
+      base.Inject(data, converter);
+      if (Value is IJsonConvertable convertable)
+        converter.ConvertFromJson(convertable, data.GetChild(nameof(Value)));
+    }
+
+    public override JsonItem Extract(JsonItemConverter converter) {
+      var item = base.Extract(converter);
+      if(Value is IJsonConvertable convertable) {
+        var valueItem = converter.ConvertToJson(convertable);
+        valueItem.Name = Name;
+        valueItem.Description = Description;
+        item.AddChild(nameof(Value), valueItem);
+      }
+      return item;
     }
   }
 }

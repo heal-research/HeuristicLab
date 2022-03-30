@@ -23,6 +23,7 @@ using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HEAL.Attic;
+using HeuristicLab.JsonInterface;
 
 namespace HeuristicLab.Data {
   [StorableType("884665C1-FE7A-4022-8A7A-8ECFF7358146")]
@@ -63,6 +64,25 @@ namespace HeuristicLab.Data {
       readOnly.values = Tuple.Create<DoubleValue, DoubleValue>((DoubleValue)Item1.AsReadOnly(), (DoubleValue)Item2.AsReadOnly());
       readOnly.readOnly = true;
       return readOnly;
+    }
+
+    public override void Inject(JsonItem data, JsonItemConverter converter) {
+      if (!readOnly) {
+        Start = data.GetProperty<double>(nameof(Start));
+        End = data.GetProperty<double>(nameof(End));
+      }
+    }
+
+    public override JsonItem Extract(JsonItemConverter converter) {
+      var item = new EmptyJsonItem(this, converter) {
+        Name = ItemName,
+        Description = ItemDescription
+      };
+      if(!readOnly) {
+        item.AddProperty<double>(nameof(Start), Start);
+        item.AddProperty<double>(nameof(End), End);
+      }
+      return item;
     }
   }
 }

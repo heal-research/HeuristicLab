@@ -90,6 +90,10 @@ namespace HeuristicLab.Data {
     bool IStringConvertibleValue.SetValue(string value) {
       return SetValue(value);
     }
+
+
     #endregion
+
+    
   }
 }

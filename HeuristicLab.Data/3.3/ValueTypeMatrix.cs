@@ -28,11 +28,12 @@ using System.Text;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HEAL.Attic;
+using HeuristicLab.JsonInterface;
 
 namespace HeuristicLab.Data {
   [Item("ValueTypeMatrix", "An abstract base class for representing matrices of value types.")]
   [StorableType("4EDE6858-4628-4F21-8F27-A45C59C2DE36")]
-  public abstract class ValueTypeMatrix<T> : Item, IEnumerable<T> where T : struct {
+  public abstract class ValueTypeMatrix<T> : Item, IEnumerable<T>, IJsonConvertable where T : struct {
     private const int maximumToStringLength = 100;
 
     public static new Image StaticItemImage {
@@ -288,6 +289,26 @@ namespace HeuristicLab.Data {
         Reset(this, EventArgs.Empty);
       OnToStringChanged();
     }
+
     #endregion
+
+
+    public void Inject(JsonItem data, JsonItemConverter converter) {
+      if(!readOnly) {
+        matrix = data.GetProperty<T[,]>("Value");
+        columnNames = data.GetProperty<List<string>>(nameof(ColumnNames));
+        rowNames = data.GetProperty<List<string>>(nameof(RowNames));
+      }
+    }
+
+    public JsonItem Extract(JsonItemConverter converter) {
+      var item = new EmptyJsonItem(this, converter);
+      if(!readOnly) {
+        item.AddProperty<T[,]>("Value", matrix);
+        item.AddProperty<List<string>>(nameof(ColumnNames), columnNames);
+        item.AddProperty<List<string>>(nameof(RowNames), rowNames);
+      }
+      return item;
+    }
   }
 }
