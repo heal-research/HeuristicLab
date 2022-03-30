@@ -3,11 +3,10 @@ using Newtonsoft.Json.Linq;
 using HEAL.Attic;
 
 namespace HeuristicLab.JsonInterface {
-  [StorableType("C700603D-50E5-448B-B785-9974463A91A8")]
   public class DateTimeJsonItem : IntervalRestrictedValueJsonItem<DateTime> {
 
-    public override JObject GenerateJObject() {
-      var obj = base.GenerateJObject();
+    protected internal override JObject ToJObject() {
+      var obj = base.ToJObject();
 
       if (Minimum.CompareTo(DateTime.MinValue) == 0)
         obj.Property("Minimum").Remove();
@@ -18,15 +17,13 @@ namespace HeuristicLab.JsonInterface {
       return obj;
     }
 
-    public override void SetJObject(JObject jObject) {
+    protected internal override void FromJObject(JObject jObject) {
       Minimum = DateTime.MinValue;
       Maximum = DateTime.MaxValue;
-      base.SetJObject(jObject);
+      base.FromJObject(jObject);
     }
 
-    public DateTimeJsonItem() { }
-
-    [StorableConstructor]
-    protected DateTimeJsonItem(StorableConstructorFlag _) : base(_) { }
+    public DateTimeJsonItem(string id, IJsonConvertable convertable, JsonItemConverter converter) :
+      base(id, convertable, converter) { }
   }
 }

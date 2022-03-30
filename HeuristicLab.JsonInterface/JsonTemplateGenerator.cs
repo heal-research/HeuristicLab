@@ -1,9 +1,7 @@
 ﻿using System.Collections.Generic;
-using HeuristicLab.Optimization;
 using Newtonsoft.Json.Linq;
 using HEAL.Attic;
 using System.IO;
-using HeuristicLab.Core;
 using System.Linq;
 
 namespace HeuristicLab.JsonInterface {
@@ -16,13 +14,19 @@ namespace HeuristicLab.JsonInterface {
     /// static Function to generate a template.
     /// </summary>
     /// <param name="templatePath">the path for the template files</param>
-    /// <param name="optimizer">the optimizer object to serialize</param>
+    /// <param name="convertable">the object to serialize</param>
     /// <param name="rootItem">Root JsonItem for serialization, considers only active JsonItems for serialization</param>
-    public static void GenerateTemplate(string templatePath, IOptimizer optimizer, IJsonItem rootItem, IEnumerable<IRunCollectionModifier> runCollectionModifiers) {
+    public static void GenerateTemplate(string templatePath, IJsonConvertable convertable/*, JsonItem rootItem*//*, IEnumerable<IRunCollectionModifier> runCollectionModifiers*/) {
       // clear all runs
+      /*
       if (optimizer.ExecutionState == ExecutionState.Paused)
         optimizer.Stop();
       optimizer.Runs.Clear();
+      */
+
+
+      var converter = new JsonItemConverter();
+      var rootItem = converter.ConvertToJson(convertable);
 
       // validation
       ValidationResult validationResult = rootItem.GetValidator().Validate();
@@ -39,48 +43,50 @@ namespace HeuristicLab.JsonInterface {
       #endregion
 
       // filter items with values/ranges/actualNames
-      var jsonItems = rootItem.Where(x => x.Active && !(x is EmptyJsonItem) && !(x is UnsupportedJsonItem));
+      var jsonItems = rootItem.Iterate().Where(x => /*x.Active && !(x is EmptyJsonItem) &&*/ !(x is UnsupportedJsonItem));
 
       #region Serialize HL File
-      ProtoBufSerializer serializer = new ProtoBufSerializer();
-      // get absolute path for serialization
-      string hlFilePath = Path.Combine(templateDirectory, $"{templateName}.hl");
-      serializer.Serialize(optimizer, hlFilePath);
-      // overwrite string for relative path
-      hlFilePath = Path.Combine($".", $"{templateName}.hl");
+      //ProtoBufSerializer serializer = new ProtoBufSerializer();
+      //// get absolute path for serialization
+      //string hlFilePath = Path.Combine(templateDirectory, $"{templateName}.hl");
+      //serializer.Serialize(convertable, hlFilePath);
+      //// overwrite string for relative path
+      //hlFilePath = Path.Combine($".", $"{templateName}.hl");
       #endregion
 
       #region Filter Items
       foreach (var item in jsonItems) {
-        parameterItems.Add(item.GenerateJObject());
+        parameterItems.Add(item.ToJObject());
       }
       #endregion
 
       #region RunCollectionModifiers Serialization
-      foreach (var rcModifier in runCollectionModifiers) {
-        JArray rcModifierParameterItems = new JArray();
-        var guid = StorableTypeAttribute.GetStorableTypeAttribute(rcModifier.GetType()).Guid.ToString();
-        var item = JsonItemConverter.Extract(rcModifier);
+      // separate HL Class -> e.g. filteredOptimizer? (like Batch Run)
+      //var converter = new JsonItemConverter();
+      //foreach (var rcModifier in runCollectionModifiers) {
+      //  JArray rcModifierParameterItems = new JArray();
+      //  var guid = StorableTypeAttribute.GetStorableTypeAttribute(rcModifier.GetType()).Guid.ToString();
+      //  var item = converter.ConvertToJson(rcModifier);
 
-        var rcModifierItems = item
-          .Where(x => !(x is EmptyJsonItem) && !(x is UnsupportedJsonItem))
-          .Select(x => x.GenerateJObject());
+      //  var rcModifierItems = item
+      //    .Where(x => !(x is EmptyJsonItem) && !(x is UnsupportedJsonItem))
+      //    .Select(x => x.ToJObject());
 
-        foreach (var i in rcModifierItems)
-          rcModifierParameterItems.Add(i);
+      //  foreach (var i in rcModifierItems)
+      //    rcModifierParameterItems.Add(i);
 
-        JObject rcModifierObj = new JObject();
-        rcModifierObj.Add(nameof(IJsonItem.Name), item.Name);
-        rcModifierObj.Add("GUID", guid);
-        rcModifierObj.Add(Constants.Parameters, rcModifierParameterItems);
-        runCollectionModifierItems.Add(rcModifierObj);
-      }
+      //  JObject rcModifierObj = new JObject();
+      //  rcModifierObj.Add(nameof(IJsonItem.Name), item.Name);
+      //  rcModifierObj.Add("GUID", guid);
+      //  rcModifierObj.Add(Constants.Parameters, rcModifierParameterItems);
+      //  runCollectionModifierItems.Add(rcModifierObj);
+      //}
       #endregion
 
       #region Set Template Data
       template[Constants.Metadata][Constants.TemplateName] = templateName;
-      template[Constants.Metadata][Constants.HLFileLocation] = hlFilePath;
-      template[Constants.Metadata][Constants.OptimizerDescription] = optimizer.Description;
+      //template[Constants.Metadata][Constants.HLFileLocation] = hlFilePath;
+      //template[Constants.Metadata][Constants.OptimizerDescription] = convertable.Description;
       template[Constants.Parameters] = parameterItems;
       template[Constants.RunCollectionModifiers] = runCollectionModifierItems;
       #endregion

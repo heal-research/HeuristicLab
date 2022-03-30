@@ -1,21 +1,20 @@
 ﻿using Newtonsoft.Json.Linq;
 using HEAL.Attic;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace HeuristicLab.JsonInterface {
-  [StorableType("DE16C5EB-998D-4D34-BD98-7BF0E02A56BC")]
-  public class LookupJsonItem : JsonItem, ILookupJsonItem {
+  public class LookupJsonItem : JsonItem {
     public virtual string ActualName { get; set; }
 
-    public override void SetJObject(JObject jObject) {
-      base.SetJObject(jObject);
+    protected internal override void FromJObject(JObject jObject) {
+      base.FromJObject(jObject);
       ActualName = jObject[nameof(ILookupJsonItem.ActualName)]?.ToString();
     }
 
     protected override ValidationResult Validate() => ValidationResult.Successful();
 
-    public LookupJsonItem() { }
-
-    [StorableConstructor]
-    protected LookupJsonItem(StorableConstructorFlag _) : base(_) { }
+    public LookupJsonItem(string id, IJsonConvertable convertable, JsonItemConverter converter) :
+      base(id, convertable, converter) { }
   }
 }

@@ -92,7 +92,7 @@
       // textBoxDescription
       // 
       this.textBoxDescription.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.textBoxDescription.Location = new System.Drawing.Point(100, 23);
+      this.textBoxDescription.Location = new System.Drawing.Point(100, 22);
       this.textBoxDescription.Margin = new System.Windows.Forms.Padding(0);
       this.textBoxDescription.Name = "textBoxDescription";
       this.textBoxDescription.Size = new System.Drawing.Size(394, 20);
@@ -105,7 +105,7 @@
       this.label1.Location = new System.Drawing.Point(0, 0);
       this.label1.Margin = new System.Windows.Forms.Padding(0);
       this.label1.Name = "label1";
-      this.label1.Size = new System.Drawing.Size(100, 23);
+      this.label1.Size = new System.Drawing.Size(100, 22);
       this.label1.TabIndex = 9;
       this.label1.Text = "Name";
       this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -114,10 +114,10 @@
       // 
       this.labelDescription.AutoSize = true;
       this.labelDescription.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.labelDescription.Location = new System.Drawing.Point(0, 23);
+      this.labelDescription.Location = new System.Drawing.Point(0, 22);
       this.labelDescription.Margin = new System.Windows.Forms.Padding(0);
       this.labelDescription.Name = "labelDescription";
-      this.labelDescription.Size = new System.Drawing.Size(100, 24);
+      this.labelDescription.Size = new System.Drawing.Size(100, 22);
       this.labelDescription.TabIndex = 13;
       this.labelDescription.Text = "Description";
       this.labelDescription.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;

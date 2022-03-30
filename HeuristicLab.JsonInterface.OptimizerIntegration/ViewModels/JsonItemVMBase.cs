@@ -5,9 +5,9 @@ using System.Windows.Forms;
 
 namespace HeuristicLab.JsonInterface.OptimizerIntegration {
   public abstract class JsonItemVMBase<JsonItemType> : IJsonItemVM<JsonItemType>
-    where JsonItemType : class, IJsonItem 
+    where JsonItemType : JsonItem 
   {
-    IJsonItem IJsonItemVM.Item { 
+    JsonItem IJsonItemVM.Item { 
       get => Item; 
       set => Item = (JsonItemType)value; 
     }

@@ -7,7 +7,7 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
 
   public abstract class MatrixValueVM<T, JsonItemType> : RangedValueBaseVM<T, JsonItemType>, IMatrixJsonItemVM
     where T : IComparable
-    where JsonItemType : class, IMatrixJsonItem, IIntervalRestrictedJsonItem<T> {
+    where JsonItemType : IntervalRestrictedMatrixJsonItem<T> {
 
     public override UserControl Control => CompoundControl.Create(base.Control, MatrixJsonItemControl.Create(this));
 

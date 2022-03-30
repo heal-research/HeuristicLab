@@ -32,7 +32,6 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
       }
     }
 
-
     public static void ImportJsonTemplate() {
       if (openFileDialog == null) {
         openFileDialog = new OpenFileDialog();
@@ -46,7 +45,7 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
       if (openFileDialog.ShowDialog() == DialogResult.OK) {
         try {
           var content = JsonTemplateInstantiator.Instantiate(openFileDialog.FileName);
-          IView view = MainFormManager.MainForm.ShowContent(content.Optimizer);
+          IView view = MainFormManager.MainForm.ShowContent(content.Convertable);
           if (view == null)
             ErrorHandling.ShowErrorDialog("There is no view for the loaded item. It cannot be displayed.", new InvalidOperationException("No View Available"));
         } catch (Exception ex) {

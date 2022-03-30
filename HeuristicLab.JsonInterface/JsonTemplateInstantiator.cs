@@ -4,20 +4,19 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using HEAL.Attic;
-using HeuristicLab.Optimization;
 using HeuristicLab.PluginInfrastructure;
 using Newtonsoft.Json.Linq;
 
 namespace HeuristicLab.JsonInterface {
   public readonly struct InstantiatorResult {
 
-    public InstantiatorResult(IOptimizer optimizer, IEnumerable<IRunCollectionModifier> runCollectionModifiers) {
-      Optimizer = optimizer;
-      RunCollectionModifiers = runCollectionModifiers;
+    public InstantiatorResult(IJsonConvertable convertable/*, IEnumerable<IRunCollectionModifier> runCollectionModifiers*/) {
+      Convertable = convertable;
+      //RunCollectionModifiers = runCollectionModifiers;
     }
 
-    public IOptimizer Optimizer { get; }
-    public IEnumerable<IRunCollectionModifier> RunCollectionModifiers { get; }
+    public IJsonConvertable Convertable { get; }
+    //public IEnumerable<IRunCollectionModifier> RunCollectionModifiers { get; }
   }
 
 
@@ -33,7 +32,8 @@ namespace HeuristicLab.JsonInterface {
     #region Private Properties
     private JToken Template { get; set; }
     private JArray Config { get; set; }
-    private IDictionary<string, IJsonItem> Objects { get; set; } = new Dictionary<string, IJsonItem>();
+    private IDictionary<string, JsonItem> Objects { get; } = new Dictionary<string, JsonItem>();
+    private JsonItemConverter Converter { get; } = new JsonItemConverter();
     #endregion
 
     /// <summary>
@@ -66,18 +66,18 @@ namespace HeuristicLab.JsonInterface {
 
       string hLFileLocation = Path.Combine(Path.GetDirectoryName(templateFileFullPath), relativePath);
       ProtoBufSerializer serializer = new ProtoBufSerializer();
-      IOptimizer optimizer = (IOptimizer)serializer.Deserialize(hLFileLocation);
-      optimizer.Prepare(true);
+      IJsonConvertable convertable = (IJsonConvertable)serializer.Deserialize(hLFileLocation);
+      //convertable.Prepare(true);
       #endregion
 
       // collect all parameterizedItems from template
-      CollectParameterizedItems(optimizer);
+      CollectParameterizedItems(convertable);
       
       if (Config != null)
         MergeTemplateWithConfig();
 
       // get algorithm root item
-      IJsonItem rootItem = Objects.First().Value;
+      JsonItem rootItem = Objects.First().Value;
 
       // validation
       ValidationResult validationResult = rootItem.GetValidator().Validate();
@@ -85,50 +85,50 @@ namespace HeuristicLab.JsonInterface {
         throw validationResult.GenerateException();
 
       // inject configuration
-      JsonItemConverter.Inject(optimizer, rootItem);
+      Converter.ConvertFromJson(convertable, rootItem);
 
-      return new InstantiatorResult(optimizer, CollectRunCollectionModifiers());
+      return new InstantiatorResult(convertable/*, CollectRunCollectionModifiers()*/);
     }
 
     /// <summary>
     /// Instantiates all defined (in template) ResultCollectionProcessors and injects the configured parameters.
     /// </summary>
-    private IEnumerable<IRunCollectionModifier> CollectRunCollectionModifiers() {
-      IList<IRunCollectionModifier> runCollectionModifiers = new List<IRunCollectionModifier>();
+    //private IEnumerable<IRunCollectionModifier> CollectRunCollectionModifiers() {
+    //  IList<IRunCollectionModifier> runCollectionModifiers = new List<IRunCollectionModifier>();
 
-      if (Template is JObject o && !o.ContainsKey(Constants.RunCollectionModifiers))
-        return Enumerable.Empty<IRunCollectionModifier>();
+    //  if (Template is JObject o && !o.ContainsKey(Constants.RunCollectionModifiers))
+    //    return Enumerable.Empty<IRunCollectionModifier>();
 
-      foreach (JObject obj in Template[Constants.RunCollectionModifiers]) {
-        var guid = obj["GUID"].ToString();
-        var parameters = obj[Constants.Parameters];
-        var type = Mapper.StaticCache.GetType(new Guid(guid));
-        var rcModifier = (IRunCollectionModifier)Activator.CreateInstance(type);
-        var rcModifierItem = JsonItemConverter.Extract(rcModifier);
+    //  foreach (JObject obj in Template[Constants.RunCollectionModifiers]) {
+    //    var guid = obj["GUID"].ToString();
+    //    var parameters = obj[Constants.Parameters];
+    //    var type = Mapper.StaticCache.GetType(new Guid(guid));
+    //    var rcModifier = (IRunCollectionModifier)Activator.CreateInstance(type);
+    //    var rcModifierItem = Converter.ConvertToJson(rcModifier);
 
-        SetJObjects(rcModifierItem, parameters);        
+    //    SetJObjects(rcModifierItem, parameters);
 
-        JsonItemConverter.Inject(rcModifier, rcModifierItem);
-        runCollectionModifiers.Add(rcModifier);
-      }
-      return runCollectionModifiers;
-    }
+    //    Converter.ConvertFromJson(rcModifier, rcModifierItem);
+    //    runCollectionModifiers.Add(rcModifier);
+    //  }
+    //  return runCollectionModifiers;
+    //}
 
-    private void CollectParameterizedItems(IOptimizer optimizer) {
-      IJsonItem root = JsonItemConverter.Extract(optimizer);
+    private void CollectParameterizedItems(IJsonConvertable convertable) {
+      var root = Converter.ConvertToJson(convertable);
       Objects.Add(root.Path, root);
 
       foreach (var kvp in SetJObjects(root, Template[Constants.Parameters]))
         Objects.Add(kvp);
     }
 
-    private IDictionary<string, IJsonItem> SetJObjects(IJsonItem root, JToken parameters) {
-      var dict = new Dictionary<string, IJsonItem>();
+    private IDictionary<string, JsonItem> SetJObjects(JsonItem root, JToken parameters) {
+      var dict = new Dictionary<string, JsonItem>();
       foreach (JObject obj in parameters) {
-        var path = obj[nameof(IJsonItem.Path)].ToString();
-        foreach (var item in root) {
+        var path = obj[nameof(JsonItem.Path)].ToString();
+        foreach (var item in root.Iterate()) {
           if (item.Path == path) {
-            item.SetJObject(obj);
+            item.FromJObject(obj);
             item.Active = true;
             dict.Add(item.Path, item);
           }
@@ -145,7 +145,7 @@ namespace HeuristicLab.JsonInterface {
           throw new ArgumentException("Path property is missing.");
         string path = prop.Value.ToString();
         // override default value
-        if (Objects.TryGetValue(path, out IJsonItem param)) {
+        if (Objects.TryGetValue(path, out JsonItem param)) {
           // remove fixed template parameter from config => dont allow to copy them from concrete config
           // TODO: shift this into JsonItems?
           obj.Property(nameof(IIntervalRestrictedJsonItem<int>.Minimum))?.Remove();
@@ -155,7 +155,7 @@ namespace HeuristicLab.JsonInterface {
           obj.Property(nameof(IMatrixJsonItem.RowsResizable))?.Remove();
           obj.Property(nameof(IArrayJsonItem.Resizable))?.Remove();
           // merge
-          param.SetJObject(obj);
+          param.FromJObject(obj);
         } else throw new InvalidDataException($"No parameter with path='{path}' defined!");
       }
     }

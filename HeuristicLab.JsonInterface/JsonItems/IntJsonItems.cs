@@ -2,10 +2,9 @@
 using HEAL.Attic;
 
 namespace HeuristicLab.JsonInterface {
-  [StorableType("4FFDAC9B-34F3-4FDB-ABD1-BB2128CE5A49")]
   public class IntJsonItem : IntervalRestrictedValueJsonItem<int> {
-    public override JObject GenerateJObject() {
-      var obj = base.GenerateJObject();
+    protected internal override JObject ToJObject() {
+      var obj = base.ToJObject();
 
       if (Minimum.CompareTo(int.MinValue) == 0)
         obj.Property("Minimum").Remove();
@@ -16,22 +15,19 @@ namespace HeuristicLab.JsonInterface {
       return obj;
     }
 
-    public override void SetJObject(JObject jObject) {
+    protected internal override void FromJObject(JObject jObject) {
       Minimum = int.MinValue;
       Maximum = int.MaxValue;
-      base.SetJObject(jObject);
+      base.FromJObject(jObject);
     }
 
-    public IntJsonItem() { }
-
-    [StorableConstructor]
-    protected IntJsonItem(StorableConstructorFlag _) : base(_) { }
+    public IntJsonItem(string id, IJsonConvertable convertable, JsonItemConverter converter) :
+      base(id, convertable, converter) { }
   }
 
-  [StorableType("73E22461-6CA0-4BE1-A5FE-9EF7FFD320AD")]
   public class IntArrayJsonItem : IntervalRestrictedArrayJsonItem<int> {
-    public override JObject GenerateJObject() {
-      var obj = base.GenerateJObject();
+    protected internal override JObject ToJObject() {
+      var obj = base.ToJObject();
 
       if (Minimum.CompareTo(int.MinValue) == 0)
         obj.Property("Minimum").Remove();
@@ -42,22 +38,19 @@ namespace HeuristicLab.JsonInterface {
       return obj;
     }
 
-    public override void SetJObject(JObject jObject) {
+    protected internal override void FromJObject(JObject jObject) {
       Minimum = int.MinValue;
       Maximum = int.MaxValue;
-      base.SetJObject(jObject);
+      base.FromJObject(jObject);
     }
 
-    public IntArrayJsonItem() { }
-
-    [StorableConstructor]
-    protected IntArrayJsonItem(StorableConstructorFlag _) : base(_) { }
+    public IntArrayJsonItem(string id, IJsonConvertable convertable, JsonItemConverter converter) :
+      base(id, convertable, converter) { }
   }
 
-  [StorableType("A6FBA509-FC37-4E54-9578-5AFB764CFB89")]
-  public class IntRangeJsonItem : RangedJsonItem<int> {
-    public override JObject GenerateJObject() {
-      var obj = base.GenerateJObject();
+  public class IntRangeJsonItem : RangeJsonItem<int> {
+    protected internal override JObject ToJObject() {
+      var obj = base.ToJObject();
 
       if (Minimum.CompareTo(int.MinValue) == 0)
         obj.Property("Minimum").Remove();
@@ -68,22 +61,19 @@ namespace HeuristicLab.JsonInterface {
       return obj;
     }
 
-    public override void SetJObject(JObject jObject) {
+    protected internal override void FromJObject(JObject jObject) {
       Minimum = int.MinValue;
       Maximum = int.MaxValue;
-      base.SetJObject(jObject);
+      base.FromJObject(jObject);
     }
 
-    public IntRangeJsonItem() { }
-
-    [StorableConstructor]
-    protected IntRangeJsonItem(StorableConstructorFlag _) : base(_) { }
+    public IntRangeJsonItem(string id, IJsonConvertable convertable, JsonItemConverter converter) :
+      base(id, convertable, converter) { }
   }
 
-  [StorableType("3CFF8D3E-8608-41BA-85A5-42CD4DA45685")]
   public class IntMatrixJsonItem : IntervalRestrictedMatrixJsonItem<int> {
-    public override JObject GenerateJObject() {
-      var obj = base.GenerateJObject();
+    protected internal override JObject ToJObject() {
+      var obj = base.ToJObject();
 
       if (Minimum.CompareTo(int.MinValue) == 0)
         obj.Property("Minimum").Remove();
@@ -94,15 +84,13 @@ namespace HeuristicLab.JsonInterface {
       return obj;
     }
 
-    public override void SetJObject(JObject jObject) {
+    protected internal override void FromJObject(JObject jObject) {
       Minimum = int.MinValue;
       Maximum = int.MaxValue;
-      base.SetJObject(jObject);
+      base.FromJObject(jObject);
     }
 
-    public IntMatrixJsonItem() { }
-
-    [StorableConstructor]
-    protected IntMatrixJsonItem(StorableConstructorFlag _) : base(_) { }
+    public IntMatrixJsonItem(string id, IJsonConvertable convertable, JsonItemConverter converter) :
+      base(id, convertable, converter) { }
   }
 }

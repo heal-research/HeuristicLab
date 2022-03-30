@@ -9,6 +9,6 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
 
   public abstract class SingleValueVM<T, JsonItemType> : RangedValueBaseVM<T, JsonItemType>
     where T : IComparable
-    where JsonItemType : class, IIntervalRestrictedJsonItem<T>, IValueJsonItem<T> 
+    where JsonItemType : ValueJsonItem<T> 
   { }
 }

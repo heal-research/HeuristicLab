@@ -86,7 +86,7 @@ namespace HeuristicLab.JsonInterface.App {
       Task work = Task.Run(() => {
         if(templatePath != null && configPath != null && outputPath != null) {
           try {
-            Runner.Run(templatePath, configPath, outputPath);
+            Runner.Run(templatePath, configPath, outputPath, TimeSpan.FromSeconds(1));
           } catch (Exception ex) {
             ErrorHandling.ShowErrorDialog(this, ex);
           }

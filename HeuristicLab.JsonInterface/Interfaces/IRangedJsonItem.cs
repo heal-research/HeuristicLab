@@ -7,10 +7,10 @@ namespace HeuristicLab.JsonInterface {
     /// <summary>
     /// The lower bound of an ranged item. 
     /// </summary>
-    T MinValue { get; set; }
+    T Start { get; set; }
     /// <summary>
     /// The upper bound of an ranged item.
     /// </summary>
-    T MaxValue { get; set; }
+    T End { get; set; }
   }
 }
