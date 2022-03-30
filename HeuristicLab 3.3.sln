@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30907.101
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32319.34
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{96396439-A764-4022-A8D2-BE021449B8D1}"
 	ProjectSection(SolutionItems) = preProject
@@ -75,9 +75,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab-3.3", "Heurist
 		{C664305E-497C-4533-A140-967DEDB05C19} = {C664305E-497C-4533-A140-967DEDB05C19}
 		{3FC7515E-D8A0-41FE-8CFA-50E3ADA61A1E} = {3FC7515E-D8A0-41FE-8CFA-50E3ADA61A1E}
 		{7EA0985E-A1D6-4FA7-B30A-2633FDFB01F0} = {7EA0985E-A1D6-4FA7-B30A-2633FDFB01F0}
-		{0E3AAB5E-F152-44E0-A054-4D9A83ECEE08} = {0E3AAB5E-F152-44E0-A054-4D9A83ECEE08}
 		{E10F395F-C8A6-48AD-B470-9AA7A1F43809} = {E10F395F-C8A6-48AD-B470-9AA7A1F43809}
-		{039D995F-1AA5-4461-92B3-B466F612D998} = {039D995F-1AA5-4461-92B3-B466F612D998}
 		{8CFC7A61-E214-44DC-96B3-4CEA9B8E958E} = {8CFC7A61-E214-44DC-96B3-4CEA9B8E958E}
 		{0C378762-D5DB-488A-8931-2BA42B1B7CBF} = {0C378762-D5DB-488A-8931-2BA42B1B7CBF}
 		{97198965-AFEA-496B-B3B1-316905C43FD6} = {97198965-AFEA-496B-B3B1-316905C43FD6}
@@ -164,7 +162,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab-3.3", "Heurist
 		{BBAB9DF5-5EF3-4BA8-ADE9-B36E82114937} = {BBAB9DF5-5EF3-4BA8-ADE9-B36E82114937}
 		{02CDDBF5-42A7-4C40-AE6C-E5D29AC9CCEC} = {02CDDBF5-42A7-4C40-AE6C-E5D29AC9CCEC}
 		{6AE0E1F5-D3FF-43A3-90E1-2435E7493FB5} = {6AE0E1F5-D3FF-43A3-90E1-2435E7493FB5}
-		{5A3413F8-0928-4167-80E7-AAD9D6E38A94} = {5A3413F8-0928-4167-80E7-AAD9D6E38A94}
 		{EE07BFF8-B23D-41F5-8AD7-AC9598D7A2C9} = {EE07BFF8-B23D-41F5-8AD7-AC9598D7A2C9}
 		{E4EE5AFB-D552-447B-8A16-6CBE7938AF32} = {E4EE5AFB-D552-447B-8A16-6CBE7938AF32}
 	EndProjectSection
@@ -476,13 +473,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Algorithms.Dat
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Algorithms.MultiObjectiveLocalSearch", "HeuristicLab.Algorithms.MultiObjectiveLocalSearch\3.3\HeuristicLab.Algorithms.MultiObjectiveLocalSearch.csproj", "{4CCDD23A-9FA3-4B36-9469-87D67E99225F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Heuristiclab.ConfigStarter", "Heuristiclab.ConfigStarter\Heuristiclab.ConfigStarter.csproj", "{E0FB3F94-8A4D-4F37-8D8F-E757B1E6E99A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.JsonInterface-3.3", "HeuristicLab.JsonInterface\3.3\HeuristicLab.JsonInterface-3.3.csproj", "{0E3AAB5E-F152-44E0-A054-4D9A83ECEE08}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.JsonInterface", "HeuristicLab.JsonInterface\HeuristicLab.JsonInterface.csproj", "{0E3AAB5E-F152-44E0-A054-4D9A83ECEE08}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.JsonInterface.App-3.3", "HeuristicLab.JsonInterface.App\3.3\HeuristicLab.JsonInterface.App-3.3.csproj", "{039D995F-1AA5-4461-92B3-B466F612D998}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.JsonInterface.App", "HeuristicLab.JsonInterface.App\HeuristicLab.JsonInterface.App.csproj", "{039D995F-1AA5-4461-92B3-B466F612D998}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.JsonInterface.OptimizerIntegration", "HeuristicLab.JsonInterface.OptimizerIntegration\HeuristicLab.JsonInterface.OptimizerIntegration.csproj", "{5A3413F8-0928-4167-80E7-AAD9D6E38A94}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.JsonInterface.OptimizerIntegration-3.3", "HeuristicLab.JsonInterface.OptimizerIntegration\3.3\HeuristicLab.JsonInterface.OptimizerIntegration-3.3.csproj", "{5A3413F8-0928-4167-80E7-AAD9D6E38A94}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
