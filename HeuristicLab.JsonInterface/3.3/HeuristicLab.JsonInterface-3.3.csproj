@@ -1,0 +1,154 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{0E3AAB5E-F152-44E0-A054-4D9A83ECEE08}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>HeuristicLab.JsonInterface</RootNamespace>
+    <AssemblyName>HeuristicLab.JsonInterface-3.3</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>false</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>$(SolutionDir)\bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>$(SolutionDir)\bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>HeuristicLab.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="HEAL.Attic, Version=1.4.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\bin\HEAL.Attic.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Constants.cs" />
+    <Compile Include="Converters\AlgorithmConverter.cs" />
+    <Compile Include="Converters\BatchRunConverter.cs" />
+    <Compile Include="Converters\ExperimentConverter.cs" />
+    <Compile Include="Converters\ItemCollectionConverter.cs" />
+    <Compile Include="Converters\RegressionProblemDataConverter.cs" />
+    <Compile Include="Converters\ResultParameterConverter.cs" />
+    <Compile Include="Converters\ValueLookupParameterConverter.cs" />
+    <Compile Include="Converters\ValueRangeConverter.cs" />
+    <Compile Include="Interfaces\IArrayJsonItem.cs" />
+    <Compile Include="Interfaces\IConcreteRestrictedJsonItem.cs" />
+    <Compile Include="Interfaces\IIntervalRestrictedJsonItem.cs" />
+    <Compile Include="Interfaces\IJsonConvertable.cs" />
+    <Compile Include="Interfaces\IJsonItem.cs" />
+    <Compile Include="Interfaces\IJsonItemValidator.cs" />
+    <Compile Include="Interfaces\ILookupJsonItem.cs" />
+    <Compile Include="Interfaces\IMatrixJsonItem.cs" />
+    <Compile Include="Interfaces\IRangedJsonItem.cs" />
+    <Compile Include="Interfaces\IValueJsonItem.cs" />
+    <Compile Include="Interfaces\IValueLookupJsonItem.cs" />
+    <Compile Include="Interfaces\IListJsonItem.cs" />
+    <Compile Include="JsonItems\ArrayJsonItem.cs" />
+    <Compile Include="JsonItems\BoolJsonItems.cs" />
+    <Compile Include="JsonItems\ConcreteRestrictedArrayJsonItem.cs" />
+    <Compile Include="JsonItems\ConcreteRestrictedValueJsonItem.cs" />
+    <Compile Include="JsonItems\DateTimeJsonItem.cs" />
+    <Compile Include="JsonItems\DoubleJsonItems.cs" />
+    <Compile Include="JsonItems\EmptyJsonItem.cs" />
+    <Compile Include="JsonItems\IntervalRestrictedArrayJsonItem.cs" />
+    <Compile Include="JsonItems\IntervalRestrictedJsonItem.cs" />
+    <Compile Include="JsonItems\IntervalRestrictedMatrixJsonItem.cs" />
+    <Compile Include="JsonItems\IntervalRestrictedValueJsonItem.cs" />
+    <Compile Include="JsonItems\IntJsonItems.cs" />
+    <Compile Include="JsonItems\JsonItem.cs" />
+    <Compile Include="JsonItems\ListJsonItem.cs" />
+    <Compile Include="JsonItems\TypedListJsonItem.cs" />
+    <Compile Include="JsonItems\LookupJsonItem.cs" />
+    <Compile Include="JsonItems\MatrixJsonItem.cs" />
+    <Compile Include="JsonItems\RangeJsonItem.cs" />
+    <Compile Include="JsonItems\StringJsonItem.cs" />
+    <Compile Include="JsonItems\UnsupportedJsonItem.cs" />
+    <Compile Include="JsonItems\ValueJsonItem.cs" />
+    <Compile Include="JsonItems\ValueLookupJsonItem.cs" />
+    <Compile Include="ResultCollectionProcessors\AbstractProcessors\RunCollectionSRSolutionFormatter.cs" />
+    <Compile Include="ResultCollectionProcessors\FilterResultCollectionProcessor.cs" />
+    <Compile Include="ResultCollectionProcessors\RunCollectionSRSolutionGraphVizFormatter.cs" />
+    <Compile Include="ResultCollectionProcessors\RunCollectionSRSolutionLatexFormatter.cs" />
+    <Compile Include="ResultCollectionProcessors\RunCollectionSRSolutionPythonFormatter.cs" />
+    <Compile Include="SingleLineArrayJsonWriter.cs" />
+    <Compile Include="JsonTemplateGenerator.cs" />
+    <Compile Include="JsonTemplateInstantiator.cs" />
+    <Compile Include="Converters\ConstrainedValueParameterConverter.cs" />
+    <Compile Include="Converters\ParameterizedItemConverter.cs" />
+    <Compile Include="Converters\ValueParameterConverter.cs" />
+    <Compile Include="Converters\EnumTypeConverter.cs" />
+    <Compile Include="Converters\LookupParameterConverter.cs" />
+    <Compile Include="Converters\MultiCheckedOperatorConverter.cs" />
+    <Compile Include="Converters\StringValueConverter.cs" />
+    <Compile Include="Converters\ValueTypeArrayConverter.cs" />
+    <Compile Include="Converters\BaseConverter.cs" />
+    <Compile Include="Converters\ValueTypeMatrixConverter.cs" />
+    <Compile Include="Converters\ValueTypeValueConverter.cs" />
+    <Compile Include="Plugin.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Interfaces\IJsonItemConverter.cs" />
+    <Compile Include="JsonItemConverter.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="HeuristicLab.snk" />
+    <None Include="packages.config" />
+    <None Include="Plugin.cs.frame" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\HeuristicLab.PluginInfrastructure\3.3\HeuristicLab.PluginInfrastructure-3.3.csproj">
+      <Project>{94186a6a-5176-4402-ae83-886557b53cca}</Project>
+      <Name>HeuristicLab.PluginInfrastructure-3.3</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>set Path=%25Path%25;$(ProjectDir);$(SolutionDir)
+set ProjectDir=$(ProjectDir)
+set SolutionDir=$(SolutionDir)
+set Outdir=$(Outdir)
+
+call PreBuildEvent.cmd
+
+</PreBuildEvent>
+  </PropertyGroup>
+</Project>
