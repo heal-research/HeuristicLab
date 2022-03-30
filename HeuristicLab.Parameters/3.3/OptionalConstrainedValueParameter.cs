@@ -21,10 +21,12 @@
 
 using System;
 using System.Drawing;
+using System.Linq;
 using HEAL.Attic;
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
+using HeuristicLab.JsonInterface;
 
 namespace HeuristicLab.Parameters {
   /// <summary>
@@ -243,6 +245,41 @@ namespace HeuristicLab.Parameters {
     }
     private void Value_ToStringChanged(object sender, EventArgs e) {
       OnToStringChanged();
+    }
+
+    public override void Inject(JsonItem data, JsonItemConverter converter) {
+      var value = data.GetProperty<string>(nameof(Value));
+      //StringJsonItem stringJsonItem = (StringJsonItem)data;
+      if (!string.IsNullOrEmpty(value)) {
+        var validValue = ValidValues.Where(x => x.ToString() == value).FirstOrDefault();
+        if(validValue != null)
+          Value = validValue;
+      }
+
+      if (ValidValues is IJsonConvertable convertable)
+        converter.ConvertFromJson(convertable, data.GetChild(nameof(ValidValues)));
+    }
+    
+    public override JsonItem Extract(JsonItemConverter converter) {
+      EmptyJsonItem item = new EmptyJsonItem(this, converter) {
+        Name = Name,
+        Description = Description
+      };
+
+      item.AddProperty<string>(nameof(Value), Value != null ? Value.ToString() : "");
+      item.AddProperty<string[]>(nameof(ValidValues), ValidValues.Select(x => x.ToString()).ToArray());
+      
+      /*
+      StringJsonItem item = new StringJsonItem(ItemName, this, converter) {
+        Name = Name,
+        Description = Description,
+        Value = Value != null ? Value.ItemName : "",
+        ConcreteRestrictedItems = ValidValues.Select(x => x.ItemName)
+      };*/
+      if(ValidValues is IJsonConvertable convertable)
+        item.AddChild(nameof(ValidValues), converter.ConvertToJson(convertable));
+
+      return item;
     }
   }
 }

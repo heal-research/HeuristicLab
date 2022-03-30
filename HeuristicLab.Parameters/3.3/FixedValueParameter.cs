@@ -52,5 +52,6 @@ namespace HeuristicLab.Parameters {
     public override IDeepCloneable Clone(Cloner cloner) {
       return new FixedValueParameter<T>(this, cloner);
     }
+
   }
 }

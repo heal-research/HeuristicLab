@@ -24,11 +24,12 @@ using System.Drawing;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HEAL.Attic;
+using HeuristicLab.JsonInterface;
 
 namespace HeuristicLab.Data {
   [StorableType("06A7697C-2C25-49AF-95A2-DDB14D2F7B81")]
   [Item("StringConvertibleValueTuple<,>", "A generic abstract base class for representing multiple values of a string convertible value.")]
-  public abstract class StringConvertibleValueTuple<T, U> : Item, IStringConvertibleValueTuple
+  public abstract class StringConvertibleValueTuple<T, U> : Item, IStringConvertibleValueTuple, IJsonConvertable
     where T : class, IDeepCloneable, IStringConvertibleValue
     where U : class, IDeepCloneable, IStringConvertibleValue {
     public static new Image StaticItemImage {
@@ -94,5 +95,9 @@ namespace HeuristicLab.Data {
         ValueChanged(this, EventArgs.Empty);
       OnToStringChanged();
     }
+
+    public abstract void Inject(JsonItem data, JsonItemConverter converter);
+
+    public abstract JsonItem Extract(JsonItemConverter converter);
   }
 }

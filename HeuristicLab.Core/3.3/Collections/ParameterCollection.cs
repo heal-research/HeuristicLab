@@ -22,11 +22,13 @@
 using System.Collections.Generic;
 using HeuristicLab.Common;
 using HEAL.Attic;
+using HeuristicLab.JsonInterface;
+using System.Linq;
 
 namespace HeuristicLab.Core {
   [StorableType("D1F7CEF4-42C6-46E1-B2B9-AB49C1420D55")]
   [Item("ParameterCollection", "Represents a collection of parameters.")]
-  public class ParameterCollection : NamedItemCollection<IParameter> {
+  public class ParameterCollection : NamedItemCollection<IParameter>, IJsonConvertable {
     [StorableConstructor]
     protected ParameterCollection(StorableConstructorFlag _) : base(_) { }
     protected ParameterCollection(ParameterCollection original, Cloner cloner) : base(original, cloner) { }
@@ -35,5 +37,19 @@ namespace HeuristicLab.Core {
     public ParameterCollection(IEnumerable<IParameter> collection) : base(collection) { }
 
     public override IDeepCloneable Clone(Cloner cloner) { return new ParameterCollection(this, cloner); }
+
+    public void Inject(JsonItem data, JsonItemConverter converter) {
+      foreach (var param in this)
+        if (param is IJsonConvertable convertable)
+          converter.ConvertFromJson(convertable, data.GetChild(param.Name));
+    }
+
+    public JsonItem Extract(JsonItemConverter converter) {
+      var item = new EmptyJsonItem(ItemName, this, converter);
+      foreach(var param in this)
+        if(param is IJsonConvertable convertable)
+          item.AddChild(param.Name, converter.ConvertToJson(convertable));
+      return item;
+    }
   }
 }

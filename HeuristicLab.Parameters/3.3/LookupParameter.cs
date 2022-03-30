@@ -24,6 +24,7 @@ using System.Threading;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HEAL.Attic;
+using HeuristicLab.JsonInterface;
 
 namespace HeuristicLab.Parameters {
   /// <summary>
@@ -238,6 +239,22 @@ namespace HeuristicLab.Parameters {
       EventHandler handler = ActualNameChanged;
       if (handler != null) handler(this, EventArgs.Empty);
       OnToStringChanged();
+    }
+
+    public override void Inject(JsonItem data, JsonItemConverter converter) {
+      ActualName = data.GetProperty<string>(nameof(ActualName));
+    }
+
+    public override JsonItem Extract(JsonItemConverter converter) {
+      var item = new EmptyJsonItem(ItemName, this, converter);
+      item.AddProperty<string>(nameof(ActualName), ActualName);
+      return item;
+      /*
+      return new LookupJsonItem(ItemName, this, converter) {
+        Name = Name,
+        Description = Description,
+        ActualName = ActualName
+      };*/
     }
   }
 }

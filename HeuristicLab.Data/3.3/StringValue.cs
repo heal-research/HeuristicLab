@@ -24,11 +24,12 @@ using System.Drawing;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HEAL.Attic;
+using HeuristicLab.JsonInterface;
 
 namespace HeuristicLab.Data {
   [Item("StringValue", "Represents a string.")]
   [StorableType("1091C8E5-4480-447C-8EB3-AA260C59976D")]
-  public class StringValue : Item, IComparable, IStringConvertibleValue {
+  public class StringValue : Item, IComparable, IStringConvertibleValue, IJsonConvertable {
     public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Field; }
     }
@@ -130,6 +131,20 @@ namespace HeuristicLab.Data {
     bool IStringConvertibleValue.SetValue(string value) {
       return SetValue(value);
     }
+
     #endregion
+
+
+    public void Inject(JsonItem data, JsonItemConverter converter) {
+      if(!readOnly)
+        Value = data.GetProperty<string>(nameof(Value));
+    }
+
+    public JsonItem Extract(JsonItemConverter converter) {
+      var item = new EmptyJsonItem(this, converter);
+      if(!readOnly)
+        item.AddProperty<string>(nameof(Value), Value);
+      return item;
+    }
   }
 }

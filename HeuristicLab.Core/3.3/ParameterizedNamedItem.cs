@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
 using HEAL.Attic;
+using HeuristicLab.JsonInterface;
 
 namespace HeuristicLab.Core {
   /// <summary>
@@ -31,7 +32,7 @@ namespace HeuristicLab.Core {
   /// </summary>
   [Item("ParameterizedNamedItem", "A base class for items which have a name and contain parameters.")]
   [StorableType("058C7952-437D-4EA0-9F12-23E8A67C5352")]
-  public abstract class ParameterizedNamedItem : NamedItem, IParameterizedNamedItem {
+  public abstract class ParameterizedNamedItem : NamedItem, IParameterizedNamedItem, IJsonConvertable {
     [Storable]
     private ParameterCollection parameters;
     protected ParameterCollection Parameters {
@@ -102,6 +103,20 @@ namespace HeuristicLab.Core {
         parameterizedItem.CollectParameterValues(children);
         foreach (var child in children) yield return child;
       }
+    }
+
+    public virtual void Inject(JsonItem data, JsonItemConverter converter) {
+      converter.ConvertFromJson(Parameters, data.GetChild(nameof(Parameters)));
+    }
+
+    public virtual JsonItem Extract(JsonItemConverter converter) {
+      var item = new EmptyJsonItem(ItemName, this, converter) {
+        Name = Name,
+        Description = ItemDescription
+      };
+
+      item.AddChild(nameof(Parameters), converter.ConvertToJson(Parameters));
+      return item;
     }
   }
 }

@@ -233,6 +233,10 @@
       <Name>HeuristicLab.Common-3.3</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.JsonInterface\3.3\HeuristicLab.JsonInterface-3.3.csproj">
+      <Project>{0e3aab5e-f152-44e0-a054-4d9a83ecee08}</Project>
+      <Name>HeuristicLab.JsonInterface-3.3</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Persistence\3.3\HeuristicLab.Persistence-3.3.csproj">
       <Project>{102BC7D3-0EF9-439C-8F6D-96FF0FDB8E1B}</Project>
       <Name>HeuristicLab.Persistence-3.3</Name>
