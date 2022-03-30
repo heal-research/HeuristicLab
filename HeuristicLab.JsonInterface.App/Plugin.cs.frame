@@ -32,6 +32,7 @@ namespace HeuristicLab.JsonInterface.App
   //[PluginDependency("HeuristicLab.Common", "3.3")]
   [PluginDependency("HeuristicLab.Common.Resources", "3.3")]
   [PluginDependency("HeuristicLab.Core", "3.3")]
+  [PluginDependency("HeuristicLab.Data", "3.3")]
   [PluginDependency("HeuristicLab.ParallelEngine", "3.3")]
   //[PluginDependency("HeuristicLab.Problems.Instances", "3.3")]
   public class HeuristicLabJsonInterfaceAppPlugin : PluginBase {
@@ -41,7 +42,7 @@ namespace HeuristicLab.JsonInterface.App
   public class HeuristicLabJsonInterfaceAppApplication : ApplicationBase {
     public override void Run(ICommandLineArgument[] args) {
       if(args.Length == 4 && args[1] is OpenArgument && args[2] is OpenArgument && (args[3] is StringArgument || args[3] is OpenArgument)) {
-        Runner.Run(args[1].Value.ToString(), args[2].Value.ToString(), args[3].Value.ToString());
+        Runner.Run(args[1].Value.ToString(), args[2].Value.ToString(), args[3].Value.ToString(), System.TimeSpan.FromSeconds(1));
       } else {
         JsonInterfaceForm form = new JsonInterfaceForm();
         Application.Run(form);

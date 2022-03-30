@@ -32,14 +32,12 @@ namespace HeuristicLab.JsonInterface {
       new AggregateException(Errors.Select(x => new ArgumentException(x)));
   }
 
-  [StorableType("B1270D98-B0D9-40FB-B089-F6E70C65CD65")]
   /// <summary>
   /// Main data class for json interface.
   /// </summary>
-  public abstract class JsonItem : IJsonItem {
-
+  public abstract class JsonItem /*: IEnumerable<JsonItem>*/ {
+    
     public class JsonItemValidator : IJsonItemValidator {
-      //private IDictionary<int, bool> Cache = new Dictionary<int, bool>();
       private JsonItem Root { get; set; }
       public JsonItemValidator(JsonItem root) {
         Root = root;
@@ -48,7 +46,7 @@ namespace HeuristicLab.JsonInterface {
       public ValidationResult Validate() {
         List<string> errors = new List<string>();
         bool success = true;
-        foreach (var x in Root) {
+        foreach (var x in Root.Iterate()) {
           JsonItem item = x as JsonItem;
           if (item.Active) {
             var res = ((JsonItem)x).Validate();
@@ -61,70 +59,94 @@ namespace HeuristicLab.JsonInterface {
       }
     }
 
-    public virtual string Name { get; set; }
+    [JsonIgnore]
+    public string Id { get; private set; }
 
-    public virtual string Description { get; set; }
+    public string Name { get; set; }
 
-    public virtual string Path {
+    public string Description { get; set; }
+
+    public string Path {
       get {
-        IJsonItem tmp = Parent;
-        StringBuilder builder = new StringBuilder(this.Name);
+        JsonItem tmp = Parent;
+        StringBuilder builder = new StringBuilder(this.Id);
         while (tmp != null) {
-          builder.Insert(0, tmp.Name + ".");
+          builder.Insert(0, tmp.Id + ".");
           tmp = tmp.Parent;
         }
         return builder.ToString();
       }
     }
 
+    private IDictionary<string, JsonItem> childs = new Dictionary<string, JsonItem>();
     [JsonIgnore]
-    public virtual IEnumerable<IJsonItem> Children { get; protected set; }
+    public IEnumerable<KeyValuePair<string, JsonItem>> Childs => childs;
+
+
+    private IDictionary<string, object> properties = new Dictionary<string, object>();
+    [JsonIgnore]
+    public IEnumerable<KeyValuePair<string, object>> Properties => properties;
+
 
     [JsonIgnore]
-    public virtual IJsonItem Parent { get; set; }
+    public JsonItem Parent { get; set; }
+
 
     [JsonIgnore]
-    public virtual bool Active { get; set; }
+    public bool Active { get; set; }
 
     #region Constructors
-    [StorableConstructor]
-    protected JsonItem(StorableConstructorFlag _) { }
-
-    public JsonItem() { }
-
-    public JsonItem(IEnumerable<IJsonItem> childs) {
-      AddChildren(childs);
+    public JsonItem(string id, IJsonConvertable convertable, JsonItemConverter converter) {
+      Id = id;
+      converter.AddToCache(convertable, this);
     }
     #endregion
 
     #region Public Methods
-    public void AddChildren(params IJsonItem[] childs) =>
-      AddChildren(childs as IEnumerable<IJsonItem>);
-
-    public void AddChildren(IEnumerable<IJsonItem> childs) {
-      if (childs == null) return;
-      if (Children == null)
-        Children = new List<IJsonItem>();
-      if (Children is IList<IJsonItem> list) {
-        foreach (var child in childs) {
-          list.Add(child);
-          child.Parent = this;
-        }
-      }
+    public void AddChild(string name, JsonItem jsonItem) {
+      jsonItem.Parent = this;
+      jsonItem.Id = name;
+      childs.Add(name, jsonItem);
     }
+    public JsonItem GetChild(string name) => childs[name];
 
-    public IJsonItemValidator GetValidator() => new JsonItemValidator(this);
+    public void AddProperty<T>(string name, T value) => properties.Add(name, value);
+    public void AddProperty(string name, JsonItem value) {
+      value.Parent = this;
+      this.AddProperty<JsonItem>(name, value); // Forbid to add JsonItems as props?
+    }
+    public T GetProperty<T>(string name) => (T)properties[name];
 
-    public virtual JObject GenerateJObject() =>
-      JObject.FromObject(this, new JsonSerializer() {
+
+    public JsonItemValidator GetValidator() => new JsonItemValidator(this);
+
+    /// <summary>
+    /// Method to generate a Newtonsoft JObject, which describes the JsonItem.
+    /// </summary>
+    /// <returns>Newtonsoft JObject</returns>
+    protected internal virtual JObject ToJObject() {
+      var obj = JObject.FromObject(this, new JsonSerializer() {
         TypeNameHandling = TypeNameHandling.None,
         NullValueHandling = NullValueHandling.Ignore,
         ReferenceLoopHandling = ReferenceLoopHandling.Ignore
       });
+      foreach(var prop in Properties) {
+        if (prop.Value is JsonItem item)
+          obj.Add(prop.Key, item.ToJObject());
+        else
+          obj.Add(prop.Key, JToken.FromObject(prop.Value));
+      }
+      return obj;
+    }
+      
 
-    public virtual void SetJObject(JObject jObject) {
-      Name = (jObject[nameof(IJsonItem.Name)]?.ToObject<string>());
-      Description = (jObject[nameof(IJsonItem.Description)]?.ToObject<string>());
+    /// <summary>
+    /// To set all necessary JsonItem properties with an given Newtonsoft JObject.
+    /// </summary>
+    /// <param name="jObject">Newtonsoft JObject</param>
+    protected internal virtual void FromJObject(JObject jObject) {
+      Name = (jObject[nameof(JsonItem.Name)]?.ToObject<string>());
+      Description = (jObject[nameof(JsonItem.Description)]?.ToObject<string>());
     }
     #endregion
 
@@ -133,19 +155,14 @@ namespace HeuristicLab.JsonInterface {
     #endregion
 
     #region IEnumerable Support
-    public virtual IEnumerator<IJsonItem> GetEnumerator() {
+    public virtual IEnumerable<JsonItem> Iterate() {
       yield return this;
-
-      if (Children != null) {
-        foreach (var x in Children) {
-          foreach (var c in x) {
-            yield return c;
-          }
-        }
-      }
+      foreach (var kvp in Childs)
+        foreach (var c in kvp.Value.Iterate())
+          yield return c;
     }
 
-    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+    //IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     #endregion
   }
 }

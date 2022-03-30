@@ -5,7 +5,7 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
 
   public abstract class ArrayValueVM<T, JsonItemType> : RangedValueBaseVM<T, JsonItemType>, IArrayJsonItemVM
     where T : IComparable
-    where JsonItemType : class, IArrayJsonItem, IIntervalRestrictedJsonItem<T> {
+    where JsonItemType : IntervalRestrictedArrayJsonItem<T> {
 
     public override UserControl Control => CompoundControl.Create(base.Control, ArrayJsonItemControl.Create(this));
 

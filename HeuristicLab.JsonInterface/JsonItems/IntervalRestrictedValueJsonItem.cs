@@ -3,8 +3,7 @@ using Newtonsoft.Json.Linq;
 using HEAL.Attic;
 
 namespace HeuristicLab.JsonInterface {
-  [StorableType("5BD32AD9-7CA2-4837-B1C3-D47D0CD83035")]
-  public abstract class IntervalRestrictedValueJsonItem<T> : ValueJsonItem<T>, IIntervalRestrictedJsonItem<T>
+  public abstract class IntervalRestrictedValueJsonItem<T> : ValueJsonItem<T>
       where T : IComparable {
     public T Minimum { get; set; }
     public T Maximum { get; set; }
@@ -15,8 +14,8 @@ namespace HeuristicLab.JsonInterface {
       else return ValidationResult.Faulty($"[{Path}]: Value {Value} is not between {Minimum} and {Maximum}.");
     }
 
-    public override void SetJObject(JObject jObject) {
-      base.SetJObject(jObject);
+    protected internal override void FromJObject(JObject jObject) {
+      base.FromJObject(jObject);
 
       var minProp = jObject[nameof(IIntervalRestrictedJsonItem<T>.Minimum)];
       if (minProp != null) Minimum = minProp.ToObject<T>();
@@ -25,9 +24,7 @@ namespace HeuristicLab.JsonInterface {
       if (maxProp != null) Maximum = maxProp.ToObject<T>();
     }
 
-    public IntervalRestrictedValueJsonItem() { }
-
-    [StorableConstructor]
-    protected IntervalRestrictedValueJsonItem(StorableConstructorFlag _) : base(_) { }
+    public IntervalRestrictedValueJsonItem(string id, IJsonConvertable convertable, JsonItemConverter converter) :
+      base(id, convertable, converter) { }
   }
 }

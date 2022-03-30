@@ -4,8 +4,7 @@ using HEAL.Attic;
 using Newtonsoft.Json.Linq;
 
 namespace HeuristicLab.JsonInterface {
-  [StorableType("4B3B7E23-4317-4804-BB51-88ABFD58CD03")]
-  public abstract class ConcreteRestrictedValueJsonItem<T> : ValueJsonItem<T>, IConcreteRestrictedJsonItem<T> {
+  public abstract class ConcreteRestrictedValueJsonItem<T> : ValueJsonItem<T>{
 
     public IEnumerable<T> ConcreteRestrictedItems { get; set; }
 
@@ -18,16 +17,15 @@ namespace HeuristicLab.JsonInterface {
         $"'{ string.Join(",", ConcreteRestrictedItems.Select(s => s.ToString()).ToArray()) }'.");
     }
 
-    public override void SetJObject(JObject jObject) {
-      base.SetJObject(jObject);
+    protected internal override void FromJObject(JObject jObject) {
+      base.FromJObject(jObject);
       ConcreteRestrictedItems =
         (jObject[nameof(IConcreteRestrictedJsonItem<T>.ConcreteRestrictedItems)]?
         .ToObject<IEnumerable<T>>());
     }
 
-    public ConcreteRestrictedValueJsonItem() { }
+    public ConcreteRestrictedValueJsonItem(string id, IJsonConvertable convertable, JsonItemConverter converter) :
+      base(id, convertable, converter) { }
 
-    [StorableConstructor]
-    protected ConcreteRestrictedValueJsonItem(StorableConstructorFlag _) : base(_) { }
   }
 }

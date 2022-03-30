@@ -1,26 +1,23 @@
 ﻿using System;
 using Newtonsoft.Json.Linq;
 using HEAL.Attic;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace HeuristicLab.JsonInterface {
-  [StorableType("29139288-7ABB-4391-926E-5975CF38141E")]
-  public abstract class ValueJsonItem : JsonItem, IValueJsonItem {
+  public abstract class ValueJsonItem : JsonItem {
     public object Value { get; set; }
 
-    public override void SetJObject(JObject jObject) {
+    protected internal override void FromJObject(JObject jObject) {
       Value = jObject[nameof(IValueJsonItem.Value)]?.ToObject<object>();
     }
 
-    public ValueJsonItem() { }
-
-    [StorableConstructor]
-    protected ValueJsonItem(StorableConstructorFlag _) : base(_) {
-    }
+    public ValueJsonItem(string id, IJsonConvertable convertable, JsonItemConverter converter) :
+      base(id, convertable, converter) { }
 
   }
 
-  [StorableType("86085358-50D6-4486-9265-F6CEA8C8FA19")]
-  public abstract class ValueJsonItem<T> : ValueJsonItem, IValueJsonItem<T> {
+  public abstract class ValueJsonItem<T> : ValueJsonItem {
     public new T Value {
       get => ConvertObject(base.Value);
       set => base.Value = value;
@@ -36,14 +33,12 @@ namespace HeuristicLab.JsonInterface {
       return (T)obj;
     }
 
-    public override void SetJObject(JObject jObject) {
+    protected internal override void FromJObject(JObject jObject) {
       if (jObject[nameof(IValueJsonItem<T>.Value)] != null)
         Value = jObject[nameof(IValueJsonItem<T>.Value)].ToObject<T>();
     }
 
-    public ValueJsonItem() { }
-
-    [StorableConstructor]
-    protected ValueJsonItem(StorableConstructorFlag _) : base(_) { }
+    public ValueJsonItem(string id, IJsonConvertable convertable, JsonItemConverter converter) :
+      base(id, convertable, converter) { }
   }
 }

@@ -51,16 +51,5 @@ namespace HeuristicLab.JsonInterface {
     void AddChildren(params IJsonItem[] childs);
     void AddChildren(IEnumerable<IJsonItem> childs);
 
-    /// <summary>
-    /// Method to generate a Newtonsoft JObject, which describes the JsonItem.
-    /// </summary>
-    /// <returns>Newtonsoft JObject</returns>
-    JObject GenerateJObject();
-
-    /// <summary>
-    /// To set all necessary JsonItem properties with an given Newtonsoft JObject.
-    /// </summary>
-    /// <param name="jObject">Newtonsoft JObject</param>
-    void SetJObject(JObject jObject);
   }
 }

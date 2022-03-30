@@ -9,8 +9,8 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
   /// <typeparam name="T">JsonItemType</typeparam>
   /// <typeparam name="X">Type of the range array (ConcreteRestrictedItemArray)</typeparam>
   /// <typeparam name="V">Type of the value property</typeparam>
-  public abstract class ConcreteRestrictedJsonItemVM<T, X, V> : JsonItemVMBase<T>
-    where T : class, IConcreteRestrictedJsonItem<X>, IValueJsonItem<V> {
+  public abstract class ConcreteRestrictedJsonItemVM<T, X> : JsonItemVMBase<T>
+    where T : ConcreteRestrictedValueJsonItem<X> {
     public override UserControl Control {
       get {
         var control = ConcreteItemsRestrictor.Create(Item.ConcreteRestrictedItems);
@@ -48,7 +48,7 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
     /// Method to get or generate a default value for property "Value".
     /// </summary>
     /// <returns></returns>
-    protected abstract V GetDefaultValue();
+    protected abstract X GetDefaultValue();
 
     private void AddComboOption(object opt) {
       var items = new List<X>(Range);

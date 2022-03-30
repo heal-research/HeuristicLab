@@ -1,40 +1,34 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using HEAL.Attic;
-using Newtonsoft.Json.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Newtonsoft.Json;
 
-namespace HeuristicLab.JsonInterface {
-  [StorableType("43E86513-0F25-4BA8-85B4-4FB50FF62FA8")]
-  public class ListJsonItem : ArrayJsonItem<IJsonItem>, IListJsonItem {
+namespace HeuristicLab.JsonInterface.JsonItems {
+  public class ListJsonItem : JsonItem {
 
-    public string TargetTypeGUID { get; set; }
+    private IList<JsonItem> items = new List<JsonItem>();
+    [JsonIgnore]
+    public IEnumerable<JsonItem> Items => items;
+
+
+    public ListJsonItem(string id, IJsonConvertable convertable, JsonItemConverter converter) :
+      base(id, convertable, converter) { }
 
     protected override ValidationResult Validate() {
-      var validationResults = Value.Select(x => x.GetValidator().Validate());
-      ValidationResult result = new ValidationResult(
-        validationResults.Any(x => !x.Success),
-        validationResults.SelectMany(x => x.Errors));
-      return result;
+      throw new NotImplementedException();
     }
 
-    public override void SetJObject(JObject jObject) {
-      var guidJObj = jObject[nameof(IListJsonItem.TargetTypeGUID)];
-      IList<IJsonItem> items = new List<IJsonItem>();
-      if (guidJObj != null) {
-        TargetTypeGUID = jObject[nameof(IListJsonItem.TargetTypeGUID)].ToString();
-        var targetType = Mapper.StaticCache.GetType(new Guid(TargetTypeGUID));
-        foreach (JObject obj in jObject[nameof(IValueJsonItem.Value)]) {
-          items.Add((IJsonItem)obj.ToObject(targetType));
-        }
-      }
-      Value = items.ToArray();
-      Resizable = (jObject[nameof(IArrayJsonItem.Resizable)]?.ToObject<bool>()).GetValueOrDefault();
-    }
+    public void AddItem(JsonItem item) => items.Add(item);
 
-    public ListJsonItem() { }
+    //public override IEnumerator<JsonItem> Iterate() {
+    //  foreach (var item in this)
+    //    yield return item;
 
-    [StorableConstructor]
-    protected ListJsonItem(StorableConstructorFlag _) : base(_) { }
+    //  foreach (var item in items)
+    //    foreach (var c in item)
+    //      yield return c;
+    //}
   }
 }

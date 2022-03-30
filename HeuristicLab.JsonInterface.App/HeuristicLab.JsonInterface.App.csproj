@@ -9,9 +9,10 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>HeuristicLab.JsonInterface.App</RootNamespace>
     <AssemblyName>HeuristicLab.JsonInterface.App</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -95,6 +96,10 @@
       <Project>{C36BD924-A541-4A00-AFA8-41701378DDC5}</Project>
       <Name>HeuristicLab.Core-3.3</Name>
       <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Data\3.3\HeuristicLab.Data-3.3.csproj">
+      <Project>{BBAB9DF5-5EF3-4BA8-ADE9-B36E82114937}</Project>
+      <Name>HeuristicLab.Data-3.3</Name>
     </ProjectReference>
     <ProjectReference Include="..\HeuristicLab.JsonInterface\HeuristicLab.JsonInterface.csproj">
       <Project>{0e3aab5e-f152-44e0-a054-4d9a83ecee08}</Project>

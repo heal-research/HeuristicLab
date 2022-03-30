@@ -2,36 +2,32 @@
 using HEAL.Attic;
 
 namespace HeuristicLab.JsonInterface {
-  [StorableType("B9B3843E-90B9-453F-AB7F-B3A4B8DF6809")]
   public class DoubleJsonItem : IntervalRestrictedValueJsonItem<double> {
-    public override JObject GenerateJObject() {
-      var obj = base.GenerateJObject();
+    protected internal override JObject ToJObject() {
+      var obj = base.ToJObject();
 
-      if (Minimum.CompareTo(double.MinValue) == 0)
+      if (Minimum == double.MinValue)
         obj.Property("Minimum").Remove();
 
-      if (Maximum.CompareTo(double.MaxValue) == 0)
+      if (Maximum == double.MaxValue)
         obj.Property("Maximum").Remove();
 
       return obj;
     }
 
-    public override void SetJObject(JObject jObject) {
+    protected internal override void FromJObject(JObject jObject) {
       Minimum = double.MinValue;
       Maximum = double.MaxValue;
-      base.SetJObject(jObject);
+      base.FromJObject(jObject);
     }
 
-    public DoubleJsonItem() { }
-
-    [StorableConstructor]
-    protected DoubleJsonItem(StorableConstructorFlag _) : base(_) { }
+    public DoubleJsonItem(string id, IJsonConvertable convertable, JsonItemConverter converter) :
+      base(id, convertable, converter) { }
   }
 
-  [StorableType("D7E2BA3D-E9F7-4062-8423-182B517FA7CA")]
   public class DoubleArrayJsonItem : IntervalRestrictedArrayJsonItem<double> {
-    public override JObject GenerateJObject() {
-      var obj = base.GenerateJObject();
+    protected internal override JObject ToJObject() {
+      var obj = base.ToJObject();
 
       if (Minimum.CompareTo(double.MinValue) == 0)
         obj.Property("Minimum").Remove();
@@ -42,22 +38,19 @@ namespace HeuristicLab.JsonInterface {
       return obj;
     }
 
-    public override void SetJObject(JObject jObject) {
+    protected internal override void FromJObject(JObject jObject) {
       Minimum = double.MinValue;
       Maximum = double.MaxValue;
-      base.SetJObject(jObject);
+      base.FromJObject(jObject);
     }
 
-    public DoubleArrayJsonItem() { }
-
-    [StorableConstructor]
-    protected DoubleArrayJsonItem(StorableConstructorFlag _) : base(_) { }
+    public DoubleArrayJsonItem(string id, IJsonConvertable convertable, JsonItemConverter converter) :
+      base(id, convertable, converter) { }
   }
 
-  [StorableType("4ED29A62-F368-476B-B551-4283E428F7B9")]
-  public class DoubleRangeJsonItem : RangedJsonItem<double> {
-    public override JObject GenerateJObject() {
-      var obj = base.GenerateJObject();
+  public class DoubleRangeJsonItem : RangeJsonItem<double> {
+    protected internal override JObject ToJObject() {
+      var obj = base.ToJObject();
 
       if (Minimum.CompareTo(double.MinValue) == 0)
         obj.Property("Minimum").Remove();
@@ -68,22 +61,19 @@ namespace HeuristicLab.JsonInterface {
       return obj;
     }
 
-    public override void SetJObject(JObject jObject) {
+    protected internal override void FromJObject(JObject jObject) {
       Minimum = double.MinValue;
       Maximum = double.MaxValue;
-      base.SetJObject(jObject);
+      base.FromJObject(jObject);
     }
 
-    public DoubleRangeJsonItem() { }
-
-    [StorableConstructor]
-    protected DoubleRangeJsonItem(StorableConstructorFlag _) : base(_) { }
+    public DoubleRangeJsonItem(string id, IJsonConvertable convertable, JsonItemConverter converter) :
+      base(id, convertable, converter) { }
   }
 
-  [StorableType("39C117DA-6274-4C1F-8CA8-A57B1A7A9C72")]
   public class DoubleMatrixJsonItem : IntervalRestrictedMatrixJsonItem<double> {
-    public override JObject GenerateJObject() {
-      var obj = base.GenerateJObject();
+    protected internal override JObject ToJObject() {
+      var obj = base.ToJObject();
 
       if (Minimum.CompareTo(double.MinValue) == 0)
         obj.Property("Minimum").Remove();
@@ -94,15 +84,13 @@ namespace HeuristicLab.JsonInterface {
       return obj;
     }
 
-    public override void SetJObject(JObject jObject) {
+    protected internal override void FromJObject(JObject jObject) {
       Minimum = double.MinValue;
       Maximum = double.MaxValue;
-      base.SetJObject(jObject);
+      base.FromJObject(jObject);
     }
 
-    public DoubleMatrixJsonItem() { }
-
-    [StorableConstructor]
-    protected DoubleMatrixJsonItem(StorableConstructorFlag _) : base(_) { }
+    public DoubleMatrixJsonItem(string id, IJsonConvertable convertable, JsonItemConverter converter) :
+      base(id, convertable, converter) { }
   }
 }

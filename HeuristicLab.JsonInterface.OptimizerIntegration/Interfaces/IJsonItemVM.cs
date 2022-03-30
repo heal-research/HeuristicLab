@@ -19,12 +19,12 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
     TreeNode TreeNode { get; set; }
 
     TreeView TreeView { get; set; }
-    IJsonItem Item { get; set; }
+    JsonItem Item { get; set; }
 
   }
 
   public interface IJsonItemVM<JsonItemType> : IJsonItemVM
-    where JsonItemType : IJsonItem
+    where JsonItemType : JsonItem
   {
     new JsonItemType Item { get; set; }
   }
