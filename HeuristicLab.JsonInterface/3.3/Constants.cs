@@ -7,18 +7,16 @@
     internal const string Metadata = "Metadata";
     internal const string TemplateName = "TemplateName";
     internal const string HLFileLocation = "HLFileLocation";
-    internal const string OptimizerDescription = "OptimizerDescription";
+    internal const string TemplateDescription = "TemplateDescription";
     internal const string Parameters = "Parameters";
-    internal const string RunCollectionModifiers = "RunCollectionModifiers";
 
     internal const string Template = @"{
       '" + Metadata + @"': {
         '" + TemplateName + @"':'',
         '" + HLFileLocation + @"':'',
-        '" + OptimizerDescription + @"':''
+        '" + TemplateDescription + @"':''
       },
-      '" + Parameters + @"': [],
-      '" + RunCollectionModifiers + @"': []
+      '" + Parameters + @"': []
     }";
   }
 }
