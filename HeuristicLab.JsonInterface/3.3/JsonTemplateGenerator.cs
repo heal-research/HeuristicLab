@@ -43,7 +43,7 @@ namespace HeuristicLab.JsonInterface {
       #endregion
 
       // filter items with values/ranges/actualNames
-      var jsonItems = rootItem.Iterate().Where(x => /*x.Active && !(x is EmptyJsonItem) &&*/ !(x is UnsupportedJsonItem));
+      var jsonItems = rootItem.Iterate();//.Where(x => /*x.Active && !(x is EmptyJsonItem) &&*/ !(x is UnsupportedJsonItem));
 
       #region Serialize HL File
       //ProtoBufSerializer serializer = new ProtoBufSerializer();

@@ -479,6 +479,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.JsonInterface.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.JsonInterface.OptimizerIntegration-3.3", "HeuristicLab.JsonInterface.OptimizerIntegration\3.3\HeuristicLab.JsonInterface.OptimizerIntegration-3.3.csproj", "{5A3413F8-0928-4167-80E7-AAD9D6E38A94}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApp1", "ConsoleApp1\ConsoleApp1.csproj", "{C0E985B2-DF0F-4A4E-AAD5-80DF73CF3525}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -2345,6 +2347,18 @@ Global
 		{5A3413F8-0928-4167-80E7-AAD9D6E38A94}.Release|x64.Build.0 = Release|Any CPU
 		{5A3413F8-0928-4167-80E7-AAD9D6E38A94}.Release|x86.ActiveCfg = Release|Any CPU
 		{5A3413F8-0928-4167-80E7-AAD9D6E38A94}.Release|x86.Build.0 = Release|Any CPU
+		{C0E985B2-DF0F-4A4E-AAD5-80DF73CF3525}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C0E985B2-DF0F-4A4E-AAD5-80DF73CF3525}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C0E985B2-DF0F-4A4E-AAD5-80DF73CF3525}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{C0E985B2-DF0F-4A4E-AAD5-80DF73CF3525}.Debug|x64.Build.0 = Debug|Any CPU
+		{C0E985B2-DF0F-4A4E-AAD5-80DF73CF3525}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C0E985B2-DF0F-4A4E-AAD5-80DF73CF3525}.Debug|x86.Build.0 = Debug|Any CPU
+		{C0E985B2-DF0F-4A4E-AAD5-80DF73CF3525}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C0E985B2-DF0F-4A4E-AAD5-80DF73CF3525}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C0E985B2-DF0F-4A4E-AAD5-80DF73CF3525}.Release|x64.ActiveCfg = Release|Any CPU
+		{C0E985B2-DF0F-4A4E-AAD5-80DF73CF3525}.Release|x64.Build.0 = Release|Any CPU
+		{C0E985B2-DF0F-4A4E-AAD5-80DF73CF3525}.Release|x86.ActiveCfg = Release|Any CPU
+		{C0E985B2-DF0F-4A4E-AAD5-80DF73CF3525}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

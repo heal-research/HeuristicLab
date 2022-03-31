@@ -146,14 +146,6 @@ namespace HeuristicLab.JsonInterface {
         string path = prop.Value.ToString();
         // override default value
         if (Objects.TryGetValue(path, out JsonItem param)) {
-          // remove fixed template parameter from config => dont allow to copy them from concrete config
-          // TODO: shift this into JsonItems?
-          obj.Property(nameof(IIntervalRestrictedJsonItem<int>.Minimum))?.Remove();
-          obj.Property(nameof(IIntervalRestrictedJsonItem<int>.Maximum))?.Remove();
-          obj.Property(nameof(IConcreteRestrictedJsonItem<string>.ConcreteRestrictedItems))?.Remove();
-          obj.Property(nameof(IMatrixJsonItem.ColumnsResizable))?.Remove();
-          obj.Property(nameof(IMatrixJsonItem.RowsResizable))?.Remove();
-          obj.Property(nameof(IArrayJsonItem.Resizable))?.Remove();
           // merge
           param.FromJObject(obj);
         } else throw new InvalidDataException($"No parameter with path='{path}' defined!");

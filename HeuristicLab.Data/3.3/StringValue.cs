@@ -141,7 +141,7 @@ namespace HeuristicLab.Data {
     }
 
     public JsonItem Extract(JsonItemConverter converter) {
-      var item = new EmptyJsonItem(this, converter);
+      var item = new JsonItem(this, converter);
       if(!readOnly)
         item.AddProperty<string>(nameof(Value), Value);
       return item;

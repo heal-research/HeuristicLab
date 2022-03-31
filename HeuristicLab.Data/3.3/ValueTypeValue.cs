@@ -91,7 +91,7 @@ namespace HeuristicLab.Data {
     }
 
     public JsonItem Extract(JsonItemConverter converter) {
-      var item = new EmptyJsonItem(ItemName, this, converter) {
+      var item = new JsonItem(ItemName, this, converter) {
         Name = ItemName,
         Description = ItemDescription
       };

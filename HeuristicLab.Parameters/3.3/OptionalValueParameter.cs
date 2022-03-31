@@ -229,7 +229,7 @@ namespace HeuristicLab.Parameters {
     }
 
     public override JsonItem Extract(JsonItemConverter converter) {
-      var item = new EmptyJsonItem(Name, this, converter) {
+      var item = new JsonItem(Name, this, converter) {
         Name = Name,
         Description = Description
       };

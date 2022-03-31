@@ -18,11 +18,12 @@ namespace HeuristicLab.JsonInterface {
     public override void WritePropertyName(string name) {
       base.Formatting = Formatting.Indented;
       base.WritePropertyName(name);
+      /*
       isRangeArray = 
         name == nameof(IConcreteRestrictedJsonItem<int>.ConcreteRestrictedItems) || 
         name == nameof(IValueJsonItem.Value) ||
         name == nameof(IMatrixJsonItem.RowNames) || 
-        name == nameof(IMatrixJsonItem.ColumnNames);
+        name == nameof(IMatrixJsonItem.ColumnNames);*/
     }
 
     public override void WriteStartObject() {
