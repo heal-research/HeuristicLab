@@ -35,9 +35,9 @@ namespace HeuristicLab.JsonInterface {
   /// <summary>
   /// Main data class for json interface.
   /// </summary>
-  public abstract class JsonItem /*: IEnumerable<JsonItem>*/ {
+  public class JsonItem /*: IEnumerable<JsonItem>*/ {
     
-    public class JsonItemValidator : IJsonItemValidator {
+    public class JsonItemValidator /*: IJsonItemValidator*/ {
       private JsonItem Root { get; set; }
       public JsonItemValidator(JsonItem root) {
         Root = root;
@@ -49,10 +49,10 @@ namespace HeuristicLab.JsonInterface {
         foreach (var x in Root.Iterate()) {
           JsonItem item = x as JsonItem;
           if (item.Active) {
-            var res = ((JsonItem)x).Validate();
+            //var res = ((JsonItem)x).Validate();
             //if one success is false -> whole validation is false
-            success = success && res.Success;
-            errors.AddRange(res.Errors);
+            //success = success && res.Success;
+            //errors.AddRange(res.Errors);
           }
         }
         return new ValidationResult(success, errors);
@@ -96,6 +96,7 @@ namespace HeuristicLab.JsonInterface {
     public bool Active { get; set; }
 
     #region Constructors
+    public JsonItem(IJsonConvertable convertable, JsonItemConverter converter) : this("", convertable, converter) { }
     public JsonItem(string id, IJsonConvertable convertable, JsonItemConverter converter) {
       Id = id;
       converter.AddToCache(convertable, this);
@@ -151,7 +152,7 @@ namespace HeuristicLab.JsonInterface {
     #endregion
 
     #region Abstract Methods
-    protected abstract ValidationResult Validate();
+    //protected abstract ValidationResult Validate();
     #endregion
 
     #region IEnumerable Support

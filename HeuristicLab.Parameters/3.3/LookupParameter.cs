@@ -246,15 +246,12 @@ namespace HeuristicLab.Parameters {
     }
 
     public override JsonItem Extract(JsonItemConverter converter) {
-      var item = new EmptyJsonItem(ItemName, this, converter);
+      var item = new JsonItem(ItemName, this, converter) {
+        Name = Name,
+        Description = Description
+      };
       item.AddProperty<string>(nameof(ActualName), ActualName);
       return item;
-      /*
-      return new LookupJsonItem(ItemName, this, converter) {
-        Name = Name,
-        Description = Description,
-        ActualName = ActualName
-      };*/
     }
   }
 }

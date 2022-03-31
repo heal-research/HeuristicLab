@@ -45,7 +45,7 @@ namespace HeuristicLab.Core {
     }
 
     public JsonItem Extract(JsonItemConverter converter) {
-      var item = new EmptyJsonItem(ItemName, this, converter);
+      var item = new JsonItem(ItemName, this, converter);
       foreach(var param in this)
         if(param is IJsonConvertable convertable)
           item.AddChild(param.Name, converter.ConvertToJson(convertable));

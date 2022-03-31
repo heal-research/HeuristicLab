@@ -261,7 +261,7 @@ namespace HeuristicLab.Parameters {
     }
     
     public override JsonItem Extract(JsonItemConverter converter) {
-      EmptyJsonItem item = new EmptyJsonItem(this, converter) {
+      JsonItem item = new JsonItem(this, converter) {
         Name = Name,
         Description = Description
       };
@@ -269,13 +269,6 @@ namespace HeuristicLab.Parameters {
       item.AddProperty<string>(nameof(Value), Value != null ? Value.ToString() : "");
       item.AddProperty<string[]>(nameof(ValidValues), ValidValues.Select(x => x.ToString()).ToArray());
       
-      /*
-      StringJsonItem item = new StringJsonItem(ItemName, this, converter) {
-        Name = Name,
-        Description = Description,
-        Value = Value != null ? Value.ItemName : "",
-        ConcreteRestrictedItems = ValidValues.Select(x => x.ItemName)
-      };*/
       if(ValidValues is IJsonConvertable convertable)
         item.AddChild(nameof(ValidValues), converter.ConvertToJson(convertable));
 

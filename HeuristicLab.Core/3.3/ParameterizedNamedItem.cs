@@ -110,7 +110,7 @@ namespace HeuristicLab.Core {
     }
 
     public virtual JsonItem Extract(JsonItemConverter converter) {
-      var item = new EmptyJsonItem(ItemName, this, converter) {
+      var item = new JsonItem(ItemName, this, converter) {
         Name = Name,
         Description = ItemDescription
       };

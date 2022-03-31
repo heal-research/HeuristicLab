@@ -72,7 +72,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
 
     public override JsonItem Extract(JsonItemConverter converter) {
-      var item = new EmptyJsonItem(this, converter) {
+      var item = new JsonItem(this, converter) {
         Name = ItemName,
         Description = ItemDescription
       };
