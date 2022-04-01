@@ -36,7 +36,9 @@ namespace HeuristicLab.JsonInterface {
   /// Main data class for json interface.
   /// </summary>
   public class JsonItem /*: IEnumerable<JsonItem>*/ {
-    
+    private readonly IDictionary<string, JsonItem> childs = new Dictionary<string, JsonItem>();
+    private readonly IDictionary<string, object> properties = new Dictionary<string, object>();
+
     public class JsonItemValidator /*: IJsonItemValidator*/ {
       private JsonItem Root { get; set; }
       public JsonItemValidator(JsonItem root) {
@@ -78,19 +80,14 @@ namespace HeuristicLab.JsonInterface {
       }
     }
 
-    private IDictionary<string, JsonItem> childs = new Dictionary<string, JsonItem>();
     [JsonIgnore]
     public IEnumerable<KeyValuePair<string, JsonItem>> Childs => childs;
 
-
-    private IDictionary<string, object> properties = new Dictionary<string, object>();
     [JsonIgnore]
     public IEnumerable<KeyValuePair<string, object>> Properties => properties;
 
-
     [JsonIgnore]
     public JsonItem Parent { get; set; }
-
 
     [JsonIgnore]
     public bool Active { get; set; }
@@ -118,7 +115,6 @@ namespace HeuristicLab.JsonInterface {
     }
     public T GetProperty<T>(string name) => (T)properties[name];
 
-
     public JsonItemValidator GetValidator() => new JsonItemValidator(this);
 
     /// <summary>
@@ -139,20 +135,15 @@ namespace HeuristicLab.JsonInterface {
       }
       return obj;
     }
-      
-
+    
     /// <summary>
     /// To set all necessary JsonItem properties with an given Newtonsoft JObject.
     /// </summary>
     /// <param name="jObject">Newtonsoft JObject</param>
     protected internal virtual void FromJObject(JObject jObject) {
-      Name = (jObject[nameof(JsonItem.Name)]?.ToObject<string>());
-      Description = (jObject[nameof(JsonItem.Description)]?.ToObject<string>());
+      foreach(var prop in Properties.ToArray())
+        properties[prop.Key] = jObject[prop.Key]?.ToObject(prop.Value.GetType());
     }
-    #endregion
-
-    #region Abstract Methods
-    //protected abstract ValidationResult Validate();
     #endregion
 
     #region IEnumerable Support
