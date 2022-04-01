@@ -28,11 +28,12 @@ using System.Text;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HEAL.Attic;
+using HeuristicLab.JsonInterface;
 
 namespace HeuristicLab.Data {
   [Item("ValueTypeArray", "An abstract base class for representing arrays of value types.")]
   [StorableType("6A05E421-E015-44A8-959F-5711CF9400A9")]
-  public abstract class ValueTypeArray<T> : Item, IValueTypeArray<T> where T : struct {
+  public abstract class ValueTypeArray<T> : Item, IValueTypeArray<T>, IJsonConvertable where T : struct {
     private const int maximumToStringLength = 100;
 
     public static new Image StaticItemImage {
@@ -200,6 +201,25 @@ namespace HeuristicLab.Data {
       if (Reset != null)
         Reset(this, EventArgs.Empty);
       OnToStringChanged();
+    }
+
+    public void Inject(JsonItem data, JsonItemConverter converter) {
+      if (!readOnly) {
+        array = data.GetProperty<T[]>("Value");
+        ElementNames = data.GetProperty<IEnumerable<string>>(nameof(ElementNames));
+      }
+    }
+
+    public JsonItem Extract(JsonItemConverter converter) {
+      var item = new JsonItem(ItemName, this, converter) {
+        Name = ItemName,
+        Description = ItemDescription
+      };
+      if(!readOnly) {
+        item.AddProperty<T[]>("Value", array);
+        item.AddProperty<IEnumerable<string>>(nameof(ElementNames), ElementNames);
+      }
+      return item;
     }
   }
 }
