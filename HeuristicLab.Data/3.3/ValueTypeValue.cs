@@ -87,7 +87,8 @@ namespace HeuristicLab.Data {
     }
 
     public void Inject(JsonItem data, JsonItemConverter converter) {
-      Value = data.GetProperty<T>(nameof(Value));
+      if(!readOnly)
+        Value = data.GetProperty<T>(nameof(Value));
     }
 
     public JsonItem Extract(JsonItemConverter converter) {
@@ -95,7 +96,8 @@ namespace HeuristicLab.Data {
         Name = ItemName,
         Description = ItemDescription
       };
-      item.AddProperty<T>(nameof(Value), Value);
+      if(!readOnly)
+        item.AddProperty<T>(nameof(Value), Value);
       return item;
     }
   }
