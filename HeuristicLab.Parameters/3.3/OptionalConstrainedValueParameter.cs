@@ -249,7 +249,6 @@ namespace HeuristicLab.Parameters {
 
     public override void Inject(JsonItem data, JsonItemConverter converter) {
       var value = data.GetProperty<string>(nameof(Value));
-      //StringJsonItem stringJsonItem = (StringJsonItem)data;
       if (!string.IsNullOrEmpty(value)) {
         var validValue = ValidValues.Where(x => x.ToString() == value).FirstOrDefault();
         if(validValue != null)
