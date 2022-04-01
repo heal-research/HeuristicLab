@@ -19,10 +19,9 @@ namespace ConsoleApp1
       ga.Engine = new SequentialEngine();
       ga.Problem = new SymbolicRegressionSingleObjectiveProblem();
 
-      var converter = new JsonItemConverter();
-      JsonItem item = converter.ConvertToJson(ga);
-
       JsonTemplateGenerator.GenerateTemplate(@"D:\test", ga);
+      var res = JsonTemplateInstantiator.Instantiate(@"D:\test.json");
+      Console.WriteLine(res);
     }
   }
 }
