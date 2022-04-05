@@ -29,7 +29,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
     public new Constant Symbol => (Constant) base.Symbol;
 
-    public double Value => Symbol.Value;
+    private double constantValue;
+    [Storable]
+    public double Value {
+      get { return constantValue; }
+      set { constantValue = value; }
+    }
 
     [StorableConstructor]
     private ConstantTreeNode(StorableConstructorFlag _) : base(_) { }

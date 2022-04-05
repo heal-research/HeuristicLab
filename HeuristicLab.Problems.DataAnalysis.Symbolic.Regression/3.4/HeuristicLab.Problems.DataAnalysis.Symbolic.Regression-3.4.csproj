@@ -109,6 +109,11 @@
       <HintPath>..\..\bin\ALGLIB-3.17.0.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="HeuristicLab.Problems.DataAnalysis.Symbolic.NativeInterpreter-0.1, Version=0.0.0.1, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\bin\HeuristicLab.Problems.DataAnalysis.Symbolic.NativeInterpreter-0.1.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -135,6 +140,7 @@
     <Compile Include="ParameterOptimization.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="ShapeConstraintsAnalyzer.cs" />
+    <Compile Include="SingleObjective\Evaluators\ParameterOptimizationEvaluator.cs" />
     <Compile Include="SingleObjective\ParameterOptimizationAnalyzer.cs" />
     <Compile Include="SingleObjective\Evaluators\NMSESingleObjectiveConstraintsEvaluator.cs" />
     <Compile Include="SingleObjective\Evaluators\SymbolicRegressionMeanRelativeErrorEvaluator.cs" />
