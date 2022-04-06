@@ -72,10 +72,6 @@
     <Compile Include="Converters\ValueRangeConverter.cs" />
     <Compile Include="Interfaces\IJsonConvertable.cs" />
     <Compile Include="JsonItems\JsonItem.cs" />
-    <Compile Include="ResultCollectionProcessors\AbstractProcessors\RunCollectionSRSolutionFormatter.cs" />
-    <Compile Include="ResultCollectionProcessors\RunCollectionSRSolutionGraphVizFormatter.cs" />
-    <Compile Include="ResultCollectionProcessors\RunCollectionSRSolutionLatexFormatter.cs" />
-    <Compile Include="ResultCollectionProcessors\RunCollectionSRSolutionPythonFormatter.cs" />
     <Compile Include="SingleLineArrayJsonWriter.cs" />
     <Compile Include="JsonTemplateGenerator.cs" />
     <Compile Include="JsonTemplateInstantiator.cs" />
