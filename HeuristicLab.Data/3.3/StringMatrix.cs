@@ -28,11 +28,12 @@ using System.Text;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HEAL.Attic;
+using HeuristicLab.JsonInterface;
 
 namespace HeuristicLab.Data {
   [Item("StringMatrix", "Represents a matrix of strings.")]
   [StorableType("0BFE5727-D2CF-418C-94BE-A8A0BBA195D8")]
-  public class StringMatrix : Item, IEnumerable<string>, IStringConvertibleMatrix {
+  public class StringMatrix : Item, IEnumerable<string>, IStringConvertibleMatrix, IJsonConvertable {
     private const int maximumToStringLength = 100;
 
     public static new Image StaticItemImage {
@@ -342,5 +343,23 @@ namespace HeuristicLab.Data {
       return SetValue(value, rowIndex, columnIndex);
     }
     #endregion
+
+    public void Inject(JsonItem data, JsonItemConverter converter) {
+      if (!readOnly) {
+        matrix = data.GetProperty<string[,]>("Value");
+        columnNames = data.GetProperty<List<string>>(nameof(ColumnNames));
+        rowNames = data.GetProperty<List<string>>(nameof(RowNames));
+      }
+    }
+
+    public JsonItem Extract(JsonItemConverter converter) {
+      var item = new JsonItem(this, converter);
+      if (!readOnly) {
+        item.AddProperty<string[,]>("Value", matrix);
+        item.AddProperty<List<string>>(nameof(ColumnNames), columnNames);
+        item.AddProperty<List<string>>(nameof(RowNames), rowNames);
+      }
+      return item;
+    }
   }
 }
