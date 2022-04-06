@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 
@@ -9,7 +10,7 @@ namespace HeuristicLab.Build {
     public string ProjectDir { get; set; }
 
     public override bool Execute() {
-      string commitCount = ThisAssembly.Git.Commits;
+      string version = GetVersion();
 
       string assemblyInfoFramePath = Path.Combine(ProjectDir, "Properties", "AssemblyInfo.cs.frame");
       string assemblyInfoPath = Path.Combine(ProjectDir, "Properties", "AssemblyInfo.cs");
@@ -17,7 +18,7 @@ namespace HeuristicLab.Build {
       if (File.Exists(assemblyInfoFramePath)) {
         Log.LogMessage($"Updating {assemblyInfoPath}");
         var assemblyInfoFrameContent = File.ReadAllText(assemblyInfoFramePath);
-        File.WriteAllText(assemblyInfoPath, assemblyInfoFrameContent.Replace("$WCREV$", commitCount));
+        File.WriteAllText(assemblyInfoPath, assemblyInfoFrameContent.Replace("$WCREV$", version));
       }
 
 
@@ -27,10 +28,14 @@ namespace HeuristicLab.Build {
       if (File.Exists(pluginFramePath)) {
         Log.LogMessage($"Updating {pluginPath}");
         var pluginFrameContent = File.ReadAllText(pluginFramePath);
-        File.WriteAllText(pluginPath, pluginFrameContent.Replace("$WCREV$", commitCount));
+        File.WriteAllText(pluginPath, pluginFrameContent.Replace("$WCREV$", version));
       }
 
       return true;
+    }
+
+    public string GetVersion() {
+      return ThisAssembly.Git.Commits;
     }
   }
 }
