@@ -209,14 +209,6 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PreBuildEvent>set Path=%25Path%25;$(ProjectDir);$(SolutionDir)
-set ProjectDir=$(ProjectDir)
-set SolutionDir=$(SolutionDir)
-set Outdir=$(Outdir)
-
-call PreBuildEvent.cmd</PreBuildEvent>
-  </PropertyGroup>
-  <PropertyGroup>
     <PostBuildEvent>copy /y "$(TargetPath)" "$(SolutionDir)\bin"
 copy /y "$(TargetPath).config" "$(SolutionDir)\bin"</PostBuildEvent>
   </PropertyGroup>
@@ -227,4 +219,6 @@ copy /y "$(TargetPath).config" "$(SolutionDir)\bin"</PostBuildEvent>
   <Target Name="AfterBuild">
   </Target>
   -->
+  <UsingTask TaskName="HeuristicLab.Build.UpdateVersion" AssemblyFile="$(MSBuildProjectDirectory)\..\..\build\bin\HeuristicLab.Build.dll"/>
+  <Target Name="BeforeBuild"> <UpdateVersion ProjectDir="."/> </Target>
 </Project>
