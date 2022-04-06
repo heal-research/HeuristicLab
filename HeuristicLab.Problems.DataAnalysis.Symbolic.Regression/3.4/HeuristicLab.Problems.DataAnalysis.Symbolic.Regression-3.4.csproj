@@ -134,6 +134,10 @@
     <Compile Include="MultiObjective\SymbolicRegressionMultiObjectiveValidationBestSolutionAnalyzer.cs" />
     <Compile Include="ParameterOptimization.cs" />
     <Compile Include="Plugin.cs" />
+    <Compile Include="RunCollectionModification\AbstractProcessors\RunCollectionSRSolutionFormatter.cs" />
+    <Compile Include="RunCollectionModification\RunCollectionSRSolutionGraphVizFormatter.cs" />
+    <Compile Include="RunCollectionModification\RunCollectionSRSolutionLatexFormatter.cs" />
+    <Compile Include="RunCollectionModification\RunCollectionSRSolutionPythonFormatter.cs" />
     <Compile Include="ShapeConstraintsAnalyzer.cs" />
     <Compile Include="SingleObjective\ParameterOptimizationAnalyzer.cs" />
     <Compile Include="SingleObjective\Evaluators\NMSESingleObjectiveConstraintsEvaluator.cs" />
