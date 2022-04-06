@@ -17,16 +17,17 @@ namespace HeuristicLab.Build {
       if (File.Exists(assemblyInfoFramePath)) {
         Log.LogMessage($"Updating {assemblyInfoPath}");
         var assemblyInfoFrameContent = File.ReadAllText(assemblyInfoFramePath);
-        File.WriteAllText(Path.Combine(ProjectDir, "Properties", "AssemblyInfo.cs"), assemblyInfoFrameContent.Replace("$WCREV$", commitCount));
+        File.WriteAllText(assemblyInfoPath, assemblyInfoFrameContent.Replace("$WCREV$", commitCount));
       }
+
 
       string pluginFramePath = Path.Combine(ProjectDir, "Plugin.cs.frame");
       string pluginPath = Path.Combine(ProjectDir, "Plugin.cs");
 
       if (File.Exists(pluginFramePath)) {
-        Log.LogMessage($"Updating {Path.Combine(ProjectDir, "Plugin.cs")}");
-        var pluginFrameContent = File.ReadAllText(Path.Combine(ProjectDir, "Plugin.cs.frame"));
-        File.WriteAllText(Path.Combine(ProjectDir, "Plugin.cs"), pluginFrameContent.Replace("$WCREV$", commitCount));
+        Log.LogMessage($"Updating {pluginPath}");
+        var pluginFrameContent = File.ReadAllText(pluginFramePath);
+        File.WriteAllText(pluginPath, pluginFrameContent.Replace("$WCREV$", commitCount));
       }
 
       return true;
