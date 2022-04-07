@@ -8,17 +8,6 @@ using HeuristicLab.PluginInfrastructure;
 using Newtonsoft.Json.Linq;
 
 namespace HeuristicLab.JsonInterface {
-  public readonly struct InstantiatorResult {
-
-    public InstantiatorResult(IJsonConvertable convertable/*, IEnumerable<IRunCollectionModifier> runCollectionModifiers*/) {
-      Convertable = convertable;
-      //RunCollectionModifiers = runCollectionModifiers;
-    }
-
-    public IJsonConvertable Convertable { get; }
-    //public IEnumerable<IRunCollectionModifier> RunCollectionModifiers { get; }
-  }
-
 
   /// <summary>
   /// Class to instantiate an IAlgorithm object with a json interface template and config.
@@ -42,13 +31,13 @@ namespace HeuristicLab.JsonInterface {
     /// <param name="templateFile">Template file (json), generated with JCGenerator.</param>
     /// <param name="configFile">Config file (json) for the template.</param>
     /// <returns>confugrated IOptimizer object</returns>
-    public static InstantiatorResult Instantiate(string templateFile, string configFile = null) {
+    public static IJsonConvertable Instantiate(string templateFile, string configFile = null) {
       JsonTemplateInstantiator instantiator = new JsonTemplateInstantiator();
       return instantiator.ExecuteInstantiaton(templateFile, configFile);
     }
 
     #region Helper
-    private InstantiatorResult ExecuteInstantiaton(string templateFile, string configFile = null) {
+    private IJsonConvertable ExecuteInstantiaton(string templateFile, string configFile = null) {
 
       #region Parse Files
       string templateFileFullPath = Path.GetFullPath(templateFile);
@@ -86,7 +75,7 @@ namespace HeuristicLab.JsonInterface {
       // inject configuration
       Converter.ConvertFromJson(convertable, rootItem);
 
-      return new InstantiatorResult(convertable/*, CollectRunCollectionModifiers()*/);
+      return convertable;
     }
 
     private void CollectParameterizedItems(IJsonConvertable convertable) {
