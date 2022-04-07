@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
+using System.Runtime.InteropServices;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 
@@ -35,7 +37,29 @@ namespace HeuristicLab.Build {
     }
 
     public string GetVersion() {
-      return ThisAssembly.Git.Commits;
+      string version = DateTime.Now.ToString("yyyyMMddHHmmss");
+
+      if (System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
+        using (Process process = new Process()) {
+          process.StartInfo.FileName = "cmd.exe";
+          process.StartInfo.WorkingDirectory = new DirectoryInfo(ProjectDir).FullName;
+          process.StartInfo.Arguments = $"/c git rev-list --count HEAD";
+          process.StartInfo.UseShellExecute = false;
+          process.StartInfo.RedirectStandardOutput = true;
+          process.Start();
+
+          version = process.StandardOutput.ReadToEnd().Replace("\n", "");
+        }
+
+      } else if (System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(OSPlatform.Linux)) {
+
+      } else if (System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(OSPlatform.OSX)) {
+
+      } else {
+
+      }
+
+      return version;
     }
   }
 }

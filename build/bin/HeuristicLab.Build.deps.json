@@ -9,7 +9,6 @@
     ".NETStandard,Version=v2.0/": {
       "HeuristicLab.Build/1.0.0": {
         "dependencies": {
-          "GitInfo": "2.2.0",
           "Microsoft.Build.Utilities.Core": "17.1.0",
           "NETStandard.Library": "2.0.3"
         },
@@ -17,7 +16,6 @@
           "HeuristicLab.Build.dll": {}
         }
       },
-      "GitInfo/2.2.0": {},
       "Microsoft.Build.Framework/17.1.0": {
         "dependencies": {
           "Microsoft.Win32.Registry": "4.3.0",
@@ -306,13 +304,6 @@
       "type": "project",
       "serviceable": false,
       "sha512": ""
-    },
-    "GitInfo/2.2.0": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-SKTmjt40sYqoDB3S7HFVUToUN/vl6Zrt+PuSHdjbQDlcBx0JAZBdS7BXVbVKyy+0iaaF3FBd4ZxspIlKQCC9Lw==",
-      "path": "gitinfo/2.2.0",
-      "hashPath": "gitinfo.2.2.0.nupkg.sha512"
     },
     "Microsoft.Build.Framework/17.1.0": {
       "type": "package",

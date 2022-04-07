@@ -6,7 +6,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="GitInfo" Version="2.2.0" />
     <PackageReference Include="Microsoft.Build.Utilities.Core" Version="17.1.0" />
   </ItemGroup>
 
