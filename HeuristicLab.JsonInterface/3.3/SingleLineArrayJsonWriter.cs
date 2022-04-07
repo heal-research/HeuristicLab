@@ -8,22 +8,22 @@ namespace HeuristicLab.JsonInterface {
   /// It collapses arrays into a single line.
   /// </summary>
   public class SingleLineArrayJsonWriter : JsonTextWriter {
-    private bool isRangeArray = false;
+    private int arrayDepth = 0;
     public override void WriteStartArray() {
-      
-      if (isRangeArray) base.Formatting = Formatting.None;
+      if (arrayDepth > 0) 
+        base.Formatting = Formatting.None;
+      arrayDepth++;
       base.WriteStartArray();
+    }
+
+    public override void WriteEndArray() {
+      arrayDepth--;
+      base.WriteEndArray();
     }
 
     public override void WritePropertyName(string name) {
       base.Formatting = Formatting.Indented;
       base.WritePropertyName(name);
-      /*
-      isRangeArray = 
-        name == nameof(IConcreteRestrictedJsonItem<int>.ConcreteRestrictedItems) || 
-        name == nameof(IValueJsonItem.Value) ||
-        name == nameof(IMatrixJsonItem.RowNames) || 
-        name == nameof(IMatrixJsonItem.ColumnNames);*/
     }
 
     public override void WriteStartObject() {
