@@ -25,6 +25,9 @@ using HeuristicLab.Core;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HEAL.Attic;
+using HeuristicLab.JsonInterface;
+using System.Collections.Generic;
+using System;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
   [Item("Symbolic Regression Problem (single-objective)", "Represents a single objective symbolic regression problem.")]
@@ -163,5 +166,48 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
         }
       }
     }
+
+    #region IJsonConvertable Members
+    private const string TrainingPartitionStartPropertyName = "TrainingPartition.Start";
+    private const string TrainingPartitionEndPropertyName = "TrainingPartition.End";
+    private const string TestPartitionStartPropertyName = "TestPartition.Start";
+    private const string TestPartitionEndPropertyName = "TestPartition.End";
+
+    public override void Inject(JsonItem item, JsonItemConverter converter) {
+      var dataset = Dataset.Instantiate(item);
+      var allowedInputVariables = item.GetProperty<IEnumerable<string>>(nameof(ProblemData.AllowedInputVariables));
+      var targetVariable = item.GetProperty<string>(nameof(ProblemData.TargetVariable));
+
+      var problemData = new RegressionProblemData(dataset, allowedInputVariables, targetVariable);
+      problemData.TrainingPartition.Start = item.GetProperty<int>(TrainingPartitionStartPropertyName);
+      problemData.TrainingPartition.End = item.GetProperty<int>(TrainingPartitionEndPropertyName);
+      problemData.TestPartition.Start = item.GetProperty<int>(TestPartitionStartPropertyName);
+      problemData.TestPartition.End = item.GetProperty<int>(TestPartitionEndPropertyName);
+      ProblemData = problemData;
+
+      ApplyLinearScaling.Value = item.GetProperty<bool>(nameof(ApplyLinearScaling));
+      MaximumSymbolicExpressionTreeDepth.Value = item.GetProperty<int>(nameof(MaximumSymbolicExpressionTreeDepth));
+      MaximumSymbolicExpressionTreeLength.Value = item.GetProperty<int>(nameof(MaximumSymbolicExpressionTreeLength));
+    }
+
+    public override JsonItem Extract(JsonItemConverter converter) {
+      var item = new JsonItem(ItemName, this, converter) {
+        Name = Name,
+        Description = Description
+      };
+      if (ProblemData.Dataset is Dataset dataset)
+        item.MergeProperties(converter.ConvertToJson(dataset));
+      item.AddProperty(nameof(ProblemData.AllowedInputVariables), ProblemData.AllowedInputVariables.ToArray());
+      item.AddProperty(nameof(ProblemData.TargetVariable), ProblemData.TargetVariable);
+      item.AddProperty(TrainingPartitionStartPropertyName, ProblemData.TrainingPartition.Start);
+      item.AddProperty(TrainingPartitionEndPropertyName, ProblemData.TrainingPartition.End);
+      item.AddProperty(TestPartitionStartPropertyName, ProblemData.TestPartition.Start);
+      item.AddProperty(TestPartitionEndPropertyName, ProblemData.TestPartition.End);
+      item.AddProperty(nameof(ApplyLinearScaling), ApplyLinearScaling.Value);
+      item.AddProperty(nameof(MaximumSymbolicExpressionTreeDepth), MaximumSymbolicExpressionTreeDepth.Value);
+      item.AddProperty(nameof(MaximumSymbolicExpressionTreeLength), MaximumSymbolicExpressionTreeLength.Value);
+      return item;
+    }
+    #endregion
   }
 }
