@@ -30,6 +30,7 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HEAL.Attic;
+using HeuristicLab.JsonInterface;
 
 namespace HeuristicLab.Optimization {
   /// <summary>
@@ -346,5 +347,18 @@ namespace HeuristicLab.Optimization {
       runsCounter = runs.Count;
     }
     #endregion
+
+    public override void Inject(JsonItem data, JsonItemConverter converter) {
+      base.Inject(data, converter);
+      if (Problem is IJsonConvertable convertable)
+        converter.ConvertFromJson(convertable, data.GetChild(nameof(Problem)));
+    }
+
+    public override JsonItem Extract(JsonItemConverter converter) {
+      var item = base.Extract(converter);
+      if(Problem is IJsonConvertable convertable)
+        item.AddChild(nameof(Problem), converter.ConvertToJson(convertable));
+      return item;
+    }
   }
 }
