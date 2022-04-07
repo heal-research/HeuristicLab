@@ -26,6 +26,7 @@ using HeuristicLab.Common.Resources;
 using HeuristicLab.Core;
 using HeuristicLab.Parameters;
 using HEAL.Attic;
+using HeuristicLab.JsonInterface;
 
 namespace HeuristicLab.Optimization {
   [Item("ResultParameter", "A parameter whose value is written to a result collection.")]
@@ -146,6 +147,21 @@ namespace HeuristicLab.Optimization {
       EventHandler handler = DefaultValueChanged;
       if (handler != null) handler(this, EventArgs.Empty);
       OnItemImageChanged();
+    }
+
+    public override void Inject(JsonItem data, JsonItemConverter converter) {
+      ActualName = data.GetProperty<string>("ResultName");
+      ResultCollectionName = data.GetProperty<string>(nameof(ResultCollectionName));
+    }
+
+    public override JsonItem Extract(JsonItemConverter converter) {
+      var item = new JsonItem(ItemName, this, converter) {
+        Name = Name,
+        Description = Description
+      };
+      item.AddProperty<string>("ResultName", ActualName);
+      item.AddProperty<string>(nameof(ResultCollectionName), ResultCollectionName);
+      return item;
     }
   }
 }
