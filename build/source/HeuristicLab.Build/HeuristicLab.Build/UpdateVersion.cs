@@ -39,25 +39,21 @@ namespace HeuristicLab.Build {
     public string GetVersion() {
       string version = DateTime.Now.ToString("yyyyMMddHHmmss");
 
-      if (System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
+      try {
         using (Process process = new Process()) {
-          process.StartInfo.FileName = "cmd.exe";
+          process.StartInfo.FileName = "git";
           process.StartInfo.WorkingDirectory = new DirectoryInfo(ProjectDir).FullName;
-          process.StartInfo.Arguments = $"/c git rev-list --count HEAD";
+          process.StartInfo.Arguments = $"rev-list --count HEAD";
           process.StartInfo.UseShellExecute = false;
           process.StartInfo.RedirectStandardOutput = true;
           process.Start();
 
-          version = process.StandardOutput.ReadToEnd().Replace("\n", "");
+          string ret = process.StandardOutput.ReadToEnd().Replace("\n", "");
+          if (int.TryParse(ret, out _)) {
+            version = ret;
+          }
         }
-
-      } else if (System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(OSPlatform.Linux)) {
-
-      } else if (System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(OSPlatform.OSX)) {
-
-      } else {
-
-      }
+      } catch (Exception ex) { Log.LogMessage(ex.ToString()); }
 
       return version;
     }
