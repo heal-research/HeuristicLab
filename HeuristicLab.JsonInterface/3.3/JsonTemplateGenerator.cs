@@ -17,21 +17,8 @@ namespace HeuristicLab.JsonInterface {
     /// <param name="convertable">the object to serialize</param>
     /// <param name="templateDescription">description of the template</param>
     public static void GenerateTemplate(string templatePath, IJsonConvertable convertable, string templateDescription = "") {
-      // clear all runs
-      /*
-      if (optimizer.ExecutionState == ExecutionState.Paused)
-        optimizer.Stop();
-      optimizer.Runs.Clear();
-      */
-
-
       var converter = new JsonItemConverter();
       var rootItem = converter.ConvertToJson(convertable);
-
-      // validation
-      //ValidationResult validationResult = rootItem.GetValidator().Validate();
-      //if (!validationResult.Success)
-      //  throw validationResult.GenerateException();
 
       #region Init
       JObject template = JObject.Parse(Constants.Template);
