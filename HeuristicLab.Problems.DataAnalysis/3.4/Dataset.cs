@@ -28,11 +28,12 @@ using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.JsonInterface;
 
 namespace HeuristicLab.Problems.DataAnalysis {
   [Item("Dataset", "Represents a dataset containing data that should be analyzed.")]
   [StorableType("49F4D145-50D7-4497-8D8A-D190CD556CC8")]
-  public class Dataset : NamedItem, IDataset {
+  public class Dataset : NamedItem, IDataset, IJsonConvertable {
     [StorableConstructor]
     protected Dataset(StorableConstructorFlag _) : base(_) { }
     protected Dataset(Dataset original, Cloner cloner)
@@ -396,6 +397,47 @@ namespace HeuristicLab.Problems.DataAnalysis {
     public virtual event EventHandler SortableViewChanged { add { } remove { } }
     public virtual event EventHandler<EventArgs<int, int>> ItemChanged { add { } remove { } }
     public virtual event EventHandler Reset { add { } remove { } }
+    #endregion
+
+    #region IJsonConvertable Members
+    public void Inject(JsonItem data, JsonItemConverter converter) {
+      double[,] values = data.GetProperty<double[,]>("Value");
+      variableNames = data.GetProperty<IEnumerable<string>>(nameof(VariableNames)).ToList();
+      Rows = values.GetLength(1);
+      var dict = new Dictionary<string, IList>();
+      int col = 0;
+      foreach (var variableName in variableNames) {
+        var rowValues = new List<object>();
+        for(int row = 0; row < Rows; row++)
+          rowValues.Add(values[col, row]);
+        dict.Add(variableName, rowValues);
+        col++;
+      }
+      variableValues = dict;
+    }
+
+    public JsonItem Extract(JsonItemConverter converter) {
+      var item = new JsonItem(ItemName, this, converter) {
+        Name = Name,
+        Description = Description
+      };
+
+      double[,] values = new double[Columns, Rows];
+      int col = 0;
+      foreach(var variableName in VariableNames) {
+        var rowValues = GetDoubleValues(variableName);
+        int row = 0;
+        foreach(var cell in rowValues) {
+          values[col, row] = cell;
+          row++;
+        }
+        col++;
+      }
+
+      item.AddProperty<double[,]>("Value", values);
+      item.AddProperty<IEnumerable<string>>(nameof(VariableNames), VariableNames);
+      return item;
+    }
     #endregion
   }
 }
