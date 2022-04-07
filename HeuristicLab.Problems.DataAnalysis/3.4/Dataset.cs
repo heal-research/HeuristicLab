@@ -403,9 +403,9 @@ namespace HeuristicLab.Problems.DataAnalysis {
     private const string DataPropertyName = "Data";
     public static Dataset Instantiate(JsonItem item) {
       ReadData(item, out IEnumerable<string> variableNames, out double[,] data);
-      if (variableNames.Count() != data.GetLength(1))
+      if (variableNames.Count() != data.GetLength(0))
         throw new ArgumentException("The count of variableNames is not equal with the count of columns.");
-      return new Dataset(variableNames, data);
+      return new Dataset(variableNames, data.Transpose());
     }
 
     private static void ReadData(JsonItem item, out IEnumerable<string> variableNames, out double[,] data) {
@@ -435,13 +435,13 @@ namespace HeuristicLab.Problems.DataAnalysis {
         Description = Description
       };
 
-      double[,] values = new double[Rows, Columns];
+      double[,] values = new double[Columns, Rows];
       int col = 0;
       foreach(var variableName in VariableNames) {
         var rowValues = GetDoubleValues(variableName);
         int row = 0;
         foreach(var cell in rowValues) {
-          values[row, col] = cell;
+          values[col, row] = cell;
           row++;
         }
         col++;
