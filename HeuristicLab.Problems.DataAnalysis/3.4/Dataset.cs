@@ -400,20 +400,29 @@ namespace HeuristicLab.Problems.DataAnalysis {
     #endregion
 
     #region IJsonConvertable Members
-    public void Inject(JsonItem data, JsonItemConverter converter) {
-      double[,] values = data.GetProperty<double[,]>("Value");
-      variableNames = data.GetProperty<IEnumerable<string>>(nameof(VariableNames)).ToList();
-
-      if (variableNames.Count != values.GetLength(0))
+    private const string DataPropertyName = "Data";
+    public static Dataset Instantiate(JsonItem item) {
+      ReadData(item, out IEnumerable<string> variableNames, out double[,] data);
+      if (variableNames.Count() != data.GetLength(0))
         throw new ArgumentException("The count of variableNames is not equal with the count of columns.");
+      return new Dataset(variableNames, data);
+    }
 
-      Rows = values.GetLength(1);
+    private static void ReadData(JsonItem item, out IEnumerable<string> variableNames, out double[,] data) {
+      data = item.GetProperty<double[,]>(DataPropertyName);
+      variableNames = item.GetProperty<IEnumerable<string>>(nameof(VariableNames)).ToList();
+    }
+
+    public void Inject(JsonItem item, JsonItemConverter converter) {
+      ReadData(item, out IEnumerable<string> vn, out double[,] data);
+      variableNames = vn.ToList();
+      Rows = data.GetLength(1);
       var dict = new Dictionary<string, IList>();
       int col = 0;
       foreach (var variableName in variableNames) {
         var rowValues = new List<object>();
         for(int row = 0; row < Rows; row++)
-          rowValues.Add(values[col, row]);
+          rowValues.Add(data[col, row]);
         dict.Add(variableName, rowValues);
         col++;
       }
@@ -438,7 +447,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
         col++;
       }
 
-      item.AddProperty("Value", values);
+      item.AddProperty(DataPropertyName, values);
       item.AddProperty(nameof(VariableNames), VariableNames);
       return item;
     }
