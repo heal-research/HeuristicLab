@@ -403,6 +403,10 @@ namespace HeuristicLab.Problems.DataAnalysis {
     public void Inject(JsonItem data, JsonItemConverter converter) {
       double[,] values = data.GetProperty<double[,]>("Value");
       variableNames = data.GetProperty<IEnumerable<string>>(nameof(VariableNames)).ToList();
+
+      if (variableNames.Count != values.GetLength(0))
+        throw new ArgumentException("The count of variableNames is not equal with the count of columns.");
+
       Rows = values.GetLength(1);
       var dict = new Dictionary<string, IList>();
       int col = 0;
@@ -434,8 +438,8 @@ namespace HeuristicLab.Problems.DataAnalysis {
         col++;
       }
 
-      item.AddProperty<double[,]>("Value", values);
-      item.AddProperty<IEnumerable<string>>(nameof(VariableNames), VariableNames);
+      item.AddProperty("Value", values);
+      item.AddProperty(nameof(VariableNames), VariableNames);
       return item;
     }
     #endregion
