@@ -28,7 +28,13 @@ namespace HeuristicLab.JsonInterface {
       #endregion
 
       // filter items with values/ranges/actualNames
-      var jsonItems = rootItem.Iterate();
+      var jsonItems = rootItem
+        .Iterate()
+        // Filter "empty" JsonItems
+        .Where(x => x.Properties
+          .Select(i => i.Key)
+          .Except(new string[] { nameof(JsonItem.Name), nameof(JsonItem.Description), nameof(JsonItem.Path) })
+          .Count() > 0);
 
       #region Serialize HL File
       ProtoBufSerializer serializer = new ProtoBufSerializer();

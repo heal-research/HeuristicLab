@@ -58,14 +58,14 @@ namespace HeuristicLab.JsonInterface {
       IJsonConvertable convertable = (IJsonConvertable)serializer.Deserialize(hLFileLocation);
       #endregion
 
+      // get algorithm root item
+      var rootItem = Converter.ConvertToJson(convertable);
+
       // collect all parameterizedItems from template
-      CollectParameterizedItems(convertable);
+      CollectParameterizedItems(rootItem);
       
       if (Config != null)
         MergeTemplateWithConfig();
-
-      // get algorithm root item
-      JsonItem rootItem = Objects.First().Value;
 
       // validation
       ValidationResult validationResult = rootItem.GetValidator().Validate();
@@ -78,8 +78,7 @@ namespace HeuristicLab.JsonInterface {
       return convertable;
     }
 
-    private void CollectParameterizedItems(IJsonConvertable convertable) {
-      var root = Converter.ConvertToJson(convertable);
+    private void CollectParameterizedItems(JsonItem root) {
       foreach (JObject obj in Template[Constants.Parameters]) {
         var path = obj[nameof(JsonItem.Path)].ToString();
         foreach (var item in root.Iterate()) {
