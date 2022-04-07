@@ -204,10 +204,8 @@ namespace HeuristicLab.Data {
     }
 
     public void Inject(JsonItem data, JsonItemConverter converter) {
-      if (!readOnly) {
+      if (!readOnly)
         array = data.GetProperty<T[]>("Value");
-        ElementNames = data.GetProperty<IEnumerable<string>>(nameof(ElementNames));
-      }
     }
 
     public JsonItem Extract(JsonItemConverter converter) {
@@ -215,10 +213,8 @@ namespace HeuristicLab.Data {
         Name = ItemName,
         Description = ItemDescription
       };
-      if(!readOnly) {
+      if(!readOnly)
         item.AddProperty<T[]>("Value", array);
-        item.AddProperty<IEnumerable<string>>(nameof(ElementNames), ElementNames);
-      }
       return item;
     }
   }
