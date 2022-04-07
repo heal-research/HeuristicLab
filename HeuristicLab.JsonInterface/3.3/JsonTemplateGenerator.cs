@@ -9,14 +9,21 @@ namespace HeuristicLab.JsonInterface {
   /// Class to generate json interface templates.
   /// </summary>
   public class JsonTemplateGenerator {
-
-    /// <summary>
-    /// static Function to generate a template.
-    /// </summary>
-    /// <param name="templatePath">the path for the template files</param>
-    /// <param name="convertable">the object to serialize</param>
-    /// <param name="templateDescription">description of the template</param>
-    public static void GenerateTemplate(string templatePath, IJsonConvertable convertable, string templateDescription = "") {
+    public static readonly string[] DefaultJsonItemFilter = new string[] {
+      nameof(JsonItem.Name),
+      nameof(JsonItem.Description),
+      nameof(JsonItem.Path),
+      "ActualName",
+      "ResultName",
+      "ResultCollectionName"
+    };
+  /// <summary>
+  /// static Function to generate a template.
+  /// </summary>
+  /// <param name="templatePath">the path for the template files</param>
+  /// <param name="convertable">the object to serialize</param>
+  /// <param name="templateDescription">description of the template</param>
+  public static void GenerateTemplate(string templatePath, IJsonConvertable convertable, string templateDescription = "", string[] jsonItemFilter = null) {
       var converter = new JsonItemConverter();
       var rootItem = converter.ConvertToJson(convertable);
 
@@ -28,12 +35,15 @@ namespace HeuristicLab.JsonInterface {
       #endregion
 
       // filter items with values/ranges/actualNames
+      if (jsonItemFilter == null)
+        jsonItemFilter = DefaultJsonItemFilter;
+
       var jsonItems = rootItem
         .Iterate()
-        // Filter "empty" JsonItems
+        // remove JsonItems which contains only the given properties
         .Where(x => x.Properties
           .Select(i => i.Key)
-          .Except(new string[] { nameof(JsonItem.Name), nameof(JsonItem.Description), nameof(JsonItem.Path) })
+          .Except(jsonItemFilter)
           .Count() > 0);
 
       #region Serialize HL File
