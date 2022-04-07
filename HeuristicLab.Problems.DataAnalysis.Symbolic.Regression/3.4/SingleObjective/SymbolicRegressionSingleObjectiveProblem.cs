@@ -178,6 +178,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       var allowedInputVariables = item.GetProperty<IEnumerable<string>>(nameof(ProblemData.AllowedInputVariables));
       var targetVariable = item.GetProperty<string>(nameof(ProblemData.TargetVariable));
 
+      if (!allowedInputVariables.All(x => dataset.VariableNames.Contains(x)))
+        throw new ArgumentException("AllowedInputVariables must be a subset of VariableNames");
+
+      if (!dataset.VariableNames.Contains(targetVariable))
+        throw new ArgumentException("TargetVariable must be declared in VariableNames");
+
       var problemData = new RegressionProblemData(dataset, allowedInputVariables, targetVariable);
       problemData.TrainingPartition.Start = item.GetProperty<int>(TrainingPartitionStartPropertyName);
       problemData.TrainingPartition.End = item.GetProperty<int>(TrainingPartitionEndPropertyName);
