@@ -92,7 +92,9 @@ namespace HeuristicLab.Core {
     }
 
     public JsonItem Extract(JsonItemConverter converter) {
-      var item = new JsonItem(this, converter);
+      var item = new JsonItem(this, converter) {
+        Name = ItemName
+      };
       foreach(var i in this)
         if (i is IJsonConvertable convertable)
           item.AddChild(convertable.ToString(), converter.ConvertToJson(convertable));
