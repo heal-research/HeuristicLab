@@ -25,7 +25,7 @@ using HeuristicLab.PluginInfrastructure;
 namespace HeuristicLab.JsonInterface.App
 {
   [Plugin("HeuristicLab.JsonInterface.App", "3.3.16.0")]
-  [PluginFile("HeuristicLab.JsonInterface.App.dll", PluginFileType.Assembly)]
+  [PluginFile("HeuristicLab.JsonInterface.App.dll-3.3", PluginFileType.Assembly)]
   [PluginDependency("HeuristicLab.JsonInterface", "3.3")]
   [PluginDependency("HeuristicLab.Optimization", "3.3")]
   [PluginDependency("HeuristicLab.Collections", "3.3")]
