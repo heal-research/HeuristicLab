@@ -193,7 +193,7 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
       // 
       // jsonItemBindingSource
       // 
-      this.jsonItemBindingSource.DataSource = typeof(HeuristicLab.JsonInterface.IJsonItem);
+      this.jsonItemBindingSource.DataSource = typeof(HeuristicLab.JsonInterface.JsonItem);
       // 
       // ExportJsonDialog
       // 

@@ -1,3 +1,3 @@
-﻿namespace HeuristicLab.JsonInterface.OptimizerIntegration {
-  public interface ILookupJsonItemVM : IJsonItemVM { }
-}
+﻿//namespace HeuristicLab.JsonInterface.OptimizerIntegration {
+//  public interface ILookupJsonItemVM : IJsonItemVM { }
+//}

@@ -2,24 +2,13 @@
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
+using HeuristicLab.JsonInterface;
 
 namespace HeuristicLab.JsonInterface.OptimizerIntegration {
-  public abstract class JsonItemVMBase<JsonItemType> : IJsonItemVM<JsonItemType>
-    where JsonItemType : JsonItem 
+  public class JsonItemVMBase: INotifyPropertyChanged
   {
-    JsonItem IJsonItemVM.Item { 
-      get => Item; 
-      set => Item = (JsonItemType)value; 
-    }
+    private JsonItem Item { get; }
 
-    private JsonItemType item;
-    public JsonItemType Item {
-      get => item;
-      set {
-        item = value;
-        ItemChanged?.Invoke();
-      }
-    }
     public TreeNode TreeNode { get; set; }
     public TreeView TreeView { get; set; }
     public bool Selected {
@@ -51,12 +40,16 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
       }
     }
 
-    public virtual Type TargetedJsonItemType => typeof(JsonItemType);
-    public abstract UserControl Control { get; }
+    //public virtual Type TargetedJsonItemType => typeof(JsonItemType);
+    //public abstract UserControl Control { get; }
 
     public event PropertyChangedEventHandler PropertyChanged;
     public event Action ItemChanged;
     public event Action SelectedChanged;
+
+    public JsonItemVMBase(JsonItem item) {
+      Item = item;
+    }
 
     protected void OnPropertyChange(object sender, string propertyName) {
       // Make a temporary copy of the event to avoid possibility of
