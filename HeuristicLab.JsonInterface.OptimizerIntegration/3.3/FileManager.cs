@@ -19,9 +19,9 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
     public static void ExportJsonTemplate(IContentView view) {
       IStorableContent content = view.Content as IStorableContent;
       if (!view.Locked && content != null) {
-        if(content is IOptimizer) {
+        if(content is IJsonConvertable convertable) {
           try {
-            exportDialog.Content = content;
+            exportDialog.SetJsonConvertable(convertable);
             exportDialog.ShowDialog();
           } catch (Exception e) {
             ErrorHandling.ShowErrorDialog(e);
@@ -45,7 +45,7 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
       if (openFileDialog.ShowDialog() == DialogResult.OK) {
         try {
           var content = JsonTemplateInstantiator.Instantiate(openFileDialog.FileName);
-          IView view = MainFormManager.MainForm.ShowContent(content.Convertable);
+          IView view = MainFormManager.MainForm.ShowContent((IContent)content);
           if (view == null)
             ErrorHandling.ShowErrorDialog("There is no view for the loaded item. It cannot be displayed.", new InvalidOperationException("No View Available"));
         } catch (Exception ex) {
