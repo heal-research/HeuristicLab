@@ -74,11 +74,17 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
       treeView.Nodes.Clear();
       Node2VM.Clear();
       treeView.Nodes.Add(BuildTree(rootItem));
+      treeView.ExpandAll();
     }
 
     private TreeNode BuildTree(JsonItem rootItem) {
-      TreeNode node = new TreeNode(rootItem.Name);
+      TreeNode node = new TreeNode(rootItem.Id);
       Node2VM.Add(node, new JsonItemVMBase(rootItem));
+
+      if(!rootItem.Properties.Select(x => x.Key).Except(JsonTemplateGenerator.DefaultJsonItemFilter).Any()) {
+        node.ForeColor = Color.LightGray;
+        node.NodeFont = new Font(SystemFonts.DialogFont, FontStyle.Italic);
+      }
       foreach (var kvp in rootItem.Childs)
         node.Nodes.Add(BuildTree(kvp.Value));
       return node;
