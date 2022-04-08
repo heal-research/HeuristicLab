@@ -189,6 +189,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       problemData.TrainingPartition.End = item.GetProperty<int>(TrainingPartitionEndPropertyName);
       problemData.TestPartition.Start = item.GetProperty<int>(TestPartitionStartPropertyName);
       problemData.TestPartition.End = item.GetProperty<int>(TestPartitionEndPropertyName);
+      FitnessCalculationPartition.Start = item.GetProperty<int>(TrainingPartitionStartPropertyName);
+      FitnessCalculationPartition.End = item.GetProperty<int>(TrainingPartitionEndPropertyName);
       ProblemData = problemData;
 
       ApplyLinearScaling.Value = item.GetProperty<bool>(nameof(ApplyLinearScaling));
