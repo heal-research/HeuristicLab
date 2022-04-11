@@ -38,7 +38,7 @@ namespace HeuristicLab.Build {
 
     public string GetVersion() {
       var now = DateTime.Now;
-      var minutes = new TimeSpan(now.Hour, now.Minute, now.Second).TotalMinutes;
+      var minutes = (int)new TimeSpan(now.Hour, now.Minute, now.Second).TotalMinutes;
       string version = minutes.ToString();
 
       try {
@@ -48,6 +48,7 @@ namespace HeuristicLab.Build {
           process.StartInfo.Arguments = $"rev-list --count HEAD";
           process.StartInfo.UseShellExecute = false;
           process.StartInfo.RedirectStandardOutput = true;
+          process.StartInfo.RedirectStandardError = true;
           process.Start();
 
           string ret = process.StandardOutput.ReadToEnd().Replace("\n", "");
