@@ -37,7 +37,9 @@ namespace HeuristicLab.Build {
     }
 
     public string GetVersion() {
-      string version = DateTime.Now.ToString("yyyyMMddHHmmss");
+      var now = DateTime.Now;
+      var minutes = new TimeSpan(now.Hour, now.Minute, now.Second).TotalMinutes;
+      string version = minutes.ToString();
 
       try {
         using (Process process = new Process()) {
@@ -53,7 +55,7 @@ namespace HeuristicLab.Build {
             version = ret;
           }
         }
-      } catch (Exception ex) { Log.LogMessage(ex.ToString()); }
+      } catch (Exception) { }
 
       return version;
     }
