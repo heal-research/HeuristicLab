@@ -265,14 +265,9 @@
   <Target Name="AfterBuild">
   </Target>
   -->
-  <PropertyGroup>
-    <PreBuildEvent Condition=" '$(OS)' == 'Windows_NT' ">set Path=%25Path%25;$(ProjectDir);$(SolutionDir)
-set ProjectDir=$(ProjectDir)
-set SolutionDir=$(SolutionDir)
-
-call "$(ProjectDir)\Protos\ProcessProtos.cmd"
-</PreBuildEvent>   
-  </PropertyGroup>
   <UsingTask TaskName="HeuristicLab.Build.UpdateVersion" AssemblyFile="$(MSBuildProjectDirectory)\..\..\build\bin\HeuristicLab.Build.dll"/>
   <Target Name="BeforeBuild"> <UpdateVersion ProjectDir="."/> </Target>
+  
+  <UsingTask TaskName="HeuristicLab.Build.CreateProtoMessages" AssemblyFile="$(MSBuildProjectDirectory)\..\..\build\bin\HeuristicLab.Build.dll"/>
+  <Target Name="BeforeBuild"> <CreateProtoMessages ProtosDir="./Protos/" SolutionDir="$(SolutionDir)"/> </Target>
 </Project>
