@@ -7,10 +7,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 		Build.cmd = Build.cmd
-		ConfigMerger.exe = ConfigMerger.exe
 		..\documentation\License\gpl-3.0.txt = ..\documentation\License\gpl-3.0.txt
-		MergeConfigs.cmd = MergeConfigs.cmd
-		PreBuildEvent.cmd = PreBuildEvent.cmd
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab-3.3", "HeuristicLab\3.3\HeuristicLab-3.3.csproj", "{B1DCDECA-B56E-41D5-9850-EF0D3A77DEAF}"
