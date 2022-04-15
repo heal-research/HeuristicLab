@@ -50,20 +50,20 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="ALGLIB-3.17.0, Version=3.17.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
-      <HintPath>..\..\bin\ALGLIB-3.17.0.dll</HintPath>
+      <HintPath>$(SolutionDir)\bin\ALGLIB-3.17.0.dll</HintPath>
       <Private>False</Private>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="AutoDiff-1.0, Version=1.0.0.14388, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
-      <HintPath>..\..\bin\AutoDiff-1.0.dll</HintPath>
+      <HintPath>$(SolutionDir)\bin\AutoDiff-1.0.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="HEAL.Attic, Version=1.4.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
-      <HintPath>..\..\bin\HEAL.Attic.dll</HintPath>
+      <HintPath>$(SolutionDir)\bin\HEAL.Attic.dll</HintPath>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="HeuristicLab.Problems.DataAnalysis.Symbolic.NativeInterpreter-0.1, Version=0.0.0.1, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
-      <HintPath>..\..\bin\HeuristicLab.Problems.DataAnalysis.Symbolic.NativeInterpreter-0.1.dll</HintPath>
+      <HintPath>$(SolutionDir)\bin\HeuristicLab.Problems.DataAnalysis.Symbolic.NativeInterpreter-0.1.dll</HintPath>
       <Private>False</Private>
       <SpecificVersion>False</SpecificVersion>
     </Reference>

@@ -38,7 +38,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Interop.MLApp">
-      <HintPath>..\..\bin\Interop.MLApp.dll</HintPath>
+      <HintPath>$(SolutionDir)\bin\Interop.MLApp.dll</HintPath>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
     <Reference Include="System.Windows.Forms" />
@@ -65,7 +65,7 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="HEAL.Attic, Version=1.0.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
-      <HintPath>..\..\bin\HEAL.Attic.dll</HintPath>
+      <HintPath>$(SolutionDir)\bin\HEAL.Attic.dll</HintPath>
       <Private>False</Private>
       <SpecificVersion>False</SpecificVersion>
     </Reference>

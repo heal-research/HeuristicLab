@@ -50,7 +50,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="ALGLIB-3.17.0, Version=3.17.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
-      <HintPath>..\..\bin\ALGLIB-3.17.0.dll</HintPath>
+      <HintPath>$(SolutionDir)\bin\ALGLIB-3.17.0.dll</HintPath>
       <Private>False</Private>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
@@ -83,7 +83,7 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="HEAL.Attic, Version=1.0.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
-      <HintPath>..\..\bin\HEAL.Attic.dll</HintPath>
+      <HintPath>$(SolutionDir)\bin\HEAL.Attic.dll</HintPath>
       <Private>False</Private>
       <SpecificVersion>False</SpecificVersion>
     </Reference>

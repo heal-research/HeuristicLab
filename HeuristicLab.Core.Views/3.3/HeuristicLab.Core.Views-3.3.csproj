@@ -287,11 +287,11 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="HEAL.Attic, Version=1.0.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
-      <HintPath>..\..\bin\HEAL.Attic.dll</HintPath>
+      <HintPath>$(SolutionDir)\bin\HEAL.Attic.dll</HintPath>
       <Private>False</Private>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
   </ItemGroup>
-  <UsingTask TaskName="HeuristicLab.Build.UpdateVersion" AssemblyFile="$(MSBuildProjectDirectory)\..\..\build\bin\HeuristicLab.Build.dll"/>
-  <Target Name="BeforeBuild"> <UpdateVersion ProjectDir="."/> </Target>
+  <UsingTask TaskName="HeuristicLab.Build.UpdateVersion" AssemblyFile="$(MSBuildProjectDirectory)\..\..\build\bin\HeuristicLab.Build.dll" />
+  <Target Name="BeforeBuild"> <UpdateVersion ProjectDir="." /> </Target>
 </Project>

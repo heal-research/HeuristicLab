@@ -49,12 +49,12 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="ALGLIB-3.17.0, Version=3.17.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
-      <HintPath>..\..\bin\ALGLIB-3.17.0.dll</HintPath>
+      <HintPath>$(SolutionDir)\bin\ALGLIB-3.17.0.dll</HintPath>
       <Private>False</Private>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="EPPlus-4.0.3, Version=4.0.3.0, Culture=neutral, PublicKeyToken=ea159fdaa78159a1, processorArchitecture=MSIL">
-      <HintPath>..\..\bin\EPPlus-4.0.3.dll</HintPath>
+      <HintPath>$(SolutionDir)\bin\EPPlus-4.0.3.dll</HintPath>
       <Private>False</Private>
       <SpecificVersion>False</SpecificVersion>
     </Reference>

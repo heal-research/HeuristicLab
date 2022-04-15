@@ -50,7 +50,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Google.ProtocolBuffers-2.4.1.473, Version=2.4.1.473, Culture=neutral, PublicKeyToken=17b3b1f090c3ea48, processorArchitecture=MSIL">
-      <HintPath>..\..\bin\Google.ProtocolBuffers-2.4.1.473.dll</HintPath>
+      <HintPath>$(SolutionDir)\bin\Google.ProtocolBuffers-2.4.1.473.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Data.DataSetExtensions" />
@@ -76,7 +76,7 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="HEAL.Attic, Version=1.0.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
-      <HintPath>..\..\bin\HEAL.Attic.dll</HintPath>
+      <HintPath>$(SolutionDir)\bin\HEAL.Attic.dll</HintPath>
       <Private>False</Private>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
