@@ -93,11 +93,6 @@
       <SpecificVersion>False</SpecificVersion>
     </Reference>
   </ItemGroup>
-  <ItemGroup>
-    <Compile Remove="Transformers\BitmapTransformer.cs" />
-    <Compile Remove="Transformers\FontTransformer.cs" />
-    <Compile Remove="Transformers\KnownStorableTypesMap.cs" />
-  </ItemGroup>
   <UsingTask TaskName="HeuristicLab.Build.UpdateVersion" AssemblyFile="$(MSBuildProjectDirectory)\..\..\build\bin\HeuristicLab.Build.dll"/>
   <Target Name="BeforeBuild"> <UpdateVersion ProjectDir="."/> </Target>
 </Project>
