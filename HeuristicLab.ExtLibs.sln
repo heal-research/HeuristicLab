@@ -18,8 +18,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProtocolBuffers-2.4.1.473", "HeuristicLab.ExtLibs\HeuristicLab.ProtobufCS\2.4.1\ProtobufCS\src\ProtocolBuffers\ProtocolBuffers-2.4.1.473.csproj", "{6908BDCE-D925-43F3-94AC-A531E6DF2591}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProtoGen-2.4.1.473", "HeuristicLab.ExtLibs\HeuristicLab.ProtobufCS\2.4.1\ProtobufCS\src\ProtoGen\ProtoGen-2.4.1.473.csproj", "{250ADE34-82FD-4BAE-86D5-985FBE589C4A}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.ProtobufCS-2.4.1.473", "HeuristicLab.ExtLibs\HeuristicLab.ProtobufCS\2.4.1\HeuristicLab.ProtobufCS\HeuristicLab.ProtobufCS-2.4.1.473.csproj", "{236459CE-80CF-4991-972F-DE74C826BCCC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibSVM-3.12", "HeuristicLab.ExtLibs\HeuristicLab.LibSVM\3.12\LibSVM-3.12\LibSVM-3.12.csproj", "{4C41E3A3-B2FD-46EA-98FB-F21433E58FBE}"
@@ -159,19 +157,7 @@ Global
 		{6908BDCE-D925-43F3-94AC-A531E6DF2591}.Release|x64.ActiveCfg = Release|x64
 		{6908BDCE-D925-43F3-94AC-A531E6DF2591}.Release|x64.Build.0 = Release|x64
 		{6908BDCE-D925-43F3-94AC-A531E6DF2591}.Release|x86.ActiveCfg = Release|x86
-		{6908BDCE-D925-43F3-94AC-A531E6DF2591}.Release|x86.Build.0 = Release|x86
-		{250ADE34-82FD-4BAE-86D5-985FBE589C4A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{250ADE34-82FD-4BAE-86D5-985FBE589C4A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{250ADE34-82FD-4BAE-86D5-985FBE589C4A}.Debug|x64.ActiveCfg = Debug|x64
-		{250ADE34-82FD-4BAE-86D5-985FBE589C4A}.Debug|x64.Build.0 = Debug|x64
-		{250ADE34-82FD-4BAE-86D5-985FBE589C4A}.Debug|x86.ActiveCfg = Debug|x86
-		{250ADE34-82FD-4BAE-86D5-985FBE589C4A}.Debug|x86.Build.0 = Debug|x86
-		{250ADE34-82FD-4BAE-86D5-985FBE589C4A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{250ADE34-82FD-4BAE-86D5-985FBE589C4A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{250ADE34-82FD-4BAE-86D5-985FBE589C4A}.Release|x64.ActiveCfg = Release|x64
-		{250ADE34-82FD-4BAE-86D5-985FBE589C4A}.Release|x64.Build.0 = Release|x64
-		{250ADE34-82FD-4BAE-86D5-985FBE589C4A}.Release|x86.ActiveCfg = Release|x86
-		{250ADE34-82FD-4BAE-86D5-985FBE589C4A}.Release|x86.Build.0 = Release|x86
+		{6908BDCE-D925-43F3-94AC-A531E6DF2591}.Release|x86.Build.0 = Release|x86		
 		{236459CE-80CF-4991-972F-DE74C826BCCC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{236459CE-80CF-4991-972F-DE74C826BCCC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{236459CE-80CF-4991-972F-DE74C826BCCC}.Debug|x64.ActiveCfg = Debug|x64
