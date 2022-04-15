@@ -19,6 +19,9 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>$(SolutionDir)\bin\</OutputPath>
+    <UseCommonOutputDirectory>true</UseCommonOutputDirectory>
+    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -259,7 +262,6 @@
   </Target>
   <Target Name="AfterBuild">
   </Target>
-  -->
   <UsingTask TaskName="HeuristicLab.Build.UpdateVersion" AssemblyFile="$(MSBuildProjectDirectory)\..\..\build\bin\HeuristicLab.Build.dll"/>
   <Target Name="BeforeBuild"> <UpdateVersion ProjectDir="."/> </Target>
-</Project>
+  -->
