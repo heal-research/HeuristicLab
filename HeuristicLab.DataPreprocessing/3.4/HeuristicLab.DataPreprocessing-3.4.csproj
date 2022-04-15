@@ -57,9 +57,6 @@
       <SpecificVersion>False</SpecificVersion>
     </Reference>
   </ItemGroup>
-  <ItemGroup>
-    <Compile Remove="Properties\Resources.Designer.cs" />
-  </ItemGroup>
   <UsingTask TaskName="HeuristicLab.Build.UpdateVersion" AssemblyFile="$(MSBuildProjectDirectory)\..\..\build\bin\HeuristicLab.Build.dll"/>
   <Target Name="BeforeBuild"> <UpdateVersion ProjectDir="."/> </Target>
 </Project>
