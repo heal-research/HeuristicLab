@@ -29,7 +29,7 @@ using HeuristicLab.Core;
 using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
 
-namespace HeuristicLab.DebugEngine {
+namespace HeuristicLab.DebugEngine.Views {
 
   [View("Operation Content View")]
   [Content(typeof(OperationContent), IsDefaultView = true)]

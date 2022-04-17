@@ -19,7 +19,7 @@
  */
 #endregion
 
-namespace HeuristicLab.DebugEngine {
+namespace HeuristicLab.DebugEngine.Views {
   partial class OperationContentView {
     /// <summary> 
     /// Required designer variable.

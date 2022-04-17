@@ -21,7 +21,7 @@
 
 using HeuristicLab.PluginInfrastructure;
 
-namespace HeuristicLab.ExactOptimization {
+namespace HeuristicLab.ExactOptimization.Views {
 
   [Plugin("HeuristicLab.ExactOptimization.Views", "Views for exact optimization", "3.3.16.$WCREV$")]
   [PluginFile("HeuristicLab.ExactOptimization.Views-3.3.dll", PluginFileType.Assembly)]

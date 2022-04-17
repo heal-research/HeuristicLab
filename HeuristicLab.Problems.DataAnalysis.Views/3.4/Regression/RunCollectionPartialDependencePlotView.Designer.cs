@@ -1,4 +1,4 @@
-﻿namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
+﻿namespace HeuristicLab.Problems.DataAnalysis.Views {
   partial class RunCollectionPartialDependencePlotView {
     /// <summary> 
     /// Required designer variable.
