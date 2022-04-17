@@ -234,7 +234,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
         Encoding.Add(encoding);
       }
 
-      //set single point || copy crossover for numeric parameters
+      // set single point || copy crossover for numeric parameters
       var multiCrossover = (IParameterizedItem)Encoding.Operators.OfType<MultiEncodingCrossover>().First();
       foreach (var param in multiCrossover.Parameters.OfType<ConstrainedValueParameter<ICrossover>>()) {
         if (!param.Name.Contains(NumericParametersEncoding)) continue;
@@ -243,13 +243,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
         var copyCrossover = param.ValidValues.OfType<CopyCrossover>().First();
 
         var realvectorEncoding = (RealVectorEncoding)Encoding.Encodings.Where(e => e.Name == NumericParametersEncoding).First();
-        if (realvectorEncoding.Length == 1) { //single-point crossover throws if encoding length == 1
+        if (realvectorEncoding.Length == 1) { // single-point crossover throws if encoding length == 1
           param.Value = copyCrossover;
         } else
           param.Value = singlePointCrossover;
       }
 
-      //adapt crossover probability for subtree crossover
+      // adapt crossover probability for subtree crossover
       foreach (var param in multiCrossover.Parameters.OfType<ConstrainedValueParameter<ICrossover>>()) {
         var subtreeCrossover = param.ValidValues.OfType<SubtreeCrossover>().FirstOrDefault();
         if (subtreeCrossover != null) {
@@ -258,7 +258,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
         }
       }
 
-      //set multi manipulator as default manipulator for all symbolic expression tree encoding parts
+      // set multi manipulator as default manipulator for all symbolic expression tree encoding parts
       var manipulator = (IParameterizedItem)Encoding.Operators.OfType<MultiEncodingManipulator>().First();
       foreach (var param in manipulator.Parameters.OfType<ConstrainedValueParameter<IManipulator>>()) {
         var m = param.ValidValues.OfType<MultiSymbolicExpressionTreeManipulator>().FirstOrDefault();
@@ -300,7 +300,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
 
       UpdateIndividualFromTree(tree, individual, containsNumericParameters: StructureTemplate.ContainsNumericParameters);
 
-      //calculate NMSE
+      // calculate NMSE
       var estimatedValues = Interpreter.GetSymbolicExpressionTreeValues(tree, ProblemData.Dataset, ProblemData.TrainingIndices);
       var boundedEstimatedValues = estimatedValues.LimitToRange(EstimationLimits.Lower, EstimationLimits.Upper);
       var targetValues = ProblemData.TargetVariableTrainingValues;
@@ -308,7 +308,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       if (errorState != OnlineCalculatorError.None)
         nmse = 1.0;
 
-      //evaluate constraints
+      // evaluate constraints
       var constraints = Enumerable.Empty<ShapeConstraint>();
       if (ProblemData is ShapeConstrainedRegressionProblemData scProbData)
         constraints = scProbData.ShapeConstraints.EnabledConstraints;
@@ -343,7 +343,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     private static ISymbolicExpressionTree BuildTreeFromIndividual(ISymbolicExpressionTree template, Individual individual, bool containsNumericParameters) {
       var resolvedTree = (ISymbolicExpressionTree)template.Clone();
 
-      //set numeric parameter values
+      // set numeric parameter values
       if (containsNumericParameters) {
         var realVector = individual.RealVector(NumericParametersEncoding);
         var numberTreeNodes = resolvedTree.IterateNodesPrefix().OfType<NumberTreeNode>().ToArray();
@@ -374,7 +374,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       foreach (var subFunctionTreeNode in clonedTree.IterateNodesPrefix().OfType<SubFunctionTreeNode>()) {
         var grammar = ((ISymbolicExpressionTree)individual[subFunctionTreeNode.Name]).Root.Grammar;
         var functionTreeNode = subFunctionTreeNode.GetSubtree(0);
-        //remove function code to make numeric parameters extraction easier
+        // remove function code to make numeric parameters extraction easier
         subFunctionTreeNode.RemoveSubtree(0);
 
 
@@ -389,7 +389,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
         individual[subFunctionTreeNode.Name] = functionTree;
       }
 
-      //set numeric parameter values
+      // set numeric parameter values
       if (containsNumericParameters) {
         var realVector = individual.RealVector(NumericParametersEncoding);
         var numberTreeNodes = clonedTree.IterateNodesPrefix().OfType<NumberTreeNode>().ToArray();
