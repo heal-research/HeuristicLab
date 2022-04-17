@@ -305,8 +305,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       var boundedEstimatedValues = estimatedValues.LimitToRange(EstimationLimits.Lower, EstimationLimits.Upper);
       var targetValues = ProblemData.TargetVariableTrainingValues;
       var nmse = OnlineNormalizedMeanSquaredErrorCalculator.Calculate(targetValues, boundedEstimatedValues, out var errorState);
+
+      var badNMSE = ApplyLinearScaling ? 1.0 : double.MaxValue;
       if (errorState != OnlineCalculatorError.None)
-        nmse = 1.0;
+        nmse = badNMSE;
 
       // evaluate constraints
       var constraints = Enumerable.Empty<ShapeConstraint>();
@@ -318,10 +320,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
 
         // infinite/NaN constraints
         if (constraintViolations.Any(x => double.IsNaN(x) || double.IsInfinity(x)))
-          nmse = 1.0;
+          nmse = badNMSE;
 
         if (constraintViolations.Any(x => x > 0.0))
-          nmse = 1.0;
+          nmse = badNMSE;
       }
 
       return nmse;
