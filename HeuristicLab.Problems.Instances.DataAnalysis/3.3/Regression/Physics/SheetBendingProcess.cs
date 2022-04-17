@@ -14,7 +14,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
       "An example case of a bending process\"," + Environment.NewLine +
       "Applications in Engineering Science, Volume 6, 2021, 100049, " + Environment.NewLine +
       "ISSN 2666-4968, https://doi.org/10.1016/j.apples.2021.100049. " + Environment.NewLine +
-      "Function: F = E/(E+h) * ((σ_y * t^2) / w + (h * t^3) / (3 * R * w) - (4 * σ_y^3 * R^2) / (3 * w * E^2)) * (1 + 4 * t / w)" +
+      "Function: F = E/(E+h) * ((σ_y * t^2) / w + (h * t^3) / (3 * R * w) - (4 * σ_y^3 * R^2) / (3 * w * E^2)) * (1 + 4 * t / w)" + Environment.NewLine +
       "with E = 210000," + Environment.NewLine +
       "h ∈ [0.1, 5] [MPa]," + Environment.NewLine +
       "σ_y ∈ [250, 1000] [MPa]," + Environment.NewLine +
