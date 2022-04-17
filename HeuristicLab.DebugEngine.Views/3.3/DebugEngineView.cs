@@ -25,7 +25,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
 using System.ComponentModel;
-namespace HeuristicLab.DebugEngine {
+namespace HeuristicLab.DebugEngine.Views {
 
   /// <summary>
   /// Engine espcially for debugging

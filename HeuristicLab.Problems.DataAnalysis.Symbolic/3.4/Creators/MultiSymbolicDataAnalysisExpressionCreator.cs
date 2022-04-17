@@ -33,7 +33,7 @@ using HeuristicLab.Parameters;
 using HEAL.Attic;
 using HeuristicLab.PluginInfrastructure;
 
-namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Creators {
+namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableType("8E932C08-6D00-4055-9525-DBF28420DAB0")]
   public class MultiSymbolicDataAnalysisExpressionCreator : StochasticMultiBranch<ISymbolicDataAnalysisSolutionCreator>,
     ISymbolicDataAnalysisSolutionCreator,

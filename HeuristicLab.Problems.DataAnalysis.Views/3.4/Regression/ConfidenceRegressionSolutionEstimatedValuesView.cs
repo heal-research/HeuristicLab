@@ -22,10 +22,8 @@ using System.Linq;
 using System.Windows.Forms;
 using HeuristicLab.Data;
 using HeuristicLab.MainForm;
-using HeuristicLab.Problems.DataAnalysis;
-using HeuristicLab.Problems.DataAnalysis.Views;
 
-namespace HeuristicLab.Algorithms.DataAnalysis.Views {
+namespace HeuristicLab.Problems.DataAnalysis.Views {
   [View("Estimated Values")]
   [Content(typeof(IConfidenceRegressionSolution), false)]
   public partial class ConfidenceRegressionSolutionEstimatedValuesView : RegressionSolutionEstimatedValuesView {

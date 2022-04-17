@@ -24,7 +24,6 @@ using System.Drawing;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.DataPreprocessing.Filter;
 using HEAL.Attic;
 
 namespace HeuristicLab.DataPreprocessing {

@@ -27,7 +27,7 @@ using HeuristicLab.Common.Resources;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 
-namespace HeuristicLab.DataPreprocessing.Filter {
+namespace HeuristicLab.DataPreprocessing {
   [Item("ComparisonFilter", "A filter which compares the member of the preprocessing data with the constraint data.")]
   [StorableType("6529899a-987c-48b3-ba14-154d25a7cc8e")]
   public class ComparisonFilter : ComparisonConstraint, IFilter {

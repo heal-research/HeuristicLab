@@ -22,7 +22,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace HeuristicLab.Problems.DataAnalysis.OnlineCalculators {
+namespace HeuristicLab.Problems.DataAnalysis {
   public class MatthewsCorrelationCoefficientCalculator {
     public static double Calculate(IEnumerable<double> originalValues, IEnumerable<double> estimatedValues, out OnlineCalculatorError errorState) {
       var confusionMatrix = ConfusionMatrixCalculator.Calculate(originalValues, estimatedValues, out errorState);

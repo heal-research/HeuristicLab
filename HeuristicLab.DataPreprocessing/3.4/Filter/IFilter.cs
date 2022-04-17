@@ -22,7 +22,7 @@
 using HeuristicLab.Core;
 using HEAL.Attic;
 
-namespace HeuristicLab.DataPreprocessing.Filter {
+namespace HeuristicLab.DataPreprocessing {
   [StorableType("bf5dabf7-e795-493c-b2d0-23051dfb3d2f")]
   public interface IFilter : IConstraint {
     new bool[] Check();

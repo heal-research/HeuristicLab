@@ -21,7 +21,7 @@
 
 using System.Linq;
 
-namespace HeuristicLab.Problems.DataAnalysis.OnlineCalculators {
+namespace HeuristicLab.Problems.DataAnalysis {
   public class AutoCorrelationCalculator {
     public static double[] Calculate(double[] values, out OnlineCalculatorError error) {
       error = OnlineCalculatorError.None;

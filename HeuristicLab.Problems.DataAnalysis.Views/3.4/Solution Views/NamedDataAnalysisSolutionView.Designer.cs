@@ -19,7 +19,7 @@
  */
 #endregion
 
-namespace HeuristicLab.Problems.DataAnalysis.Views.Solution_Views {
+namespace HeuristicLab.Problems.DataAnalysis.Views {
   partial class NamedDataAnalysisSolutionView {
     /// <summary> 
     /// Required designer variable.

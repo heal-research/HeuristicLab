@@ -25,7 +25,7 @@ using HeuristicLab.Core;
 using HEAL.Attic;
 using HeuristicLab.Random;
 
-namespace HeuristicLab.ExpressionGenerator {
+namespace HeuristicLab.Random {
   /// <summary>
   /// Gamma distribution implemented after 
   /// "A Simple Method for Generating Gamma Variables" - Marsaglia & Tsang
