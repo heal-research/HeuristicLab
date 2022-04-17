@@ -292,7 +292,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       individual[SymbolicExpressionTreeName] = tree;
 
       if (OptimizeParameters) {
-        var excludeNodes = GetTemplateTreeNodes(tree.Root).OfType<IVariableTreeNode>();
+        var excludeNodes = GetTemplateTreeNodes(tree.Root).OfType<IVariableTreeNode>().ToArray();
         ParameterOptimization.OptimizeTreeParameters(ProblemData, tree, interpreter: Interpreter, excludeNodes: excludeNodes);
       } else if (ApplyLinearScaling) {
         LinearScaling.AdjustLinearScalingParams(ProblemData, tree, Interpreter);
