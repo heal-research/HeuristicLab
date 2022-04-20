@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
@@ -26,9 +27,24 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
       }
       propertyList.Columns[0].Width = -2;
       propertyList.Columns[1].Width = 100;
+      propertyList.ItemCheck += PropertyCheckChanged;
 
       textBoxName.DataBindings.Add("Text", VM, nameof(JsonItemVM.Name));
       textBoxDescription.DataBindings.Add("Text", VM, nameof(JsonItemVM.Description));
+    }
+
+
+    private void PropertyCheckChanged(object sender, ItemCheckEventArgs e) {
+      var item = propertyList.Items[e.Index];
+      switch (e.NewValue) {
+        case CheckState.Unchecked:
+          VM.DeactivateProperty(item.Text);
+          break;
+        case CheckState.Checked:
+          VM.ActivateProperty(item.Text);
+          break;
+        default: break;
+      }
     }
 
     private void textBoxName_Validating(object sender, CancelEventArgs e) {

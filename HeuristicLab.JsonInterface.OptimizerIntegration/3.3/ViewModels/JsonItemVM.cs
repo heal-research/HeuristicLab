@@ -46,8 +46,18 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
       }
     }
 
-    public IEnumerable<KeyValuePair<string, string>> Properties { get; }
+    private IEnumerable<KeyValuePair<string, object>> cachedProperties;
+    public IEnumerable<KeyValuePair<string, string>> Properties => Item.Properties
+        .Select(kvp => new KeyValuePair<string, string>(kvp.Key, kvp.Value.GetType().Name));
 
+    public void ActivateProperty(string propertyName) {
+      if(!Item.Properties.Any(x => x.Key == propertyName))
+        Item.AddProperty(cachedProperties.Where(x => x.Key == propertyName).Single());
+    }
+    public void DeactivateProperty(string propertyName) {
+      if (Item.Properties.Any(x => x.Key == propertyName))
+        Item.RemoveProperty(propertyName);
+    }
 
     //public virtual Type TargetedJsonItemType => typeof(JsonItemType);
     //public abstract UserControl Control { get; }
@@ -58,8 +68,7 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
 
     public JsonItemVM(JsonItem item, TreeView treeView, TreeNode treeNode) {
       Item = item;
-      Properties = Item.Properties
-        .Select(kvp => new KeyValuePair<string, string>(kvp.Key, kvp.Value.GetType().Name));
+      cachedProperties = Item.Properties.ToArray();
       TreeView = treeView;
       TreeNode = treeNode;
     }
