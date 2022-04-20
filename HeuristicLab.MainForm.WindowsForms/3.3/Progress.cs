@@ -23,7 +23,7 @@ using System;
 using System.Windows.Forms;
 using HeuristicLab.Common;
 
-namespace HeuristicLab.MainForm {
+namespace HeuristicLab.MainForm.WindowsForms {
   public class Progress : IProgress {
     private ProgressState progressState;
     public ProgressState ProgressState {

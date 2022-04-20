@@ -3,7 +3,7 @@ using System.ServiceModel.Security;
 using System.Threading.Tasks;
 using HeuristicLab.PluginInfrastructure;
 
-namespace HeuristicLab.Clients.Hive {
+namespace HeuristicLab.Clients.Common {
   public class SecurityExceptionUtil {
     public static void TryAndReportSecurityExceptions(Action action, Action finallyCallback = null) {
       try {

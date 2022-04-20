@@ -19,15 +19,15 @@
  */
 #endregion
 
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 
-namespace HeuristicLab.Analysis.QualityAnalysis {
+namespace HeuristicLab.Analysis {
   [Item("ScaledQualityDifferenceAnalyzer", @"Calculates the quality value relative to a certain range given with a minimum and a maximum value.
 The difference lies in the interval [0;1] if the range [min;max] is as large as the observed quality values, otherwise the difference will become < 0 or > 1.
 A value towards 0 always means that it's closer to the better fitness value, while a value towards 1 means that it's closer to the worse fitness value.")]
