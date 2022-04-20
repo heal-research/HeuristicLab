@@ -9,7 +9,7 @@ using HeuristicLab.JsonInterface;
 namespace HeuristicLab.JsonInterface.OptimizerIntegration {
   public class JsonItemVM: INotifyPropertyChanged
   {
-    private JsonItem Item { get; }
+    public JsonItem Item { get; }
 
     public TreeNode TreeNode { get; }
 
