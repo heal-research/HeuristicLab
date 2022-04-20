@@ -31,6 +31,9 @@
       this.textBoxDescription = new System.Windows.Forms.TextBox();
       this.label1 = new System.Windows.Forms.Label();
       this.labelDescription = new System.Windows.Forms.Label();
+      this.propertyList = new System.Windows.Forms.ListView();
+      this.Property = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+      this.Type = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
       this.tableLayoutPanel1.SuspendLayout();
       this.tableLayoutPanel5.SuspendLayout();
@@ -57,15 +60,14 @@
       this.tableLayoutPanel1.ColumnCount = 1;
       this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
       this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel5, 0, 0);
+      this.tableLayoutPanel1.Controls.Add(this.propertyList, 0, 1);
       this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
       this.tableLayoutPanel1.Location = new System.Drawing.Point(3, 3);
       this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(0);
       this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-      this.tableLayoutPanel1.RowCount = 3;
+      this.tableLayoutPanel1.RowCount = 2;
       this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 44F));
-      this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 6F));
       this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-      this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
       this.tableLayoutPanel1.Size = new System.Drawing.Size(494, 594);
       this.tableLayoutPanel1.TabIndex = 16;
       // 
@@ -122,6 +124,31 @@
       this.labelDescription.Text = "Description";
       this.labelDescription.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
       // 
+      // propertyList
+      // 
+      this.propertyList.CheckBoxes = true;
+      this.propertyList.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.Property,
+            this.Type});
+      this.propertyList.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.propertyList.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.propertyList.HideSelection = false;
+      this.propertyList.Location = new System.Drawing.Point(0, 44);
+      this.propertyList.Margin = new System.Windows.Forms.Padding(0);
+      this.propertyList.Name = "propertyList";
+      this.propertyList.Size = new System.Drawing.Size(494, 550);
+      this.propertyList.TabIndex = 3;
+      this.propertyList.UseCompatibleStateImageBehavior = false;
+      this.propertyList.View = System.Windows.Forms.View.Details;
+      // 
+      // Property
+      // 
+      this.Property.Text = "Property";
+      // 
+      // Type
+      // 
+      this.Type.Text = "Type";
+      // 
       // JsonItemBaseControl
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -147,5 +174,8 @@
     protected System.Windows.Forms.TextBox textBoxDescription;
     protected System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
     private System.Windows.Forms.TableLayoutPanel tableLayoutPanel5;
+    private System.Windows.Forms.ListView propertyList;
+    private System.Windows.Forms.ColumnHeader Property;
+    private System.Windows.Forms.ColumnHeader Type;
   }
 }

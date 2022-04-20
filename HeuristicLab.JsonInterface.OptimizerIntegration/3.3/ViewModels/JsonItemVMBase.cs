@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 using HeuristicLab.JsonInterface;
 
@@ -9,8 +11,10 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
   {
     private JsonItem Item { get; }
 
-    public TreeNode TreeNode { get; set; }
-    public TreeView TreeView { get; set; }
+    public TreeNode TreeNode { get; }
+
+    public TreeView TreeView { get; }
+
     public bool Selected {
       get => Item.Active;
       set {
@@ -25,6 +29,7 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
         OnPropertyChange(this, nameof(Selected));
       }
     }
+
     public string Name {
       get => Item.Name;
       set {
@@ -32,6 +37,7 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
         OnPropertyChange(this, nameof(Name));
       }
     }
+
     public string Description {
       get => Item.Description;
       set {
@@ -40,6 +46,9 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
       }
     }
 
+    public IEnumerable<KeyValuePair<string, string>> Properties { get; }
+
+
     //public virtual Type TargetedJsonItemType => typeof(JsonItemType);
     //public abstract UserControl Control { get; }
 
@@ -47,8 +56,12 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
     public event Action ItemChanged;
     public event Action SelectedChanged;
 
-    public JsonItemVMBase(JsonItem item) {
+    public JsonItemVMBase(JsonItem item, TreeView treeView, TreeNode treeNode) {
       Item = item;
+      Properties = Item.Properties
+        .Select(kvp => new KeyValuePair<string, string>(kvp.Key, kvp.Value.GetType().Name));
+      TreeView = treeView;
+      TreeNode = treeNode;
     }
 
     protected void OnPropertyChange(object sender, string propertyName) {

@@ -1,4 +1,6 @@
 ﻿using System.ComponentModel;
+using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 
 namespace HeuristicLab.JsonInterface.OptimizerIntegration {
@@ -9,14 +11,22 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
       InitializeComponent();
     }
 
-    protected JsonItemBaseControl(JsonItemVMBase vm, UserControl control) {
+    protected JsonItemBaseControl(JsonItemVMBase vm) {
       InitializeComponent();
       VM = vm;
-      if (control != null) {
-        control.Margin = new Padding() { All = 0 };
-        tableLayoutPanel1.Controls.Add(control, 0, 2);
-        control.Dock = DockStyle.Fill;
+      propertyList.Items.Clear();
+      var font = propertyList.Font;
+      propertyList.Font = new System.Drawing.Font(font, System.Drawing.FontStyle.Bold);
+      foreach (var prop in vm.Properties) {
+        var item = new ListViewItem(new [] { prop.Key, prop.Value }) { 
+          Checked = true, 
+          Font = font 
+        };
+        propertyList.Items.Add(item);
       }
+      propertyList.Columns[0].Width = -2;
+      propertyList.Columns[1].Width = 100;
+
       textBoxName.DataBindings.Add("Text", VM, nameof(JsonItemVMBase.Name));
       textBoxDescription.DataBindings.Add("Text", VM, nameof(JsonItemVMBase.Description));
     }
@@ -30,6 +40,6 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
       }
     }
 
-    public static JsonItemBaseControl Create(JsonItemVMBase vm, UserControl control) => new JsonItemBaseControl(vm, control);
+    public static JsonItemBaseControl Create(JsonItemVMBase vm) => new JsonItemBaseControl(vm);
   }
 }

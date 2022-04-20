@@ -15,12 +15,7 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
 
     #region Private Properties
     private static FolderBrowserDialog FolderBrowserDialog { get; set; }
-    private IDictionary<TreeNode, UserControl> Node2Control { get; set; } = new Dictionary<TreeNode, UserControl>();
     private IDictionary<TreeNode, JsonItemVMBase> Node2VM { get; } = new Dictionary<TreeNode, JsonItemVMBase>();
-    private IDictionary<Type, Type> JI2VM { get; set; }
-    private JsonItem Root { get; set; }
-    private IJsonConvertable Convertable { get; set; }
-    private IList<JsonItemVMBase> VMs { get; } = new List<JsonItemVMBase>();
     //private ICheckedItemList<IRunCollectionModifier> RunCollectionModifiers { get; set; }
     #endregion
     /*
@@ -63,7 +58,7 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
       Icon = Common.Resources.HeuristicLab.Icon;
       
       //RunCollectionModifiers = postProcessorListControl.Content;
-      //treeView.AfterCheck += TreeView_AfterCheck;
+      treeView.AfterCheck += TreeView_AfterCheck;
       //InitCache();
     }
 
@@ -78,16 +73,37 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
     }
 
     private TreeNode BuildTree(JsonItem rootItem) {
-      TreeNode node = new TreeNode(rootItem.Id);
-      Node2VM.Add(node, new JsonItemVMBase(rootItem));
+      if (!IsDrawableItem(rootItem)) return null;
 
-      if(!rootItem.Properties.Select(x => x.Key).Except(JsonTemplateGenerator.DefaultJsonItemFilter).Any()) {
+      TreeNode node = new TreeNode(rootItem.Id);
+      JsonItemVMBase vm = new JsonItemVMBase(rootItem) { 
+        TreeNode = node, 
+        TreeView = treeView 
+      };
+      Node2VM.Add(node, vm);
+
+      if(!ItemHasProps(rootItem)) {
         node.ForeColor = Color.LightGray;
         node.NodeFont = new Font(SystemFonts.DialogFont, FontStyle.Italic);
       }
-      foreach (var kvp in rootItem.Childs)
-        node.Nodes.Add(BuildTree(kvp.Value));
+      foreach (var kvp in rootItem.Childs) {
+        var n = BuildTree(kvp.Value);
+        if(n != null) node.Nodes.Add(n);
+      }
       return node;
+
+      bool IsDrawableItem(JsonItem item) {
+        bool drawable = false;
+        foreach(var i in item.Iterate())
+          drawable = drawable || ItemHasProps(i);
+        return drawable;
+      }
+
+      bool ItemHasProps(JsonItem item) =>
+        item.Properties
+        .Select(x => x.Key)
+        .Except(JsonTemplateGenerator.DefaultJsonItemFilter)
+        .Any();
     }
 
 
@@ -154,8 +170,8 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
     //}
     
     private void treeView_AfterSelect(object sender, TreeViewEventArgs e) {
-      if(Node2Control.TryGetValue(treeView.SelectedNode, out UserControl control)) {
-        SetControlOnPanel(control, panelParameterDetails);
+      if(Node2VM.TryGetValue(treeView.SelectedNode, out JsonItemVMBase vm)) {
+        SetControlOnPanel(JsonItemBaseControl.Create(vm), panelParameterDetails);
       }
     }
 
