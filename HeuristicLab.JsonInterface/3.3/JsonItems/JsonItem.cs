@@ -109,10 +109,12 @@ namespace HeuristicLab.JsonInterface {
     public JsonItem GetChild(string name) => childs[name];
 
     public void AddProperty<T>(string name, T value) => properties.Add(name, value);
+    public void AddProperty(KeyValuePair<string, object> property) => properties.Add(property);
     public void AddProperty(string name, JsonItem value) {
       value.Parent = this;
       this.AddProperty<JsonItem>(name, value); // Forbid to add JsonItems as props?
     }
+    public void RemoveProperty(string name) => properties.Remove(name);
     public void MergeProperties(JsonItem value) {
       foreach (var property in value.Properties)
         properties.Add(property);
