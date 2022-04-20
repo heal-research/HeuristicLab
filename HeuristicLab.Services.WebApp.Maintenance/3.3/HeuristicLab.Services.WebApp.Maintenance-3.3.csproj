@@ -197,6 +197,7 @@
   </Target>
   <Target Name="AfterBuild">
   </Target>
+  -->
   <UsingTask TaskName="HeuristicLab.Build.UpdateVersion" AssemblyFile="$(MSBuildProjectDirectory)\..\..\build\bin\HeuristicLab.Build.dll"/>
   <Target Name="BeforeBuild"> <UpdateVersion ProjectDir="."/> </Target>
-  -->
+</Project>
