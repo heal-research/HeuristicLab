@@ -85,11 +85,6 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Interfaces\IArrayJsonItemVM.cs" />
-    <Compile Include="Interfaces\IJsonItemVM.cs" />
-    <Compile Include="Interfaces\ILookupJsonItemVM.cs" />
-    <Compile Include="Interfaces\IMatrixJsonItemVM.cs" />
-    <Compile Include="Interfaces\IValueLookupJsonItemVM.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
