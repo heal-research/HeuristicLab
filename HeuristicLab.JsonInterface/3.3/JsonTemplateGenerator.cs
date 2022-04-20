@@ -9,7 +9,7 @@ namespace HeuristicLab.JsonInterface {
   /// Class to generate json interface templates.
   /// </summary>
   public class JsonTemplateGenerator {
-    public static readonly string[] DefaultJsonItemFilter = new string[] {
+    public static readonly string[] DefaultJsonItemPropertyFilter = new string[] {
       nameof(JsonItem.Name),
       nameof(JsonItem.Description),
       nameof(JsonItem.Path),
@@ -17,16 +17,23 @@ namespace HeuristicLab.JsonInterface {
       "ResultName",
       "ResultCollectionName"
     };
-  /// <summary>
-  /// static Function to generate a template.
-  /// </summary>
-  /// <param name="templatePath">the path for the template files</param>
-  /// <param name="convertable">the object to serialize</param>
-  /// <param name="templateDescription">description of the template</param>
-  public static void GenerateTemplate(string templatePath, IJsonConvertable convertable, string templateDescription = "", string[] jsonItemFilter = null) {
+
+    
+    /// <summary>
+    /// static Function to generate a template.
+    /// </summary>
+    /// <param name="templatePath">the path for the template files</param>
+    /// <param name="convertable">the object to serialize</param>
+    /// <param name="templateDescription">description of the template</param>
+    public static void GenerateTemplate(string templatePath, IJsonConvertable convertable, string templateDescription = "", string[] jsonItemPropertyFilter = null) {
       var converter = new JsonItemConverter();
       var rootItem = converter.ConvertToJson(convertable);
+      var jsonItems = rootItem
+        .Iterate();
+      GenerateTemplate(templatePath, convertable, jsonItems, templateDescription, jsonItemPropertyFilter);
+    }
 
+    public static void GenerateTemplate(string templatePath, object objectToSerialize, IEnumerable<JsonItem> items, string templateDescription = "", string[] jsonItemPropertyFilter = null) {
       #region Init
       JObject template = JObject.Parse(Constants.Template);
       JArray parameterItems = new JArray();
@@ -35,22 +42,21 @@ namespace HeuristicLab.JsonInterface {
       #endregion
 
       // filter items with values/ranges/actualNames
-      if (jsonItemFilter == null)
-        jsonItemFilter = DefaultJsonItemFilter;
+      if (jsonItemPropertyFilter == null)
+        jsonItemPropertyFilter = DefaultJsonItemPropertyFilter;
 
-      var jsonItems = rootItem
-        .Iterate()
+      var jsonItems = items
         // remove JsonItems which contains only the given properties
         .Where(x => x.Properties
           .Select(i => i.Key)
-          .Except(jsonItemFilter)
+          .Except(jsonItemPropertyFilter)
           .Count() > 0);
 
       #region Serialize HL File
       ProtoBufSerializer serializer = new ProtoBufSerializer();
       // get absolute path for serialization
       string hlFilePath = Path.Combine(templateDirectory, $"{templateName}.hl");
-      serializer.Serialize(convertable, hlFilePath);
+      serializer.Serialize(objectToSerialize, hlFilePath);
       // overwrite string for relative path
       hlFilePath = Path.Combine($".", $"{templateName}.hl");
       #endregion
