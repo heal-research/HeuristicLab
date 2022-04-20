@@ -96,18 +96,7 @@
     <Compile Include="Views\JsonItemBaseControl.Designer.cs">
       <DependentUpon>JsonItemBaseControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="ViewModels\ArrayValueVM.cs" />
-    <Compile Include="ViewModels\ConcreteRestrictedJsonItemVM.cs" />
-    <Compile Include="ViewModels\DoubleVMs.cs" />
-    <Compile Include="ViewModels\IntVMs.cs" />
     <Compile Include="ViewModels\JsonItemVM.cs" />
-    <Compile Include="ViewModels\LookupJsonItemVM.cs" />
-    <Compile Include="ViewModels\MatrixValueVM.cs" />
-    <Compile Include="ViewModels\RangedValueBaseVM.cs" />
-    <Compile Include="ViewModels\RangeVM.cs" />
-    <Compile Include="ViewModels\SingleValueVM.cs" />
-    <Compile Include="ViewModels\StringValueVM.cs" />
-    <Compile Include="ViewModels\ValueLookupJsonItemVM.cs" />
     <Compile Include="Views\ExportJsonDialog.cs">
       <SubType>Form</SubType>
     </Compile>
