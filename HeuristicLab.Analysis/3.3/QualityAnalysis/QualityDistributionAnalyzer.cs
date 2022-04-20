@@ -20,15 +20,15 @@
 #endregion
 
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 
-namespace HeuristicLab.Analysis.QualityAnalysis {
+namespace HeuristicLab.Analysis {
   [Item("QualityDistributionAnalyzer", "Analyzes the distribution of the quality values in that it adds a Histogram of them into the result collection.")]
   [StorableType("9B339DF1-A9D3-4C9C-B78C-84B764715EB8")]
   public class QualityDistributionAnalyzer : SingleSuccessorOperator, IAnalyzer, IIterationBasedOperator, ISingleObjectiveOperator {
