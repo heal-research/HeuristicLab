@@ -15,10 +15,11 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
 
     public TreeView TreeView { get; }
 
+    private bool selected;
     public bool Selected {
-      get => Item.Active;
+      get => selected;
       set {
-        Item.Active = value;
+        selected = value;
         if(TreeNode != null) {
           TreeNode.ForeColor = (Selected ? Color.Green : Color.Black);
           TreeNode.Checked = value;

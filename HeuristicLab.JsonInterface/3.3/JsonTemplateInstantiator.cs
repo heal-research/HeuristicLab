@@ -67,11 +67,6 @@ namespace HeuristicLab.JsonInterface {
       if (Config != null)
         MergeTemplateWithConfig();
 
-      // validation
-      ValidationResult validationResult = rootItem.GetValidator().Validate();
-      if (!validationResult.Success)
-        throw validationResult.GenerateException();
-
       // inject configuration
       Converter.ConvertFromJson(convertable, rootItem);
 
@@ -84,7 +79,6 @@ namespace HeuristicLab.JsonInterface {
         foreach (var item in root.Iterate()) {
           if (item.Path == path) {
             item.FromJObject(obj);
-            item.Active = true;
             Objects.Add(item.Path, item);
           }
         }
