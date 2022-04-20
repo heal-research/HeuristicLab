@@ -8,7 +8,6 @@ using HeuristicLab.PluginInfrastructure;
 namespace HeuristicLab.JsonInterface.OptimizerIntegration {
   internal static class FileManager {
     private static OpenFileDialog openFileDialog;
-    private static ExportJsonDialog exportDialog = new ExportJsonDialog();
 
     public static void ExportJsonTemplate() {
       IContentView activeView = MainFormManager.MainForm.ActiveView as IContentView;
@@ -16,13 +15,14 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
         ExportJsonTemplate(activeView);
       }
     }
+
     public static void ExportJsonTemplate(IContentView view) {
       IStorableContent content = view.Content as IStorableContent;
       if (!view.Locked && content != null) {
         if(content is IJsonConvertable convertable) {
           try {
-            exportDialog.SetJsonConvertable(convertable);
-            exportDialog.ShowDialog();
+            using (var exportDialog = new ExportJsonDialog(convertable))
+              exportDialog.ShowDialog();
           } catch (Exception e) {
             ErrorHandling.ShowErrorDialog(e);
           }

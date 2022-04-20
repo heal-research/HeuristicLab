@@ -14,60 +14,25 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
   public partial class ExportJsonDialog : Form {
 
     #region Private Properties
-    private static FolderBrowserDialog FolderBrowserDialog { get; set; }
+    private FolderBrowserDialog FolderBrowserDialog { get; } = new FolderBrowserDialog() {
+      Description = "Select .json-Template Directory"
+    };
+
     private IDictionary<TreeNode, JsonItemVM> Node2VM { get; } = new Dictionary<TreeNode, JsonItemVM>();
+
+    private IJsonConvertable Convertable { get; }
     //private ICheckedItemList<IRunCollectionModifier> RunCollectionModifiers { get; set; }
     #endregion
-    /*
-    private IContent content;
-    public IContent Content {
-      get => content;
-      set {
-        content = value;
-        #region Clear
-        VMs = new List<JsonItemVMBase>();
-        treeView.Nodes.Clear();
-        #endregion
-        Convertable = content as IJsonConvertable;
-        if(Convertable != null) {
-          //Convertable = (IOptimizer)Convertable.Clone(); // clone the optimizer
-          var converter = new JsonItemConverter();
-          Root = converter.ConvertToJson(Convertable);
-          TreeNode parent = new TreeNode(Root.Name);
-          treeView.AfterCheck += TreeView_AfterCheck;
-          BuildTreeNode(parent, Root);
-          treeView.Nodes.Add(parent);
-          treeView.ExpandAll();
-          panelParameterDetails.Controls.Clear();
-        }
-      } 
-    }*/
 
-
-
-    //private void InitCache() {
-    //  JI2VM = new Dictionary<Type, Type>();
-    //  foreach (var vmType in ApplicationManager.Manager.GetTypes(typeof(IJsonItemVM))) {
-    //    IJsonItemVM vm = (IJsonItemVM)Activator.CreateInstance(vmType);
-    //    JI2VM.Add(vm.TargetedJsonItemType, vmType);
-    //  }
-    //}
-
-    public ExportJsonDialog() {
+    public ExportJsonDialog(IJsonConvertable convertable) {
       InitializeComponent();
       Icon = Common.Resources.HeuristicLab.Icon;
-      
-      //RunCollectionModifiers = postProcessorListControl.Content;
       treeView.AfterCheck += TreeView_AfterCheck;
-      //InitCache();
-    }
 
-    public void SetJsonConvertable(IJsonConvertable convertable) {
       var converter = new JsonItemConverter();
       var rootItem = converter.ConvertToJson(convertable);
+      Convertable = convertable;
 
-      treeView.Nodes.Clear();
-      Node2VM.Clear();
       treeView.Nodes.Add(BuildTree(rootItem));
       treeView.ExpandAll();
     }
@@ -99,23 +64,16 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
       bool ItemHasProps(JsonItem item) =>
         item.Properties
         .Select(x => x.Key)
-        .Except(JsonTemplateGenerator.DefaultJsonItemFilter)
+        .Except(JsonTemplateGenerator.DefaultJsonItemPropertyFilter)
         .Any();
     }
 
-
     private void exportButton_Click(object sender, EventArgs e) {
-      if (FolderBrowserDialog == null) {
-        FolderBrowserDialog = new FolderBrowserDialog();
-        FolderBrowserDialog.Description = "Select .json-Template Directory";
-      }
-
       if (FolderBrowserDialog.ShowDialog() == DialogResult.OK) {
         try {
-          /*
           JsonTemplateGenerator.GenerateTemplate(
             Path.Combine(FolderBrowserDialog.SelectedPath, textBoxTemplateName.Text), 
-            Convertable, Root, RunCollectionModifiers.CheckedItems.Select(x => x.Value));*/
+            Convertable, Node2VM.Values.Where(x => x.Selected).Select(x => x.Item));
           Close();
         } catch (Exception ex) {
           ErrorHandling.ShowErrorDialog(this, ex);
@@ -123,49 +81,6 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
       }
     }
 
-    //private void BuildTreeNode(TreeNode node, JsonItem item) {
-    //  RegisterItem(node, item, treeView);
-    //  if (item.Children != null) {
-    //    foreach (var c in item.Children) {
-    //      if (IsDrawableItem(c)) {
-    //        TreeNode childNode = new TreeNode(c.Name);
-    //        node.Nodes.Add(childNode);
-    //        BuildTreeNode(childNode, c);
-    //      }
-    //    }
-    //  }
-    //}
-
-    //private IJsonItemVM RegisterItem(TreeNode node, IJsonItem item, TreeView tv) {
-    //  if (JI2VM.TryGetValue(item.GetType(), out Type vmType)) {
-    //    IJsonItemVM vm = (IJsonItemVM)Activator.CreateInstance(vmType);
-
-    //    vm.Item = item;
-    //    vm.TreeNode = node;
-    //    vm.TreeView = tv;
-    //    vm.Selected = false;
-
-    //    VMs.Add(vm);
-    //    Node2VM.Add(node, vm);
-    //    UserControl control = JsonItemBaseControl.Create(vm, vm.Control);
-    //    Node2Control.Add(node, control);
-    //    return vm;
-    //  } else {
-    //    node.ForeColor = Color.LightGray;
-    //    node.NodeFont = new Font(SystemFonts.DialogFont, FontStyle.Italic);
-    //  }
-    //  return null;
-    //}
-
-    //private bool IsDrawableItem(IJsonItem item) {
-    //  bool b = false;
-    //  if (item.Children != null)
-    //    foreach (var c in item.Children)
-    //      b = b || IsDrawableItem(c);
-      
-    //  return b || !(item is EmptyJsonItem) || !(item is UnsupportedJsonItem);
-    //}
-    
     private void treeView_AfterSelect(object sender, TreeViewEventArgs e) {
       if(Node2VM.TryGetValue(treeView.SelectedNode, out JsonItemVM vm)) {
         SetControlOnPanel(JsonItemBaseControl.Create(vm), panelParameterDetails);
