@@ -5,13 +5,13 @@ using System.Windows.Forms;
 
 namespace HeuristicLab.JsonInterface.OptimizerIntegration {
   public partial class JsonItemBaseControl : UserControl {
-    protected JsonItemVMBase VM { get; set; }
+    protected JsonItemVM VM { get; set; }
 
     private JsonItemBaseControl() {
       InitializeComponent();
     }
 
-    protected JsonItemBaseControl(JsonItemVMBase vm) {
+    protected JsonItemBaseControl(JsonItemVM vm) {
       InitializeComponent();
       VM = vm;
       propertyList.Items.Clear();
@@ -27,8 +27,8 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
       propertyList.Columns[0].Width = -2;
       propertyList.Columns[1].Width = 100;
 
-      textBoxName.DataBindings.Add("Text", VM, nameof(JsonItemVMBase.Name));
-      textBoxDescription.DataBindings.Add("Text", VM, nameof(JsonItemVMBase.Description));
+      textBoxName.DataBindings.Add("Text", VM, nameof(JsonItemVM.Name));
+      textBoxDescription.DataBindings.Add("Text", VM, nameof(JsonItemVM.Description));
     }
 
     private void textBoxName_Validating(object sender, CancelEventArgs e) {
@@ -40,6 +40,6 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
       }
     }
 
-    public static JsonItemBaseControl Create(JsonItemVMBase vm) => new JsonItemBaseControl(vm);
+    public static JsonItemBaseControl Create(JsonItemVM vm) => new JsonItemBaseControl(vm);
   }
 }

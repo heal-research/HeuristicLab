@@ -105,7 +105,7 @@
     <Compile Include="ViewModels\ConcreteRestrictedJsonItemVM.cs" />
     <Compile Include="ViewModels\DoubleVMs.cs" />
     <Compile Include="ViewModels\IntVMs.cs" />
-    <Compile Include="ViewModels\JsonItemVMBase.cs" />
+    <Compile Include="ViewModels\JsonItemVM.cs" />
     <Compile Include="ViewModels\LookupJsonItemVM.cs" />
     <Compile Include="ViewModels\MatrixValueVM.cs" />
     <Compile Include="ViewModels\RangedValueBaseVM.cs" />

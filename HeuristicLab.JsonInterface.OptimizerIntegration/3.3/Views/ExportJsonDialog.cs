@@ -15,7 +15,7 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
 
     #region Private Properties
     private static FolderBrowserDialog FolderBrowserDialog { get; set; }
-    private IDictionary<TreeNode, JsonItemVMBase> Node2VM { get; } = new Dictionary<TreeNode, JsonItemVMBase>();
+    private IDictionary<TreeNode, JsonItemVM> Node2VM { get; } = new Dictionary<TreeNode, JsonItemVM>();
     //private ICheckedItemList<IRunCollectionModifier> RunCollectionModifiers { get; set; }
     #endregion
     /*
@@ -76,10 +76,7 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
       if (!IsDrawableItem(rootItem)) return null;
 
       TreeNode node = new TreeNode(rootItem.Id);
-      JsonItemVMBase vm = new JsonItemVMBase(rootItem) { 
-        TreeNode = node, 
-        TreeView = treeView 
-      };
+      JsonItemVM vm = new JsonItemVM(rootItem, treeView, node);
       Node2VM.Add(node, vm);
 
       if(!ItemHasProps(rootItem)) {
@@ -170,7 +167,7 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
     //}
     
     private void treeView_AfterSelect(object sender, TreeViewEventArgs e) {
-      if(Node2VM.TryGetValue(treeView.SelectedNode, out JsonItemVMBase vm)) {
+      if(Node2VM.TryGetValue(treeView.SelectedNode, out JsonItemVM vm)) {
         SetControlOnPanel(JsonItemBaseControl.Create(vm), panelParameterDetails);
       }
     }
@@ -198,13 +195,13 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
 
     private void TreeView_AfterCheck(object sender, TreeViewEventArgs e) {
       if (e.Action != TreeViewAction.Unknown)
-        if (Node2VM.TryGetValue(e.Node, out JsonItemVMBase vm))
+        if (Node2VM.TryGetValue(e.Node, out JsonItemVM vm))
           vm.Selected = e.Node.Checked;
     }
 
     private void treeViewResults_AfterCheck(object sender, TreeViewEventArgs e) {
       if (e.Action != TreeViewAction.Unknown)
-        if (Node2VM.TryGetValue(e.Node, out JsonItemVMBase vm))
+        if (Node2VM.TryGetValue(e.Node, out JsonItemVM vm))
           vm.Selected = e.Node.Checked;
     }
   }
