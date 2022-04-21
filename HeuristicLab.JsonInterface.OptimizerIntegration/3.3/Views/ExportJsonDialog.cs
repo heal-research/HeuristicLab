@@ -21,7 +21,6 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
     private IDictionary<TreeNode, JsonItemVM> Node2VM { get; } = new Dictionary<TreeNode, JsonItemVM>();
 
     private IJsonConvertable Convertable { get; }
-    //private ICheckedItemList<IRunCollectionModifier> RunCollectionModifiers { get; set; }
     #endregion
 
     public ExportJsonDialog(IJsonConvertable convertable) {
@@ -32,6 +31,9 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
       var converter = new JsonItemConverter();
       var rootItem = converter.ConvertToJson(convertable);
       Convertable = convertable;
+
+      if(convertable is IOptimizer optimizer)
+        postProcessorListControl.Content = optimizer.Runs.Modifiers;
 
       treeView.Nodes.Add(BuildTree(rootItem));
       treeView.ExpandAll();
