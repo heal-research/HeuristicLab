@@ -40,12 +40,11 @@ namespace HeuristicLab.Optimization {
     #endregion
 
     public void Modify(List<IRun> runs) {
-      foreach(var run in runs) {
-        foreach(var filter in FilterStringParameter.Value) {
-          if(!run.Results.ContainsKey(filter.Value))
-            run.Results.Remove(filter.Value);
-        }
-      }
+      var filters = FilterStringParameter.Value.Select(x => x.Value);
+      foreach (var run in runs)
+        foreach(var res in run.Results.ToArray())
+          if(!filters.Contains(res.Key))
+            run.Results.Remove(res.Key);
     }
   }
 }
