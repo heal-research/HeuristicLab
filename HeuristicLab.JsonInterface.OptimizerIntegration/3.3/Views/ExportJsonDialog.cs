@@ -41,7 +41,7 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
       if (!IsDrawableItem(rootItem)) return null;
 
       TreeNode node = new TreeNode(rootItem.Id);
-      JsonItemVM vm = new JsonItemVM(rootItem, treeView, node);
+      JsonItemVM vm = new JsonItemVM(rootItem);
       Node2VM.Add(node, vm);
 
       if(!ItemHasProps(rootItem)) {
@@ -110,8 +110,11 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
 
     private void TreeView_AfterCheck(object sender, TreeViewEventArgs e) {
       if (e.Action != TreeViewAction.Unknown)
-        if (Node2VM.TryGetValue(e.Node, out JsonItemVM vm))
+        if (Node2VM.TryGetValue(e.Node, out JsonItemVM vm)) {
           vm.Selected = e.Node.Checked;
+          e.Node.ForeColor = (e.Node.Checked ? Color.Green : Color.Black);
+          treeView.Refresh();
+        }
     }
 
     private void treeViewResults_AfterCheck(object sender, TreeViewEventArgs e) {

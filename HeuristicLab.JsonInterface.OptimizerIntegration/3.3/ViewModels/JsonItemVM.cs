@@ -11,22 +11,11 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
   {
     public JsonItem Item { get; }
 
-    public TreeNode TreeNode { get; }
-
-    public TreeView TreeView { get; }
-
     private bool selected;
     public bool Selected {
       get => selected;
       set {
         selected = value;
-        if(TreeNode != null) {
-          TreeNode.ForeColor = (Selected ? Color.Green : Color.Black);
-          TreeNode.Checked = value;
-        }
-        if (TreeView != null)
-          TreeView.Refresh();
-        SelectedChanged?.Invoke();
         OnPropertyChange(this, nameof(Selected));
       }
     }
@@ -52,26 +41,23 @@ namespace HeuristicLab.JsonInterface.OptimizerIntegration {
         .Select(kvp => new KeyValuePair<string, string>(kvp.Key, kvp.Value.GetType().Name));
 
     public void ActivateProperty(string propertyName) {
-      if(!Item.Properties.Any(x => x.Key == propertyName))
+      if(!Item.Properties.Any(x => x.Key == propertyName)) {
         Item.AddProperty(cachedProperties.Where(x => x.Key == propertyName).Single());
+        OnPropertyChange(this, nameof(Properties));
+      }
     }
     public void DeactivateProperty(string propertyName) {
-      if (Item.Properties.Any(x => x.Key == propertyName))
+      if (Item.Properties.Any(x => x.Key == propertyName)) {
         Item.RemoveProperty(propertyName);
+        OnPropertyChange(this, nameof(Properties));
+      }
     }
 
-    //public virtual Type TargetedJsonItemType => typeof(JsonItemType);
-    //public abstract UserControl Control { get; }
-
     public event PropertyChangedEventHandler PropertyChanged;
-    public event Action ItemChanged;
-    public event Action SelectedChanged;
 
-    public JsonItemVM(JsonItem item, TreeView treeView, TreeNode treeNode) {
+    public JsonItemVM(JsonItem item) {
       Item = item;
       cachedProperties = Item.Properties.ToArray();
-      TreeView = treeView;
-      TreeNode = treeNode;
     }
 
     protected void OnPropertyChange(object sender, string propertyName) {
