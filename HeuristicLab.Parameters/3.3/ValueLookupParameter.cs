@@ -206,7 +206,7 @@ namespace HeuristicLab.Parameters {
 	public override void Inject(JsonItem data, JsonItemConverter converter) {
       base.Inject(data, converter);
       if (Value is IJsonConvertable convertable)
-        converter.ConvertFromJson(convertable, data.GetChild(nameof(Value)));
+        converter.ConvertFromJson(convertable, data);
     }
 
     public override JsonItem Extract(JsonItemConverter converter) {
