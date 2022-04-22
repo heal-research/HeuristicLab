@@ -23,7 +23,6 @@
     <OutputPath>$(SolutionDir)\bin\</OutputPath>
     <NoWarn>1591, 1570, 1571, 1572, 1573, 1574</NoWarn>
     <DefineConstants>DEBUG;TRACE;LITE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
     <NoStdLib>true</NoStdLib>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -32,7 +31,6 @@
     <OutputPath>$(SolutionDir)\bin\</OutputPath>
     <NoWarn>1591, 1570, 1571, 1572, 1573, 1574</NoWarn>
     <DefineConstants>TRACE;LITE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
     <NoStdLib>true</NoStdLib>
   </PropertyGroup>
   <ItemGroup>

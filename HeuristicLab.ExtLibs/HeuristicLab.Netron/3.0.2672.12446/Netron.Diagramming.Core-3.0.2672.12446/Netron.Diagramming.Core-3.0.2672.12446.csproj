@@ -64,10 +64,8 @@
     <RemoveIntegerChecks>false</RemoveIntegerChecks>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <DebugType>embedded</DebugType>
-    <ErrorReport>prompt</ErrorReport>
     <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
     <RunCodeAnalysis>false</RunCodeAnalysis>
-    <CodeAnalysisRules>
     </CodeAnalysisRules>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
@@ -89,8 +87,6 @@
     <RemoveIntegerChecks>false</RemoveIntegerChecks>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <DebugType>none</DebugType>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRules>
     </CodeAnalysisRules>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
@@ -103,10 +99,8 @@
     <FileAlignment>4096</FileAlignment>
     <DebugType>embedded</DebugType>
     <PlatformTarget>x86</PlatformTarget>
-    <CodeAnalysisRules>
     </CodeAnalysisRules>
     <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
-    <ErrorReport>prompt</ErrorReport>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
@@ -116,9 +110,7 @@
     <Optimize>true</Optimize>
     <FileAlignment>4096</FileAlignment>
     <PlatformTarget>x86</PlatformTarget>
-    <CodeAnalysisRules>
     </CodeAnalysisRules>
-    <ErrorReport>prompt</ErrorReport>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
@@ -130,10 +122,8 @@
     <FileAlignment>4096</FileAlignment>
     <DebugType>embedded</DebugType>
     <PlatformTarget>x64</PlatformTarget>
-    <CodeAnalysisRules>
     </CodeAnalysisRules>
     <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
-    <ErrorReport>prompt</ErrorReport>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
@@ -143,9 +133,7 @@
     <Optimize>true</Optimize>
     <FileAlignment>4096</FileAlignment>
     <PlatformTarget>x64</PlatformTarget>
-    <CodeAnalysisRules>
     </CodeAnalysisRules>
-    <ErrorReport>prompt</ErrorReport>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
