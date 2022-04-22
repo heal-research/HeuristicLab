@@ -237,7 +237,7 @@ namespace HeuristicLab.Parameters {
         var valItem = converter.ConvertToJson(convertable);
         valItem.Name = Name;
         valItem.Description = Description;
-        item.AddChild(nameof(Value), valItem);
+        item.MergeProperties(valItem);
       }
       return item;
     }
