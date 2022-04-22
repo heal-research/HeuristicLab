@@ -40,11 +40,11 @@ namespace HeuristicLab.Problems.DataAnalysis {
         if (trimmedLine == "") continue; // If it is a comment just continue without saving anything
         if (trimmedLine.StartsWith("#")) {
           // disabled constraints are commented
-          var constraint = ParseConstaint(trimmedLine.TrimStart('#', ' '));
+          var constraint = ParseConstraint(trimmedLine.TrimStart('#', ' '));
           sc.Add(constraint);
           sc.SetItemCheckedState(constraint, false);
         } else {
-          var constraint = ParseConstaint(trimmedLine);
+          var constraint = ParseConstraint(trimmedLine);
           sc.Add(constraint);
           sc.SetItemCheckedState(constraint, true);
         }
@@ -52,7 +52,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       return sc;
     }
 
-    public static ShapeConstraint ParseConstaint(string expr) {
+    public static ShapeConstraint ParseConstraint(string expr) {
       var trimmedLine = expr.TrimStart();
       if (trimmedLine.StartsWith("f")) {
         return ParseFunctionRangeConstraint(expr);
