@@ -31,25 +31,25 @@
     <PostBuildEvent />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugType>full</DebugType>
+    <DebugType>embedded</DebugType>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
+    <DebugType>embedded</DebugType>
     <DocumentationFile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
-    <DebugType>full</DebugType>
+    <DebugType>embedded</DebugType>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <DocumentationFile />
-    <DebugType>pdbonly</DebugType>
+    <DebugType>embedded</DebugType>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
-    <DebugType>full</DebugType>
+    <DebugType>embedded</DebugType>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
     <DocumentationFile>bin\$(Platform)\$(Configuration)\HeuristicLab.Problems.VehicleRouting.Views-3.4.xml</DocumentationFile>
-    <DebugType>pdbonly</DebugType>
+    <DebugType>embedded</DebugType>
   </PropertyGroup>
   <PropertyGroup>
     <PostBuildEvent />
