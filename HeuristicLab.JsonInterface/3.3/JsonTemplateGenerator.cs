@@ -10,9 +10,6 @@ namespace HeuristicLab.JsonInterface {
   /// </summary>
   public class JsonTemplateGenerator {
     public static readonly string[] DefaultJsonItemPropertyFilter = new string[] {
-      nameof(JsonItem.Name),
-      nameof(JsonItem.Description),
-      nameof(JsonItem.Path),
       "ActualName",
       "ResultName",
       "ResultCollectionName"
