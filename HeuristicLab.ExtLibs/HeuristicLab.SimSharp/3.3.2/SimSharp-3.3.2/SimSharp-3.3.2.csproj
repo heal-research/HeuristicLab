@@ -44,7 +44,6 @@ Sim# allows modeling processes easily and with little boiler plate code. A proce
   </PropertyGroup>
 
   <PropertyGroup>
-    <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\SimSharp.xml</DocumentationFile>
     <RepositoryUrl>https://github.com/abeham/SimSharp.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>discrete-event simulation</PackageTags>
