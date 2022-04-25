@@ -26,12 +26,14 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using HeuristicLab.Clients.Access;
+using HeuristicLab.Clients.Common;
 using HeuristicLab.Clients.Hive.Views;
 using HeuristicLab.Collections;
 using HeuristicLab.Common.Resources;
 using HeuristicLab.Core;
 using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
+using HeuristicLab.MainForm.WindowsForms;
 
 namespace HeuristicLab.Clients.Hive.Administrator.Views {
   [View("Projects View")]

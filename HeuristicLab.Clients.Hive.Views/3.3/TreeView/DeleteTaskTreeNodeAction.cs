@@ -20,7 +20,6 @@
 #endregion
 
 using System.Drawing;
-using HeuristicLab.Clients.Hive.Jobs;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
 

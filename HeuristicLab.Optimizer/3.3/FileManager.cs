@@ -28,6 +28,7 @@ using System.Windows.Forms;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.MainForm;
+using HeuristicLab.MainForm.WindowsForms;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Optimizer {

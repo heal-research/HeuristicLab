@@ -22,10 +22,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using HeuristicLab.Clients.Hive.Jobs;
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
-using HeuristicLab.MainForm;
+using HeuristicLab.MainForm.WindowsForms;
 using HeuristicLab.Optimization;
 using HeuristicLab.PluginInfrastructure;
 

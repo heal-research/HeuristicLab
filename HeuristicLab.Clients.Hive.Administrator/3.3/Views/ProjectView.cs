@@ -24,9 +24,11 @@ using System.ComponentModel;
 using System.Linq;
 using System.Windows.Forms;
 using HeuristicLab.Clients.Access;
+using HeuristicLab.Clients.Common;
 using HeuristicLab.Clients.Hive.Views;
 using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
+using HeuristicLab.MainForm.WindowsForms;
 using Tpl = System.Threading.Tasks;
 
 namespace HeuristicLab.Clients.Hive.Administrator.Views {

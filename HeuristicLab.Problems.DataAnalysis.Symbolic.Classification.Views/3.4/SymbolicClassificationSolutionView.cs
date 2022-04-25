@@ -24,6 +24,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Windows.Forms;
 using HeuristicLab.MainForm;
+using HeuristicLab.MainForm.WindowsForms;
 using HeuristicLab.Problems.DataAnalysis.Symbolic.Views;
 using HeuristicLab.Problems.DataAnalysis.Views;
 

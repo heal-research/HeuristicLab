@@ -21,7 +21,6 @@
 
 using System.Collections.Generic;
 using System.Windows.Forms;
-using HeuristicLab.Clients.Hive.Jobs;
 using HeuristicLab.Core;
 using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
