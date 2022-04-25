@@ -59,6 +59,10 @@ namespace HeuristicLab.JsonInterface {
       jsonItem.Id = name;
       childs.Add(name, jsonItem);
     }
+    public void MergeChilds(JsonItem jsonItem) {
+      foreach(var kvp in jsonItem.Childs)
+        AddChild(kvp.Key, kvp.Value);
+    }
     public JsonItem GetChild(string name) => childs[name];
 
     public void AddProperty<T>(string name, T value) => properties.Add(name, value);
@@ -99,7 +103,7 @@ namespace HeuristicLab.JsonInterface {
     /// <param name="jObject">Newtonsoft JObject</param>
     protected internal virtual void FromJObject(JObject jObject) {
       foreach(var prop in Properties.ToArray())
-        properties[prop.Key] = jObject[prop.Key]?.ToObject(prop.Value.GetType());
+        properties[prop.Key] = jObject[prop.Key]?.ToObject(prop.Value.GetType()) ?? properties[prop.Key];
     }
     #endregion
 
