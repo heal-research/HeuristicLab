@@ -224,8 +224,9 @@ namespace HeuristicLab.Parameters {
     }
 
     public override void Inject(JsonItem data, JsonItemConverter converter) {
-      if(Value != null && Value is IJsonConvertable convertable)
-        converter.ConvertFromJson(convertable, data);
+      if (Value != null && Value is IJsonConvertable convertable)
+        // use Inject method of convertable to bypass caching (data is already in cache)
+        convertable.Inject(data, converter); 
     }
 
     public override JsonItem Extract(JsonItemConverter converter) {
@@ -238,6 +239,7 @@ namespace HeuristicLab.Parameters {
         valItem.Name = Name;
         valItem.Description = Description;
         item.MergeProperties(valItem);
+        item.MergeChilds(valItem);
       }
       return item;
     }
