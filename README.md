@@ -26,7 +26,7 @@ In May 2009 we submitted HeuristicLab for the **Microsoft Innovation Award 2009*
 Starting from 3.3.16 HeuristicLab requires a 64-bit operating system to use all features. Specifically, the OR-Tools integration is affected. You can still run HeuristicLab in 32-bit environments, but you have to remove Google.OrTools.dll from the folder containing the HeuristicLab.exe file before you start it.
 
 HeuristicLab is based on the Microsoft .NET Framework. In order to be able to run HeuristicLab properly, you have to download and install the following software package:
-  * [​Microsoft .NET Framework 4.6.1](https://dotnet.microsoft.com/download/dotnet-framework/net461)
+  * [​Microsoft .NET Framework 4.7.2](https://dotnet.microsoft.com/download/dotnet-framework/net472)
 
 ## HeuristicLab Google Group
 
