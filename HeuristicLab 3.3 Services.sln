@@ -5,11 +5,9 @@ VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{96396439-A764-4022-A8D2-BE021449B8D1}"
 	ProjectSection(SolutionItems) = preProject
-		ConfigMerger.exe = ConfigMerger.exe
 		..\documentation\License\gpl-3.0.txt = ..\documentation\License\gpl-3.0.txt
 		HeuristicLab 3.3 Services.vsmdi = HeuristicLab 3.3 Services.vsmdi
 		LocalTestRun.testrunconfig = LocalTestRun.testrunconfig
-		PreBuildEvent.cmd = PreBuildEvent.cmd
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Services.Deployment-3.3", "HeuristicLab.Services.Deployment\3.3\HeuristicLab.Services.Deployment-3.3.csproj", "{30D8C5F1-CD3A-4EC1-907F-430177A03FBE}"
