@@ -142,6 +142,7 @@
     <Compile Include="Implementation\DataAnalysisModel.cs" />
     <Compile Include="Implementation\Interval\Interval.cs" />
     <Compile Include="Implementation\Interval\IntervalCollection.cs" />
+    <Compile Include="Implementation\Interval\ModalInterval.cs" />
     <Compile Include="Implementation\Regression\ConfidenceBoundRegressionSolution.cs" />
     <Compile Include="Implementation\Regression\ConstantRegressionModel.cs" />
     <Compile Include="Implementation\Regression\ConstantRegressionSolution.cs" />
