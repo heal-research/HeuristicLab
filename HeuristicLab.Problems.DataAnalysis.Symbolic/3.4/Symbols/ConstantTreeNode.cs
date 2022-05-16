@@ -20,6 +20,7 @@
 #endregion
 
 using HEAL.Attic;
+
 using HeuristicLab.Common;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 
@@ -27,14 +28,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableType("F91000E6-B041-4648-A9E8-595228F957FA")]
   public sealed class ConstantTreeNode : SymbolicExpressionTreeTerminalNode, INumericTreeNode {
 
-    public new Constant Symbol => (Constant) base.Symbol;
+    public new Constant Symbol => (Constant)base.Symbol;
 
-    private double constantValue;
-    [Storable]
-    public double Value {
-      get { return constantValue; }
-      set { constantValue = value; }
-    }
+    public double Value => Symbol.Value;
 
     [StorableConstructor]
     private ConstantTreeNode(StorableConstructorFlag _) : base(_) { }
