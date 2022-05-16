@@ -1,0 +1,5007 @@
+﻿{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Hive",
+    "version": "v1"
+  },
+  "paths": {
+    "/ComputingResource/heartbeatinterval/{id}": {
+      "get": {
+        "tags": [
+          "ComputingResource"
+        ],
+        "summary": "get heartbeat interval of computing resource identified by Id",
+        "operationId": "heartbeatinterval",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "returns all hearbeat interval",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "unexpected error"
+          },
+          "404": {
+            "description": "no computing resource corresponds to this Id"
+          }
+        }
+      }
+    },
+    "/ComputingResource/genealogy": {
+      "get": {
+        "tags": [
+          "ComputingResource"
+        ],
+        "summary": "get genealogy of computing resources",
+        "operationId": "genealogy",
+        "responses": {
+          "200": {
+            "description": "returns the genealogy",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "array",
+                    "uniqueItems": true,
+                    "items": {
+                      "type": "string",
+                      "format": "uuid"
+                    }
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "array",
+                    "uniqueItems": true,
+                    "items": {
+                      "type": "string",
+                      "format": "uuid"
+                    }
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "array",
+                    "uniqueItems": true,
+                    "items": {
+                      "type": "string",
+                      "format": "uuid"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "unexpected error"
+          }
+        }
+      }
+    },
+    "/ComputingResource/names": {
+      "get": {
+        "tags": [
+          "ComputingResource"
+        ],
+        "summary": "get names and corresponding Ids of all computing resources",
+        "operationId": "names",
+        "responses": {
+          "200": {
+            "description": "returns the names",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "unexpected error"
+          }
+        }
+      }
+    },
+    "/ComputingResource/add/{parentId}/{childId}": {
+      "put": {
+        "tags": [
+          "ComputingResource"
+        ],
+        "summary": "add computing resource corresponding to childId to drone group corresponding to parentId",
+        "operationId": "add",
+        "parameters": [
+          {
+            "name": "parentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "childId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "500": {
+            "description": "unexpected error"
+          },
+          "204": {
+            "description": "computing resource was added succesfully"
+          }
+        }
+      }
+    },
+    "/ComputingResource/remove/{parentId}/{childId}": {
+      "put": {
+        "tags": [
+          "ComputingResource"
+        ],
+        "summary": "remove computing resource corresponding to childId from drone group corresponding to parentId",
+        "operationId": "remove",
+        "parameters": [
+          {
+            "name": "parentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "childId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "500": {
+            "description": "unexpected error"
+          },
+          "204": {
+            "description": "computing resource was removed succesfully"
+          }
+        }
+      }
+    },
+    "/Downtime/resource/{resourceId}": {
+      "get": {
+        "tags": [
+          "Downtime"
+        ],
+        "summary": "get downtimes of computing resource by Id",
+        "operationId": "resource",
+        "parameters": [
+          {
+            "name": "resourceId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "returns all downtimes",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DowntimeDTO"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DowntimeDTO"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DowntimeDTO"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "unexpected error"
+          }
+        }
+      }
+    },
+    "/Downtime": {
+      "get": {
+        "tags": [
+          "Downtime"
+        ],
+        "summary": "get all entities",
+        "operationId": "DowntimeAll",
+        "responses": {
+          "200": {
+            "description": "returns all entities",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DowntimeDTO"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DowntimeDTO"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DowntimeDTO"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "unexpected error"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Downtime"
+        ],
+        "summary": "insert new entity",
+        "operationId": "DowntimePOST",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DowntimeDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DowntimeDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/DowntimeDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "500": {
+            "description": "unexpected error"
+          },
+          "201": {
+            "description": "returns the inserted entity"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Downtime"
+        ],
+        "summary": "update existing entity",
+        "operationId": "DowntimePUT",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DowntimeDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DowntimeDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/DowntimeDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "500": {
+            "description": "unexpected error"
+          },
+          "204": {
+            "description": "update successful"
+          }
+        }
+      }
+    },
+    "/Downtime/{id}": {
+      "get": {
+        "tags": [
+          "Downtime"
+        ],
+        "summary": "get entity by Id",
+        "operationId": "DowntimeGET",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "returns the entity with the given Id",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/DowntimeDTO"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DowntimeDTO"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DowntimeDTO"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "unexpected error"
+          },
+          "404": {
+            "description": "no entity corresponds to this Id, or corresponding entity is marked as deleted"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Downtime"
+        ],
+        "summary": "delete entity by Id",
+        "operationId": "DowntimeDELETE",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "500": {
+            "description": "unexpected error"
+          },
+          "204": {
+            "description": "deletion successful"
+          },
+          "404": {
+            "description": "no entity corresponds to this Id, or corresponding entity is marked as deleted"
+          }
+        }
+      }
+    },
+    "/Drone/hello": {
+      "post": {
+        "tags": [
+          "Drone"
+        ],
+        "summary": "creates a new entry for a drone or updates an existing one",
+        "operationId": "hello",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DroneDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DroneDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/DroneDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "500": {
+            "description": "unexpected error"
+          },
+          "204": {
+            "description": "request was succesfully processed"
+          }
+        }
+      }
+    },
+    "/Drone/goodbye/{droneId}": {
+      "post": {
+        "tags": [
+          "Drone"
+        ],
+        "summary": "marks the drone corresponding to droneId as offline",
+        "operationId": "goodbye",
+        "parameters": [
+          {
+            "name": "droneId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "500": {
+            "description": "unexpected error"
+          },
+          "204": {
+            "description": "drone was succesfully marked as offline"
+          },
+          "404": {
+            "description": "no drone corresponds to this Id"
+          }
+        }
+      }
+    },
+    "/Drone/heartbeatinterval": {
+      "get": {
+        "tags": [
+          "Drone"
+        ],
+        "summary": "return the heartbeat interval of the drone corresponding to droneId",
+        "operationId": "heartbeatinterval2",
+        "parameters": [
+          {
+            "name": "droneId",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "returns heartbeat interval or -1 should no drone correspond to this Id",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "unexpected error"
+          }
+        }
+      }
+    },
+    "/Drone": {
+      "get": {
+        "tags": [
+          "Drone"
+        ],
+        "summary": "get all entities",
+        "operationId": "DroneAll",
+        "responses": {
+          "200": {
+            "description": "returns all entities",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DroneDTO"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DroneDTO"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DroneDTO"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "unexpected error"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Drone"
+        ],
+        "summary": "insert new entity",
+        "operationId": "DronePOST",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DroneDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DroneDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/DroneDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "500": {
+            "description": "unexpected error"
+          },
+          "201": {
+            "description": "returns the inserted entity"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Drone"
+        ],
+        "summary": "update existing entity",
+        "operationId": "DronePUT",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DroneDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DroneDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/DroneDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "500": {
+            "description": "unexpected error"
+          },
+          "204": {
+            "description": "update successful"
+          }
+        }
+      }
+    },
+    "/Drone/{id}": {
+      "get": {
+        "tags": [
+          "Drone"
+        ],
+        "summary": "get entity by Id",
+        "operationId": "DroneGET",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "returns the entity with the given Id",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/DroneDTO"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DroneDTO"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DroneDTO"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "unexpected error"
+          },
+          "404": {
+            "description": "no entity corresponds to this Id, or corresponding entity is marked as deleted"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Drone"
+        ],
+        "summary": "delete entity by Id",
+        "operationId": "DroneDELETE",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "500": {
+            "description": "unexpected error"
+          },
+          "204": {
+            "description": "deletion successful"
+          },
+          "404": {
+            "description": "no entity corresponds to this Id, or corresponding entity is marked as deleted"
+          }
+        }
+      }
+    },
+    "/DroneGroup": {
+      "get": {
+        "tags": [
+          "DroneGroup"
+        ],
+        "summary": "get all entities",
+        "operationId": "DroneGroupAll",
+        "responses": {
+          "200": {
+            "description": "returns all entities",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DroneGroupDTO"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DroneGroupDTO"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DroneGroupDTO"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "unexpected error"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "DroneGroup"
+        ],
+        "summary": "insert new entity",
+        "operationId": "DroneGroupPOST",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DroneGroupDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DroneGroupDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/DroneGroupDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "500": {
+            "description": "unexpected error"
+          },
+          "201": {
+            "description": "returns the inserted entity"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "DroneGroup"
+        ],
+        "summary": "update existing entity",
+        "operationId": "DroneGroupPUT",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DroneGroupDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DroneGroupDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/DroneGroupDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "500": {
+            "description": "unexpected error"
+          },
+          "204": {
+            "description": "update successful"
+          }
+        }
+      }
+    },
+    "/DroneGroup/{id}": {
+      "get": {
+        "tags": [
+          "DroneGroup"
+        ],
+        "summary": "get entity by Id",
+        "operationId": "DroneGroupGET",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "returns the entity with the given Id",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/DroneGroupDTO"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DroneGroupDTO"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DroneGroupDTO"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "unexpected error"
+          },
+          "404": {
+            "description": "no entity corresponds to this Id, or corresponding entity is marked as deleted"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "DroneGroup"
+        ],
+        "summary": "delete entity by Id",
+        "operationId": "DroneGroupDELETE",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "500": {
+            "description": "unexpected error"
+          },
+          "204": {
+            "description": "deletion successful"
+          },
+          "404": {
+            "description": "no entity corresponds to this Id, or corresponding entity is marked as deleted"
+          }
+        }
+      }
+    },
+    "/Heartbeat": {
+      "post": {
+        "tags": [
+          "Heartbeat"
+        ],
+        "summary": "process the heartbeat of a drone",
+        "operationId": "Heartbeat",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Heartbeat"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Heartbeat"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Heartbeat"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "heartbeat succesful",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MessageContainer"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MessageContainer"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MessageContainer"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "unexpected error"
+          }
+        }
+      }
+    },
+    "/HiveJob/project/{projectId}": {
+      "get": {
+        "tags": [
+          "HiveJob"
+        ],
+        "summary": "get all hive jobs of the project corresponding to projectId",
+        "operationId": "project",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "returns all hive jobs",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/HiveJobDTO"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/HiveJobDTO"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/HiveJobDTO"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "unexpected error"
+          }
+        }
+      }
+    },
+    "/HiveJob/{id}/{state}": {
+      "put": {
+        "tags": [
+          "HiveJob"
+        ],
+        "summary": "update state of hive job corresponding to this Id",
+        "operationId": "HiveJobPUT",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "state",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "500": {
+            "description": "unexpected error"
+          },
+          "204": {
+            "description": "update was succesful"
+          },
+          "400": {
+            "description": "given state is invalid"
+          }
+        }
+      }
+    },
+    "/HiveJob": {
+      "get": {
+        "tags": [
+          "HiveJob"
+        ],
+        "summary": "get all entities",
+        "operationId": "HiveJobAll",
+        "responses": {
+          "200": {
+            "description": "returns all entities",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/HiveJobDTO"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/HiveJobDTO"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/HiveJobDTO"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "unexpected error"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "HiveJob"
+        ],
+        "summary": "insert new entity",
+        "operationId": "HiveJobPOST",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HiveJobDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HiveJobDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/HiveJobDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "500": {
+            "description": "unexpected error"
+          },
+          "201": {
+            "description": "returns the inserted entity"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "HiveJob"
+        ],
+        "summary": "update existing entity",
+        "operationId": "HiveJobPUT2",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HiveJobDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HiveJobDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/HiveJobDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "500": {
+            "description": "unexpected error"
+          },
+          "204": {
+            "description": "update successful"
+          }
+        }
+      }
+    },
+    "/HiveJob/{id}": {
+      "get": {
+        "tags": [
+          "HiveJob"
+        ],
+        "summary": "get entity by Id",
+        "operationId": "HiveJobGET",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "returns the entity with the given Id",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/HiveJobDTO"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HiveJobDTO"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HiveJobDTO"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "unexpected error"
+          },
+          "404": {
+            "description": "no entity corresponds to this Id, or corresponding entity is marked as deleted"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "HiveJob"
+        ],
+        "summary": "delete entity by Id",
+        "operationId": "HiveJobDELETE",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "500": {
+            "description": "unexpected error"
+          },
+          "204": {
+            "description": "deletion successful"
+          },
+          "404": {
+            "description": "no entity corresponds to this Id, or corresponding entity is marked as deleted"
+          }
+        }
+      }
+    },
+    "/HiveJobPermission/grant": {
+      "post": {
+        "tags": [
+          "HiveJobPermission"
+        ],
+        "summary": "grant permission as specified in DTO",
+        "operationId": "grant",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HiveJobPermissionDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HiveJobPermissionDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/HiveJobPermissionDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "500": {
+            "description": "unexpected error"
+          },
+          "204": {
+            "description": "permission succesfully granted"
+          }
+        }
+      }
+    },
+    "/HiveJobPermission/revoke": {
+      "post": {
+        "tags": [
+          "HiveJobPermission"
+        ],
+        "summary": "revoke permission as specified in DTO",
+        "operationId": "revoke",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HiveJobPermissionDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HiveJobPermissionDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/HiveJobPermissionDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "500": {
+            "description": "unexpected error"
+          },
+          "204": {
+            "description": "permission succesfully revoked"
+          }
+        }
+      }
+    },
+    "/HiveJobPermission/job/{jobId}": {
+      "get": {
+        "tags": [
+          "HiveJobPermission"
+        ],
+        "summary": "get all granted permissions for hive job corresponding to jobId",
+        "operationId": "job",
+        "parameters": [
+          {
+            "name": "jobId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "returns all granted permissions",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/HiveJobPermissionDTO"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/HiveJobPermissionDTO"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/HiveJobPermissionDTO"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "unexpected error"
+          }
+        }
+      }
+    },
+    "/HiveJobPermission/user/{userId}": {
+      "get": {
+        "tags": [
+          "HiveJobPermission"
+        ],
+        "summary": "get all granted permissions for user corresponding to userId",
+        "operationId": "user",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "returns all granted permissions",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/HiveJobPermissionDTO"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/HiveJobPermissionDTO"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/HiveJobPermissionDTO"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "unexpected error"
+          }
+        }
+      }
+    },
+    "/HiveRole": {
+      "get": {
+        "tags": [
+          "HiveRole"
+        ],
+        "summary": "get all roles",
+        "operationId": "HiveRoleAll",
+        "responses": {
+          "200": {
+            "description": "returns all roles",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/HiveRoleDTO"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/HiveRoleDTO"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/HiveRoleDTO"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "unexpected error"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "HiveRole"
+        ],
+        "summary": "insert new role",
+        "operationId": "HiveRolePOST",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HiveRoleDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HiveRoleDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/HiveRoleDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "500": {
+            "description": "unexpected error"
+          },
+          "201": {
+            "description": "returns the inserted role"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "HiveRole"
+        ],
+        "summary": "update existing role",
+        "operationId": "HiveRolePUT",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HiveRoleDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HiveRoleDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/HiveRoleDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "500": {
+            "description": "unexpected error"
+          },
+          "204": {
+            "description": "update successful"
+          }
+        }
+      }
+    },
+    "/HiveRole/{id}": {
+      "get": {
+        "tags": [
+          "HiveRole"
+        ],
+        "summary": "get role by Id",
+        "operationId": "HiveRoleGET",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "returns the role with the given Id",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/HiveRoleDTO"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HiveRoleDTO"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HiveRoleDTO"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "unexpected error"
+          },
+          "404": {
+            "description": "no role corresponds to this Id, or corresponding role is marked as deleted"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "HiveRole"
+        ],
+        "summary": "delete role by Id",
+        "operationId": "HiveRoleDELETE",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "500": {
+            "description": "unexpected error"
+          },
+          "204": {
+            "description": "deletion successful"
+          },
+          "404": {
+            "description": "no role corresponds to this Id, or corresponding role is marked as deleted"
+          }
+        }
+      }
+    },
+    "/HiveTask/job/{jobId}": {
+      "get": {
+        "tags": [
+          "HiveTask"
+        ],
+        "summary": "get all entities",
+        "operationId": "job2",
+        "parameters": [
+          {
+            "name": "jobId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "returns all entities",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/HiveTaskDTO"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/HiveTaskDTO"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/HiveTaskDTO"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "unexpected error"
+          }
+        }
+      }
+    },
+    "/HiveTask/update": {
+      "put": {
+        "tags": [
+          "HiveTask"
+        ],
+        "summary": "update hive task",
+        "operationId": "update",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HiveTaskUpdateDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HiveTaskUpdateDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/HiveTaskUpdateDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "returns the updated hive task",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/HiveTaskDTO"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HiveTaskDTO"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HiveTaskDTO"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "unexpected error"
+          }
+        }
+      }
+    },
+    "/HiveTask/stop/{id}": {
+      "put": {
+        "tags": [
+          "HiveTask"
+        ],
+        "summary": "stop hive task",
+        "operationId": "stop",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "500": {
+            "description": "unexpected error"
+          },
+          "204": {
+            "description": "hive task stopped succesfully"
+          },
+          "404": {
+            "description": "no hive task corresponds to this Id"
+          }
+        }
+      }
+    },
+    "/HiveTask/pause/{id}": {
+      "put": {
+        "tags": [
+          "HiveTask"
+        ],
+        "summary": "pause hive task",
+        "operationId": "pause",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "500": {
+            "description": "unexpected error"
+          },
+          "204": {
+            "description": "hive task paused succesfully"
+          },
+          "404": {
+            "description": "no hive task corresponds to this Id"
+          }
+        }
+      }
+    },
+    "/HiveTask/restart/{id}": {
+      "put": {
+        "tags": [
+          "HiveTask"
+        ],
+        "summary": "restart hive task",
+        "operationId": "restart",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "500": {
+            "description": "unexpected error"
+          },
+          "204": {
+            "description": "hive task restarted succesfully"
+          },
+          "404": {
+            "description": "no hive task corresponds to this Id"
+          }
+        }
+      }
+    },
+    "/HiveTask": {
+      "get": {
+        "tags": [
+          "HiveTask"
+        ],
+        "summary": "get all entities",
+        "operationId": "HiveTaskAll",
+        "responses": {
+          "200": {
+            "description": "returns all entities",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/HiveTaskDTO"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/HiveTaskDTO"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/HiveTaskDTO"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "unexpected error"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "HiveTask"
+        ],
+        "summary": "insert new entity",
+        "operationId": "HiveTaskPOST",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HiveTaskDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HiveTaskDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/HiveTaskDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "500": {
+            "description": "unexpected error"
+          },
+          "201": {
+            "description": "returns the inserted entity"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "HiveTask"
+        ],
+        "summary": "update existing entity",
+        "operationId": "HiveTaskPUT",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HiveTaskDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HiveTaskDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/HiveTaskDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "500": {
+            "description": "unexpected error"
+          },
+          "204": {
+            "description": "update successful"
+          }
+        }
+      }
+    },
+    "/HiveTask/{id}": {
+      "get": {
+        "tags": [
+          "HiveTask"
+        ],
+        "summary": "get entity by Id",
+        "operationId": "HiveTaskGET",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "returns the entity with the given Id",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/HiveTaskDTO"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HiveTaskDTO"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HiveTaskDTO"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "unexpected error"
+          },
+          "404": {
+            "description": "no entity corresponds to this Id, or corresponding entity is marked as deleted"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "HiveTask"
+        ],
+        "summary": "delete entity by Id",
+        "operationId": "HiveTaskDELETE",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "500": {
+            "description": "unexpected error"
+          },
+          "204": {
+            "description": "deletion successful"
+          },
+          "404": {
+            "description": "no entity corresponds to this Id, or corresponding entity is marked as deleted"
+          }
+        }
+      }
+    },
+    "/HiveTaskData/task/{id}": {
+      "get": {
+        "tags": [
+          "HiveTaskData"
+        ],
+        "summary": "get task data of hive task corresponding to this Id",
+        "operationId": "task",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "returns task data of the hive",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/HiveTaskDataDTO"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HiveTaskDataDTO"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HiveTaskDataDTO"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "unexpected error"
+          },
+          "404": {
+            "description": "no task data found for hive task corresponding to this Id"
+          }
+        }
+      }
+    },
+    "/HiveTaskData": {
+      "get": {
+        "tags": [
+          "HiveTaskData"
+        ],
+        "summary": "get all entities",
+        "operationId": "HiveTaskDataAll",
+        "responses": {
+          "200": {
+            "description": "returns all entities",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/HiveTaskDataDTO"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/HiveTaskDataDTO"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/HiveTaskDataDTO"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "unexpected error"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "HiveTaskData"
+        ],
+        "summary": "insert new entity",
+        "operationId": "HiveTaskDataPOST",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HiveTaskDataDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HiveTaskDataDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/HiveTaskDataDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "500": {
+            "description": "unexpected error"
+          },
+          "201": {
+            "description": "returns the inserted entity"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "HiveTaskData"
+        ],
+        "summary": "update existing entity",
+        "operationId": "HiveTaskDataPUT",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HiveTaskDataDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HiveTaskDataDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/HiveTaskDataDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "500": {
+            "description": "unexpected error"
+          },
+          "204": {
+            "description": "update successful"
+          }
+        }
+      }
+    },
+    "/HiveTaskData/{id}": {
+      "get": {
+        "tags": [
+          "HiveTaskData"
+        ],
+        "summary": "get entity by Id",
+        "operationId": "HiveTaskDataGET",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "returns the entity with the given Id",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/HiveTaskDataDTO"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HiveTaskDataDTO"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HiveTaskDataDTO"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "unexpected error"
+          },
+          "404": {
+            "description": "no entity corresponds to this Id, or corresponding entity is marked as deleted"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "HiveTaskData"
+        ],
+        "summary": "delete entity by Id",
+        "operationId": "HiveTaskDataDELETE",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "500": {
+            "description": "unexpected error"
+          },
+          "204": {
+            "description": "deletion successful"
+          },
+          "404": {
+            "description": "no entity corresponds to this Id, or corresponding entity is marked as deleted"
+          }
+        }
+      }
+    },
+    "/HiveUser": {
+      "get": {
+        "tags": [
+          "HiveUser"
+        ],
+        "summary": "get all users",
+        "operationId": "HiveUserAll",
+        "responses": {
+          "200": {
+            "description": "returns all users",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/HiveUserDTO"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/HiveUserDTO"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/HiveUserDTO"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "unexpected error"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "HiveUser"
+        ],
+        "summary": "insert new user",
+        "operationId": "HiveUserPOST",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HiveUserDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HiveUserDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/HiveUserDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "500": {
+            "description": "unexpected error"
+          },
+          "201": {
+            "description": "returns the inserted user"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "HiveUser"
+        ],
+        "summary": "update existing user",
+        "operationId": "HiveUserPUT",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HiveUserDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HiveUserDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/HiveUserDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "500": {
+            "description": "unexpected error"
+          },
+          "204": {
+            "description": "update successful"
+          }
+        }
+      }
+    },
+    "/HiveUser/{id}": {
+      "get": {
+        "tags": [
+          "HiveUser"
+        ],
+        "summary": "get user by Id",
+        "operationId": "HiveUserGET",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "returns the user with the given Id",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/HiveUserDTO"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HiveUserDTO"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HiveUserDTO"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "unexpected error"
+          },
+          "404": {
+            "description": "no user corresponds to this Id, or corresponding user is marked as deleted"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "HiveUser"
+        ],
+        "summary": "delete user by Id",
+        "operationId": "HiveUserDELETE",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "500": {
+            "description": "unexpected error"
+          },
+          "204": {
+            "description": "deletion successful"
+          },
+          "404": {
+            "description": "no user corresponds to this Id, or corresponding user is marked as deleted"
+          }
+        }
+      }
+    },
+    "/Plugin/valid": {
+      "get": {
+        "tags": [
+          "Plugin"
+        ],
+        "summary": "get all valid plugins",
+        "operationId": "valid",
+        "responses": {
+          "200": {
+            "description": "returns all valid plugins",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PluginDTO"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PluginDTO"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PluginDTO"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "unexpected error"
+          }
+        }
+      }
+    },
+    "/Plugin": {
+      "get": {
+        "tags": [
+          "Plugin"
+        ],
+        "summary": "get all entities",
+        "operationId": "PluginAll",
+        "responses": {
+          "200": {
+            "description": "returns all entities",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PluginDTO"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PluginDTO"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PluginDTO"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "unexpected error"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Plugin"
+        ],
+        "summary": "insert new entity",
+        "operationId": "PluginPOST",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PluginDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PluginDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/PluginDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "500": {
+            "description": "unexpected error"
+          },
+          "201": {
+            "description": "returns the inserted entity"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Plugin"
+        ],
+        "summary": "update existing entity",
+        "operationId": "PluginPUT",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PluginDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PluginDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/PluginDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "500": {
+            "description": "unexpected error"
+          },
+          "204": {
+            "description": "update successful"
+          }
+        }
+      }
+    },
+    "/Plugin/{id}": {
+      "get": {
+        "tags": [
+          "Plugin"
+        ],
+        "summary": "get entity by Id",
+        "operationId": "PluginGET",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "returns the entity with the given Id",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/PluginDTO"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PluginDTO"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PluginDTO"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "unexpected error"
+          },
+          "404": {
+            "description": "no entity corresponds to this Id, or corresponding entity is marked as deleted"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Plugin"
+        ],
+        "summary": "delete entity by Id",
+        "operationId": "PluginDELETE",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "500": {
+            "description": "unexpected error"
+          },
+          "204": {
+            "description": "deletion successful"
+          },
+          "404": {
+            "description": "no entity corresponds to this Id, or corresponding entity is marked as deleted"
+          }
+        }
+      }
+    },
+    "/PluginData/plugin": {
+      "get": {
+        "tags": [
+          "PluginData"
+        ],
+        "summary": "get plugin data for all plugins corresponding to pluginIds",
+        "operationId": "plugin",
+        "parameters": [
+          {
+            "name": "pluginIds",
+            "in": "query",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "format": "uuid"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "returns plugin data",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PluginDataDTO"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PluginDataDTO"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PluginDataDTO"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "unexpected error"
+          }
+        }
+      }
+    },
+    "/PluginData": {
+      "get": {
+        "tags": [
+          "PluginData"
+        ],
+        "summary": "get all entities",
+        "operationId": "PluginDataAll",
+        "responses": {
+          "200": {
+            "description": "returns all entities",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PluginDataDTO"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PluginDataDTO"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PluginDataDTO"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "unexpected error"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "PluginData"
+        ],
+        "summary": "insert new entity",
+        "operationId": "PluginDataPOST",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PluginDataDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PluginDataDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/PluginDataDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "500": {
+            "description": "unexpected error"
+          },
+          "201": {
+            "description": "returns the inserted entity"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "PluginData"
+        ],
+        "summary": "update existing entity",
+        "operationId": "PluginDataPUT",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PluginDataDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PluginDataDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/PluginDataDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "500": {
+            "description": "unexpected error"
+          },
+          "204": {
+            "description": "update successful"
+          }
+        }
+      }
+    },
+    "/PluginData/{id}": {
+      "get": {
+        "tags": [
+          "PluginData"
+        ],
+        "summary": "get entity by Id",
+        "operationId": "PluginDataGET",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "returns the entity with the given Id",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/PluginDataDTO"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PluginDataDTO"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PluginDataDTO"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "unexpected error"
+          },
+          "404": {
+            "description": "no entity corresponds to this Id, or corresponding entity is marked as deleted"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "PluginData"
+        ],
+        "summary": "delete entity by Id",
+        "operationId": "PluginDataDELETE",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "500": {
+            "description": "unexpected error"
+          },
+          "204": {
+            "description": "deletion successful"
+          },
+          "404": {
+            "description": "no entity corresponds to this Id, or corresponding entity is marked as deleted"
+          }
+        }
+      }
+    },
+    "/Project/genealogy": {
+      "get": {
+        "tags": [
+          "Project"
+        ],
+        "summary": "get genealogy of all projects",
+        "operationId": "genealogy2",
+        "responses": {
+          "200": {
+            "description": "returns genealogy",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "array",
+                    "uniqueItems": true,
+                    "items": {
+                      "type": "string",
+                      "format": "uuid"
+                    }
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "array",
+                    "uniqueItems": true,
+                    "items": {
+                      "type": "string",
+                      "format": "uuid"
+                    }
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "array",
+                    "uniqueItems": true,
+                    "items": {
+                      "type": "string",
+                      "format": "uuid"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "unexpected error"
+          }
+        }
+      }
+    },
+    "/Project/names": {
+      "get": {
+        "tags": [
+          "Project"
+        ],
+        "summary": "get names and Ids of all projects",
+        "operationId": "names2",
+        "responses": {
+          "200": {
+            "description": "returns names and Ids of all projects",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "unexpected error"
+          }
+        }
+      }
+    },
+    "/Project/{name}": {
+      "get": {
+        "tags": [
+          "Project"
+        ],
+        "summary": "get project corresponding to this name",
+        "operationId": "ProjectGET",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "returns the project specified by the name",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectDTO"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectDTO"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectDTO"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "unexpected error"
+          },
+          "404": {
+            "description": "no project corresponds to this name"
+          }
+        }
+      }
+    },
+    "/Project": {
+      "get": {
+        "tags": [
+          "Project"
+        ],
+        "summary": "get all entities",
+        "operationId": "ProjectAll",
+        "responses": {
+          "200": {
+            "description": "returns all entities",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ProjectDTO"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ProjectDTO"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ProjectDTO"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "unexpected error"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Project"
+        ],
+        "summary": "insert new entity",
+        "operationId": "ProjectPOST",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProjectDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProjectDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProjectDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "500": {
+            "description": "unexpected error"
+          },
+          "201": {
+            "description": "returns the inserted entity"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Project"
+        ],
+        "summary": "update existing entity",
+        "operationId": "ProjectPUT",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProjectDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProjectDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProjectDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "500": {
+            "description": "unexpected error"
+          },
+          "204": {
+            "description": "update successful"
+          }
+        }
+      }
+    },
+    "/Project/{id}": {
+      "get": {
+        "tags": [
+          "Project"
+        ],
+        "summary": "get entity by Id",
+        "operationId": "ProjectGET2",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "returns the entity with the given Id",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectDTO"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectDTO"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectDTO"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "unexpected error"
+          },
+          "404": {
+            "description": "no entity corresponds to this Id, or corresponding entity is marked as deleted"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Project"
+        ],
+        "summary": "delete entity by Id",
+        "operationId": "ProjectDELETE",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "500": {
+            "description": "unexpected error"
+          },
+          "204": {
+            "description": "deletion successful"
+          },
+          "404": {
+            "description": "no entity corresponds to this Id, or corresponding entity is marked as deleted"
+          }
+        }
+      }
+    },
+    "/ProjectPermission/project/{projectId}": {
+      "get": {
+        "tags": [
+          "ProjectPermission"
+        ],
+        "summary": "get all granted permissions for project corresponding to projectId",
+        "operationId": "project2",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "returns all granted permissions",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ProjectPermissionDTO"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ProjectPermissionDTO"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ProjectPermissionDTO"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "unexpected error"
+          }
+        }
+      }
+    },
+    "/ProjectPermission/user/{userId}": {
+      "get": {
+        "tags": [
+          "ProjectPermission"
+        ],
+        "summary": "get all granted permissions for user corresponding to userId",
+        "operationId": "user2",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "returns all granted permissions",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ProjectPermissionDTO"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ProjectPermissionDTO"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ProjectPermissionDTO"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "unexpected error"
+          }
+        }
+      }
+    },
+    "/ProjectPermission/role/{roleId}": {
+      "get": {
+        "tags": [
+          "ProjectPermission"
+        ],
+        "summary": "get all granted permissions for role corresponding to roleId",
+        "operationId": "role",
+        "parameters": [
+          {
+            "name": "roleId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "returns all granted permissions",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ProjectPermissionDTO"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ProjectPermissionDTO"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ProjectPermissionDTO"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "unexpected error"
+          }
+        }
+      }
+    },
+    "/ProjectPermission/user/grant": {
+      "post": {
+        "tags": [
+          "ProjectPermission"
+        ],
+        "summary": "grant permission to user as specified in DTO",
+        "operationId": "grant2",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProjectPermissionDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProjectPermissionDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProjectPermissionDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "500": {
+            "description": "unexpected error"
+          },
+          "204": {
+            "description": "permission succesfully granted"
+          }
+        }
+      }
+    },
+    "/ProjectPermission/user/revoke": {
+      "post": {
+        "tags": [
+          "ProjectPermission"
+        ],
+        "summary": "revoke permission from user as specified in DTO",
+        "operationId": "revoke2",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProjectPermissionDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProjectPermissionDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProjectPermissionDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "500": {
+            "description": "unexpected error"
+          },
+          "204": {
+            "description": "permission succesfully revoked"
+          }
+        }
+      }
+    },
+    "/ProjectPermission/role/grant": {
+      "post": {
+        "tags": [
+          "ProjectPermission"
+        ],
+        "summary": "grant permission to role as specified in DTO",
+        "operationId": "grant3",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProjectPermissionDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProjectPermissionDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProjectPermissionDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "500": {
+            "description": "unexpected error"
+          },
+          "204": {
+            "description": "permission succesfully granted"
+          }
+        }
+      }
+    },
+    "/ProjectPermission/role/revoke": {
+      "post": {
+        "tags": [
+          "ProjectPermission"
+        ],
+        "summary": "revoke permission from role as specified in DTO",
+        "operationId": "revoke3",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProjectPermissionDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProjectPermissionDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProjectPermissionDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "500": {
+            "description": "unexpected error"
+          },
+          "204": {
+            "description": "permission succesfully revoked"
+          }
+        }
+      }
+    },
+    "/StateLog": {
+      "get": {
+        "tags": [
+          "StateLog"
+        ],
+        "summary": "get all entities",
+        "operationId": "StateLogAll",
+        "responses": {
+          "200": {
+            "description": "returns all entities",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/StateLogDTO"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/StateLogDTO"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/StateLogDTO"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "unexpected error"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "StateLog"
+        ],
+        "summary": "insert new entity",
+        "operationId": "StateLogPOST",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StateLogDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StateLogDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/StateLogDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "500": {
+            "description": "unexpected error"
+          },
+          "201": {
+            "description": "returns the inserted entity"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "StateLog"
+        ],
+        "summary": "update existing entity",
+        "operationId": "StateLogPUT",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StateLogDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StateLogDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/StateLogDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "500": {
+            "description": "unexpected error"
+          },
+          "204": {
+            "description": "update successful"
+          }
+        }
+      }
+    },
+    "/StateLog/{id}": {
+      "get": {
+        "tags": [
+          "StateLog"
+        ],
+        "summary": "get entity by Id",
+        "operationId": "StateLogGET",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "returns the entity with the given Id",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/StateLogDTO"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StateLogDTO"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StateLogDTO"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "unexpected error"
+          },
+          "404": {
+            "description": "no entity corresponds to this Id, or corresponding entity is marked as deleted"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "StateLog"
+        ],
+        "summary": "delete entity by Id",
+        "operationId": "StateLogDELETE",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "500": {
+            "description": "unexpected error"
+          },
+          "204": {
+            "description": "deletion successful"
+          },
+          "404": {
+            "description": "no entity corresponds to this Id, or corresponding entity is marked as deleted"
+          }
+        }
+      }
+    },
+    "/UserPriority": {
+      "get": {
+        "tags": [
+          "UserPriority"
+        ],
+        "summary": "get all user priorities",
+        "operationId": "UserPriorityAll",
+        "responses": {
+          "200": {
+            "description": "returns all user priorities",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UserPriority"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UserPriority"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UserPriority"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "unexpected error"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "UserPriority"
+        ],
+        "summary": "insert new user priority",
+        "operationId": "UserPriorityPOST",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserPriority"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserPriority"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserPriority"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "500": {
+            "description": "unexpected error"
+          },
+          "201": {
+            "description": "returns the inserted user priority"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "UserPriority"
+        ],
+        "summary": "update existing user priority",
+        "operationId": "UserPriorityPUT",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserPriority"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserPriority"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserPriority"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "500": {
+            "description": "unexpected error"
+          },
+          "204": {
+            "description": "update successful"
+          }
+        }
+      }
+    },
+    "/UserPriority/{id}": {
+      "get": {
+        "tags": [
+          "UserPriority"
+        ],
+        "summary": "get user priority by Id",
+        "operationId": "UserPriorityGET",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "returns the user priority with the given Id",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserPriority"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserPriority"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserPriority"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "unexpected error"
+          },
+          "404": {
+            "description": "no user priority corresponds to this Id"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "UserPriority"
+        ],
+        "summary": "delete user priority by Id",
+        "operationId": "UserPriorityDELETE",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "500": {
+            "description": "unexpected error"
+          },
+          "204": {
+            "description": "deletion successful"
+          },
+          "404": {
+            "description": "no user priority corresponds to this Id"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "CpuArchitecture": {
+        "type": "string",
+        "enum": [
+          "Unknown",
+          "x86",
+          "x64"
+        ]
+      },
+      "DowntimeDTO": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "modifiedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "computingResourceId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "startAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "endAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "allDayEvent": {
+            "type": "boolean"
+          },
+          "recurring": {
+            "type": "boolean"
+          },
+          "downtimeType": {
+            "$ref": "#/components/schemas/DowntimeType"
+          }
+        }
+      },
+      "DowntimeType": {
+        "type": "string",
+        "enum": [
+          "Offline",
+          "Shutdown"
+        ]
+      },
+      "DroneDTO": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "modifiedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "ownerId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "heartbeatInterval": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "parentDroneGroupId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "downtimes": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          "assignedHiveJobs": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          "assignedProjects": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          "operatingSystem": {
+            "type": "string",
+            "nullable": true
+          },
+          "isAllowedToCalculate": {
+            "type": "boolean"
+          },
+          "disposeOnInactivity": {
+            "type": "boolean"
+          },
+          "droneState": {
+            "$ref": "#/components/schemas/DroneState"
+          },
+          "cpuSpeed": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "cpuUtilization": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "cpuArchitecture": {
+            "$ref": "#/components/schemas/CpuArchitecture"
+          },
+          "cores": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "freeCores": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "memory": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "freeMemory": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "lastHeartbeatAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "lastLoginAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "DroneGroupDTO": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "modifiedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "ownerId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "heartbeatInterval": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "parentDroneGroupId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "downtimes": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          "assignedHiveJobs": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          "assignedProjects": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          "childComputingResources": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        }
+      },
+      "DroneState": {
+        "type": "string",
+        "enum": [
+          "Idle",
+          "Calculating",
+          "Offline"
+        ]
+      },
+      "Heartbeat": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "droneId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "freeMemory": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "freeCores": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "taskProgress": {
+            "type": "object",
+            "nullable": true,
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "assignJob": {
+            "type": "boolean"
+          },
+          "cpuUtilization": {
+            "type": "number",
+            "format": "float"
+          },
+          "heartbeatInterval": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "HiveJobDTO": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "modifiedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "ownerId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "projectId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "hiveJobState": {
+            "$ref": "#/components/schemas/HiveJobState"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "hiveTasks": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          "assignedComputingResources": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          "hiveJobPermissions": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        }
+      },
+      "HiveJobPermissionDTO": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "modifiedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "permissionType": {
+            "$ref": "#/components/schemas/PermissionType"
+          },
+          "jobId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "grantedUserId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "grantedByUserId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "HiveJobState": {
+        "type": "string",
+        "enum": [
+          "Online",
+          "StatisticsPending",
+          "DeletionPending"
+        ]
+      },
+      "HiveRoleDTO": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "HiveTaskCommand": {
+        "type": "string",
+        "enum": [
+          "None",
+          "Stop",
+          "Abort",
+          "Pause"
+        ]
+      },
+      "HiveTaskDataDTO": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "modifiedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "hiveTaskId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "data": {
+            "type": "string",
+            "format": "byte",
+            "nullable": true
+          }
+        }
+      },
+      "HiveTaskDTO": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "modifiedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "taskState": {
+            "$ref": "#/components/schemas/HiveTaskState"
+          },
+          "executionTime": {
+            "type": "number",
+            "format": "double"
+          },
+          "lastHeartbeatAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "priority": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "coresNeeded": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "memoryNeeded": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "parentTaskId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "childHiveTasks": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          "finishWhenChildJobsFinished": {
+            "type": "boolean"
+          },
+          "command": {
+            "$ref": "#/components/schemas/HiveTaskCommand"
+          },
+          "hiveJobId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "taskDataId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "requiredPlugins": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        }
+      },
+      "HiveTaskState": {
+        "type": "string",
+        "enum": [
+          "Offline",
+          "Waiting",
+          "Transferring",
+          "Calculating",
+          "Paused",
+          "Finished",
+          "Aborted",
+          "Failed"
+        ]
+      },
+      "HiveTaskUpdateDTO": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "hiveTaskId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "taskState": {
+            "$ref": "#/components/schemas/HiveTaskState"
+          },
+          "droneId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "userId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "exception": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "HiveUserDTO": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "userName": {
+            "type": "string",
+            "nullable": true
+          },
+          "email": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "MessageContainer": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "message": {
+            "$ref": "#/components/schemas/MessageType"
+          },
+          "taskId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "MessageType": {
+        "type": "string",
+        "enum": [
+          "CalculateTask",
+          "StopTask",
+          "StopAll",
+          "AbortTask",
+          "AbortAll",
+          "PauseTask",
+          "PauseAll",
+          "Restart",
+          "Sleep",
+          "ShutdownDrone",
+          "SayHello",
+          "NewHBInterval",
+          "ShutdownComputer"
+        ]
+      },
+      "PermissionType": {
+        "type": "string",
+        "enum": [
+          "NotAllowed",
+          "Read",
+          "Full"
+        ]
+      },
+      "PluginDataDTO": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "modifiedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "pluginId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "data": {
+            "type": "string",
+            "format": "byte",
+            "nullable": true
+          },
+          "fileName": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "PluginDTO": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "modifiedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "ownerId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "version": {
+            "type": "string",
+            "nullable": true
+          },
+          "hash": {
+            "type": "string",
+            "format": "byte",
+            "nullable": true
+          },
+          "pluginData": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          "requiringTasks": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        }
+      },
+      "ProjectDTO": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "modifiedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "ownerId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "parentProjectId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "childProjects": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "hiveJobs": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          "assignedComputingResources": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          "projectPermissions": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        }
+      },
+      "ProjectPermissionDTO": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "modifiedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "permissionType": {
+            "$ref": "#/components/schemas/PermissionType"
+          },
+          "grantedUserId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "grantedRoleId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "grantedByUserId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "projectId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "StateLogDTO": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "modifiedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "taskState": {
+            "$ref": "#/components/schemas/HiveTaskState"
+          },
+          "taskId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "userId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "droneId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "exception": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "UserPriority": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "userId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "enqueuedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      }
+    }
+  }
+}
