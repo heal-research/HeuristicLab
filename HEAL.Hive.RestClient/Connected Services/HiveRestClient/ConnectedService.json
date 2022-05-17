@@ -44,7 +44,7 @@
       "UseRequestAndResponseSerializationSettings": false,
       "SerializeTypeInformation": false,
       "QueryNullValue": "",
-      "ClassName": "{controller}Client",
+      "ClassName": "{controller}HiveRestClient",
       "OperationGenerationMode": 5,
       "AdditionalNamespaceUsages": [],
       "AdditionalContractNamespaceUsages": [],

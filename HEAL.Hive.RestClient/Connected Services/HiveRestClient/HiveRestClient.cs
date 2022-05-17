@@ -715,26 +715,26 @@ namespace HEAL.Hive.RestClient.HiveRestClient
         }
     
         /// <summary>insert new entity</summary>
-        /// <returns>Success</returns>
+        /// <returns>returns the inserted entity</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<DowntimeDTO> DowntimePostAsync(DowntimeDTO body)
+        public System.Threading.Tasks.Task<ResourceDTO> DowntimePostAsync(DowntimeDTO body)
         {
             return DowntimePostAsync(body, System.Threading.CancellationToken.None);
         }
     
         /// <summary>insert new entity</summary>
-        /// <returns>Success</returns>
+        /// <returns>returns the inserted entity</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public DowntimeDTO DowntimePost(DowntimeDTO body)
+        public ResourceDTO DowntimePost(DowntimeDTO body)
         {
             return System.Threading.Tasks.Task.Run(async () => await DowntimePostAsync(body, System.Threading.CancellationToken.None)).GetAwaiter().GetResult();
         }
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>insert new entity</summary>
-        /// <returns>Success</returns>
+        /// <returns>returns the inserted entity</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<DowntimeDTO> DowntimePostAsync(DowntimeDTO body, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<ResourceDTO> DowntimePostAsync(DowntimeDTO body, System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/Downtime");
@@ -772,9 +772,9 @@ namespace HEAL.Hive.RestClient.HiveRestClient
                         ProcessResponse(client_, response_);
     
                         var status_ = (int)response_.StatusCode;
-                        if (status_ == 200)
+                        if (status_ == 201)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<DowntimeDTO>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<ResourceDTO>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -786,12 +786,6 @@ namespace HEAL.Hive.RestClient.HiveRestClient
                         {
                             string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
                             throw new ApiException("unexpected error", status_, responseText_, headers_, null);
-                        }
-                        else
-                        if (status_ == 201)
-                        {
-                            string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new ApiException("returns the inserted entity", status_, responseText_, headers_, null);
                         }
                         else
                         {
@@ -1482,26 +1476,26 @@ namespace HEAL.Hive.RestClient.HiveRestClient
         }
     
         /// <summary>insert new entity</summary>
-        /// <returns>Success</returns>
+        /// <returns>returns the inserted entity</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<DroneDTO> DronePostAsync(DroneDTO body)
+        public System.Threading.Tasks.Task<ResourceDTO> DronePostAsync(DroneDTO body)
         {
             return DronePostAsync(body, System.Threading.CancellationToken.None);
         }
     
         /// <summary>insert new entity</summary>
-        /// <returns>Success</returns>
+        /// <returns>returns the inserted entity</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public DroneDTO DronePost(DroneDTO body)
+        public ResourceDTO DronePost(DroneDTO body)
         {
             return System.Threading.Tasks.Task.Run(async () => await DronePostAsync(body, System.Threading.CancellationToken.None)).GetAwaiter().GetResult();
         }
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>insert new entity</summary>
-        /// <returns>Success</returns>
+        /// <returns>returns the inserted entity</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<DroneDTO> DronePostAsync(DroneDTO body, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<ResourceDTO> DronePostAsync(DroneDTO body, System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/Drone");
@@ -1539,9 +1533,9 @@ namespace HEAL.Hive.RestClient.HiveRestClient
                         ProcessResponse(client_, response_);
     
                         var status_ = (int)response_.StatusCode;
-                        if (status_ == 200)
+                        if (status_ == 201)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<DroneDTO>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<ResourceDTO>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -1553,12 +1547,6 @@ namespace HEAL.Hive.RestClient.HiveRestClient
                         {
                             string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
                             throw new ApiException("unexpected error", status_, responseText_, headers_, null);
-                        }
-                        else
-                        if (status_ == 201)
-                        {
-                            string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new ApiException("returns the inserted entity", status_, responseText_, headers_, null);
                         }
                         else
                         {
@@ -1962,26 +1950,26 @@ namespace HEAL.Hive.RestClient.HiveRestClient
         }
     
         /// <summary>insert new entity</summary>
-        /// <returns>Success</returns>
+        /// <returns>returns the inserted entity</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<DroneGroupDTO> DroneGroupPostAsync(DroneGroupDTO body)
+        public System.Threading.Tasks.Task<ResourceDTO> DroneGroupPostAsync(DroneGroupDTO body)
         {
             return DroneGroupPostAsync(body, System.Threading.CancellationToken.None);
         }
     
         /// <summary>insert new entity</summary>
-        /// <returns>Success</returns>
+        /// <returns>returns the inserted entity</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public DroneGroupDTO DroneGroupPost(DroneGroupDTO body)
+        public ResourceDTO DroneGroupPost(DroneGroupDTO body)
         {
             return System.Threading.Tasks.Task.Run(async () => await DroneGroupPostAsync(body, System.Threading.CancellationToken.None)).GetAwaiter().GetResult();
         }
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>insert new entity</summary>
-        /// <returns>Success</returns>
+        /// <returns>returns the inserted entity</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<DroneGroupDTO> DroneGroupPostAsync(DroneGroupDTO body, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<ResourceDTO> DroneGroupPostAsync(DroneGroupDTO body, System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/DroneGroup");
@@ -2019,9 +2007,9 @@ namespace HEAL.Hive.RestClient.HiveRestClient
                         ProcessResponse(client_, response_);
     
                         var status_ = (int)response_.StatusCode;
-                        if (status_ == 200)
+                        if (status_ == 201)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<DroneGroupDTO>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<ResourceDTO>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -2033,12 +2021,6 @@ namespace HEAL.Hive.RestClient.HiveRestClient
                         {
                             string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
                             throw new ApiException("unexpected error", status_, responseText_, headers_, null);
-                        }
-                        else
-                        if (status_ == 201)
-                        {
-                            string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new ApiException("returns the inserted entity", status_, responseText_, headers_, null);
                         }
                         else
                         {
@@ -2733,26 +2715,26 @@ namespace HEAL.Hive.RestClient.HiveRestClient
         }
     
         /// <summary>insert new entity</summary>
-        /// <returns>Success</returns>
+        /// <returns>returns the inserted entity</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<HiveJobDTO> HiveJobPostAsync(HiveJobDTO body)
+        public System.Threading.Tasks.Task<ResourceDTO> HiveJobPostAsync(HiveJobDTO body)
         {
             return HiveJobPostAsync(body, System.Threading.CancellationToken.None);
         }
     
         /// <summary>insert new entity</summary>
-        /// <returns>Success</returns>
+        /// <returns>returns the inserted entity</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public HiveJobDTO HiveJobPost(HiveJobDTO body)
+        public ResourceDTO HiveJobPost(HiveJobDTO body)
         {
             return System.Threading.Tasks.Task.Run(async () => await HiveJobPostAsync(body, System.Threading.CancellationToken.None)).GetAwaiter().GetResult();
         }
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>insert new entity</summary>
-        /// <returns>Success</returns>
+        /// <returns>returns the inserted entity</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<HiveJobDTO> HiveJobPostAsync(HiveJobDTO body, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<ResourceDTO> HiveJobPostAsync(HiveJobDTO body, System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/HiveJob");
@@ -2790,9 +2772,9 @@ namespace HEAL.Hive.RestClient.HiveRestClient
                         ProcessResponse(client_, response_);
     
                         var status_ = (int)response_.StatusCode;
-                        if (status_ == 200)
+                        if (status_ == 201)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<HiveJobDTO>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<ResourceDTO>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -2804,12 +2786,6 @@ namespace HEAL.Hive.RestClient.HiveRestClient
                         {
                             string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
                             throw new ApiException("unexpected error", status_, responseText_, headers_, null);
-                        }
-                        else
-                        if (status_ == 201)
-                        {
-                            string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new ApiException("returns the inserted entity", status_, responseText_, headers_, null);
                         }
                         else
                         {
@@ -4545,26 +4521,26 @@ namespace HEAL.Hive.RestClient.HiveRestClient
         }
     
         /// <summary>insert new entity</summary>
-        /// <returns>Success</returns>
+        /// <returns>returns the inserted entity</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<HiveTaskDTO> HiveTaskPostAsync(HiveTaskDTO body)
+        public System.Threading.Tasks.Task<ResourceDTO> HiveTaskPostAsync(HiveTaskDTO body)
         {
             return HiveTaskPostAsync(body, System.Threading.CancellationToken.None);
         }
     
         /// <summary>insert new entity</summary>
-        /// <returns>Success</returns>
+        /// <returns>returns the inserted entity</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public HiveTaskDTO HiveTaskPost(HiveTaskDTO body)
+        public ResourceDTO HiveTaskPost(HiveTaskDTO body)
         {
             return System.Threading.Tasks.Task.Run(async () => await HiveTaskPostAsync(body, System.Threading.CancellationToken.None)).GetAwaiter().GetResult();
         }
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>insert new entity</summary>
-        /// <returns>Success</returns>
+        /// <returns>returns the inserted entity</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<HiveTaskDTO> HiveTaskPostAsync(HiveTaskDTO body, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<ResourceDTO> HiveTaskPostAsync(HiveTaskDTO body, System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/HiveTask");
@@ -4602,9 +4578,9 @@ namespace HEAL.Hive.RestClient.HiveRestClient
                         ProcessResponse(client_, response_);
     
                         var status_ = (int)response_.StatusCode;
-                        if (status_ == 200)
+                        if (status_ == 201)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<HiveTaskDTO>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<ResourceDTO>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -4616,12 +4592,6 @@ namespace HEAL.Hive.RestClient.HiveRestClient
                         {
                             string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
                             throw new ApiException("unexpected error", status_, responseText_, headers_, null);
-                        }
-                        else
-                        if (status_ == 201)
-                        {
-                            string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new ApiException("returns the inserted entity", status_, responseText_, headers_, null);
                         }
                         else
                         {
@@ -5125,26 +5095,26 @@ namespace HEAL.Hive.RestClient.HiveRestClient
         }
     
         /// <summary>insert new entity</summary>
-        /// <returns>Success</returns>
+        /// <returns>returns the inserted entity</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<HiveTaskDataDTO> HiveTaskDataPostAsync(HiveTaskDataDTO body)
+        public System.Threading.Tasks.Task<ResourceDTO> HiveTaskDataPostAsync(HiveTaskDataDTO body)
         {
             return HiveTaskDataPostAsync(body, System.Threading.CancellationToken.None);
         }
     
         /// <summary>insert new entity</summary>
-        /// <returns>Success</returns>
+        /// <returns>returns the inserted entity</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public HiveTaskDataDTO HiveTaskDataPost(HiveTaskDataDTO body)
+        public ResourceDTO HiveTaskDataPost(HiveTaskDataDTO body)
         {
             return System.Threading.Tasks.Task.Run(async () => await HiveTaskDataPostAsync(body, System.Threading.CancellationToken.None)).GetAwaiter().GetResult();
         }
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>insert new entity</summary>
-        /// <returns>Success</returns>
+        /// <returns>returns the inserted entity</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<HiveTaskDataDTO> HiveTaskDataPostAsync(HiveTaskDataDTO body, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<ResourceDTO> HiveTaskDataPostAsync(HiveTaskDataDTO body, System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/HiveTaskData");
@@ -5182,9 +5152,9 @@ namespace HEAL.Hive.RestClient.HiveRestClient
                         ProcessResponse(client_, response_);
     
                         var status_ = (int)response_.StatusCode;
-                        if (status_ == 200)
+                        if (status_ == 201)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<HiveTaskDataDTO>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<ResourceDTO>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -5196,12 +5166,6 @@ namespace HEAL.Hive.RestClient.HiveRestClient
                         {
                             string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
                             throw new ApiException("unexpected error", status_, responseText_, headers_, null);
-                        }
-                        else
-                        if (status_ == 201)
-                        {
-                            string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new ApiException("returns the inserted entity", status_, responseText_, headers_, null);
                         }
                         else
                         {
@@ -6168,26 +6132,26 @@ namespace HEAL.Hive.RestClient.HiveRestClient
         }
     
         /// <summary>insert new entity</summary>
-        /// <returns>Success</returns>
+        /// <returns>returns the inserted entity</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<PluginDTO> PluginPostAsync(PluginDTO body)
+        public System.Threading.Tasks.Task<ResourceDTO> PluginPostAsync(PluginDTO body)
         {
             return PluginPostAsync(body, System.Threading.CancellationToken.None);
         }
     
         /// <summary>insert new entity</summary>
-        /// <returns>Success</returns>
+        /// <returns>returns the inserted entity</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public PluginDTO PluginPost(PluginDTO body)
+        public ResourceDTO PluginPost(PluginDTO body)
         {
             return System.Threading.Tasks.Task.Run(async () => await PluginPostAsync(body, System.Threading.CancellationToken.None)).GetAwaiter().GetResult();
         }
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>insert new entity</summary>
-        /// <returns>Success</returns>
+        /// <returns>returns the inserted entity</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<PluginDTO> PluginPostAsync(PluginDTO body, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<ResourceDTO> PluginPostAsync(PluginDTO body, System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/Plugin");
@@ -6225,9 +6189,9 @@ namespace HEAL.Hive.RestClient.HiveRestClient
                         ProcessResponse(client_, response_);
     
                         var status_ = (int)response_.StatusCode;
-                        if (status_ == 200)
+                        if (status_ == 201)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<PluginDTO>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<ResourceDTO>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -6239,12 +6203,6 @@ namespace HEAL.Hive.RestClient.HiveRestClient
                         {
                             string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
                             throw new ApiException("unexpected error", status_, responseText_, headers_, null);
-                        }
-                        else
-                        if (status_ == 201)
-                        {
-                            string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new ApiException("returns the inserted entity", status_, responseText_, headers_, null);
                         }
                         else
                         {
@@ -6743,26 +6701,26 @@ namespace HEAL.Hive.RestClient.HiveRestClient
         }
     
         /// <summary>insert new entity</summary>
-        /// <returns>Success</returns>
+        /// <returns>returns the inserted entity</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<PluginDataDTO> PluginDataPostAsync(PluginDataDTO body)
+        public System.Threading.Tasks.Task<ResourceDTO> PluginDataPostAsync(PluginDataDTO body)
         {
             return PluginDataPostAsync(body, System.Threading.CancellationToken.None);
         }
     
         /// <summary>insert new entity</summary>
-        /// <returns>Success</returns>
+        /// <returns>returns the inserted entity</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public PluginDataDTO PluginDataPost(PluginDataDTO body)
+        public ResourceDTO PluginDataPost(PluginDataDTO body)
         {
             return System.Threading.Tasks.Task.Run(async () => await PluginDataPostAsync(body, System.Threading.CancellationToken.None)).GetAwaiter().GetResult();
         }
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>insert new entity</summary>
-        /// <returns>Success</returns>
+        /// <returns>returns the inserted entity</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<PluginDataDTO> PluginDataPostAsync(PluginDataDTO body, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<ResourceDTO> PluginDataPostAsync(PluginDataDTO body, System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/PluginData");
@@ -6800,9 +6758,9 @@ namespace HEAL.Hive.RestClient.HiveRestClient
                         ProcessResponse(client_, response_);
     
                         var status_ = (int)response_.StatusCode;
-                        if (status_ == 200)
+                        if (status_ == 201)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<PluginDataDTO>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<ResourceDTO>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -6814,12 +6772,6 @@ namespace HEAL.Hive.RestClient.HiveRestClient
                         {
                             string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
                             throw new ApiException("unexpected error", status_, responseText_, headers_, null);
-                        }
-                        else
-                        if (status_ == 201)
-                        {
-                            string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new ApiException("returns the inserted entity", status_, responseText_, headers_, null);
                         }
                         else
                         {
@@ -7503,26 +7455,26 @@ namespace HEAL.Hive.RestClient.HiveRestClient
         }
     
         /// <summary>insert new entity</summary>
-        /// <returns>Success</returns>
+        /// <returns>returns the inserted entity</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<ProjectDTO> ProjectPostAsync(ProjectDTO body)
+        public System.Threading.Tasks.Task<ResourceDTO> ProjectPostAsync(ProjectDTO body)
         {
             return ProjectPostAsync(body, System.Threading.CancellationToken.None);
         }
     
         /// <summary>insert new entity</summary>
-        /// <returns>Success</returns>
+        /// <returns>returns the inserted entity</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public ProjectDTO ProjectPost(ProjectDTO body)
+        public ResourceDTO ProjectPost(ProjectDTO body)
         {
             return System.Threading.Tasks.Task.Run(async () => await ProjectPostAsync(body, System.Threading.CancellationToken.None)).GetAwaiter().GetResult();
         }
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>insert new entity</summary>
-        /// <returns>Success</returns>
+        /// <returns>returns the inserted entity</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<ProjectDTO> ProjectPostAsync(ProjectDTO body, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<ResourceDTO> ProjectPostAsync(ProjectDTO body, System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/Project");
@@ -7560,9 +7512,9 @@ namespace HEAL.Hive.RestClient.HiveRestClient
                         ProcessResponse(client_, response_);
     
                         var status_ = (int)response_.StatusCode;
-                        if (status_ == 200)
+                        if (status_ == 201)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProjectDTO>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<ResourceDTO>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -7574,12 +7526,6 @@ namespace HEAL.Hive.RestClient.HiveRestClient
                         {
                             string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
                             throw new ApiException("unexpected error", status_, responseText_, headers_, null);
-                        }
-                        else
-                        if (status_ == 201)
-                        {
-                            string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new ApiException("returns the inserted entity", status_, responseText_, headers_, null);
                         }
                         else
                         {
@@ -8633,26 +8579,26 @@ namespace HEAL.Hive.RestClient.HiveRestClient
         }
     
         /// <summary>insert new entity</summary>
-        /// <returns>Success</returns>
+        /// <returns>returns the inserted entity</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<StateLogDTO> StateLogPostAsync(StateLogDTO body)
+        public System.Threading.Tasks.Task<ResourceDTO> StateLogPostAsync(StateLogDTO body)
         {
             return StateLogPostAsync(body, System.Threading.CancellationToken.None);
         }
     
         /// <summary>insert new entity</summary>
-        /// <returns>Success</returns>
+        /// <returns>returns the inserted entity</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public StateLogDTO StateLogPost(StateLogDTO body)
+        public ResourceDTO StateLogPost(StateLogDTO body)
         {
             return System.Threading.Tasks.Task.Run(async () => await StateLogPostAsync(body, System.Threading.CancellationToken.None)).GetAwaiter().GetResult();
         }
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>insert new entity</summary>
-        /// <returns>Success</returns>
+        /// <returns>returns the inserted entity</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<StateLogDTO> StateLogPostAsync(StateLogDTO body, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<ResourceDTO> StateLogPostAsync(StateLogDTO body, System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/StateLog");
@@ -8690,9 +8636,9 @@ namespace HEAL.Hive.RestClient.HiveRestClient
                         ProcessResponse(client_, response_);
     
                         var status_ = (int)response_.StatusCode;
-                        if (status_ == 200)
+                        if (status_ == 201)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<StateLogDTO>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<ResourceDTO>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -8704,12 +8650,6 @@ namespace HEAL.Hive.RestClient.HiveRestClient
                         {
                             string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
                             throw new ApiException("unexpected error", status_, responseText_, headers_, null);
-                        }
-                        else
-                        if (status_ == 201)
-                        {
-                            string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new ApiException("returns the inserted entity", status_, responseText_, headers_, null);
                         }
                         else
                         {

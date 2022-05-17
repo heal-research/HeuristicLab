@@ -351,31 +351,28 @@
           }
         },
         "responses": {
-          "200": {
-            "description": "Success",
+          "201": {
+            "description": "returns the inserted entity",
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/DowntimeDTO"
+                  "$ref": "#/components/schemas/ResourceDTO"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DowntimeDTO"
+                  "$ref": "#/components/schemas/ResourceDTO"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DowntimeDTO"
+                  "$ref": "#/components/schemas/ResourceDTO"
                 }
               }
             }
           },
           "500": {
             "description": "unexpected error"
-          },
-          "201": {
-            "description": "returns the inserted entity"
           }
         }
       },
@@ -677,31 +674,28 @@
           }
         },
         "responses": {
-          "200": {
-            "description": "Success",
+          "201": {
+            "description": "returns the inserted entity",
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/DroneDTO"
+                  "$ref": "#/components/schemas/ResourceDTO"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DroneDTO"
+                  "$ref": "#/components/schemas/ResourceDTO"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DroneDTO"
+                  "$ref": "#/components/schemas/ResourceDTO"
                 }
               }
             }
           },
           "500": {
             "description": "unexpected error"
-          },
-          "201": {
-            "description": "returns the inserted entity"
           }
         }
       },
@@ -886,31 +880,28 @@
           }
         },
         "responses": {
-          "200": {
-            "description": "Success",
+          "201": {
+            "description": "returns the inserted entity",
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/DroneGroupDTO"
+                  "$ref": "#/components/schemas/ResourceDTO"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DroneGroupDTO"
+                  "$ref": "#/components/schemas/ResourceDTO"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DroneGroupDTO"
+                  "$ref": "#/components/schemas/ResourceDTO"
                 }
               }
             }
           },
           "500": {
             "description": "unexpected error"
-          },
-          "201": {
-            "description": "returns the inserted entity"
           }
         }
       },
@@ -1250,31 +1241,28 @@
           }
         },
         "responses": {
-          "200": {
-            "description": "Success",
+          "201": {
+            "description": "returns the inserted entity",
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/HiveJobDTO"
+                  "$ref": "#/components/schemas/ResourceDTO"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/HiveJobDTO"
+                  "$ref": "#/components/schemas/ResourceDTO"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/HiveJobDTO"
+                  "$ref": "#/components/schemas/ResourceDTO"
                 }
               }
             }
           },
           "500": {
             "description": "unexpected error"
-          },
-          "201": {
-            "description": "returns the inserted entity"
           }
         }
       },
@@ -2037,31 +2025,28 @@
           }
         },
         "responses": {
-          "200": {
-            "description": "Success",
+          "201": {
+            "description": "returns the inserted entity",
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/HiveTaskDTO"
+                  "$ref": "#/components/schemas/ResourceDTO"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/HiveTaskDTO"
+                  "$ref": "#/components/schemas/ResourceDTO"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/HiveTaskDTO"
+                  "$ref": "#/components/schemas/ResourceDTO"
                 }
               }
             }
           },
           "500": {
             "description": "unexpected error"
-          },
-          "201": {
-            "description": "returns the inserted entity"
           }
         }
       },
@@ -2293,31 +2278,28 @@
           }
         },
         "responses": {
-          "200": {
-            "description": "Success",
+          "201": {
+            "description": "returns the inserted entity",
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/HiveTaskDataDTO"
+                  "$ref": "#/components/schemas/ResourceDTO"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/HiveTaskDataDTO"
+                  "$ref": "#/components/schemas/ResourceDTO"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/HiveTaskDataDTO"
+                  "$ref": "#/components/schemas/ResourceDTO"
                 }
               }
             }
           },
           "500": {
             "description": "unexpected error"
-          },
-          "201": {
-            "description": "returns the inserted entity"
           }
         }
       },
@@ -2736,31 +2718,28 @@
           }
         },
         "responses": {
-          "200": {
-            "description": "Success",
+          "201": {
+            "description": "returns the inserted entity",
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/PluginDTO"
+                  "$ref": "#/components/schemas/ResourceDTO"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PluginDTO"
+                  "$ref": "#/components/schemas/ResourceDTO"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PluginDTO"
+                  "$ref": "#/components/schemas/ResourceDTO"
                 }
               }
             }
           },
           "500": {
             "description": "unexpected error"
-          },
-          "201": {
-            "description": "returns the inserted entity"
           }
         }
       },
@@ -3000,31 +2979,28 @@
           }
         },
         "responses": {
-          "200": {
-            "description": "Success",
+          "201": {
+            "description": "returns the inserted entity",
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/PluginDataDTO"
+                  "$ref": "#/components/schemas/ResourceDTO"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PluginDataDTO"
+                  "$ref": "#/components/schemas/ResourceDTO"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PluginDataDTO"
+                  "$ref": "#/components/schemas/ResourceDTO"
                 }
               }
             }
           },
           "500": {
             "description": "unexpected error"
-          },
-          "201": {
-            "description": "returns the inserted entity"
           }
         }
       },
@@ -3354,31 +3330,28 @@
           }
         },
         "responses": {
-          "200": {
-            "description": "Success",
+          "201": {
+            "description": "returns the inserted entity",
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/ProjectDTO"
+                  "$ref": "#/components/schemas/ResourceDTO"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ProjectDTO"
+                  "$ref": "#/components/schemas/ResourceDTO"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ProjectDTO"
+                  "$ref": "#/components/schemas/ResourceDTO"
                 }
               }
             }
           },
           "500": {
             "description": "unexpected error"
-          },
-          "201": {
-            "description": "returns the inserted entity"
           }
         }
       },
@@ -3874,31 +3847,28 @@
           }
         },
         "responses": {
-          "200": {
-            "description": "Success",
+          "201": {
+            "description": "returns the inserted entity",
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/StateLogDTO"
+                  "$ref": "#/components/schemas/ResourceDTO"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/StateLogDTO"
+                  "$ref": "#/components/schemas/ResourceDTO"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/StateLogDTO"
+                  "$ref": "#/components/schemas/ResourceDTO"
                 }
               }
             }
           },
           "500": {
             "description": "unexpected error"
-          },
-          "201": {
-            "description": "returns the inserted entity"
           }
         }
       },
@@ -5015,6 +4985,24 @@
           "projectId": {
             "type": "string",
             "format": "uuid"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ResourceDTO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "modifiedAt": {
+            "type": "string",
+            "format": "date-time"
           }
         },
         "additionalProperties": false

@@ -40,7 +40,7 @@
       "useRequestAndResponseSerializationSettings": false,
       "serializeTypeInformation": false,
       "queryNullValue": "",
-      "className": "{controller}Client",
+      "className": "{controller}HiveRestClient",
       "operationGenerationMode": "SingleClientFromPathSegments",
       "additionalNamespaceUsages": [],
       "additionalContractNamespaceUsages": [],
