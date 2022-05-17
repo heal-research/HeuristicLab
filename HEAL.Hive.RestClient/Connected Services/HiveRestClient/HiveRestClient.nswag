@@ -28,7 +28,7 @@
       "generateBaseUrlProperty": true,
       "generateSyncMethods": true,
       "generatePrepareRequestAndProcessResponseAsAsyncMethods": false,
-      "exposeJsonSerializerSettings": false,
+      "exposeJsonSerializerSettings": true,
       "clientClassAccessModifier": "public",
       "typeAccessModifier": "public",
       "generateContractsOutput": false,
