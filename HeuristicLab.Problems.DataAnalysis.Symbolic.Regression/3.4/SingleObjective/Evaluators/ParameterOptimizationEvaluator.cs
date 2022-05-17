@@ -217,13 +217,17 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
         if (node is VariableTreeNode && !updateVariableWeights) {
           continue;
         }
-        if (node is ConstantTreeNode && node.Parent.Symbol is Power && node.Parent.GetSubtree(1) == node) {
+        if (node is ConstantTreeNode) {
+          // do not optimize constants
+          continue;
+        }
+        if (node is NumberTreeNode && node.Parent.Symbol is Power && node.Parent.GetSubtree(1) == node) {
           // do not optimize exponents
           continue;
         }
         nodesToOptimize.Add(node);
-        if (node is ConstantTreeNode constant) {
-          originalNodeValues[node] = constant.Value;
+        if (node is NumberTreeNode number) {
+          originalNodeValues[node] = number.Value;
         } else if (node is VariableTreeNode variable) {
           originalNodeValues[node] = variable.Weight;
         }
@@ -248,8 +252,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     private static void UpdateNodeValues(IDictionary<ISymbolicExpressionTreeNode, double> values) {
       foreach (var item in values) {
         var node = item.Key;
-        if (node is ConstantTreeNode constant) {
-          constant.Value = item.Value;
+        if (node is NumberTreeNode number) {
+          number.Value = item.Value;
         } else if (node is VariableTreeNode variable) {
           variable.Weight = item.Value;
         }

@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+
 using HEAL.Attic;
+
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -114,6 +116,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     private static readonly HashSet<byte> supportedOpCodes = new HashSet<byte>() {
+      (byte)OpCode.Number,
       (byte)OpCode.Constant,
       (byte)OpCode.Variable,
       (byte)OpCode.Add,

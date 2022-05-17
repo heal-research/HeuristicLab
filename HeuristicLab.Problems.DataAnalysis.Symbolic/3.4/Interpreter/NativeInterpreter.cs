@@ -76,7 +76,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       if (cachedData == null || cachedDataset != dataset || cachedDataset is ModifiableDataset) {
         InitCache(dataset);
       }
-      
+
       nodes = root.IterateNodesPrefix().ToList(); nodes.Reverse();
       var code = new NativeInstruction[nodes.Count];
       if (root.SubtreeCount > ushort.MaxValue) throw new ArgumentException("Number of subtrees is too big (>65.535)");
@@ -86,6 +86,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         if (n is VariableTreeNode variable) {
           code[i].Coeff = variable.Weight;
           code[i].Data = cachedData[variable.VariableName].AddrOfPinnedObject();
+        } else if (n is NumberTreeNode number) {
+          code[i].Coeff = number.Value;
         } else if (n is ConstantTreeNode constant) {
           code[i].Coeff = constant.Value;
         }
@@ -138,6 +140,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     private static IDataset cachedDataset;
 
     private static readonly HashSet<byte> supportedOpCodes = new HashSet<byte>() {
+      (byte)OpCode.Number,
       (byte)OpCode.Constant,
       (byte)OpCode.Variable,
       (byte)OpCode.Add,
