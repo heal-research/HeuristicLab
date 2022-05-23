@@ -106,6 +106,7 @@
     <Compile Include="ListViewItemDateComparer.cs" />
     <Compile Include="ListViewItemComparer.cs" />
     <Compile Include="MenuItems\CreateHiveJobMenuItem.cs" />
+    <Compile Include="MenuItems\RunInNewHiveMenuItem.cs" />
     <Compile Include="MenuItems\RunInHiveMenuItem.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Views\HiveJobManagerView.cs">
