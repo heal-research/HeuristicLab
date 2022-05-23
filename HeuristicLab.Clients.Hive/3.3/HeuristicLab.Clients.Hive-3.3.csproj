@@ -110,6 +110,7 @@
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.Http" />
     <Reference Include="System.Runtime.Remoting" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Runtime.Serialization.Formatters.Soap" />
@@ -123,6 +124,7 @@
   <ItemGroup>
     <Compile Include="Exceptions\AnonymousUserException.cs" />
     <Compile Include="HiveAdminClient.cs" />
+    <Compile Include="HiveClientRest.cs" />
     <Compile Include="HiveClient.cs" />
     <Compile Include="ServiceClients\AssignedJobResource.cs" />
     <Compile Include="ServiceClients\AssignedProjectResource.cs" />
@@ -163,7 +165,9 @@
     <Compile Include="Plugin.cs" />
     <Compile Include="HiveTasks\HiveTask.cs" />
     <Compile Include="JobResultPoller.cs" />
+    <Compile Include="Util\DtoConverterUtil.cs" />
     <Compile Include="Util\PersistenceUtil.cs" />
+    <Compile Include="Util\PluginUtilRest.cs" />
     <Compile Include="Util\PluginUtil.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <None Include="Properties\AssemblyInfo.cs.frame" />
@@ -196,6 +200,14 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\HEAL.Hive.Domain\HEAL.Hive.Domain.csproj">
+      <Project>{5DC7F615-BC12-4A14-B341-C2D607650C00}</Project>
+      <Name>HEAL.Hive.Domain</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HEAL.Hive.RestClient\HEAL.Hive.RestClient.csproj">
+      <Project>{48767D25-438B-4BC8-81B2-15679D47F93A}</Project>
+      <Name>HEAL.Hive.RestClient</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Clients.Access\3.3\HeuristicLab.Clients.Access-3.3.csproj">
       <Project>{494F87F4-0F25-4D33-A382-10CDB2174D48}</Project>
       <Name>HeuristicLab.Clients.Access-3.3</Name>
