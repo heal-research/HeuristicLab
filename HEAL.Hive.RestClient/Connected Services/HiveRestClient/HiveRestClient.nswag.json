@@ -2005,6 +2005,71 @@
         }
       }
     },
+    "/HiveTask/{id}/plugins": {
+      "post": {
+        "tags": [
+          "HiveTask"
+        ],
+        "summary": "add required plugins to hive task",
+        "operationId": "plugins",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "text/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "500": {
+            "description": "unexpected error"
+          },
+          "204": {
+            "description": "hive task requirements succesfully updated"
+          },
+          "404": {
+            "description": "no hive task corresponds to this Id"
+          }
+        }
+      }
+    },
     "/HiveTask": {
       "get": {
         "tags": [
