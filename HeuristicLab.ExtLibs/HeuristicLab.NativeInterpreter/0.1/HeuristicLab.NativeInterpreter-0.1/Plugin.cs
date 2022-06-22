@@ -22,7 +22,7 @@
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
-  [Plugin("HeuristicLab.NativeInterpreter", "Provides a native (C++) interpreter for symbolic expression trees", "0.1.0.0")]
+  [Plugin("HeuristicLab.Problems.DataAnalysis.Symbolic.NativeInterpreter", "Provides a native (C++) interpreter for symbolic expression trees", "0.1.0.0")]
   [PluginFile("HeuristicLab.Problems.DataAnalysis.Symbolic.NativeInterpreter-0.1.dll", PluginFileType.Assembly)]
   [PluginFile("hl-native-interpreter.dll", PluginFileType.NativeDll)]
   public class HeuristicLabNativeInterpreterPlugin : PluginBase {
