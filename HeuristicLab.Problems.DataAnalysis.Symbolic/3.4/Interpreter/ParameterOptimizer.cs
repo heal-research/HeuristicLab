@@ -15,18 +15,18 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableType("A624630B-0CEB-4D06-9B26-708987A7AE8F")]
   [Item("ParameterOptimizer", "Operator calling into native C++ code for tree interpretation.")]
   public sealed class ParameterOptimizer : ParameterizedNamedItem {
-    private const string OptimizerIterationsParameterName = "OptimizerIterations";
+    private const string IterationsParameterName = "Iterations";
 
     #region parameters
-    public IFixedValueParameter<IntValue> OptimizerIterationsParameter {
-      get { return (IFixedValueParameter<IntValue>)Parameters[OptimizerIterationsParameterName]; }
+    public IFixedValueParameter<IntValue> IterationsParameter {
+      get { return (IFixedValueParameter<IntValue>)Parameters[IterationsParameterName]; }
     }
     #endregion
 
     #region parameter properties
-    public int OptimizerIterations {
-      get { return OptimizerIterationsParameter.Value.Value; }
-      set { OptimizerIterationsParameter.Value.Value = value; }
+    public int Iterations {
+      get { return IterationsParameter.Value.Value; }
+      set { IterationsParameter.Value.Value = value; }
     }
     #endregion
 
@@ -42,7 +42,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     #endregion
 
     public ParameterOptimizer() {
-      Parameters.Add(new FixedValueParameter<IntValue>(OptimizerIterationsParameterName, "The number of iterations for the nonlinear least squares optimizer.", new IntValue(10)));
+      Parameters.Add(new FixedValueParameter<IntValue>(IterationsParameterName, "The number of iterations for the nonlinear least squares optimizer.", new IntValue(10)));
     }
 
     private static byte MapSupportedSymbols(ISymbolicExpressionTreeNode node) {
@@ -71,7 +71,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
     public Dictionary<ISymbolicExpressionTreeNode, double> OptimizeTree(ISymbolicExpressionTree tree, IDataset dataset, IEnumerable<int> rows, string targetVariable, IEnumerable<double> weights,
       HashSet<ISymbolicExpressionTreeNode> nodesToOptimize = null) {
-      var options = new SolverOptions { Iterations = OptimizerIterations };
+      var options = new SolverOptions { Iterations = Iterations };
       var summary = new SolverSummary();
 
       // if no nodes are specified, use all the nodes
