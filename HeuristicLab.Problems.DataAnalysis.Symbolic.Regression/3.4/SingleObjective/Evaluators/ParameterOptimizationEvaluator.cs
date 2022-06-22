@@ -37,64 +37,65 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
   [Item("Parameter Optimization Evaluator (native)", "Optimizes model parameters using nonlinear least squares and returns the mean squared error.")]
   [StorableType("D6443358-1FA3-4F4C-89DB-DCC3D81050B2")]
   public class ParameterOptimizationEvaluator : SymbolicRegressionSingleObjectiveEvaluator {
-    private const string ParameterOptimizationIterationsParameterName = "Iterations";
-    private const string ParameterOptimizationProbabilityParameterName = "Probability";
-    private const string ParameterOptimizationRowsPercentageParameterName = "Rows percentage";
-    private const string UpdateParametersInTreeParameterName = "Update parameters";
+    private const string IterationsParameterName = "Iterations";
+    private const string ProbabilityParameterName = "Probability";
+    private const string RowsPercentageParameterName = "Rows percentage";
+    private const string UpdateParametersParameterName = "Update parameters";
     private const string UpdateVariableWeightsParameterName = "Update variable weights";
+    private const string CountEvaluationsParameterName = "Count function and gradient evaluations";
     private const string FunctionEvaluationsResultParameterName = "Function evaluations";
     private const string GradientEvaluationsResultParameterName = "Gradient evaluations";
-    private const string CountEvaluationsParameterName = "Count function and gradient evaluations";
 
-    public IFixedValueParameter<IntValue> ParameterOptimizationIterationsParameter {
-      get { return (IFixedValueParameter<IntValue>)Parameters[ParameterOptimizationIterationsParameterName]; }
+    public IFixedValueParameter<IntValue> IterationsParameter {
+      get { return (IFixedValueParameter<IntValue>)Parameters[IterationsParameterName]; }
     }
-    public IFixedValueParameter<PercentValue> ParameterOptimizationProbabilityParameter {
-      get { return (IFixedValueParameter<PercentValue>)Parameters[ParameterOptimizationProbabilityParameterName]; }
+    public IFixedValueParameter<PercentValue> ProbabilityParameter {
+      get { return (IFixedValueParameter<PercentValue>)Parameters[ProbabilityParameterName]; }
     }
-    public IFixedValueParameter<PercentValue> ParameterOptimizationRowsPercentageParameter {
-      get { return (IFixedValueParameter<PercentValue>)Parameters[ParameterOptimizationRowsPercentageParameterName]; }
+    public IFixedValueParameter<PercentValue> RowsPercentageParameter {
+      get { return (IFixedValueParameter<PercentValue>)Parameters[RowsPercentageParameterName]; }
     }
-    public IFixedValueParameter<BoolValue> UpdateParametersInTreeParameter {
-      get { return (IFixedValueParameter<BoolValue>)Parameters[UpdateParametersInTreeParameterName]; }
+    public IFixedValueParameter<BoolValue> UpdateParametersParameter {
+      get { return (IFixedValueParameter<BoolValue>)Parameters[UpdateParametersParameterName]; }
     }
     public IFixedValueParameter<BoolValue> UpdateVariableWeightsParameter {
       get { return (IFixedValueParameter<BoolValue>)Parameters[UpdateVariableWeightsParameterName]; }
     }
-
+    public IFixedValueParameter<BoolValue> CountEvaluationsParameter {
+      get { return (IFixedValueParameter<BoolValue>)Parameters[CountEvaluationsParameterName]; }
+    }
     public IResultParameter<IntValue> FunctionEvaluationsResultParameter {
       get { return (IResultParameter<IntValue>)Parameters[FunctionEvaluationsResultParameterName]; }
     }
     public IResultParameter<IntValue> GradientEvaluationsResultParameter {
       get { return (IResultParameter<IntValue>)Parameters[GradientEvaluationsResultParameterName]; }
     }
-    public IFixedValueParameter<BoolValue> CountEvaluationsParameter {
-      get { return (IFixedValueParameter<BoolValue>)Parameters[CountEvaluationsParameterName]; }
-    }
 
-    public IntValue ParameterOptimizationIterations {
-      get { return ParameterOptimizationIterationsParameter.Value; }
+    public int Iterations {
+      get { return IterationsParameter.Value.Value; }
+      set { IterationsParameter.Value.Value = value; }
     }
-    public PercentValue ParameterOptimizationProbability {
-      get { return ParameterOptimizationProbabilityParameter.Value; }
+    public double Probability {
+      get { return ProbabilityParameter.Value.Value; }
+      set { ProbabilityParameter.Value.Value = value; }
     }
-    public PercentValue ParameterOptimizationRowsPercentage {
-      get { return ParameterOptimizationRowsPercentageParameter.Value; }
+    public double RowsPercentage {
+      get { return RowsPercentageParameter.Value.Value; }
+      set { RowsPercentageParameter.Value.Value = value; }
     }
-    public bool UpdateParametersInTree {
-      get { return UpdateParametersInTreeParameter.Value.Value; }
-      set { UpdateParametersInTreeParameter.Value.Value = value; }
+    public bool UpdateParameters {
+      get { return UpdateParametersParameter.Value.Value; }
+      set { UpdateParametersParameter.Value.Value = value; }
     }
-
     public bool UpdateVariableWeights {
       get { return UpdateVariableWeightsParameter.Value.Value; }
       set { UpdateVariableWeightsParameter.Value.Value = value; }
     }
-
     public bool CountEvaluations {
       get { return CountEvaluationsParameter.Value.Value; }
       set { CountEvaluationsParameter.Value.Value = value; }
     }
+
 
     public override bool Maximization {
       get { return false; }
@@ -107,10 +108,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     }
     public ParameterOptimizationEvaluator()
       : base() {
-      Parameters.Add(new FixedValueParameter<IntValue>(ParameterOptimizationIterationsParameterName, "Determines how many iterations should be calculated while optimizing the parameters of a symbolic expression tree (0 indicates other or default stopping criterion).", new IntValue(10)));
-      Parameters.Add(new FixedValueParameter<PercentValue>(ParameterOptimizationProbabilityParameterName, "Determines the probability that the parameters are optimized", new PercentValue(1)));
-      Parameters.Add(new FixedValueParameter<PercentValue>(ParameterOptimizationRowsPercentageParameterName, "Determines the percentage of the rows which should be used for parameter optimization", new PercentValue(1)));
-      Parameters.Add(new FixedValueParameter<BoolValue>(UpdateParametersInTreeParameterName, "Determines if the parameters in the tree should be overwritten by the optimized parameters.", new BoolValue(true)) { Hidden = true });
+      Parameters.Add(new FixedValueParameter<IntValue>(IterationsParameterName, "Determines how many iterations should be calculated while optimizing the parameters of a symbolic expression tree (0 indicates other or default stopping criterion).", new IntValue(10)));
+      Parameters.Add(new FixedValueParameter<PercentValue>(ProbabilityParameterName, "Determines the probability that the parameters are optimized", new PercentValue(1)));
+      Parameters.Add(new FixedValueParameter<PercentValue>(RowsPercentageParameterName, "Determines the percentage of the rows which should be used for parameter optimization", new PercentValue(1)));
+      Parameters.Add(new FixedValueParameter<BoolValue>(UpdateParametersParameterName, "Determines if the parameters in the tree should be overwritten by the optimized parameters.", new BoolValue(true)) { Hidden = true });
       Parameters.Add(new FixedValueParameter<BoolValue>(UpdateVariableWeightsParameterName, "Determines if the variable weights in the tree should be  optimized.", new BoolValue(true)) { Hidden = true });
 
       Parameters.Add(new FixedValueParameter<BoolValue>(CountEvaluationsParameterName, "Determines if function and gradient evaluation should be counted.", new BoolValue(false)));
@@ -124,8 +125,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
 
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
-      if (!Parameters.ContainsKey(UpdateParametersInTreeParameterName))
-        Parameters.Add(new FixedValueParameter<BoolValue>(UpdateParametersInTreeParameterName, "Determines if the parameters in the tree should be overwritten by the optimized parameters.", new BoolValue(true)));
+      if (!Parameters.ContainsKey(UpdateParametersParameterName))
+        Parameters.Add(new FixedValueParameter<BoolValue>(UpdateParametersParameterName, "Determines if the parameters in the tree should be overwritten by the optimized parameters.", new BoolValue(true)));
       if (!Parameters.ContainsKey(UpdateVariableWeightsParameterName))
         Parameters.Add(new FixedValueParameter<BoolValue>(UpdateVariableWeightsParameterName, "Determines if the variable weights in the tree should be optimized.", new BoolValue(true)));
 
@@ -142,13 +143,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     public override IOperation InstrumentedApply() {
       var tree = SymbolicExpressionTreeParameter.ActualValue;
       double quality;
-      if (RandomParameter.ActualValue.NextDouble() < ParameterOptimizationProbability.Value) {
-        IEnumerable<int> constantOptimizationRows = GenerateRowsToEvaluate(ParameterOptimizationRowsPercentage.Value);
+      if (RandomParameter.ActualValue.NextDouble() < Probability) {
+        IEnumerable<int> constantOptimizationRows = GenerateRowsToEvaluate(RowsPercentage);
         var counter = new EvaluationsCounter();
         quality = OptimizeParameters(SymbolicDataAnalysisTreeInterpreterParameter.ActualValue, tree, ProblemDataParameter.ActualValue,
-           constantOptimizationRows, Enumerable.Empty<double>(), ApplyLinearScalingParameter.ActualValue.Value, ParameterOptimizationIterations.Value, updateVariableWeights: UpdateVariableWeights, lowerEstimationLimit: EstimationLimitsParameter.ActualValue.Lower, upperEstimationLimit: EstimationLimitsParameter.ActualValue.Upper, updateConstantsInTree: UpdateParametersInTree, counter: counter);
+           constantOptimizationRows, Enumerable.Empty<double>(), ApplyLinearScalingParameter.ActualValue.Value, Iterations, updateVariableWeights: UpdateVariableWeights, lowerEstimationLimit: EstimationLimitsParameter.ActualValue.Lower, upperEstimationLimit: EstimationLimitsParameter.ActualValue.Upper, updateConstantsInTree: UpdateParameters, counter: counter);
 
-        if (ParameterOptimizationRowsPercentage.Value != RelativeNumberOfEvaluatedSamplesParameter.ActualValue.Value) {
+        if (RowsPercentage != RelativeNumberOfEvaluatedSamplesParameter.ActualValue.Value) {
           var evaluationRows = GenerateRowsToEvaluate();
           quality = SymbolicRegressionSingleObjectiveMeanSquaredErrorEvaluator.Calculate(tree, ProblemDataParameter.ActualValue, evaluationRows, SymbolicDataAnalysisTreeInterpreterParameter.ActualValue, ApplyLinearScalingParameter.ActualValue.Value, EstimationLimitsParameter.ActualValue.Lower, EstimationLimitsParameter.ActualValue.Upper);
         }
