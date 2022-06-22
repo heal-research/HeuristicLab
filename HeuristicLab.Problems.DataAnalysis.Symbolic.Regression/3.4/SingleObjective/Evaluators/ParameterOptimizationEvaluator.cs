@@ -34,7 +34,7 @@ using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
-  [Item("Parameter Optimization Evaluator", "Optimizes model parameters using nonlinear least squares and returns the mean squared error.")]
+  [Item("Parameter Optimization Evaluator (native)", "Optimizes model parameters using nonlinear least squares and returns the mean squared error.")]
   [StorableType("D6443358-1FA3-4F4C-89DB-DCC3D81050B2")]
   public class ParameterOptimizationEvaluator : SymbolicRegressionSingleObjectiveEvaluator {
     private const string ConstantOptimizationIterationsParameterName = "ConstantOptimizationIterations";
