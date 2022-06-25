@@ -19,12 +19,9 @@
  */
 #endregion
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
-
 using HEAL.Attic;
-
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;

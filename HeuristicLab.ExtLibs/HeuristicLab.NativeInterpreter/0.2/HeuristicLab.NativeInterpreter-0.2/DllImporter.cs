@@ -1,4 +1,27 @@
-﻿using System;
+﻿#region License Information
+
+/* HeuristicLab
+ * Copyright (C) Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ *
+ * This file is part of HeuristicLab.
+ *
+ * HeuristicLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * HeuristicLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+#endregion
+
+using System;
 using System.Runtime.InteropServices;
 
 namespace HeuristicLab.NativeInterpreter {
@@ -18,14 +41,14 @@ namespace HeuristicLab.NativeInterpreter {
     public int Algorithm; // var pro algorithm
   }
 
-  // proxy structure to pass information from ceres back to the caller
+  // proxy structure to pass information from the native NLS solver back to the caller
   [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
   public class SolverSummary {
     public double InitialCost;      // value of the objective function before the optimization
     public double FinalCost;        // value of the objective function after the optimization
     public int Iterations;          // number of iterations actually performed by the solver
     public int ResidualEvaluations; // number of residual evaluations
-    public int JacobianEvaluations; // number of jacobian evaluations
+    public int JacobianEvaluations; // number of Jacobian evaluations
     public int Success;             // whether the optimization was successful
   }
 
