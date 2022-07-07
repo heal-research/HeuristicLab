@@ -595,6 +595,9 @@
     <Compile Include="HeuristicLab.IGraph\IGraphWrappersGraphTest.cs" />
     <Compile Include="HeuristicLab.IGraph\IGraphWrappersMatrixTest.cs" />
     <Compile Include="HeuristicLab.IGraph\IGraphWrappersVectorTest.cs" />
+    <Compile Include="HeuristicLab.Optimization-3.4\AlgorithmEventsTest.cs" />
+    <Compile Include="HeuristicLab.Optimization-3.4\EventTestAlgorithm.cs" />
+    <Compile Include="HeuristicLab.Optimization-3.4\EventTestProblem.cs" />
     <Compile Include="HeuristicLab.Persistence-3.3\StorableAttributeTests.cs" />
     <Compile Include="HeuristicLab.Persistence-3.3\UseCases.cs" />
     <Compile Include="HeuristicLab.Persistence.Attic\PersistenceConsistencyChecks.cs" />
@@ -728,6 +731,7 @@
       <Private>False</Private>
     </Reference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
