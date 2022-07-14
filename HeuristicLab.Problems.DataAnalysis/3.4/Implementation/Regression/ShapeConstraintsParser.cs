@@ -43,14 +43,15 @@ namespace HeuristicLab.Problems.DataAnalysis {
     private class LexAnalyser {
       private string Text { get; set; }
       private int CurIndex { get; set; }
+      private int CurRow { get; set; }
+      private int CurCol { get; set; }
       public object CurValue { get; private set; }
 
       public LexAnalyser(string textToParse) {
         Text = textToParse
-          .ToLower()
-          .Replace("\r\n", " ")
-          .Replace("\r", " ")
-          .Replace("\n", " ")
+          .Replace("\r\n", "\n")
+          .Replace("\r", "\n")
+           //.Replace("\n", " ")
           .Replace("\t", " ")
           .Trim();
         CurIndex = 0;
@@ -59,23 +60,23 @@ namespace HeuristicLab.Problems.DataAnalysis {
       public bool Next(Symbol symbol) {
         SkipWhitespace();
         switch (symbol) {
-          case Symbol.In: return Read("in");
-          case Symbol.Frac: return Read("/");
-          case Symbol.Comment: return Read("#");
-          case Symbol.Comma: return Read(",");
-          case Symbol.IntervalSep: return Read(new string[] { "..", "," });
-          case Symbol.OpenBracket: return Read("[");
-          case Symbol.CloseBracket: return Read("]");
-          case Symbol.Colon: return Read(":");
-          case Symbol.F: return Read("f", () => CurValue = "f");
-          case Symbol.Derivative: return Read(new string[] { "d", "∂" });
-          case Symbol.Power2: return Read("²");
-          case Symbol.Power3: return Read("³");
-          case Symbol.NegInf: return Read("-inf.", () => CurValue = double.NegativeInfinity);
-          case Symbol.PosInf: return Read(new string[] { "inf.", "+inf." }, () => CurValue = double.PositiveInfinity);
-          case Symbol.Where: return Read("where");
-          case Symbol.With: return Read("with");
-          case Symbol.Weight: return Read("weight");
+          case Symbol.In: return ReadToken("in");
+          case Symbol.Frac: return ReadToken("/");
+          case Symbol.Comment: return ReadToken("#");
+          case Symbol.Comma: return ReadToken(",");
+          case Symbol.IntervalSep: return ReadToken(new string[] { "..", "," });
+          case Symbol.OpenBracket: return ReadToken("[");
+          case Symbol.CloseBracket: return ReadToken("]");
+          case Symbol.Colon: return ReadToken(":");
+          case Symbol.F: return ReadToken("f", () => CurValue = "f");
+          case Symbol.Derivative: return ReadToken(new string[] { "d", "∂" }, caseSensitiv: true);
+          case Symbol.Power2: return ReadToken("²");
+          case Symbol.Power3: return ReadToken("³");
+          case Symbol.NegInf: return ReadToken("-inf.", () => CurValue = double.NegativeInfinity);
+          case Symbol.PosInf: return ReadToken(new string[] { "inf.", "+inf." }, () => CurValue = double.PositiveInfinity);
+          case Symbol.Where: return ReadToken("where");
+          case Symbol.With: return ReadToken("with");
+          case Symbol.Weight: return ReadToken("weight");
           case Symbol.Number: return ReadText(c => "1234567890.e-".Contains(c), str => CurValue = ParseNumber(str));
           case Symbol.Text: return ReadText(c => char.IsLetterOrDigit(c), str => CurValue = str);
           case Symbol.EOF: return CurIndex >= Text.Length;
@@ -88,29 +89,38 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
       public void ExpectNext(params Symbol[] symbols) {
         if (!symbols.Any(x => Next(x)))
-          throw new ArgumentException($"Expected symbol(s) '{string.Join(",", symbols)}'");
+          throw new ArgumentException($"Expected symbol(s) '{string.Join(",", symbols)}' at {CurRow}:{CurCol}");
       }
 
       private void SkipWhitespace() {
-        while (CurIndex < Text.Length && Text[CurIndex] == ' ')
+        while (CurIndex < Text.Length && (Text[CurIndex] == ' ' || Text[CurIndex] == '\n')) {
+          if (Text[CurIndex] == '\n') {
+            CurRow++;
+            CurCol = 0;
+          }
           CurIndex++;
+        }
       }
 
-      private bool Read(string[] tokens, Action ifSucess = null) => tokens.Any(x => Read(x, ifSucess));
-      private bool Read(string token, Action ifSucess = null) {
+      private bool ReadToken(string[] tokens, Action ifSucess = null, bool caseSensitiv = false) => tokens.Any(x => ReadToken(x, ifSucess, caseSensitiv));
+      private bool ReadToken(string token, Action ifSucess = null, bool caseSensitiv = false) {
         token = token.ToLower();
-        if (CurIndex < Text.Length && Text.Substring(CurIndex, token.Length) == token) {
+        if (CurIndex < Text.Length && 
+           (caseSensitiv ? Text.Substring(CurIndex, token.Length) : Text.Substring(CurIndex, token.Length).ToLower()) == token) {
           CurIndex += token.Length;
+          CurCol += token.Length;
           ifSucess?.Invoke();
           return true;
         }
         return false;
       }
 
-      private bool ReadText(Func<char, bool> func, Action<string> ifSuccess = null) {
+      private bool ReadText(Func<char, bool> func, Action<string> ifSuccess = null, bool caseSensitiv = false) {
         StringBuilder builder = new StringBuilder();
-        while (CurIndex < Text.Length && func(Text[CurIndex]))
+        while (CurIndex < Text.Length && func(caseSensitiv ? Text[CurIndex] : char.ToLowerInvariant(Text[CurIndex]))) {
           builder.Append(Text[CurIndex++]);
+          CurCol++;
+        }
         var str = builder.ToString();
         var res = string.IsNullOrEmpty(str);
         if (!res)
