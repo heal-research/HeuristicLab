@@ -56,7 +56,6 @@ namespace HeuristicLab.Problems.DataAnalysis {
         CurIndex = 0;
       }
 
-
       public bool Next(Symbol symbol) {
         SkipWhitespace();
         switch (symbol) {
