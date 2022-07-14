@@ -105,7 +105,8 @@ namespace HeuristicLab.Problems.DataAnalysis {
       private bool ReadToken(string[] tokens, Action ifSucess = null, bool caseSensitiv = false) => tokens.Any(x => ReadToken(x, ifSucess, caseSensitiv));
       private bool ReadToken(string token, Action ifSucess = null, bool caseSensitiv = false) {
         token = token.ToLower();
-        if (CurIndex < Text.Length && 
+        if (CurIndex < Text.Length &&
+           (CurIndex + token.Length) <= Text.Length && 
            (caseSensitiv ? Text.Substring(CurIndex, token.Length) : Text.Substring(CurIndex, token.Length).ToLower()) == token) {
           CurIndex += token.Length;
           CurCol += token.Length;
