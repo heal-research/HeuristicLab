@@ -122,7 +122,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     /*
       ShapeConstraintList = { ShapeConstraint } .
       ShapeConstraint = ['#'] Shape 'in' Interval [ 'where' RegionList ] [ 'with' Weight ] .
-      Shape = Func | 'd' Func '/' 'd' Variable | 'd²' Func '/' 'd' Variable '²' | 'd³' Func '/' 'd' Variable '³' .
+      Shape = Func | ('d' Func '/' 'd' Variable) | ('d²' Func '/' 'd' Variable '²') | ('d³' Func '/' 'd' Variable '³') .
       Func = 'f' | text .
       Interval = '[' (number | '-Inf.') ('..' | ',') (number | 'Inf.') ']' .
       Variable = text .
@@ -163,7 +163,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       collection.SetItemCheckedState(constraint, enabled);
     }
 
-    // Shape = Func | 'd' Func '/' 'd' Variable | 'd²' Func '/' 'd' Variable '²' | 'd³' Func '/' 'd' Variable '³' .
+    // Shape = Func | ('d' Func '/' 'd' Variable) | ('d²' Func '/' 'd' Variable '²') | ('d³' Func '/' 'd' Variable '³') .
     private static (string, string, int) ParseShape(LexAnalyser lex) {
       int derivation = 0;
       string func = null;
