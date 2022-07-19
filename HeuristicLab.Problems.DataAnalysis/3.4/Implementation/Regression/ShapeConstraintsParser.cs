@@ -35,7 +35,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       Number, Text, F, In,
       Derivative, Power2, Power3,
       Frac, NegInf, PosInf,
-      IntervalSep, Colon, Comment,
+      IntervalSep, Colon,
       OpenBracket, CloseBracket, Comma,
       Weight, Where, With, EOF
     }
@@ -48,13 +48,29 @@ namespace HeuristicLab.Problems.DataAnalysis {
       public object CurValue { get; private set; }
 
       public LexAnalyser(string textToParse) {
-        Text = textToParse
+        Text = Preprocess(textToParse);
+        CurIndex = 0;
+      }
+
+      private string Preprocess(string textToParse) {
+        // Normalize whitespaces and breaks
+        var text = textToParse
           .Replace("\r\n", "\n")
           .Replace("\r", "\n")
-           //.Replace("\n", " ")
           .Replace("\t", " ")
           .Trim();
-        CurIndex = 0;
+
+        // Remove Line Comments
+        int idxStart;
+        while ((idxStart = text.IndexOf('#')) != -1) {
+          int idxEnd = text.IndexOf("\n", idxStart);
+          if (idxEnd == -1)
+            text = text.Remove(idxStart);
+          else
+            text = text.Remove(idxStart, idxEnd - idxStart);
+        }
+
+        return text;
       }
 
       public bool Next(Symbol symbol) {
@@ -62,7 +78,6 @@ namespace HeuristicLab.Problems.DataAnalysis {
         switch (symbol) {
           case Symbol.In: return ReadToken("in");
           case Symbol.Frac: return ReadToken("/");
-          case Symbol.Comment: return ReadToken("#");
           case Symbol.Comma: return ReadToken(",");
           case Symbol.IntervalSep: return ReadToken(new string[] { "..", "," });
           case Symbol.OpenBracket: return ReadToken("[");
@@ -132,7 +147,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     /*
       ShapeConstraintList = { ShapeConstraint } .
-      ShapeConstraint = ['#'] Shape 'in' Interval [ 'where' RegionList ] [ 'with' Weight ] .
+      ShapeConstraint = Shape 'in' Interval [ 'where' RegionList ] [ 'with' Weight ] .
       Shape = Func | ('d' Func '/' 'd' Variable) | ('d²' Func '/' 'd' Variable '²') | ('d³' Func '/' 'd' Variable '³') .
       Func = 'f' | text .
       Interval = '[' (number | '-Inf.') ('..' | ',') (number | 'Inf.') ']' .
@@ -154,11 +169,11 @@ namespace HeuristicLab.Problems.DataAnalysis {
       return sc;
     }
 
-    // ShapeConstraint = ['#'] Shape 'in' Interval [ 'where' RegionList ] [ 'with' Weight ] .
+    // ShapeConstraint = Shape 'in' Interval [ 'where' RegionList ] [ 'with' Weight ] .
     private static void ParseShapeConstraint(LexAnalyser lex, ShapeConstraints collection) {
       IntervalCollection regions = null;
       double weight = 1;
-      bool enabled = !lex.Next(Symbol.Comment);
+      //bool enabled = !lex.Next(Symbol.Comment);
       (string func, string variable, int derivation) = ParseShape(lex);
       lex.ExpectNext(Symbol.In);
       var interval = ParseInterval(lex);
@@ -171,7 +186,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
         new ShapeConstraint(variable, derivation, interval, weight) :
         new ShapeConstraint(variable, derivation, interval, regions, weight);
       collection.Add(constraint);
-      collection.SetItemCheckedState(constraint, enabled);
+      //collection.SetItemCheckedState(constraint, enabled);
     }
 
     // Shape = Func | ('d' Func '/' 'd' Variable) | ('d²' Func '/' 'd' Variable '²') | ('d³' Func '/' 'd' Variable '³') .
