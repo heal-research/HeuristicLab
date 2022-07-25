@@ -281,6 +281,32 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       }
     }
 
+    public virtual void ClearAllowedChildSymbols(ISymbol parent) {
+      bool changed = false;
+      if (allowedChildSymbols.TryGetValue(parent.Name, out var childSymbols)) {
+        changed |= childSymbols.Count > 0;
+        childSymbols.Clear();
+      }
+
+      for (int argumentIndex = 0; argumentIndex < GetMaximumSubtreeCount(parent); argumentIndex++) {
+        var key = Tuple.Create(parent.Name, argumentIndex);
+        if (allowedChildSymbolsPerIndex.TryGetValue(key, out childSymbols)) {
+          changed |= childSymbols.Count > 0;
+          childSymbols.Clear();
+        }
+      }
+
+      if (changed) {
+        ClearCaches();
+        OnChanged();
+      }
+    }
+
+    public virtual void ClearAllAllowedChildSymbols() {
+      foreach(var symbol in Symbols)
+        ClearAllowedChildSymbols(symbol);
+    }
+
     public virtual void SetSubtreeCount(ISymbol symbol, int minimumSubtreeCount, int maximumSubtreeCount) {
       var symbols = symbol.Flatten().Where(s => !(s is GroupSymbol));
       if (symbols.Any(s => s.MinimumArity > minimumSubtreeCount)) throw new ArgumentException("Invalid minimum subtree count " + minimumSubtreeCount + " for " + symbol);
