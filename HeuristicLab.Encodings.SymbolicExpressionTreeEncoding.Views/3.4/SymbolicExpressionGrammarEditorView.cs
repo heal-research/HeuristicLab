@@ -109,10 +109,20 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
     }
 
     private void Content_ReadOnlyChanged(object sender, EventArgs e) {
+      if (InvokeRequired) {
+        Invoke(new EventHandler(Content_ReadOnlyChanged), sender, e);
+        return;
+      }
+
       ReadOnly = Content.ReadOnly;
     }
 
     private void Content_Changed(object sender, EventArgs e) {
+      if (InvokeRequired) {
+        Invoke(new EventHandler(Content_Changed), sender, e);
+        return;
+      }
+
       ISymbol symbol = null;
       if (symbolsTreeView.SelectedNode != null)
         symbol = (ISymbol)symbolsTreeView.SelectedNode.Tag;
@@ -296,8 +306,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
           }
           if (groupSymbol != null) groupSymbol.SymbolsCollection.Add(symbol);
           else Content.AddSymbol(symbol);
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
           ErrorHandling.ShowErrorDialog(this, ex);
         }
       }
