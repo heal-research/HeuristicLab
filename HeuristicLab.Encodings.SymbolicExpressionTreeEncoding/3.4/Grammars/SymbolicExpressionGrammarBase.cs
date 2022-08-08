@@ -282,6 +282,25 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     }
 
     public virtual void ClearAllowedChildSymbols(ISymbol parent) {
+      var changed = ClearAllowedChildSymbolsDictionaries(parent);
+      if (changed) {
+        ClearCaches();
+        OnChanged();
+      }
+    }
+
+    public virtual void ClearAllAllowedChildSymbols() {
+      bool changed = false;
+      foreach (var symbol in Symbols)
+        changed |= ClearAllowedChildSymbolsDictionaries(symbol);
+
+      if (changed) {
+        ClearCaches();
+        OnChanged();
+      }
+    }
+
+    private bool ClearAllowedChildSymbolsDictionaries(ISymbol parent) {
       bool changed = false;
       if (allowedChildSymbols.TryGetValue(parent.Name, out var childSymbols)) {
         changed |= childSymbols.Count > 0;
@@ -295,16 +314,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
           childSymbols.Clear();
         }
       }
-
-      if (changed) {
-        ClearCaches();
-        OnChanged();
-      }
-    }
-
-    public virtual void ClearAllAllowedChildSymbols() {
-      foreach(var symbol in Symbols)
-        ClearAllowedChildSymbols(symbol);
+      return changed;
     }
 
     public virtual void SetSubtreeCount(ISymbol symbol, int minimumSubtreeCount, int maximumSubtreeCount) {
