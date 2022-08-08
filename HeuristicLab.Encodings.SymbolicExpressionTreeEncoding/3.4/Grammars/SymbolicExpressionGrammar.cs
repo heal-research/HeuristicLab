@@ -210,6 +210,15 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       base.RemoveAllowedChildSymbol(parent, child, argumentIndex);
     }
 
+    public sealed override void ClearAllowedChildSymbols(ISymbol parent) {
+      if (ReadOnly) throw new InvalidOperationException();
+      base.ClearAllowedChildSymbols(parent);
+    }
+    public sealed override void ClearAllAllowedChildSymbols() {
+      if (ReadOnly) throw new InvalidOperationException();
+      base.ClearAllAllowedChildSymbols();
+    }
+
     public sealed override void SetSubtreeCount(ISymbol symbol, int minimumSubtreeCount, int maximumSubtreeCount) {
       if (ReadOnly) throw new InvalidOperationException();
       base.SetSubtreeCount(symbol, minimumSubtreeCount, maximumSubtreeCount);

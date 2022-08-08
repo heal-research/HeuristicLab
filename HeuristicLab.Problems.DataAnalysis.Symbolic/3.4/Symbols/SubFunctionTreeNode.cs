@@ -26,7 +26,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
     private SubFunctionTreeNode(SubFunctionTreeNode original, Cloner cloner) : base(original, cloner) {
       Arguments = original.Arguments;
-      Name = (string)original.Name.Clone();
+      Name = original.Name;
     }
     #endregion
 

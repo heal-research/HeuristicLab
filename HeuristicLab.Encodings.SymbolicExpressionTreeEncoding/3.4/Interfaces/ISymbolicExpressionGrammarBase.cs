@@ -45,6 +45,8 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     void AddAllowedChildSymbol(ISymbol parent, ISymbol child, int argumentIndex);
     void RemoveAllowedChildSymbol(ISymbol parent, ISymbol child);
     void RemoveAllowedChildSymbol(ISymbol parent, ISymbol child, int argumentIndex);
+    void ClearAllowedChildSymbols(ISymbol parent);
+    void ClearAllAllowedChildSymbols();
 
 
     int GetMinimumSubtreeCount(ISymbol symbol);
