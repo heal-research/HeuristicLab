@@ -31,10 +31,13 @@ namespace HeuristicLab.Optimization {
   /// </summary>
   public interface IProblem : IParameterizedNamedItem {
     IEnumerable<IItem> Operators { get; }
-
-
     IEnumerable<IParameterizedItem> ExecutionContextItems { get; }
+
+    void RegisterAlgorithmEvents(IAlgorithm algorithm);
+    void DeregisterAlgorithmEvents(IAlgorithm algorithm);
+
     event EventHandler OperatorsChanged;
     event EventHandler Reset;
+
   }
 }

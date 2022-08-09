@@ -25,7 +25,7 @@ using System.Windows.Forms;
 using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
 
-namespace HeuristicLab.Problems.DataAnalysis.Views.Solution_Views {
+namespace HeuristicLab.Problems.DataAnalysis.Views {
   [View("DataAnalysisSolutionView")]
   [Content(typeof(DataAnalysisSolution), true)]
   public partial class NamedDataAnalysisSolutionView : NamedItemView {

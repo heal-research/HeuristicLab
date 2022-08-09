@@ -18,7 +18,7 @@
  * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
  */
 #endregion
-namespace HeuristicLab.Algorithms.DataAnalysis.Views {
+namespace HeuristicLab.Problems.DataAnalysis.Views {
   partial class ConfidenceRegressionSolutionEstimatedValuesView {
     /// <summary> 
     /// Required designer variable.

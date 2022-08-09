@@ -103,6 +103,8 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     public void AddAllowedChildSymbol(ISymbol parent, ISymbol child, int argumentIndex) { throw new NotSupportedException(); }
     public void RemoveAllowedChildSymbol(ISymbol parent, ISymbol child) { throw new NotSupportedException(); }
     public void RemoveAllowedChildSymbol(ISymbol parent, ISymbol child, int argumentIndex) { throw new NotSupportedException(); }
+    public void ClearAllowedChildSymbols(ISymbol parent) { throw new NotSupportedException(); }
+    public void ClearAllAllowedChildSymbols() { throw new NotSupportedException(); }
     public void SetSubtreeCount(ISymbol symbol, int minimumSubtreeCount, int maximumSubtreeCount) { throw new NotSupportedException(); }
 
 

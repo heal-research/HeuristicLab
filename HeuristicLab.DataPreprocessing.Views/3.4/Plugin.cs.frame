@@ -21,9 +21,9 @@
 
 using HeuristicLab.PluginInfrastructure;
 
-namespace HeuristicLab.DataPreprocessing {
+namespace HeuristicLab.DataPreprocessing.Views {
   /// <summary>
-  /// Plugin class for HeuristicLab.Data plugin.
+  /// Plugin class for HeuristicLab.DataPreprocessing.Views plugin.
   /// </summary>
   [Plugin("HeuristicLab.DataPreprocessing.Views", "3.4.6.$WCREV$")]
   [PluginFile("HeuristicLab.DataPreprocessing.Views-3.4.dll", PluginFileType.Assembly)]

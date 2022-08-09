@@ -86,9 +86,15 @@ namespace HeuristicLab.Optimization {
       set {
         if (problem != value) {
           if ((value != null) && !ProblemType.IsInstanceOfType(value)) throw new ArgumentException("Invalid problem type.");
-          if (problem != null) DeregisterProblemEvents();
+          if (problem != null) {
+            DeregisterProblemEvents();
+            problem.DeregisterAlgorithmEvents(this);
+          }
           problem = value;
-          if (problem != null) RegisterProblemEvents();
+          if (problem != null) {
+            RegisterProblemEvents();
+            problem.RegisterAlgorithmEvents(this);
+          }
           OnProblemChanged();
           Prepare();
         }

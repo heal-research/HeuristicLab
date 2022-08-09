@@ -28,6 +28,7 @@ using System.Windows.Forms;
 using HeuristicLab.Common;
 using HeuristicLab.Data;
 using HeuristicLab.MainForm;
+using HeuristicLab.MainForm.WindowsForms;
 
 namespace HeuristicLab.Problems.DataAnalysis.Views {
   [View("Variable Impacts")]

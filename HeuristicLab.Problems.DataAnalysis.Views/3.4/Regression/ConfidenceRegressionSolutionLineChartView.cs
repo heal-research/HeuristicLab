@@ -26,10 +26,9 @@ using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 using HeuristicLab.MainForm;
 using HeuristicLab.Problems.DataAnalysis;
-using HeuristicLab.Problems.DataAnalysis.Views;
 using HeuristicLab.Visualization.ChartControlsExtensions;
 
-namespace HeuristicLab.Algorithms.DataAnalysis.Views {
+namespace HeuristicLab.Problems.DataAnalysis.Views {
   [View("Line Chart (95% confidence interval)")]
   [Content(typeof(IConfidenceRegressionSolution))]
   public partial class ConfidenceRegressionSolutionLineChartView : DataAnalysisSolutionEvaluationView {

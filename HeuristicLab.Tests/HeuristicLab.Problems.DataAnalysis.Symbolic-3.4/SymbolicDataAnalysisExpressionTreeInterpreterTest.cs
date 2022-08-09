@@ -24,6 +24,8 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
+using HeuristicLab.NativeInterpreter;
+using HeuristicLab.Problems.DataAnalysis.Symbolic.Regression;
 using HeuristicLab.Random;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
@@ -241,10 +243,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
       var dataset = Util.CreateRandomDataset(twister, numRows, Columns);
 
       var grammar = new TypeCoherentExpressionGrammar();
+      grammar.ConfigureAsDefaultRegressionGrammar();
 
       var interpreters = new ISymbolicDataAnalysisExpressionTreeInterpreter[] {
         new SymbolicDataAnalysisExpressionTreeLinearInterpreter(),
         new SymbolicDataAnalysisExpressionTreeInterpreter(),
+        new NativeInterpreter(),
       };
 
       var rows = Enumerable.Range(0, numRows).ToList();
@@ -260,13 +264,283 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
           var sum = valuesMatrix[m].Sum();
           for (int n = m + 1; n < interpreters.Length; ++n) {
             var s = valuesMatrix[n].Sum();
-            if (double.IsNaN(sum) && double.IsNaN(s)) continue;
+            if (double.IsNaN(sum) && double.IsNaN(s) ||
+                double.IsPositiveInfinity(sum) && double.IsPositiveInfinity(s) ||
+                double.IsNegativeInfinity(sum) && double.IsNegativeInfinity(s) ||
+                Math.Abs(sum - s) < 1e-12) continue;
 
             string errorMessage = string.Format("Interpreters {0} and {1} do not agree on tree {2} (seed = {3}).", interpreters[m].Name, interpreters[n].Name, i, seed);
-            Assert.AreEqual(sum, s, 1e-12, errorMessage);
+            Assert.AreEqual(sum / s, 1.0, 1e-6, errorMessage);
           }
         }
       }
+    }
+
+    [TestMethod]
+    [TestCategory("Problems.DataAnalysis.Symbolic")]
+    [TestProperty("Time", "long")]
+    public void NativeInterpreterTestTypeCoherentGrammarPerformance() {
+      TestTypeCoherentGrammarPerformance(new NativeInterpreter(), 12.5e6);
+    }
+
+    [TestMethod]
+    [TestCategory("Problems.DataAnalysis.Symbolic")]
+    [TestProperty("Time", "long")]
+    public void NativeInterpreterTestArithmeticGrammarPerformance() {
+      TestArithmeticGrammarPerformance(new NativeInterpreter(), 12.5e6);
+    }
+
+    [TestMethod]
+    [TestCategory("Problems.DataAnalysis.Symbolic")]
+    [TestProperty("Time", "long")]
+    public void NativeInterpreterTestParameterOptimization() {
+      var parser = new InfixExpressionParser();
+      var random = new FastRandom(Environment.TickCount);
+      const int nRows = 20;
+
+      var x1 = Enumerable.Range(0, nRows).Select(_ => UniformDistributedRandom.NextDouble(random, -1, 1)).ToArray();
+      var x2 = Enumerable.Range(0, nRows).Select(_ => UniformDistributedRandom.NextDouble(random, -1, 1)).ToArray();
+      var x3 = Enumerable.Range(0, nRows).Select(_ => UniformDistributedRandom.NextDouble(random, -1, 1)).ToArray();
+
+      var optimalAlpha = new double[] { -2, -3, -5 };
+      var y = Enumerable.Range(0, nRows).Select(i =>
+          Math.Exp(x1[i] * optimalAlpha[0]) +
+          Math.Exp(x2[i] * optimalAlpha[1]) +
+          Math.Exp(x3[i] * optimalAlpha[2])).ToArray();
+
+      var initialAlpha = Enumerable.Range(0, 3).Select(_ => UniformDistributedRandom.NextDouble(random, -1, 1)).ToArray();
+      var ds = new Dataset(new[] { "x1", "x2", "x3", "y" }, new[] { x1, x2, x3, y });
+
+      var expr = "EXP(x1) + EXP(x2) + EXP(x3)";
+      var tree = parser.Parse(expr);
+      var rows = Enumerable.Range(0, nRows).ToArray();
+      var options = new SolverOptions {
+        Iterations = 100,
+      };
+
+      var nodesToOptimize = new HashSet<ISymbolicExpressionTreeNode>(tree.IterateNodesPrefix().Where(x => x is VariableTreeNode));
+      int idx = 0;
+      Console.Write("Initial parameters: ");
+      foreach (var node in nodesToOptimize) {
+        (node as VariableTreeNode).Weight = initialAlpha[idx++];
+        Console.Write((node as VariableTreeNode).Weight + " ");
+      }
+      Console.WriteLine();
+
+      var summary = new SolverSummary();
+      var parameters = ParameterOptimizer.OptimizeTree(tree, ds, rows, "y", Enumerable.Empty<double>(), nodesToOptimize, options, ref summary);
+
+      Console.Write("Optimized parameters: ");
+      foreach (var t in parameters) {
+        Console.Write(t.Value + " ");
+      }
+      Console.WriteLine();
+
+      Console.WriteLine("Optimization summary:");
+      Console.WriteLine("Optimization success: " + summary.Success);
+      Console.WriteLine("Iterations:           " + summary.Iterations);
+      Console.WriteLine("Initial cost:         " + summary.InitialCost);
+      Console.WriteLine("Final cost:           " + summary.FinalCost);
+      Console.WriteLine("Residual evaluations: " + summary.ResidualEvaluations);
+      Console.WriteLine("Jacobian evaluations: " + summary.JacobianEvaluations);
+    }
+
+
+    [TestMethod]
+    [TestCategory("Problems.DataAnalysis.Symbolic")]
+    [TestProperty("Time", "long")]
+    public void ParameterOptimizationConsistency() {
+      var parser = new InfixExpressionParser();
+      var random = new FastRandom(1234);
+      const int nRows = 20;
+
+      var x1 = Enumerable.Range(0, nRows).Select(_ => UniformDistributedRandom.NextDouble(random, -1, 1)).ToArray();
+      var x2 = Enumerable.Range(0, nRows).Select(_ => UniformDistributedRandom.NextDouble(random, -1, 1)).ToArray();
+      var x3 = Enumerable.Range(0, nRows).Select(_ => UniformDistributedRandom.NextDouble(random, -1, 1)).ToArray();
+
+
+      var y = Enumerable.Range(0, nRows).Select(i =>
+          (x1[i] + 2.0) / (4.0 * x2[i] + 10)).ToArray();
+
+      for (int i = 0; i < nRows; i++) {
+        Console.WriteLine($"{x1[i]} {x2[i]} {x3[i]} {y[i]}");
+      }
+      var initialAlpha = new[] { 0.0, 1.0, 0.0 }; // bad starting point (native optimizer does not improve the error)
+      // var initialAlpha = new[] { 2.0, 1.0, 2.0 }; // good starting point (both optimizers converge to the solution)
+
+      var ds = new Dataset(new[] { "x1", "x2", "x3", "y" }, new[] { x1, x2, x3, y });
+
+      var expr = "(x1 + <num>) / (<num> * x2 + <num>)";
+      var tree = parser.Parse(expr);
+      var rows = Enumerable.Range(0, nRows).ToArray();
+      var interpreter = new SymbolicDataAnalysisExpressionTreeBatchInterpreter();
+      var options = new SolverOptions {
+        Iterations = 10,
+      };
+
+
+      var nodesToOptimize = new List<ISymbolicExpressionTreeNode>(tree.IterateNodesPrefix().Where(x => x is NumberTreeNode));
+      int idx = 0;
+      Console.Write("Initial parameters: ");
+      foreach (var node in nodesToOptimize) {
+        (node as NumberTreeNode).Value = initialAlpha[idx++];
+        Console.Write((node as NumberTreeNode).Value + " ");
+      }
+      Console.WriteLine();
+
+      // check initial MSE for comparison with initial cost in ParameterOptimizer
+      var initialMSE = OnlineMeanSquaredErrorCalculator.Calculate(y, interpreter.GetSymbolicExpressionTreeValues(tree, ds, rows), out var errorState);
+      if (errorState != OnlineCalculatorError.None) initialMSE = double.MaxValue;
+
+
+      var summary = new SolverSummary();
+      var params1 = ParameterOptimizer.OptimizeTree(tree, ds, rows, "y", Enumerable.Empty<double>(), new HashSet<ISymbolicExpressionTreeNode>(nodesToOptimize), options, ref summary);
+
+      SymbolicRegressionParameterOptimizationEvaluator.OptimizeParameters(interpreter, tree,
+        new RegressionProblemData(ds, new[] { "x1", "x2", "x3" }, "y"), rows, applyLinearScaling: false, maxIterations: 10, updateVariableWeights: false);
+
+      var params2 = tree.IterateNodesPrefix().OfType<NumberTreeNode>().Select(n => n.Value).ToArray();
+
+      var optimizedMSE = OnlineMeanSquaredErrorCalculator.Calculate(y, interpreter.GetSymbolicExpressionTreeValues(tree, ds, rows), out errorState);
+      if (errorState != OnlineCalculatorError.None) optimizedMSE = double.MaxValue;
+      
+
+      Console.WriteLine("Optimized parameters (native): ");
+      foreach (var t in params1) {
+        Console.WriteLine(t.Value + " ");
+      }
+      Console.WriteLine("Optimized parameters (managed): ");
+      foreach (var val in params2) {
+        Console.WriteLine(val + " ");
+      }
+      Console.WriteLine();
+
+      Console.WriteLine("Optimization summary:");
+      Console.WriteLine("Optimization success: " + summary.Success);
+      Console.WriteLine("Iterations:           " + summary.Iterations);
+      Console.WriteLine("Initial cost:         " + summary.InitialCost);
+      Console.WriteLine("Final cost:           " + summary.FinalCost);
+      Console.WriteLine("Residual evaluations: " + summary.ResidualEvaluations);
+      Console.WriteLine("Jacobian evaluations: " + summary.JacobianEvaluations);
+
+      // output costs produced by the managed parameter optimizer to compare to the native code
+      Console.WriteLine($"Managed initial cost: {initialMSE* rows.Count() * 0.5}");
+      Console.WriteLine($"Managed optimized cost: {optimizedMSE * rows.Count() * 0.5}");
+    }
+
+    [TestMethod]
+    [TestCategory("Problems.DataAnalysis.Symbolic")]
+    [TestProperty("Time", "long")]
+    public void NativeInterpreterTestParameterOptimizationVarPro() {
+      var parser = new InfixExpressionParser();
+      var random = new FastRandom(1234);
+      const int nRows = 20;
+
+      var x1 = Enumerable.Range(0, nRows).Select(_ => UniformDistributedRandom.NextDouble(random, -1, 1)).ToArray();
+      var x2 = Enumerable.Range(0, nRows).Select(_ => UniformDistributedRandom.NextDouble(random, -1, 1)).ToArray();
+      var x3 = Enumerable.Range(0, nRows).Select(_ => UniformDistributedRandom.NextDouble(random, -1, 1)).ToArray();
+
+      var optimalAlpha = new double[] { -2, -3, -5 };
+      var y = Enumerable.Range(0, nRows).Select(i =>
+        Math.Exp(x1[i] * optimalAlpha[0]) +
+        Math.Exp(x2[i] * optimalAlpha[1]) +
+        Math.Exp(x3[i] * optimalAlpha[2])).ToArray();
+
+      var initialAlpha = Enumerable.Range(0, 3).Select(_ => UniformDistributedRandom.NextDouble(random, -1, 1)).ToArray();
+      var ds = new Dataset(new[] { "x1", "x2", "x3", "y" }, new[] { x1, x2, x3, y });
+
+      var expr = new[] { "EXP(x1)", "EXP(x2)", "EXP(x3)" };
+      var trees = expr.Select(x => parser.Parse(x)).ToArray();
+      var rows = Enumerable.Range(0, nRows).ToArray();
+      var options = new SolverOptions {
+        Iterations = 100,
+      };
+
+      var summary = new SolverSummary();
+
+      var nodesToOptimize = new HashSet<ISymbolicExpressionTreeNode>(trees.SelectMany(t => t.IterateNodesPrefix().Where(x => x is VariableTreeNode)));
+      int idx = 0;
+      Console.Write("Initial parameters: ");
+      foreach (var node in nodesToOptimize) {
+        (node as VariableTreeNode).Weight = initialAlpha[idx++];
+        Console.Write((node as VariableTreeNode).Weight + " ");
+      }
+      Console.WriteLine();
+
+      var coeff = new double[trees.Length + 1];
+      var parameters = ParameterOptimizer.OptimizeTree(trees, ds, rows, "y", Enumerable.Empty<double>(), nodesToOptimize, options, coeff, ref summary);
+      Console.Write("Optimized parameters: ");
+      foreach (var t in parameters) {
+        Console.Write(t.Value + " ");
+      }
+      Console.WriteLine();
+
+      Console.Write("Coefficients: ");
+      foreach (var v in coeff) Console.Write(v + " ");
+      Console.WriteLine();
+
+      Console.WriteLine("Optimization summary:");
+      Console.WriteLine("Initial cost:         " + summary.InitialCost);
+      Console.WriteLine("Final cost:           " + summary.FinalCost);
+      Console.WriteLine("Residual evaluations: " + summary.ResidualEvaluations);
+      Console.WriteLine("Jacobian evaluations: " + summary.JacobianEvaluations);
+    }
+
+    [TestMethod]
+    [TestCategory("Problems.DataAnalysis.Symbolic")]
+    [TestProperty("Time", "long")]
+    public void NativeInterpreterTestParameterOptimizationVarProNoParameters() {
+      var parser = new InfixExpressionParser();
+      var random = new FastRandom(1234);
+      const int nRows = 20;
+
+      var x1 = Enumerable.Range(0, nRows).Select(_ => UniformDistributedRandom.NextDouble(random, -1, 1)).ToArray();
+      var x2 = Enumerable.Range(0, nRows).Select(_ => UniformDistributedRandom.NextDouble(random, -1, 1)).ToArray();
+
+      var optimalAlpha = new double[] { -2, -3 };
+      var y = Enumerable.Range(0, nRows).Select(i =>
+        optimalAlpha[0] * x1[i] +
+        optimalAlpha[1] * x2[i]).ToArray();
+
+      var initialAlpha = Enumerable.Range(0, 3).Select(_ => UniformDistributedRandom.NextDouble(random, -1, 1)).ToArray();
+      var ds = new Dataset(new[] { "x1", "x2", "y" }, new[] { x1, x2, y });
+
+      var expr = new[] { "x1", "x2" };
+      var trees = expr.Select(x => parser.Parse(x)).ToArray();
+      var rows = Enumerable.Range(0, nRows).ToArray();
+      var options = new SolverOptions {
+        Iterations = 100
+      };
+
+      var summary = new SolverSummary();
+
+      var nodesToOptimize = new HashSet<ISymbolicExpressionTreeNode>(trees.SelectMany(t => t.IterateNodesPrefix().Where(x => x is VariableTreeNode)));
+      //var nodesToOptimize = new HashSet<ISymbolicExpressionTreeNode>();
+      int idx = 0;
+      Console.Write("Initial parameters: ");
+      foreach (var node in nodesToOptimize) {
+        (node as VariableTreeNode).Weight = initialAlpha[idx++];
+        Console.Write((node as VariableTreeNode).Weight + " ");
+      }
+      Console.WriteLine();
+
+      var coeff = new double[trees.Length + 1];
+      var parameters = ParameterOptimizer.OptimizeTree(trees, ds, rows, "y", Enumerable.Empty<double>(), nodesToOptimize, options, coeff, ref summary);
+      Console.Write("Optimized parameters: ");
+      foreach (var t in parameters) {
+        Console.Write(t.Value + " ");
+      }
+      Console.WriteLine();
+
+      Console.Write("Coefficients: ");
+      foreach (var v in coeff) Console.Write(v + " ");
+      Console.WriteLine();
+
+      Console.WriteLine("Optimization summary:");
+      Console.WriteLine("Initial cost:         " + summary.InitialCost);
+      Console.WriteLine("Final cost:           " + summary.FinalCost);
+      Console.WriteLine("Residual evaluations: " + summary.ResidualEvaluations);
+      Console.WriteLine("Jacobian evaluations: " + summary.JacobianEvaluations);
     }
 
     [TestMethod]

@@ -29,7 +29,7 @@ using HeuristicLab.Parameters;
 namespace HeuristicLab.Optimization {
   [Item("MultiEncoding Creator", "Contains solution creators that together create a multi-encoding.")]
   [StorableType("E261B506-6F74-4BC4-8164-5ACE20FBC319")]
-  public sealed class MultiEncodingCreator : MultiEncodingOperator<ISolutionCreator>, ISolutionCreator, IStochasticOperator {
+  public sealed class MultiEncodingCreator : MultiEncodingOperator<ISolutionCreator>, IMultiEncodingCreator, IStochasticOperator {
     public ILookupParameter<IRandom> RandomParameter {
       get { return (ILookupParameter<IRandom>)Parameters["Random"]; }
     }

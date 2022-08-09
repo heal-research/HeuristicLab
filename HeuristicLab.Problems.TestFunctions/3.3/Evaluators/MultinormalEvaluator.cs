@@ -23,14 +23,14 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 
-namespace HeuristicLab.Problems.TestFunctions.Evaluators {
+namespace HeuristicLab.Problems.TestFunctions {
   [Item("MultinormalFunction", "Evaluates a random multinormal function on a given point.")]
   [StorableType("55E0E22B-43BD-4408-8A78-8F918E66AFB1")]
   public class MultinormalEvaluator : SingleObjectiveTestFunctionProblemEvaluator {

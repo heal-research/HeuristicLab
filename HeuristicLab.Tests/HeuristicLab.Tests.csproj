@@ -296,6 +296,11 @@
       <HintPath>..\bin\HeuristicLab.Problems.DataAnalysis.Symbolic.Classification-3.4.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="HeuristicLab.Problems.DataAnalysis.Symbolic.NativeInterpreter-0.2, Version=0.2.0.1, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\bin\HeuristicLab.Problems.DataAnalysis.Symbolic.NativeInterpreter-0.2.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="HeuristicLab.Problems.DataAnalysis.Symbolic.Regression-3.4">
       <HintPath>..\bin\HeuristicLab.Problems.DataAnalysis.Symbolic.Regression-3.4.dll</HintPath>
       <Private>False</Private>
@@ -599,6 +604,9 @@
     <Compile Include="HeuristicLab.IGraph\IGraphWrappersMatrixTest.cs" />
     <Compile Include="HeuristicLab.IGraph\IGraphWrappersVectorTest.cs" />
     <Compile Include="HeuristicLab.JsonInterface\GeneratorInstantiatorTest.cs" />
+    <Compile Include="HeuristicLab.Optimization-3.4\AlgorithmEventsTest.cs" />
+    <Compile Include="HeuristicLab.Optimization-3.4\EventTestAlgorithm.cs" />
+    <Compile Include="HeuristicLab.Optimization-3.4\EventTestProblem.cs" />
     <Compile Include="HeuristicLab.Persistence-3.3\StorableAttributeTests.cs" />
     <Compile Include="HeuristicLab.Persistence-3.3\UseCases.cs" />
     <Compile Include="HeuristicLab.Persistence.Attic\PersistenceConsistencyChecks.cs" />
@@ -733,6 +741,7 @@
       <Private>False</Private>
     </Reference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

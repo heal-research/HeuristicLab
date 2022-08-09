@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using HEAL.Attic;
 using HeuristicLab.Algorithms.GeneticAlgorithm;
 using HeuristicLab.Problems.Instances.DataAnalysis;
@@ -11,7 +7,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using HeuristicLab.Problems.DataAnalysis.Symbolic.Regression;
 using HeuristicLab.Problems.DataAnalysis.Symbolic;
 using HeuristicLab.Selection;
-using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Optimization;
 
 namespace HeuristicLab.Tests {

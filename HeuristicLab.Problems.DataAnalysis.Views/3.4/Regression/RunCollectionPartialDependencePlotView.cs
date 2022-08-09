@@ -7,7 +7,7 @@ using HeuristicLab.MainForm.WindowsForms;
 using HeuristicLab.Optimization;
 using HeuristicLab.Problems.DataAnalysis.Views;
 
-namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
+namespace HeuristicLab.Problems.DataAnalysis.Views {
   [Content(typeof(RunCollection), false)]
   [View("RunCollection Partial Dependence Plots")]
   public partial class RunCollectionPartialDependencePlotView : AsynchronousContentView {

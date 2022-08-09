@@ -28,6 +28,7 @@ using System.Windows.Forms;
 using HeuristicLab.Clients.Access;
 using HeuristicLab.Core;
 using HeuristicLab.MainForm;
+using HeuristicLab.MainForm.WindowsForms;
 using HeuristicLab.Optimization;
 using View = HeuristicLab.MainForm.WindowsForms.View;
 

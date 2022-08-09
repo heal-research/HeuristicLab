@@ -27,10 +27,9 @@ using HeuristicLab.Collections;
 using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
-using HeuristicLab.Problems.DataAnalysis;
 using HeuristicLab.Visualization.ChartControlsExtensions;
 
-namespace HeuristicLab.Algorithms.DataAnalysis.Views {
+namespace HeuristicLab.Problems.DataAnalysis.Views {
   [View("Gradient View")]
   [Content(typeof(IRegressionSolution))]
   public partial class RegressionSolutionGradientView : ItemView {

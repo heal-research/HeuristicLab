@@ -118,6 +118,11 @@ namespace HeuristicLab.Optimization {
     public IEnumerable<IParameterizedItem> ExecutionContextItems {
       get { yield return this; }
     }
+
+    public void RegisterAlgorithmEvents(IAlgorithm algorithm) { }
+
+    public void DeregisterAlgorithmEvents(IAlgorithm algorithm) { }
+
     #endregion
 
     [StorableConstructor]

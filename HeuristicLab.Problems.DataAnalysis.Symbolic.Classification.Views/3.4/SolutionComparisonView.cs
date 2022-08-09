@@ -25,7 +25,7 @@ using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Algorithms.DataAnalysis;
 using HeuristicLab.MainForm;
-using HeuristicLab.Problems.DataAnalysis.Views.Classification;
+using HeuristicLab.Problems.DataAnalysis.Views;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification.Views {
   [View("Solution Comparison")]

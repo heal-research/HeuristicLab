@@ -38,9 +38,9 @@ using HeuristicLab.Problems.DataAnalysis.Symbolic.Regression;
 using HeuristicLab.Random;
 using HeuristicLab.Selection;
 
-namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression {
+namespace HeuristicLab.Algorithms.DataAnalysis {
   [Item("Gradient Boosting Machine Regression (GBM)",
-    "Gradient boosting for any regression base learner (e.g. MCTS symbolic regression)")]
+    "Gradient boosting for any regression base learner")]
   [StorableType("98B340D7-DB23-40F9-A9CC-C3E652E92671")]
   [Creatable(CreatableAttribute.Categories.DataAnalysisRegression, Priority = 350)]
   public class GradientBoostingRegressionAlgorithm : FixedDataAnalysisAlgorithm<IRegressionProblem> {

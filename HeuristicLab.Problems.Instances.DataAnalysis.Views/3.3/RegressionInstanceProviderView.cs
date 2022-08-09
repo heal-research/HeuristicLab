@@ -23,6 +23,7 @@ using System;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using HeuristicLab.MainForm;
+using HeuristicLab.MainForm.WindowsForms;
 using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {

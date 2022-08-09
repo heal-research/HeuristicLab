@@ -25,7 +25,6 @@ using HeuristicLab.Core;
 using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Parameters;
 using HEAL.Attic;
-using HeuristicLab.Problems.TestFunctions.Evaluators;
 
 namespace HeuristicLab.Problems.TestFunctions {
   [Item("MultinormalAdditiveMoveEvaluator", "Class for evaluating an additive move on the multinormal function.")]

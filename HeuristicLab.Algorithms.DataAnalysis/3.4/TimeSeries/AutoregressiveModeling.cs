@@ -22,17 +22,17 @@
 using System;
 using System.Linq;
 using System.Threading;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 using HeuristicLab.Problems.DataAnalysis;
 using HeuristicLab.Problems.DataAnalysis.Symbolic;
 using HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis;
 
-namespace HeuristicLab.Algorithms.DataAnalysis.TimeSeries {
+namespace HeuristicLab.Algorithms.DataAnalysis {
   [Item("Autoregressive Modeling (AR)", "Timeseries modeling algorithm that creates AR-N models.")]
   [Creatable(CreatableAttribute.Categories.DataAnalysis, Priority = 130)]
   [StorableType("3BB9D723-944A-420F-A44A-A86F6FB4DABE")]

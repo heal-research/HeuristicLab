@@ -19,7 +19,7 @@
  */
 #endregion
 
-namespace HeuristicLab.Algorithms.DataAnalysis.Views {
+namespace HeuristicLab.Problems.DataAnalysis.Views {
   partial class DensityTrackbar {
     /// <summary> 
     /// Required designer variable.

@@ -31,7 +31,8 @@ using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
-  [Item("Parameter Optimization Evaluator", "Calculates Pearson R² of a symbolic regression solution and optimizes the parameters used.")]
+  [Obsolete("Use ParameterOptimizationEvaluator instead")]
+  [Item("Parameter Optimization Evaluator (managed)", "Calculates Pearson R² of a symbolic regression solution and optimizes the parameters used.")]
   [StorableType("24B68851-036D-4446-BD6F-3823E9028FF4")]
   public class SymbolicRegressionParameterOptimizationEvaluator : SymbolicRegressionSingleObjectiveEvaluator {
     private const string ParameterOptimizationIterationsParameterName = "ParameterOptimizationIterations";

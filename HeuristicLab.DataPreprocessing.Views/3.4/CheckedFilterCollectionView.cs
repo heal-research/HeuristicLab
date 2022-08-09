@@ -22,7 +22,6 @@
 using System;
 using HeuristicLab.Core;
 using HeuristicLab.Core.Views;
-using HeuristicLab.DataPreprocessing.Filter;
 using HeuristicLab.MainForm;
 
 namespace HeuristicLab.DataPreprocessing.Views {

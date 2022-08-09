@@ -28,7 +28,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HEAL.Attic;
 
-namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification.SingleObjective {
+namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
   [Item("Bounded Mean squared error Evaluator", "Calculates the bounded mean squared error of a symbolic classification solution (estimations above or below the class values are only penaltilized linearly.")]
   [StorableType("3C4C86ED-3F6A-464F-B7B6-326A220085EC")]
   public class SymbolicClassificationSingleObjectiveBoundedMeanSquaredErrorEvaluator : SymbolicClassificationSingleObjectiveEvaluator {

@@ -29,7 +29,7 @@ using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
 using HeuristicLab.Operators;
 
-namespace HeuristicLab.DebugEngine {
+namespace HeuristicLab.DebugEngine.Views {
 
   [View("Operator Trace View")]
   [Content(typeof(OperatorTrace), IsDefaultView = true)]

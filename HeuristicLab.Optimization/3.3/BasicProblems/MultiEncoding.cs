@@ -30,7 +30,7 @@ using HeuristicLab.PluginInfrastructure;
 namespace HeuristicLab.Optimization {
   [Item("MultiEncoding", "Describes a combined encoding consisting of multiple simpler encodings.")]
   [StorableType("359E2173-4D0C-40E5-A2F3-E42E59840345")]
-  public sealed class MultiEncoding : Encoding<MultiEncodingCreator> {
+  public sealed class MultiEncoding : Encoding<IMultiEncodingCreator> {
 
     private readonly List<IEncoding> encodings;
     [Storable]

@@ -23,7 +23,7 @@ using System.Drawing;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
 
-namespace HeuristicLab.Clients.Hive {
+namespace HeuristicLab.Clients.Hive.Views {
   public class NewTaskTreeNodeAction : IItemTreeNodeAction<HiveTask> {
     private ItemCollection<HiveTask> hiveJobs;
 
