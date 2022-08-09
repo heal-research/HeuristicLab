@@ -19,9 +19,11 @@
  */
 #endregion
 
+using System.Linq;
 using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
+using HeuristicLab.JsonInterface;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
   [Item("Shape-constrained symbolic regression problem (single-objective)", "Represents a single-objective shape-constrained regression problem.")]
@@ -64,6 +66,26 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       }
 
       base.Load(scProblemData);
+    }
+
+    public override void Inject(JsonItem item, JsonItemConverter converter) {
+      base.Inject(item, converter);
+      // reinstantiate problem data with a shape constrained problem data
+      ProblemData = new ShapeConstrainedRegressionProblemData(ProblemData);
+      var constraintsText = item.GetProperty<string[]>(nameof(ShapeConstrainedRegressionProblemData.ShapeConstraints));
+      var parsedConstraints = ShapeConstraintsParser.ParseConstraints(string.Join("\n", constraintsText));
+      var constraints = ShapeConstrainedRegressionProblemData.ShapeConstraints;
+      constraints.Clear();
+      constraints.AddRange(parsedConstraints);
+    }
+
+    public override JsonItem Extract(JsonItemConverter converter) {
+      var item = base.Extract(converter);
+      var constraints = ShapeConstrainedRegressionProblemData.ShapeConstraints;
+      item.AddProperty(
+        nameof(ShapeConstrainedRegressionProblemData.ShapeConstraints), 
+        constraints.Select(x => x.ToString()).ToArray());
+      return item;
     }
   }
 }
