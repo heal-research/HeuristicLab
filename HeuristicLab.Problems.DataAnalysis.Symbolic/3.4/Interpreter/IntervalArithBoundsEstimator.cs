@@ -33,7 +33,7 @@ using HeuristicLab.Parameters;
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableType("C8539434-6FB0-47D0-9F5A-2CAE5D8B8B4F")]
   [Item("Interval Arithmetic Bounds Estimator", "Interpreter for calculation of intervals of symbolic models.")]
-  public sealed class IntervalArithBoundsEstimator : ParameterizedNamedItem, IBoundsEstimator {
+  public class IntervalArithBoundsEstimator : ParameterizedNamedItem, IBoundsEstimator {
     #region Parameters
 
     private const string EvaluatedSolutionsParameterName = "EvaluatedSolutions";
@@ -300,7 +300,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       throw new NotImplementedException();
     }
 
-    public double GetConstraintViolation(
+    public virtual double GetConstraintViolation(
       ISymbolicExpressionTree tree, IntervalCollection variableRanges, ShapeConstraint constraint) {
       var occuringVariableRanges = GetOccurringVariableRanges(tree, variableRanges);
       var instructions = PrepareInterpreterState(tree, occuringVariableRanges);

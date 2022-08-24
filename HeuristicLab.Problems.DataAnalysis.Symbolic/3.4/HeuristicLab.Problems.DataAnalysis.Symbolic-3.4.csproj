@@ -187,6 +187,7 @@
     <Compile Include="Interpreter\ParameterOptimizer.cs" />
     <Compile Include="Interpreter\SymbolicDataAnalysisExpressionCompiledTreeInterpreter.cs" />
     <Compile Include="Interpreter\SymbolicDataAnalysisExpressionTreeBatchInterpreter.cs" />
+    <Compile Include="Interpreter\ThresholdIntervalArithBoundsEstimator.cs" />
     <Compile Include="IntervalUtil.cs" />
     <Compile Include="LinearScaling.cs" />
     <Compile Include="Selectors\DiversitySelector.cs" />
