@@ -90,7 +90,6 @@ namespace HeuristicLab.Problems.DataAnalysis {
       }
     }
 
-
     [Storable]
     private double weight = 1.0;
     public double Weight {
@@ -105,6 +104,19 @@ namespace HeuristicLab.Problems.DataAnalysis {
       }
     }
 
+    [Storable]
+    private Interval threshold = new Interval(double.NegativeInfinity, double.PositiveInfinity);
+    public Interval Threshold {
+      get => threshold;
+      set {
+        if (threshold == value)
+          return;
+        threshold = value;
+        OnToStringChanged();
+        OnChanged();
+      }
+    }
+
     [StorableConstructor]
     private ShapeConstraint(StorableConstructorFlag _) : base(_) { }
 
@@ -115,25 +127,42 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     // without derivation
     public ShapeConstraint(Interval interval, double weight)
+      : this(interval, weight, new Interval(double.NegativeInfinity, double.PositiveInfinity)) { }
+    
+    public ShapeConstraint(Interval interval, double weight, Interval threshold)
       : this(string.Empty, 0,
-         interval, new IntervalCollection(), weight) { }
+         interval, new IntervalCollection(), weight, threshold) { }
 
     public ShapeConstraint(Interval interval, IntervalCollection regions, double weight)
+      : this(interval, regions, weight, new Interval(double.NegativeInfinity, double.PositiveInfinity)) { }
+
+    public ShapeConstraint(Interval interval, IntervalCollection regions, double weight, Interval threshold)
       : this(string.Empty, 0,
-         interval, regions, weight) { }
+         interval, regions, weight, threshold) { }
 
     public ShapeConstraint(string variable, int numberOfDerivations,
                               Interval interval, double weight)
       : this(variable, numberOfDerivations,
-             interval, new IntervalCollection(), weight) { }
+             interval, weight, new Interval(double.NegativeInfinity, double.PositiveInfinity)) { }
 
     public ShapeConstraint(string variable, int numberOfDerivations,
-                              Interval interval, IntervalCollection regions, double weight) {
+                              Interval interval, double weight, Interval threshold)
+      : this(variable, numberOfDerivations,
+             interval, new IntervalCollection(), weight, threshold) { }
+
+    public ShapeConstraint(string variable, int numberOfDerivations,
+                              Interval interval, IntervalCollection regions, double weight) 
+      : this(variable, numberOfDerivations, interval, regions, weight, 
+             new Interval(double.NegativeInfinity, double.PositiveInfinity)) { }
+
+    public ShapeConstraint(string variable, int numberOfDerivations,
+                              Interval interval, IntervalCollection regions, double weight, Interval threshold) {
       Variable = variable;
       NumberOfDerivations = numberOfDerivations;
       Interval = interval;
       Regions = regions;
       Weight = weight;
+      Threshold = threshold;
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -174,34 +203,29 @@ namespace HeuristicLab.Problems.DataAnalysis {
       string write(double val) => double.IsPositiveInfinity(val) ? "inf." : double.IsNegativeInfinity(val) ? "-inf." : $"{val}";
       if (!IsDerivative) {
         expression = string.Format($"f in [{write(Interval.LowerBound)} .. {write(Interval.UpperBound)}]");
-        if (Regions != null) {
-          foreach (var region in Regions.GetReadonlyDictionary())
-            expression += $", {region.Key} in [{write(region.Value.LowerBound)} .. {write(region.Value.UpperBound)}]";
+      } else {
+        var derivationString = string.Empty;
+        switch (numberOfDerivations) {
+          case 1:
+            derivationString = ""; break;
+          case 2:
+            derivationString = "²"; break;
+          case 3:
+            derivationString = "³"; break;
         }
-        if (Weight != 1.0) {
-          expression += $" weight: {weight}";
-        }
-
-        return expression;
+        expression = string.Format($"∂{derivationString}f/∂{Variable}{derivationString} in [{write(Interval.LowerBound)} .. {write(Interval.UpperBound)}]");
       }
 
-      var derivationString = string.Empty;
-      switch (numberOfDerivations) {
-        case 1:
-          derivationString = ""; break;
-        case 2:
-          derivationString = "²"; break;
-        case 3:
-          derivationString = "³"; break;
-      }
-      expression = string.Format($"∂{derivationString}f/∂{Variable}{derivationString} in [{write(Interval.LowerBound)} .. {write(Interval.UpperBound)}]");
-      if (Regions != null) {
+      if (Regions != null)
         foreach (var region in Regions.GetReadonlyDictionary())
           expression += $", {region.Key} in [{write(region.Value.LowerBound)} .. {write(region.Value.UpperBound)}]";
-      }
-      if (Weight != 1.0) {
+
+      if (Weight != 1.0)
         expression += $" weight: {weight}";
-      }
+
+      if (Threshold.LowerBound != double.NegativeInfinity || Threshold.UpperBound != double.PositiveInfinity)
+        expression += $" threshold in [{write(Threshold.LowerBound)} .. {write(Threshold.UpperBound)}]";
+
       return expression;
     }
   }

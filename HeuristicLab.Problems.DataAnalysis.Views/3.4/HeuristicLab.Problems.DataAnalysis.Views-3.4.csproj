@@ -628,6 +628,9 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Regression\ShapeConstraintView.resx">
+      <DependentUpon>ShapeConstraintView.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Resources\shapeConstraintsHelp.rtf" />
     <None Include="Resources\VS2008ImageLibrary_Annotations_Information.png" />
   </ItemGroup>

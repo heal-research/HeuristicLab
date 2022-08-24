@@ -68,6 +68,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       numberOfDerivationsComboBox.Enabled = Content != null && !Locked && !ReadOnly;
       lowerboundInput.Enabled = Content != null && !Locked && !ReadOnly;
       upperboundInput.Enabled = Content != null && !Locked && !ReadOnly;
+      thresholdLowerBoundInput.Enabled = Content != null && !Locked && !ReadOnly;
+      thresholdUpperBoundInput.Enabled = Content != null && !Locked && !ReadOnly;
       weightTextBox.Enabled = Content != null && !Locked && !ReadOnly;
     }
 
@@ -99,12 +101,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       if (Content == null) {
         lowerboundInput.Text = string.Empty;
         upperboundInput.Text = string.Empty;
+        thresholdLowerBoundInput.Text = string.Empty;
+        thresholdUpperBoundInput.Text = string.Empty;
         weightTextBox.Text = string.Empty;
         return;
       }
 
       lowerboundInput.Text = Content.Interval.LowerBound.ToString();
       upperboundInput.Text = Content.Interval.UpperBound.ToString();
+      thresholdLowerBoundInput.Text = Content.Threshold.LowerBound.ToString();
+      thresholdUpperBoundInput.Text = Content.Threshold.UpperBound.ToString();
       weightTextBox.Text = Content.Weight.ToString();
 
       variableInput.Text = Content.Variable;
@@ -205,6 +211,51 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       if (!String.IsNullOrEmpty(value)) Content.Variable = value;
     }
 
+    private void thresholdLowerBoundInput_Validating(object sender, CancelEventArgs e) {
+      var value = ParseDoubleValue(thresholdLowerBoundInput.Text, thresholdLowerBoundInput, errorProvider);
+      if (double.IsNaN(value)) {
+        errorProvider.SetError(thresholdLowerBoundInput, "Invalid input: threshold lower bound must be a double value.");
+        e.Cancel = true;
+        return;
+      }
+
+      if (value > Content.Threshold.UpperBound) {
+        errorProvider.SetError(thresholdLowerBoundInput, "Invalid input: threshold lower bound must be smaller than threshold upper bound.");
+        e.Cancel = true;
+        return;
+      }
+
+      errorProvider.SetError(thresholdLowerBoundInput, string.Empty);
+      e.Cancel = false;
+    }
+
+    private void thresholdLowerBoundInput_Validated(object sender, EventArgs e) {
+      var value = ParseDoubleValue(thresholdLowerBoundInput.Text, thresholdLowerBoundInput, errorProvider);
+      if (!double.IsNaN(value)) Content.Threshold = new Interval(value, Content.Threshold.UpperBound);
+    }
+
+    private void thresholdUpperBoundInput_Validating(object sender, CancelEventArgs e) {
+      var value = ParseDoubleValue(thresholdUpperBoundInput.Text, thresholdUpperBoundInput, errorProvider);
+      if (double.IsNaN(value)) {
+        errorProvider.SetError(thresholdUpperBoundInput, "Invalid Input: threshold upper bound must be a double value.");
+        e.Cancel = true;
+        return;
+      }
+
+      if (value < Content.Threshold.LowerBound) {
+        errorProvider.SetError(thresholdUpperBoundInput, "Invalid input: threshold upper bound must be bigger than threshold lower bound.");
+        e.Cancel = true;
+        return;
+      }
+
+      errorProvider.SetError(thresholdUpperBoundInput, string.Empty);
+      e.Cancel = false;
+    }
+
+    private void thresholdUpperBoundInput_Validated(object sender, EventArgs e) {
+      var value = ParseDoubleValue(thresholdUpperBoundInput.Text, thresholdUpperBoundInput, errorProvider);
+      if (!double.IsNaN(value)) Content.Threshold = new Interval(Content.Threshold.LowerBound, value);
+    }
     #endregion
 
     #region content event handlers
@@ -212,8 +263,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     private void Content_Changed(object sender, EventArgs e) {
       UpdateControls();
     }
-
-
     #endregion
+
+    
   }
 }
