@@ -241,7 +241,7 @@ namespace HeuristicLab.Core.Views {
                                (Content != null) && !Content.IsReadOnly && !ReadOnly;
       removeButton.Enabled = itemsListView.SelectedItems.Count > 0 &&
                              (Content != null) && !Content.IsReadOnly && !ReadOnly;
-      
+
       if (showDetailsCheckBox.Checked) {
         if (itemsListView.SelectedItems.Count == 1) {
           T item = (T)itemsListView.SelectedItems[0].Tag;
@@ -388,8 +388,14 @@ namespace HeuristicLab.Core.Views {
     }
     protected virtual void removeButton_Click(object sender, EventArgs e) {
       if (itemsListView.SelectedItems.Count > 0) {
-        foreach (ListViewItem item in itemsListView.SelectedItems)
-          Content.RemoveAt(item.Index);
+        var idx = new int[itemsListView.SelectedItems.Count];
+        for (int i = 0; i < idx.Length; i++) {
+          idx[i] = itemsListView.SelectedItems[i].Index;
+        }
+        Array.Sort(idx);
+        for (int i = idx.Length - 1; i >= 0; i--) {
+          Content.RemoveAt(idx[i]);
+        }
       }
     }
     #endregion

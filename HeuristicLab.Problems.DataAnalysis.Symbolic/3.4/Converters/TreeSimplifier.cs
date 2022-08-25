@@ -834,7 +834,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       } else if (IsBinFactor(node)) {
         var binFactor = node as BinaryFactorVariableTreeNode;
         return BinFactor(binFactor.Symbol, binFactor.VariableName, binFactor.VariableValue, Math.Abs(binFactor.Weight));
-      } else if (IsSquare(node) || IsExp(node) || IsSquareRoot(node) || IsCubeRoot(node)) {
+      } else if (IsSquare(node) || IsExp(node) || IsSquareRoot(node)) {
         return node; // abs(sqr(x)) = sqr(x), abs(exp(x)) = exp(x) ...
       } else if (IsMultiplication(node)) {
         var mul = mulSymbol.CreateTreeNode();
