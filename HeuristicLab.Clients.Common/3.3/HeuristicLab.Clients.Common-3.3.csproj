@@ -125,6 +125,7 @@
   <ItemGroup>
     <Compile Include="ClientFactory.cs" />
     <Compile Include="CryptoService.cs" />
+    <Compile Include="HiveClientUtil.cs" />
     <Compile Include="PasswordDialog.cs">
       <SubType>Form</SubType>
     </Compile>

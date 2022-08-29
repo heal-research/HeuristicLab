@@ -43,6 +43,7 @@ namespace HeuristicLab.Clients.Common {
       Settings.Default.Password = CryptoService.EncryptString(passwordTextBox.Text);
       if (savePasswordCheckBox.Checked)
         Settings.Default.Save();
+      Settings.Default.UseNewHive = newHiveCheckBox.Checked;
     }
   }
 }
