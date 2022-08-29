@@ -3,7 +3,7 @@
   "defaultVariables": null,
   "documentGenerator": {
     "fromDocument": {
-      "url": "C:\\Users\\P42386\\Desktop\\Workspace\\HeuristicLab\\HEAL.Hive.RestClient\\swagger.json",
+      "url": "C:\\Users\\P42386\\Desktop\\Hive\\Workspace\\HeuristicLab\\HEAL.Hive.RestClient\\swagger.json",
       "output": "HiveRestClient.nswag.json",
       "newLineBehavior": "Auto"
     }
@@ -28,7 +28,7 @@
       "generateBaseUrlProperty": true,
       "generateSyncMethods": true,
       "generatePrepareRequestAndProcessResponseAsAsyncMethods": false,
-      "exposeJsonSerializerSettings": true,
+      "exposeJsonSerializerSettings": false,
       "clientClassAccessModifier": "public",
       "typeAccessModifier": "public",
       "generateContractsOutput": false,
@@ -40,7 +40,7 @@
       "useRequestAndResponseSerializationSettings": false,
       "serializeTypeInformation": false,
       "queryNullValue": "",
-      "className": "{controller}HiveRestClient",
+      "className": "{controller}Client",
       "operationGenerationMode": "SingleClientFromPathSegments",
       "additionalNamespaceUsages": [],
       "additionalContractNamespaceUsages": [],

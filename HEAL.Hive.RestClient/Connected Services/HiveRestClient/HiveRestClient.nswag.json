@@ -2737,6 +2737,53 @@
         }
       }
     },
+    "/HiveUser/{username}": {
+      "get": {
+        "tags": [
+          "HiveUser"
+        ],
+        "summary": "get user by username",
+        "operationId": "HiveUserGET2",
+        "parameters": [
+          {
+            "name": "username",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "returns the user with the given username",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/HiveUserDTO"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HiveUserDTO"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HiveUserDTO"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "unexpected error"
+          },
+          "404": {
+            "description": "no user corresponds to this Idusername, or corresponding user is marked as deleted"
+          }
+        }
+      }
+    },
     "/Plugin/valid": {
       "get": {
         "tags": [
