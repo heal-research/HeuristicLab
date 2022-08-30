@@ -25,6 +25,8 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.ServiceModel;
+using HEAL.Hive.RestClient.HiveRestClient;
+using HeuristicLab.Clients.Hive.Wrapper;
 using HeuristicLab.Core;
 using HeuristicLab.PluginInfrastructure;
 
@@ -64,6 +66,45 @@ namespace HeuristicLab.Clients.Hive {
               pluginIds.Add(p.Id);
             } catch (FaultException<PluginAlreadyExistsFault> fault) {
               onlinePlugins.Add(service.GetPlugin(fault.Detail.Id));
+            }
+          } else {
+            pluginIds.Add(foundPlugin.Id);
+          }
+        } else {
+          pluginIds.Add(foundPlugin.Id);
+        }
+      }
+      return pluginIds;
+    }
+    public static List<Guid> GetPluginDependencies(HiveRestClient client, List<Plugin> onlinePlugins, List<Plugin> alreadyUploadedPlugins,
+                                               IEnumerable<IPluginDescription> neededPlugins) {
+      var pluginIds = new List<Guid>();
+      Dictionary<IPluginDescription, byte[]> checksumsNeededPlugins = CalcChecksumsForPlugins(neededPlugins);
+
+      foreach (var neededPlugin in checksumsNeededPlugins) {
+        Plugin foundPlugin = alreadyUploadedPlugins.FirstOrDefault(p => p.Hash.SequenceEqual(neededPlugin.Value));
+        if (foundPlugin == null) {
+          foundPlugin = onlinePlugins.FirstOrDefault(p => {
+            if (p.Hash != null) {
+              return p.Hash.SequenceEqual(neededPlugin.Value);
+            } else {
+              return false;
+            }
+          });
+
+          if (foundPlugin == null) {
+            Plugin p = CreatePlugin(neededPlugin.Key, neededPlugin.Value);
+            List<PluginData> pd = CreatePluginDatas(neededPlugin.Key);
+            try {
+              p.Id = client.PluginPost(p.toDto()).Id;
+              foreach (var pluginData in pd) {
+                pluginData.PluginId = p.Id;
+                client.PluginDataPost(pluginData.toDto());
+              }
+              alreadyUploadedPlugins.Add(p);
+              pluginIds.Add(p.Id);
+            } catch (FaultException<PluginAlreadyExistsFault> fault) {
+              onlinePlugins.Add(new PluginDTOWrapper(client.PluginGet(fault.Detail.Id)));
             }
           } else {
             pluginIds.Add(foundPlugin.Id);
