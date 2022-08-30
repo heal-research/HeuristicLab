@@ -28,10 +28,9 @@ using System.Net.Http;
 using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
-using HEAL.Hive.Domain.DTOs.Entities;
-using HEAL.Hive.Domain.Entities;
 using HEAL.Hive.Domain.Enums;
 using HEAL.Hive.RestClient.HiveRestClient;
+using HeuristicLab.Clients.Common;
 using HeuristicLab.Clients.Hive.Wrapper;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -50,7 +49,7 @@ namespace HeuristicLab.Clients.Hive {
       }
     }
 
-    private HiveRestClient _client = new HiveRestClient(Settings.Default.NewHiveEndpoint, new HttpClient());
+    private readonly HiveRestClient _client = new HiveRestClient(Settings.Default.NewHiveEndpoint, new HttpClient());
 
     #region Properties
     private HiveItemCollection<RefreshableJob> jobs;
@@ -491,6 +490,14 @@ namespace HeuristicLab.Clients.Hive {
 
         foreach (OptimizerHiveTask hiveJob in refreshableJob.HiveTasks.OfType<OptimizerHiveTask>()) {
           hiveJob.SetIndexInParentOptimizerList(null);
+        }
+
+        // set user id
+        try {
+          refreshableJob.Job.OwnerUserId = _client.HiveUserGet(HiveClientUtil.GetCurrentUserName()).Id;
+        }
+        catch (ApiException) {
+          refreshableJob.Job.OwnerUserId = Guid.Empty;
         }
 
         // upload Job
