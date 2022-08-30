@@ -427,13 +427,11 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
     }
 
     private static IEnumerable<Resource> GetAssignedResourcesForProject(Guid projectId) {
-      var assignedProjectResources = HiveServiceLocator.Instance.CallHiveService(s => s.GetAssignedResourcesForProject(projectId));
-      return HiveClient.Instance.Resources.Where(x => assignedProjectResources.Select(y => y.ResourceId).Contains(x.Id));
+      return HiveClient.Instance.GetAssignedResourcesForProject(projectId);
     }
 
     private static IEnumerable<Resource> GetAssignedResourcesForJob(Guid jobId) {
-      var assignedJobResources = HiveServiceLocator.Instance.CallHiveService(s => s.GetAssignedResourcesForJob(jobId));
-      return HiveClient.Instance.Resources.Where(x => assignedJobResources.Select(y => y.ResourceId).Contains(x.Id));
+      return HiveClient.Instance.GetAssignedResourcesForJob(jobId);
     }
 
     private void UpdateResourceTree() {

@@ -124,8 +124,11 @@
   <ItemGroup>
     <Compile Include="Exceptions\AnonymousUserException.cs" />
     <Compile Include="HiveAdminClient.cs" />
-    <Compile Include="HiveClientRest.cs" />
+    <Compile Include="HiveClients\RestHiveClient.cs" />
+    <Compile Include="HiveClients\WCFHiveClient.cs" />
     <Compile Include="HiveClient.cs" />
+    <Compile Include="IHiveClientImplementation.cs" />
+    <Compile Include="IHiveClient.cs" />
     <Compile Include="ServiceClients\AssignedJobResource.cs" />
     <Compile Include="ServiceClients\AssignedProjectResource.cs" />
     <Compile Include="ServiceClients\Project.cs" />
@@ -141,6 +144,12 @@
     <Compile Include="ServiceClients\JobPermission.cs" />
     <Compile Include="StateLogList.cs" />
     <Compile Include="StateLogListList.cs" />
+    <Compile Include="Wrapper\PluginDTOWrapper.cs" />
+    <Compile Include="Wrapper\DroneGroupDTOWrapper.cs" />
+    <Compile Include="Wrapper\DroneDTOWrapper.cs" />
+    <Compile Include="Wrapper\Extensions.cs" />
+    <Compile Include="Wrapper\HiveJobDTOWrapper.cs" />
+    <Compile Include="Wrapper\ProjectDTOWrapper.cs" />
     <None Include="app.config">
       <SubType>Designer</SubType>
     </None>
@@ -165,9 +174,7 @@
     <Compile Include="Plugin.cs" />
     <Compile Include="HiveTasks\HiveTask.cs" />
     <Compile Include="JobResultPoller.cs" />
-    <Compile Include="Util\DtoConverterUtil.cs" />
     <Compile Include="Util\PersistenceUtil.cs" />
-    <Compile Include="Util\PluginUtilRest.cs" />
     <Compile Include="Util\PluginUtil.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <None Include="Properties\AssemblyInfo.cs.frame" />
