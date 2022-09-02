@@ -247,7 +247,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       }
     }
 
-    public static bool CanOptimizeConstants(ISymbolicExpressionTree tree) {
+    public static bool CanOptimizeParameters(ISymbolicExpressionTree tree) {
       return TreeToAutoDiffTermConverter.IsCompatible(tree);
     }
 
