@@ -127,7 +127,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         "Defined constants will not be modified.\n " +
         "Modifiable numbers are specified with <num>. To specify a default value within this number symbol, a default value can be declared by e.g. <num=1.0>.", 
         new StringValue("<num> * x*x + 0.0")));
-      Parameters.Add(new FixedValueParameter<IntValue>(IterationsParameterName, "The maximum number of iterations for parameter optimization.", new IntValue(200)));
+      Parameters.Add(new FixedValueParameter<IntValue>(IterationsParameterName, "The maximum number of iterations for parameter optimization. MaxIterations=0 means that the iterations stopping criterion is disabled and the algorithm runs until convergence. MaxIterations=-1 means to disable optimization completely.", new IntValue(200)));
       Parameters.Add(new FixedValueParameter<IntValue>(RestartsParameterName, "The number of independent random restarts (>0)", new IntValue(10)));
       Parameters.Add(new FixedValueParameter<IntValue>(SeedParameterName, "The PRNG seed value.", new IntValue()));
       Parameters.Add(new FixedValueParameter<BoolValue>(SetSeedRandomlyParameterName, "Switch to determine if the random number seed should be initialized randomly.", new BoolValue(true)));

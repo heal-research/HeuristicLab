@@ -32,8 +32,10 @@ using HeuristicLab.Problems.DataAnalysis.Symbolic;
 namespace HeuristicLab.Algorithms.DataAnalysis {
   [StorableType("55412E08-DAD4-4C2E-9181-C142E7EA9474")]
   [Item("RandomForestModelFull", "Represents a random forest for regression and classification.")]
-  public sealed class RandomForestModelFull : ClassificationModel, IRandomForestModel {
-
+  public sealed class RandomForestModelFull : ClassificationModel, IRandomForestModel, IStorableContent {
+    
+    public string Filename { get; set; }
+    
     public override IEnumerable<string> VariablesUsedForPrediction {
       get { return inputVariables; }
     }
