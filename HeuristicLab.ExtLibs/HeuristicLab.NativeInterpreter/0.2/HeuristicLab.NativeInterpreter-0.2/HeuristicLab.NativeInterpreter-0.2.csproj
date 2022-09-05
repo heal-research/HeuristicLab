@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{E05AC63F-6924-4C83-BD0A-EDF3C103C1D8}</ProjectGuid>
+    <ProjectGuid>{350C6529-D7F0-494D-A274-590306BAB67D}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>HeuristicLab.Problems.DataAnalysis.Symbolic.NativeInterpreter</RootNamespace>
