@@ -75,6 +75,10 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
     }
 
     private void Grammar_Changed(object sender, EventArgs e) {
+      if (InvokeRequired) {
+        Invoke(new EventHandler(Grammar_Changed), sender, e);
+        return;
+      }
       if (Grammar == null) return;
       if (Symbol == null) return;
       if (Symbol != null && !Grammar.ContainsSymbol(Symbol)) Symbol = null;
@@ -82,8 +86,11 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
     }
 
     private void Grammar_ReadOnlyChanged(object sender, EventArgs e) {
-      if (InvokeRequired) Invoke((MethodInvoker)BuildAllowedChildSymbolsTree);
-      else BuildAllowedChildSymbolsTree();
+      if (InvokeRequired) {
+        Invoke((MethodInvoker)BuildAllowedChildSymbolsTree);
+        return;
+      }
+      BuildAllowedChildSymbolsTree();
     }
 
     private void OnGrammarChanged() {

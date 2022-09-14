@@ -130,8 +130,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
 
     private void UpdateContent() {
       if (Content != null) {
-        Content.Fixed = true;
         DeregisterContentEvents();
+        Content.Fixed = true;
         Content.VariableNames = variableNamesView.Content.CheckedItems.Select(x => x.Value);
         Content.AllVariableNames = variableNamesView.Content.Select(x => x.Value);
         RegisterContentEvents();

@@ -35,34 +35,39 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     protected DataAnalysisGrammar(string name, string description) : base(name, description) { }
 
     public void ConfigureVariableSymbols(IDataAnalysisProblemData problemData) {
+      StartGrammarManipulation();
+
       var dataset = problemData.Dataset;
       foreach (var varSymbol in Symbols.OfType<VariableBase>()) {
-        if (!varSymbol.Fixed) {
-          varSymbol.AllVariableNames = problemData.InputVariables.Select(x => x.Value).Where(x => dataset.VariableHasType<double>(x));
-          varSymbol.VariableNames = problemData.AllowedInputVariables.Where(x => dataset.VariableHasType<double>(x));
-        }
+        if (varSymbol.Fixed) continue;
+        if (varSymbol is BinaryFactorVariable) continue;
+        if (varSymbol is FactorVariable) continue;
+
+        varSymbol.AllVariableNames = problemData.InputVariables.Select(x => x.Value).Where(x => dataset.VariableHasType<double>(x));
+        varSymbol.VariableNames = problemData.AllowedInputVariables.Where(x => dataset.VariableHasType<double>(x));
+
       }
+
       foreach (var factorSymbol in Symbols.OfType<BinaryFactorVariable>()) {
-        if (!factorSymbol.Fixed) {
-          factorSymbol.AllVariableNames = problemData.InputVariables.Select(x => x.Value).Where(x => dataset.VariableHasType<string>(x));
-          factorSymbol.VariableNames = problemData.AllowedInputVariables.Where(x => dataset.VariableHasType<string>(x));
-          factorSymbol.VariableValues = factorSymbol.VariableNames
-            .ToDictionary(varName => varName, varName => dataset.GetStringValues(varName).Distinct().ToList());
-        }
+        if (factorSymbol.Fixed) continue;
+        factorSymbol.AllVariableNames = problemData.InputVariables.Select(x => x.Value).Where(x => dataset.VariableHasType<string>(x));
+        factorSymbol.VariableNames = problemData.AllowedInputVariables.Where(x => dataset.VariableHasType<string>(x));
+        factorSymbol.VariableValues = factorSymbol.VariableNames
+          .ToDictionary(varName => varName, varName => dataset.GetStringValues(varName).Distinct().ToList());
       }
+
       foreach (var factorSymbol in Symbols.OfType<FactorVariable>()) {
-        if (!factorSymbol.Fixed) {
-          factorSymbol.AllVariableNames = problemData.InputVariables.Select(x => x.Value).Where(x => dataset.VariableHasType<string>(x));
-          factorSymbol.VariableNames = problemData.AllowedInputVariables.Where(x => dataset.VariableHasType<string>(x));
-          factorSymbol.VariableValues = factorSymbol.VariableNames
-            .ToDictionary(varName => varName,
-            varName => dataset.GetStringValues(varName).Distinct()
-            .Select((n, i) => Tuple.Create(n, i))
-            .ToDictionary(tup => tup.Item1, tup => tup.Item2));
-        }
+        if (factorSymbol.Fixed) continue;
+        factorSymbol.AllVariableNames = problemData.InputVariables.Select(x => x.Value).Where(x => dataset.VariableHasType<string>(x));
+        factorSymbol.VariableNames = problemData.AllowedInputVariables.Where(x => dataset.VariableHasType<string>(x));
+        factorSymbol.VariableValues = factorSymbol.VariableNames
+          .ToDictionary(varName => varName,
+          varName => dataset.GetStringValues(varName).Distinct()
+          .Select((n, i) => Tuple.Create(n, i))
+          .ToDictionary(tup => tup.Item1, tup => tup.Item2));
       }
+
+      FinishedGrammarManipulation();
     }
-
-
   }
 }
