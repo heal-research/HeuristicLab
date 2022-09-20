@@ -29,8 +29,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HeuristicLab.Random-3.3", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HeuristicLab.Selection-3.3", "HeuristicLab.Selection\3.3\HeuristicLab.Selection-3.3.csproj", "{2C36CD4F-E5F5-43A4-801A-201EA895FE17}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HeuristicLab.Operators.Programmable-3.3", "HeuristicLab.Operators.Programmable\3.3\HeuristicLab.Operators.Programmable-3.3.csproj", "{6A5F8C2D-B0C3-4B36-BC20-9B1A91EE6DB6}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HeuristicLab.Tracing-3.3", "HeuristicLab.Tracing\3.3\HeuristicLab.Tracing-3.3.csproj", "{EE2034D9-6E27-48A1-B855-42D45F69A4FC}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HeuristicLab.Collections-3.3", "HeuristicLab.Collections\3.3\HeuristicLab.Collections-3.3.csproj", "{958B43BC-CC5C-4FA2-8628-2B3B01D890B6}"
@@ -294,18 +292,6 @@ Global
 		{2C36CD4F-E5F5-43A4-801A-201EA895FE17}.Release|x64.Build.0 = Release|x64
 		{2C36CD4F-E5F5-43A4-801A-201EA895FE17}.Release|x86.ActiveCfg = Release|x86
 		{2C36CD4F-E5F5-43A4-801A-201EA895FE17}.Release|x86.Build.0 = Release|x86
-		{6A5F8C2D-B0C3-4B36-BC20-9B1A91EE6DB6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6A5F8C2D-B0C3-4B36-BC20-9B1A91EE6DB6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6A5F8C2D-B0C3-4B36-BC20-9B1A91EE6DB6}.Debug|x64.ActiveCfg = Debug|x64
-		{6A5F8C2D-B0C3-4B36-BC20-9B1A91EE6DB6}.Debug|x64.Build.0 = Debug|x64
-		{6A5F8C2D-B0C3-4B36-BC20-9B1A91EE6DB6}.Debug|x86.ActiveCfg = Debug|x86
-		{6A5F8C2D-B0C3-4B36-BC20-9B1A91EE6DB6}.Debug|x86.Build.0 = Debug|x86
-		{6A5F8C2D-B0C3-4B36-BC20-9B1A91EE6DB6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6A5F8C2D-B0C3-4B36-BC20-9B1A91EE6DB6}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6A5F8C2D-B0C3-4B36-BC20-9B1A91EE6DB6}.Release|x64.ActiveCfg = Release|x64
-		{6A5F8C2D-B0C3-4B36-BC20-9B1A91EE6DB6}.Release|x64.Build.0 = Release|x64
-		{6A5F8C2D-B0C3-4B36-BC20-9B1A91EE6DB6}.Release|x86.ActiveCfg = Release|x86
-		{6A5F8C2D-B0C3-4B36-BC20-9B1A91EE6DB6}.Release|x86.Build.0 = Release|x86
 		{EE2034D9-6E27-48A1-B855-42D45F69A4FC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{EE2034D9-6E27-48A1-B855-42D45F69A4FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EE2034D9-6E27-48A1-B855-42D45F69A4FC}.Debug|x64.ActiveCfg = Debug|x64
