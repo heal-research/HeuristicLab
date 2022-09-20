@@ -20,7 +20,7 @@
 #endregion
 
 using System;
-using System.Windows.Forms;
+//using System.Windows.Forms;
 
 namespace HeuristicLab.PluginInfrastructure {
   public static class ErrorHandling {
@@ -43,7 +43,7 @@ namespace HeuristicLab.PluginInfrastructure {
         return message;
       }
     }
-
+    /*
     public static void ShowErrorDialog(Exception exception) {
       ShowErrorDialog(string.Empty, exception);
     }
@@ -65,6 +65,6 @@ namespace HeuristicLab.PluginInfrastructure {
           dialog.ShowDialog(owner);
         }
       }
-    }
+    }*/
   }
 }

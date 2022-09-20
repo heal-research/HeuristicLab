@@ -83,7 +83,9 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
       if (reflectionOnlyAssemblies.ContainsKey(args.Name))
         return reflectionOnlyAssemblies[args.Name];
       else
-        return Assembly.ReflectionOnlyLoad(args.Name);
+        //TODO: .NET6
+        //return Assembly.ReflectionOnlyLoad(args.Name);
+        return Assembly.Load(args.Name);
     }
 
 
@@ -180,14 +182,14 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
       // try to load each .dll file in the plugin directory into the reflection only context
       foreach (string filename in Directory.GetFiles(baseDir, "*.dll").Union(Directory.GetFiles(baseDir, "*.exe"))) {
         try {
-          Assembly asm = Assembly.ReflectionOnlyLoadFrom(filename);
+          //TODO: .NET6
+          //Assembly asm = Assembly.ReflectionOnlyLoadFrom(filename);        
+          Assembly asm = Assembly.LoadFrom(filename);
+
           RegisterLoadedAssembly(asm);
           assemblies.Add(asm);
-        }
-        catch (BadImageFormatException) { } // just ignore the case that the .dll file is not a CLR assembly (e.g. a native dll)
-        catch (FileLoadException) { }
-        catch (SecurityException) { }
-        catch (ReflectionTypeLoadException) { } // referenced assemblies are missing
+        } catch (BadImageFormatException) { } // just ignore the case that the .dll file is not a CLR assembly (e.g. a native dll)
+        catch (FileLoadException) { } catch (SecurityException) { } catch (ReflectionTypeLoadException) { } // referenced assemblies are missing
       }
       return assemblies;
     }
@@ -216,24 +218,19 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
             }
             desc.Disable(errorStrBuiler.ToString());
           }
-        }
-        catch (BadImageFormatException ex) {
+        } catch (BadImageFormatException ex) {
           // disable the plugin
           desc.Disable("Problem while loading plugin assemblies:" + Environment.NewLine + "BadImageFormatException: " + ex.Message);
-        }
-        catch (FileNotFoundException ex) {
+        } catch (FileNotFoundException ex) {
           // disable the plugin
           desc.Disable("Problem while loading plugin assemblies:" + Environment.NewLine + "FileNotFoundException: " + ex.Message);
-        }
-        catch (FileLoadException ex) {
+        } catch (FileLoadException ex) {
           // disable the plugin
           desc.Disable("Problem while loading plugin assemblies:" + Environment.NewLine + "FileLoadException: " + ex.Message);
-        }
-        catch (ArgumentException ex) {
+        } catch (ArgumentException ex) {
           // disable the plugin
           desc.Disable("Problem while loading plugin assemblies:" + Environment.NewLine + "ArgumentException: " + ex.Message);
-        }
-        catch (SecurityException ex) {
+        } catch (SecurityException ex) {
           // disable the plugin
           desc.Disable("Problem while loading plugin assemblies:" + Environment.NewLine + "SecurityException: " + ex.Message);
         }
@@ -260,14 +257,10 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
         }
         // ignore exceptions. Just don't yield a plugin description when an exception is thrown
         catch (FileNotFoundException) {
-        }
-        catch (FileLoadException) {
-        }
-        catch (InvalidPluginException) {
-        }
-        catch (TypeLoadException) {
-        }
-        catch (MissingMemberException) {
+        } catch (FileLoadException) {
+        } catch (InvalidPluginException) {
+        } catch (TypeLoadException) {
+        } catch (MissingMemberException) {
         }
       }
       return pluginDescriptions;
@@ -339,8 +332,7 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
         if (dependencyAttr.ConstructorArguments.Count > 1) {
           try {
             version = new Version((string)dependencyAttr.ConstructorArguments[1].Value); // might throw FormatException
-          }
-          catch (FormatException ex) {
+          } catch (FormatException ex) {
             throw new InvalidPluginException("Invalid version format of dependency " + name + " in plugin " + pluginType.ToString(), ex);
           }
         }
@@ -510,29 +502,25 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
         foreach (string assemblyLocation in desc.AssemblyLocations) {
           if (desc.PluginState != PluginState.Disabled) {
             try {
-              string assemblyName = (from assembly in AppDomain.CurrentDomain.ReflectionOnlyGetAssemblies()
+              //TODO: .NET6
+              string assemblyName = (from assembly in AppDomain.CurrentDomain.GetAssemblies()
                                      where string.Equals(Path.GetFullPath(assembly.Location), Path.GetFullPath(assemblyLocation), StringComparison.CurrentCultureIgnoreCase)
                                      select assembly.FullName).Single();
               // now load the assemblies into the execution context  
               // this can still lead to an exception
               // even when the assemby was successfully loaded into the reflection only context before 
-              // when loading the assembly using it's assemblyName it can be loaded from a different location than before (e.g. the GAC)
+              // when loading the assembly using it's assemblyName it can be loaded from a different location than before (e.g. the GAC)             
               Assembly.Load(assemblyName);
               assemblyNames.Add(assemblyName);
-            }
-            catch (BadImageFormatException) {
+            } catch (BadImageFormatException) {
               desc.Disable(Path.GetFileName(assemblyLocation) + " is not a valid assembly.");
-            }
-            catch (FileLoadException) {
+            } catch (FileLoadException) {
               desc.Disable("Can't load file " + Path.GetFileName(assemblyLocation));
-            }
-            catch (FileNotFoundException) {
+            } catch (FileNotFoundException) {
               desc.Disable("File " + Path.GetFileName(assemblyLocation) + " is missing.");
-            }
-            catch (SecurityException) {
+            } catch (SecurityException) {
               desc.Disable("File " + Path.GetFileName(assemblyLocation) + " can't be loaded because of security constraints.");
-            }
-            catch (NotSupportedException ex) {
+            } catch (NotSupportedException ex) {
               // disable the plugin
               desc.Disable("Problem while loading plugin assemblies:" + Environment.NewLine + "NotSupportedException: " + ex.Message);
             }
@@ -611,11 +599,19 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
 
     // register assembly in the assembly cache for the ReflectionOnlyAssemblyResolveEvent
     private void RegisterLoadedAssembly(Assembly asm) {
+      //TODO: .NET6
+      //if (reflectionOnlyAssemblies.ContainsKey(asm.FullName) || reflectionOnlyAssemblies.ContainsKey(asm.GetName().Name)) {
+      //  throw new ArgumentException("An assembly with the name " + asm.GetName().Name + " has been registered already.", "asm");
+      //}
+      //reflectionOnlyAssemblies.Add(asm.FullName, asm);
+      //reflectionOnlyAssemblies.Add(asm.GetName().Name, asm); // add short name
+
       if (reflectionOnlyAssemblies.ContainsKey(asm.FullName) || reflectionOnlyAssemblies.ContainsKey(asm.GetName().Name)) {
-        throw new ArgumentException("An assembly with the name " + asm.GetName().Name + " has been registered already.", "asm");
+        //throw new ArgumentException("An assembly with the name " + asm.GetName().Name + " has been registered already.", "asm");
+      } else {
+        reflectionOnlyAssemblies.Add(asm.FullName, asm);
+        reflectionOnlyAssemblies.Add(asm.GetName().Name, asm); // add short name
       }
-      reflectionOnlyAssemblies.Add(asm.FullName, asm);
-      reflectionOnlyAssemblies.Add(asm.GetName().Name, asm); // add short name
     }
 
     private void OnPluginLoaded(PluginInfrastructureEventArgs e) {
