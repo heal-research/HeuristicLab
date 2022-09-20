@@ -721,7 +721,7 @@ namespace HeuristicLab.Optimization.Views {
           }
         }
         catch (Exception ex) {
-          ErrorHandling.ShowErrorDialog(this, ex);
+          ErrorHandlingUI.ShowErrorDialog(this, ex);
         }
       }
     }

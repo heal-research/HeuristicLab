@@ -103,7 +103,7 @@ namespace HeuristicLab.Clients.OKB.Administration {
     }
 
     private void refreshButton_Click(object sender, EventArgs e) {
-      Content.RefreshAsync(new Action<Exception>((Exception ex) => ErrorHandling.ShowErrorDialog(this, "Refresh failed.", ex)));
+      Content.RefreshAsync(new Action<Exception>((Exception ex) => ErrorHandlingUI.ShowErrorDialog(this, "Refresh failed.", ex)));
     }
   }
 }

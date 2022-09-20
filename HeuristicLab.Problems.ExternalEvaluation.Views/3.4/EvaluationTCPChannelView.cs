@@ -113,7 +113,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation.Views {
         Content.Open();
       }
       catch (Exception ex) {
-        PluginInfrastructure.ErrorHandling.ShowErrorDialog(ex);
+        PluginInfrastructure.ErrorHandlingUI.ShowErrorDialog(ex);
       }
     }
     private void disconnectButton_Click(object sender, EventArgs e) {
@@ -121,7 +121,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation.Views {
         Content.Close();
       }
       catch (Exception ex) {
-        PluginInfrastructure.ErrorHandling.ShowErrorDialog(ex);
+        PluginInfrastructure.ErrorHandlingUI.ShowErrorDialog(ex);
       }
     }
     #endregion

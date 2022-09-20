@@ -102,7 +102,7 @@ namespace HeuristicLab.Clients.Access.Views {
           btnRegisterClient.Enabled = true;
           btnCollectInformation.Enabled = true;
           btnCancel.Enabled = true;
-          PluginInfrastructure.ErrorHandling.ShowErrorDialog(task.Exception);
+          PluginInfrastructure.ErrorHandlingUI.ShowErrorDialog(task.Exception);
         }
       }
     }

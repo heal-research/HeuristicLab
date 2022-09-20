@@ -91,9 +91,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression.Views {
         solution.Name = "Baseline (linear subset)";
         return solution;
       } catch (NotSupportedException e) {
-        ErrorHandling.ShowErrorDialog("Could not create a linear regression solution.", e);
+        ErrorHandlingUI.ShowErrorDialog("Could not create a linear regression solution.", e);
       } catch (ArgumentException e) {
-        ErrorHandling.ShowErrorDialog("Could not create a linear regression solution.", e);
+        ErrorHandlingUI.ShowErrorDialog("Could not create a linear regression solution.", e);
       }
       return null;
     }

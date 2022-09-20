@@ -57,7 +57,7 @@ namespace HeuristicLab.ExactOptimization.Views {
       try {
         base.Compile();
       } catch (ProblemDefinitionScriptException e) {
-        PluginInfrastructure.ErrorHandling.ShowErrorDialog(e);
+        PluginInfrastructure.ErrorHandlingUI.ShowErrorDialog(e);
         return false;
       }
       return true;

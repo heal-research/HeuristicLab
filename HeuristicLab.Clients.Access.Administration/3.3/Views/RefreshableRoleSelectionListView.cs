@@ -49,7 +49,7 @@ namespace HeuristicLab.Clients.Access.Administration {
             Content.RefreshRoles();
           }
           CurrentRoles = AccessAdministrationClient.CallAccessService<List<Role>>(s => s.GetUserRoles(CurrentUser));
-        }), PluginInfrastructure.ErrorHandling.ShowErrorDialog);
+        }), PluginInfrastructure.ErrorHandlingUI.ShowErrorDialog);
       }
     }
 
@@ -108,7 +108,7 @@ namespace HeuristicLab.Clients.Access.Administration {
         foreach (var role in deletedRoles) {
           AccessAdministrationClient.CallAccessService(s => s.RemoveUserFromRole(role, CurrentUser));
         }
-      }), PluginInfrastructure.ErrorHandling.ShowErrorDialog);
+      }), PluginInfrastructure.ErrorHandlingUI.ShowErrorDialog);
     }
   }
 }

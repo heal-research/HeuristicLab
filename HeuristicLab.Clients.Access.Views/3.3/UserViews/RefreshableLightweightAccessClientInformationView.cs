@@ -38,7 +38,7 @@ namespace HeuristicLab.Clients.Access.Views {
     }
 
     protected override void RefreshData() {
-      Content.ExecuteActionAsync(RefreshUserData, PluginInfrastructure.ErrorHandling.ShowErrorDialog);
+      Content.ExecuteActionAsync(RefreshUserData, PluginInfrastructure.ErrorHandlingUI.ShowErrorDialog);
     }
 
     protected override void Content_Refreshing(object sender, EventArgs e) {
@@ -70,7 +70,7 @@ namespace HeuristicLab.Clients.Access.Views {
     private void storeButton_Click(object sender, EventArgs e) {
       AccessClient.Instance.ExecuteActionAsync(new Action(delegate {
         AccessClient.CallAccessService(x => x.UpdateLightweightUser(UserInformation.Instance.User));
-      }), HeuristicLab.PluginInfrastructure.ErrorHandling.ShowErrorDialog);
+      }), HeuristicLab.PluginInfrastructure.ErrorHandlingUI.ShowErrorDialog);
     }
   }
 }

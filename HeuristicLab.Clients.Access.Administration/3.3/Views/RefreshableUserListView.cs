@@ -27,7 +27,7 @@ namespace HeuristicLab.Clients.Access.Administration {
     }
 
     protected override void RefreshData() {
-      Content.RefreshUsersAsync(PluginInfrastructure.ErrorHandling.ShowErrorDialog);
+      Content.RefreshUsersAsync(PluginInfrastructure.ErrorHandlingUI.ShowErrorDialog);
     }
 
     protected override void Content_Refreshing(object sender, EventArgs e) {
@@ -67,13 +67,13 @@ namespace HeuristicLab.Clients.Access.Administration {
     void Users_ItemsRemoved(object sender, Collections.CollectionItemsChangedEventArgs<Collections.IndexedItem<User>> e) {
       foreach (var u in e.Items) {
         if (u.Value.Id != Guid.Empty) {
-          Content.DeleteUserAsync(u.Value, PluginInfrastructure.ErrorHandling.ShowErrorDialog);
+          Content.DeleteUserAsync(u.Value, PluginInfrastructure.ErrorHandlingUI.ShowErrorDialog);
         }
       }
     }
 
     private void storeButton_Click(object sender, EventArgs e) {
-      Content.StoreUsersAsync(PluginInfrastructure.ErrorHandling.ShowErrorDialog);
+      Content.StoreUsersAsync(PluginInfrastructure.ErrorHandlingUI.ShowErrorDialog);
     }
   }
 }

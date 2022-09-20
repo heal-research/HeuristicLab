@@ -76,7 +76,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       BackgroundWorker worker = (BackgroundWorker)sender;
       if (!e.Cancelled && !worker.CancellationPending) {
         if (e.Error != null) {
-          ErrorHandling.ShowErrorDialog(e.Error);
+          ErrorHandlingUI.ShowErrorDialog(e.Error);
         } else {
           OnCorrelationCalculationFinished((double[,])e.Result, bwInfo.Calculator, bwInfo.Partition, bwInfo.IgnoreMissingValues, bwInfo.Variable);
         }

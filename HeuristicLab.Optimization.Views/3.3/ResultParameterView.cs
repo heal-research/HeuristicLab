@@ -118,7 +118,7 @@ namespace HeuristicLab.Optimization.Views {
         try {
           Content.DefaultValue = (T)typeSelectorDialog.TypeSelector.CreateInstanceOfSelectedType();
         } catch (Exception ex) {
-          ErrorHandling.ShowErrorDialog(this, ex);
+          ErrorHandlingUI.ShowErrorDialog(this, ex);
         }
       }
     }

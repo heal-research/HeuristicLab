@@ -97,7 +97,7 @@ namespace HeuristicLab.Clients.Access.Administration {
         ShowPassword(result);
       });
 
-      AccessAdministrationClient.Instance.ExecuteActionAsync(a, PluginInfrastructure.ErrorHandling.ShowErrorDialog); ;
+      AccessAdministrationClient.Instance.ExecuteActionAsync(a, PluginInfrastructure.ErrorHandlingUI.ShowErrorDialog); ;
     }
 
     private void ShowPassword(string result) {

@@ -123,8 +123,8 @@ namespace HeuristicLab.Clients.OKB.Query {
             try {
               ex.Flatten().Handle(x => x is OperationCanceledException);
             } catch (AggregateException remaining) {
-              if (remaining.InnerExceptions.Count == 1) ErrorHandling.ShowErrorDialog(this, "Refresh results failed.", remaining.InnerExceptions[0]);
-              else ErrorHandling.ShowErrorDialog(this, "Refresh results failed.", remaining);
+              if (remaining.InnerExceptions.Count == 1) ErrorHandlingUI.ShowErrorDialog(this, "Refresh results failed.", remaining.InnerExceptions[0]);
+              else ErrorHandlingUI.ShowErrorDialog(this, "Refresh results failed.", remaining);
             }
           }
         }));
@@ -155,7 +155,7 @@ namespace HeuristicLab.Clients.OKB.Query {
     }
 
     private void refreshFiltersButton_Click(object sender, EventArgs e) {
-      Content.RefreshAsync(new Action<Exception>((Exception ex) => ErrorHandling.ShowErrorDialog(this, "Refresh failed.", ex)));
+      Content.RefreshAsync(new Action<Exception>((Exception ex) => ErrorHandlingUI.ShowErrorDialog(this, "Refresh failed.", ex)));
     }
 
     private void refreshResultsButton_Click(object sender, EventArgs e) {

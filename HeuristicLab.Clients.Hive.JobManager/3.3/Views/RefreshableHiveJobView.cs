@@ -378,7 +378,7 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       else {
         //don't show the error dialog when downloading tasks, the HiveClient will throw an exception and the dialog will be shown then
         if (sender.GetType() != typeof(ConcurrentTaskDownloader<ItemTask>) && sender.GetType() != typeof(TaskDownloader)) {
-          ErrorHandling.ShowErrorDialog(this, e.Value);
+          ErrorHandlingUI.ShowErrorDialog(this, e.Value);
         }
       }
     }
@@ -468,7 +468,7 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
           Content.Log.LogException(t.Exception);
         }, TaskContinuationOptions.OnlyOnFaulted);
       } else {
-        HiveClient.StartJob((Exception ex) => ErrorHandling.ShowErrorDialog(this, "Start failed.", ex), Content, new CancellationToken());
+        HiveClient.StartJob((Exception ex) => ErrorHandlingUI.ShowErrorDialog(this, "Start failed.", ex), Content, new CancellationToken());
         UpdateSelectorDialog();
       }
     }
@@ -534,7 +534,7 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
         try {
           invoker.EndInvoke(ar);
         } catch (Exception ex) {
-          ThreadPool.QueueUserWorkItem(delegate (object exception) { ErrorHandling.ShowErrorDialog(this, (Exception)exception); }, ex);
+          ThreadPool.QueueUserWorkItem(delegate (object exception) { ErrorHandlingUI.ShowErrorDialog(this, (Exception)exception); }, ex);
         }
       }, null);
       UpdateSelectorDialog();
@@ -551,7 +551,7 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
         try {
           invoker.EndInvoke(ar);
         } catch (Exception ex) {
-          ThreadPool.QueueUserWorkItem(delegate (object exception) { ErrorHandling.ShowErrorDialog(this, (Exception)exception); }, ex);
+          ThreadPool.QueueUserWorkItem(delegate (object exception) { ErrorHandlingUI.ShowErrorDialog(this, (Exception)exception); }, ex);
         }
       }, null);
       UpdateSelectorDialog();

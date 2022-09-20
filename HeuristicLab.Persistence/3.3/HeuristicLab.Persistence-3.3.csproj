@@ -111,15 +111,11 @@ $SolutionDir/PreBuildEvent.sh
     <Folder Include="Transformers\" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="HEAL.Attic, Version=1.0.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\bin\HEAL.Attic.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Remove="Transformers\BitmapTransformer.cs" />
     <Compile Remove="Transformers\FontTransformer.cs" />
     <Compile Remove="Transformers\KnownStorableTypesMap.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="HEAL.Attic" Version="1.7.0" />
   </ItemGroup>
 </Project>

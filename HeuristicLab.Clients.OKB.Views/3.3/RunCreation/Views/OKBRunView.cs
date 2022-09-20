@@ -73,7 +73,7 @@ namespace HeuristicLab.Clients.OKB.RunCreation.Views {
         MessageBox.Show("You have to register your client to be able to store OKB runs." + Environment.NewLine
           + " Please click in the menu bar on Services -> Access -> Client Information and register your client. ", "Missing client registration", MessageBoxButtons.OK, MessageBoxIcon.Information);
       } catch (Exception ex) {
-        ErrorHandling.ShowErrorDialog(this, "Store failed.", ex);
+        ErrorHandlingUI.ShowErrorDialog(this, "Store failed.", ex);
       }
     }
     #endregion

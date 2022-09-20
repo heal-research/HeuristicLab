@@ -221,7 +221,7 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
       }
       try {
         RunCreationClient.Instance.SetCharacteristicValues(Content.ProblemId, values);
-      } catch (Exception ex) { ErrorHandling.ShowErrorDialog(ex); }
+      } catch (Exception ex) { ErrorHandlingUI.ShowErrorDialog(ex); }
     }
     private void calculateButton_Click(object sender, EventArgs e) {
       var calculators = calculatorList.CheckedItems.Select(x => x.Value).Where(x => x.CanCalculate()).ToList();

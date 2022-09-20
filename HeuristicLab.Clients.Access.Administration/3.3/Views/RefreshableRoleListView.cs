@@ -27,7 +27,7 @@ namespace HeuristicLab.Clients.Access.Administration {
     }
 
     protected override void RefreshData() {
-      Content.RefreshRolesAsync(PluginInfrastructure.ErrorHandling.ShowErrorDialog);
+      Content.RefreshRolesAsync(PluginInfrastructure.ErrorHandlingUI.ShowErrorDialog);
     }
 
     protected override void Content_Refreshing(object sender, EventArgs e) {
@@ -66,12 +66,12 @@ namespace HeuristicLab.Clients.Access.Administration {
 
     void Roles_ItemsRemoved(object sender, Collections.CollectionItemsChangedEventArgs<Collections.IndexedItem<Role>> e) {
       foreach (var u in e.Items) {
-        Content.DeleteRoleAsync(u.Value, PluginInfrastructure.ErrorHandling.ShowErrorDialog);
+        Content.DeleteRoleAsync(u.Value, PluginInfrastructure.ErrorHandlingUI.ShowErrorDialog);
       }
     }
 
     private void storeButton_Click(object sender, EventArgs e) {
-      Content.StoreRolesAsync(PluginInfrastructure.ErrorHandling.ShowErrorDialog);
+      Content.StoreRolesAsync(PluginInfrastructure.ErrorHandlingUI.ShowErrorDialog);
     }
   }
 }

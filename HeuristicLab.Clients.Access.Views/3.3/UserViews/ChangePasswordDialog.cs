@@ -104,7 +104,7 @@ namespace HeuristicLab.Clients.Access.Views {
       });
       call.BeginInvoke(delegate(IAsyncResult result) {
         Exception ex = call.EndInvoke(result);
-        if (ex != null) PluginInfrastructure.ErrorHandling.ShowErrorDialog(ex);
+        if (ex != null) PluginInfrastructure.ErrorHandlingUI.ShowErrorDialog(ex);
       }, null);
     }
 

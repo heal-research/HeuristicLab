@@ -96,8 +96,8 @@ namespace HeuristicLab.Clients.Access.Administration {
         }
       });
 
-      AccessAdministrationClient.Instance.ExecuteActionAsync(storeAction, PluginInfrastructure.ErrorHandling.ShowErrorDialog);
-      AccessAdministrationClient.Instance.ExecuteActionAsync(deleteAction, PluginInfrastructure.ErrorHandling.ShowErrorDialog);
+      AccessAdministrationClient.Instance.ExecuteActionAsync(storeAction, PluginInfrastructure.ErrorHandlingUI.ShowErrorDialog);
+      AccessAdministrationClient.Instance.ExecuteActionAsync(deleteAction, PluginInfrastructure.ErrorHandlingUI.ShowErrorDialog);
     }
 
     private void Content_Refreshing(object sender, EventArgs e) {

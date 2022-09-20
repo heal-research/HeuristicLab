@@ -202,7 +202,7 @@ namespace HeuristicLab.Operators.Programmable {
       try {
         ProgrammableOperator.Compile();
       } catch (Exception ex) {
-        ErrorHandling.ShowErrorDialog(this, ex);
+        ErrorHandlingUI.ShowErrorDialog(this, ex);
       }
       this.Enabled = true;
       UpdateCompilationLabel();

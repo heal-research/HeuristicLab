@@ -81,13 +81,13 @@ namespace HeuristicLab.Optimization.Views {
           try {
             encoding = (IEncoding)Activator.CreateInstance(dialog.EncodingType, dialog.EncodingName);
           } catch (MissingMethodException mmex) {
-            PluginInfrastructure.ErrorHandling.ShowErrorDialog("The encoding must have a constructor that takes the name as a single string argument", mmex);
+            PluginInfrastructure.ErrorHandlingUI.ShowErrorDialog("The encoding must have a constructor that takes the name as a single string argument", mmex);
             return;
           } catch (TargetInvocationException tiex) {
-            PluginInfrastructure.ErrorHandling.ShowErrorDialog("The encoding could not be created due to an error in the constructor.", tiex);
+            PluginInfrastructure.ErrorHandlingUI.ShowErrorDialog("The encoding could not be created due to an error in the constructor.", tiex);
             return;
           } catch (MethodAccessException maex) {
-            PluginInfrastructure.ErrorHandling.ShowErrorDialog("The encoding's string constructor is not public.", maex);
+            PluginInfrastructure.ErrorHandlingUI.ShowErrorDialog("The encoding's string constructor is not public.", maex);
             return;
           }
           Content.Add(encoding);

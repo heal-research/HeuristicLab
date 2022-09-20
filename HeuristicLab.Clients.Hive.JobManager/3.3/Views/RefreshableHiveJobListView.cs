@@ -119,7 +119,7 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
 
         task.ContinueWith((t) => {
           Progress.Hide(this);
-          ErrorHandling.ShowErrorDialog("An error occured while deleting the job. ", t.Exception);
+          ErrorHandlingUI.ShowErrorDialog("An error occured while deleting the job. ", t.Exception);
         }, TaskContinuationOptions.OnlyOnFaulted);
 
         task.ContinueWith((t) => {

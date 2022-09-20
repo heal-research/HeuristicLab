@@ -76,7 +76,7 @@ namespace HeuristicLab.Clients.Hive.Views {
       var task = System.Threading.Tasks.Task.Factory.StartNew(ResumeTaskAsync);
       task.ContinueWith((t) => {
         Content.Progress.Finish();
-        ErrorHandling.ShowErrorDialog(this, "An error occured while resuming the task.", t.Exception);
+        ErrorHandlingUI.ShowErrorDialog(this, "An error occured while resuming the task.", t.Exception);
       }, TaskContinuationOptions.OnlyOnFaulted);
     }
 
@@ -84,7 +84,7 @@ namespace HeuristicLab.Clients.Hive.Views {
       var task = System.Threading.Tasks.Task.Factory.StartNew(PauseTaskAsync);
       task.ContinueWith((t) => {
         Content.Progress.Finish();
-        ErrorHandling.ShowErrorDialog(this, "An error occured while pausing the task.", t.Exception);
+        ErrorHandlingUI.ShowErrorDialog(this, "An error occured while pausing the task.", t.Exception);
       }, TaskContinuationOptions.OnlyOnFaulted);
     }
 
@@ -92,7 +92,7 @@ namespace HeuristicLab.Clients.Hive.Views {
       var task = System.Threading.Tasks.Task.Factory.StartNew(StopTaskAsync);
       task.ContinueWith((t) => {
         Content.Progress.Finish();
-        ErrorHandling.ShowErrorDialog(this, "An error occured while stopping the task.", t.Exception);
+        ErrorHandlingUI.ShowErrorDialog(this, "An error occured while stopping the task.", t.Exception);
       }, TaskContinuationOptions.OnlyOnFaulted);
     }
     #endregion

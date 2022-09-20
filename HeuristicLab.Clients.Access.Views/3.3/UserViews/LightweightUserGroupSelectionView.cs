@@ -46,7 +46,7 @@ namespace HeuristicLab.Clients.Access.Views {
       if (!this.DesignMode && AccessClient.Instance.UsersAndGroups == null) {
         AccessClient.Instance.Refreshing += new EventHandler(Instance_Refreshing);
         AccessClient.Instance.Refreshed += new EventHandler(Instance_Refreshed);
-        AccessClient.Instance.RefreshAsync(new Action<Exception>((Exception ex) => ErrorHandling.ShowErrorDialog(this, "Refresh failed.", ex)));
+        AccessClient.Instance.RefreshAsync(new Action<Exception>((Exception ex) => ErrorHandlingUI.ShowErrorDialog(this, "Refresh failed.", ex)));
         AccessClient.Instance.Refreshing -= new EventHandler(Instance_Refreshing);
         AccessClient.Instance.Refreshed -= new EventHandler(Instance_Refreshed);
       }

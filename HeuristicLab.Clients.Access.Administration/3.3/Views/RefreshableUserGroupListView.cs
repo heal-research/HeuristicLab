@@ -27,7 +27,7 @@ namespace HeuristicLab.Clients.Access.Administration {
     }
 
     protected override void RefreshData() {
-      Content.RefreshUserGroupsAsync(PluginInfrastructure.ErrorHandling.ShowErrorDialog);
+      Content.RefreshUserGroupsAsync(PluginInfrastructure.ErrorHandlingUI.ShowErrorDialog);
     }
 
     protected override void Content_Refreshing(object sender, EventArgs e) {
@@ -59,7 +59,7 @@ namespace HeuristicLab.Clients.Access.Administration {
 
     void Groups_ItemsRemoved(object sender, Collections.CollectionItemsChangedEventArgs<Collections.IndexedItem<UserGroup>> e) {
       foreach (var u in e.Items) {
-        Content.DeleteUserGroupAsync(u.Value, PluginInfrastructure.ErrorHandling.ShowErrorDialog);
+        Content.DeleteUserGroupAsync(u.Value, PluginInfrastructure.ErrorHandlingUI.ShowErrorDialog);
       }
     }
 
@@ -71,7 +71,7 @@ namespace HeuristicLab.Clients.Access.Administration {
     }
 
     private void storeButton_Click(object sender, EventArgs e) {
-      Content.StoreUserGroupsAsync(PluginInfrastructure.ErrorHandling.ShowErrorDialog);
+      Content.StoreUserGroupsAsync(PluginInfrastructure.ErrorHandlingUI.ShowErrorDialog);
     }
   }
 }

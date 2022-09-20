@@ -307,7 +307,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
           if (groupSymbol != null) groupSymbol.SymbolsCollection.Add(symbol);
           else Content.AddSymbol(symbol);
         } catch (Exception ex) {
-          ErrorHandling.ShowErrorDialog(this, ex);
+          ErrorHandlingUI.ShowErrorDialog(this, ex);
         }
       }
     }

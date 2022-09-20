@@ -125,7 +125,7 @@ namespace HeuristicLab.Core.Views {
           Content.Value = (IItem)typeSelectorDialog.TypeSelector.CreateInstanceOfSelectedType();
         }
         catch (Exception ex) {
-          ErrorHandling.ShowErrorDialog(this, ex);
+          ErrorHandlingUI.ShowErrorDialog(this, ex);
         }
       }
     }

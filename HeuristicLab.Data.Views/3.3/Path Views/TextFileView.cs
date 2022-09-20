@@ -226,7 +226,7 @@ namespace HeuristicLab.Data.Views {
         }
       }
       catch (Exception e) {
-        ErrorHandling.ShowErrorDialog(e);
+        ErrorHandlingUI.ShowErrorDialog(e);
       }
       return fileContent;
     }
@@ -240,7 +240,7 @@ namespace HeuristicLab.Data.Views {
         }
       }
       catch (Exception e) {
-        ErrorHandling.ShowErrorDialog(e);
+        ErrorHandlingUI.ShowErrorDialog(e);
       }
     }
   }

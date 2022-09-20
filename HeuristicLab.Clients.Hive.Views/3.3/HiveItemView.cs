@@ -76,7 +76,7 @@ namespace HeuristicLab.Clients.Hive.Views {
         Content.Store();
       }
       catch (Exception ex) {
-        ErrorHandling.ShowErrorDialog(this, "Store failed.", ex);
+        ErrorHandlingUI.ShowErrorDialog(this, "Store failed.", ex);
       }
     }
   }

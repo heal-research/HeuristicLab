@@ -145,7 +145,7 @@ namespace HeuristicLab.Parameters.Views {
         try {
           Content.Value = (T)typeSelectorDialog.TypeSelector.CreateInstanceOfSelectedType();
         } catch (Exception ex) {
-          ErrorHandling.ShowErrorDialog(this, ex);
+          ErrorHandlingUI.ShowErrorDialog(this, ex);
         }
       }
     }

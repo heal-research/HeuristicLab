@@ -93,7 +93,7 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
     }
 
     private void DisplayError(Exception ex) {
-      PluginInfrastructure.ErrorHandling.ShowErrorDialog("An error occured while retrieving algorithm and problem information from the OKB.", ex);
+      PluginInfrastructure.ErrorHandlingUI.ShowErrorDialog("An error occured while retrieving algorithm and problem information from the OKB.", ex);
     }
 
     private void DisplayRuns(RunCollection runs) {
@@ -204,7 +204,7 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
       var task = System.Threading.Tasks.Task.Factory.StartNew(UploadAsync);
       task.ContinueWith((t) => {
         Progress.Hide(this);
-        PluginInfrastructure.ErrorHandling.ShowErrorDialog("An exception occured while uploading the runs to the OKB.", t.Exception);
+        PluginInfrastructure.ErrorHandlingUI.ShowErrorDialog("An exception occured while uploading the runs to the OKB.", t.Exception);
       }, TaskContinuationOptions.OnlyOnFaulted);
     }
 

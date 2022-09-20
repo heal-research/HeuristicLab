@@ -343,7 +343,7 @@ namespace HeuristicLab.Analysis.Statistics.Views {
           }
           catch (Exception ex) {
             if (verbose) {
-              ErrorHandling.ShowErrorDialog("Can't parse group sizes. Please only use numbers seperated by a " + delimiter + ". ", ex);
+              ErrorHandlingUI.ShowErrorDialog("Can't parse group sizes. Please only use numbers seperated by a " + delimiter + ". ", ex);
             }
           }
         }

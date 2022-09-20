@@ -551,7 +551,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
       try {
         ((IActionUserInterfaceItem)item.Tag).Execute();
       } catch (Exception ex) {
-        ErrorHandling.ShowErrorDialog((Control)MainFormManager.MainForm, ex);
+        ErrorHandlingUI.ShowErrorDialog((Control)MainFormManager.MainForm, ex);
       }
     }
     #endregion

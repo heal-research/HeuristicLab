@@ -34,7 +34,7 @@ namespace HeuristicLab.ExactOptimization.Views {
             FileName = openFileDialog.FileName
           };
         } catch (Exception ex) {
-          ErrorHandling.ShowErrorDialog(this, ex);
+          ErrorHandlingUI.ShowErrorDialog(this, ex);
         } finally {
           problemViewHost.Enabled = true;
           newProblemButton.Enabled = openProblemButton.Enabled = true;

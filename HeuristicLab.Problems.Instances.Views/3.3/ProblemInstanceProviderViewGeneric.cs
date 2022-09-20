@@ -129,14 +129,14 @@ namespace HeuristicLab.Problems.Instances.Views {
           try {
             data = Content.LoadData(descriptor);
           } catch (Exception ex) {
-            ErrorHandling.ShowErrorDialog(String.Format("Could not load the problem instance {0}", descriptor.Name), ex);
+            ErrorHandlingUI.ShowErrorDialog(String.Format("Could not load the problem instance {0}", descriptor.Name), ex);
             Progress.Hide(content);
             return;
           }
           try {
             GenericConsumer.Load(data);
           } catch (Exception ex) {
-            ErrorHandling.ShowErrorDialog(String.Format("This problem does not support loading the instance {0}", descriptor.Name), ex);
+            ErrorHandlingUI.ShowErrorDialog(String.Format("This problem does not support loading the instance {0}", descriptor.Name), ex);
           } finally {
             Progress.Hide(content);
           }
@@ -172,7 +172,7 @@ namespace HeuristicLab.Problems.Instances.Views {
         try {
           Content.ExportData(GenericExporter.Export(), saveFileDialog.FileName);
         } catch (Exception ex) {
-          ErrorHandling.ShowErrorDialog(this, ex);
+          ErrorHandlingUI.ShowErrorDialog(this, ex);
         }
       }
     }

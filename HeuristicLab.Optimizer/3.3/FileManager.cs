@@ -48,7 +48,7 @@ namespace HeuristicLab.Optimizer {
       if (newItemDialog.ShowDialog() == DialogResult.OK) {
         IView view = MainFormManager.MainForm.ShowContent(newItemDialog.Item);
         if (view == null)
-          ErrorHandling.ShowErrorDialog("There is no view for the new item. It cannot be displayed.", new InvalidOperationException("No View Available"));
+          ErrorHandlingUI.ShowErrorDialog("There is no view for the new item. It cannot be displayed.", new InvalidOperationException("No View Available"));
       }
     }
 
@@ -83,9 +83,9 @@ namespace HeuristicLab.Optimizer {
         }
         IView view = MainFormManager.MainForm.ShowContent(content);
         if (view == null)
-          ErrorHandling.ShowErrorDialog("There is no view for the loaded item. It cannot be displayed.", new InvalidOperationException("No View Available"));
+          ErrorHandlingUI.ShowErrorDialog("There is no view for the loaded item. It cannot be displayed.", new InvalidOperationException("No View Available"));
       } catch (Exception ex) {
-        ErrorHandling.ShowErrorDialog((Control)MainFormManager.MainForm, "Cannot open file.", ex);
+        ErrorHandlingUI.ShowErrorDialog((Control)MainFormManager.MainForm, "Cannot open file.", ex);
       } finally {
         ((MainForm.WindowsForms.MainForm)MainFormManager.MainForm).ResetAppStartingCursor();
       }
@@ -151,7 +151,7 @@ namespace HeuristicLab.Optimizer {
         MainFormManager.GetMainForm<HeuristicLab.MainForm.WindowsForms.MainForm>().UpdateTitle();
       } catch (OperationCanceledException) { // do nothing if canceled
       } catch (Exception ex) {
-        ErrorHandling.ShowErrorDialog((Control)MainFormManager.MainForm, "Cannot save file.", ex);
+        ErrorHandlingUI.ShowErrorDialog((Control)MainFormManager.MainForm, "Cannot save file.", ex);
       } finally {
         Progress.Hide(content);
         MainFormManager.GetMainForm<HeuristicLab.MainForm.WindowsForms.MainForm>().ResetAppStartingCursor();

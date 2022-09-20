@@ -9,9 +9,9 @@ namespace HeuristicLab.Clients.Common {
       try {
         action();
       } catch (MessageSecurityException ex) {
-        ErrorHandling.ShowErrorDialog("There is something wrong with the applied security. Are your credentials correct?", ex);
+        ErrorHandlingUI.ShowErrorDialog("There is something wrong with the applied security. Are your credentials correct?", ex);
       } catch (SecurityAccessDeniedException ex) {
-        ErrorHandling.ShowErrorDialog("The security authorization request failed. Are you a Hive administrator?", ex);
+        ErrorHandlingUI.ShowErrorDialog("The security authorization request failed. Are you a Hive administrator?", ex);
       } finally {
         if (finallyCallback != null) finallyCallback();
       }
@@ -21,9 +21,9 @@ namespace HeuristicLab.Clients.Common {
       try {
         await Task.Run(action);
       } catch (MessageSecurityException ex) {
-        ErrorHandling.ShowErrorDialog("There is something wrong with the applied security. Are your credentials correct?", ex);
+        ErrorHandlingUI.ShowErrorDialog("There is something wrong with the applied security. Are your credentials correct?", ex);
       } catch (SecurityAccessDeniedException ex) {
-        ErrorHandling.ShowErrorDialog("The security authorization request failed. Are you a Hive administrator?", ex);
+        ErrorHandlingUI.ShowErrorDialog("The security authorization request failed. Are you a Hive administrator?", ex);
       } finally {
         if (finallyCallback != null) finallyCallback();
       }

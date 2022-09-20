@@ -93,7 +93,7 @@ namespace HeuristicLab.Scripting.Views {
           UpdateInfoTextLabel(ScriptExecutionCanceledMessage, Color.DarkOrange);
         } else {
           UpdateInfoTextLabel(ScriptExecutionFailedMessage, Color.DarkRed);
-          PluginInfrastructure.ErrorHandling.ShowErrorDialog(this, ex);
+          PluginInfrastructure.ErrorHandlingUI.ShowErrorDialog(this, ex);
         }
       }
     }
