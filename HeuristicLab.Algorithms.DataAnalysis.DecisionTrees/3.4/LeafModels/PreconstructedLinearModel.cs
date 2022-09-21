@@ -18,6 +18,7 @@
  * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
  */
 #endregion
+extern alias alglib_3_17;
 
 using System;
 using System.Collections.Generic;
@@ -71,13 +72,13 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       var nFeatures = inputMatrix.GetLength(1) - 1;
       double[] coefficients;
 
-      alglib.linearmodel lm;
-      alglib.lrreport ar;
+      alglib_3_17.alglib.linearmodel lm;
+      alglib_3_17.alglib.lrreport ar;
       int retVal;
-      alglib.lrbuild(inputMatrix, inputMatrix.GetLength(0), nFeatures, out retVal, out lm, out ar);
+      alglib_3_17.alglib.lrbuild(inputMatrix, inputMatrix.GetLength(0), nFeatures, out retVal, out lm, out ar);
       if (retVal != 1) throw new ArgumentException("Error in calculation of linear regression solution");
 
-      alglib.lrunpack(lm, out coefficients, out nFeatures);
+      alglib_3_17.alglib.lrunpack(lm, out coefficients, out nFeatures);
       var coeffs = pd.AllowedInputVariables.Zip(coefficients, (s, d) => new {s, d}).ToDictionary(x => x.s, x => x.d);
       var res = new PreconstructedLinearModel(coeffs, coefficients[nFeatures], pd.TargetVariable);
       return res;
@@ -106,27 +107,27 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       var aTa = new double[n + 1, n + 1];
       var aTyVector = new double[n + 1];
       int info;
-      alglib.densesolverreport report;
+      alglib_3_17.alglib.densesolverreport report;
       double[] coefficients;
 
       //Perform linear regression
-      alglib.rmatrixgemm(n + 1, 1, m, 1, inTr, 0, 0, 0, y, 0, 0, 0, 0, ref aTy, 0, 0); //aTy = inTr * y;
-      alglib.rmatrixgemm(n + 1, n + 1, m, 1, inTr, 0, 0, 0, inTr, 0, 0, 1, 0, ref aTa, 0, 0); //aTa = inTr * t(inTr) +aTa //
-      alglib.spdmatrixcholesky(ref aTa, n + 1, true);
+      alglib_3_17.alglib.rmatrixgemm(n + 1, 1, m, 1, inTr, 0, 0, 0, y, 0, 0, 0, 0, ref aTy, 0, 0); //aTy = inTr * y;
+      alglib_3_17.alglib.rmatrixgemm(n + 1, n + 1, m, 1, inTr, 0, 0, 0, inTr, 0, 0, 1, 0, ref aTa, 0, 0); //aTa = inTr * t(inTr) +aTa //
+      alglib_3_17.alglib.spdmatrixcholesky(ref aTa, n + 1, true);
       for (var i = 0; i < n + 1; i++) aTyVector[i] = aTy[i, 0];
-      alglib.spdmatrixcholeskysolve(aTa, n + 1, true, aTyVector, out info, out report, out coefficients);
+      alglib_3_17.alglib.spdmatrixcholeskysolve(aTa, n + 1, true, aTyVector, out info, out report, out coefficients);
 
       //if Cholesky calculation fails fall back to classic linear regresseion 
       if (info != 1) {
-        alglib.linearmodel lm;
-        alglib.lrreport ar;
+        alglib_3_17.alglib.linearmodel lm;
+        alglib_3_17.alglib.lrreport ar;
         int retVal;
         var inputMatrix = pd.Dataset.ToArray(pd.AllowedInputVariables.Concat(new[] {
           pd.TargetVariable
         }), pd.AllIndices);
-        alglib.lrbuild(inputMatrix, inputMatrix.GetLength(0), n, out retVal, out lm, out ar);
+        alglib_3_17.alglib.lrbuild(inputMatrix, inputMatrix.GetLength(0), n, out retVal, out lm, out ar);
         if (retVal != 1) throw new ArgumentException("Error in calculation of linear regression solution");
-        alglib.lrunpack(lm, out coefficients, out n);
+        alglib_3_17.alglib.lrunpack(lm, out coefficients, out n);
       }
 
       var coeffs = Enumerable.Range(0, n).ToDictionary(i => variables[i], i => coefficients[i]);
