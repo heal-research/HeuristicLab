@@ -138,8 +138,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HeuristicLab.Problems.DataA
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HeuristicLab.Problems.ParameterOptimization-3.3", "HeuristicLab.Problems.ParameterOptimization\3.3\HeuristicLab.Problems.ParameterOptimization-3.3.csproj", "{D2C39FBA-A1D5-403A-9211-B0A299A76313}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HeuristicLab.DataPreprocessing-3.4", "HeuristicLab.DataPreprocessing\3.4\HeuristicLab.DataPreprocessing-3.4.csproj", "{3B90F866-70F8-43EF-A541-51819D255B7B}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HeuristicLab.Algorithms.ParameterlessPopulationPyramid-3.3", "HeuristicLab.Algorithms.ParameterlessPopulationPyramid\3.3\HeuristicLab.Algorithms.ParameterlessPopulationPyramid-3.3.csproj", "{9319C447-8183-4DBC-8145-0E3CF98084CC}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HeuristicLab.Problems.Binary-3.3", "HeuristicLab.Problems.Binary\3.3\HeuristicLab.Problems.Binary-3.3.csproj", "{FC627BE5-0F93-47D8-BD2E-530EA2B8AA5F}"
@@ -151,8 +149,6 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HeuristicLab.Algorithms.CMAEvolutionStrategy-3.4", "HeuristicLab.Algorithms.CMAEvolutionStrategy\3.4\HeuristicLab.Algorithms.CMAEvolutionStrategy-3.4.csproj", "{291010E4-2F4E-4D29-A795-753CFF293FDB}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HeuristicLab.Encodings.LinearLinkageEncoding-3.4", "HeuristicLab.Encodings.LinearLinkageEncoding\3.4\HeuristicLab.Encodings.LinearLinkageEncoding-3.4.csproj", "{BE698769-975A-429E-828C-72BB2B6182C8}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HeuristicLab.Problems.Orienteering-3.3", "HeuristicLab.Problems.Orienteering\3.3\HeuristicLab.Problems.Orienteering-3.3.csproj", "{D1EFA4CC-909F-41D5-9C1F-C3AF1957A372}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HeuristicLab.Problems.Instances.Orienteering-3.3", "HeuristicLab.Problems.Instances.Orienteering\3.3\HeuristicLab.Problems.Instances.Orienteering-3.3.csproj", "{B37BF2DD-752C-456A-9DEF-FF5B41FC3C77}"
 EndProject
@@ -952,18 +948,6 @@ Global
 		{D2C39FBA-A1D5-403A-9211-B0A299A76313}.Release|x64.Build.0 = Release|x64
 		{D2C39FBA-A1D5-403A-9211-B0A299A76313}.Release|x86.ActiveCfg = Release|x86
 		{D2C39FBA-A1D5-403A-9211-B0A299A76313}.Release|x86.Build.0 = Release|x86
-		{3B90F866-70F8-43EF-A541-51819D255B7B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3B90F866-70F8-43EF-A541-51819D255B7B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3B90F866-70F8-43EF-A541-51819D255B7B}.Debug|x64.ActiveCfg = Debug|x64
-		{3B90F866-70F8-43EF-A541-51819D255B7B}.Debug|x64.Build.0 = Debug|x64
-		{3B90F866-70F8-43EF-A541-51819D255B7B}.Debug|x86.ActiveCfg = Debug|x86
-		{3B90F866-70F8-43EF-A541-51819D255B7B}.Debug|x86.Build.0 = Debug|x86
-		{3B90F866-70F8-43EF-A541-51819D255B7B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3B90F866-70F8-43EF-A541-51819D255B7B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3B90F866-70F8-43EF-A541-51819D255B7B}.Release|x64.ActiveCfg = Release|x64
-		{3B90F866-70F8-43EF-A541-51819D255B7B}.Release|x64.Build.0 = Release|x64
-		{3B90F866-70F8-43EF-A541-51819D255B7B}.Release|x86.ActiveCfg = Release|x86
-		{3B90F866-70F8-43EF-A541-51819D255B7B}.Release|x86.Build.0 = Release|x86
 		{9319C447-8183-4DBC-8145-0E3CF98084CC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{9319C447-8183-4DBC-8145-0E3CF98084CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9319C447-8183-4DBC-8145-0E3CF98084CC}.Debug|x64.ActiveCfg = Debug|x64
@@ -1024,18 +1008,6 @@ Global
 		{BE698769-975A-429E-828C-72BB2B6182C8}.Release|x64.Build.0 = Release|x64
 		{BE698769-975A-429E-828C-72BB2B6182C8}.Release|x86.ActiveCfg = Release|x86
 		{BE698769-975A-429E-828C-72BB2B6182C8}.Release|x86.Build.0 = Release|x86
-		{D1EFA4CC-909F-41D5-9C1F-C3AF1957A372}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D1EFA4CC-909F-41D5-9C1F-C3AF1957A372}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D1EFA4CC-909F-41D5-9C1F-C3AF1957A372}.Debug|x64.ActiveCfg = Debug|x64
-		{D1EFA4CC-909F-41D5-9C1F-C3AF1957A372}.Debug|x64.Build.0 = Debug|x64
-		{D1EFA4CC-909F-41D5-9C1F-C3AF1957A372}.Debug|x86.ActiveCfg = Debug|x86
-		{D1EFA4CC-909F-41D5-9C1F-C3AF1957A372}.Debug|x86.Build.0 = Debug|x86
-		{D1EFA4CC-909F-41D5-9C1F-C3AF1957A372}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D1EFA4CC-909F-41D5-9C1F-C3AF1957A372}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D1EFA4CC-909F-41D5-9C1F-C3AF1957A372}.Release|x64.ActiveCfg = Release|x64
-		{D1EFA4CC-909F-41D5-9C1F-C3AF1957A372}.Release|x64.Build.0 = Release|x64
-		{D1EFA4CC-909F-41D5-9C1F-C3AF1957A372}.Release|x86.ActiveCfg = Release|x86
-		{D1EFA4CC-909F-41D5-9C1F-C3AF1957A372}.Release|x86.Build.0 = Release|x86
 		{B37BF2DD-752C-456A-9DEF-FF5B41FC3C77}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B37BF2DD-752C-456A-9DEF-FF5B41FC3C77}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B37BF2DD-752C-456A-9DEF-FF5B41FC3C77}.Debug|x64.ActiveCfg = Debug|x64
