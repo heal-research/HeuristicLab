@@ -355,7 +355,8 @@ namespace HeuristicLab.Problems.VehicleRouting {
       }
 
       if (cities != ProblemInstance.Coordinates.Rows - 1)
-        ErrorHandlingUI.ShowErrorDialog(new Exception("The optimal solution does not seem to correspond with the problem data"));
+        throw new Exception("The optimal solution does not seem to correspond with the problem data");
+        //ErrorHandlingUI.ShowErrorDialog(new Exception("The optimal solution does not seem to correspond with the problem data"));
       else {
         VRPSolution solution = new VRPSolution(ProblemInstance, encoding, new DoubleValue(0));
         BestKnownSolutionParameter.Value = solution;
