@@ -427,8 +427,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HeuristicLab.Algorithms.CMA
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HeuristicLab.Encodings.LinearLinkageEncoding-3.4", "HeuristicLab.Encodings.LinearLinkageEncoding\3.4\HeuristicLab.Encodings.LinearLinkageEncoding-3.4.csproj", "{BE698769-975A-429E-828C-72BB2B6182C8}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HeuristicLab.Problems.Orienteering-3.3", "HeuristicLab.Problems.Orienteering\3.3\HeuristicLab.Problems.Orienteering-3.3.csproj", "{D1EFA4CC-909F-41D5-9C1F-C3AF1957A372}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Problems.Orienteering.Views-3.3", "HeuristicLab.Problems.Orienteering.Views\3.3\HeuristicLab.Problems.Orienteering.Views-3.3.csproj", "{BBF2CCC8-4D87-4297-8E18-8241FF93F966}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HeuristicLab.Problems.Instances.Orienteering-3.3", "HeuristicLab.Problems.Instances.Orienteering\3.3\HeuristicLab.Problems.Instances.Orienteering-3.3.csproj", "{B37BF2DD-752C-456A-9DEF-FF5B41FC3C77}"
@@ -554,6 +552,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Attic", "HeuristicLab.ExtLibs\HeuristicLab.Attic\1.0.0\HeuristicLab.Attic.csproj", "{44A10478-D290-43C2-9757-F08F5292FEA5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.DataPreprocessing-3.4", "HeuristicLab.DataPreprocessing\3.4\HeuristicLab.DataPreprocessing-3.4.csproj", "{3B90F866-70F8-43EF-A541-51819D255B7B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Problems.Orienteering-3.3", "HeuristicLab.Problems.Orienteering\3.3\HeuristicLab.Problems.Orienteering-3.3.csproj", "{D1EFA4CC-909F-41D5-9C1F-C3AF1957A372}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -2857,6 +2857,18 @@ Global
 		{3B90F866-70F8-43EF-A541-51819D255B7B}.Release|x64.Build.0 = Release|x64
 		{3B90F866-70F8-43EF-A541-51819D255B7B}.Release|x86.ActiveCfg = Release|x86
 		{3B90F866-70F8-43EF-A541-51819D255B7B}.Release|x86.Build.0 = Release|x86
+		{D1EFA4CC-909F-41D5-9C1F-C3AF1957A372}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D1EFA4CC-909F-41D5-9C1F-C3AF1957A372}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D1EFA4CC-909F-41D5-9C1F-C3AF1957A372}.Debug|x64.ActiveCfg = Debug|x64
+		{D1EFA4CC-909F-41D5-9C1F-C3AF1957A372}.Debug|x64.Build.0 = Debug|x64
+		{D1EFA4CC-909F-41D5-9C1F-C3AF1957A372}.Debug|x86.ActiveCfg = Debug|x86
+		{D1EFA4CC-909F-41D5-9C1F-C3AF1957A372}.Debug|x86.Build.0 = Debug|x86
+		{D1EFA4CC-909F-41D5-9C1F-C3AF1957A372}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D1EFA4CC-909F-41D5-9C1F-C3AF1957A372}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D1EFA4CC-909F-41D5-9C1F-C3AF1957A372}.Release|x64.ActiveCfg = Release|x64
+		{D1EFA4CC-909F-41D5-9C1F-C3AF1957A372}.Release|x64.Build.0 = Release|x64
+		{D1EFA4CC-909F-41D5-9C1F-C3AF1957A372}.Release|x86.ActiveCfg = Release|x86
+		{D1EFA4CC-909F-41D5-9C1F-C3AF1957A372}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

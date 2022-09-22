@@ -200,7 +200,7 @@
       <Name>HeuristicLab.Problems.LinearAssignment.Views-3.3</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Problems.Orienteering\3.3\HeuristicLab.Problems.Orienteering-3.3.csproj">
-      <Project>{D1EFA4CC-909F-41D5-9C1F-C3AF1957A372}</Project>
+      <Project>{d1efa4cc-909f-41d5-9c1f-c3af1957a372}</Project>
       <Name>HeuristicLab.Problems.Orienteering-3.3</Name>
     </ProjectReference>
   </ItemGroup>
