@@ -69,10 +69,6 @@
       <Name>HeuristicLab.PluginInfrastructure-3.3</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Protobuf\3.6.1\HeuristicLab.Protobuf.csproj">
-      <Project>{44b10478-d290-43d3-9757-c08f5292fea5}</Project>
-      <Name>HeuristicLab.Protobuf</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

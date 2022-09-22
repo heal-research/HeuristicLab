@@ -8,6 +8,9 @@
     <CodeAnalysisLogFile>..\..\..\..\trunk\sources\bin\HeuristicLab.Problems.Scheduling-3.3.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
   </PropertyGroup>
   <PropertyGroup>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+  </PropertyGroup>
+  <PropertyGroup>
     <SignAssembly>true</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
