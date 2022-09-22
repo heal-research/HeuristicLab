@@ -274,11 +274,6 @@
       <Name>HeuristicLab.Data.Views-3.3</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.DataPreprocessing\3.4\HeuristicLab.DataPreprocessing-3.4.csproj">
-      <Project>{3B90F866-70F8-43EF-A541-51819D255B7B}</Project>
-      <Name>HeuristicLab.DataPreprocessing-3.4</Name>
-      <Private>False</Private>
-    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Data\3.3\HeuristicLab.Data-3.3.csproj">
       <Project>{BBAB9DF5-5EF3-4BA8-ADE9-B36E82114937}</Project>
       <Name>HeuristicLab.Data-3.3</Name>
