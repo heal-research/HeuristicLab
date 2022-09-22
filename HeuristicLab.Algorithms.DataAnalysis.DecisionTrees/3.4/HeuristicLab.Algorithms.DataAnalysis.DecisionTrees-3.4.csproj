@@ -53,7 +53,8 @@
     <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
   </ItemGroup>
   <PropertyGroup>
-    <PreBuildEvent Condition=" '$(OS)' == 'Windows_NT' ">set Path=%25Path%25;$(ProjectDir);$(SolutionDir)
+    <PreBuildEvent Condition=" '$(OS)' == 'Windows_NT' ">
+set Path=%Path%;$(ProjectDir);$(SolutionDir)
 set ProjectDir=$(ProjectDir)
 set SolutionDir=$(SolutionDir)
 set Outdir=$(Outdir)
@@ -65,6 +66,13 @@ export ProjectDir=$(ProjectDir)
 export SolutionDir=$(SolutionDir)
 
 $SolutionDir/PreBuildEvent.sh
+</PreBuildEvent>
+    <PreBuildEvent>set Path=%Path%;$(ProjectDir);$(SolutionDir)
+set ProjectDir=$(ProjectDir)
+set SolutionDir=$(SolutionDir)
+set Outdir=$(OutDir)
+
+call PreBuildEvent.cmd
 </PreBuildEvent>
   </PropertyGroup>
 </Project>
