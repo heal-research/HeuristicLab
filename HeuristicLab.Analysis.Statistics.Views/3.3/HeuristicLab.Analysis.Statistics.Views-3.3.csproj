@@ -115,6 +115,9 @@
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Drawing.Common, Version=6.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Drawing.Common.6.0.0\lib\net461\System.Drawing.Common.dll</HintPath>
+    </Reference>
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Forms.DataVisualization" />
     <Reference Include="System.Xml.Linq">
@@ -130,6 +133,7 @@
     <EmbeddedResource Include="InfoResources\ChartAnalysisInfo.rtf" />
     <EmbeddedResource Include="InfoResources\SampleSizeInfluenceInfo.rtf" />
     <EmbeddedResource Include="InfoResources\StatisticalTestsInfo.rtf" />
+    <None Include="packages.config" />
     <None Include="Plugin.cs.frame" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -233,6 +237,10 @@
       <Project>{14ab8d24-25bc-400c-a846-4627aa945192}</Project>
       <Name>HeuristicLab.Optimization-3.3</Name>
       <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.PluginInfrastructure.Extension\3.3\HeuristicLab.PluginInfrastructure.Extension-3.3.csproj">
+      <Project>{d2b1d7d0-cbef-4640-9449-b1dd88b3639a}</Project>
+      <Name>HeuristicLab.PluginInfrastructure.Extension-3.3</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.PluginInfrastructure\3.3\HeuristicLab.PluginInfrastructure-3.3.csproj">
       <Project>{94186A6A-5176-4402-AE83-886557B53CCA}</Project>
