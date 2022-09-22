@@ -85,7 +85,6 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="HEAL.Attic" Version="1.7.0" />
-    <PackageReference Include="Microsoft.Windows.Compatibility" Version="6.0.0" />
     <PackageReference Include="System.ServiceModel.Federation" Version="4.10.0" />
   </ItemGroup>
   <PropertyGroup>
