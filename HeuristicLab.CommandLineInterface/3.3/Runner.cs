@@ -38,7 +38,7 @@ namespace HeuristicLab.CommandLineInterface
 
           while(!executableTask.IsCompleted) {
             try {
-              Task.Delay(TimeSpan.FromSeconds(30), cancellationTokenSource.Token).Wait();
+              Task.Delay(TimeSpan.FromHours(1), cancellationTokenSource.Token).Wait();
               if (!executableTask.IsCompleted) {
                 executable.Pause();
               }
