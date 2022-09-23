@@ -18,19 +18,16 @@
  * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
  */
 #endregion
-
 using HeuristicLab.PluginInfrastructure;
-
-namespace HeuristicLab.JsonInterface.App
+namespace HeuristicLab.CommandLineInterface
 {
   [Plugin("HeuristicLab.CommandLineInterface", "3.3.16.0")]
   [PluginFile("HeuristicLab.CommandLineInterface-3.3.dll", PluginFileType.Assembly)]
   [PluginDependency("HeuristicLab.Attic", "1.0")]
-  public class HeuristicLabJsonInterfaceAppPlugin : PluginBase {
+  public class HeuristicLabCommandLineInterfacePlugin : PluginBase {
   }
-
   [Application("CLIRunner", "HeuristicLab.CommandLineInterface 3.3.16")]
-  public class HeuristicLabJsonInterfaceAppApplication : ApplicationBase {
+  public class HeuristicLabCommandLineInterfaceApplication : ApplicationBase {
     public override void Run(ICommandLineArgument[] args) {
       Runner.Run(args);
     }
