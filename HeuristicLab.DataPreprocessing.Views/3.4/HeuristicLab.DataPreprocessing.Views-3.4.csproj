@@ -232,6 +232,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="HeuristicLab.snk" />
     <None Include="packages.config" />
     <None Include="Plugin.cs.frame" />
