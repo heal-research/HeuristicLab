@@ -599,15 +599,8 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
 
     // register assembly in the assembly cache for the ReflectionOnlyAssemblyResolveEvent
     private void RegisterLoadedAssembly(Assembly asm) {
-      //TODO: .NET6
-      //if (reflectionOnlyAssemblies.ContainsKey(asm.FullName) || reflectionOnlyAssemblies.ContainsKey(asm.GetName().Name)) {
-      //  throw new ArgumentException("An assembly with the name " + asm.GetName().Name + " has been registered already.", "asm");
-      //}
-      //reflectionOnlyAssemblies.Add(asm.FullName, asm);
-      //reflectionOnlyAssemblies.Add(asm.GetName().Name, asm); // add short name
-
       if (reflectionOnlyAssemblies.ContainsKey(asm.FullName) || reflectionOnlyAssemblies.ContainsKey(asm.GetName().Name)) {
-        //throw new ArgumentException("An assembly with the name " + asm.GetName().Name + " has been registered already.", "asm");
+        throw new ArgumentException("An assembly with the name " + asm.GetName().Name + " has been registered already.", "asm");
       } else {
         reflectionOnlyAssemblies.Add(asm.FullName, asm);
         reflectionOnlyAssemblies.Add(asm.GetName().Name, asm); // add short name
