@@ -48,24 +48,26 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
     /// </summary>
     /// <returns></returns>
     public IEnumerable<IPluginDescription> GetRemotePluginList() {
-      var client = DeploymentService.UpdateServiceClientFactory.CreateClient();
-      try {
-        List<IPluginDescription> plugins = new List<IPluginDescription>(client.GetPlugins());
-        client.Close();
-        return plugins;
-      }
-      catch (TimeoutException e) {
-        client.Abort();
-        throw new InstallationManagerException("Time out while connecting to server.", e);
-      }
-      catch (FaultException e) {
-        client.Abort();
-        throw new InstallationManagerException("Fault in connection to server.", e);
-      }
-      catch (CommunicationException e) {
-        client.Abort();
-        throw new InstallationManagerException("General communication exception in connection to server.", e);
-      }
+      // obsolete code
+      //var client = DeploymentService.UpdateServiceClientFactory.CreateClient();
+      //try {
+      //  List<IPluginDescription> plugins = new List<IPluginDescription>(client.GetPlugins());
+      //  client.Close();
+      //  return plugins;
+      //}
+      //catch (TimeoutException e) {
+      //  client.Abort();
+      //  throw new InstallationManagerException("Time out while connecting to server.", e);
+      //}
+      //catch (FaultException e) {
+      //  client.Abort();
+      //  throw new InstallationManagerException("Fault in connection to server.", e);
+      //}
+      //catch (CommunicationException e) {
+      //  client.Abort();
+      //  throw new InstallationManagerException("General communication exception in connection to server.", e);
+      //}
+      return Enumerable.Empty<IPluginDescription>();
     }
 
     /// <summary>
