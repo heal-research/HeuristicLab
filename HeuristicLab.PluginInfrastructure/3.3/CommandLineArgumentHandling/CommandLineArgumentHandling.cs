@@ -44,8 +44,9 @@ namespace HeuristicLab.PluginInfrastructure {
     private static ICommandLineArgument ParseArgument(string entry) {
       var regex = new Regex(@"^/[A-Za-z]+(:\w[\w\s]*)?$");
       bool isFile = File.Exists(entry);
-      if (!regex.IsMatch(entry) && !isFile) return null;
+      if (!regex.IsMatch(entry) && !isFile) return new StringArgument(entry);
       if (!isFile) {
+        var stringArgumentFallback = new StringArgument(entry);
         entry = entry.Remove(0, 1);
         var parts = entry.Split(':');
         string key = parts[0].Trim();
@@ -53,7 +54,7 @@ namespace HeuristicLab.PluginInfrastructure {
         switch (key) {
           case StartArgument.TOKEN: return new StartArgument(value);
           case HideStarterArgument.TOKEN: return new HideStarterArgument(value);
-          default: return null;
+          default: return stringArgumentFallback;
         }
       } else return new OpenArgument(entry);
     }

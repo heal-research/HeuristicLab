@@ -31,7 +31,7 @@ namespace HeuristicLab.PluginInfrastructure {
     }
 
     protected override bool CheckValidity() {
-      return !string.IsNullOrEmpty(Value) && !string.IsNullOrWhiteSpace(Value);
+      return !string.IsNullOrWhiteSpace(Value);
     }
   }
 }
