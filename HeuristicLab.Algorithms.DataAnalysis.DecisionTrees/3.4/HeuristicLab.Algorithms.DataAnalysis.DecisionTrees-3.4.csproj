@@ -25,6 +25,10 @@
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ALGLIB-3.17.0">
+      <HintPath>..\..\bin\ALGLIB-3.17.0.dll</HintPath>
+      <Aliases>alglib_3_17</Aliases>
+    </Reference>
     <Reference Include="System.Data.Linq" />
   </ItemGroup>
   <ItemGroup>
@@ -37,9 +41,6 @@
     <ProjectReference Include="..\..\HeuristicLab.Data\3.3\HeuristicLab.Data-3.3.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.Encodings.PermutationEncoding\3.3\HeuristicLab.Encodings.PermutationEncoding-3.3.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.Encodings.SymbolicExpressionTreeEncoding\3.4\HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.4.csproj" />
-    <ProjectReference Include="..\..\HeuristicLab.ExtLibs\HeuristicLab.ALGLIB\3.17.0\ALGLIB-3.17.0\ALGLIB-3.17.0.csproj">
-      <Aliases>alglib_3_17</Aliases>
-    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Optimization\3.3\HeuristicLab.Optimization-3.3.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.Parameters\3.3\HeuristicLab.Parameters-3.3.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.PluginInfrastructure\3.3\HeuristicLab.PluginInfrastructure-3.3.csproj" />

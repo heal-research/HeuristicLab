@@ -66,7 +66,6 @@
     <ProjectReference Include="..\..\HeuristicLab.Common\3.3\HeuristicLab.Common-3.3.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.Core\3.3\HeuristicLab.Core-3.3.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.Data\3.3\HeuristicLab.Data-3.3.csproj" />
-    <ProjectReference Include="..\..\HeuristicLab.ExtLibs\HeuristicLab.ALGLIB\3.17.0\ALGLIB-3.17.0\ALGLIB-3.17.0.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.Operators\3.3\HeuristicLab.Operators-3.3.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.Optimization.Operators\3.3\HeuristicLab.Optimization.Operators-3.3.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.Optimization\3.3\HeuristicLab.Optimization-3.3.csproj" />
@@ -94,6 +93,11 @@
   <ItemGroup>
     <PackageReference Include="HEAL.Attic" Version="1.7.0" />
     <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="ALGLIB-3.17.0">
+      <HintPath>..\..\bin\ALGLIB-3.17.0.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <PropertyGroup>
     <PreBuildEvent Condition=" '$(OS)' == 'Windows_NT' ">set Path=%25Path%25;$(ProjectDir);$(SolutionDir)

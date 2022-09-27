@@ -59,7 +59,6 @@
     <ProjectReference Include="..\..\HeuristicLab.Core\3.3\HeuristicLab.Core-3.3.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.Data\3.3\HeuristicLab.Data-3.3.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.Encodings.SymbolicExpressionTreeEncoding\3.4\HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.4.csproj" />
-    <ProjectReference Include="..\..\HeuristicLab.ExtLibs\HeuristicLab.ALGLIB\3.17.0\ALGLIB-3.17.0\ALGLIB-3.17.0.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.Operators\3.3\HeuristicLab.Operators-3.3.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.Optimization\3.3\HeuristicLab.Optimization-3.3.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.Parameters\3.3\HeuristicLab.Parameters-3.3.csproj" />
@@ -73,6 +72,11 @@
   <ItemGroup>
     <PackageReference Include="HEAL.Attic" Version="1.7.0" />
     <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="ALGLIB-3.17.0">
+      <HintPath>..\..\bin\ALGLIB-3.17.0.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <PropertyGroup>
     <PreBuildEvent Condition=" '$(OS)' == 'Windows_NT' ">
