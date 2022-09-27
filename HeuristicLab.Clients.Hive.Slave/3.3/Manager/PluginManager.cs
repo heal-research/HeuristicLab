@@ -119,6 +119,13 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
       CopyFile(baseDir, targetDir, CoreProperties.Settings.Default.ClientsHiveDll);
       CopyFile(baseDir, targetDir, CoreProperties.Settings.Default.HiveDll);
       CopyFile(baseDir, targetDir, CoreProperties.Settings.Default.ClientsCommonDll);
+
+      // copy system dlls, necessary because of system nuget packages
+      // (e.g. System.Drawing.Common, System.Configuration.ConfigurationManager, ...)
+      // TODO: rethink to use nuget restore
+      var sysFiles = Directory.GetFiles(baseDir, "System.*.dll");
+      foreach(var sysFile in sysFiles)
+        CopyFile(baseDir, targetDir, Path.GetFileName(sysFile));
     }
 
     private static DirectoryInfo RecreateDirectory(String targetDir) {
