@@ -238,6 +238,7 @@
     </Compile>
     <Compile Include="Manager\PluginInfrastructureCancelEventArgs.cs" />
     <Compile Include="Manager\PluginManager.cs" />
+    <Compile Include="Manager\PluginValidator.cs" />
     <Compile Include="SandboxApplicationManager.cs" />
     <Compile Include="DefaultApplicationManager.cs" />
     <Compile Include="ErrorHandling\ErrorDialog.cs">
