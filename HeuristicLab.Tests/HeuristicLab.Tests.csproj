@@ -107,6 +107,9 @@
     <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
+  <PropertyGroup>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="ALGLIB-3.17.0">
       <HintPath>..\bin\ALGLIB-3.17.0.dll</HintPath>
@@ -696,6 +699,7 @@
     <Compile Include="TestRandom.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="App.config" />
     <None Include="Builder.testsettings">
       <SubType>Designer</SubType>
     </None>
