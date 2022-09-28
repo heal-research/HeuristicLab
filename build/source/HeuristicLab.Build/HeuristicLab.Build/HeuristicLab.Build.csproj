@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <OutputPath>$(SolutionDir)..\..\bin\</OutputPath>
+    <OutputPath>$(SolutionDir)\build\bin\</OutputPath>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <BaseOutputPath>..\..\bin</BaseOutputPath>
   </PropertyGroup>
@@ -16,4 +16,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
+  <Target BeforeTargets="BeforeBuild" Name="UpdateVersionTask">
+  </Target>
 </Project>
