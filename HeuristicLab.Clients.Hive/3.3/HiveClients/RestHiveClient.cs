@@ -28,9 +28,8 @@ using System.Net.Http;
 using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
-using HEAL.Hive.Domain.Enums;
-using HEAL.Hive.RestClient.HiveRestClient;
-using HeuristicLab.Clients.Common;
+using HEAL.Hive.SwaggerClient;
+using HeuristicLab.Clients.Access;
 using HeuristicLab.Clients.Hive.Wrapper;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -49,7 +48,7 @@ namespace HeuristicLab.Clients.Hive {
       }
     }
 
-    private readonly HiveRestClient _client = new HiveRestClient(Settings.Default.NewHiveEndpoint, new HttpClient());
+    private readonly swaggerClient _client = new swaggerClient(Settings.Default.NewHiveEndpoint, new HttpClient());
 
     #region Properties
     private HiveItemCollection<RefreshableJob> jobs;
@@ -63,9 +62,9 @@ namespace HeuristicLab.Clients.Hive {
       }
     }
 
-    private IItemList<ProjectDTOWrapper> projects;
+    private List<ProjectDTO> _projectDTOs;
     public IItemList<Project> Projects {
-      get { return new ItemList<Project>(projects); }
+      get { return new ItemList<Project>(_projectDTOs.Select(x => new ProjectDTOWrapper(x))); }
     }
 
     private IItemList<Resource> resources;
@@ -149,7 +148,7 @@ namespace HeuristicLab.Clients.Hive {
       OnRefreshing();
 
       try {
-        projects = new ItemList<ProjectDTOWrapper>();
+        //projects = new ItemList<ProjectDTOWrapper>();
         resources = new ItemList<Resource>();
         jobs = new HiveItemCollection<RefreshableJob>();
         projectNames = new Dictionary<Guid, string>();
@@ -160,12 +159,13 @@ namespace HeuristicLab.Clients.Hive {
         resourceAncestors = new Dictionary<Guid, HashSet<Guid>>();
         resourceDescendants = new Dictionary<Guid, HashSet<Guid>>();
 
-        _client.ProjectGet().ToList().ForEach(x => projects.Add(new ProjectDTOWrapper(x)));
-        _client.DroneGroupGet().ToList().ForEach(x => resources.Add(new DroneGroupDTOWrapper(x)));
-        _client.DroneGet().ToList().ForEach(x => resources.Add(new DroneDTOWrapper(x)));
-        _client.HiveJobGet().ToList().ForEach(x => jobs.Add(new RefreshableJob(new HiveJobDTOWrapper(x))));
-        _client.ProjectNames().ToList().ForEach(x => projectNames.Add(Guid.Parse(x.Key), x.Value));
-        _client.ComputingResourceNames().ToList().ForEach(x => resourceNames.Add(Guid.Parse(x.Key), x.Value));
+        //_client.ProjectGet().ToList().ForEach(x => projects.Add(new ProjectDTOWrapper(x)));
+        _projectDTOs = _client.ProjectGetAllAsync().Result.ToList();
+        _client.DroneGroupGetAllAsync().Result.ToList().ForEach(x => resources.Add(new DroneGroupDTOWrapper(x)));
+        _client.DroneGetAllAsync().Result.ToList().ForEach(x => resources.Add(new DroneDTOWrapper(x)));
+        _client.HiveJobGetAllAsync().Result.ToList().ForEach(x => jobs.Add(new RefreshableJob(new HiveJobDTOWrapper(x))));
+        _client.ProjectGetNamesAsync().Result.ToList().ForEach(x => projectNames.Add(Guid.Parse(x.Key), x.Value));
+        _client.ComputingResourceGetNamesAsync().Result.ToList().ForEach(x => resourceNames.Add(Guid.Parse(x.Key), x.Value));
 
         RefreshResourceGenealogy();
         RefreshProjectGenealogy();
@@ -173,7 +173,8 @@ namespace HeuristicLab.Clients.Hive {
         RefreshDisabledParentResources();
       } catch {
         jobs = null;
-        projects = null;
+        //projects = null;
+        _projectDTOs = null;
         resources = null;
         throw;
       } finally {
@@ -185,7 +186,7 @@ namespace HeuristicLab.Clients.Hive {
       OnRefreshing();
 
       try {
-        projects = new ItemList<ProjectDTOWrapper>();
+        //projects = new ItemList<ProjectDTOWrapper>();
         projectNames = new Dictionary<Guid, string>();
         resources = new ItemList<Resource>();
         resourceNames = new Dictionary<Guid, string>();
@@ -195,19 +196,19 @@ namespace HeuristicLab.Clients.Hive {
         resourceAncestors = new Dictionary<Guid, HashSet<Guid>>();
         resourceDescendants = new Dictionary<Guid, HashSet<Guid>>();
 
-        _client.ProjectGet().ToList().ForEach(x => projects.Add(new ProjectDTOWrapper(x)));
-        _client.DroneGroupGet().ToList().ForEach(x => resources.Add(new DroneGroupDTOWrapper(x)));
-        _client.DroneGet().ToList().ForEach(x => resources.Add(new DroneDTOWrapper(x)));
-        _client.HiveJobGet().ToList().ForEach(x => jobs.Add(new RefreshableJob(new HiveJobDTOWrapper(x))));
-        _client.ProjectNames().ToList().ForEach(x => projectNames.Add(Guid.Parse(x.Key), x.Value));
-        _client.ComputingResourceNames().ToList().ForEach(x => resourceNames.Add(Guid.Parse(x.Key), x.Value));
+        _projectDTOs = _client.ProjectGetAllAsync().Result.ToList();
+        _client.DroneGroupGetAllAsync().Result.ToList().ForEach(x => resources.Add(new DroneGroupDTOWrapper(x)));
+        _client.DroneGetAllAsync().Result.ToList().ForEach(x => resources.Add(new DroneDTOWrapper(x)));
+        _client.ProjectGetNamesAsync().Result.ToList().ForEach(x => projectNames.Add(Guid.Parse(x.Key), x.Value));
+        _client.ComputingResourceGetNamesAsync().Result.ToList().ForEach(x => resourceNames.Add(Guid.Parse(x.Key), x.Value));
 
         RefreshResourceGenealogy();
         RefreshProjectGenealogy();
         RefreshDisabledParentProjects();
         RefreshDisabledParentResources();
       } catch {
-        projects = null;
+        //projects = null;
+        _projectDTOs = null;
         resources = null;
         throw;
       } finally {
@@ -235,7 +236,7 @@ namespace HeuristicLab.Clients.Hive {
       resourceDescendants.Clear();
 
       // fetch resource ancestor set
-      var rg = _client.ComputingResourceGenealogy();
+      var rg = _client.ComputingResourceGetGenealogyAsync().Result;
       rg.Keys.ToList().ForEach(k => resourceAncestors.Add(Guid.Parse(k), new HashSet<Guid>()));
       resourceAncestors.Keys.ToList().ForEach(k => resourceAncestors[k].UnionWith(rg[k.ToString()]));
 
@@ -254,7 +255,7 @@ namespace HeuristicLab.Clients.Hive {
 
 
       // fetch project ancestor list
-      var pg = _client.ProjectGenealogy();
+      var pg = _client.ProjectGetGenealogyAsync().Result;
       pg.Keys.ToList().ForEach(k => projectAncestors.Add(Guid.Parse(k), new HashSet<Guid>()));
       projectAncestors.Keys.ToList().ForEach(k => projectAncestors[k].UnionWith(pg[k.ToString()]));
 
@@ -270,10 +271,10 @@ namespace HeuristicLab.Clients.Hive {
     private void RefreshDisabledParentProjects() {
       disabledParentProjects = new HashSet<Project>();
 
-      foreach (var pid in projects
+      foreach (var pid in _projectDTOs
         .Where(x => x.ParentProjectId.HasValue)
         .SelectMany(x => projectAncestors[x.Id]).Distinct()
-        .Where(x => !projects.Select(y => y.Id).Contains(x))) {
+        .Where(x => !_projectDTOs.Select(y => y.Id).Contains(x))) {
         var p = new Project();
         p.Id = pid;
         p.ParentProjectId = projectAncestors[pid].FirstOrDefault();
@@ -298,12 +299,12 @@ namespace HeuristicLab.Clients.Hive {
     }
 
     public IEnumerable<Project> GetAvailableProjectAncestors(Guid id) {
-      if (projectAncestors.ContainsKey(id)) return projects.Where(x => projectAncestors[id].Contains(x.Id));
+      if (projectAncestors.ContainsKey(id)) return _projectDTOs.Where(x => projectAncestors[id].Contains(x.Id)).Select(x => new ProjectDTOWrapper(x));
       else return Enumerable.Empty<Project>();
     }
 
     public IEnumerable<Project> GetAvailableProjectDescendants(Guid id) {
-      if (projectDescendants.ContainsKey(id)) return projects.Where(x => projectDescendants[id].Contains(x.Id));
+      if (projectDescendants.ContainsKey(id)) return _projectDTOs.Where(x => projectDescendants[id].Contains(x.Id)).Select(x => new ProjectDTOWrapper(x));
       else return Enumerable.Empty<Project>();
     }
 
@@ -318,7 +319,7 @@ namespace HeuristicLab.Clients.Hive {
     }
 
     public IEnumerable<Resource> GetAvailableResourcesForProject(Guid id) {
-      var assignedProjectResources = projects.First(x => x.Id == id).AssignedComputingResources;
+      var assignedProjectResources = _projectDTOs.First(x => x.Id == id).AssignedComputingResources;
       return resources.Where(x => assignedProjectResources.Contains(x.Id));
     }
 
@@ -340,24 +341,24 @@ namespace HeuristicLab.Clients.Hive {
         }
         if (item is JobPermission) {
           var hep = (JobPermission)item;
-          hep.GrantedUserId = _client.HiveUserGet(hep.GrantedUserName).Id;
+          hep.GrantedUserId = _client.HiveUserGetUserByNameAsync(hep.GrantedUserName).Result.Id;
           if (hep.GrantedUserId == Guid.Empty) {
             throw new ArgumentException(string.Format("The user {0} was not found.", hep.GrantedUserName));
           }
-          _client.HiveJobPermissionGrant(hep.toDto());
+          _client.HiveJobPermissionGrantPermissionToUserAsync(hep.toDto()).Wait();
         }
         if (item is Project) {
           var project = (Project)item;
-          _client.ProjectPost(project.toDto());
+          _client.ProjectInsertAsync(project.toDto()).Wait();
         }
       } else {
         if (item is Job) {
           var job = (Job)item;
-          _client.HiveJobPut(job.toDto());
+          _client.HiveJobUpdateAsync(job.toDto()).Wait();
         }
         if (item is Project) {
           var project = (Project)item;
-          _client.ProjectPut(project.toDto());
+          _client.ProjectUpdateAsync(project.toDto()).Wait();
         }
         return;
       }
@@ -384,17 +385,17 @@ namespace HeuristicLab.Clients.Hive {
         return;
 
       if (item is Job)
-        _client.HiveJobPut(item.Id, HiveJobState.StatisticsPending.ToString());
+        _client.HiveJobUpdateJobStateAsync(item.Id, HiveJobState.StatisticsPending.ToString()).Wait();
       if (item is RefreshableJob) {
         RefreshableJob job = (RefreshableJob)item;
         if (job.RefreshAutomatically) {
           job.StopResultPolling();
         }
-        _client.HiveJobPut(item.Id, HiveJobState.StatisticsPending.ToString());
+        _client.HiveJobUpdateJobStateAsync(item.Id, HiveJobState.StatisticsPending.ToString()).Wait();
       }
       if (item is JobPermission) {
         var hep = (JobPermission)item;
-        _client.HiveJobPermissionRevoke(hep.toDto());
+        _client.HiveJobPermissionRevokePermissionFromUserAsync(hep.toDto()).Wait();
       }
       item.Id = Guid.Empty;
     }
@@ -430,7 +431,7 @@ namespace HeuristicLab.Clients.Hive {
     public void PauseJob(RefreshableJob refreshableJob) {
       foreach (HiveTask task in refreshableJob.GetAllHiveTasks()) {
         if (task.Task.State != TaskState.Finished && task.Task.State != TaskState.Aborted && task.Task.State != TaskState.Failed)
-        _client.HiveTaskPause(task.Task.Id);
+        _client.HiveTaskPauseHiveTaskAsync(task.Task.Id).Wait();
       }
       refreshableJob.ExecutionState = ExecutionState.Paused;
     }
@@ -438,7 +439,7 @@ namespace HeuristicLab.Clients.Hive {
     public void StopJob(RefreshableJob refreshableJob) {
       foreach (HiveTask task in refreshableJob.GetAllHiveTasks()) {
         if (task.Task.State != TaskState.Finished && task.Task.State != TaskState.Aborted && task.Task.State != TaskState.Failed)
-          _client.HiveTaskStop(task.Task.Id);
+          _client.HiveTaskStopHiveTaskAsync(task.Task.Id).Wait();
       }
       refreshableJob.ExecutionState = ExecutionState.Stopped;
     }
@@ -446,7 +447,7 @@ namespace HeuristicLab.Clients.Hive {
     public void ResumeJob(RefreshableJob refreshableJob) {
       foreach (HiveTask task in refreshableJob.GetAllHiveTasks()) {
         if (task.Task.State == TaskState.Paused) {
-          _client.HiveTaskRestart(task.Task.Id);
+          _client.HiveTaskRestartHiveTaskAsync(task.Task.Id).Wait();
         }
       }
       refreshableJob.ExecutionState = ExecutionState.Started;
@@ -494,7 +495,7 @@ namespace HeuristicLab.Clients.Hive {
 
         // set user id
         try {
-          refreshableJob.Job.OwnerUserId = _client.HiveUserGet(HiveClientUtil.GetCurrentUserName()).Id;
+          refreshableJob.Job.OwnerUserId = _client.HiveUserGetUserByNameAsync(UserInformation.Instance.UserName).Result.Id;
         }
         catch (ApiException) {
           refreshableJob.Job.OwnerUserId = Guid.Empty;
@@ -504,7 +505,7 @@ namespace HeuristicLab.Clients.Hive {
         refreshableJob.Progress.Message = "Uploading Job...";
         //refreshableJob.Job.Id = HiveServiceLocator.Instance.CallHiveService((s) => s.AddJob(refreshableJob.Job, refreshableJob.Job.ResourceIds));
         //refreshableJob.Job = HiveServiceLocator.Instance.CallHiveService((s) => s.GetJob(refreshableJob.Job.Id)); // update owner and permissions
-        refreshableJob.Job.Id = _client.HiveJobPost(refreshableJob.Job.toDto()).Id;
+        refreshableJob.Job.Id = _client.HiveJobInsertAsync(refreshableJob.Job.toDto()).Result.Id;
         cancellationToken.ThrowIfCancellationRequested();
 
         int totalJobCount = refreshableJob.GetAllHiveTasks().Count();
@@ -514,7 +515,7 @@ namespace HeuristicLab.Clients.Hive {
         // upload plugins
         refreshableJob.Progress.Message = "Uploading plugins...";
         //this.OnlinePlugins = HiveServiceLocator.Instance.CallHiveService((s) => s.GetPlugins());
-        this.OnlinePlugins = _client.PluginGet().Select(x => new PluginDTOWrapper(x)).Cast<Plugin>().ToList();
+        this.OnlinePlugins = _client.PluginGetAllAsync().Result.Select(x => new PluginDTOWrapper(x)).Cast<Plugin>().ToList();
         this.AlreadyUploadedPlugins = new List<Plugin>();
         Plugin configFilePlugin = UploadConfigurationFile(onlinePlugins);
         this.alreadyUploadedPlugins.Add(configFilePlugin);
@@ -564,9 +565,9 @@ namespace HeuristicLab.Clients.Hive {
       if (onlineConfig.Count() > 0) {
         return onlineConfig.First();
       } else {
-        configPlugin.Id = _client.PluginPost(configPlugin.toDto()).Id;
+        configPlugin.Id = _client.PluginInsertAsync(configPlugin.toDto()).Result.Id;
         configFile.PluginId = configPlugin.Id;
-        _client.PluginDataPost(configFile.toDto());
+        _client.PluginDataInsertAsync(configFile.toDto()).Wait();
         return configPlugin;
       }
     }
@@ -613,15 +614,15 @@ namespace HeuristicLab.Clients.Hive {
           if (!cancellationToken.IsCancellationRequested) {
             if (parentHiveTask != null) {
               hiveTask.Task.ParentTaskId = parentHiveTask.Task.Id;
-              var taskInfo = _client.HiveTaskPost(hiveTask.Task.toDto());
-              _client.HiveTaskPlugins(taskInfo.Id, hiveTask.Task.PluginsNeededIds);
+              var taskInfo = _client.HiveTaskInsertAsync(hiveTask.Task.toDto()).Result;
+              _client.HiveTaskAddPluginDependenciesAsync(taskInfo.Id, hiveTask.Task.PluginsNeededIds).Wait();
               taskData.TaskId = taskInfo.Id;
-              _client.HiveTaskDataPost(taskData.toDto());
+              _client.HiveTaskDataInsertAsync(taskData.toDto()).Wait();
             } else {
-              var taskInfo = _client.HiveTaskPost(hiveTask.Task.toDto());
-              _client.HiveTaskPlugins(taskInfo.Id, hiveTask.Task.PluginsNeededIds);
+              var taskInfo = _client.HiveTaskInsertAsync(hiveTask.Task.toDto()).Result;
+              _client.HiveTaskAddPluginDependenciesAsync(taskInfo.Id, hiveTask.Task.PluginsNeededIds).Wait();
               taskData.TaskId = taskInfo.Id;
-              _client.HiveTaskDataPost(taskData.toDto());
+              _client.HiveTaskDataInsertAsync(taskData.toDto()).Wait();
             }
           }
         }, Settings.Default.MaxRepeatServiceCalls, "Failed to add task", log);
@@ -651,8 +652,6 @@ namespace HeuristicLab.Clients.Hive {
 
     #region Download Experiment
     public void LoadJob(RefreshableJob refreshableJob) {
-      throw new NotImplementedException();
-      /*
       var hiveExperiment = refreshableJob.Job;
       refreshableJob.IsProgressing = true;
       TaskDownloader downloader = null;
@@ -709,7 +708,6 @@ namespace HeuristicLab.Clients.Hive {
         }
       
       }
-      */
     }
 
     private static void BuildHiveJobTree(HiveTask parentHiveTask, IEnumerable<LightweightTask> allTasks, IDictionary<Guid, HiveTask> allHiveTasks) {
@@ -737,7 +735,7 @@ namespace HeuristicLab.Clients.Hive {
     }
 
     public ItemTask LoadItemJob(Guid jobId) {
-      var taskData = _client.HiveTaskDataTask(jobId);
+      var taskData = _client.HiveTaskDataGetByIdAsync(jobId).Result;
       try {
         return PersistenceUtil.Deserialize<ItemTask>(taskData.Data);
       } catch {
@@ -760,7 +758,7 @@ namespace HeuristicLab.Clients.Hive {
     }
 
     public HiveItemCollection<JobPermission> GetJobPermissions(Guid jobId) {
-      var permissionDtos = _client.HiveJobPermissionJob(jobId);
+      var permissionDtos = _client.HiveJobPermissionGetPermissionsOfJobAsync(jobId).Result;
       var permissions = new HiveItemCollection<JobPermission>();
 
       foreach(var perm in permissionDtos) {
@@ -771,7 +769,7 @@ namespace HeuristicLab.Clients.Hive {
           Id = perm.Id,
           Permission = (Permission)(int)perm.PermissionType
         };
-        hep.UnmodifiedGrantedUserNameUpdate(_client.HiveUserGet(perm.GrantedUserId).UserName);
+        hep.UnmodifiedGrantedUserNameUpdate(_client.HiveUserGetByIdAsync(perm.GrantedUserId).Result.UserName);
         permissions.Add(hep);
       }
 
@@ -792,7 +790,7 @@ namespace HeuristicLab.Clients.Hive {
     }
 
     public IEnumerable<Resource> GetAssignedResourcesForProject(Guid projectId) {
-      var project = projects.First(x => x.Id == projectId);
+      var project = _projectDTOs.First(x => x.Id == projectId);
       var res = resources.Where(r => project.AssignedComputingResources.Contains(r.Id)).ToList();
       return res;
     }

@@ -25,7 +25,7 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.ServiceModel;
-using HEAL.Hive.RestClient.HiveRestClient;
+using HEAL.Hive.SwaggerClient;
 using HeuristicLab.Clients.Hive.Wrapper;
 using HeuristicLab.Core;
 using HeuristicLab.PluginInfrastructure;
@@ -76,7 +76,7 @@ namespace HeuristicLab.Clients.Hive {
       }
       return pluginIds;
     }
-    public static List<Guid> GetPluginDependencies(HiveRestClient client, List<Plugin> onlinePlugins, List<Plugin> alreadyUploadedPlugins,
+    public static List<Guid> GetPluginDependencies(swaggerClient client, List<Plugin> onlinePlugins, List<Plugin> alreadyUploadedPlugins,
                                                IEnumerable<IPluginDescription> neededPlugins) {
       var pluginIds = new List<Guid>();
       Dictionary<IPluginDescription, byte[]> checksumsNeededPlugins = CalcChecksumsForPlugins(neededPlugins);
@@ -96,15 +96,15 @@ namespace HeuristicLab.Clients.Hive {
             Plugin p = CreatePlugin(neededPlugin.Key, neededPlugin.Value);
             List<PluginData> pd = CreatePluginDatas(neededPlugin.Key);
             try {
-              p.Id = client.PluginPost(p.toDto()).Id;
+              p.Id = client.PluginInsertAsync(p.toDto()).Result.Id;
               foreach (var pluginData in pd) {
                 pluginData.PluginId = p.Id;
-                client.PluginDataPost(pluginData.toDto());
+                client.PluginDataInsertAsync(pluginData.toDto()).Wait();
               }
               alreadyUploadedPlugins.Add(p);
               pluginIds.Add(p.Id);
             } catch (FaultException<PluginAlreadyExistsFault> fault) {
-              onlinePlugins.Add(new PluginDTOWrapper(client.PluginGet(fault.Detail.Id)));
+              onlinePlugins.Add(new PluginDTOWrapper(client.PluginGetByIdAsync(fault.Detail.Id).Result));
             }
           } else {
             pluginIds.Add(foundPlugin.Id);

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using HEAL.Hive.Domain.DTOs.Entities;
+using HEAL.Hive.SwaggerClient;
 
 namespace HeuristicLab.Clients.Hive.Wrapper {
   public class ProjectDTOWrapper : Project {
@@ -15,8 +15,8 @@ namespace HeuristicLab.Clients.Hive.Wrapper {
       this.Name = projectDTO.Name;
       this.Description = projectDTO.Description;
       this.ParentProjectId = projectDTO.ParentProjectId;
-      this.DateCreated = projectDTO.CreatedAt;
-      this.EndDate = projectDTO.EndDate;
+      //this.DateCreated = projectDTO.CreatedAt;
+      //this.EndDate = projectDTO.EndDate;
       this.AssignedComputingResources = projectDTO.AssignedComputingResources;
     }
   }

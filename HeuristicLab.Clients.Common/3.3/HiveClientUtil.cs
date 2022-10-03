@@ -7,9 +7,5 @@ namespace HeuristicLab.Clients.Common {
       return Settings.Default.UseNewHive ? 2 : 1;
     }
     
-    public static string GetCurrentUserName() { 
-      return Settings.Default.UserName; 
-    }
-
   }
 }

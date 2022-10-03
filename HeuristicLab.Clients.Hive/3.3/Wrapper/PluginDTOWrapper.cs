@@ -1,5 +1,5 @@
 ﻿using System;
-using HEAL.Hive.Domain.DTOs.Entities;
+using HEAL.Hive.SwaggerClient;
 
 namespace HeuristicLab.Clients.Hive.Wrapper {
   public class PluginDTOWrapper : Plugin {
@@ -10,10 +10,10 @@ namespace HeuristicLab.Clients.Hive.Wrapper {
       this.PluginDTO = pluginDTO;
       this.Id = pluginDTO.Id;
       this.Name = pluginDTO.Name;
-      this.Version = pluginDTO.Version;
+      this.Version = new Version(pluginDTO.Version);
       this.UserId = pluginDTO.OwnerId ?? Guid.Empty;
       this.Hash = pluginDTO.Hash;
-      this.DateCreated = pluginDTO.CreatedAt;
+      //this.DateCreated = pluginDTO.CreatedAt;
     }
   }
 }

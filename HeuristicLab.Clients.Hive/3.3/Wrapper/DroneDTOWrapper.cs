@@ -1,5 +1,5 @@
 ﻿using System;
-using HEAL.Hive.Domain.DTOs.Entities;
+using HEAL.Hive.SwaggerClient;
 
 namespace HeuristicLab.Clients.Hive.Wrapper {
   public class DroneDTOWrapper : Slave {
@@ -17,7 +17,7 @@ namespace HeuristicLab.Clients.Hive.Wrapper {
       this.HbInterval = droneDTO.HeartbeatInterval;
       this.IsAllowedToCalculate = droneDTO.IsAllowedToCalculate;
       this.IsDisposable = droneDTO.DisposeOnInactivity;
-      this.LastHeartbeat = droneDTO.LastHeartbeatAt;
+      this.LastHeartbeat = DateTime.Parse(droneDTO.LastHeartbeatAt);
       this.OperatingSystem = droneDTO.OperatingSystem;
       this.OwnerUserId = droneDTO.OwnerId;
       this.ParentResourceId = droneDTO.ParentDroneGroupId;

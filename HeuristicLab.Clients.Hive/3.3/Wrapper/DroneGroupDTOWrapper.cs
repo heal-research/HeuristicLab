@@ -1,5 +1,4 @@
-﻿using System;
-using HEAL.Hive.Domain.DTOs.Entities;
+﻿using HEAL.Hive.SwaggerClient;
 
 namespace HeuristicLab.Clients.Hive.Wrapper {
   public class DroneGroupDTOWrapper : SlaveGroup {

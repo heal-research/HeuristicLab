@@ -207,13 +207,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\HEAL.Hive.Domain\HEAL.Hive.Domain.csproj">
-      <Project>{5DC7F615-BC12-4A14-B341-C2D607650C00}</Project>
-      <Name>HEAL.Hive.Domain</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\HEAL.Hive.RestClient\HEAL.Hive.RestClient.csproj">
-      <Project>{48767D25-438B-4BC8-81B2-15679D47F93A}</Project>
-      <Name>HEAL.Hive.RestClient</Name>
+    <ProjectReference Include="..\..\HEAL.Hive.SwaggerClient\HEAL.Hive.SwaggerClient.csproj">
+      <Project>{09816C4F-861F-4224-A78E-F106B36D03BB}</Project>
+      <Name>HEAL.Hive.SwaggerClient</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Clients.Access\3.3\HeuristicLab.Clients.Access-3.3.csproj">
       <Project>{494F87F4-0F25-4D33-A382-10CDB2174D48}</Project>

@@ -1,5 +1,5 @@
-﻿using HEAL.Hive.Domain.DTOs.Entities;
-using HEAL.Hive.Domain.Enums;
+﻿
+using HEAL.Hive.SwaggerClient;
 
 namespace HeuristicLab.Clients.Hive.Wrapper {
   public static class Extensions {
@@ -37,7 +37,7 @@ namespace HeuristicLab.Clients.Hive.Wrapper {
         Name = plugin.Name,
         OwnerId = plugin.UserId,
         Hash = plugin.Hash,
-        Version = plugin.Version,
+        Version = plugin.Version.ToString(),
       };
     }
 

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using HEAL.Hive.Domain.DTOs.Entities;
+using HEAL.Hive.SwaggerClient;
 
 namespace HeuristicLab.Clients.Hive.Wrapper {
   public class HiveJobDTOWrapper : Job {
@@ -12,7 +12,7 @@ namespace HeuristicLab.Clients.Hive.Wrapper {
       this.Id = hiveJobDTO.Id;
       this.Name = hiveJobDTO.Name;
       this.Description = hiveJobDTO.Description;
-      this.DateCreated = hiveJobDTO.CreatedAt;
+      //this.DateCreated = hiveJobDTO.CreatedAt;
       this.OwnerUserId = hiveJobDTO.OwnerId ?? Guid.Empty;
       this.State = (JobState) (int) hiveJobDTO.HiveJobState;
       this.ResourceIds = new List<Guid>(hiveJobDTO.AssignedComputingResources);
