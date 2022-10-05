@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>HeuristicLab.Problems.DataAnalysis</RootNamespace>
     <AssemblyName>HeuristicLab.Problems.DataAnalysis-3.4</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
@@ -118,10 +118,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Implementation\SupervisedDataAnalysisProblemData.cs" />
-    <Compile Include="Interfaces\ISupervisedDataAnalysisModel.cs" />
-    <Compile Include="Interfaces\ISupervisedDataAnalysisProblem.cs" />
-    <Compile Include="Interfaces\ISupervisedDataAnalysisProblemData.cs" />
     <Compile Include="DatasetExtensions.cs" />
     <Compile Include="DatasetUtil.cs" />
     <Compile Include="DoubleLimit.cs" />
@@ -161,6 +157,7 @@
     <Compile Include="Implementation\Regression\RegressionModel.cs" />
     <Compile Include="Implementation\Regression\RegressionSolutionVariableImpactsCalculator.cs" />
     <Compile Include="Implementation\Regression\ShapeConstraintsParser.cs" />
+    <Compile Include="Implementation\SupervisedDataAnalysisProblemData.cs" />
     <Compile Include="Implementation\TimeSeriesPrognosis\Models\ConstantTimeSeriesPrognosisModel.cs" />
     <Compile Include="Implementation\TimeSeriesPrognosis\Models\TimeSeriesPrognosisAutoRegressiveModel.cs" />
     <Compile Include="Implementation\TimeSeriesPrognosis\TimeSeriesPrognosisProblem.cs" />
@@ -187,6 +184,9 @@
     <Compile Include="Interfaces\IDataAnalysisSolutionExporter.cs" />
     <Compile Include="Interfaces\IDataset.cs" />
     <Compile Include="Interfaces\IDependencyCalculator.cs" />
+    <Compile Include="Interfaces\ISupervisedDataAnalysisModel.cs" />
+    <Compile Include="Interfaces\ISupervisedDataAnalysisProblem.cs" />
+    <Compile Include="Interfaces\ISupervisedDataAnalysisProblemData.cs" />
     <Compile Include="Interfaces\ITransformation.cs" />
     <Compile Include="Interfaces\ITransformationMapper.cs" />
     <Compile Include="Interfaces\Regression\IConfidenceRegressionModel.cs" />

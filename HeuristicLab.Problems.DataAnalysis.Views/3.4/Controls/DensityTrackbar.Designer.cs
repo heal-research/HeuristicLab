@@ -19,7 +19,7 @@
  */
 #endregion
 
-namespace HeuristicLab.Algorithms.DataAnalysis.Views {
+namespace HeuristicLab.Problems.DataAnalysis.Views {
   partial class DensityTrackbar {
     /// <summary> 
     /// Required designer variable.
@@ -70,7 +70,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
       // 
       // trackBar
       // 
-      this.trackBar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+      this.trackBar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.trackBar.BackColor = System.Drawing.Color.White;
       this.trackBar.LargeChange = 100;
@@ -86,8 +86,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
       // 
       // chart
       // 
-      this.chart.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+      this.chart.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.chart.Location = new System.Drawing.Point(156, 35);
       this.chart.Name = "chart";

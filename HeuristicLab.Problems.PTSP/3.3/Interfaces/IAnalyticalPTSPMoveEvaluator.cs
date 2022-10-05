@@ -26,5 +26,6 @@ using HeuristicLab.Optimization;
 namespace HeuristicLab.Problems.PTSP {
   [StorableType("dea758f7-136a-469f-a486-ef6569fa0c74")]
   public interface IAnalyticalPTSPMoveEvaluator : IAnalyticalPTSPOperator, ISingleObjectiveMoveEvaluator, IPermutationMoveOperator {
+
   }
 }

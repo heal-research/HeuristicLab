@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2019 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -117,7 +117,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
         : Cache.GetValue(solutionMessage, EvaluateOnNextAvailableClient, GetQualityMessageExtensions(), cancellationToken);
     }
 
-    public override void Analyze(ISingleObjectiveSolutionContext<TEncodedSolution>[] solutions,  IRandom random) {
+    public override void Analyze(ISingleObjectiveSolutionContext<TEncodedSolution>[] solutions, IRandom random) {
       OptimizationSupport.Analyze(solutions, random);
     }
     public override IEnumerable<TEncodedSolution> GetNeighbors(TEncodedSolution solutions, IRandom random) {

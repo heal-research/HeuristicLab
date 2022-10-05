@@ -46,7 +46,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     private FullTreeShaker(FullTreeShaker original, Cloner cloner) : base(original, cloner) { }
     public FullTreeShaker()
       : base() {
-      Parameters.Add(new FixedValueParameter<DoubleValue>(ShakingFactorParameterName, "The shaking factor that should be used for the manipulation of constants (default=1.0).", new DoubleValue(1.0)));
+      Parameters.Add(new FixedValueParameter<DoubleValue>(ShakingFactorParameterName, "The shaking factor that should be used for the manipulation of parameters (default=1.0).", new DoubleValue(1.0)));
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {

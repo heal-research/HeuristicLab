@@ -3,14 +3,6 @@
 ECHO Clean starting...
 
 FOR /F "tokens=*" %%G IN ('DIR /AD /B') DO (
-  IF EXIST "%%G\bin" (
-    ECHO Cleaning "bin" in %%G ...
-    RMDIR /S /Q "%%G\bin"
-  )
-  IF EXIST "%%G\obj" (
-    ECHO Cleaning "obj" in %%G ...
-    RMDIR /S /Q "%%G\obj"
-  )
   FOR /F "tokens=*" %%T IN ('DIR /AD /B %%G') DO (
     IF EXIST "%%G\%%T\bin" (
       ECHO Cleaning "bin" in %%G in version %%T ...
@@ -34,3 +26,6 @@ IF EXIST TestResults (
 )
 
 ECHO Clean finished.
+
+PAUSE
+PAUSE

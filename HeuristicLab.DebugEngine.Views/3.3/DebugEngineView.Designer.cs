@@ -19,7 +19,7 @@
  */
 #endregion
 
-namespace HeuristicLab.DebugEngine {
+namespace HeuristicLab.DebugEngine.Views {
   partial class DebugEngineView {
     /// <summary>
     /// Required designer variable.
@@ -46,15 +46,15 @@ namespace HeuristicLab.DebugEngine {
     private void InitializeComponent() {
       this.components = new System.ComponentModel.Container();
       System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DebugEngineView));
-      this.operationContentView = new HeuristicLab.DebugEngine.OperationContentView();
-      this.executionStackView = new HeuristicLab.DebugEngine.ExecutionStackView();
+      this.operationContentView = new HeuristicLab.DebugEngine.Views.OperationContentView();
+      this.executionStackView = new HeuristicLab.DebugEngine.Views.ExecutionStackView();
       this.splitContainer2 = new System.Windows.Forms.SplitContainer();
       this.refreshButton = new System.Windows.Forms.Button();
       this.skipStackOpsCheckBox = new System.Windows.Forms.CheckBox();
       this.stepButton = new System.Windows.Forms.Button();
       this.toolTip = new System.Windows.Forms.ToolTip(this.components);
       this.splitContainer3 = new System.Windows.Forms.SplitContainer();
-      this.operatorTraceView = new HeuristicLab.DebugEngine.OperatorTraceView();
+      this.operatorTraceView = new HeuristicLab.DebugEngine.Views.OperatorTraceView();
       this.splitContainer2.Panel1.SuspendLayout();
       this.splitContainer2.Panel2.SuspendLayout();
       this.splitContainer2.SuspendLayout();
@@ -197,8 +197,8 @@ namespace HeuristicLab.DebugEngine {
     private System.Windows.Forms.SplitContainer splitContainer2;
     private System.Windows.Forms.Button stepButton;
     private System.Windows.Forms.ToolTip toolTip;
-    private HeuristicLab.DebugEngine.ExecutionStackView executionStackView;
-    private HeuristicLab.DebugEngine.OperationContentView operationContentView;
+    private HeuristicLab.DebugEngine.Views.ExecutionStackView executionStackView;
+    private HeuristicLab.DebugEngine.Views.OperationContentView operationContentView;
     private System.Windows.Forms.Button refreshButton;
     private System.Windows.Forms.CheckBox skipStackOpsCheckBox;
     private System.Windows.Forms.SplitContainer splitContainer3;

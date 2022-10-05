@@ -44,10 +44,10 @@ namespace HeuristicLab.Algorithms.MOCMAEvolutionStrategy {
       var frontCopy = front.Select(x => x.PenalizedFitness).ToList();
       if (frontCopy.Count <= 1) return 0;
       //TODO discuss with bwerth
-      var tep = problem != null ? frontCopy.Concat(new[] {problem.ReferencePoint}) : frontCopy;
+      var tep = problem != null ? frontCopy.Concat(new[] { problem.ReferencePoint }) : frontCopy;
       var refPoint = HypervolumeCalculator.CalculateNadirPoint(tep, problem.Maximization);
       var contributions = Enumerable.Range(0, frontCopy.Count).Select(i => Contribution(frontCopy, i, problem.Maximization, refPoint));
-      return contributions.Select((value, index) => new {value, index}).OrderBy(x => x.value).First().index;
+      return contributions.Select((value, index) => new { value, index }).OrderBy(x => x.value).First().index;
     }
 
     #region Helpers

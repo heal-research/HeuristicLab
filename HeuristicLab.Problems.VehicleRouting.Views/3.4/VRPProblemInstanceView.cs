@@ -83,17 +83,23 @@ namespace HeuristicLab.Problems.VehicleRouting.Views {
 
       while (result.Count != count) {
         switch (i) {
-          case 0: result.Add(new Pen(Color.FromArgb(0, 0, b)));
+          case 0:
+            result.Add(new Pen(Color.FromArgb(0, 0, b)));
             break;
-          case 1: result.Add(new Pen(Color.FromArgb(0, g, 0)));
+          case 1:
+            result.Add(new Pen(Color.FromArgb(0, g, 0)));
             break;
-          case 2: result.Add(new Pen(Color.FromArgb(r, 0, 0)));
+          case 2:
+            result.Add(new Pen(Color.FromArgb(r, 0, 0)));
             break;
-          case 3: result.Add(new Pen(Color.FromArgb(0, g, b)));
+          case 3:
+            result.Add(new Pen(Color.FromArgb(0, g, b)));
             break;
-          case 4: result.Add(new Pen(Color.FromArgb(r, 0, b)));
+          case 4:
+            result.Add(new Pen(Color.FromArgb(r, 0, b)));
             break;
-          case 5: result.Add(new Pen(Color.FromArgb(r, g, 0)));
+          case 5:
+            result.Add(new Pen(Color.FromArgb(r, g, 0)));
             break;
         }
 

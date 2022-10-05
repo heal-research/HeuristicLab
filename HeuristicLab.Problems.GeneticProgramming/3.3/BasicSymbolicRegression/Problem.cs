@@ -169,6 +169,7 @@ namespace HeuristicLab.Problems.GeneticProgramming.BasicSymbolicRegression {
         g.AddTerminalSymbol(newErcSy);
       }
 
+      Encoding.GrammarParameter.ReadOnly = false;
       Encoding.Grammar = g;
       Encoding.GrammarParameter.ReadOnly = GrammarRefParameter.ReadOnly = true;
     }

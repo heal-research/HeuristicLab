@@ -111,7 +111,7 @@ namespace HeuristicLab.DataPreprocessing {
       preprocessedAlgorithm.Name = preprocessedAlgorithm.Name + "(Preprocessed)";
       preprocessedAlgorithm.Runs.Clear();
       dynamic problem = preprocessedAlgorithm.Problem;
-      problem.ProblemData = (dynamic) CreateNewProblemData();
+      problem.ProblemData = (dynamic)CreateNewProblemData();
       return preprocessedAlgorithm;
     }
     private IDataAnalysisProblem ExportProblem(IDataAnalysisProblem source) {

@@ -21,7 +21,6 @@
 using System.Collections.Generic;
 using HEAL.Attic;
 using HeuristicLab.Core;
-using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Optimization;
 
 namespace HeuristicLab.Algorithms.MOCMAEvolutionStrategy {

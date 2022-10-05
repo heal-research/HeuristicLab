@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>HeuristicLab.Problems.TestFunctions</RootNamespace>
     <AssemblyName>HeuristicLab.Problems.TestFunctions-3.3</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
@@ -113,14 +113,29 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Functions\Ackley.cs" />
+    <Compile Include="Functions\Beale.cs" />
+    <Compile Include="Functions\Booth.cs" />
+    <Compile Include="Functions\Griewank.cs" />
+    <Compile Include="Functions\Levy.cs" />
+    <Compile Include="Functions\Matyas.cs" />
+    <Compile Include="Functions\Multinormal.cs" />
     <Compile Include="Functions\Random.cs" />
+    <Compile Include="Functions\Rastrigin.cs" />
+    <Compile Include="Functions\Rosenbrock.cs" />
     <Compile Include="Functions\SchafferF6.cs" />
+    <Compile Include="Functions\Schwefel.cs" />
+    <Compile Include="Functions\SingleObjectiveTestFunction.cs" />
+    <Compile Include="Functions\Sphere.cs" />
+    <Compile Include="Functions\SumSquares.cs" />
+    <Compile Include="Functions\Zakharov.cs" />
     <Compile Include="Improvers\SingleObjectiveTestFunctionImprovementOperator.cs" />
     <Compile Include="Instances\SOTFData.cs" />
     <Compile Include="Instances\SOTFDataDescriptor.cs" />
     <Compile Include="Instances\SOTFInstanceProvider.cs" />
-    <Compile Include="Interfaces\ITestFunctionSolutionSimilarityCalculator.cs" />
+    <Compile Include="Interfaces\ISingleObjectiveTestFunction.cs" />
     <Compile Include="Interfaces\ISingleObjectiveTestFuntionImprovementOperator.cs" />
+    <Compile Include="Interfaces\ITestFunctionSolutionSimilarityCalculator.cs" />
     <Compile Include="PathRelinkers\SingleObjectiveTestFunctionPathRelinker.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -129,29 +144,14 @@
     <Compile Include="Analyzers\BestSingleObjectiveTestFunctionSolutionAnalyzer.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Functions\Ackley.cs" />
-    <Compile Include="Functions\Beale.cs" />
-    <Compile Include="Functions\Booth.cs" />
-    <Compile Include="Functions\Griewank.cs" />
-    <Compile Include="Functions\Levy.cs" />
-    <Compile Include="Functions\Matyas.cs" />
-    <Compile Include="Functions\Multinormal.cs" />
-    <Compile Include="Functions\Rastrigin.cs" />
-    <Compile Include="Functions\Rosenbrock.cs" />
-    <Compile Include="Functions\Schwefel.cs" />
-    <Compile Include="Functions\SingleObjectiveTestFunction.cs" />
-    <Compile Include="Functions\Sphere.cs" />
-    <Compile Include="Functions\SumSquares.cs" />
-    <Compile Include="Functions\Zakharov.cs" />
     <Compile Include="Interfaces\IBestSingleObjectiveTestFunctionSolutionAnalyzer.cs" />
     <Compile Include="Interfaces\ISingleObjectiveTestFunctionAdditiveMoveEvaluator.cs" />
     <Compile Include="Interfaces\ISingleObjectiveTestFunctionMoveEvaluator.cs" />
-    <Compile Include="Interfaces\ISingleObjectiveTestFunction.cs" />
     <Compile Include="Interfaces\ISingleObjectiveTestFunctionProblemSolutionsVisualizer.cs" />
     <Compile Include="MoveEvaluators\AdditiveMoveEvaluator.cs" />
     <Compile Include="SimilarityCalculators\SingleObjectiveTestFunctionSimilarityCalculator.cs" />
-    <Compile Include="SingleObjectiveTestFunctionSolution.cs" />
     <Compile Include="SingleObjectiveTestFunctionProblem.cs" />
+    <Compile Include="SingleObjectiveTestFunctionSolution.cs" />
     <None Include="HeuristicLab.snk" />
     <None Include="Plugin.cs.frame" />
     <None Include="Properties\AssemblyInfo.cs.frame" />

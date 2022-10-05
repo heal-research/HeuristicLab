@@ -65,7 +65,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis.Tests 
       grammar.MaximumFunctionDefinitions = 0;
       grammar.MinimumFunctionArguments = 0;
       grammar.MinimumFunctionDefinitions = 0;
-      var randomTrees = Util.CreateRandomTrees(twister, dataset, grammar, N, 1, 100, 0, 0);
+      var randomTrees = Util.CreateRandomTrees(twister, dataset, grammar, N, 100);
       foreach (ISymbolicExpressionTree tree in randomTrees) {
         Util.InitTree(tree, twister, new List<string>(dataset.VariableNames));
       }
@@ -82,7 +82,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis.Tests 
       grammar.MaximumFunctionDefinitions = 0;
       grammar.MinimumFunctionArguments = 0;
       grammar.MinimumFunctionDefinitions = 0;
-      var randomTrees = Util.CreateRandomTrees(twister, dataset, grammar, N, 1, 100, 0, 0);
+      var randomTrees = Util.CreateRandomTrees(twister, dataset, grammar, N, 100);
       foreach (ISymbolicExpressionTree tree in randomTrees) {
         Util.InitTree(tree, twister, new List<string>(dataset.VariableNames));
       }
@@ -99,7 +99,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis.Tests 
       grammar.MaximumFunctionDefinitions = 0;
       grammar.MinimumFunctionArguments = 0;
       grammar.MinimumFunctionDefinitions = 0;
-      var randomTrees = Util.CreateRandomTrees(twister, dataset, grammar, N, 1, 100, 0, 0);
+      var randomTrees = Util.CreateRandomTrees(twister, dataset, grammar, N, 100);
       foreach (SymbolicExpressionTree tree in randomTrees) {
         Util.InitTree(tree, twister, new List<string>(dataset.VariableNames));
       }

@@ -20,11 +20,11 @@
 #endregion
 
 using System.ComponentModel;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
-using HEAL.Attic;
 
 namespace HeuristicLab.Problems.LinearAssignment {
   [Item("LAP Assignment", "Represents a solution to the LAP.")]

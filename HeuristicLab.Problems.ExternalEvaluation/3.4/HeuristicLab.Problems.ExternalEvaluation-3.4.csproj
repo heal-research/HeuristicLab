@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>HeuristicLab.Problems.ExternalEvaluation</RootNamespace>
     <AssemblyName>HeuristicLab.Problems.ExternalEvaluation-3.4</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
@@ -133,10 +133,10 @@
     <Compile Include="Drivers\EvaluationProcessChannel.cs" />
     <Compile Include="Drivers\EvaluationStreamChannel.cs" />
     <Compile Include="Drivers\EvaluationTCPChannel.cs" />
+    <Compile Include="ExternalEvaluationProblemInstances.cs" />
     <Compile Include="Interfaces\IExternalEvaluationProblem.cs" />
     <Compile Include="Interfaces\IMultiObjectiveOptimizationSupport.cs" />
     <Compile Include="MultiObjectiveExternalEvaluationProblem.cs" />
-    <Compile Include="ExternalEvaluationProblemInstances.cs" />
     <Compile Include="ExternalEvaluationProblem.cs" />
     <Compile Include="Interfaces\IEvaluationServiceClient.cs" />
     <Compile Include="Interfaces\IEvaluationChannel.cs" />
@@ -145,11 +145,11 @@
     <Compile Include="Plugin.cs" />
     <Compile Include="Programmable\CompiledOptimizationSupport.cs" />
     <Content Include="Programmable\MultiObjective\CompiledMultiObjectiveOptimizationSupport.cs" />
-    <Content Include="Programmable\SingleObjective\CompiledSingleObjectiveOptimizationSupport.cs" />
     <Compile Include="Programmable\MultiObjective\MultiObjectiveOptimizationSupportScript.cs" />
     <Compile Include="Programmable\OptimizationSupportScript.cs" />
-    <Compile Include="Programmable\SingleObjective\SingleObjectiveOptimizationSupportScript.cs" />
     <Compile Include="Programmable\OptimizationSupportScriptException.cs" />
+    <Content Include="Programmable\SingleObjective\CompiledSingleObjectiveOptimizationSupport.cs" />
+    <Compile Include="Programmable\SingleObjective\SingleObjectiveOptimizationSupportScript.cs" />
     <Compile Include="Programmable\Templates.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -187,7 +187,6 @@
     <EmbeddedResource Include="Programmable\Templates.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Templates.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

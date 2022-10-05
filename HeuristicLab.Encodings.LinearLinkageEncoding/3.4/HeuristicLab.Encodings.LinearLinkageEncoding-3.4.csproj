@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>HeuristicLab.Encodings.LinearLinkageEncoding</RootNamespace>
     <AssemblyName>HeuristicLab.Encodings.LinearLinkageEncoding-3.4</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -168,8 +168,6 @@
     <Compile Include="Crossovers\LowestIndexMaxCrossover.cs" />
     <Compile Include="Crossovers\MultiLLECrossover.cs" />
     <Compile Include="Crossovers\SinglePointCrossover.cs" />
-    <Compile Include="LinearLinkageMultiObjectiveProblem.cs" />
-    <Compile Include="LinearLinkageProblem.cs" />
     <Compile Include="Interfaces\ILinearLinkageMoveOperator.cs" />
     <Compile Include="Interfaces\ILinearLinkageEMSSMoveOperator.cs" />
     <Compile Include="Interfaces\ILinearLinkageSwap2MoveOperator.cs" />
@@ -180,6 +178,8 @@
     <Compile Include="LinearLinkageEqualityComparer.cs" />
     <Compile Include="LinearLinkageManipulator.cs" />
     <Compile Include="LinearLinkageCrossover.cs" />
+    <Compile Include="LinearLinkageMultiObjectiveProblem.cs" />
+    <Compile Include="LinearLinkageProblem.cs" />
     <Compile Include="Manipulators\GraftManipulator.cs" />
     <Compile Include="Manipulators\MoveItemManipulator.cs" />
     <Compile Include="Manipulators\MergeGroupManipulator.cs" />

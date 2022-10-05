@@ -153,7 +153,6 @@ namespace HeuristicLab.Data {
     IValueTypeArray IValueTypeArray.AsReadOnly() {
       return AsReadOnly();
     }
-
     public override string ToString() {
       if (array.Length == 0) return "[]";
 

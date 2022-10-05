@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>HeuristicLab.Encodings.BinaryVectorEncoding</RootNamespace>
     <AssemblyName>HeuristicLab.Encodings.BinaryVectorEncoding-3.3</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
@@ -118,21 +118,21 @@
     <None Include="Properties\AssemblyInfo.cs.frame" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BinaryVectorMultiObjectiveProblem.cs" />
-    <Compile Include="BinaryVectorProblem.cs" />
     <Compile Include="BinaryVectorEncoding.cs" />
     <Compile Include="BinaryVectorEqualityComparer.cs" />
+    <Compile Include="BinaryVectorMultiObjectiveProblem.cs" />
+    <Compile Include="BinaryVectorProblem.cs" />
     <Compile Include="Creators\RandomBinaryVectorCreator.cs" />
     <Compile Include="Crossovers\MultiBinaryVectorCrossover.cs" />
     <Compile Include="Crossovers\UniformCrossover.cs" />
     <Compile Include="Crossovers\SinglePointCrossover.cs" />
     <Compile Include="Crossovers\NPointCrossover.cs" />
     <Compile Include="BinaryVector.cs" />
+    <Compile Include="Interfaces\IBinaryVectorSolutionOperator.cs" />
+    <Compile Include="Interfaces\IBinaryVectorSolutionsOperator.cs" />
+    <Compile Include="Interfaces\IOneBitflipMoveQualityOperator.cs" />
     <Compile Include="SimilarityCalculators\HammingSimilarityCalculator.cs" />
     <Compile Include="Interfaces\IBinaryVectorMultiNeighborhoodShakingOperator.cs" />
-    <Compile Include="Interfaces\IBinaryVectorSolutionsOperator.cs" />
-    <Compile Include="Interfaces\IBinaryVectorSolutionOperator.cs" />
-    <Compile Include="Interfaces\IOneBitflipMoveQualityOperator.cs" />
     <Compile Include="Interfaces\IOneBitflipMoveOperator.cs" />
     <Compile Include="Interfaces\IBinaryVectorCreator.cs" />
     <Compile Include="Interfaces\IBinaryVectorCrossover.cs" />

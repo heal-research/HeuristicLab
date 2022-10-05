@@ -155,11 +155,13 @@ namespace HeuristicLab.Data.Views {
       errorProvider.SetError(lengthTextBox, string.Empty);
     }
     private void lengthTextBox_KeyDown(object sender, KeyEventArgs e) {
-      if (e.KeyCode == Keys.Enter || e.KeyCode == Keys.Return)
+      if (e.KeyCode == Keys.Enter || e.KeyCode == Keys.Return) {
         lengthLabel.Focus();  // set focus on label to validate data
-      if (e.KeyCode == Keys.Escape) {
+        e.SuppressKeyPress = true;
+      } else if (e.KeyCode == Keys.Escape) {
         lengthTextBox.Text = Content.Length.ToString();
         lengthLabel.Focus();  // set focus on label to validate data
+        e.SuppressKeyPress = true;
       }
     }
     #endregion

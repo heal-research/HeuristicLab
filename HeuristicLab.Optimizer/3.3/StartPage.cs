@@ -31,6 +31,7 @@ using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.MainForm;
+using HeuristicLab.MainForm.WindowsForms;
 
 namespace HeuristicLab.Optimizer {
   [View("Start Page")]
@@ -121,7 +122,7 @@ namespace HeuristicLab.Optimizer {
         var serializer = new ProtoBufSerializer();
         NamedItem item;
         try {
-          item = (NamedItem)serializer.Deserialize(stream, out var info,false);
+          item = (NamedItem)serializer.Deserialize(stream, out var info, false);
           if (item == null) item = new ErrorMessage(name, "Sample failed to load!");
         } catch (Exception e) {
           item = new ErrorMessage(name, "Sample failed to load!" + Environment.NewLine + e.ToString());

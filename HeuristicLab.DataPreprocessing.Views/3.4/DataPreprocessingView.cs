@@ -27,6 +27,7 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
+using HeuristicLab.MainForm.WindowsForms;
 using HeuristicLab.Problems.DataAnalysis;
 using HeuristicLab.Problems.Instances.DataAnalysis;
 using HeuristicLab.Problems.Instances.DataAnalysis.Views;

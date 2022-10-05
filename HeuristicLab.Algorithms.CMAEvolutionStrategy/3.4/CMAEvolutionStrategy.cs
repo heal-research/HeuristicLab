@@ -483,8 +483,7 @@ namespace HeuristicLab.Algorithms.CMAEvolutionStrategy {
             CMAUpdaterParameter.ValidValues.Add(op);
           CMAUpdater = CMAUpdaterParameter.ValidValues.First();
         }
-      }
-      finally { cmaesInitializerSync = false; }
+      } finally { cmaesInitializerSync = false; }
     }
     private void UpdateAnalyzers() {
       Analyzer.Operators.Clear();

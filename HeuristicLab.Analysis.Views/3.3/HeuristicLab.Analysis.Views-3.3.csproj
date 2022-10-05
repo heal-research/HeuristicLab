@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>HeuristicLab.Analysis.Views</RootNamespace>
     <AssemblyName>HeuristicLab.Analysis.Views-3.3</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
@@ -143,18 +143,6 @@
     </Compile>
     <Compile Include="IndexedDataTableView.Designer.cs">
       <DependentUpon>IndexedDataTableView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ParetoFrontScatterPlotViewOfT.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="ParetoFrontScatterPlotViewOfT.Designer.cs">
-      <DependentUpon>ParetoFrontScatterPlotViewOfT.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ParetoFrontScatterPlotView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="ParetoFrontScatterPlotView.Designer.cs">
-      <DependentUpon>ParetoFrontScatterPlotView.cs</DependentUpon>
     </Compile>
     <Compile Include="ScatterPlotView.cs">
       <SubType>UserControl</SubType>

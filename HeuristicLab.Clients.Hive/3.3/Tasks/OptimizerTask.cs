@@ -20,12 +20,12 @@
 #endregion
 
 using System;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
-using HEAL.Attic;
 
-namespace HeuristicLab.Clients.Hive.Jobs {
+namespace HeuristicLab.Clients.Hive {
   [Item("Optimizer Task", "Represents Task which executes a IOptimizer object.")]
   [StorableType("9A59FAAF-3F5C-4629-B22D-714488DC2678")]
   public class OptimizerTask : ItemTask {

@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>HeuristicLab.Encodings.RealVectorEncoding</RootNamespace>
     <AssemblyName>HeuristicLab.Encodings.RealVectorEncoding-3.3</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
@@ -114,13 +114,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Creators\NormalDistributedRealVectorCreator.cs" />
-    <Compile Include="RealVectorMultiObjectiveProblem.cs" />
-    <Compile Include="RealVectorProblem.cs" />
+    <Compile Include="Crossovers\CopyCrossover.cs" />
+    <Compile Include="Interfaces\IRealVectorAdditiveMoveOperator.cs" />
     <Compile Include="Interfaces\IRealVectorAdditiveMoveQualityOperator.cs" />
     <Compile Include="Interfaces\IRealVectorBoundedOperator.cs" />
     <Compile Include="Interfaces\IRealVectorMultiNeighborhoodShakingOperator.cs" />
-    <Compile Include="Interfaces\IRealVectorSolutionsOperator.cs" />
     <Compile Include="Interfaces\IRealVectorSolutionOperator.cs" />
+    <Compile Include="Interfaces\IRealVectorSolutionsOperator.cs" />
     <Compile Include="ParticleOperators\RealVectorNeighborhoodParticleUpdater.cs" />
     <Compile Include="ParticleOperators\RealVectorParticleCreator.cs" />
     <Compile Include="ParticleOperators\RealVectorParticleUpdater.cs" />
@@ -171,7 +171,6 @@
     <Compile Include="Interfaces\IRealVectorStdDevStrategyParameterCrossover.cs" />
     <Compile Include="Interfaces\IRealVectorStdDevStrategyParameterManipulator.cs" />
     <Compile Include="Interfaces\IRealVectorStdDevStrategyParameterOperator.cs" />
-    <Compile Include="Interfaces\IRealVectorAdditiveMoveOperator.cs" />
     <Compile Include="Interfaces\IRealVectorBoundsChecker.cs" />
     <Compile Include="Interfaces\IRealVectorMoveGenerator.cs" />
     <Compile Include="Interfaces\IRealVectorMoveOperator.cs" />
@@ -194,6 +193,8 @@
     <Compile Include="Manipulators\MichalewiczNonUniformOnePositionManipulator.cs" />
     <Compile Include="Manipulators\PolynomialOnePositionManipulator.cs" />
     <Compile Include="Manipulators\UniformOnePositionManipulator.cs" />
+    <Compile Include="RealVectorMultiObjectiveProblem.cs" />
+    <Compile Include="RealVectorProblem.cs" />
     <Compile Include="ReflectiveBoundsChecker.cs" />
     <Compile Include="ShakingOperators\RealVectorShakingOperator.cs" />
     <Compile Include="SimilarityCalculators\EuclideanSimilarityCalculator.cs" />

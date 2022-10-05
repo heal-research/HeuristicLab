@@ -33,6 +33,7 @@ using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Random;
+using ParetoFrontScatterPlot = HeuristicLab.Problems.TestFunctions.MultiObjective.ParetoFrontScatterPlot;
 
 namespace HeuristicLab.Algorithms.MOCMAEvolutionStrategy {
   [Item("Multi-Objective CMA Evolution Strategy (MOCMAES)", "A multi objective evolution strategy based on covariance matrix adaptation. Code is based on 'Covariance Matrix Adaptation for Multi - objective Optimization' by Igel, Hansen and Roth")]
@@ -271,10 +272,10 @@ namespace HeuristicLab.Algorithms.MOCMAEvolutionStrategy {
       Parameters.Add(new FixedValueParameter<IntValue>(SeedName, "The random seed used to initialize the new pseudo random number generator.", new IntValue(0)));
       Parameters.Add(new FixedValueParameter<BoolValue>(SetSeedRandomlyName, "True if the random seed should be set to a random value, otherwise false.", new BoolValue(true)));
       Parameters.Add(new FixedValueParameter<IntValue>(PopulationSizeName, "λ (lambda) - the size of the offspring population.", new IntValue(20)));
-      Parameters.Add(new ValueParameter<DoubleArray>(InitialSigmaName, "The initial sigma can be a single value or a value for each dimension. All values need to be > 0.", new DoubleArray(new[] {0.5})));
+      Parameters.Add(new ValueParameter<DoubleArray>(InitialSigmaName, "The initial sigma can be a single value or a value for each dimension. All values need to be > 0.", new DoubleArray(new[] { 0.5 })));
       Parameters.Add(new FixedValueParameter<IntValue>(MaximumGenerationsName, "The maximum number of generations which should be processed.", new IntValue(1000)));
       Parameters.Add(new FixedValueParameter<IntValue>(MaximumEvaluatedSolutionsName, "The maximum number of evaluated solutions that should be computed.", new IntValue(int.MaxValue)));
-      var set = new ItemSet<IIndicator> {new HypervolumeIndicator(), new CrowdingIndicator(), new MinimalDistanceIndicator()};
+      var set = new ItemSet<IIndicator> { new HypervolumeIndicator(), new CrowdingIndicator(), new MinimalDistanceIndicator() };
       Parameters.Add(new ConstrainedValueParameter<IIndicator>(IndicatorName, "The selection mechanism on non-dominated solutions", set, set.First()));
     }
 
@@ -493,8 +494,7 @@ namespace HeuristicLab.Algorithms.MOCMAEvolutionStrategy {
       ResultsScatterPlot = new ParetoFrontScatterPlot(qualities, solutions.Select(x => x.Mean.ToArray()).ToArray(), ResultsScatterPlot.ParetoFront, ResultsScatterPlot.Objectives, ResultsScatterPlot.ProblemSize);
       ResultsSolutions = solutions.Select(x => x.Mean.ToArray()).ToMatrix();
 
-      var problem = Problem as MultiObjectiveProblem<RealVectorEncoding, RealVector>;
-      if (problem == null) return;
+      var problem = Problem;
 
 
       if (qualities.Length == 0) return;

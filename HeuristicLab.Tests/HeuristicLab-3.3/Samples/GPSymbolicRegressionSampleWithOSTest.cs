@@ -65,7 +65,7 @@ namespace HeuristicLab.Tests {
         // the following are the result values as produced on builder.heuristiclab.com
         // Unfortunately, running the same test on a different machine results in different values
         // For x86 environments the results below match but on x64 there is a difference
-        // We tracked down the ConstantOptimizationEvaluator as a possible cause but have not
+        // We tracked down the ParameterOptimizationEvaluator as a possible cause but have not
         // been able to identify the real cause. Presumably, execution on a Xeon and a Core i7 processor 
         // leads to different results. 
         Assert.AreEqual(0.996270926227739, SamplesUtils.GetDoubleResult(osga, "BestQuality"), 1E-8, Environment.NewLine + "Best Quality differs.");
@@ -183,10 +183,11 @@ namespace HeuristicLab.Tests {
       problem.MaximumFunctionDefinitions.Value = 0;
       problem.MaximumFunctionArguments.Value = 0;
 
-      var evaluator = new SymbolicRegressionConstantOptimizationEvaluator();
-      evaluator.ConstantOptimizationIterations.Value = 5;
+      var evaluator = new SymbolicRegressionParameterOptimizationEvaluator();
+      evaluator.ParameterOptimizationIterations.Value = 5;
       problem.EvaluatorParameter.Value = evaluator;
       problem.RelativeNumberOfEvaluatedSamplesParameter.Hidden = true;
+      problem.SolutionCreatorParameter.Hidden = true;
       #endregion
 
       #region Algorithm Configuration

@@ -25,9 +25,8 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Globalization;
 using System.Windows.Forms;
-using HeuristicLab.Problems.DataAnalysis;
 
-namespace HeuristicLab.Algorithms.DataAnalysis.Views {
+namespace HeuristicLab.Problems.DataAnalysis.Views {
   public partial class DensityTrackbar : UserControl {
 
     public decimal Value {

@@ -52,19 +52,22 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       var estimationLimits = EstimationLimitsParameter.ActualValue;
       var applyLinearScaling = ApplyLinearScalingParameter.ActualValue.Value;
 
-      if (UseConstantOptimization) {
-        SymbolicRegressionConstantOptimizationEvaluator.OptimizeConstants(interpreter, solution, problemData, rows, applyLinearScaling, ConstantOptimizationIterations, updateVariableWeights: ConstantOptimizationUpdateVariableWeights, lowerEstimationLimit: estimationLimits.Lower, upperEstimationLimit: estimationLimits.Upper);
+      if (UseParameterOptimization) {
+        SymbolicRegressionParameterOptimizationEvaluator.OptimizeParameters(interpreter, solution, problemData, rows, applyLinearScaling, ParameterOptimizationIterations, updateVariableWeights: ParameterOptimizationUpdateVariableWeights, lowerEstimationLimit: estimationLimits.Lower, upperEstimationLimit: estimationLimits.Upper);
       }
       double[] qualities = Calculate(interpreter, solution, estimationLimits.Lower, estimationLimits.Upper, problemData, rows, applyLinearScaling, DecimalPlaces);
       QualitiesParameter.ActualValue = new DoubleArray(qualities);
       return base.InstrumentedApply();
     }
 
-    public static double[] Calculate(ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, ISymbolicExpressionTree solution, double lowerEstimationLimit, double upperEstimationLimit, IRegressionProblemData problemData, IEnumerable<int> rows, bool applyLinearScaling, int decimalPlaces) {
-      double r2 = SymbolicRegressionSingleObjectivePearsonRSquaredEvaluator.Calculate(interpreter, solution, lowerEstimationLimit, upperEstimationLimit, problemData, rows, applyLinearScaling);
+    public static double[] Calculate(ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, ISymbolicExpressionTree tree, double lowerEstimationLimit, double upperEstimationLimit, IRegressionProblemData problemData, IEnumerable<int> rows, bool applyLinearScaling, int decimalPlaces) {
+      double r2 = SymbolicRegressionSingleObjectivePearsonRSquaredEvaluator.Calculate(
+         tree, problemData, rows, 
+         interpreter, applyLinearScaling, 
+         lowerEstimationLimit, upperEstimationLimit);
       if (decimalPlaces >= 0)
         r2 = Math.Round(r2, decimalPlaces);
-      return new double[2] { r2, SymbolicDataAnalysisModelComplexityCalculator.CalculateComplexity(solution) };
+      return new double[2] { r2, SymbolicDataAnalysisModelComplexityCalculator.CalculateComplexity(tree) };
     }
 
     public override double[] Evaluate(IExecutionContext context, ISymbolicExpressionTree tree, IRegressionProblemData problemData, IEnumerable<int> rows) {

@@ -26,7 +26,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
   [StorableType("56c31bd6-dc0d-4478-b121-ea1817eae301")]
   /// <summary>
   /// Interface for all regression models.
-  /// <remarks>All methods and properties in this interface must be implemented thread safely</remarks>
+  /// <remarks>All methods and properties in in this interface must be implemented thread safely</remarks>
   /// </summary>
   public interface IRegressionModel : ISupervisedDataAnalysisModel {
     IEnumerable<double> GetEstimatedValues(IDataset dataset, IEnumerable<int> rows);

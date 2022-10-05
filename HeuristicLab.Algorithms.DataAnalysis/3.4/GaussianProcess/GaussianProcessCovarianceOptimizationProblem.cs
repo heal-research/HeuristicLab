@@ -97,7 +97,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     #region parameter names
 
     private const string ProblemDataParameterName = "ProblemData";
-    private const string ConstantOptIterationsParameterName = "Constant optimization steps";
+    private const string ParameterOptIterationsParameterName = "Parameter optimization steps";
     private const string RestartsParameterName = "Restarts";
 
     #endregion
@@ -106,8 +106,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     public IValueParameter<IRegressionProblemData> ProblemDataParameter {
       get { return (IValueParameter<IRegressionProblemData>)Parameters[ProblemDataParameterName]; }
     }
-    public IFixedValueParameter<IntValue> ConstantOptIterationsParameter {
-      get { return (IFixedValueParameter<IntValue>)Parameters[ConstantOptIterationsParameterName]; }
+    public IFixedValueParameter<IntValue> ParameterOptIterationsParameter {
+      get { return (IFixedValueParameter<IntValue>)Parameters[ParameterOptIterationsParameterName]; }
     }
     public IFixedValueParameter<IntValue> RestartsParameter {
       get { return (IFixedValueParameter<IntValue>)Parameters[RestartsParameterName]; }
@@ -122,9 +122,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
     IDataAnalysisProblemData IDataAnalysisProblem.ProblemData { get { return ProblemData; } }
 
-    public int ConstantOptIterations {
-      get { return ConstantOptIterationsParameter.Value.Value; }
-      set { ConstantOptIterationsParameter.Value.Value = value; }
+    public int ParameterOptIterations {
+      get { return ParameterOptIterationsParameter.Value.Value; }
+      set { ParameterOptIterationsParameter.Value.Value = value; }
     }
 
     public int Restarts {
@@ -147,8 +147,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     public GaussianProcessCovarianceOptimizationProblem() : base(new SymbolicExpressionTreeEncoding()) {
       Maximization = true; // return log likelihood (instead of negative log likelihood as in GPR)
       Parameters.Add(new ValueParameter<IRegressionProblemData>(ProblemDataParameterName, "The data for the regression problem", new RegressionProblemData()));
-      Parameters.Add(new FixedValueParameter<IntValue>(ConstantOptIterationsParameterName, "Number of optimization steps for hyperparameter values", new IntValue(50)));
-      Parameters.Add(new FixedValueParameter<IntValue>(RestartsParameterName, "The number of random restarts for constant optimization.", new IntValue(10)));
+      Parameters.Add(new FixedValueParameter<IntValue>(ParameterOptIterationsParameterName, "Number of optimization steps for hyperparameter values", new IntValue(50)));
+      Parameters.Add(new FixedValueParameter<IntValue>(RestartsParameterName, "The number of random restarts for parameter optimization.", new IntValue(10)));
       Parameters["Restarts"].Hidden = true;
 
 
@@ -229,14 +229,14 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
             hyperParameters[1 + i] = random.NextDouble() * 2.0 - 1.0;
           }
         }
-        hyperParameters[hyperParameters.Length - 1] = 1.0; // s² = exp(2), TODO: other inits better?
+        hyperParameters[hyperParameters.Length - 1] = 1.0; // sï¿½ = exp(2), TODO: other inits better?
 
         // use alglib.bfgs for hyper-parameter optimization ...
         double epsg = 0;
         double epsf = 0.00001;
         double epsx = 0;
         double stpmax = 1;
-        int maxits = ConstantOptIterations;
+        int maxits = ParameterOptIterations;
         alglib.mincgstate state;
         alglib.mincgreport rep;
 
@@ -387,6 +387,14 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     private GaussianProcessCovarianceOptimizationProblem(StorableConstructorFlag _) : base(_) { }
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
+      if (!Parameters.ContainsKey(ParameterOptIterationsParameterName)) {
+        if (Parameters.ContainsKey("Constant optimization steps")) {
+          Parameters.Add(new FixedValueParameter<IntValue>(ParameterOptIterationsParameterName, "Number of optimization steps for hyperparameter values", (IntValue)Parameters["Constant optimization steps"].ActualValue));
+          Parameters.Remove("Constant optimization steps");
+        } else {
+          Parameters.Add(new FixedValueParameter<IntValue>(ParameterOptIterationsParameterName, "Number of optimization steps for hyperparameter values", new IntValue(50)));
+        }
+      }
     }
 
     // cloning 

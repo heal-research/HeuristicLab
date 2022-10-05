@@ -56,8 +56,6 @@ namespace HeuristicLab.ExactOptimization.LinearProgramming {
 
     public event EventHandler ProblemDefinitionChanged;
 
-    public string Filename { get; set; }
-
     public ILinearProblemDefinition ProblemDefinition {
       get => problemDefinitionParam.Value;
       set {

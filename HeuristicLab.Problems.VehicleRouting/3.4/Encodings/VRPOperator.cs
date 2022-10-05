@@ -19,14 +19,14 @@
  */
 #endregion
 
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 
-namespace HeuristicLab.Problems.VehicleRouting.Encodings {
+namespace HeuristicLab.Problems.VehicleRouting {
   [Item("VRPOperator", "Represents a VRP operator.")]
   [StorableType("A2F2C612-6A4E-4C61-9C17-2826A6BA6DC6")]
   public abstract class VRPOperator : InstrumentedOperator, IVRPOperator {

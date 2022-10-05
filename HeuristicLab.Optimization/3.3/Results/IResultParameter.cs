@@ -24,6 +24,7 @@ using HEAL.Attic;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.Optimization {
+  //TODO: what happens with ResultDefinitions? Are those still necessary?
   //[StorableType("986fa3d0-38f8-43aa-820e-e67d09a29025")]
   //public interface IResultDefinition {
   //  string Name { get; set; }

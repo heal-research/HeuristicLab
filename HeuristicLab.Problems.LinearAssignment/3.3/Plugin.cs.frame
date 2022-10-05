@@ -25,6 +25,7 @@ namespace HeuristicLab.Problems.LinearAssignment {
   [Plugin("HeuristicLab.Problems.LinearAssignment", "3.3.16.$WCREV$")]
   [PluginFile("HeuristicLab.Problems.LinearAssignment-3.3.dll", PluginFileType.Assembly)]
   [PluginDependency("HeuristicLab.Analysis", "3.3")]
+  [PluginDependency("HeuristicLab.Attic", "1.0")]
   [PluginDependency("HeuristicLab.Collections", "3.3")]
   [PluginDependency("HeuristicLab.Common", "3.3")]
   [PluginDependency("HeuristicLab.Common.Resources", "3.3")]
@@ -35,8 +36,7 @@ namespace HeuristicLab.Problems.LinearAssignment {
   [PluginDependency("HeuristicLab.Optimization", "3.3")]
   [PluginDependency("HeuristicLab.Optimization.Operators", "3.3")]
   [PluginDependency("HeuristicLab.Parameters", "3.3")]
-  [PluginDependency("HeuristicLab.Random", "3.3")]
-  [PluginDependency("HeuristicLab.Attic", "1.0")]
+  [PluginDependency("HeuristicLab.Random", "3.3")]  
   public class HeuristicLabProblemsLinearAssignmentPlugin : PluginBase {
   }
 }

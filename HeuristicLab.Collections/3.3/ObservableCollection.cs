@@ -19,12 +19,12 @@
  */
 #endregion
 
+using HEAL.Attic;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using HEAL.Attic;
 
 namespace HeuristicLab.Collections {
   [StorableType("98A1FFF8-88D8-4A1A-BDAA-BDC3F4663C1F")]

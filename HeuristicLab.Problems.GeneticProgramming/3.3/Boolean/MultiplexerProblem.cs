@@ -103,6 +103,7 @@ namespace HeuristicLab.Problems.GeneticProgramming.Boolean {
       for (int i = 0; i < inputBits; i++)
         g.AddTerminalSymbol(string.Format("d{0}", i));
 
+      Encoding.GrammarParameter.ReadOnly = false;
       Encoding.Grammar = g;
       Encoding.GrammarParameter.ReadOnly = GrammarRefParameter.ReadOnly = true;
 

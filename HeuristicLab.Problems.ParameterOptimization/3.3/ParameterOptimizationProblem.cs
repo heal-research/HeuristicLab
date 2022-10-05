@@ -36,7 +36,7 @@ namespace HeuristicLab.Problems.ParameterOptimization {
   [Item("Parameter Optimization Problem", "A base class for other problems for the optimization of a parameter vector.")]
   [StorableType("B1F529FE-483C-4EF2-9306-2F6A0833EEAC")]
   public abstract class ParameterOptimizationProblem : SingleObjectiveHeuristicOptimizationProblem<IParameterVectorEvaluator>, IStorableContent {
-    public string Filename { get; set; }
+
     private const string ProblemSizeParameterName = "ProblemSize";
     private const string BoundsParameterName = "Bounds";
     private const string ParameterNamesParameterName = "ParameterNames";

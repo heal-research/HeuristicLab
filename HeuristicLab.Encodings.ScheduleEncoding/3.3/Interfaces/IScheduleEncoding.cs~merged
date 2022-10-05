@@ -1,0 +1,72 @@
+﻿#region License Information
+<<<<<<< HEAD
+
+=======
+>>>>>>> main
+/* HeuristicLab
+ * Copyright (C) Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ *
+ * This file is part of HeuristicLab.
+ *
+ * HeuristicLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * HeuristicLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
+ */
+<<<<<<< HEAD
+
+#endregion
+<<<<<<< HEAD:HeuristicLab.Encodings.ScheduleEncoding/3.3/Interfaces/IScheduleEncoding.cs
+
+using HEAL.Attic;
+using HeuristicLab.Core;
+using HeuristicLab.Data;
+using HeuristicLab.Optimization;
+
+namespace HeuristicLab.Encodings.ScheduleEncoding {
+  [StorableType("09b9d24c-2576-495a-b06c-338d095cba0d")]
+  public interface IScheduleEncoding : IEncoding {
+    IValueParameter<ItemList<Job>> JobDataParameter { get; }
+    IFixedValueParameter<IntValue> JobsParameter { get; }
+    IFixedValueParameter<IntValue> ResourcesParameter { get; }
+
+    ItemList<Job> JobData { get; }
+    int Jobs { get; set; }
+    int Resources { get; set; }
+
+
+    Schedule Decode(IScheduleSolution schedule, ItemList<Job> jobData);
+=======
+using HeuristicLab.Core;
+using HeuristicLab.Data;
+using HeuristicLab.Optimization;
+using HEAL.Attic;
+
+namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
+  [StorableType("868522CB-CA0A-4908-8108-86D2464F0FAE")]
+  public interface IMultiObjectiveTestFunctionAnalyzer : IAnalyzer, IMultiObjectiveOperator {
+    IScopeTreeLookupParameter<DoubleArray> QualitiesParameter { get; }
+    ILookupParameter<ResultCollection> ResultsParameter { get; }
+    ILookupParameter<IMultiObjectiveTestFunction> TestFunctionParameter { get; }
+    ILookupParameter<DoubleMatrix> BestKnownFrontParameter { get; }
+>>>>>>> main:HeuristicLab.Problems.TestFunctions.MultiObjective/3.3/Interfaces/IMultiObjectiveTestFunctionAnalyzer.cs
+=======
+#endregion
+
+using HeuristicLab.Core;
+using HEAL.Attic;
+
+namespace HeuristicLab.Encodings.ScheduleEncoding {
+  [StorableType("09b9d24c-2576-495a-b06c-338d095cba0d")]
+  public interface IScheduleEncoding : IItem {
+>>>>>>> main
+  }
+}

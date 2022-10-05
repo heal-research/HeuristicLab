@@ -1,4 +1,4 @@
-#region License Information
+﻿#region License Information
 /* HeuristicLab
  * Copyright (C) Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
@@ -19,65 +19,34 @@
  */
 #endregion
 
-using HeuristicLab.Common;
-using HeuristicLab.Core;
-using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HEAL.Attic;
-using HeuristicLab.Random;
-namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
-  [StorableType("247DBD04-18F2-4184-B6F5-6E283BF06FD0")]
-  public sealed class ConstantTreeNode : SymbolicExpressionTreeTerminalNode {
-    public new Constant Symbol {
-      get { return (Constant)base.Symbol; }
-    }
+using HeuristicLab.Common;
+using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 
-    private double constantValue;
-    [Storable]
-    public double Value {
-      get { return constantValue; }
-      set { constantValue = value; }
-    }
+namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
+  [StorableType("F91000E6-B041-4648-A9E8-595228F957FA")]
+  public sealed class ConstantTreeNode : SymbolicExpressionTreeTerminalNode, INumericTreeNode {
+
+    public new Constant Symbol => (Constant)base.Symbol;
+
+    public double Value => Symbol.Value;
 
     [StorableConstructor]
     private ConstantTreeNode(StorableConstructorFlag _) : base(_) { }
 
     private ConstantTreeNode(ConstantTreeNode original, Cloner cloner)
       : base(original, cloner) {
-      constantValue = original.constantValue;
     }
 
     private ConstantTreeNode() : base() { }
     public ConstantTreeNode(Constant constantSymbol) : base(constantSymbol) { }
-
-    public override bool HasLocalParameters {
-      get {
-        return true;
-      }
-    }
-    public override void ResetLocalParameters(IRandom random) {
-      base.ResetLocalParameters(random);
-      var range = Symbol.MaxValue - Symbol.MinValue;
-      Value = random.NextDouble() * range + Symbol.MinValue;
-    }
-
-    public override void ShakeLocalParameters(IRandom random, double shakingFactor) {
-      base.ShakeLocalParameters(random, shakingFactor);
-      // 50% additive & 50% multiplicative
-      if (random.NextDouble() < 0.5) {
-        double x = NormalDistributedRandom.NextDouble(random, Symbol.ManipulatorMu, Symbol.ManipulatorSigma);
-        Value = Value + x * shakingFactor;
-      } else {
-        double x = NormalDistributedRandom.NextDouble(random, 1.0, Symbol.MultiplicativeManipulatorSigma);
-        Value = Value * x;
-      }
-    }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new ConstantTreeNode(this, cloner);
     }
 
     public override string ToString() {
-      return constantValue.ToString("E4");
+      return $"{Value:E4}";
     }
   }
 }

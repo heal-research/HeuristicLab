@@ -271,7 +271,8 @@ namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
           fitness = iterate();
           ResultsIterations++;
           cancellationToken.ThrowIfCancellationRequested();
-        } finally {
+        }
+        finally {
           ResultsEvaluations = tracker.Evaluations;
           ResultsBestQuality = tracker.BestQuality;
           ResultsBestFoundOnEvaluation = tracker.BestFoundOnEvaluation;

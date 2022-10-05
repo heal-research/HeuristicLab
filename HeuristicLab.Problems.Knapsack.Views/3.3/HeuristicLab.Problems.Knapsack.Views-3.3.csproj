@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>HeuristicLab.Problems.Knapsack.Views</RootNamespace>
     <AssemblyName>HeuristicLab.Problems.Knapsack.Views-3.3</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
@@ -162,11 +162,6 @@
     <ProjectReference Include="..\..\HeuristicLab.MainForm\3.3\HeuristicLab.MainForm-3.3.csproj">
       <Project>{3BD61258-31DA-4B09-89C0-4F71FEF5F05A}</Project>
       <Name>HeuristicLab.MainForm-3.3</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Optimization\3.3\HeuristicLab.Optimization-3.3.csproj">
-      <Project>{14ab8d24-25bc-400c-a846-4627aa945192}</Project>
-      <Name>HeuristicLab.Optimization-3.3</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.PluginInfrastructure\3.3\HeuristicLab.PluginInfrastructure-3.3.csproj">

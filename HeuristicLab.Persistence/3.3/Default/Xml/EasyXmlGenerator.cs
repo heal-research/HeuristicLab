@@ -19,15 +19,15 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.IO;
 using HEAL.Attic;
 using HeuristicLab.Persistence.Auxiliary;
 using HeuristicLab.Persistence.Core;
 using HeuristicLab.Persistence.Core.Tokens;
 using HeuristicLab.Persistence.Interfaces;
 using HeuristicLab.Tracing;
+using System;
+using System.Collections.Generic;
+using System.IO;
 
 namespace HeuristicLab.Persistence.Default.Xml {
 
@@ -132,7 +132,7 @@ namespace HeuristicLab.Persistence.Default.Xml {
     /// </summary>
     /// <param name="o">The object.</param>
     /// <param name="filename">The filename.</param>
-    public new static void Serialize(object o, string filename) {
+    public static void Serialize(object o, string filename) {
       Serialize(o, filename, ConfigurationService.Instance.GetConfiguration(new XmlFormat()));
     }
 
@@ -143,7 +143,7 @@ namespace HeuristicLab.Persistence.Default.Xml {
     /// <param name="obj">The object.</param>
     /// <param name="filename">The filename.</param>
     /// <param name="config">The configuration.</param>
-    public new static void Serialize(object obj, string filename, Configuration config) {
+    public static void Serialize(object obj, string filename, Configuration config) {
       try {
         string tempfile = Path.GetTempFileName();
         DateTime start = DateTime.Now;
@@ -154,8 +154,7 @@ namespace HeuristicLab.Persistence.Default.Xml {
           (DateTime.Now - start).TotalSeconds));
         File.Copy(tempfile, filename, true);
         File.Delete(tempfile);
-      }
-      catch (Exception) {
+      } catch (Exception) {
         Logger.Warn("Exception caught, no data has been written.");
         throw;
       }
@@ -190,11 +189,9 @@ namespace HeuristicLab.Persistence.Default.Xml {
           }
           writer.Flush();
         }
-      }
-      catch (PersistenceException) {
+      } catch (PersistenceException) {
         throw;
-      }
-      catch (Exception e) {
+      } catch (Exception e) {
         throw new PersistenceException("Unexpected exception during Serialization.", e);
       }
     }

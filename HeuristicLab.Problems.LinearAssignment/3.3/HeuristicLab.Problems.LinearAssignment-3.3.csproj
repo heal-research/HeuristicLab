@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>HeuristicLab.Problems.LinearAssignment</RootNamespace>
     <AssemblyName>HeuristicLab.Problems.LinearAssignment-3.3</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -192,8 +192,9 @@
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Random\3.3\HeuristicLab.Random-3.3.csproj">
-      <Project>{F4539FB6-4708-40C9-BE64-0A1390AEA197}</Project>
+      <Project>{f4539fb6-4708-40c9-be64-0a1390aea197}</Project>
       <Name>HeuristicLab.Random-3.3</Name>
+      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

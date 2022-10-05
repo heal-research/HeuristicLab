@@ -36,7 +36,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     public string Filename { get; set; }
 
     #region default data
-    private static double[,] kozaF1 = new double[,] {
+    private static readonly double[,] kozaF1 = new double[,] {
           {2.017885919, -1.449165046},
           {1.30060506,  -1.344523885},
           {1.147134798, -1.317989331},
@@ -73,9 +73,10 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
 
     static RegressionProblemData() {
-      defaultDataset = new Dataset(new string[] { "y", "x" }, kozaF1);
-      defaultDataset.Name = "Fourth-order Polynomial Function Benchmark Dataset";
-      defaultDataset.Description = "f(x) = x^4 + x^3 + x^2 + x";
+      defaultDataset = new Dataset(new string[] { "y", "x" }, kozaF1) {
+        Name = "Fourth-order Polynomial Function Benchmark Dataset",
+        Description = "f(x) = x^4 + x^3 + x^2 + x"
+      };
       defaultAllowedInputVariables = new List<string>() { "x" };
       defaultTargetVariable = "y";
 
@@ -94,33 +95,6 @@ namespace HeuristicLab.Problems.DataAnalysis {
       emptyProblemData = problemData;
     }
     #endregion
-
-    #region parameter properties
-    public IConstrainedValueParameter<StringValue> TargetVariableParameter => (IConstrainedValueParameter<StringValue>)Parameters[TargetVariableParameterName];
-    /*public IFixedValueParameter<IntervalCollection> VariableRangesParameter => (IFixedValueParameter<IntervalCollection>)Parameters[VariableRangesParameterName];
-    #endregion
-
-    #region properties
-    public IntervalCollection VariableRanges {
-      get => VariableRangesParameter.Value;
-    }*/
-
-    public string TargetVariable {
-      get { return TargetVariableParameter.Value.Value; }
-      set {
-        if (value == null) throw new ArgumentNullException("targetVariable", "The provided value for the targetVariable is null.");
-        if (value == TargetVariable) return;
-
-        var matchingParameterValue = TargetVariableParameter.ValidValues.FirstOrDefault(v => v.Value == value);
-        if (matchingParameterValue == null) throw new ArgumentException("The provided value is not valid as the targetVariable.", "targetVariable");
-        TargetVariableParameter.Value = matchingParameterValue;
-      }
-    }
-    public IEnumerable<double> TargetVariableValues => Dataset.GetDoubleValues(TargetVariable);
-    public IEnumerable<double> TargetVariableTrainingValues => Dataset.GetDoubleValues(TargetVariable, TrainingIndices);
-    public IEnumerable<double> TargetVariableTestValues => Dataset.GetDoubleValues(TargetVariable, TestIndices);
-    #endregion
-
 
 
     [StorableConstructor]

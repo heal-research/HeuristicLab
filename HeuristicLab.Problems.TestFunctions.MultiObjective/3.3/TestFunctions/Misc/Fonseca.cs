@@ -33,7 +33,7 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
   [StorableType("CBB43DEB-9DD2-4365-A3CF-18F89F2A47B0")]
   public class Fonseca : MultiObjectiveTestFunction {
     protected override double[,] GetBounds(int objectives) {
-      return new double[,] {{-4, 4}};
+      return new double[,] { { -4, 4 } };
     }
 
     protected override bool[] GetMaximization(int objectives) {
@@ -49,7 +49,7 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
     }
 
     protected override double[] GetReferencePoint(int objectives) {
-      return new double[] {11, 11};
+      return new double[] { 11, 11 };
     }
 
     [StorableConstructor]
@@ -80,7 +80,7 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
       }
       f1 = 1 - Math.Exp(-f1);
 
-      double[] res = {f0, f1};
+      double[] res = { f0, f1 };
       return res;
     }
   }

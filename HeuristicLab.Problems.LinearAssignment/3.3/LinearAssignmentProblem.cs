@@ -29,6 +29,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Optimization;
+using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
 
 namespace HeuristicLab.Problems.LinearAssignment {

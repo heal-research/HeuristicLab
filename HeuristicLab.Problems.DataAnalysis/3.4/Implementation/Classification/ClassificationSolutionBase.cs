@@ -22,11 +22,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
-using HEAL.Attic;
-using HeuristicLab.Problems.DataAnalysis.OnlineCalculators;
 
 namespace HeuristicLab.Problems.DataAnalysis {
   [StorableType("60599497-EAF0-4DB0-B2E4-D58F34458D8F")]

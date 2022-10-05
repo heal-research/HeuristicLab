@@ -24,7 +24,6 @@ using System.Linq;
 using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Optimization;
 
 namespace HeuristicLab.Algorithms.MOCMAEvolutionStrategy {
@@ -45,7 +44,7 @@ namespace HeuristicLab.Algorithms.MOCMAEvolutionStrategy {
       var extracted = front.Select(x => x.PenalizedFitness).ToArray();
       if (extracted.Length <= 2) return 0;
       var pointsums = CrowdingCalculator.CalculateCrowdingDistances(extracted);
-      return pointsums.Select((value, index) => new {value, index}).OrderBy(x => x.value).First().index;
+      return pointsums.Select((value, index) => new { value, index }).OrderBy(x => x.value).First().index;
     }
   }
 }

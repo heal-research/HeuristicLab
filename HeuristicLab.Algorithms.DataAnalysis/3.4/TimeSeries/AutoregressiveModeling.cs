@@ -22,17 +22,17 @@
 using System;
 using System.Linq;
 using System.Threading;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 using HeuristicLab.Problems.DataAnalysis;
 using HeuristicLab.Problems.DataAnalysis.Symbolic;
 using HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis;
 
-namespace HeuristicLab.Algorithms.DataAnalysis.TimeSeries {
+namespace HeuristicLab.Algorithms.DataAnalysis {
   [Item("Autoregressive Modeling (AR)", "Timeseries modeling algorithm that creates AR-N models.")]
   [Creatable(CreatableAttribute.Categories.DataAnalysis, Priority = 130)]
   [StorableType("3BB9D723-944A-420F-A44A-A86F6FB4DABE")]
@@ -103,7 +103,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.TimeSeries {
       alglib.lrreport ar = new alglib.lrreport();
       int nRows = inputMatrix.GetLength(0);
       int nFeatures = inputMatrix.GetLength(1) - 1;
-      double[] coefficients = new double[nFeatures + 1]; // last coefficient is for the constant
+      double[] coefficients = new double[nFeatures + 1]; // last coefficient is for the offset
 
       int retVal = 1;
       alglib.lrbuild(inputMatrix, nRows, nFeatures, out retVal, out lm, out ar);

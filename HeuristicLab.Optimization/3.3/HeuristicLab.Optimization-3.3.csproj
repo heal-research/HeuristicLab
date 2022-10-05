@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>HeuristicLab.Optimization</RootNamespace>
     <AssemblyName>HeuristicLab.Optimization-3.3</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
@@ -120,34 +120,33 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Algorithms\BasicAlgorithm.cs" />
+    <Compile Include="Algorithms\HeuristicOptimizationEngineAlgorithm.cs" />
+    <Compile Include="BasicProblems\CombinedEncoding.cs" />
     <Compile Include="BasicProblems\CombinedSolution.cs" />
+    <Compile Include="BasicProblems\Encoding.cs" />
     <Compile Include="BasicProblems\EvaluationResult.cs" />
+    <Compile Include="BasicProblems\Interfaces\IEncodedSolution.cs" />
+    <Compile Include="BasicProblems\Interfaces\IEncoding.cs" />
+    <Compile Include="BasicProblems\Interfaces\IEncodingOperator.cs" />
     <Compile Include="BasicProblems\Interfaces\IEvaluationResult.cs" />
     <Compile Include="BasicProblems\Interfaces\IMultiEncodingOperator.cs" />
     <Compile Include="BasicProblems\Interfaces\IMultiObjectiveProblem.cs" />
-    <Compile Include="BasicProblems\Interfaces\internal\ISolutionScope.cs" />
-    <Compile Include="BasicProblems\Interfaces\ISingleObjectiveProblem.cs" />
-    <Compile Include="BasicProblems\CombinedEncoding.cs" />
-    <Compile Include="BasicProblems\Interfaces\ISolutionContext.cs" />
-    <Compile Include="BasicProblems\Operators\MultiEncodingCreator.cs" />
-    <Compile Include="BasicProblems\Operators\MultiEncodingCrossover.cs" />
-    <Compile Include="BasicProblems\Operators\MultiEncodingManipulator.cs" />
-    <Compile Include="BasicProblems\Operators\MultiEncodingOperator.cs" />
-    <Compile Include="BasicProblems\Problem.cs" />
-    <Compile Include="BasicProblems\Encoding.cs" />
-    <Compile Include="BasicProblems\Interfaces\IEncoding.cs" />
-    <Compile Include="BasicProblems\Interfaces\IEncodingOperator.cs" />
     <Compile Include="BasicProblems\Interfaces\IMultiObjectiveProblemDefinition.cs" />
     <Compile Include="BasicProblems\Interfaces\internal\IMultiObjectiveAnalysisOperator.cs" />
     <Compile Include="BasicProblems\Interfaces\internal\IMultiObjectiveEvaluationOperator.cs" />
     <Compile Include="BasicProblems\Interfaces\internal\INeighborBasedOperator.cs" />
     <Compile Include="BasicProblems\Interfaces\internal\ISingleObjectiveAnalysisOperator.cs" />
     <Compile Include="BasicProblems\Interfaces\internal\ISingleObjectiveEvaluationOperator.cs" />
+    <Compile Include="BasicProblems\Interfaces\IProblem.cs" />
     <Compile Include="BasicProblems\Interfaces\IProblemDefinition.cs" />
     <Compile Include="BasicProblems\Interfaces\ISingleObjectiveMoveOperator.cs" />
+    <Compile Include="BasicProblems\Interfaces\ISingleObjectiveProblem.cs" />
     <Compile Include="BasicProblems\Interfaces\ISingleObjectiveProblemDefinition.cs" />
-    <Compile Include="BasicProblems\Interfaces\IEncodedSolution.cs" />
+    <Compile Include="BasicProblems\Interfaces\ISolutionContext.cs" />
     <Compile Include="BasicProblems\MultiObjectiveProblem.cs" />
+    <Compile Include="BasicProblems\Operators\MultiEncodingCrossover.cs" />
+    <Compile Include="BasicProblems\Operators\MultiEncodingManipulator.cs" />
+    <Compile Include="BasicProblems\Operators\MultiEncodingOperator.cs" />
     <Compile Include="BasicProblems\Operators\MultiObjectiveAnalyzer.cs" />
     <Compile Include="BasicProblems\Operators\MultiObjectiveEvaluator.cs" />
     <Compile Include="BasicProblems\Operators\ScopeUtil.cs" />
@@ -157,19 +156,19 @@
     <Compile Include="BasicProblems\Operators\SingleObjectiveMoveEvaluator.cs" />
     <Compile Include="BasicProblems\Operators\SingleObjectiveMoveGenerator.cs" />
     <Compile Include="BasicProblems\Operators\SingleObjectiveMoveMaker.cs" />
+    <Compile Include="BasicProblems\Problem.cs" />
     <Compile Include="BasicProblems\SingleObjectiveProblem.cs" />
     <Compile Include="BasicProblems\SolutionContext.cs" />
     <Compile Include="BasicProblems\VectorEncoding.cs" />
     <Compile Include="Interfaces\ICharacteristicCalculator.cs" />
     <Compile Include="Interfaces\ILocalImprovementAlgorithmOperator.cs" />
     <Compile Include="Interfaces\IMultiObjectiveOperator.cs" />
-    <Compile Include="Parameters\AlgorithmLookupParameter.cs" />
-    <Compile Include="Parameters\MultiObjectiveProblemLookupParameter.cs" />
-    <Compile Include="Parameters\ProblemLookupParameter.cs" />
-    <Compile Include="Results\IResultsProducingItem.cs" />
     <Compile Include="MultiObjective\CrowdingCalculator.cs" />
     <Compile Include="MultiObjective\DominationCalculator.cs" />
     <Compile Include="MultiObjective\HypervolumeCalculator.cs" />
+    <Compile Include="Parameters\AlgorithmLookupParameter.cs" />
+    <Compile Include="Parameters\MultiObjectiveProblemLookupParameter.cs" />
+    <Compile Include="Parameters\ProblemLookupParameter.cs" />
     <Compile Include="Results\IResultParameter.cs" />
     <Compile Include="Interfaces\ISingleObjectiveOperator.cs" />
     <Compile Include="Interfaces\ISingleObjectivePathRelinker.cs" />
@@ -184,6 +183,7 @@
     <Compile Include="MetaOptimizers\BatchRun.cs" />
     <Compile Include="MetaOptimizers\Experiment.cs" />
     <Compile Include="MetaOptimizers\TimeLimitRun.cs" />
+    <Compile Include="Results\IResultsProducingItem.cs" />
     <Compile Include="Results\ResultDefinition.cs" />
     <Compile Include="Results\ResultParameter.cs" />
     <Compile Include="RunCollectionModification\RunCollectionRunRemover.cs" />
@@ -204,7 +204,6 @@
     <Compile Include="Algorithms\Algorithm.cs" />
     <Compile Include="RunCollectionModification\Calculator.cs" />
     <Compile Include="Interfaces\IDiscreteDoubleMatrixModifier.cs" />
-    <Compile Include="Algorithms\HeuristicOptimizationEngineAlgorithm.cs" />
     <Compile Include="Interfaces\ILocalImprovementOperator.cs" />
     <Compile Include="Interfaces\IMultiNeighborhoodShakingOperator.cs" />
     <Compile Include="MoveHelper.cs" />
@@ -262,7 +261,6 @@
     <Compile Include="Interfaces\ICrossover.cs" />
     <Compile Include="Interfaces\IEvaluator.cs" />
     <Compile Include="Interfaces\IManipulator.cs" />
-    <Compile Include="BasicProblems\Interfaces\IProblem.cs" />
     <Compile Include="Interfaces\ISingleObjectiveEvaluator.cs" />
     <Compile Include="Interfaces\ISolutionCreator.cs" />
     <Compile Include="Interfaces\IStochasticOperator.cs" />

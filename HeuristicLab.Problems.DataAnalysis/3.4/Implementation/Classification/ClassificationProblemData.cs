@@ -22,17 +22,16 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis {
   [StorableType("1C8DCCCF-4E2A-421D-9C61-7C017D584054")]
   [Item("ClassificationProblemData", "Represents an item containing all data defining a classification problem.")]
   public class ClassificationProblemData : SupervisedDataAnalysisProblemData, IClassificationProblemData, IStorableContent {
-    protected const string TargetVariableParameterName = "TargetVariable";
     protected const string ClassNamesParameterName = "ClassNames";
     protected const string ClassificationPenaltiesParameterName = "ClassificationPenalties";
     protected const string PositiveClassParameterName = "PositiveClass";
@@ -42,8 +41,8 @@ namespace HeuristicLab.Problems.DataAnalysis {
     public string Filename { get; set; }
 
     #region default data
-    private static string[] defaultVariableNames = new string[] { "sample", "clump thickness", "cell size", "cell shape", "marginal adhesion", "epithelial cell size", "bare nuclei", "chromatin", "nucleoli", "mitoses", "class" };
-    private static double[,] defaultData = new double[,]{
+    private static readonly string[] defaultVariableNames = new string[] { "sample", "clump thickness", "cell size", "cell shape", "marginal adhesion", "epithelial cell size", "bare nuclei", "chromatin", "nucleoli", "mitoses", "class" };
+    private static readonly double[,] defaultData = new double[,]{
      {1000025,5,1,1,1,2,1,3,1,1,2      },
      {1002945,5,4,4,5,7,10,3,2,1,2     },
      {1015425,3,1,1,1,2,2,3,1,1,2      },
@@ -182,9 +181,10 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
 
     static ClassificationProblemData() {
-      defaultDataset = new Dataset(defaultVariableNames, defaultData);
-      defaultDataset.Name = "Wisconsin classification problem";
-      defaultDataset.Description = "subset from to ..";
+      defaultDataset = new Dataset(defaultVariableNames, defaultData) {
+        Name = "Wisconsin classification problem",
+        Description = "subset from to .."
+      };
 
       defaultAllowedInputVariables = defaultVariableNames.Except(new List<string>() { "sample", "class" });
       defaultTargetVariable = "class";
@@ -207,9 +207,6 @@ namespace HeuristicLab.Problems.DataAnalysis {
     #endregion
 
     #region parameter properties
-    public IConstrainedValueParameter<StringValue> TargetVariableParameter {
-      get { return (IConstrainedValueParameter<StringValue>)Parameters[TargetVariableParameterName]; }
-    }
     public IFixedValueParameter<StringMatrix> ClassNamesParameter {
       get { return (IFixedValueParameter<StringMatrix>)Parameters[ClassNamesParameterName]; }
     }
@@ -222,19 +219,6 @@ namespace HeuristicLab.Problems.DataAnalysis {
     #endregion
 
     #region properties
-    public string TargetVariable {
-      get { return TargetVariableParameter.Value.Value; }
-      set {
-        if (value == null) throw new ArgumentNullException("targetVariable", "The provided value for the targetVariable is null.");
-        if (value == TargetVariable) return;
-
-
-        var matchingParameterValue = TargetVariableParameter.ValidValues.FirstOrDefault(v => v.Value == value);
-        if (matchingParameterValue == null) throw new ArgumentException("The provided value is not valid as the targetVariable.", "targetVariable");
-        TargetVariableParameter.Value = matchingParameterValue;
-      }
-    }
-
     private List<double> classValuesCache;
     private List<double> ClassValuesCache {
       get {
@@ -313,9 +297,6 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     public ClassificationProblemData() : this(defaultDataset, defaultAllowedInputVariables, defaultTargetVariable, Enumerable.Empty<string>()) { }
 
-    public ClassificationProblemData(IClassificationProblemData classificationProblemData)
-      : this(classificationProblemData, classificationProblemData.Dataset) {
-    }
 
     /// <summary>
     /// This method satisfies a common use case: making a copy of the problem but providing a different dataset.
@@ -324,7 +305,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     /// </summary>
     /// <param name="classificationProblemData">The original instance of classification problem data.</param>
     /// <param name="dataset">The new dataset.</param>
-    public ClassificationProblemData(IClassificationProblemData classificationProblemData, IDataset dataset)
+    public ClassificationProblemData(IClassificationProblemData classificationProblemData)
     : this(classificationProblemData.Dataset, classificationProblemData.AllowedInputVariables, classificationProblemData.TargetVariable, classificationProblemData.ClassNames, classificationProblemData.PositiveClass) {
 
       TrainingPartition.Start = classificationProblemData.TrainingPartition.Start;

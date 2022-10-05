@@ -81,8 +81,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         if (node is VariableTreeNode variable) {
           code[i].weight = variable.Weight;
           code[i].data = cachedData[variable.VariableName].AddrOfPinnedObject();
-        } else if (node is ConstantTreeNode constant) {
-          code[i].value = constant.Value;
+        } else if (node is INumericTreeNode numeric) {
+          code[i].value = numeric.Value;
         }
 
         code[i].childIndex = c;
@@ -102,6 +102,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
     private static readonly HashSet<byte> supportedOpCodes = new HashSet<byte>() {
       (byte)OpCode.Constant,
+      (byte)OpCode.Number,
       (byte)OpCode.Variable,
       (byte)OpCode.Add,
       (byte)OpCode.Sub,
@@ -120,7 +121,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       (byte)OpCode.CubeRoot,
       (byte)OpCode.Cube,
       (byte)OpCode.Absolute,
-      (byte)OpCode.AnalyticQuotient
+      (byte)OpCode.AnalyticQuotient,
+      (byte)OpCode.SubFunction
     };
 
     public IEnumerable<double> GetSymbolicExpressionTreeValues(ISymbolicExpressionTree tree, IDataset dataset, IEnumerable<int> rows) {

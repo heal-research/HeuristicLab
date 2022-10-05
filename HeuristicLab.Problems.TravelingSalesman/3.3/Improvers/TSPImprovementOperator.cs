@@ -39,7 +39,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
   [Item("TSPImprovementOperator", "An operator that improves traveling salesman solutions. The operator tries to improve the traveling salesman solution by swapping two randomly chosen edges for a certain number of times.")]
   [StorableType("1b3cbc66-6dcc-4f61-9cbe-8b50cc54413a")]
   public sealed class TSPImprovementOperator : SingleSuccessorOperator, ISingleObjectiveImprovementOperator {
-    
+
     [Storable] public ILookupParameter<ITSPData> TSPDataParameter { get; private set; }
     [Storable] public IValueParameter<IntValue> ImprovementAttemptsParameter { get; private set; }
     [Storable] public ILookupParameter<IRandom> RandomParameter { get; private set; }

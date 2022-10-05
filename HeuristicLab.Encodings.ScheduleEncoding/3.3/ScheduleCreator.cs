@@ -19,18 +19,18 @@
  */
 #endregion
 
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.ScheduleEncoding {
   [Item("ScheduleCreator", "Represents the generalized form of creators for Scheduling Problems.")]
   [StorableType("3DDA1485-4518-4F1D-A475-795FFE63C98E")]
   public abstract class ScheduleCreator<TSchedule> : InstrumentedOperator, IScheduleCreator<TSchedule>
-  where TSchedule : class,IScheduleSolution {
+  where TSchedule : class, IScheduleSolution {
 
     public ILookupParameter<TSchedule> ScheduleParameter {
       get { return (ILookupParameter<TSchedule>)Parameters["Schedule"]; }

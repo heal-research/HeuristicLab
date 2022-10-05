@@ -50,7 +50,8 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
          new RocketFuelFlow(rand.Next()),
          new AircraftLift(rand.Next()),
          new FluidDynamics(rand.Next()),
-         new AircraftMaximumLift(rand.Next())
+         new AircraftMaximumLift(rand.Next()),
+         new SheetBendingProcess(rand.Next())
       };
     }
   }

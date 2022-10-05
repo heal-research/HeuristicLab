@@ -223,6 +223,9 @@ namespace HeuristicLab.Data {
       for (var row = 0; row < Rows; row++) {
         yield return matrix[row, col];
       }
+      for (var row = 0; row < Rows; row++) {
+        yield return matrix[row, col];
+      }
     }
 
     public override string ToString() {

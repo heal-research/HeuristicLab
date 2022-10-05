@@ -20,18 +20,18 @@
 #endregion
 using System;
 using System.Collections.Generic;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Optimization;
-using HEAL.Attic;
 
 namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
   [Item("ELLI", "to be aded")]
   [StorableType("C4F3378F-169B-412C-8882-D733EF5388D9")]
   public class ELLI : MultiObjectiveTestFunction {
     protected override double[,] GetBounds(int objectives) {
-      return new double[,] {{-10, 10}};
+      return new double[,] { { -10, 10 } };
     }
 
     protected override bool[] GetMaximization(int objecitves) {
@@ -39,7 +39,7 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
     }
 
     protected override double[] GetReferencePoint(int objecitves) {
-      return new double[] {11, 11};
+      return new double[] { 11, 11 };
     }
 
     protected override IList<double[]> GetOptimalParetoFront(int objecitves) {
@@ -84,7 +84,7 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective {
       //objective0
       double f1 = 1 / (a * a * r.Length) * sum;
 
-      return new double[] {f0, f1};
+      return new double[] { f0, f1 };
     }
   }
 }

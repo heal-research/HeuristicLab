@@ -109,7 +109,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
       grammar.MinimumFunctionArguments = 0;
       grammar.MinimumFunctionDefinitions = 0;
 
-      var trees = Util.CreateRandomTrees(twister, dataset, grammar, PopulationSize, 1, MaxTreeLength, 0, 0);
+      var trees = Util.CreateRandomTrees(twister, dataset, grammar, PopulationSize, MaxTreeLength);
       foreach (ISymbolicExpressionTree tree in trees) {
         Util.InitTree(tree, twister, new List<string>(dataset.VariableNames));
       }

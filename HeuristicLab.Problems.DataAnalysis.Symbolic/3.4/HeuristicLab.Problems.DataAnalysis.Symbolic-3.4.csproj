@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>HeuristicLab.Problems.DataAnalysis.Symbolic</RootNamespace>
     <AssemblyName>HeuristicLab.Problems.DataAnalysis.Symbolic-3.4</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
@@ -46,6 +46,7 @@
     <WarningLevel>4</WarningLevel>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>false</Prefer32Bit>
+    <LangVersion>7.3</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -56,6 +57,7 @@
     <WarningLevel>4</WarningLevel>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>false</Prefer32Bit>
+    <LangVersion>7.3</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
     <DebugSymbols>true</DebugSymbols>
@@ -66,6 +68,7 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>false</Prefer32Bit>
+    <LangVersion>7.3</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
     <OutputPath>$(SolutionDir)\bin\</OutputPath>
@@ -76,6 +79,7 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>false</Prefer32Bit>
+    <LangVersion>7.3</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <DebugSymbols>true</DebugSymbols>
@@ -86,6 +90,7 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>false</Prefer32Bit>
+    <LangVersion>7.3</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <OutputPath>$(SolutionDir)\bin\</OutputPath>
@@ -96,6 +101,7 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>false</Prefer32Bit>
+    <LangVersion>7.3</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="ALGLIB-3.17.0, Version=3.17.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
@@ -110,7 +116,6 @@
     <Reference Include="HEAL.Attic, Version=1.4.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\bin\HEAL.Attic.dll</HintPath>
-	  <Private>False</Private>
     </Reference>
     <Reference Include="HeuristicLab.Problems.DataAnalysis.Symbolic.NativeInterpreter-0.1, Version=0.0.0.1, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -147,6 +152,7 @@
     <Compile Include="Analyzers\SymbolicDataAnalysisSingleObjectiveTrainingBestSolutionAnalyzer.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Converters\ConstantsToNumberConverter.cs" />
     <Compile Include="Converters\LinearModelToTreeConverter.cs" />
     <Compile Include="Converters\TreeSimplifier.cs" />
     <Compile Include="Converters\DerivativeCalculator.cs" />
@@ -168,6 +174,8 @@
     <Compile Include="Importer\Token.cs" />
     <Compile Include="Interfaces\IBoundsEstimator.cs" />
     <Compile Include="Interfaces\IModelBacktransformator.cs" />
+    <Compile Include="Interfaces\INumericSymbol.cs" />
+    <Compile Include="Interfaces\INumericTreeNode.cs" />
     <Compile Include="Interfaces\IVariableTreeNode.cs" />
     <Compile Include="Interfaces\IVariableSymbol.cs" />
     <Compile Include="Interpreter\BatchInstruction.cs" />
@@ -179,7 +187,10 @@
     <Compile Include="Interpreter\SymbolicDataAnalysisExpressionTreeBatchInterpreter.cs" />
     <Compile Include="Interpreter\SymbolicDataAnalysisExpressionTreeNativeInterpreter.cs" />
     <Compile Include="IntervalUtil.cs" />
+    <Compile Include="LinearScaling.cs" />
     <Compile Include="Selectors\DiversitySelector.cs" />
+    <Compile Include="StructureTemplate\StructureTemplate.cs" />
+    <Compile Include="StructureTemplate\SubFunction.cs" />
     <Compile Include="SymbolicDataAnalysisExpressionTreeAverageSimilarityCalculator.cs" />
     <Compile Include="SymbolicDataAnalysisExpressionTreeSimplificationOperator.cs" />
     <Compile Include="SymbolicDataAnalysisModelComplexityCalculator.cs" />
@@ -232,8 +243,8 @@
     <Compile Include="Symbols\And.cs" />
     <Compile Include="Symbols\AutoregressiveVariable.cs" />
     <Compile Include="Symbols\Average.cs" />
-    <Compile Include="Symbols\Constant.cs" />
-    <Compile Include="Symbols\ConstantTreeNode.cs" />
+    <Compile Include="Symbols\Number.cs" />
+    <Compile Include="Symbols\NumberTreeNode.cs" />
     <Compile Include="Symbols\AiryA.cs" />
     <Compile Include="Symbols\AiryB.cs" />
     <Compile Include="Symbols\Bessel.cs" />
@@ -245,6 +256,10 @@
     <Compile Include="Symbols\Absolute.cs" />
     <Compile Include="Symbols\CubeRoot.cs" />
     <Compile Include="Symbols\HyperbolicTangent.cs" />
+    <Compile Include="Symbols\Constant.cs" />
+    <Compile Include="Symbols\ConstantTreeNode.cs" />
+    <Compile Include="Symbols\SubFunctionSymbol.cs" />
+    <Compile Include="Symbols\SubFunctionTreeNode.cs" />
     <Compile Include="Symbols\VariableBase.cs" />
     <Compile Include="Symbols\VariableTreeNodeBase.cs" />
     <Compile Include="Symbols\Xor.cs" />

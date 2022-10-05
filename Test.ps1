@@ -1,30 +1,32 @@
 ﻿# find ms build
-$programFilesX86Dir = ($Env:ProgramFiles, ${Env:ProgramFiles(x86)})[[bool]${Env:ProgramFiles(x86)}]
-$vsDir = [System.IO.Path]::Combine($programFilesX86Dir, "Microsoft Visual Studio")
-$years = @("2019", "2017")
+$programFilesDirs = @($Env:ProgramFiles, ${Env:ProgramFiles(x86)})
+$years = @("2022", "2019", "2017")
 $editions = @("Enterprise", "Professional", "Community", "BuildTools")
 $versions = @("Current", "15.0")
 
 $msBuildPath = $undefined
 $vstestPath = $undefined
-:search Foreach ($year in $years) {
-  $loc = [System.IO.Path]::Combine($vsDir, $year)
-  Foreach ($edition in $editions) {
-    $edLoc = [System.IO.Path]::Combine($loc, $edition, "MSBuild")
-    Foreach ($version in $versions) {
-      $binLoc = [System.IO.Path]::Combine($edLoc, $version, "Bin")
-      $loc64 = [System.IO.Path]::Combine($binLoc, "amd64", "MSBuild.exe")
-      $loc32 = [System.IO.Path]::Combine($binLoc, "MSBuild.exe")
+:search Foreach ($dir in $programFilesDirs) {
+  $vsDir = [System.IO.Path]::Combine($dir, "Microsoft Visual Studio")
+  Foreach ($year in $years) {
+    $loc = [System.IO.Path]::Combine($vsDir, $year)
+    Foreach ($edition in $editions) {
+      $edLoc = [System.IO.Path]::Combine($loc, $edition, "MSBuild")
+      Foreach ($version in $versions) {
+        $binLoc = [System.IO.Path]::Combine($edLoc, $version, "Bin")
+        $loc64 = [System.IO.Path]::Combine($binLoc, "amd64", "MSBuild.exe")
+        $loc32 = [System.IO.Path]::Combine($binLoc, "MSBuild.exe")
 
-      If ([System.IO.File]::Exists($loc64)) {
-        $msBuildPath = $loc64
-        $vstestPath = [System.IO.Path]::Combine($loc, $edition, "Common7", "IDE", "CommonExtensions", "Microsoft", "TestWindow", "vstest.console.exe")
-        Break search;
-      }
-      If ([System.IO.File]::Exists($loc32)) {
-        $msBuildPath = $loc32
-        $vstestPath = [System.IO.Path]::Combine($loc, $edition, "Common7", "IDE", "CommonExtensions", "Microsoft", "TestWindow", "vstest.console.exe")
-        Break search;
+        If ([System.IO.File]::Exists($loc64)) {
+          $msBuildPath = $loc64
+          $vstestPath = [System.IO.Path]::Combine($loc, $edition, "Common7", "IDE", "CommonExtensions", "Microsoft", "TestWindow", "vstest.console.exe")
+          Break search;
+        }
+        If ([System.IO.File]::Exists($loc32)) {
+          $msBuildPath = $loc32
+          $vstestPath = [System.IO.Path]::Combine($loc, $edition, "Common7", "IDE", "CommonExtensions", "Microsoft", "TestWindow", "vstest.console.exe")
+          Break search;
+        }
       }
     }
   }
@@ -158,11 +160,18 @@ If($dobuild) {
 }
 
 & $vstestPath "bin\$testcontainer" /Framework:framework40 /Platform:$testplatform /TestCaseFilter:"TestCategory=$testcategory"
+
+""
+
+Write-Host -NoNewline "Press any key to continue ... "
+
+[void][System.Console]::ReadKey($true)
+
 # SIG # Begin signature block
 # MIIRPwYJKoZIhvcNAQcCoIIRMDCCESwCAQExDzANBglghkgBZQMEAgEFADB5Bgor
 # BgEEAYI3AgEEoGswaTA0BgorBgEEAYI3AgEeMCYCAwEAAAQQH8w7YFlLCE63JNLG
-# KX7zUQIBAAIBAAIBAAIBAAIBADAxMA0GCWCGSAFlAwQCAQUABCAJ0I/t/xZNoRef
-# SWG1a9MeW996RfVwX+NKpwaPNeHob6CCDo4wggbaMIIEwqADAgECAhNoAAE6ILAh
+# KX7zUQIBAAIBAAIBAAIBAAIBADAxMA0GCWCGSAFlAwQCAQUABCBtCktnwnVbhfUW
+# rrODW7qXn4ckTNXv9s/As4v50Ft51aCCDo4wggbaMIIEwqADAgECAhNoAAE6ILAh
 # JeBjaP8pAAEAATogMA0GCSqGSIb3DQEBCwUAMD4xEjAQBgoJkiaJk/IsZAEZFgJh
 # dDEVMBMGCgmSJomT8ixkARkWBWZob29lMREwDwYDVQQDEwhGSE9PZUNBMTAeFw0x
 # OTExMDYwOTI1NTJaFw0yNDExMDQwOTI1NTJaMD4xFjAUBgNVBAsTDUZ1RSBIYWdl
@@ -244,12 +253,12 @@ If($dobuild) {
 # CgmSJomT8ixkARkWBWZob29lMREwDwYDVQQDEwhGSE9PZUNBMQITaAABOiCwISXg
 # Y2j/KQABAAE6IDANBglghkgBZQMEAgEFAKCBhDAYBgorBgEEAYI3AgEMMQowCKAC
 # gAChAoAAMBkGCSqGSIb3DQEJAzEMBgorBgEEAYI3AgEEMBwGCisGAQQBgjcCAQsx
-# DjAMBgorBgEEAYI3AgEVMC8GCSqGSIb3DQEJBDEiBCBzUedLfOrfI8C+s+K6rJYY
-# VhIOL3BMg83zouWpb+G6TTANBgkqhkiG9w0BAQEFAASCAQAF0ha6sm0rEfVTS6ot
-# vyp0nokYc/jNw174T/jZgKM2g4t+TehmVgYZAiimkBCidURXpKaNf3URjmeGY2hA
-# /Yl1oKG+kR0SmUgB1qryGqMIn1o0zXJKSY0XtahKFleDXFkhYCbLxr6Nq/i0Yfbd
-# MsfX3soN/aG6N9bRq9RviS1K6O8X8S4ZWYKkdcf0LT5ANqVZukvHcgSCHCeo/osl
-# 3EoTo/n1i2uo0z8MtrhMiqaKj0Rg48ZQtEO3ee/OGBFRDZcnptkSNpDOreyPFKx3
-# 9TzLOHwdmFSC85eAtDt7ciWzoLA0Z2UrbKIRGrXDDRQRlvGgFOtf5dfQFJuMRwKy
-# Qp84
+# DjAMBgorBgEEAYI3AgEVMC8GCSqGSIb3DQEJBDEiBCDDzy6RhRdWhlEvoZ9lSBH8
+# 1bgdAp3kSHSn3I9JzPC1gzANBgkqhkiG9w0BAQEFAASCAQCKOmizxpz/TOCEhRPY
+# f1KVbo9UBYP3YT7g/TNdUCcI0ITkyQkXI2dowJACBzAyb50EqARONPobf81koPhh
+# /AW0jvak1bXrLRHE6DwitNCBLwTLNkZ2Zn3yUBjB4OwIGyUoX+4af9hC9+G6eoTt
+# aE5vbVnZOZBsultoeKpso5QgL5CPEnqkMXsV1p3MCF2ryD5lHKLEHXvF4A3bfRkz
+# y8sVKscEuRjOMhvCx2qjNLpRFGf5Ppd6hzCIw/e67c/nGUCh6GflK9UfZanW4Gn7
+# NQ9KUd9NZXJ8Bo3bEU9Co51zGXQY18atrTX0AaYizZ/MBCtYOU7x15BtQzraFAiL
+# PHJ6
 # SIG # End signature block

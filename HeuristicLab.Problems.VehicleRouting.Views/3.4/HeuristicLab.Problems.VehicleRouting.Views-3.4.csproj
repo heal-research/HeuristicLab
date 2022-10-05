@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>HeuristicLab.Problems.VehicleRouting.Views</RootNamespace>
     <AssemblyName>HeuristicLab.Problems.VehicleRouting.Views-3.4</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>HeuristicLab.snk</AssemblyOriginatorKeyFile>
@@ -118,6 +118,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CVRPEvaluationView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="CVRPEvaluationView.Designer.cs">
+      <DependentUpon>CVRPEvaluationView.cs</DependentUpon>
+    </Compile>
     <Compile Include="CVRPPDTWEvaluationView.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -129,12 +135,6 @@
     </Compile>
     <Compile Include="CVRPTWEvaluationView.Designer.cs">
       <DependentUpon>CVRPTWEvaluationView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="CVRPEvaluationView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="CVRPEvaluationView.Designer.cs">
-      <DependentUpon>CVRPEvaluationView.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="MDCVRPPDTWView.cs">
@@ -333,9 +333,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="VRPEvaluationView.resx">
       <DependentUpon>VRPEvaluationView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="VRPSolutionView.resx">
-      <DependentUpon>VRPSolutionView.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

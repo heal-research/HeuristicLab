@@ -11,7 +11,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>HeuristicLab.Tests</RootNamespace>
     <AssemblyName>HeuristicLab.Tests</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <TargetFrameworkProfile />
@@ -110,11 +110,6 @@
   <ItemGroup>
     <Reference Include="ALGLIB-3.17.0">
       <HintPath>..\bin\ALGLIB-3.17.0.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="HEAL.Attic, Version=1.4.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\bin\HEAL.Attic.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="HeuristicLab.Algorithms.ALPS-3.3">
@@ -469,16 +464,15 @@
     <Compile Include="HeuristicLab-3.3\PluginDependenciesTest.cs" />
     <Compile Include="HeuristicLab-3.3\PluginLoader.cs" />
     <Compile Include="HeuristicLab-3.3\Samples\AlpsSampleTest.cs" />
-    <Compile Include="HeuristicLab-3.3\Samples\EsGriewankSampleTest.cs" />
     <Compile Include="HeuristicLab-3.3\Samples\GABppSampleTest.cs" />
     <Compile Include="HeuristicLab-3.3\Samples\GPRobocodeSampleTest.cs" />
     <Compile Include="HeuristicLab-3.3\Samples\GPSymbolicRegressionSampleWithOSTest.cs" />
     <Compile Include="HeuristicLab-3.3\Samples\OSESGriewankSampleTest.cs" />
     <Compile Include="HeuristicLab-3.3\Samples\GAGroupingProblemSampleTest.cs" />
     <Compile Include="HeuristicLab-3.3\Samples\ShapeConstrainedRegressionSampleTest.cs" />
-    <Compile Include="HeuristicLab-3.3\Samples\LocalSearchKnapsackSampleTest.cs" />
-    <Compile Include="HeuristicLab-3.3\Samples\SimulatedAnnealingRastriginSampleTest.cs" />
+    <Compile Include="HeuristicLab-3.3\Samples\StructureTemplateRegressionSampleTest.cs" />
     <Compile Include="HeuristicLab-3.3\Samples\VnsOpSampleTest.cs" />
+    <Compile Include="HeuristicLab-3.3\Samples\EsGriewankSampleTest.cs" />
     <Compile Include="HeuristicLab-3.3\Samples\GaussianProcessRegressionSampleTest.cs" />
     <Compile Include="HeuristicLab-3.3\Samples\GAVrpSampleTest.cs" />
     <Compile Include="HeuristicLab-3.3\Samples\GeSymbolicRegressionSampleTest.cs" />
@@ -488,12 +482,14 @@
     <Compile Include="HeuristicLab-3.3\Samples\GPSymbolicRegressionSampleTest.cs" />
     <Compile Include="HeuristicLab-3.3\Samples\GPTimeSeriesSampleTest.cs" />
     <Compile Include="HeuristicLab-3.3\Samples\GPMultiplexerSampleTest.cs" />
+    <Compile Include="HeuristicLab-3.3\Samples\LocalSearchKnapsackSampleTest.cs" />
     <Compile Include="HeuristicLab-3.3\Samples\PsoRastriginSampleTest.cs" />
     <Compile Include="HeuristicLab-3.3\Samples\RAPGASchedulingSampleTest.cs" />
     <Compile Include="HeuristicLab-3.3\Samples\SamplesUtils.cs" />
     <Compile Include="HeuristicLab-3.3\Samples\GATspSampleTest.cs" />
     <Compile Include="HeuristicLab-3.3\Samples\IslandGaTspSampleTest.cs" />
     <Compile Include="HeuristicLab-3.3\Samples\ScatterSearchVRPSampleTest.cs" />
+    <Compile Include="HeuristicLab-3.3\Samples\SimulatedAnnealingRastriginSampleTest.cs" />
     <Compile Include="HeuristicLab-3.3\Samples\TabuSearchTspSampleTest.cs" />
     <Compile Include="HeuristicLab-3.3\Samples\TabuSearchVRPSampleTest.cs" />
     <Compile Include="HeuristicLab-3.3\Samples\VnsTspSampleTest.cs" />
@@ -514,7 +510,6 @@
     <Compile Include="HeuristicLab.Analysis-3.3\ConfidenceIntervalsTests.cs" />
     <Compile Include="HeuristicLab.Analysis-3.3\EffectSizeUnitTests.cs" />
     <Compile Include="HeuristicLab.Analysis-3.3\KruskalWallisUnitTests.cs" />
-    <Compile Include="HeuristicLab.Analysis-3.3\Multi-objective\SpacingTest.cs" />
     <Compile Include="HeuristicLab.Analysis-3.3\MultidimensionalScalingTest.cs" />
     <Compile Include="HeuristicLab.Collections-3.3\BidirectionalDictionaryTest.cs" />
     <Compile Include="HeuristicLab.Collections-3.3\BidirectionalLookupTest.cs" />
@@ -595,9 +590,6 @@
     <Compile Include="HeuristicLab.IGraph\IGraphWrappersGraphTest.cs" />
     <Compile Include="HeuristicLab.IGraph\IGraphWrappersMatrixTest.cs" />
     <Compile Include="HeuristicLab.IGraph\IGraphWrappersVectorTest.cs" />
-    <Compile Include="HeuristicLab.Optimization-3.3\Multi-objective\CrowdingTest.cs" />
-    <Compile Include="HeuristicLab.Optimization-3.3\Multi-objective\FastHyperVolumeTests.cs" />
-    <Compile Include="HeuristicLab.Optimization-3.3\Multi-objective\HyperVolumeTests.cs" />
     <Compile Include="HeuristicLab.Persistence-3.3\StorableAttributeTests.cs" />
     <Compile Include="HeuristicLab.Persistence-3.3\UseCases.cs" />
     <Compile Include="HeuristicLab.Persistence.Attic\PersistenceConsistencyChecks.cs" />
@@ -644,8 +636,12 @@
     <Compile Include="HeuristicLab.Problems.TestFunctions-3.3\SphereEvaluatorTest.cs" />
     <Compile Include="HeuristicLab.Problems.TestFunctions-3.3\SumSquaresEvaluatorTest.cs" />
     <Compile Include="HeuristicLab.Problems.TestFunctions-3.3\ZakharovEvaluatorTest.cs" />
-    <Compile Include="HeuristicLab.Analysis-3.3\Multi-objective\GenerationalDistanceTest.cs" />
-    <Compile Include="HeuristicLab.Analysis-3.3\Multi-objective\InvertedGenerationalDistanceTest.cs" />
+    <Compile Include="HeuristicLab.Problems.TestFunctions.MultiObjective-3.3\CrowdingTest.cs" />
+    <Compile Include="HeuristicLab.Problems.TestFunctions.MultiObjective-3.3\FastHyperVolumeTests.cs" />
+    <Compile Include="HeuristicLab.Problems.TestFunctions.MultiObjective-3.3\GenerationalDistanceTest.cs" />
+    <Compile Include="HeuristicLab.Problems.TestFunctions.MultiObjective-3.3\HyperVolumeTests.cs" />
+    <Compile Include="HeuristicLab.Problems.TestFunctions.MultiObjective-3.3\InvertedGenerationalDistanceTest.cs" />
+    <Compile Include="HeuristicLab.Problems.TestFunctions.MultiObjective-3.3\SpacingTest.cs" />
     <Compile Include="HeuristicLab.Problems.TravelingSalesman-3.3\TSPMoveEvaluatorTest.cs" />
     <Compile Include="HeuristicLab.Problems.LinearAssignment-3.3\LinearAssignmentProblemSolverTest.cs" />
     <Compile Include="HeuristicLab.Problems.VehicleRouting-3.4\VRPInstancesTest.cs" />
@@ -720,7 +716,13 @@
       <CustomToolNamespace>HeuristicLab.Tests</CustomToolNamespace>
     </EmbeddedResource>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Reference Include="HEAL.Attic, Version=1.0.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\bin\HEAL.Attic.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

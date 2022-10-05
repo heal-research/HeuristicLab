@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System.Drawing;
 using System.Windows.Forms;
 using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
@@ -39,9 +40,25 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
 
     protected override void OnContentChanged() {
       base.OnContentChanged();
-      symbolicExpressionTreeView.Content = null;
-      if (Content != null)
-        symbolicExpressionTreeView.Content = Content.SymbolicExpressionTree;
+      symbolicExpressionTreeChart.Tree = null;
+      if (Content != null) {
+        symbolicExpressionTreeChart.Tree = Content.SymbolicExpressionTree;
+        RepaintNodes();
+      }
+    }
+
+    protected void RepaintNodes() {
+      var tree = symbolicExpressionTreeChart.Tree;
+      if (tree != null) {
+        foreach (var n in tree.IterateNodesPrefix()) {
+          if (n.Symbol is SubFunctionSymbol) {
+            var visualNode = symbolicExpressionTreeChart.GetVisualSymbolicExpressionTreeNode(n);
+            visualNode.FillColor = Color.LightCyan;
+            visualNode.LineColor = Color.SlateGray;
+          }
+        }
+        symbolicExpressionTreeChart.RepaintNodes();
+      }
     }
   }
 }

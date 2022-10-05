@@ -186,10 +186,14 @@ namespace HeuristicLab.Problems.DataAnalysis {
       Parameters.Add(new FixedValueParameter<IntRange>(TestPartitionParameterName, "", new IntRange(testPartitionStart, testPartitionEnd)));
       Parameters.Add(new FixedValueParameter<ReadOnlyItemList<ITransformation>>(TransformationsParameterName, "", transformationsList.AsReadOnly()));
 
+      IntervalCollection varRanges = null;
       if (variableRanges == null) {
-        variableRanges = Dataset.GetVariableRanges();
+        varRanges = Dataset.GetVariableRanges();
+      }else {
+        varRanges = (IntervalCollection) variableRanges.Clone();
       }
-      Parameters.Add(new FixedValueParameter<IntervalCollection>(VariableRangesParameterName, variableRanges));
+
+      Parameters.Add(new FixedValueParameter<IntervalCollection>(VariableRangesParameterName, varRanges));
 
       TransformationsParameter.Hidden = true;
 

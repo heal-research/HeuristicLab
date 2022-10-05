@@ -25,9 +25,8 @@ using System.Linq;
 using System.Windows.Forms;
 using HeuristicLab.Algorithms.DataAnalysis;
 using HeuristicLab.MainForm;
-using HeuristicLab.Problems.DataAnalysis.OnlineCalculators;
 
-namespace HeuristicLab.Problems.DataAnalysis.Views.Classification {
+namespace HeuristicLab.Problems.DataAnalysis.Views {
   [View("Solution Comparison")]
   [Content(typeof(IClassificationSolution))]
   public partial class ClassificationSolutionComparisonView : DataAnalysisSolutionEvaluationView {
@@ -80,7 +79,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views.Classification {
 
           IClassificationProblemData problemData = Content.ProblemData;
           solutions = new List<IClassificationSolution>() { Content };
-          solutions.AddRange(GenerateClassificationSolutions().OrderBy(s=>s.Name));
+          solutions.AddRange(GenerateClassificationSolutions().OrderBy(s => s.Name));
 
           dataGridView.ColumnCount = 4;
           dataGridView.RowCount = solutions.Count();

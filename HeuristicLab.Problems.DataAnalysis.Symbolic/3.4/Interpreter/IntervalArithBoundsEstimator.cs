@@ -52,7 +52,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     [StorableConstructor]
     private IntervalArithBoundsEstimator(StorableConstructorFlag _) : base(_) { }
 
-    protected IntervalArithBoundsEstimator(IntervalArithBoundsEstimator original, Cloner cloner) : base(original, cloner) { }
+    private IntervalArithBoundsEstimator(IntervalArithBoundsEstimator original, Cloner cloner) : base(original, cloner) { }
 
     public IntervalArithBoundsEstimator() : base("Interval Arithmetic Bounds Estimator",
       "Estimates the bounds of the model with interval arithmetic") {
@@ -113,115 +113,116 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
       switch (currentInstr.opCode) {
         case OpCodes.Variable: {
-            var variableTreeNode = (VariableTreeNode)currentInstr.dynamicNode;
-            var weightInterval = new Interval(variableTreeNode.Weight, variableTreeNode.Weight);
+          var variableTreeNode = (VariableTreeNode)currentInstr.dynamicNode;
+          var weightInterval = new Interval(variableTreeNode.Weight, variableTreeNode.Weight);
 
-            Interval variableInterval;
-            if (variableIntervals != null && variableIntervals.ContainsKey(variableTreeNode.VariableName))
-              variableInterval = variableIntervals[variableTreeNode.VariableName];
-            else
-              variableInterval = (Interval)currentInstr.data;
+          Interval variableInterval;
+          if (variableIntervals != null && variableIntervals.ContainsKey(variableTreeNode.VariableName))
+            variableInterval = variableIntervals[variableTreeNode.VariableName];
+          else
+            variableInterval = (Interval)currentInstr.data;
 
-            result = Interval.Multiply(variableInterval, weightInterval);
-            break;
-          }
-        case OpCodes.Constant: {
-            var constTreeNode = (ConstantTreeNode)currentInstr.dynamicNode;
-            result = new Interval(constTreeNode.Value, constTreeNode.Value);
-            break;
-          }
+          result = Interval.Multiply(variableInterval, weightInterval);
+          break;
+        }
+        case OpCodes.Constant: // fall through
+        case OpCodes.Number: {
+          var numericTreeNode = (INumericTreeNode)currentInstr.dynamicNode;
+          result = new Interval(numericTreeNode.Value, numericTreeNode.Value);
+          break;
+        }
         case OpCodes.Add: {
-            result = Evaluate(instructions, ref instructionCounter, nodeIntervals, variableIntervals);
-            for (var i = 1; i < currentInstr.nArguments; i++) {
-              var argumentInterval = Evaluate(instructions, ref instructionCounter, nodeIntervals, variableIntervals);
-              result = Interval.Add(result, argumentInterval);
-            }
-
-            break;
+          result = Evaluate(instructions, ref instructionCounter, nodeIntervals, variableIntervals);
+          for (var i = 1; i < currentInstr.nArguments; i++) {
+            var argumentInterval = Evaluate(instructions, ref instructionCounter, nodeIntervals, variableIntervals);
+            result = Interval.Add(result, argumentInterval);
           }
+
+          break;
+        }
         case OpCodes.Sub: {
-            result = Evaluate(instructions, ref instructionCounter, nodeIntervals, variableIntervals);
-            if (currentInstr.nArguments == 1)
-              result = Interval.Multiply(new Interval(-1, -1), result);
+          result = Evaluate(instructions, ref instructionCounter, nodeIntervals, variableIntervals);
+          if (currentInstr.nArguments == 1)
+            result = Interval.Multiply(new Interval(-1, -1), result);
 
-            for (var i = 1; i < currentInstr.nArguments; i++) {
-              var argumentInterval = Evaluate(instructions, ref instructionCounter, nodeIntervals, variableIntervals);
-              result = Interval.Subtract(result, argumentInterval);
-            }
-
-            break;
+          for (var i = 1; i < currentInstr.nArguments; i++) {
+            var argumentInterval = Evaluate(instructions, ref instructionCounter, nodeIntervals, variableIntervals);
+            result = Interval.Subtract(result, argumentInterval);
           }
+
+          break;
+        }
         case OpCodes.Mul: {
-            result = Evaluate(instructions, ref instructionCounter, nodeIntervals, variableIntervals);
-            for (var i = 1; i < currentInstr.nArguments; i++) {
-              var argumentInterval = Evaluate(instructions, ref instructionCounter, nodeIntervals, variableIntervals);
-              result = Interval.Multiply(result, argumentInterval);
-            }
-
-            break;
+          result = Evaluate(instructions, ref instructionCounter, nodeIntervals, variableIntervals);
+          for (var i = 1; i < currentInstr.nArguments; i++) {
+            var argumentInterval = Evaluate(instructions, ref instructionCounter, nodeIntervals, variableIntervals);
+            result = Interval.Multiply(result, argumentInterval);
           }
+
+          break;
+        }
         case OpCodes.Div: {
-            result = Evaluate(instructions, ref instructionCounter, nodeIntervals, variableIntervals);
-            if (currentInstr.nArguments == 1)
-              result = Interval.Divide(new Interval(1, 1), result);
+          result = Evaluate(instructions, ref instructionCounter, nodeIntervals, variableIntervals);
+          if (currentInstr.nArguments == 1)
+            result = Interval.Divide(new Interval(1, 1), result);
 
-            for (var i = 1; i < currentInstr.nArguments; i++) {
-              var argumentInterval = Evaluate(instructions, ref instructionCounter, nodeIntervals, variableIntervals);
-              result = Interval.Divide(result, argumentInterval);
-            }
-
-            break;
+          for (var i = 1; i < currentInstr.nArguments; i++) {
+            var argumentInterval = Evaluate(instructions, ref instructionCounter, nodeIntervals, variableIntervals);
+            result = Interval.Divide(result, argumentInterval);
           }
+
+          break;
+        }
         case OpCodes.Sin: {
-            var argumentInterval = Evaluate(instructions, ref instructionCounter, nodeIntervals, variableIntervals);
-            result = Interval.Sine(argumentInterval);
-            break;
-          }
+          var argumentInterval = Evaluate(instructions, ref instructionCounter, nodeIntervals, variableIntervals);
+          result = Interval.Sine(argumentInterval);
+          break;
+        }
         case OpCodes.Cos: {
-            var argumentInterval = Evaluate(instructions, ref instructionCounter, nodeIntervals, variableIntervals);
-            result = Interval.Cosine(argumentInterval);
-            break;
-          }
+          var argumentInterval = Evaluate(instructions, ref instructionCounter, nodeIntervals, variableIntervals);
+          result = Interval.Cosine(argumentInterval);
+          break;
+        }
         case OpCodes.Tan: {
-            var argumentInterval = Evaluate(instructions, ref instructionCounter, nodeIntervals, variableIntervals);
-            result = Interval.Tangens(argumentInterval);
-            break;
-          }
+          var argumentInterval = Evaluate(instructions, ref instructionCounter, nodeIntervals, variableIntervals);
+          result = Interval.Tangens(argumentInterval);
+          break;
+        }
         case OpCodes.Tanh: {
-            var argumentInterval = Evaluate(instructions, ref instructionCounter, nodeIntervals, variableIntervals);
-            result = Interval.HyperbolicTangent(argumentInterval);
-            break;
-          }
+          var argumentInterval = Evaluate(instructions, ref instructionCounter, nodeIntervals, variableIntervals);
+          result = Interval.HyperbolicTangent(argumentInterval);
+          break;
+        }
         case OpCodes.Log: {
-            var argumentInterval = Evaluate(instructions, ref instructionCounter, nodeIntervals, variableIntervals);
-            result = Interval.Logarithm(argumentInterval);
-            break;
-          }
+          var argumentInterval = Evaluate(instructions, ref instructionCounter, nodeIntervals, variableIntervals);
+          result = Interval.Logarithm(argumentInterval);
+          break;
+        }
         case OpCodes.Exp: {
-            var argumentInterval = Evaluate(instructions, ref instructionCounter, nodeIntervals, variableIntervals);
-            result = Interval.Exponential(argumentInterval);
-            break;
-          }
+          var argumentInterval = Evaluate(instructions, ref instructionCounter, nodeIntervals, variableIntervals);
+          result = Interval.Exponential(argumentInterval);
+          break;
+        }
         case OpCodes.Square: {
-            var argumentInterval = Evaluate(instructions, ref instructionCounter, nodeIntervals, variableIntervals);
-            result = Interval.Square(argumentInterval);
-            break;
-          }
+          var argumentInterval = Evaluate(instructions, ref instructionCounter, nodeIntervals, variableIntervals);
+          result = Interval.Square(argumentInterval);
+          break;
+        }
         case OpCodes.SquareRoot: {
-            var argumentInterval = Evaluate(instructions, ref instructionCounter, nodeIntervals, variableIntervals);
-            result = Interval.SquareRoot(argumentInterval);
-            break;
-          }
+          var argumentInterval = Evaluate(instructions, ref instructionCounter, nodeIntervals, variableIntervals);
+          result = Interval.SquareRoot(argumentInterval);
+          break;
+        }
         case OpCodes.Cube: {
-            var argumentInterval = Evaluate(instructions, ref instructionCounter, nodeIntervals, variableIntervals);
-            result = Interval.Cube(argumentInterval);
-            break;
-          }
+          var argumentInterval = Evaluate(instructions, ref instructionCounter, nodeIntervals, variableIntervals);
+          result = Interval.Cube(argumentInterval);
+          break;
+        }
         case OpCodes.CubeRoot: {
-            var argumentInterval = Evaluate(instructions, ref instructionCounter, nodeIntervals, variableIntervals);
-            result = Interval.CubicRoot(argumentInterval);
-            break;
-          }
+          var argumentInterval = Evaluate(instructions, ref instructionCounter, nodeIntervals, variableIntervals);
+          result = Interval.CubicRoot(argumentInterval);
+          break;
+        }
         case OpCodes.Power: {
           var a = Evaluate(instructions, ref instructionCounter, nodeIntervals, variableIntervals);
           var b = Evaluate(instructions, ref instructionCounter, nodeIntervals, variableIntervals);
@@ -234,19 +235,23 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           break;
         }
         case OpCodes.Absolute: {
-            var argumentInterval = Evaluate(instructions, ref instructionCounter, nodeIntervals, variableIntervals);
-            result = Interval.Absolute(argumentInterval);
-            break;
-          }
+          var argumentInterval = Evaluate(instructions, ref instructionCounter, nodeIntervals, variableIntervals);
+          result = Interval.Absolute(argumentInterval);
+          break;
+        }
         case OpCodes.AnalyticQuotient: {
-            result = Evaluate(instructions, ref instructionCounter, nodeIntervals, variableIntervals);
-            for (var i = 1; i < currentInstr.nArguments; i++) {
-              var argumentInterval = Evaluate(instructions, ref instructionCounter, nodeIntervals, variableIntervals);
-              result = Interval.AnalyticQuotient(result, argumentInterval);
-            }
-
-            break;
+          result = Evaluate(instructions, ref instructionCounter, nodeIntervals, variableIntervals);
+          for (var i = 1; i < currentInstr.nArguments; i++) {
+            var argumentInterval = Evaluate(instructions, ref instructionCounter, nodeIntervals, variableIntervals);
+            result = Interval.AnalyticQuotient(result, argumentInterval);
           }
+
+          break;
+        }
+        case OpCodes.SubFunction: {
+          result = Evaluate(instructions, ref instructionCounter, nodeIntervals, variableIntervals);
+          break;
+        }
         default:
           throw new NotSupportedException(
             $"The tree contains the unknown symbol {currentInstr.dynamicNode.Symbol}");
@@ -271,7 +276,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     #endregion
-  
+
     public Interval GetModelBound(ISymbolicExpressionTree tree, IntervalCollection variableRanges) {
       lock (syncRoot) {
         EvaluatedSolutions++;
@@ -323,6 +328,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         from n in tree.Root.GetSubtree(0).IterateNodesPrefix()
         where
           !(n.Symbol is Variable) &&
+          !(n.Symbol is Number) &&
           !(n.Symbol is Constant) &&
           !(n.Symbol is StartSymbol) &&
           !(n.Symbol is Addition) &&
@@ -341,7 +347,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           !(n.Symbol is CubeRoot) &&
           !(n.Symbol is Power) &&
           !(n.Symbol is Absolute) &&
-          !(n.Symbol is AnalyticQuotient)
+          !(n.Symbol is AnalyticQuotient) &&
+          !(n.Symbol is SubFunctionSymbol)
         select n).Any();
       return !containsUnknownSymbols;
     }

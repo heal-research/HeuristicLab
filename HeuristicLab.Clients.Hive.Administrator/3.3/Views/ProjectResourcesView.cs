@@ -25,6 +25,7 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using HeuristicLab.Clients.Access;
+using HeuristicLab.Clients.Common;
 using HeuristicLab.Common.Resources;
 using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;

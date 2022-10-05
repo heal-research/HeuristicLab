@@ -17,7 +17,7 @@
     <OldToolsVersion>3.5</OldToolsVersion>
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -114,18 +114,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Analyzer\BestAverageWorstTours\BasicTourAnalyzer.cs" />
+    <Compile Include="Analyzer\BestAverageWorstTours\CapacitatedTourAnalyzer.cs" />
     <Compile Include="Analyzer\BestAverageWorstTours\PickupAndDeliveryTourAnalyzer.cs" />
     <Compile Include="Analyzer\BestAverageWorstTours\TimeWindowTourAnalyzer.cs" />
-    <Compile Include="Analyzer\BestAverageWorstTours\CapacitatedTourAnalyzer.cs" />
-    <Compile Include="Analyzer\BestAverageWorstTours\BasicTourAnalyzer.cs" />
     <Compile Include="Analyzer\ConstraintRelaxation\CapacityRelaxationVRPAnalyzer.cs" />
     <Compile Include="Analyzer\ConstraintRelaxation\PickupViolationsRelaxationVRPAnalyzer.cs" />
     <Compile Include="Analyzer\ConstraintRelaxation\TimeWindowRelaxationVRPAnalyzer.cs" />
     <Compile Include="Analyzer\VRPSolution.cs" />
+    <Compile Include="Encodings\Alba\AlbaEncodedSolution.cs" />
+    <Compile Include="Encodings\General\PermutationEncodedSolution.cs" />
+    <Compile Include="Encodings\General\TourEncodedSolutions.cs" />
+    <Compile Include="Encodings\GVR\GVREncodedSolution.cs" />
     <Compile Include="Encodings\MultiVRPEncoding.cs" />
-    <Compile Include="Encodings\Alba\AlbaEncoding.cs" />
-    <Compile Include="Encodings\GVR\GVREncoding.cs" />
-    <Compile Include="Encodings\Potvin\PotvinEncoding.cs" />
     <Compile Include="Encodings\Potvin\Moves\TwoOptStar\IPotvinTwoOptStarMoveOperator.cs" />
     <Compile Include="Encodings\Potvin\Moves\TwoOptStar\PotvinTwoOptStarExhaustiveMoveGenerator.cs" />
     <Compile Include="Encodings\Potvin\Moves\TwoOptStar\PotvinTwoOptStarMove.cs" />
@@ -137,14 +138,15 @@
     <Compile Include="Encodings\Potvin\Moves\TwoOptStar\PotvinTwoOptStarMoveTabuMaker.cs" />
     <Compile Include="Encodings\Potvin\Moves\TwoOptStar\PotvinTwoOptStarMultiMoveGenerator.cs" />
     <Compile Include="Encodings\Potvin\Moves\TwoOptStar\PotvinTwoOptStarSingleMoveGenerator.cs" />
-    <Compile Include="Encodings\Prins\PrinsEncoding.cs" />
+    <Compile Include="Encodings\Potvin\PotvinEncodedSolution.cs" />
+    <Compile Include="Encodings\Prins\PrinsEncodedSolution.cs" />
     <Compile Include="Encodings\VRPEncoding.cs" />
-    <Compile Include="Encodings\Zhu\ZhuEncoding.cs" />
+    <Compile Include="Encodings\Zhu\ZhuEncodedSolution.cs" />
     <Compile Include="Improver\VRPImprovementOperator.cs" />
     <Compile Include="Improver\VRPIntraRouteImprovementOperator.cs" />
-    <Compile Include="Interfaces\OperatorCapabilities.cs" />
-    <Compile Include="Interfaces\IVRPEncoding.cs" />
+    <Compile Include="Interfaces\IVRPEncodedSolution.cs" />
     <Compile Include="Interfaces\IVRPLocalSearchManipulator.cs" />
+    <Compile Include="Interfaces\OperatorCapabilities.cs" />
     <Compile Include="Interfaces\ProblemInstanceFeatures.cs" />
     <Compile Include="Interpreters\MDCVRPInterpreter.cs" />
     <Compile Include="Interpreters\VRPInterpreter.cs" />
@@ -154,8 +156,18 @@
     <Compile Include="Interpreters\CVRPInterpreter.cs" />
     <Compile Include="Interpreters\IVRPDataInterpreter.cs" />
     <Compile Include="PathRelinkers\VRPPathRelinker.cs" />
+    <Compile Include="ProblemInstances\MultiDepotVRP\MDCVRPPDTWProblemInstance.cs" />
+    <Compile Include="ProblemInstances\MultiDepotVRP\MDCVRPProblemInstance.cs" />
+    <Compile Include="ProblemInstances\MultiDepotVRP\MDCVRPTWProblemInstance.cs" />
+    <Compile Include="ProblemInstances\SingleDepotVRP\CVRPEvaluation.cs" />
+    <Compile Include="ProblemInstances\SingleDepotVRP\CVRPPDTWEvaluation.cs" />
+    <Compile Include="ProblemInstances\SingleDepotVRP\CVRPPDTWProblemInstance.cs" />
+    <Compile Include="ProblemInstances\SingleDepotVRP\CVRPProblemInstance.cs" />
+    <Compile Include="ProblemInstances\SingleDepotVRP\CVRPTWEvaluation.cs" />
+    <Compile Include="ProblemInstances\SingleDepotVRP\CVRPTWProblemInstance.cs" />
+    <Compile Include="ProblemInstances\VRPEvaluation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Encodings\Alba\AlbaEncodedSolution.cs" />
+    <Compile Include="Encodings\Alba\AlbaEncoding.cs" />
     <Compile Include="Encodings\Alba\Creators\RandomCreator.cs" />
     <Compile Include="Encodings\Alba\Creators\AlbaCreator.cs" />
     <Compile Include="Encodings\Alba\IAlbaOperator.cs" />
@@ -220,11 +232,9 @@
     <Compile Include="Encodings\General\Moves\VRPMoveOperator.cs" />
     <Compile Include="Encodings\General\Moves\VRPMoveMaker.cs" />
     <Compile Include="Encodings\General\Moves\VRPMoveEvaluator.cs" />
-    <Compile Include="Encodings\General\PermutationEncodedSolution.cs" />
     <Compile Include="Encodings\General\ShakingOperators\VehicleRoutingShakingOperator.cs" />
-    <Compile Include="Encodings\General\TourEncodedSolutions.cs" />
     <Compile Include="Encodings\GVR\Crossovers\GVRCrossover.cs" />
-    <Compile Include="Encodings\GVR\GVREncodedSolution.cs" />
+    <Compile Include="Encodings\GVR\GVREncoding.cs" />
     <Compile Include="Encodings\GVR\IGVROperator.cs" />
     <Compile Include="Encodings\GVR\Manipulators\GVRDisplacementManipulator.cs" />
     <Compile Include="Encodings\GVR\Manipulators\GVRInsertionManipulator.cs" />
@@ -301,7 +311,7 @@
     <Compile Include="Encodings\Potvin\Moves\VehicleAssignment\PotvinVehicleAssignmentMoveMaker.cs" />
     <Compile Include="Encodings\Potvin\Moves\VehicleAssignment\PotvinVehicleAssignmentMultiMoveGenerator.cs" />
     <Compile Include="Encodings\Potvin\Moves\VehicleAssignment\PotvinVehicleAssignmentSingleMoveGenerator.cs" />
-    <Compile Include="Encodings\Potvin\PotvinEncodedSolution.cs" />
+    <Compile Include="Encodings\Potvin\PotvinEncoding.cs" />
     <Compile Include="Encodings\Prins\Crossovers\PrinsCrossover.cs" />
     <Compile Include="Encodings\Prins\Crossovers\PrinsPermutationCrossover.cs" />
     <Compile Include="Encodings\Prins\IPrinsOperator.cs" />
@@ -310,7 +320,7 @@
     <Compile Include="Encodings\Prins\Manipulators\PrinsManipulator.cs" />
     <Compile Include="Encodings\Prins\Manipulators\PrinsPermutationManipulator.cs" />
     <Compile Include="Encodings\Prins\Manipulators\PrinsStochasticLSManipulator.cs" />
-    <Compile Include="Encodings\Prins\PrinsEncodedSolution.cs" />
+    <Compile Include="Encodings\Prins\PrinsEncoding.cs" />
     <Compile Include="Encodings\VRPOperator.cs" />
     <Compile Include="Encodings\Zhu\Crossovers\ZhuCrossover.cs" />
     <Compile Include="Encodings\Zhu\Crossovers\ZhuHeuristicCrossover1.cs" />
@@ -321,7 +331,7 @@
     <Compile Include="Encodings\Zhu\IZhuOperator.cs" />
     <Compile Include="Encodings\Zhu\Manipulators\ZhuManipulator.cs" />
     <Compile Include="Encodings\Zhu\Manipulators\ZhuPermutationManipulator.cs" />
-    <Compile Include="Encodings\Zhu\ZhuEncodedSolution.cs" />
+    <Compile Include="Encodings\Zhu\ZhuEncoding.cs" />
     <Compile Include="Interfaces\IMultiVRPOperator.cs" />
     <Compile Include="Interfaces\IVRPManipulator.cs" />
     <Compile Include="Interfaces\IVRPCrossover.cs" />
@@ -330,22 +340,12 @@
     <Compile Include="Interfaces\IVRPMoveOperator.cs" />
     <Compile Include="Interfaces\IVRPMultiNeighborhoodShakingOperator.cs" />
     <Compile Include="Interfaces\IVRPOperator.cs" />
-    <Compile Include="Interfaces\IVRPEncodedSolution.cs" />
+    <Compile Include="Interfaces\IVRPEncoding.cs" />
     <Compile Include="Interfaces\IVRPProblemInstance.cs" />
     <Compile Include="Plugin.cs" />
-    <Compile Include="ProblemInstances\MultiDepotVRP\MDCVRPProblemInstance.cs" />
-    <Compile Include="ProblemInstances\MultiDepotVRP\MDCVRPPDTWProblemInstance.cs" />
-    <Compile Include="ProblemInstances\MultiDepotVRP\MDCVRPTWProblemInstance.cs" />
     <Compile Include="ProblemInstances\MultiDepotVRP\MultiDepotVRPProblemInstance.cs" />
-    <Compile Include="ProblemInstances\SingleDepotVRP\CVRPPDTWProblemInstance.cs" />
-    <Compile Include="ProblemInstances\SingleDepotVRP\CVRPPDTWEvaluation.cs" />
     <Compile Include="SimilarityCalculators\VRPSimilarityCalculator.cs" />
     <Compile Include="SolutionParser.cs" />
-    <Compile Include="ProblemInstances\SingleDepotVRP\CVRPTWProblemInstance.cs" />
-    <Compile Include="ProblemInstances\SingleDepotVRP\CVRPProblemInstance.cs" />
-    <Compile Include="ProblemInstances\SingleDepotVRP\CVRPTWEvaluation.cs" />
-    <Compile Include="ProblemInstances\SingleDepotVRP\CVRPEvaluation.cs" />
-    <Compile Include="ProblemInstances\VRPEvaluation.cs" />
     <Compile Include="ProblemInstances\SingleDepotVRP\SingleDepotVRPProblemInstance.cs" />
     <Compile Include="ProblemInstances\VRPProblemInstance.cs" />
     <Compile Include="Encodings\Tour.cs" />
@@ -456,7 +456,6 @@
       <Private>False</Private>
     </Reference>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

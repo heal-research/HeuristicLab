@@ -19,9 +19,9 @@
  */
 #endregion
 
+using HEAL.Attic;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HEAL.Attic;
 
 namespace HeuristicLab.Encodings.ScheduleEncoding {
   [StorableType("6b229ce1-5e07-4b41-858a-be475ca501b6")]

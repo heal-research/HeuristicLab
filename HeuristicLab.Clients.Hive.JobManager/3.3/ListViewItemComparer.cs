@@ -30,7 +30,7 @@ namespace HeuristicLab.Clients.Hive.JobManager {
     private const string dateFormat = "dd.MM.yyyy HH:mm";
 
     public ListViewItemComparer() {
-      cols = new []{ 0 };
+      cols = new[] { 0 };
       Orders = new[] { SortOrder.Ascending };
     }
 
@@ -40,8 +40,6 @@ namespace HeuristicLab.Clients.Hive.JobManager {
     }
 
     public int Compare(object x, object y) {
-      int returnVal;
-      bool result;
       ListViewItem listViewItemX, listViewItemY;
       listViewItemX = x as ListViewItem;
       listViewItemY = y as ListViewItem;
@@ -60,16 +58,16 @@ namespace HeuristicLab.Clients.Hive.JobManager {
         int intX, intY;
         double doubleX, doubleY;
 
-        if(DateTime.TryParse(textX, out dateX) && DateTime.TryParse(textY, out dateY)) {
+        if (DateTime.TryParse(textX, out dateX) && DateTime.TryParse(textY, out dateY)) {
           cmpres = DateTime.Compare(dateX, dateY);
-        } else if(Int32.TryParse(textX, out intX) && Int32.TryParse(textY, out intY)) {
+        } else if (Int32.TryParse(textX, out intX) && Int32.TryParse(textY, out intY)) {
           cmpres = (intX == intY) ? 0 : (intX > intY) ? 1 : -1;
-        } else if(Double.TryParse(textX, out doubleX) && Double.TryParse(textY, out doubleY)) {
+        } else if (Double.TryParse(textX, out doubleX) && Double.TryParse(textY, out doubleY)) {
           cmpres = (doubleX == doubleY) ? 0 : (doubleX > doubleY) ? 1 : -1;
         } else {
           cmpres = String.Compare(textX, textY);
         }
-        if(Orders[i] == SortOrder.Descending) {
+        if (Orders[i] == SortOrder.Descending) {
           cmpres *= -1;
         }
       }

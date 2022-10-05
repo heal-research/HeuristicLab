@@ -105,7 +105,6 @@ namespace HeuristicLab.Problems.GrammaticalEvolution {
     #endregion
 
     #region properties
-    public string Filename { get; set; }
     public static new Image StaticItemImage { get { return VSImageLibrary.Type; } }
 
     IDataAnalysisProblemData IDataAnalysisProblem.ProblemData {
@@ -253,7 +252,8 @@ namespace HeuristicLab.Problems.GrammaticalEvolution {
     }
     #endregion
 
-    protected virtual void ParameterizeOperators() {
+    protected override void ParameterizeOperators() {
+      base.ParameterizeOperators();
       var operators = Parameters.OfType<IValueParameter>().Select(p => p.Value).OfType<IOperator>().Union(Operators).ToList();
 
       foreach (var op in operators.OfType<ISymbolicExpressionTreeGrammarBasedOperator>()) {

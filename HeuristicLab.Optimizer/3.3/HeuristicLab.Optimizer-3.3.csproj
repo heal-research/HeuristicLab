@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>HeuristicLab.Optimizer</RootNamespace>
     <AssemblyName>HeuristicLab.Optimizer-3.3</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
@@ -127,7 +127,9 @@
     <EmbeddedResource Include="Documents\GA_VRP.hl" />
     <EmbeddedResource Include="Documents\SGP_SymbClass.hl" />
     <EmbeddedResource Include="Documents\SGP_SymbReg.hl" />
+    <EmbeddedResource Include="Documents\VNS_TSP.hl" />
     <EmbeddedResource Include="Documents\SS_VRP.hl" />
+    <EmbeddedResource Include="Documents\RAPGA_JSSP.hl" />
     <EmbeddedResource Include="Documents\GPR.hl" />
     <EmbeddedResource Include="Documents\TS_VRP.hl" />
     <EmbeddedResource Include="Documents\GE_ArtificialAnt.hl" />
@@ -145,12 +147,13 @@
     <EmbeddedResource Include="Documents\GA_Grouping.hl" />
     <EmbeddedResource Include="Documents\ALPSGP_SymReg.hl" />
     <EmbeddedResource Include="Documents\ALPSGA_TSP.hl" />
+    <EmbeddedResource Include="Documents\GA_BPP.hl" />
     <EmbeddedResource Include="Documents\OSES_Griewank.hl" />
     <EmbeddedResource Include="Documents\SGP_Robocode.hl" />
     <EmbeddedResource Include="Documents\PSO_Rastrigin.hl" />
     <EmbeddedResource Include="Documents\OSGP_SymReg.hl" />
-    <EmbeddedResource Include="Documents\VNS_TSP.hl" />
-    <EmbeddedResource Include="Documents\GA_Shape_Constrained_Regression.hl" />
+    <EmbeddedResource Include="Documents\GP_Shape_Constrained_Regression.hl" />
+    <EmbeddedResource Include="Documents\GP_Structure_Template_Regression.hl" />
     <None Include="Plugin.cs.frame" />
     <Compile Include="ChangeNestingLevelDialog.cs">
       <SubType>Form</SubType>
@@ -332,7 +335,9 @@
     <None Include="Documents\Images\Play.png" />
     <None Include="Documents\Images\Restart.png" />
     <None Include="Documents\Images\Stop.png" />
+    <EmbeddedResource Include="Documents\LS_Knapsack.hl" />
     <EmbeddedResource Include="Documents\IslandGA_TSP.hl" />
+    <EmbeddedResource Include="Documents\SA_Rastrigin.hl" />
     <EmbeddedResource Include="Documents\TS_TSP.hl" />
     <EmbeddedResource Include="Documents\SGP_SantaFe.hl" />
   </ItemGroup>

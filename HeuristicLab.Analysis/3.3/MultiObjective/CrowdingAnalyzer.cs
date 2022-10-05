@@ -20,12 +20,11 @@
 #endregion
 
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HEAL.Attic;
 
 namespace HeuristicLab.Analysis {
   [StorableType("6f09f028-039d-4da8-9585-2575f9aef074")]

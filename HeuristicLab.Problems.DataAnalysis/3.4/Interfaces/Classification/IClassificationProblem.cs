@@ -22,6 +22,6 @@
 
 namespace HeuristicLab.Problems.DataAnalysis {
   [StorableType("fd15f587-2a68-4180-86c4-82410e3f22e2")]
-  public interface IClassificationProblem : ISupervisedDataAnalysisProblem<IClassificationProblemData> {
+  public interface IClassificationProblem : IDataAnalysisProblem<IClassificationProblemData> {
   }
 }

@@ -20,52 +20,52 @@
 #endregion
 
 
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
   [StorableType("1BEEE472-95E7-45C3-BD47-883B5E3A672D")]
   public abstract class SymbolicRegressionMultiObjectiveEvaluator : SymbolicDataAnalysisMultiObjectiveEvaluator<IRegressionProblemData>, ISymbolicRegressionMultiObjectiveEvaluator {
     private const string DecimalPlacesParameterName = "Decimal Places";
-    private const string UseConstantOptimizationParameterName = "Use constant optimization";
-    private const string ConstantOptimizationIterationsParameterName = "Constant optimization iterations";
+    private const string UseParameterOptimizationParameterName = "Use parameter optimization";
+    private const string ParameterOptimizationIterationsParameterName = "Parameter optimization iterations";
 
-    private const string ConstantOptimizationUpdateVariableWeightsParameterName =
-      "Constant optimization update variable weights";
+    private const string ParameterOptimizationUpdateVariableWeightsParameterName =
+      "Parameter optimization update variable weights";
 
     public IFixedValueParameter<IntValue> DecimalPlacesParameter {
       get { return (IFixedValueParameter<IntValue>)Parameters[DecimalPlacesParameterName]; }
     }
-    public IFixedValueParameter<BoolValue> UseConstantOptimizationParameter {
-      get { return (IFixedValueParameter<BoolValue>)Parameters[UseConstantOptimizationParameterName]; }
+    public IFixedValueParameter<BoolValue> UseParameterOptimizationParameter {
+      get { return (IFixedValueParameter<BoolValue>)Parameters[UseParameterOptimizationParameterName]; }
     }
 
-    public IFixedValueParameter<IntValue> ConstantOptimizationIterationsParameter {
-      get { return (IFixedValueParameter<IntValue>)Parameters[ConstantOptimizationIterationsParameterName]; }
+    public IFixedValueParameter<IntValue> ParameterOptimizationIterationsParameter {
+      get { return (IFixedValueParameter<IntValue>)Parameters[ParameterOptimizationIterationsParameterName]; }
     }
 
-    public IFixedValueParameter<BoolValue> ConstantOptimizationUpdateVariableWeightsParameter {
-      get { return (IFixedValueParameter<BoolValue>)Parameters[ConstantOptimizationUpdateVariableWeightsParameterName]; }
+    public IFixedValueParameter<BoolValue> ParameterOptimizationUpdateVariableWeightsParameter {
+      get { return (IFixedValueParameter<BoolValue>)Parameters[ParameterOptimizationUpdateVariableWeightsParameterName]; }
     }
 
     public int DecimalPlaces {
       get { return DecimalPlacesParameter.Value.Value; }
       set { DecimalPlacesParameter.Value.Value = value; }
     }
-    public bool UseConstantOptimization {
-      get { return UseConstantOptimizationParameter.Value.Value; }
-      set { UseConstantOptimizationParameter.Value.Value = value; }
+    public bool UseParameterOptimization {
+      get { return UseParameterOptimizationParameter.Value.Value; }
+      set { UseParameterOptimizationParameter.Value.Value = value; }
     }
-    public int ConstantOptimizationIterations {
-      get { return ConstantOptimizationIterationsParameter.Value.Value; }
-      set { ConstantOptimizationIterationsParameter.Value.Value = value; }
+    public int ParameterOptimizationIterations {
+      get { return ParameterOptimizationIterationsParameter.Value.Value; }
+      set { ParameterOptimizationIterationsParameter.Value.Value = value; }
     }
-    public bool ConstantOptimizationUpdateVariableWeights {
-      get { return ConstantOptimizationUpdateVariableWeightsParameter.Value.Value; }
-      set { ConstantOptimizationUpdateVariableWeightsParameter.Value.Value = value; }
+    public bool ParameterOptimizationUpdateVariableWeights {
+      get { return ParameterOptimizationUpdateVariableWeightsParameter.Value.Value; }
+      set { ParameterOptimizationUpdateVariableWeightsParameter.Value.Value = value; }
     }
 
     [StorableConstructor]
@@ -77,24 +77,41 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     protected SymbolicRegressionMultiObjectiveEvaluator()
       : base() {
       Parameters.Add(new FixedValueParameter<IntValue>(DecimalPlacesParameterName, "The number of decimal places used for rounding the quality values.", new IntValue(5)) { Hidden = true });
-      Parameters.Add(new FixedValueParameter<BoolValue>(UseConstantOptimizationParameterName, "", new BoolValue(false)));
-      Parameters.Add(new FixedValueParameter<IntValue>(ConstantOptimizationIterationsParameterName, "The number of iterations constant optimization should be applied.", new IntValue(5)));
-      Parameters.Add(new FixedValueParameter<BoolValue>(ConstantOptimizationUpdateVariableWeightsParameterName, "Determines if the variable weights in the tree should be optimized during constant optimization.", new BoolValue(true)) { Hidden = true });
+      Parameters.Add(new FixedValueParameter<BoolValue>(UseParameterOptimizationParameterName, "", new BoolValue(false)));
+      Parameters.Add(new FixedValueParameter<IntValue>(ParameterOptimizationIterationsParameterName, "The number of iterations parameter optimization should be applied.", new IntValue(5)));
+      Parameters.Add(new FixedValueParameter<BoolValue>(ParameterOptimizationUpdateVariableWeightsParameterName, "Determines if the variable weights in the tree should be optimized during parameter optimization.", new BoolValue(true)) { Hidden = true });
     }
 
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
-      if (!Parameters.ContainsKey(UseConstantOptimizationParameterName)) {
-        Parameters.Add(new FixedValueParameter<BoolValue>(UseConstantOptimizationParameterName, "", new BoolValue(false)));
+      if (!Parameters.ContainsKey(UseParameterOptimizationParameterName)) {
+        if (Parameters.ContainsKey("Use constant optimization")) {
+          Parameters.Add(new FixedValueParameter<BoolValue>(UseParameterOptimizationParameterName, "", (BoolValue)Parameters["Use constant optimization"].ActualValue));
+          Parameters.Remove("Use constant optimization");
+        } else {
+          Parameters.Add(new FixedValueParameter<BoolValue>(UseParameterOptimizationParameterName, "", new BoolValue(false)));
+        }
       }
+
       if (!Parameters.ContainsKey(DecimalPlacesParameterName)) {
         Parameters.Add(new FixedValueParameter<IntValue>(DecimalPlacesParameterName, "The number of decimal places used for rounding the quality values.", new IntValue(-1)) { Hidden = true });
       }
-      if (!Parameters.ContainsKey(ConstantOptimizationIterationsParameterName)) {
-        Parameters.Add(new FixedValueParameter<IntValue>(ConstantOptimizationIterationsParameterName, "The number of iterations constant optimization should be applied.", new IntValue(5)));
+      if (!Parameters.ContainsKey(ParameterOptimizationIterationsParameterName)) {
+        if (Parameters.ContainsKey("Constant optimization iterations")) {
+          Parameters.Add(new FixedValueParameter<IntValue>(ParameterOptimizationIterationsParameterName, "The number of iterations parameter optimization should be applied.", (IntValue)Parameters["Constant optimization iterations"].ActualValue));
+          Parameters.Remove("Constant optimization iterations");
+        } else {
+          Parameters.Add(new FixedValueParameter<IntValue>(ParameterOptimizationIterationsParameterName, "The number of iterations parameter optimization should be applied.", new IntValue(5)));
+        }
       }
-      if (!Parameters.ContainsKey(ConstantOptimizationUpdateVariableWeightsParameterName)) {
-        Parameters.Add(new FixedValueParameter<BoolValue>(ConstantOptimizationUpdateVariableWeightsParameterName, "Determines if the variable weights in the tree should be optimized during constant optimization.", new BoolValue(true)));
+      if (!Parameters.ContainsKey(ParameterOptimizationUpdateVariableWeightsParameterName)) {
+        if (Parameters.ContainsKey("Constant optimization update variable weights")) {
+          Parameters.Add(new FixedValueParameter<BoolValue>(ParameterOptimizationUpdateVariableWeightsParameterName, "Determines if the variable weights in the tree should be optimized during parameter optimization.",
+            (BoolValue)Parameters["Constant optimization update variable weights"].ActualValue));
+          Parameters.Remove("Constant optimization update variable weights");
+        } else {
+          Parameters.Add(new FixedValueParameter<BoolValue>(ParameterOptimizationUpdateVariableWeightsParameterName, "Determines if the variable weights in the tree should be optimized during parameter optimization.", new BoolValue(true)));
+        }
       }
     }
   }

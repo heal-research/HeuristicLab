@@ -21,7 +21,7 @@
 
 using HeuristicLab.PluginInfrastructure;
 
-namespace HeuristicLab.Algorithms.DataAnalysis {
+namespace HeuristicLab.Algorithms.DataAnalysis.Glmnet {
   /// <summary>
   /// Plugin class for HeuristicLab.Algorithms.DataAnalysis.Glmnet plugin which wraps the glmnet implementation by Jerome Friedman, Trevor Hastie, Noah Simon, Rob Tibshirani, see https://cran.r-project.org/web/packages/glmnet/index.html
   /// </summary>

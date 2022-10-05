@@ -1,4 +1,7 @@
-﻿using HEAL.Attic;
+﻿using System.Collections.Generic;
+using System.Linq;
+using HEAL.Attic;
+using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 #region License Information
 /* HeuristicLab
  * Copyright (C) Heuristic and Evolutionary Algorithms Laboratory (HEAL)
@@ -23,5 +26,13 @@
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
   [StorableType("5dd2601a-b884-48c0-85bc-bc1f437187a3")]
   public interface ISymbolicRegressionSingleObjectiveEvaluator : ISymbolicRegressionEvaluator, ISymbolicDataAnalysisSingleObjectiveEvaluator<IRegressionProblemData> {
+    double Evaluate(
+      ISymbolicExpressionTree tree,
+      IRegressionProblemData problemData,
+      IEnumerable<int> rows,
+      ISymbolicDataAnalysisExpressionTreeInterpreter interpreter,
+      bool applyLinearScaling = true,
+      double lowerEstimationLimit = double.MinValue, 
+      double upperEstimationLimit = double.MaxValue);
   }
 }

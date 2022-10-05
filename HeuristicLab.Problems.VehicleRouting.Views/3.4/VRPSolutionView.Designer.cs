@@ -72,6 +72,29 @@ namespace HeuristicLab.Problems.VehicleRouting.Views {
       this.tabControl1.Size = new System.Drawing.Size(468, 415);
       this.tabControl1.TabIndex = 0;
       // 
+      // tabPage1
+      // 
+      this.tabPage1.BackColor = System.Drawing.SystemColors.Window;
+      this.tabPage1.Controls.Add(this.problemInstanceView);
+      this.tabPage1.Location = new System.Drawing.Point(4, 22);
+      this.tabPage1.Name = "tabPage1";
+      this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
+      this.tabPage1.Size = new System.Drawing.Size(460, 389);
+      this.tabPage1.TabIndex = 0;
+      this.tabPage1.Text = "ProblemInstance";
+      // 
+      // problemInstanceView
+      // 
+      this.problemInstanceView.Caption = "View";
+      this.problemInstanceView.Content = null;
+      this.problemInstanceView.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.problemInstanceView.Location = new System.Drawing.Point(3, 3);
+      this.problemInstanceView.Name = "problemInstanceView";
+      this.problemInstanceView.ReadOnly = false;
+      this.problemInstanceView.Size = new System.Drawing.Size(454, 383);
+      this.problemInstanceView.TabIndex = 0;
+      this.problemInstanceView.ViewType = null;
+      // 
       // tabPage2
       // 
       this.tabPage2.BackColor = System.Drawing.SystemColors.Window;

@@ -51,7 +51,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
       variableStore = cloner.Clone(original.variableStore);
       results = cloner.Clone(original.results);
     }
-    
+
     [Obsolete("Do not use this constructor.")]
     protected OptimizationSupportScript() : base() {
       variableStore = new VariableStore();

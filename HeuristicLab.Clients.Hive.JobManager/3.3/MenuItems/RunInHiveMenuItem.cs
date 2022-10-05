@@ -27,6 +27,7 @@ using System.Windows.Forms;
 using HeuristicLab.Clients.Hive.JobManager.Views;
 using HeuristicLab.Core;
 using HeuristicLab.MainForm;
+using HeuristicLab.MainForm.WindowsForms;
 using HeuristicLab.Optimization;
 using HeuristicLab.Optimizer;
 using HeuristicLab.PluginInfrastructure;

@@ -50,7 +50,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
     public int Cities => Matrix.Rows;
 
     [StorableConstructor]
-    private  MatrixTSPData(StorableConstructorFlag _) : base(_) { }
+    private MatrixTSPData(StorableConstructorFlag _) : base(_) { }
     private MatrixTSPData(MatrixTSPData original, Cloner cloner) : base(original, cloner) {
       Matrix = original.Matrix;
       DisplayCoordinates = original.DisplayCoordinates;

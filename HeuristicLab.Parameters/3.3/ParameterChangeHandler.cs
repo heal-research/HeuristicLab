@@ -67,7 +67,7 @@ namespace HeuristicLab.Parameters {
       handler();
     }
 
-    public static ValueTypeValueParameterChangeHandler<TItem, TValue> Create(IValueParameter<TItem> parameter, Action handler)
+    public static new ValueTypeValueParameterChangeHandler<TItem, TValue> Create(IValueParameter<TItem> parameter, Action handler)
       => new ValueTypeValueParameterChangeHandler<TItem, TValue>(parameter, handler);
   }
   public class ValueTypeArrayParameterChangeHandler<TItem, TValue> : ParameterChangeHandler<TItem>
@@ -94,7 +94,7 @@ namespace HeuristicLab.Parameters {
       handler();
     }
 
-    public static ValueTypeArrayParameterChangeHandler<TItem, TValue> Create(IValueParameter<TItem> parameter, Action handler)
+    public static new ValueTypeArrayParameterChangeHandler<TItem, TValue> Create(IValueParameter<TItem> parameter, Action handler)
       => new ValueTypeArrayParameterChangeHandler<TItem, TValue>(parameter, handler);
   }
 
@@ -122,7 +122,7 @@ namespace HeuristicLab.Parameters {
       handler();
     }
 
-    public static ValueTypeMatrixParameterChangeHandler<TItem, TValue> Create(IValueParameter<TItem> parameter, Action handler)
+    public static new ValueTypeMatrixParameterChangeHandler<TItem, TValue> Create(IValueParameter<TItem> parameter, Action handler)
       => new ValueTypeMatrixParameterChangeHandler<TItem, TValue>(parameter, handler);
   }
 
@@ -211,11 +211,11 @@ namespace HeuristicLab.Parameters {
     private void ParameterValueOnValueChanged(object sender, EventArgs e) {
       handler();
     }
-    public static StringValueParameterChangeHandler Create(IValueParameter<StringValue> parameter, Action handler)
+    public static new StringValueParameterChangeHandler Create(IValueParameter<StringValue> parameter, Action handler)
      => new StringValueParameterChangeHandler(parameter, handler);
   }
 
-  public class ItemListParameterChangeHandler<T> : ParameterChangeHandler<ItemList<T>> where T : class,IItem {
+  public class ItemListParameterChangeHandler<T> : ParameterChangeHandler<ItemList<T>> where T : class, IItem {
     private ItemList<T> last;
 
     private ItemListParameterChangeHandler(IValueParameter<ItemList<T>> parameter, Action handler)
@@ -238,7 +238,7 @@ namespace HeuristicLab.Parameters {
     private void ParameterValueOnListChanged(object sender, PropertyChangedEventArgs e) {
       if (e.PropertyName == "Item[]") handler();
     }
-    public static ItemListParameterChangeHandler<T> Create(IValueParameter<ItemList<T>> parameter, Action handler)
+    public static new ItemListParameterChangeHandler<T> Create(IValueParameter<ItemList<T>> parameter, Action handler)
      => new ItemListParameterChangeHandler<T>(parameter, handler);
   }
 }

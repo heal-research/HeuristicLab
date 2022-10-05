@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>HeuristicLab.Encodings.IntegerVectorEncoding</RootNamespace>
     <AssemblyName>HeuristicLab.Encodings.IntegerVectorEncoding-3.3</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
@@ -112,8 +112,6 @@
     <None Include="Properties\AssemblyInfo.cs.frame" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="IntegerVectorMultiObjectiveProblem.cs" />
-    <Compile Include="IntegerVectorProblem.cs" />
     <Compile Include="BoundedIntegerVectorCrossover.cs" />
     <Compile Include="BoundedIntegerVectorManipulator.cs" />
     <Compile Include="Creators\UniformRandomIntegerVectorCreator.cs" />
@@ -132,22 +130,24 @@
     <Compile Include="Crossovers\RoundedUniformArithmeticCrossover.cs" />
     <Compile Include="IntegerVectorEncoding.cs" />
     <Compile Include="IntegerVectorEqualityComparer.cs" />
+    <Compile Include="IntegerVectorMultiObjectiveProblem.cs" />
     <Compile Include="IntegerVectorOperator.cs" />
+    <Compile Include="IntegerVectorProblem.cs" />
     <Compile Include="Interfaces\IBoundedIntegerVectorOperator.cs" />
     <Compile Include="Interfaces\IIntegerVectorCreator.cs" />
     <Compile Include="Interfaces\IIntegerVectorCrossover.cs" />
+    <Compile Include="Interfaces\IIntegerVectorLocalImprovementOperator.cs" />
     <Compile Include="Interfaces\IIntegerVectorManipulator.cs" />
     <Compile Include="Interfaces\IIntegerVectorMultiNeighborhoodShakingOperator.cs" />
     <Compile Include="Interfaces\IIntegerVectorOperator.cs" />
     <Compile Include="IntegerVectorCrossover.cs" />
     <Compile Include="IntegerVectorManipulator.cs" />
+    <Compile Include="Interfaces\IIntegerVectorSolutionOperator.cs" />
+    <Compile Include="Interfaces\IIntegerVectorSolutionsOperator.cs" />
     <Compile Include="Interfaces\IIntegerVectorStdDevStrategyParameterCreator.cs" />
     <Compile Include="Interfaces\IIntegerVectorStdDevStrategyParameterCrossover.cs" />
     <Compile Include="Interfaces\IIntegerVectorStdDevStrategyParameterManipulator.cs" />
     <Compile Include="Interfaces\IIntegerVectorStdDevStrategyParameterOperator.cs" />
-    <Compile Include="Interfaces\IIntegerVectorLocalImprovementOperator.cs" />
-    <Compile Include="Interfaces\IIntegerVectorSolutionOperator.cs" />
-    <Compile Include="Interfaces\IIntegerVectorSolutionsOperator.cs" />
     <Compile Include="Manipulators\UniformSomePositionsManipulator.cs" />
     <Compile Include="Manipulators\RoundedNormalAllPositionsManipulator.cs" />
     <Compile Include="Manipulators\SelfAdaptiveRoundedNormalAllPositionsManipulator.cs" />

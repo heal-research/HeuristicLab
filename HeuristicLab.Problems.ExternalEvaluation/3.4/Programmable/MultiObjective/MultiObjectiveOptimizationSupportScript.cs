@@ -32,6 +32,8 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
     [StorableConstructor]
     private MultiObjectiveOptimizationSupportScript(StorableConstructorFlag _) : base(_) { }
     private MultiObjectiveOptimizationSupportScript(MultiObjectiveOptimizationSupportScript<TEncodedSolution> original, Cloner cloner) : base(original, cloner) { }
+
+    //TODO Refactor to correct construcor
     public MultiObjectiveOptimizationSupportScript() : base() {
       var codeTemplate = Templates.CompiledMultiObjectiveOptimizationSupport;
       codeTemplate = codeTemplate.Replace("ENCODING_NAMESPACE", typeof(TEncodedSolution).Namespace);

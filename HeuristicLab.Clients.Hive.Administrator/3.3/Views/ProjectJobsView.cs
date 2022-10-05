@@ -80,12 +80,12 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
     protected override void RegisterContentEvents() {
       base.RegisterContentEvents();
       matrixView.DataGridView.SelectionChanged += DataGridView_SelectionChanged;
-      MainForm.Progress.Show(this, progress);
+      MainForm.WindowsForms.Progress.Show(this, progress);
     }
 
     protected override void DeregisterContentEvents() {
       matrixView.DataGridView.SelectionChanged -= DataGridView_SelectionChanged;
-      MainForm.Progress.Hide(this, false);
+      MainForm.WindowsForms.Progress.Hide(this, false);
       base.DeregisterContentEvents();
     }
 

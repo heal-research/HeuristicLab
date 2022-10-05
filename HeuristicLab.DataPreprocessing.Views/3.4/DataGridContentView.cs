@@ -25,7 +25,6 @@ using System.Linq;
 using System.Windows.Forms;
 using HeuristicLab.Data;
 using HeuristicLab.Data.Views;
-using HeuristicLab.DataPreprocessing.Filter;
 using HeuristicLab.MainForm;
 
 namespace HeuristicLab.DataPreprocessing.Views {
@@ -457,7 +456,7 @@ namespace HeuristicLab.DataPreprocessing.Views {
       value.SetValue(match);
       var comparisonFilter = new ComparisonFilter(preprocessingData, GetConstraintOperation(comparisonOperation), value, true);
       comparisonFilter.ConstraintColumn = columnIndex;
-      return new List<Filter.IFilter>() { comparisonFilter };
+      return new List<IFilter>() { comparisonFilter };
     }
 
     private IDictionary<int, IList<int>> MapToSorting(Dictionary<int, IList<int>> foundCells) {

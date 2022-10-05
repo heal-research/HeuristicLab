@@ -11,7 +11,8 @@ inline double evaluate(instruction *code, int len, int row) noexcept
         instruction &in = code[i];
         switch (in.opcode)
         {
-            case OpCodes::Const: /* nothing to do */ break;
+            case OpCodes::Number: /* nothing to do */ break;
+            case OpCodes::Constant: /* nothing to do */ break;
             case OpCodes::Var:
                 {
                     in.value = in.weight * in.data[row];
@@ -137,6 +138,11 @@ inline double evaluate(instruction *code, int len, int row) noexcept
                     in.value = x / hl_sqrt(1 + y*y);
                     break;
                 }
+            case OpCodes::SubFunction:
+                {
+                  in.value = code[in.childIndex].value;
+                  break;
+                }
             default: in.value = NAN;
         }
     }
@@ -164,7 +170,8 @@ inline void evaluate(instruction* code, int len, int* __restrict rows, int rowIn
                     load_data(in, rows, rowIndex, batchSize); // buffer data
                     break;
                 }
-            case OpCodes::Const: /* nothing to do because buffers for constants are already set */ break;
+            case OpCodes::Number: /* nothing to do because buffers for numbers are already set */ break;
+            case OpCodes::Constant: /* nothing to do because buffers for constants are already set */ break;
             case OpCodes::Add:
                 {
                     load(in.buf, code[in.childIndex].buf);
@@ -290,8 +297,14 @@ inline void evaluate(instruction* code, int len, int* __restrict rows, int rowIn
                     analytical_quotient(in.buf, code[in.childIndex + 1].buf);
                     break;
                 }
+            case OpCodes::SubFunction:
+                {
+                  load(in.buf, code[in.childIndex].buf);
+                  break;
+                }
+
             default: load(in.buf, NAN);
-            }
+          }
     }
 }
 

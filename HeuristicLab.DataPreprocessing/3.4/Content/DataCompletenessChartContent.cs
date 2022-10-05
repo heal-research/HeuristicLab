@@ -20,9 +20,12 @@
 #endregion
 
 using System.Drawing;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HEAL.Attic;
+
+
+
 
 namespace HeuristicLab.DataPreprocessing {
   [Item("Data Completeness Chart", "Represents a datacompleteness chart.")]

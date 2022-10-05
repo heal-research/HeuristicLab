@@ -27,31 +27,31 @@ using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
-  public partial class ConstantNodeEditDialog : Form {
-    private ConstantTreeNode constantTreeNode;
-    public ConstantTreeNode NewNode {
-      get { return constantTreeNode; }
+  public partial class NumberNodeEditDialog : Form {
+    private NumberTreeNode numberTreeNode;
+    public NumberTreeNode NewNode {
+      get { return numberTreeNode; }
       set {
         if (InvokeRequired)
-          Invoke(new Action<SymbolicExpressionTreeNode>(x => constantTreeNode = (ConstantTreeNode)x), value);
+          Invoke(new Action<SymbolicExpressionTreeNode>(x => numberTreeNode = (NumberTreeNode)x), value);
         else
-          constantTreeNode = value;
+          numberTreeNode = value;
       }
     }
 
-    public ConstantNodeEditDialog(ISymbolicExpressionTreeNode node) {
+    public NumberNodeEditDialog(ISymbolicExpressionTreeNode node) {
       InitializeComponent();
       oldValueTextBox.TabStop = false; // cannot receive focus using tab key
-      NewNode = (ConstantTreeNode)node;
+      NewNode = (NumberTreeNode)node;
       InitializeFields();
     }
 
     private void InitializeFields() {
       if (NewNode == null)
-        throw new ArgumentException("Node is not a constant.");
+        throw new ArgumentException("Node is not a number.");
       else {
-        this.Text = "Edit constant";
-        newValueTextBox.Text = oldValueTextBox.Text = Math.Round(constantTreeNode.Value, 4).ToString();
+        this.Text = "Edit number";
+        newValueTextBox.Text = oldValueTextBox.Text = Math.Round(numberTreeNode.Value, 4).ToString();
       }
     }
 
@@ -70,8 +70,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
     }
 
     private static bool ValidateNewValue(string value, out string errorMessage) {
-      double val;
-      bool valid = double.TryParse(value, out val);
+      bool valid = double.TryParse(value, out _);
       errorMessage = string.Empty;
       if (!valid) {
         var sb = new StringBuilder();
@@ -86,10 +85,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
 
     // proxy handler passing key strokes to the parent control
     private void childControl_KeyDown(object sender, KeyEventArgs e) {
-      ConstantNodeEditDialog_KeyDown(sender, e);
+      NumberNodeEditDialog_KeyDown(sender, e);
     }
 
-    private void ConstantNodeEditDialog_KeyDown(object sender, KeyEventArgs e) {
+    private void NumberNodeEditDialog_KeyDown(object sender, KeyEventArgs e) {
       if ((e.KeyCode == Keys.Enter) || (e.KeyCode == Keys.Return)) {
         if (!ValidateChildren()) return;
         OnDialogValidated(this, e); // emit validated effect
@@ -99,12 +98,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
 
     public event EventHandler DialogValidated;
     private void OnDialogValidated(object sender, EventArgs e) {
-      if (constantTreeNode == null) return;
+      if (numberTreeNode == null) return;
       var value = double.Parse(newValueTextBox.Text);
       // we impose an extra validation condition: that the new value is different from the original value
-      if (constantTreeNode.Value.Equals(value)) return;
-
-      constantTreeNode.Value = value;
+      if (numberTreeNode.Value.Equals(value)) return;
+      numberTreeNode.Value = value;
       DialogResult = DialogResult.OK;
       var dialogValidated = DialogValidated;
       if (dialogValidated != null)

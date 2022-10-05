@@ -1,6 +1,33 @@
-IF EXIST "%ProjectDir%\Properties\AssemblyInfo.cs.frame" SubWCRev "%ProjectDir%\" "%ProjectDir%\Properties\AssemblyInfo.cs.frame" "%ProjectDir%\Properties\AssemblyInfo.cs"
+for /f %%i in ('git rev-list --count HEAD') do set RESULT=%%i
+
+IF EXIST "%ProjectDir%\Properties\AssemblyInfo.cs.frame" (	
+	IF EXIST "%ProjectDir%\Properties\AssemblyInfo.cs" DEL /F "%ProjectDir%\Properties\AssemblyInfo.cs"	
+	
+	for /f "delims=" %%A in ('type "%ProjectDir%\Properties\AssemblyInfo.cs.frame"') do (
+		
+	    set "string=%%A"
+		setlocal EnableExtensions EnableDelayedExpansion
+	    set "modified=!string:$WCREV$=%RESULT%!"
+		echo !modified!>>"%ProjectDir%\Properties\AssemblyInfo.cs"
+		endlocal	   
+	)
+	
+)
 IF %ERRORLEVEL% NEQ 0 GOTO Error_Handling
-IF EXIST "%ProjectDir%\Plugin.cs.frame" SubWCRev "%ProjectDir%\" "%ProjectDir%\Plugin.cs.frame" "%ProjectDir%\Plugin.cs"
+
+IF EXIST "%ProjectDir%\Plugin.cs.frame" (
+	IF EXIST "%ProjectDir%\Plugin.cs" DEL /F "%ProjectDir%\Plugin.cs"	
+
+	for /f "delims=" %%A in ('type "%ProjectDir%\Plugin.cs.frame"') do (
+		
+	    set "string=%%A"
+	    setlocal EnableExtensions EnableDelayedExpansion		
+		set "modified=!string:$WCREV$=%RESULT%!"		
+	    echo !modified!>>"%ProjectDir%\Plugin.cs"
+		endlocal
+	)
+		
+)
 IF %ERRORLEVEL% NEQ 0 GOTO Error_Handling
 GOTO Done
 

@@ -24,8 +24,10 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows.Forms;
+using HeuristicLab.Clients.Common;
 using HeuristicLab.Clients.Hive.Views;
 using HeuristicLab.MainForm;
+using HeuristicLab.MainForm.WindowsForms;
 
 namespace HeuristicLab.Clients.Hive.JobManager.Views {
   public partial class HiveResourceSelectorDialog : Form {

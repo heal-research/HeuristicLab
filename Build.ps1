@@ -1,27 +1,29 @@
 ﻿# find ms build
-$programFilesX86Dir = ($Env:ProgramFiles, ${Env:ProgramFiles(x86)})[[bool]${Env:ProgramFiles(x86)}]
-$vsDir = [System.IO.Path]::Combine($programFilesX86Dir, "Microsoft Visual Studio")
-$years = @("2019", "2017")
+$programFilesDirs = @($Env:ProgramFiles, ${Env:ProgramFiles(x86)})
+$years = @("2022", "2019", "2017")
 $editions = @("Enterprise", "Professional", "Community", "BuildTools")
 $versions = @("Current", "15.0")
 
 $msBuildPath = $undefined
-:search Foreach ($year in $years) {
-  $loc = [System.IO.Path]::Combine($vsDir, $year)
-  Foreach ($edition in $editions) {
-    $edLoc = [System.IO.Path]::Combine($loc, $edition, "MSBuild")
-    Foreach ($version in $versions) {
-      $binLoc = [System.IO.Path]::Combine($edLoc, $version, "Bin")
-      $loc64 = [System.IO.Path]::Combine($binLoc, "amd64", "MSBuild.exe")
-      $loc32 = [System.IO.Path]::Combine($binLoc, "MSBuild.exe")
+:search Foreach ($dir in $programFilesDirs) {
+  $vsDir = [System.IO.Path]::Combine($dir, "Microsoft Visual Studio")
+  Foreach ($year in $years) {
+    $loc = [System.IO.Path]::Combine($vsDir, $year)
+    Foreach ($edition in $editions) {
+      $edLoc = [System.IO.Path]::Combine($loc, $edition, "MSBuild")
+      Foreach ($version in $versions) {
+        $binLoc = [System.IO.Path]::Combine($edLoc, $version, "Bin")
+        $loc64 = [System.IO.Path]::Combine($binLoc, "amd64", "MSBuild.exe")
+        $loc32 = [System.IO.Path]::Combine($binLoc, "MSBuild.exe")
 
-      If ([System.IO.File]::Exists($loc64)) {
-        $msBuildPath = $loc64
-        Break search;
-      }
-      If ([System.IO.File]::Exists($loc32)) {
-        $msBuildPath = $loc32
-        Break search;
+        If ([System.IO.File]::Exists($loc64)) {
+          $msBuildPath = $loc64
+          Break search;
+        }
+        If ([System.IO.File]::Exists($loc32)) {
+          $msBuildPath = $loc32
+          Break search;
+        }
       }
     }
   }
@@ -143,8 +145,8 @@ Try {
 # SIG # Begin signature block
 # MIIRPwYJKoZIhvcNAQcCoIIRMDCCESwCAQExDzANBglghkgBZQMEAgEFADB5Bgor
 # BgEEAYI3AgEEoGswaTA0BgorBgEEAYI3AgEeMCYCAwEAAAQQH8w7YFlLCE63JNLG
-# KX7zUQIBAAIBAAIBAAIBAAIBADAxMA0GCWCGSAFlAwQCAQUABCCkZQD98uHEu5cF
-# pqVi6UDP5wAnkH38IHKlZIY9T9KjMqCCDo4wggbaMIIEwqADAgECAhNoAAE6ILAh
+# KX7zUQIBAAIBAAIBAAIBAAIBADAxMA0GCWCGSAFlAwQCAQUABCCLZ/JdonyPX9Cp
+# TUV5DfnTZ07ydZrQLEzhh6BA4aW6eKCCDo4wggbaMIIEwqADAgECAhNoAAE6ILAh
 # JeBjaP8pAAEAATogMA0GCSqGSIb3DQEBCwUAMD4xEjAQBgoJkiaJk/IsZAEZFgJh
 # dDEVMBMGCgmSJomT8ixkARkWBWZob29lMREwDwYDVQQDEwhGSE9PZUNBMTAeFw0x
 # OTExMDYwOTI1NTJaFw0yNDExMDQwOTI1NTJaMD4xFjAUBgNVBAsTDUZ1RSBIYWdl
@@ -226,12 +228,12 @@ Try {
 # CgmSJomT8ixkARkWBWZob29lMREwDwYDVQQDEwhGSE9PZUNBMQITaAABOiCwISXg
 # Y2j/KQABAAE6IDANBglghkgBZQMEAgEFAKCBhDAYBgorBgEEAYI3AgEMMQowCKAC
 # gAChAoAAMBkGCSqGSIb3DQEJAzEMBgorBgEEAYI3AgEEMBwGCisGAQQBgjcCAQsx
-# DjAMBgorBgEEAYI3AgEVMC8GCSqGSIb3DQEJBDEiBCBkKJAeYkI5WqZCigil5oKN
-# A/cYpXRiV+nHT9AINKF4HjANBgkqhkiG9w0BAQEFAASCAQCWxzzUAY2ruqDFVUHY
-# Zzifh1dpYkpzIidbJIVAiAKvlql14/pqLSsZ64GS+qAph0F43FHYodilL50zydnp
-# sv6WRC6GqE4ida5vwuWl22R7t4gZx5ZIG73HPySUzKawFigUZllT4CQfW7qEBf0g
-# N42mOR0MnkGTsJiFQSpD98UHpiUaSNWSMAEsWeEiw0eVxiDOIQGTc62RtAPg4EUt
-# fIOlbRUvQAgwC6yAdmqx0fA0ADAV0aO9c6h9jyf6kYA0TeAc8o/LtBtHULCLj5HT
-# YllKIp7BZCLGQKVbKvmdxsdIGT8ajElKowM1MTGcLQYaGdzGTRgDNnTjzVsmV1Q7
-# s7qn
+# DjAMBgorBgEEAYI3AgEVMC8GCSqGSIb3DQEJBDEiBCB8JQqTFBBqCVI0KaLbaLg0
+# flx9+g0aPjepZMuhphj42jANBgkqhkiG9w0BAQEFAASCAQAPafrPJVGSrB1pcCdm
+# 7V2X2/bYyfBFxOaHI2p79UIHt5Z+PfDWuC5+ikrODQ+6FmGErfy/RN2Z1uueNUt5
+# aMhCn86vLGehThRoEGL+YDJg+/WKplowdHGkNB65yXC4CXe9NZLs02EVlljIO0yh
+# g8ITIZI1l1+njG7G8TMCwyLf/AAHaZpNZMlKSO1P0PQi8D2ggo3G0EwogPyN4AvJ
+# X877LhU4jEzX8lEouMXhilz8UQBrxrdXXWIbOUCNnXeIDVIUqf4HnsGnWGlwcQQb
+# BPUTwKveuKWSUHkk2zhMFAhuRNfm6KLBZaKdcVWaXEu66SChg68m4xjlLwy5jC+E
+# K2XI
 # SIG # End signature block

@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>HeuristicLab.Problems.Scheduling</RootNamespace>
     <AssemblyName>HeuristicLab.Problems.Scheduling-3.3</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -111,9 +111,9 @@
     <Reference Include="System.Drawing" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Objectives\MeanTardiness.cs" />
-    <Compile Include="Objectives\Makespan.cs" />
     <Compile Include="JobShopSchedulingProblem.cs" />
+    <Compile Include="Objectives\Makespan.cs" />
+    <Compile Include="Objectives\MeanTardiness.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -146,6 +146,11 @@
     <ProjectReference Include="..\..\HeuristicLab.Data\3.3\HeuristicLab.Data-3.3.csproj">
       <Project>{BBAB9DF5-5EF3-4BA8-ADE9-B36E82114937}</Project>
       <Name>HeuristicLab.Data-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Encodings.IntegerVectorEncoding\3.3\HeuristicLab.Encodings.IntegerVectorEncoding-3.3.csproj">
+      <Project>{DDFB14DD-2A85-493C-A52D-E69729BBAEB0}</Project>
+      <Name>HeuristicLab.Encodings.IntegerVectorEncoding-3.3</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Encodings.PermutationEncoding\3.3\HeuristicLab.Encodings.PermutationEncoding-3.3.csproj">

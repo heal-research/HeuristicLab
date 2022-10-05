@@ -154,6 +154,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           strBuilder.Append(" / Math.Sqrt(1 + Math.Pow(");
           FormatRecursively(node.GetSubtree(1), strBuilder);
           strBuilder.Append(" , 2) ) )");
+        } else if (node.Symbol is SubFunctionSymbol) {
+          FormatRecursively(node.GetSubtree(0), strBuilder);
         } else {
           throw new NotSupportedException("Formatting of symbol: " + node.Symbol + " not supported for C# symbolic expression tree formatter.");
         }
@@ -161,9 +163,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         if (node is VariableTreeNode) {
           var varNode = node as VariableTreeNode;
           strBuilder.AppendFormat("{0} * {1}", VariableName2Identifier(varNode.VariableName), varNode.Weight.ToString("g17", CultureInfo.InvariantCulture));
-        } else if (node is ConstantTreeNode) {
-          var constNode = node as ConstantTreeNode;
-          strBuilder.Append(constNode.Value.ToString("g17", CultureInfo.InvariantCulture));
+        } else if (node is INumericTreeNode numNode) {
+          strBuilder.Append(numNode.Value.ToString("g17", CultureInfo.InvariantCulture));
         } else if (node.Symbol is FactorVariable) {
           var factorNode = node as FactorVariableTreeNode;
           FormatFactor(factorNode, strBuilder);
@@ -310,9 +311,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     private void GenerateFactorSource(StringBuilder strBuilder) {
-      strBuilder.AppendLine("private static double EvaluateFactor(string factorValue, string[] factorValues, double[] constants) {");
+      strBuilder.AppendLine("private static double EvaluateFactor(string factorValue, string[] factorValues, double[] parameters) {");
       strBuilder.AppendLine("   for(int i=0;i<factorValues.Length;i++) " +
-                            "      if(factorValues[i] == factorValue) return constants[i];" +
+                            "      if(factorValues[i] == factorValue) return parameters[i];" +
                             "   throw new ArgumentException();");
       strBuilder.AppendLine("}");
     }

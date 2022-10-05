@@ -5,7 +5,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Parameters;
 using HEAL.Attic;
 
-namespace HeuristicLab.Encodings.LinearLinkageEncoding.Creators {
+namespace HeuristicLab.Encodings.LinearLinkageEncoding {
   [Item("Max Group-size Linear Linkage Creator", "Creates a random linear linkage LLE encoded solution with a given maximum number of items per group.")]
   [StorableType("5C9DEA79-60CC-44A5-B70E-FC11A588C307")]
   public class MaxGroupSizeLinearLinkageCreator: LinearLinkageCreator {
