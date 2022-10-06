@@ -230,13 +230,11 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
 
     public static Interval Square(Interval a) {
-      if (a.UpperBound <= 0) return new Interval(a.UpperBound * a.UpperBound, a.LowerBound * a.LowerBound);     // interval is negative
-      else if (a.LowerBound >= 0) return new Interval(a.LowerBound * a.LowerBound, a.UpperBound * a.UpperBound); // interval is positive
-      else return new Interval(0, Math.Max(a.LowerBound * a.LowerBound, a.UpperBound * a.UpperBound)); // interval goes over zero
+      return Power(a, 2);
     }
 
     public static Interval Cube(Interval a) {
-      return new Interval(Math.Pow(a.LowerBound, 3), Math.Pow(a.UpperBound, 3));
+      return Power(a, 3);
     }
 
     public static Interval Power(Interval a, int b) {
@@ -245,12 +243,12 @@ namespace HeuristicLab.Problems.DataAnalysis {
       if (b == 0) return new Interval(1.0, 1.0); // x^0 = 1
       if (b == 1) return a;
       if (b % 2 == 0) {
-        // even powers (see x²)
+        // even powers
         if (a.UpperBound <= 0) return new Interval(Math.Pow(a.UpperBound, b), Math.Pow(a.LowerBound, b));     // interval is negative
         if (a.LowerBound >= 0) return new Interval(Math.Pow(a.LowerBound, b), Math.Pow(a.UpperBound, b)); // interval is positive
         return new Interval(0, Math.Max(Math.Pow(a.LowerBound, b), Math.Pow(a.UpperBound, b))); // interval goes over zero
       } else {
-        // odd powers (see x³)
+        // odd powers
         return new Interval(Math.Pow(a.LowerBound, b), Math.Pow(a.UpperBound, b));
       }
     }

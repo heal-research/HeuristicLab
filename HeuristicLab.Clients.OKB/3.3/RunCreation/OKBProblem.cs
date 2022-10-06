@@ -116,6 +116,9 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
     }
 
     public IEnumerable<IParameterizedItem> ExecutionContextItems { get { return new[] { this }; } }
+    public void RegisterAlgorithmEvents(IAlgorithm algorithm) {}
+
+    public void DeregisterAlgorithmEvents(IAlgorithm algorithm) {}
 
     #region Persistence Properties
     [Storable(Name = "ProblemId")]
