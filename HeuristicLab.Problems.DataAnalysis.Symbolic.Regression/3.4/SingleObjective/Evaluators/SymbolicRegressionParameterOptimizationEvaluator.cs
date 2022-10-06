@@ -31,7 +31,7 @@ using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
-  [Item("Parameter Optimization Evaluator", "Calculates Pearson R² of a symbolic regression solution and optimizes the parameters used.")]
+  [Item("Parameter Optimization Evaluator", "Calculates Pearson Rï¿½ of a symbolic regression solution and optimizes the parameters used.")]
   [StorableType("24B68851-036D-4446-BD6F-3823E9028FF4")]
   public class SymbolicRegressionParameterOptimizationEvaluator : SymbolicRegressionSingleObjectiveEvaluator {
     private const string ParameterOptimizationIterationsParameterName = "ParameterOptimizationIterations";
@@ -283,7 +283,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       FunctionEvaluationsResultParameter.ExecutionContext = context;
       GradientEvaluationsResultParameter.ExecutionContext = context;
 
-      // Pearson R² evaluator is used on purpose instead of the const-opt evaluator, 
+      // Pearson Rï¿½ evaluator is used on purpose instead of the const-opt evaluator, 
       // because Evaluate() is used to get the quality of evolved models on 
       // different partitions of the dataset (e.g., best validation model)
       double r2 = SymbolicRegressionSingleObjectivePearsonRSquaredEvaluator.Calculate(
@@ -325,7 +325,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       TreeToAutoDiffTermConverter.ParametricFunctionGradient func_grad;
       if (!TreeToAutoDiffTermConverter.TryConvertToAutoDiff(tree, updateVariableWeights, applyLinearScaling, out parameters, out initialParameters, out func, out func_grad))
         throw new NotSupportedException("Could not optimize parameters of symbolic expression tree due to not supported symbols used in the tree.");
-      if (parameters.Count == 0) return 0.0; // constant expressions always have a R² of 0.0 
+      if (parameters.Count == 0) return 0.0; // constant expressions always have a Rï¿½ of 0.0 
       var parameterEntries = parameters.ToArray(); // order of entries must be the same for x
 
       // extract inital parameters

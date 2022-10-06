@@ -63,6 +63,9 @@ namespace HeuristicLab.Optimization {
       if (handler != null)
         handler(this, EventArgs.Empty);
     }
+
+    public virtual void RegisterAlgorithmEvents(IAlgorithm algorithm) { }
+    public virtual void DeregisterAlgorithmEvents(IAlgorithm algorithm) { }
   }
 
 

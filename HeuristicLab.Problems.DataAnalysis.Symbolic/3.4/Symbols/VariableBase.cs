@@ -21,9 +21,9 @@
 
 using System;
 using System.Collections.Generic;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HEAL.Attic;
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableType("F8A6AD96-28D9-4BEC-8392-8B7BA824B085")]
   public abstract class VariableBase : Symbol, IVariableSymbol {

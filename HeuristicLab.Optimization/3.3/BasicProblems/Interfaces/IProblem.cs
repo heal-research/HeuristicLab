@@ -32,6 +32,8 @@ namespace HeuristicLab.Optimization {
   /// </summary>
   public interface IProblem : IResultsProducingItem, IStorableContent {
     event EventHandler Reset;
+    void RegisterAlgorithmEvents(IAlgorithm algorithm);
+    void DeregisterAlgorithmEvents(IAlgorithm algorithm);
   }
 
   //TODO Intermediate class for compatibility 

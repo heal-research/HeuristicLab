@@ -88,11 +88,13 @@ namespace HeuristicLab.Optimization {
           if (problem != null) {
             Results.RemoveRange(problem.Results);
             DeregisterProblemEvents();
+            problem.DeregisterAlgorithmEvents(this);
           }
           problem = value;
           if (problem != null) {
             Results.AddRange(problem.Results);
             RegisterProblemEvents();
+            problem.RegisterAlgorithmEvents(this);
           }
           OnProblemChanged();
           Prepare();

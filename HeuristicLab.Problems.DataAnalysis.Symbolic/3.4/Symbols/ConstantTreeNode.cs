@@ -20,6 +20,7 @@
 #endregion
 
 using HEAL.Attic;
+
 using HeuristicLab.Common;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 

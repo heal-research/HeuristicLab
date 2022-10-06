@@ -129,6 +129,7 @@
     <Compile Include="BasicProblems\Interfaces\IEncoding.cs" />
     <Compile Include="BasicProblems\Interfaces\IEncodingOperator.cs" />
     <Compile Include="BasicProblems\Interfaces\IEvaluationResult.cs" />
+    <Compile Include="BasicProblems\Interfaces\IMultiEncodingCreator.cs" />
     <Compile Include="BasicProblems\Interfaces\IMultiEncodingOperator.cs" />
     <Compile Include="BasicProblems\Interfaces\IMultiObjectiveProblem.cs" />
     <Compile Include="BasicProblems\Interfaces\IMultiObjectiveProblemDefinition.cs" />
