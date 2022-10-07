@@ -248,7 +248,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     }
 
     public static bool CanOptimizeParameters(ISymbolicExpressionTree tree) {
-      return TreeToAutoDiffTermConverter.IsCompatible(tree);
+      return ParameterOptimizer.CanOptimizeParameters(tree);
     }
 
     public override double Evaluate(ISymbolicExpressionTree tree, IRegressionProblemData problemData, IEnumerable<int> rows, ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, bool applyLinearScaling = true, double lowerEstimationLimit = double.MinValue, double upperEstimationLimit = double.MaxValue) {
