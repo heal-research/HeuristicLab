@@ -145,8 +145,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
         var constOptRows = GenerateRowsToEvaluate(RowsPercentage);
         OptimizeParameters(tree, ProblemDataParameter.ActualValue, constOptRows,
            weights: Enumerable.Empty<double>(), Iterations,
-           updateVariableWeights: UpdateVariableWeights,
-           updateParameters: UpdateParameters, counter: counter);
+           updateVariableWeights: UpdateVariableWeights, counter: counter);
 
         quality = SymbolicRegressionSingleObjectiveMeanSquaredErrorEvaluator.Calculate(tree, ProblemDataParameter.ActualValue, GenerateRowsToEvaluate(),
           SymbolicDataAnalysisTreeInterpreterParameter.ActualValue, ApplyLinearScalingParameter.ActualValue.Value,
@@ -196,8 +195,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
 
     public static void OptimizeParameters(
       ISymbolicExpressionTree tree, IRegressionProblemData problemData, IEnumerable<int> rows, IEnumerable<double> weights,
-      int maxIterations, bool updateVariableWeights = true,
-      bool updateParameters = true, EvaluationsCounter counter = null) {
+      int maxIterations, bool updateVariableWeights = true, EvaluationsCounter counter = null) {
 
       var nodesToOptimize = new HashSet<ISymbolicExpressionTreeNode>();
       var originalNodeValues = new Dictionary<ISymbolicExpressionTreeNode, double>();
@@ -225,7 +223,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       counter.FunctionEvaluations += summary.ResidualEvaluations;
       counter.GradientEvaluations += summary.JacobianEvaluations;
 
-      if (summary.Success != 0 && updateParameters) {
+      if (summary.Success != 0) {
         UpdateNodeValues(optimizedNodeValues);
       }
     }
