@@ -302,8 +302,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       var interpreter = new SymbolicDataAnalysisExpressionTreeLinearInterpreter();
       evalCounter = new ParameterOptimizationEvaluator.EvaluationsCounter();
 
-      ParameterOptimizationEvaluator.OptimizeParameters(interpreter, tree, problemData, problemData.TrainingIndices, weights: Enumerable.Empty<double>(),
-        applyLinearScaling: applyLinearScaling, maxIterations: maxIterations,
+      ParameterOptimizationEvaluator.OptimizeParameters(tree, problemData, problemData.TrainingIndices, weights: Enumerable.Empty<double>(),
+        maxIterations: maxIterations,
         updateVariableWeights: false, updateParameters: true, counter: evalCounter);
 
       var model = new SymbolicRegressionModel(problemData.TargetVariable, tree, (ISymbolicDataAnalysisExpressionTreeInterpreter)interpreter.Clone());
