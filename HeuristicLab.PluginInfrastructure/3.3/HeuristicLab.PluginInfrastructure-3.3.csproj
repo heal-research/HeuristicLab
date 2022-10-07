@@ -83,7 +83,4 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="HEAL.Attic" Version="1.7.0" />
-  </ItemGroup>
 </Project>

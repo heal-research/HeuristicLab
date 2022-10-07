@@ -70,9 +70,6 @@
     <EmbeddedResource Include="Data\JSSPORLIB.zip" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="HEAL.Attic" Version="1.7.0" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\..\HeuristicLab.Common\3.3\HeuristicLab.Common-3.3.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.Problems.Instances\3.3\HeuristicLab.Problems.Instances-3.3.csproj" />
   </ItemGroup>
