@@ -662,13 +662,13 @@ namespace HeuristicLab.Clients.Hive {
 
         // fetch all task objects to create the full tree of tree of HiveTask objects
         refreshableJob.Progress.Start("Downloading list of tasks...", ProgressMode.Indeterminate);
-        allTasks = HiveServiceLocator.Instance.CallHiveService(s => s.GetLightweightJobTasksWithoutStateLog(hiveExperiment.Id));
+        allTasks = _client.HiveTaskGetAllAsync().Result.Select(x => new LightweightHiveTaskDTOWrapper(x));
         totalJobCount = allTasks.Count();
 
         refreshableJob.Progress.Message = "Downloading tasks...";
         refreshableJob.Progress.ProgressMode = ProgressMode.Determinate;
         refreshableJob.Progress.ProgressValue = 0.0;
-        downloader = new TaskDownloader(allTasks.Select(x => x.Id));
+        downloader = new TaskDownloader(allTasks.Select(x => x.Id), 2);
         downloader.StartAsync();
 
         while (!downloader.IsFinished) {

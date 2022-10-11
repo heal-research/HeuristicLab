@@ -22,13 +22,17 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading;
+using HEAL.Hive.SwaggerClient;
+using HeuristicLab.Clients.Hive.Wrapper;
 using HeuristicLab.Common;
 
 namespace HeuristicLab.Clients.Hive {
   public class TaskDownloader : IDisposable {
     private IEnumerable<Guid> taskIds;
     private ConcurrentTaskDownloader<ItemTask> taskDownloader;
+    private swaggerClient _client;
     private IDictionary<Guid, HiveTask> results;
     private bool exceptionOccured = false;
     private Exception currentException;
@@ -76,14 +80,27 @@ namespace HeuristicLab.Clients.Hive {
       }
     }
 
-    public TaskDownloader(IEnumerable<Guid> jobIds) {
+    private readonly int _version;
+
+    public TaskDownloader(IEnumerable<Guid> jobIds, int version = 1) {
       taskIds = jobIds;
       taskDownloader = new ConcurrentTaskDownloader<ItemTask>(Settings.Default.MaxParallelDownloads, Settings.Default.MaxParallelDownloads);
       taskDownloader.ExceptionOccured += new EventHandler<EventArgs<Exception>>(taskDownloader_ExceptionOccured);
       results = new Dictionary<Guid, HiveTask>();
+      this._version = version;
+      this._client = new swaggerClient(Settings.Default.NewHiveEndpoint, new HttpClient());
     }
 
     public void StartAsync() {
+      switch (_version) {
+        case 1: { StartWCFAsync(); break; }
+        case 2: { StartRESTAsync(); break; }
+        default:
+          break;
+      }
+    }
+
+    private void StartWCFAsync() {
       foreach (Guid taskId in taskIds) {
         taskDownloader.DownloadTaskDataAndTask(taskId,
           (localTask, itemTask) => {
@@ -93,10 +110,29 @@ namespace HeuristicLab.Clients.Hive {
               try {
                 resultsLock.EnterWriteLock();
                 results.Add(localTask.Id, hiveTask);
-              }
-              finally { resultsLock.ExitWriteLock(); }
+              } finally { resultsLock.ExitWriteLock(); }
             }
           });
+      }
+    }
+
+    private void StartRESTAsync() {
+      var downloadTasks = new List<System.Threading.Tasks.Task<Tuple<HiveTaskDTO, HiveTaskDataDTO>>>();
+      foreach (Guid taskId in taskIds) {
+        var task1 = _client.HiveTaskGetByIdAsync(taskId);
+        var task2 = _client.HiveTaskDataGetDataOfHiveTaskAsync(taskId);
+        var task = System.Threading.Tasks.Task.Run(() => {
+          System.Threading.Tasks.Task.WaitAll(task1, task2);
+          return Tuple.Create(task1.Result, task2.Result);
+        });
+        downloadTasks.Add(task);
+      }
+      System.Threading.Tasks.Task.WaitAll(downloadTasks.ToArray());
+      foreach (var task in downloadTasks) {
+        var itemTask = PersistenceUtil.Deserialize<ItemTask>(task.Result.Item2.Data);
+        var hiveTask = itemTask.CreateHiveTask();
+        hiveTask.Task = new HiveTaskDTOWrapper(task.Result.Item1);
+        results.Add(task.Result.Item1.Id, hiveTask);
       }
     }
 

@@ -144,11 +144,13 @@
     <Compile Include="ServiceClients\JobPermission.cs" />
     <Compile Include="StateLogList.cs" />
     <Compile Include="StateLogListList.cs" />
+    <Compile Include="Wrapper\LightweightHiveTaskDTOWrapper.cs" />
     <Compile Include="Wrapper\PluginDTOWrapper.cs" />
     <Compile Include="Wrapper\DroneGroupDTOWrapper.cs" />
     <Compile Include="Wrapper\DroneDTOWrapper.cs" />
     <Compile Include="Wrapper\Extensions.cs" />
     <Compile Include="Wrapper\HiveJobDTOWrapper.cs" />
+    <Compile Include="Wrapper\HiveTaskDTOWrapper.cs" />
     <Compile Include="Wrapper\ProjectDTOWrapper.cs" />
     <None Include="app.config">
       <SubType>Designer</SubType>
