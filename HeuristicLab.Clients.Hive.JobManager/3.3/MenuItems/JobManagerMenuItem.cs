@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using HeuristicLab.Clients.Access;
+using HeuristicLab.Clients.Common;
 using HeuristicLab.MainForm;
 using HeuristicLab.Optimizer;
 
@@ -37,7 +38,7 @@ namespace HeuristicLab.Clients.Hive.JobManager {
     }
 
     public override void Execute() {
-      if (HiveRoles.CheckHiveUserPermissions()) {
+      if (HiveRoles.CheckHiveUserPermissions() || HiveClientUtil.GetHiveVersion() == 2) {
         MainFormManager.MainForm.ShowContent(HiveClient.Instance);
       } else if (!UserInformation.Instance.UserExists) {
         MessageBox.Show(
