@@ -147,24 +147,26 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
            weights: Enumerable.Empty<double>(), Iterations,
            updateVariableWeights: UpdateVariableWeights, counter: counter);
 
-        quality = SymbolicRegressionSingleObjectiveMeanSquaredErrorEvaluator.Calculate(tree, ProblemDataParameter.ActualValue, GenerateRowsToEvaluate(),
-          SymbolicDataAnalysisTreeInterpreterParameter.ActualValue, ApplyLinearScalingParameter.ActualValue.Value,
-          EstimationLimitsParameter.ActualValue.Lower, EstimationLimitsParameter.ActualValue.Upper);
-
         if (CountEvaluations) {
           lock (locker) {
             FunctionEvaluationsResultParameter.ActualValue.Value += counter.FunctionEvaluations;
             GradientEvaluationsResultParameter.ActualValue.Value += counter.GradientEvaluations;
           }
         }
-      } else {
-        quality = SymbolicRegressionSingleObjectiveMeanSquaredErrorEvaluator.Calculate(tree, ProblemDataParameter.ActualValue, GenerateRowsToEvaluate(),
-          SymbolicDataAnalysisTreeInterpreterParameter.ActualValue, ApplyLinearScalingParameter.ActualValue.Value,
-          EstimationLimitsParameter.ActualValue.Lower, EstimationLimitsParameter.ActualValue.Upper);
       }
+
+      quality = Evaluate(tree, ProblemDataParameter.ActualValue, GenerateRowsToEvaluate(),
+        SymbolicDataAnalysisTreeInterpreterParameter.ActualValue, ApplyLinearScalingParameter.ActualValue.Value,
+        EstimationLimitsParameter.ActualValue.Lower, EstimationLimitsParameter.ActualValue.Upper);
+
       QualityParameter.ActualValue = new DoubleValue(quality);
 
       return base.InstrumentedApply();
+    }
+
+    // this is necessary for analyzers (optimization is only done in evaluation)
+    public override double Evaluate(ISymbolicExpressionTree tree, IRegressionProblemData problemData, IEnumerable<int> rows, ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, bool applyLinearScaling = true, double lowerEstimationLimit = double.MinValue, double upperEstimationLimit = double.MaxValue) {
+      return SymbolicRegressionSingleObjectiveMeanSquaredErrorEvaluator.Calculate(tree, problemData, rows, interpreter, applyLinearScaling, lowerEstimationLimit, upperEstimationLimit);
     }
 
     public override double Evaluate(IExecutionContext context, ISymbolicExpressionTree tree, IRegressionProblemData problemData, IEnumerable<int> rows) {
@@ -191,6 +193,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     public class EvaluationsCounter {
       public int FunctionEvaluations = 0;
       public int GradientEvaluations = 0;
+    }
+
+    public static bool CanOptimizeParameters(ISymbolicExpressionTree tree) {
+      return ParameterOptimizer.CanOptimizeParameters(tree);
     }
 
     public static void OptimizeParameters(
@@ -237,15 +243,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
           variable.Weight = item.Value;
         }
       }
-    }
-
-    public static bool CanOptimizeParameters(ISymbolicExpressionTree tree) {
-      return ParameterOptimizer.CanOptimizeParameters(tree);
-    }
-
-    // this is necessary for analysers (optimization is only done in evaluation)
-    public override double Evaluate(ISymbolicExpressionTree tree, IRegressionProblemData problemData, IEnumerable<int> rows, ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, bool applyLinearScaling = true, double lowerEstimationLimit = double.MinValue, double upperEstimationLimit = double.MaxValue) {
-      return SymbolicRegressionSingleObjectiveMeanSquaredErrorEvaluator.Calculate(tree, problemData, rows, interpreter, applyLinearScaling, lowerEstimationLimit, upperEstimationLimit);
     }
   }
 }
