@@ -24,6 +24,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Xml.Linq;
 using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -134,6 +135,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
       NativeWrapper.OptimizeVarPro(codeArray, termIndices, rowsArray, target, weightsArray, coeff, options, result, out summary);
       return Enumerable.Range(0, totalCodeSize).Where(i => codeArray[i].Optimize != 0).ToDictionary(i => totalNodes[i], i => codeArray[i].Coeff);
+    }
+
+    public static bool CanOptimizeParameters(ISymbolicExpressionTree tree) {
+      var actualRoot = tree.Root.GetSubtree(0).GetSubtree(0);
+      return actualRoot.IterateNodesPrefix()
+        .Select(OpCodes.MapSymbolToOpCode)
+        .All(supportedOpCodes.Contains);
     }
 
     private static readonly HashSet<byte> supportedOpCodes = new HashSet<byte>() {

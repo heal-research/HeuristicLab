@@ -127,7 +127,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         "Defined constants will not be modified.\n " +
         "Modifiable numbers are specified with <num>. To specify a default value within this number symbol, a default value can be declared by e.g. <num=1.0>.", 
         new StringValue("<num> * x*x + 0.0")));
-      Parameters.Add(new FixedValueParameter<IntValue>(IterationsParameterName, "The maximum number of iterations for parameter optimization. MaxIterations=0 means that the iterations stopping criterion is disabled and the algorithm runs until convergence. MaxIterations=-1 means to disable optimization completely.", new IntValue(200)));
+      Parameters.Add(new FixedValueParameter<IntValue>(IterationsParameterName, "The maximum number of iterations for parameter optimization. Set MaxIterations=0 to disable optimization.", new IntValue(200)));
       Parameters.Add(new FixedValueParameter<IntValue>(RestartsParameterName, "The number of independent random restarts (>0)", new IntValue(10)));
       Parameters.Add(new FixedValueParameter<IntValue>(SeedParameterName, "The PRNG seed value.", new IntValue()));
       Parameters.Add(new FixedValueParameter<BoolValue>(SetSeedRandomlyParameterName, "Switch to determine if the random number seed should be initialized randomly.", new BoolValue(true)));
@@ -178,6 +178,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     #region nonlinear regression
     protected override void Run(CancellationToken cancellationToken) {
       IRegressionSolution bestSolution = null;
+      ParameterOptimizationEvaluator.EvaluationsCounter evalCounter = null;
       if (InitializeParametersRandomly) {
         var qualityTable = new DataTable("RMSE table");
         qualityTable.VisualProperties.YAxisLogScale = true;
@@ -185,25 +186,45 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         trainRMSERow.VisualProperties.ChartType = DataRowVisualProperties.DataRowChartType.Points;
         var testRMSERow = new DataRow("RMSE test");
         testRMSERow.VisualProperties.ChartType = DataRowVisualProperties.DataRowChartType.Points;
-
         qualityTable.Rows.Add(trainRMSERow);
         qualityTable.Rows.Add(testRMSERow);
+
+        var evaluationsTable = new DataTable("Evaluations table");
+        var funcEvalsRow = new DataRow("Function evaluations");
+        funcEvalsRow.VisualProperties.ChartType = DataRowVisualProperties.DataRowChartType.Points;
+        var jacEvalsRow = new DataRow("Jacobian evaluations");
+        jacEvalsRow.VisualProperties.ChartType = DataRowVisualProperties.DataRowChartType.Points;
+        evaluationsTable.Rows.Add(funcEvalsRow);
+        evaluationsTable.Rows.Add(jacEvalsRow);
+
         Results.Add(new Result(qualityTable.Name, qualityTable.Name + " for all restarts", qualityTable));
+        Results.Add(new Result(evaluationsTable.Name, evaluationsTable.Name + " for all restarts", evaluationsTable));
+
         if (SetSeedRandomly) Seed = RandomSeedGenerator.GetSeed();
         var rand = new MersenneTwister((uint)Seed);
-        bestSolution = CreateRegressionSolution(Problem.ProblemData, ModelStructure, Iterations, ApplyLinearScaling, rand);
+
+        bestSolution = CreateRegressionSolution(Problem.ProblemData, ModelStructure, Iterations, ApplyLinearScaling, out evalCounter, rand);
+
         trainRMSERow.Values.Add(bestSolution.TrainingRootMeanSquaredError);
         testRMSERow.Values.Add(bestSolution.TestRootMeanSquaredError);
+        funcEvalsRow.Values.Add(evalCounter.FunctionEvaluations);
+        jacEvalsRow.Values.Add(evalCounter.GradientEvaluations);
+
         for (int r = 0; r < Restarts; r++) {
-          var solution = CreateRegressionSolution(Problem.ProblemData, ModelStructure, Iterations, ApplyLinearScaling, rand);
+          var solution = CreateRegressionSolution(Problem.ProblemData, ModelStructure, Iterations, ApplyLinearScaling, out evalCounter, rand);
           trainRMSERow.Values.Add(solution.TrainingRootMeanSquaredError);
           testRMSERow.Values.Add(solution.TestRootMeanSquaredError);
+          funcEvalsRow.Values.Add(evalCounter.FunctionEvaluations);
+          jacEvalsRow.Values.Add(evalCounter.GradientEvaluations);
+
           if (solution.TrainingRootMeanSquaredError < bestSolution.TrainingRootMeanSquaredError) {
             bestSolution = solution;
           }
         }
       } else {
-        bestSolution = CreateRegressionSolution(Problem.ProblemData, ModelStructure, Iterations, ApplyLinearScaling);
+        bestSolution = CreateRegressionSolution(Problem.ProblemData, ModelStructure, Iterations, ApplyLinearScaling, out evalCounter);
+        Results.Add(new Result("Function evaluations", new IntValue(evalCounter.FunctionEvaluations)));
+        Results.Add(new Result("Jacobian evaluations", new IntValue(evalCounter.GradientEvaluations)));
       }
 
       Results.Add(new Result(RegressionSolutionResultName, "The nonlinear regression solution.", bestSolution));
@@ -221,9 +242,11 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     /// <param name="problemData">Training and test data</param>
     /// <param name="modelStructure">The function as infix expression</param>
     /// <param name="maxIterations">Number of Levenberg-Marquardt iterations</param>
-    /// <param name="random">Optional random number generator for random initialization of parameters.</param>
+    /// <param name="applyLinearScaling">Switch to turn on/off addition of linear scaling nodes f(x) * scale + offstet</param>
+    /// <param name="evalCounter">Report which contains number of function evaluations and Jacobian evaluations.</param>
+    /// <param name="rand">Optional random number generator for random initialization of parameters.</param>
     /// <returns></returns>
-    public static ISymbolicRegressionSolution CreateRegressionSolution(IRegressionProblemData problemData, string modelStructure, int maxIterations, bool applyLinearScaling, IRandom rand = null) {
+    public static ISymbolicRegressionSolution CreateRegressionSolution(IRegressionProblemData problemData, string modelStructure, int maxIterations, bool applyLinearScaling, out ParameterOptimizationEvaluator.EvaluationsCounter evalCounter, IRandom rand = null) {
       var parser = new InfixExpressionParser();
       var tree = parser.Parse(modelStructure);
       // parser handles double and string variables equally by creating a VariableTreeNode
@@ -266,21 +289,22 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         }
       }
 
-      if (!SymbolicRegressionParameterOptimizationEvaluator.CanOptimizeParameters(tree)) throw new ArgumentException("The optimizer does not support the specified model structure.");
+      if (!ParameterOptimizationEvaluator.CanOptimizeParameters(tree)) throw new ArgumentException("The optimizer does not support the specified model structure.");
 
       // initialize parameters randomly
       if (rand != null) {
         foreach (var node in tree.IterateNodesPrefix().OfType<NumberTreeNode>()) {
-          double f = Math.Exp(NormalDistributedRandom.NextDouble(rand, 0, 1));
+          double f = Math.Exp(NormalDistributedRandomPolar.NextDouble(rand, 0, 1));
           double s = rand.NextDouble() < 0.5 ? -1 : 1;
           node.Value = s * node.Value * f;
         }
       }
       var interpreter = new SymbolicDataAnalysisExpressionTreeLinearInterpreter();
+      evalCounter = new ParameterOptimizationEvaluator.EvaluationsCounter();
 
-      SymbolicRegressionParameterOptimizationEvaluator.OptimizeParameters(interpreter, tree, problemData, problemData.TrainingIndices,
-        applyLinearScaling: applyLinearScaling, maxIterations: maxIterations,
-        updateVariableWeights: false, updateParametersInTree: true);
+      ParameterOptimizationEvaluator.OptimizeParameters(tree, problemData, problemData.TrainingIndices, weights: Enumerable.Empty<double>(),
+        maxIterations: maxIterations,
+        updateVariableWeights: false, counter: evalCounter);
 
       var model = new SymbolicRegressionModel(problemData.TargetVariable, tree, (ISymbolicDataAnalysisExpressionTreeInterpreter)interpreter.Clone());
       if (applyLinearScaling)
