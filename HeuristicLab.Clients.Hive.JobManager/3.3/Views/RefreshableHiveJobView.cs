@@ -590,7 +590,7 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
     }
 
     private Project GetProject(Guid projectId) {
-      return HiveServiceLocator.Instance.CallHiveService(s => s.GetProject(projectId));
+      return HiveClient.Instance.Projects.FirstOrDefault(p => p.Id == projectId);
     }
 
     private void UpdateSelectorDialog() {

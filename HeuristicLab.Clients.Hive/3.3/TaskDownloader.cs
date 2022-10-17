@@ -81,23 +81,25 @@ namespace HeuristicLab.Clients.Hive {
     }
 
     private readonly int _version;
+    private readonly IDictionary<int, Action> _startMethods;
 
     public TaskDownloader(IEnumerable<Guid> jobIds, int version = 1) {
       taskIds = jobIds;
       taskDownloader = new ConcurrentTaskDownloader<ItemTask>(Settings.Default.MaxParallelDownloads, Settings.Default.MaxParallelDownloads);
       taskDownloader.ExceptionOccured += new EventHandler<EventArgs<Exception>>(taskDownloader_ExceptionOccured);
       results = new Dictionary<Guid, HiveTask>();
+      
       this._version = version;
       this._client = new swaggerClient(Settings.Default.NewHiveEndpoint, new HttpClient());
+
+      _startMethods = new Dictionary<int, Action>() {
+        {1, StartWCFAsync } ,
+        {2, StartRESTAsync }
+      };
     }
 
     public void StartAsync() {
-      switch (_version) {
-        case 1: { StartWCFAsync(); break; }
-        case 2: { StartRESTAsync(); break; }
-        default:
-          break;
-      }
+      _startMethods[_version]();
     }
 
     private void StartWCFAsync() {
@@ -117,13 +119,14 @@ namespace HeuristicLab.Clients.Hive {
     }
 
     private void StartRESTAsync() {
-      var downloadTasks = new List<System.Threading.Tasks.Task<Tuple<HiveTaskDTO, HiveTaskDataDTO>>>();
+      var downloadTasks = new List<System.Threading.Tasks.Task<Tuple<HiveTaskDTO, HiveTaskDataDTO, ICollection<StateLogDTO>>>>();
       foreach (Guid taskId in taskIds) {
         var task1 = _client.HiveTaskGetByIdAsync(taskId);
         var task2 = _client.HiveTaskDataGetDataOfHiveTaskAsync(taskId);
+        var task3 = _client.StateLogGetStateLogsOfHiveTaskAsync(taskId);
         var task = System.Threading.Tasks.Task.Run(() => {
-          System.Threading.Tasks.Task.WaitAll(task1, task2);
-          return Tuple.Create(task1.Result, task2.Result);
+          System.Threading.Tasks.Task.WaitAll(task1, task2, task3);
+          return Tuple.Create(task1.Result, task2.Result, task3.Result);
         });
         downloadTasks.Add(task);
       }
@@ -132,6 +135,7 @@ namespace HeuristicLab.Clients.Hive {
         var itemTask = PersistenceUtil.Deserialize<ItemTask>(task.Result.Item2.Data);
         var hiveTask = itemTask.CreateHiveTask();
         hiveTask.Task = new HiveTaskDTOWrapper(task.Result.Item1);
+        hiveTask.Task.StateLog = new List<StateLog>(task.Result.Item3.Select(x => new StateLogDTOWrapper(x)).OrderBy(x => x.DateTime));
         results.Add(task.Result.Item1.Id, hiveTask);
       }
     }

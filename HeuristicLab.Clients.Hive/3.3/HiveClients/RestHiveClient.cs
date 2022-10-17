@@ -148,7 +148,6 @@ namespace HeuristicLab.Clients.Hive {
       OnRefreshing();
 
       try {
-        //projects = new ItemList<ProjectDTOWrapper>();
         resources = new ItemList<Resource>();
         jobs = new HiveItemCollection<RefreshableJob>();
         projectNames = new Dictionary<Guid, string>();
@@ -159,7 +158,6 @@ namespace HeuristicLab.Clients.Hive {
         resourceAncestors = new Dictionary<Guid, HashSet<Guid>>();
         resourceDescendants = new Dictionary<Guid, HashSet<Guid>>();
 
-        //_client.ProjectGet().ToList().ForEach(x => projects.Add(new ProjectDTOWrapper(x)));
         _projectDTOs = _client.ProjectGetAllAsync().Result.ToList();
         _client.DroneGroupGetAllAsync().Result.ToList().ForEach(x => resources.Add(new DroneGroupDTOWrapper(x)));
         _client.DroneGetAllAsync().Result.ToList().ForEach(x => resources.Add(new DroneDTOWrapper(x)));
@@ -173,7 +171,6 @@ namespace HeuristicLab.Clients.Hive {
         RefreshDisabledParentResources();
       } catch {
         jobs = null;
-        //projects = null;
         _projectDTOs = null;
         resources = null;
         throw;
@@ -186,7 +183,6 @@ namespace HeuristicLab.Clients.Hive {
       OnRefreshing();
 
       try {
-        //projects = new ItemList<ProjectDTOWrapper>();
         projectNames = new Dictionary<Guid, string>();
         resources = new ItemList<Resource>();
         resourceNames = new Dictionary<Guid, string>();
@@ -207,7 +203,6 @@ namespace HeuristicLab.Clients.Hive {
         RefreshDisabledParentProjects();
         RefreshDisabledParentResources();
       } catch {
-        //projects = null;
         _projectDTOs = null;
         resources = null;
         throw;
@@ -503,8 +498,6 @@ namespace HeuristicLab.Clients.Hive {
 
         // upload Job
         refreshableJob.Progress.Message = "Uploading Job...";
-        //refreshableJob.Job.Id = HiveServiceLocator.Instance.CallHiveService((s) => s.AddJob(refreshableJob.Job, refreshableJob.Job.ResourceIds));
-        //refreshableJob.Job = HiveServiceLocator.Instance.CallHiveService((s) => s.GetJob(refreshableJob.Job.Id)); // update owner and permissions
         refreshableJob.Job.Id = _client.HiveJobInsertAsync(refreshableJob.Job.toDto()).Result.Id;
         cancellationToken.ThrowIfCancellationRequested();
 
@@ -514,7 +507,6 @@ namespace HeuristicLab.Clients.Hive {
 
         // upload plugins
         refreshableJob.Progress.Message = "Uploading plugins...";
-        //this.OnlinePlugins = HiveServiceLocator.Instance.CallHiveService((s) => s.GetPlugins());
         this.OnlinePlugins = _client.PluginGetAllAsync().Result.Select(x => new PluginDTOWrapper(x)).Cast<Plugin>().ToList();
         this.AlreadyUploadedPlugins = new List<Plugin>();
         Plugin configFilePlugin = UploadConfigurationFile(onlinePlugins);
@@ -662,7 +654,7 @@ namespace HeuristicLab.Clients.Hive {
 
         // fetch all task objects to create the full tree of tree of HiveTask objects
         refreshableJob.Progress.Start("Downloading list of tasks...", ProgressMode.Indeterminate);
-        allTasks = _client.HiveTaskGetAllAsync().Result.Select(x => new LightweightHiveTaskDTOWrapper(x));
+        allTasks = _client.HiveTaskGetHiveTasksOfJobAsync(refreshableJob.Id).Result.Select(x => new LightweightHiveTaskDTOWrapper(x));
         totalJobCount = allTasks.Count();
 
         refreshableJob.Progress.Message = "Downloading tasks...";

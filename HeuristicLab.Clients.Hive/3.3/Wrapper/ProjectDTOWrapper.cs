@@ -15,8 +15,6 @@ namespace HeuristicLab.Clients.Hive.Wrapper {
       this.Name = projectDTO.Name;
       this.Description = projectDTO.Description;
       this.ParentProjectId = projectDTO.ParentProjectId;
-      //this.DateCreated = projectDTO.CreatedAt;
-      //this.EndDate = projectDTO.EndDate;
       this.AssignedComputingResources = projectDTO.AssignedComputingResources;
     }
   }

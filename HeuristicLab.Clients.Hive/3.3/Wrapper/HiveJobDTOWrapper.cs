@@ -12,7 +12,7 @@ namespace HeuristicLab.Clients.Hive.Wrapper {
       this.Id = hiveJobDTO.Id;
       this.Name = hiveJobDTO.Name;
       this.Description = hiveJobDTO.Description;
-      //this.DateCreated = hiveJobDTO.CreatedAt;
+      this.DateCreated = DateTime.Parse(hiveJobDTO.CreatedAt);
       this.OwnerUserId = hiveJobDTO.OwnerId ?? Guid.Empty;
       this.State = (JobState) (int) hiveJobDTO.HiveJobState;
       this.ResourceIds = new List<Guid>(hiveJobDTO.AssignedComputingResources);
