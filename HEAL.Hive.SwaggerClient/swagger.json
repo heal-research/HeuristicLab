@@ -3935,6 +3935,60 @@
         }
       }
     },
+    "/StateLog/hivetask/{hiveTaskId}": {
+      "get": {
+        "tags": [
+          "StateLog"
+        ],
+        "summary": "get all state logs for hive task corresponding to id",
+        "operationId": "StateLogGetStateLogsOfHiveTaskAsync",
+        "parameters": [
+          {
+            "name": "hiveTaskId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "returns all statelogs",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/StateLogDTO"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/StateLogDTO"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/StateLogDTO"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "unexpected error"
+          }
+        }
+      }
+    },
     "/StateLog": {
       "get": {
         "tags": [
@@ -5184,10 +5238,10 @@
             "type": "string",
             "nullable": true
           },
-          "taskState": {
+          "hiveTaskState": {
             "$ref": "#/components/schemas/HiveTaskState"
           },
-          "taskId": {
+          "hiveTaskId": {
             "type": "string",
             "format": "uuid",
             "nullable": true
