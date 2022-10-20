@@ -337,7 +337,7 @@ namespace HeuristicLab.Core.Views {
           }
         }
         catch (Exception ex) {
-          ErrorHandling.ShowErrorDialog(this, ex);
+          ErrorHandlingUI.ShowErrorDialog(this, ex);
         }
       }
     }
@@ -357,7 +357,7 @@ namespace HeuristicLab.Core.Views {
           AddItem((T)typeSelectorDialog.TypeSelector.CreateInstanceOfSelectedType());
         }
         catch (Exception ex) {
-          ErrorHandling.ShowErrorDialog(this, ex);
+          ErrorHandlingUI.ShowErrorDialog(this, ex);
         }
       }
     }

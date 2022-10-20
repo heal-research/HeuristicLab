@@ -59,7 +59,7 @@ namespace HeuristicLab.Problems.Instances.VehicleRouting.Views {
           try {
             provider.Export(GenericExporter.Export(), saveFileDialog.FileName);
           } catch (Exception ex) {
-            ErrorHandling.ShowErrorDialog(this, ex);
+            ErrorHandlingUI.ShowErrorDialog(this, ex);
           }
         }
       }

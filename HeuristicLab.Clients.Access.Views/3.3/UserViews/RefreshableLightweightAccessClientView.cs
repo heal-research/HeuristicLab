@@ -69,7 +69,7 @@ namespace HeuristicLab.Clients.Access.Views {
         Content.Refresh();
       });
 
-      Content.ExecuteActionAsync(completeRefreshAction, new Action<Exception>((Exception ex) => ErrorHandling.ShowErrorDialog(this, "Refresh failed.", ex)));
+      Content.ExecuteActionAsync(completeRefreshAction, new Action<Exception>((Exception ex) => ErrorHandlingUI.ShowErrorDialog(this, "Refresh failed.", ex)));
     }
 
     protected override void Content_Refreshing(object sender, EventArgs e) {

@@ -146,9 +146,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
           solution.Name += " with loaded problemData";
         MainFormManager.MainForm.ShowContent(solution);
       } catch (InvalidOperationException invalidOperationException) {
-        ErrorHandling.ShowErrorDialog(this, invalidOperationException);
+        ErrorHandlingUI.ShowErrorDialog(this, invalidOperationException);
       } catch (ArgumentException argumentException) {
-        ErrorHandling.ShowErrorDialog(this, argumentException);
+        ErrorHandlingUI.ShowErrorDialog(this, argumentException);
       }
     }
 
@@ -234,9 +234,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         Content.Filename = string.Empty;
         MainFormManager.GetMainForm<HeuristicLab.MainForm.WindowsForms.MainForm>().UpdateTitle();
       } catch (InvalidOperationException invalidOperationException) {
-        ErrorHandling.ShowErrorDialog(this, invalidOperationException);
+        ErrorHandlingUI.ShowErrorDialog(this, invalidOperationException);
       } catch (ArgumentException argumentException) {
-        ErrorHandling.ShowErrorDialog(this, argumentException);
+        ErrorHandlingUI.ShowErrorDialog(this, argumentException);
       }
     }
     #endregion

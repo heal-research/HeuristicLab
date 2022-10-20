@@ -39,7 +39,7 @@ namespace HeuristicLab.Clients.OKB.Administration {
         base.removeButton_Click(sender, e);
       }
       catch (Exception ex) {
-        ErrorHandling.ShowErrorDialog(this, "Delete failed.", ex);
+        ErrorHandlingUI.ShowErrorDialog(this, "Delete failed.", ex);
       }
     }
     protected override void itemsListView_KeyDown(object sender, KeyEventArgs e) {
@@ -47,7 +47,7 @@ namespace HeuristicLab.Clients.OKB.Administration {
         base.itemsListView_KeyDown(sender, e);
       }
       catch (Exception ex) {
-        ErrorHandling.ShowErrorDialog(this, "Delete failed.", ex);
+        ErrorHandlingUI.ShowErrorDialog(this, "Delete failed.", ex);
       }
     }
     protected override void itemsListView_ItemDrag(object sender, ItemDragEventArgs e) {
@@ -55,7 +55,7 @@ namespace HeuristicLab.Clients.OKB.Administration {
         base.itemsListView_ItemDrag(sender, e);
       }
       catch (Exception ex) {
-        ErrorHandling.ShowErrorDialog(this, "Delete failed.", ex);
+        ErrorHandlingUI.ShowErrorDialog(this, "Delete failed.", ex);
       }
     }
   }

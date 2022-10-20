@@ -89,6 +89,9 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Drawing.Common, Version=6.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Drawing.Common.6.0.0\lib\net461\System.Drawing.Common.dll</HintPath>
+    </Reference>
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Forms.DataVisualization" />
   </ItemGroup>
@@ -229,7 +232,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="HeuristicLab.snk" />
+    <None Include="packages.config" />
     <None Include="Plugin.cs.frame" />
     <None Include="Properties\AssemblyInfo.cs.frame" />
   </ItemGroup>
@@ -275,9 +280,8 @@
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.DataPreprocessing\3.4\HeuristicLab.DataPreprocessing-3.4.csproj">
-      <Project>{3B90F866-70F8-43EF-A541-51819D255B7B}</Project>
+      <Project>{3b90f866-70f8-43ef-a541-51819d255b7b}</Project>
       <Name>HeuristicLab.DataPreprocessing-3.4</Name>
-      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Data\3.3\HeuristicLab.Data-3.3.csproj">
       <Project>{BBAB9DF5-5EF3-4BA8-ADE9-B36E82114937}</Project>
@@ -303,6 +307,10 @@
       <Project>{C664305E-497C-4533-A140-967DEDB05C19}</Project>
       <Name>HeuristicLab.Optimizer-3.3</Name>
       <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.PluginInfrastructure.Extension\3.3\HeuristicLab.PluginInfrastructure.Extension-3.3.csproj">
+      <Project>{d2b1d7d0-cbef-4640-9449-b1dd88b3639a}</Project>
+      <Name>HeuristicLab.PluginInfrastructure.Extension-3.3</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.PluginInfrastructure\3.3\HeuristicLab.PluginInfrastructure-3.3.csproj">
       <Project>{94186A6A-5176-4402-AE83-886557B53CCA}</Project>

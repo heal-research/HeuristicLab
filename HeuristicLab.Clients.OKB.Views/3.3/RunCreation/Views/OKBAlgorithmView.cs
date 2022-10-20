@@ -251,7 +251,7 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
       if (InvokeRequired)
         Invoke(new EventHandler<EventArgs<Exception>>(Content_ExceptionOccurred), sender, e);
       else
-        ErrorHandling.ShowErrorDialog(this, e.Value);
+        ErrorHandlingUI.ShowErrorDialog(this, e.Value);
     }
     #endregion
 
@@ -282,7 +282,7 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
           Content.Problem = (IProblem)problemTypeSelectorDialog.TypeSelector.CreateInstanceOfSelectedType();
         }
         catch (Exception ex) {
-          ErrorHandling.ShowErrorDialog(this, ex);
+          ErrorHandlingUI.ShowErrorDialog(this, ex);
         }
       }
     }
@@ -306,7 +306,7 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
               Content.Problem = problem;
           }
           catch (Exception ex) {
-            Invoke(new Action(() => ErrorHandling.ShowErrorDialog(this, ex)));
+            Invoke(new Action(() => ErrorHandlingUI.ShowErrorDialog(this, ex)));
           }
           finally {
             Invoke(new Action(delegate() {
@@ -327,7 +327,7 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
       try {
         await Content.StartAsync();
       } catch (Exception ex) {
-        ErrorHandling.ShowErrorDialog(this, ex);
+        ErrorHandlingUI.ShowErrorDialog(this, ex);
       }
     }
     private void pauseButton_Click(object sender, EventArgs e) {

@@ -154,7 +154,7 @@ namespace HeuristicLab.Scripting.Views {
         try {
           return (object)typeSelectorDialog.TypeSelector.CreateInstanceOfSelectedType();
         } catch (Exception ex) {
-          ErrorHandling.ShowErrorDialog(this, ex);
+          ErrorHandlingUI.ShowErrorDialog(this, ex);
         }
       }
       return null;

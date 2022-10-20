@@ -163,7 +163,7 @@ namespace HeuristicLab.Clients.OKB.Administration {
         storeUsersButton.Enabled = false;
       }
       catch (Exception ex) {
-        ErrorHandling.ShowErrorDialog(this, "Store authorized users and groups failed.", ex);
+        ErrorHandlingUI.ShowErrorDialog(this, "Store authorized users and groups failed.", ex);
       }
     }
 
@@ -220,7 +220,7 @@ namespace HeuristicLab.Clients.OKB.Administration {
           dataViewHost.Content = (IContent)typeSelectorDialog.TypeSelector.CreateInstanceOfSelectedType();
         }
         catch (Exception ex) {
-          ErrorHandling.ShowErrorDialog(this, "Create new algorithm data failed.", ex);
+          ErrorHandlingUI.ShowErrorDialog(this, "Create new algorithm data failed.", ex);
         }
         SetEnabledStateOfControls();
       }
@@ -301,7 +301,7 @@ namespace HeuristicLab.Clients.OKB.Administration {
       else {
         Cursor = Cursors.Default;
         Enabled = true;
-        if (exception != null) ErrorHandling.ShowErrorDialog(this, errorMessage, exception);
+        if (exception != null) ErrorHandlingUI.ShowErrorDialog(this, errorMessage, exception);
         if (continueWith != null) continueWith();
       }
     }

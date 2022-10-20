@@ -107,6 +107,9 @@
     <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
+  <PropertyGroup>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="ALGLIB-3.17.0">
       <HintPath>..\bin\ALGLIB-3.17.0.dll</HintPath>
@@ -448,6 +451,9 @@
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Drawing.Common, Version=6.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Drawing.Common.6.0.0\lib\net461\System.Drawing.Common.dll</HintPath>
+    </Reference>
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
@@ -693,10 +699,12 @@
     <Compile Include="TestRandom.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="App.config" />
     <None Include="Builder.testsettings">
       <SubType>Designer</SubType>
     </None>
     <None Include="HeuristicLab.snk" />
+    <None Include="packages.config" />
     <None Include="Test Resources\GA_SymbReg.hl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

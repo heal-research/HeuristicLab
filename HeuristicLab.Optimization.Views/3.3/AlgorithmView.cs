@@ -159,7 +159,7 @@ namespace HeuristicLab.Optimization.Views {
           Content.Problem = (IProblem)problemTypeSelectorDialog.TypeSelector.CreateInstanceOfSelectedType();
         }
         catch (Exception ex) {
-          ErrorHandling.ShowErrorDialog(this, ex);
+          ErrorHandlingUI.ShowErrorDialog(this, ex);
         }
       }
     }
@@ -183,7 +183,7 @@ namespace HeuristicLab.Optimization.Views {
               Content.Problem = problem;
           }
           catch (Exception ex) {
-            Invoke(new Action(() => ErrorHandling.ShowErrorDialog(this, ex)));
+            Invoke(new Action(() => ErrorHandlingUI.ShowErrorDialog(this, ex)));
           }
           finally {
             Invoke(new Action(delegate() {

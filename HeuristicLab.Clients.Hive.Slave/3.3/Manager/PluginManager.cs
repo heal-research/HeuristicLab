@@ -112,12 +112,20 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
       // copy files from PluginInfrastructure (which are not declared in any plugins)
       string baseDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
       CopyFile(baseDir, targetDir, CoreProperties.Settings.Default.PluginInfrastructureDll);
+      CopyFile(baseDir, targetDir, CoreProperties.Settings.Default.PluginInfrastructureExtensionDll);
 
       // copy slave plugins, otherwise its not possible to register the UnhandledException handler to the appdomain        
       CopyFile(baseDir, targetDir, CoreProperties.Settings.Default.ClientsHiveSlaveCoreDll);
       CopyFile(baseDir, targetDir, CoreProperties.Settings.Default.ClientsHiveDll);
       CopyFile(baseDir, targetDir, CoreProperties.Settings.Default.HiveDll);
       CopyFile(baseDir, targetDir, CoreProperties.Settings.Default.ClientsCommonDll);
+
+      // copy system dlls, necessary because of system nuget packages
+      // (e.g. System.Drawing.Common, System.Configuration.ConfigurationManager, ...)
+      // TODO: rethink to use nuget restore
+      var sysFiles = Directory.GetFiles(baseDir, "System.*.dll");
+      foreach(var sysFile in sysFiles)
+        CopyFile(baseDir, targetDir, Path.GetFileName(sysFile));
     }
 
     private static DirectoryInfo RecreateDirectory(String targetDir) {

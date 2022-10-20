@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Netron-3.0.267
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Netron.Diagramming.Core-3.0.2672.12446", "HeuristicLab.ExtLibs\HeuristicLab.Netron\3.0.2672.12446\Netron.Diagramming.Core-3.0.2672.12446\Netron.Diagramming.Core-3.0.2672.12446.csproj", "{96AEBBEE-4203-45F3-BCF5-7B73BF256BDA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.PluginInfrastructure-3.3", "HeuristicLab.PluginInfrastructure\3.3\HeuristicLab.PluginInfrastructure-3.3.csproj", "{94186A6A-5176-4402-AE83-886557B53CCA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HeuristicLab.PluginInfrastructure-3.3", "HeuristicLab.PluginInfrastructure\3.3\HeuristicLab.PluginInfrastructure-3.3.csproj", "{94186A6A-5176-4402-AE83-886557B53CCA}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{E7640329-47FE-480E-AE79-13C5D760123F}"
 	ProjectSection(SolutionItems) = preProject
@@ -84,11 +84,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ALGLIB-3.15.0", "HeuristicL
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.OrTools-7.0.0", "HeuristicLab.ExtLibs\HeuristicLab.OrTools\7.0.0\HeuristicLab.OrTools-7.0.0\HeuristicLab.OrTools-7.0.0.csproj", "{AEC895BC-C519-49D3-9A94-6B1C71AD6671}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Protobuf", "HeuristicLab.ExtLibs\HeuristicLab.Protobuf\3.6.1\HeuristicLab.Protobuf.csproj", "{44B10478-D290-43D3-9757-C08F5292FEA5}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.ALGLIB-3.17.0", "HeuristicLab.ExtLibs\HeuristicLab.ALGLIB\3.17.0\HeuristicLab.ALGLIB-3.17.0\HeuristicLab.ALGLIB-3.17.0.csproj", "{8A56F216-2B71-4F72-B86B-2DE489D578DB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ALGLIB-3.17.0", "HeuristicLab.ExtLibs\HeuristicLab.ALGLIB\3.17.0\ALGLIB-3.17.0\ALGLIB-3.17.0.csproj", "{A9CED8BA-9055-4DA6-A302-A4207C465AF0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Protobuf", "HeuristicLab.ExtLibs\HeuristicLab.Protobuf\3.15.0\HeuristicLab.Protobuf.csproj", "{44B10478-D290-43D3-9757-C08F5292FEA5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -552,18 +552,6 @@ Global
 		{AEC895BC-C519-49D3-9A94-6B1C71AD6671}.Release|x64.Build.0 = Release|x64
 		{AEC895BC-C519-49D3-9A94-6B1C71AD6671}.Release|x86.ActiveCfg = Release|x86
 		{AEC895BC-C519-49D3-9A94-6B1C71AD6671}.Release|x86.Build.0 = Release|x86
-		{44B10478-D290-43D3-9757-C08F5292FEA5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{44B10478-D290-43D3-9757-C08F5292FEA5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{44B10478-D290-43D3-9757-C08F5292FEA5}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{44B10478-D290-43D3-9757-C08F5292FEA5}.Debug|x64.Build.0 = Debug|Any CPU
-		{44B10478-D290-43D3-9757-C08F5292FEA5}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{44B10478-D290-43D3-9757-C08F5292FEA5}.Debug|x86.Build.0 = Debug|Any CPU
-		{44B10478-D290-43D3-9757-C08F5292FEA5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{44B10478-D290-43D3-9757-C08F5292FEA5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{44B10478-D290-43D3-9757-C08F5292FEA5}.Release|x64.ActiveCfg = Release|Any CPU
-		{44B10478-D290-43D3-9757-C08F5292FEA5}.Release|x64.Build.0 = Release|Any CPU
-		{44B10478-D290-43D3-9757-C08F5292FEA5}.Release|x86.ActiveCfg = Release|Any CPU
-		{44B10478-D290-43D3-9757-C08F5292FEA5}.Release|x86.Build.0 = Release|Any CPU
 		{8A56F216-2B71-4F72-B86B-2DE489D578DB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{8A56F216-2B71-4F72-B86B-2DE489D578DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8A56F216-2B71-4F72-B86B-2DE489D578DB}.Debug|x64.ActiveCfg = Debug|Any CPU
@@ -588,6 +576,18 @@ Global
 		{A9CED8BA-9055-4DA6-A302-A4207C465AF0}.Release|x64.Build.0 = Release|Any CPU
 		{A9CED8BA-9055-4DA6-A302-A4207C465AF0}.Release|x86.ActiveCfg = Release|Any CPU
 		{A9CED8BA-9055-4DA6-A302-A4207C465AF0}.Release|x86.Build.0 = Release|Any CPU
+		{44B10478-D290-43D3-9757-C08F5292FEA5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{44B10478-D290-43D3-9757-C08F5292FEA5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{44B10478-D290-43D3-9757-C08F5292FEA5}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{44B10478-D290-43D3-9757-C08F5292FEA5}.Debug|x64.Build.0 = Debug|Any CPU
+		{44B10478-D290-43D3-9757-C08F5292FEA5}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{44B10478-D290-43D3-9757-C08F5292FEA5}.Debug|x86.Build.0 = Debug|Any CPU
+		{44B10478-D290-43D3-9757-C08F5292FEA5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{44B10478-D290-43D3-9757-C08F5292FEA5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{44B10478-D290-43D3-9757-C08F5292FEA5}.Release|x64.ActiveCfg = Release|Any CPU
+		{44B10478-D290-43D3-9757-C08F5292FEA5}.Release|x64.Build.0 = Release|Any CPU
+		{44B10478-D290-43D3-9757-C08F5292FEA5}.Release|x86.ActiveCfg = Release|Any CPU
+		{44B10478-D290-43D3-9757-C08F5292FEA5}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

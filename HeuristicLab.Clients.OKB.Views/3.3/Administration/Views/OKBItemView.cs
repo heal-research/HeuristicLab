@@ -77,7 +77,7 @@ namespace HeuristicLab.Clients.OKB.Administration {
         Content.Store();
       }
       catch (Exception ex) {
-        ErrorHandling.ShowErrorDialog(this, "Store failed.", ex);
+        ErrorHandlingUI.ShowErrorDialog(this, "Store failed.", ex);
       }
     }
   }

@@ -52,7 +52,7 @@ namespace HeuristicLab.Optimization.Views {
         try {
           return (IRunCollectionModifier)typeSelectorDialog.TypeSelector.CreateInstanceOfSelectedType();
         } catch (Exception ex) {
-          ErrorHandling.ShowErrorDialog(this, ex);
+          ErrorHandlingUI.ShowErrorDialog(this, ex);
         }
       }
       return null;

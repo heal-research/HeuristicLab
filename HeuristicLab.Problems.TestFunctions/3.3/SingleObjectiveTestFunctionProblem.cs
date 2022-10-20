@@ -320,7 +320,7 @@ namespace HeuristicLab.Problems.TestFunctions {
         BestKnownSolutionParameter.Value = Evaluator.GetBestKnownSolution(ProblemSize.Value);
       }
       catch (ArgumentException e) {
-        ErrorHandling.ShowErrorDialog(e);
+        //ErrorHandlingUI.ShowErrorDialog(e);
         ProblemSize.Value = Evaluator.MinimumProblemSize;
       }
     }

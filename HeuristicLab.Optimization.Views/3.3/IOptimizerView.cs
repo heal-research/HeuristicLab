@@ -130,7 +130,7 @@ namespace HeuristicLab.Optimization.Views {
       if (InvokeRequired)
         Invoke(new EventHandler<EventArgs<Exception>>(Content_ExceptionOccurred), sender, e);
       else
-        ErrorHandling.ShowErrorDialog(this, e.Value);
+        ErrorHandlingUI.ShowErrorDialog(this, e.Value);
     }
     #endregion
 
@@ -139,7 +139,7 @@ namespace HeuristicLab.Optimization.Views {
       try {
         await Content.StartAsync();
       } catch (Exception ex) {
-        ErrorHandling.ShowErrorDialog(this, ex);
+        ErrorHandlingUI.ShowErrorDialog(this, ex);
       }
     }
     protected virtual void pauseButton_Click(object sender, EventArgs e) {

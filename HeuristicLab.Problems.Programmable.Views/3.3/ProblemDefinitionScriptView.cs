@@ -52,7 +52,7 @@ namespace HeuristicLab.Problems.Programmable.Views {
       try {
         base.Compile();
       } catch (ProblemDefinitionScriptException e) {
-        PluginInfrastructure.ErrorHandling.ShowErrorDialog(e);
+        PluginInfrastructure.ErrorHandlingUI.ShowErrorDialog(e);
         return false;
       }
       return true;

@@ -1,0 +1,58 @@
+#region License Information
+/* HeuristicLab
+ * Copyright (C) Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ *
+ * This file is part of HeuristicLab.
+ *
+ * HeuristicLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * HeuristicLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
+ */
+#endregion
+
+using System.Reflection;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
+using System.Security;
+using System;
+
+// General Information about an assembly is controlled through the following 
+// set of attributes. Change these attribute values to modify the information
+// associated with an assembly.
+[assembly: AssemblyTitle("HeuristicLab.PluginInfrastructure")]
+[assembly: AssemblyDescription("PluginInfrastructure to load and manage HeuristicLab plugins")]
+[assembly: AssemblyConfiguration("")]
+[assembly: AssemblyCompany("")]
+[assembly: AssemblyProduct("HeuristicLab")]
+[assembly: AssemblyCopyright("(c) 2019 HEAL")]
+[assembly: AssemblyTrademark("")]
+[assembly: AssemblyCulture("")]
+[assembly: CLSCompliant(true)]
+[assembly: InternalsVisibleTo("HeuristicLab.Tests, PublicKey=0024000004800000940000000602000000240000525341310004000001000100e3d38bc66a0dd8dd36f57285e34632ec04b3049866ab1e64cf230e95ffcbfbb90c437b4d11dfe74ba981f746274290bb03f3e636e139e685b501031dc6e0bc8409153f0c842721eb9e8e2a703c9e4d102283f3ddbdfab4078c08de51869715992a694d2f608d0fa865c9d17c06b8d6a9135004e982fd862cdb2277e4ad15a4a6")]
+
+// Setting ComVisible to false makes the types in this assembly not visible 
+// to COM components.  If you need to access a type in this assembly from 
+// COM, set the ComVisible attribute to true on that type.
+[assembly: ComVisible(false)]
+
+// The following GUID is for the ID of the typelib if this project is exposed to COM
+[assembly: Guid("7f3dedcf-24cc-4176-977a-0baad7f16573")]
+
+// Version information for an assembly consists of the following four values:
+//
+//      Major Version
+//      Minor Version 
+//      Build Number
+//      Revision
+//
+[assembly: AssemblyVersion("3.3.0.0")]
+[assembly: AssemblyFileVersion("3.3.16.$WCREV$")]

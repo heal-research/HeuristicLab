@@ -18,6 +18,7 @@
  * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
  */
 #endregion
+extern alias alglib_3_17;
 
 using System;
 using System.Collections.Generic;
@@ -137,9 +138,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
 
       var aTy = new double[n, 1];
-      alglib.rmatrixgemm(n, 1, m, 1, inTr, 0, 0, 0, y, 0, 0, 0, 0, ref aTy, 0, 0); //aTy = inTr * y;
+      alglib_3_17.alglib.rmatrixgemm(n, 1, m, 1, inTr, 0, 0, 0, y, 0, 0, 0, 0, ref aTy, 0, 0); //aTy = inTr * y;
       var aTa = new double[n, n];
-      alglib.rmatrixgemm(n, n, m, 1, inTr, 0, 0, 0, inTr, 0, 0, 1, 0, ref aTa, 0, 0); //aTa = inTr * t(inTr) +aTa //
+      alglib_3_17.alglib.rmatrixgemm(n, n, m, 1, inTr, 0, 0, 0, inTr, 0, 0, 1, 0, ref aTa, 0, 0); //aTa = inTr * t(inTr) +aTa //
 
       var aTaDecomp = new double[n, n];
       bool success;
@@ -150,10 +151,10 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         try {
           //solve "aTa * coefficients = aTy" for coefficients;
           Array.Copy(aTa, 0, aTaDecomp, 0, aTa.Length);
-          alglib.spdmatrixcholesky(ref aTaDecomp, n, true);
+          alglib_3_17.alglib.spdmatrixcholesky(ref aTaDecomp, n, true);
           int info;
-          alglib.densesolverreport report;
-          alglib.spdmatrixcholeskysolve(aTaDecomp, n, true, ydata, out info, out report, out coefficients);
+          alglib_3_17.alglib.densesolverreport report;
+          alglib_3_17.alglib.spdmatrixcholeskysolve(aTaDecomp, n, true, ydata, out info, out report, out coefficients);
 
           if (info != 1) throw new Exception();
           success = true;

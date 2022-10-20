@@ -27,6 +27,7 @@ using HeuristicLab.PluginInfrastructure;
 namespace HeuristicLab.Common.Resources {
   [Plugin("HeuristicLab.Common.Resources", "3.3.16.$WCREV$")]
   [PluginFile("HeuristicLab.Common.Resources-3.3.dll", PluginFileType.Assembly)]
+  [PluginDependency("HeuristicLab.Attic", "1.0")]
   public class HeuristicLabCommonResourcesPlugin : PluginBase {
   }
 }

@@ -54,7 +54,7 @@ namespace HeuristicLab.DataPreprocessing.Views {
 
           return (ITransformation)typeSelectorDialog.TypeSelector.CreateInstanceOfSelectedType(new[] { columnNames });
         } catch (Exception ex) {
-          ErrorHandling.ShowErrorDialog(this, ex);
+          ErrorHandlingUI.ShowErrorDialog(this, ex);
         }
       }
       return null;

@@ -99,7 +99,7 @@ namespace HeuristicLab.Clients.Access.Views {
     }
 
     private void RefreshData() {
-      ExecuteActionAsync(RefreshUserData, PluginInfrastructure.ErrorHandling.ShowErrorDialog);
+      ExecuteActionAsync(RefreshUserData, PluginInfrastructure.ErrorHandlingUI.ShowErrorDialog);
     }
 
     public void ManualRefresh() {

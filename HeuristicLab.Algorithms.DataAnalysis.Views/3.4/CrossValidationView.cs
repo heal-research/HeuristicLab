@@ -189,7 +189,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
       if (InvokeRequired)
         Invoke(new EventHandler<EventArgs<Exception>>(Content_ExceptionOccurred), sender, e);
       else
-        ErrorHandling.ShowErrorDialog(this, e.Value);
+        ErrorHandlingUI.ShowErrorDialog(this, e.Value);
     }
     private void Content_StoreAlgorithmInEachRunChanged(object sender, EventArgs e) {
       if (InvokeRequired)
@@ -226,7 +226,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
       try {
         await Content.StartAsync();
       } catch (Exception ex) {
-        ErrorHandling.ShowErrorDialog(this, ex);
+        ErrorHandlingUI.ShowErrorDialog(this, ex);
       }
     }
     private void pauseButton_Click(object sender, EventArgs e) {
@@ -250,7 +250,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
         try {
           Content.Algorithm = (IAlgorithm)algorithmTypeSelectorDialog.TypeSelector.CreateInstanceOfSelectedType();
         } catch (Exception ex) {
-          ErrorHandling.ShowErrorDialog(this, ex);
+          ErrorHandlingUI.ShowErrorDialog(this, ex);
         }
       }
     }
@@ -269,7 +269,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
             else
               Content.Algorithm = algorithm;
           } catch (Exception ex) {
-            ErrorHandling.ShowErrorDialog(this, ex);
+            ErrorHandlingUI.ShowErrorDialog(this, ex);
           } finally {
             Invoke(new Action(delegate () {
               algorithmTabControl.Enabled = true;
@@ -307,7 +307,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
             else
               Content.Problem = problem;
           } catch (Exception ex) {
-            Invoke(new Action(() => ErrorHandling.ShowErrorDialog(this, ex)));
+            Invoke(new Action(() => ErrorHandlingUI.ShowErrorDialog(this, ex)));
           } finally {
             Invoke(new Action(delegate () {
               algorithmProblemViewHost.Enabled = true;

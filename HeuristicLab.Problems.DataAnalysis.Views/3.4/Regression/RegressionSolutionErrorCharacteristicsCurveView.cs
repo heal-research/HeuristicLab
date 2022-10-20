@@ -302,9 +302,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         solution.Name = "Baseline (linear)";
         return solution;
       } catch (NotSupportedException e) {
-        ErrorHandling.ShowErrorDialog("Could not create a linear regression solution.", e);
+        ErrorHandlingUI.ShowErrorDialog("Could not create a linear regression solution.", e);
       } catch (ArgumentException e) {
-        ErrorHandling.ShowErrorDialog("Could not create a linear regression solution.", e);
+        ErrorHandlingUI.ShowErrorDialog("Could not create a linear regression solution.", e);
       }
       return null;
     }

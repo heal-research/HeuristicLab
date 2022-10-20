@@ -182,7 +182,7 @@ namespace HeuristicLab.Analysis.Statistics.Views {
 
       task.ContinueWith((t) => {
         Progress.Hide(this);
-        ErrorHandling.ShowErrorDialog("An error occured while adding lines to charts. ", t.Exception);
+        ErrorHandlingUI.ShowErrorDialog("An error occured while adding lines to charts. ", t.Exception);
       }, TaskContinuationOptions.OnlyOnFaulted);
 
       task.ContinueWith((t) => {
@@ -279,7 +279,7 @@ namespace HeuristicLab.Analysis.Statistics.Views {
 
       task.ContinueWith((t) => {
         Progress.Hide(this);
-        ErrorHandling.ShowErrorDialog("An error occured while calculating values. ", t.Exception);
+        ErrorHandlingUI.ShowErrorDialog("An error occured while calculating values. ", t.Exception);
         sem.Release();
       }, TaskContinuationOptions.OnlyOnFaulted);
 

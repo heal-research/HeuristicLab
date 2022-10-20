@@ -118,7 +118,7 @@ namespace HeuristicLab.Clients.Hive.JobManager {
     private void HandleEx(Exception ex) {
       Progress.Hide(content);
       progress.ProgressStateChanged -= progress_ProgressStateChanged;
-      ErrorHandling.ShowErrorDialog("Error uploading tasks", ex);
+      ErrorHandlingUI.ShowErrorDialog("Error uploading tasks", ex);
     }
   }
 }

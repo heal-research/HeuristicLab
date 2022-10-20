@@ -108,7 +108,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
       }
       catch (Exception ex) {
         sampleTreeView.Content = null;
-        ErrorHandling.ShowErrorDialog(ex);
+        ErrorHandlingUI.ShowErrorDialog(ex);
       }
     }
 

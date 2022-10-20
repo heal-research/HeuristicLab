@@ -1,0 +1,11 @@
+<Project>
+  <PropertyGroup>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <OutputPath>$(SolutionDir)\bin\</OutputPath>
+  </PropertyGroup>
+  <UsingTask TaskName="HeuristicLab.Build.UpdateVersion" AssemblyFile="$(SolutionDir)\build\bin\HeuristicLab.Build.dll"/>
+  <Target BeforeTargets="BeforeBuild" Name="UpdateVersionTask">
+    <UpdateVersion ProjectDir="."/>
+  </Target>
+</Project>

@@ -80,5 +80,8 @@
     <Setting Name="MachineId" Type="System.Guid" Scope="User">
       <Value Profile="(Default)">00000000-0000-0000-0000-000000000000</Value>
     </Setting>
+    <Setting Name="PluginInfrastructureExtensionDll" Type="System.String" Scope="User">
+      <Value Profile="(Default)">HeuristicLab.PluginInfrastructure.Extension-3.3.dll</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

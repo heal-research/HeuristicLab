@@ -142,7 +142,7 @@ namespace HeuristicLab.Core.Views {
         try {
           return (T)typeSelectorDialog.TypeSelector.CreateInstanceOfSelectedType();
         } catch (Exception ex) {
-          ErrorHandling.ShowErrorDialog(this, ex);
+          ErrorHandlingUI.ShowErrorDialog(this, ex);
         }
       }
       return null;

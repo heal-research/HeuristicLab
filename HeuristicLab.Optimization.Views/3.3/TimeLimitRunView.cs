@@ -241,7 +241,7 @@ namespace HeuristicLab.Optimization.Views {
         try {
           Content.Algorithm = (IAlgorithm)algorithmTypeSelectorDialog.TypeSelector.CreateInstanceOfSelectedType();
         } catch (Exception ex) {
-          ErrorHandling.ShowErrorDialog(this, ex);
+          ErrorHandlingUI.ShowErrorDialog(this, ex);
         }
       }
     }
@@ -261,7 +261,7 @@ namespace HeuristicLab.Optimization.Views {
             else
               Content.Algorithm = algorithm;
           } catch (Exception ex) {
-            ErrorHandling.ShowErrorDialog(this, ex);
+            ErrorHandlingUI.ShowErrorDialog(this, ex);
           } finally {
             Invoke(new Action(delegate() {
               algorithmViewHost.Enabled = true;

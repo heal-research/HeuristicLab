@@ -18,6 +18,7 @@
  * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
  */
 #endregion
+extern alias alglib_3_17;
 
 using System.Collections;
 using System.Collections.Generic;
@@ -190,7 +191,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       int info;
       double[] variances;
       double[,] matrix;
-      alglib.pcabuildbasis(data, instances.Length, attributes.Length, out info, out variances, out matrix);
+      alglib_3_17.alglib.pcabuildbasis(data, instances.Length, attributes.Length, out info, out variances, out matrix);
       Matrix = matrix;
       Variances = variances;
       VariableNames = attributes;

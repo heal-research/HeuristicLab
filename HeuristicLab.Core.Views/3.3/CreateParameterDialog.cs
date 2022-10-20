@@ -36,7 +36,7 @@ namespace HeuristicLab.Core.Views {
           return parameter;
         }
         catch (Exception ex) {
-          ErrorHandling.ShowErrorDialog(this, ex);
+          ErrorHandlingUI.ShowErrorDialog(this, ex);
         }
         return null;
       }
