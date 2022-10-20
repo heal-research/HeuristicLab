@@ -23,13 +23,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using HEAL.Attic;
 using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 using HeuristicLab.Problems.DataAnalysis;
 using HeuristicLab.Problems.DataAnalysis.Symbolic;
 using HeuristicLab.Problems.DataAnalysis.Symbolic.Regression;
@@ -122,10 +122,10 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     public NonlinearRegression()
       : base() {
       Problem = new RegressionProblem();
-      Parameters.Add(new FixedValueParameter<StringValue>(ModelStructureParameterName, 
+      Parameters.Add(new FixedValueParameter<StringValue>(ModelStructureParameterName,
         "The expression for which the <num> parameters should be fit.\n " +
         "Defined constants will not be modified.\n " +
-        "Modifiable numbers are specified with <num>. To specify a default value within this number symbol, a default value can be declared by e.g. <num=1.0>.", 
+        "Modifiable numbers are specified with <num>. To specify a default value within this number symbol, a default value can be declared by e.g. <num=1.0>.",
         new StringValue("<num> * x*x + 0.0")));
       Parameters.Add(new FixedValueParameter<IntValue>(IterationsParameterName, "The maximum number of iterations for parameter optimization. Set MaxIterations=0 to disable optimization.", new IntValue(200)));
       Parameters.Add(new FixedValueParameter<IntValue>(RestartsParameterName, "The number of independent random restarts (>0)", new IntValue(10)));
@@ -302,7 +302,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       var interpreter = new SymbolicDataAnalysisExpressionTreeLinearInterpreter();
       evalCounter = new ParameterOptimizationEvaluator.EvaluationsCounter();
 
-      ParameterOptimizationEvaluator.OptimizeParameters(tree, problemData, problemData.TrainingIndices, weights: Enumerable.Empty<double>(),
+      ParameterOptimizationEvaluator.OptimizeParameters(tree, problemData, problemData.TrainingIndices, rowWeights: Enumerable.Empty<double>(),
         maxIterations: maxIterations,
         updateVariableWeights: false, counter: evalCounter);
 
