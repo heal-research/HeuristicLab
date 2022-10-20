@@ -226,8 +226,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       };
       var summary = new SolverSummary();
       var optimizedNodeValues = ParameterOptimizer.OptimizeTree(tree, problemData.Dataset, rows, problemData.TargetVariable, weights, nodesToOptimize, options, ref summary);
-      counter.FunctionEvaluations += summary.ResidualEvaluations;
-      counter.GradientEvaluations += summary.JacobianEvaluations;
+
+      if (counter != null) {
+        counter.FunctionEvaluations += summary.ResidualEvaluations;
+        counter.GradientEvaluations += summary.JacobianEvaluations;
+      }
 
       if (summary.Success != 0) {
         UpdateNodeValues(optimizedNodeValues);
