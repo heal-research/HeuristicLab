@@ -21,11 +21,12 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
   [Item("Pearson R² & Tree Complexity Evaluator", "Calculates the Pearson R² and the tree complexity of a symbolic regression solution.")]
@@ -53,8 +54,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       var applyLinearScaling = ApplyLinearScalingParameter.ActualValue.Value;
 
       if (UseParameterOptimization) {
-        SymbolicRegressionParameterOptimizationEvaluator.OptimizeParameters(interpreter, solution, problemData, rows, applyLinearScaling, ParameterOptimizationIterations, updateVariableWeights: ParameterOptimizationUpdateVariableWeights, lowerEstimationLimit: estimationLimits.Lower, upperEstimationLimit: estimationLimits.Upper);
+        ParameterOptimizationEvaluator.OptimizeParameters(solution, problemData, rows, rowWeights: Enumerable.Empty<double>(), ParameterOptimizationIterations, ParameterOptimizationUpdateVariableWeights);
       }
+
       double[] qualities = Calculate(interpreter, solution, estimationLimits.Lower, estimationLimits.Upper, problemData, rows, applyLinearScaling, DecimalPlaces);
       QualitiesParameter.ActualValue = new DoubleArray(qualities);
       return base.InstrumentedApply();
@@ -62,8 +64,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
 
     public static double[] Calculate(ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, ISymbolicExpressionTree tree, double lowerEstimationLimit, double upperEstimationLimit, IRegressionProblemData problemData, IEnumerable<int> rows, bool applyLinearScaling, int decimalPlaces) {
       double r2 = SymbolicRegressionSingleObjectivePearsonRSquaredEvaluator.Calculate(
-         tree, problemData, rows, 
-         interpreter, applyLinearScaling, 
+         tree, problemData, rows,
+         interpreter, applyLinearScaling,
          lowerEstimationLimit, upperEstimationLimit);
       if (decimalPlaces >= 0)
         r2 = Math.Round(r2, decimalPlaces);
