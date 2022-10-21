@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -48,12 +49,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       IEnumerable<int> rows = GenerateRowsToEvaluate();
       var tree = SymbolicExpressionTreeParameter.ActualValue;
       var problemData = ProblemDataParameter.ActualValue;
-      var interpreter = SymbolicDataAnalysisTreeInterpreterParameter.ActualValue;
-      var estimationLimits = EstimationLimitsParameter.ActualValue;
-      var applyLinearScaling = ApplyLinearScalingParameter.ActualValue.Value;
 
       if (UseParameterOptimization) {
-        SymbolicRegressionParameterOptimizationEvaluator.OptimizeParameters(interpreter, tree, problemData, rows, applyLinearScaling, ParameterOptimizationIterations, updateVariableWeights: ParameterOptimizationUpdateVariableWeights, lowerEstimationLimit: estimationLimits.Lower, upperEstimationLimit: estimationLimits.Upper);
+        ParameterOptimizationEvaluator.OptimizeParameters(tree, problemData, rows, rowWeights: Enumerable.Empty<double>(), ParameterOptimizationIterations, ParameterOptimizationUpdateVariableWeights);
       }
 
       double[] qualities = Calculate(

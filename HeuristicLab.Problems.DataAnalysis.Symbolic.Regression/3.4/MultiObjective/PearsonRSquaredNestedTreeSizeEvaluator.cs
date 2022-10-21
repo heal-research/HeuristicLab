@@ -22,11 +22,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HEAL.Attic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
   [Item("Pearson R² & Nested Tree size Evaluator", "Calculates the Pearson R² and the nested tree size of a symbolic regression solution.")]
@@ -49,12 +49,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       IEnumerable<int> rows = GenerateRowsToEvaluate();
       var solution = SymbolicExpressionTreeParameter.ActualValue;
       var problemData = ProblemDataParameter.ActualValue;
-      var interpreter = SymbolicDataAnalysisTreeInterpreterParameter.ActualValue;
-      var estimationLimits = EstimationLimitsParameter.ActualValue;
-      var applyLinearScaling = ApplyLinearScalingParameter.ActualValue.Value;
 
       if (UseParameterOptimization) {
-        SymbolicRegressionParameterOptimizationEvaluator.OptimizeParameters(interpreter, solution, problemData, rows, applyLinearScaling, ParameterOptimizationIterations, updateVariableWeights: ParameterOptimizationUpdateVariableWeights,lowerEstimationLimit: estimationLimits.Lower, upperEstimationLimit: estimationLimits.Upper);
+        ParameterOptimizationEvaluator.OptimizeParameters(solution, problemData, rows, rowWeights: Enumerable.Empty<double>(), ParameterOptimizationIterations, ParameterOptimizationUpdateVariableWeights);
       }
 
       double[] qualities = Calculate(SymbolicDataAnalysisTreeInterpreterParameter.ActualValue, solution, EstimationLimitsParameter.ActualValue.Lower, EstimationLimitsParameter.ActualValue.Upper, ProblemDataParameter.ActualValue, rows, ApplyLinearScalingParameter.ActualValue.Value, DecimalPlaces);
@@ -64,8 +61,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
 
     public static double[] Calculate(ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, ISymbolicExpressionTree tree, double lowerEstimationLimit, double upperEstimationLimit, IRegressionProblemData problemData, IEnumerable<int> rows, bool applyLinearScaling, int decimalPlaces) {
       double r2 = SymbolicRegressionSingleObjectivePearsonRSquaredEvaluator.Calculate(
-         tree, problemData, rows, 
-         interpreter, applyLinearScaling, 
+         tree, problemData, rows,
+         interpreter, applyLinearScaling,
          lowerEstimationLimit, upperEstimationLimit);
       if (decimalPlaces >= 0)
         r2 = Math.Round(r2, decimalPlaces);
@@ -78,7 +75,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       ApplyLinearScalingParameter.ExecutionContext = context;
       // DecimalPlaces parameter is a FixedValueParameter and doesn't need the context.
 
-      double[] quality = Calculate(SymbolicDataAnalysisTreeInterpreterParameter.ActualValue, tree, EstimationLimitsParameter.ActualValue.Lower, EstimationLimitsParameter.ActualValue.Upper, problemData, rows, ApplyLinearScalingParameter.ActualValue.Value, DecimalPlaces); 
+      double[] quality = Calculate(SymbolicDataAnalysisTreeInterpreterParameter.ActualValue, tree, EstimationLimitsParameter.ActualValue.Lower, EstimationLimitsParameter.ActualValue.Upper, problemData, rows, ApplyLinearScalingParameter.ActualValue.Value, DecimalPlaces);
 
       SymbolicDataAnalysisTreeInterpreterParameter.ExecutionContext = null;
       EstimationLimitsParameter.ExecutionContext = null;
