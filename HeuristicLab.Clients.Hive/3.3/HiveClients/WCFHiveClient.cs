@@ -763,5 +763,21 @@ namespace HeuristicLab.Clients.Hive {
       var assignedProjectResource = HiveServiceLocator.Instance.CallHiveService(service => service.GetAssignedResourcesForProject(projectId));
       return Resources.Where(x => assignedProjectResource.Select(y => y.ResourceId).Contains(x.Id));
     }
+
+    public List<LightweightTask> GetLightweightJobTasks(Guid jobId) {
+      return HiveServiceLocator.Instance.CallHiveService(service => {
+        var responses = new List<LightweightTask>();
+        responses.AddRange(service.GetLightweightJobTasks(jobId));
+        return responses;
+      });
+    }
+
+    public Task GetTask(Guid taskId) {
+      return HiveServiceLocator.Instance.CallHiveService(s => s.GetTask(taskId));
+    }
+
+    public TaskData GetTaskData(Guid taskId) {
+      return HiveServiceLocator.Instance.CallHiveService(s => s.GetTaskData(taskId));
+    }
   }
 }

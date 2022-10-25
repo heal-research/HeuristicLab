@@ -80,29 +80,14 @@ namespace HeuristicLab.Clients.Hive {
       }
     }
 
-    private readonly int _version;
-    private readonly IDictionary<int, Action> _startMethods;
-
-    public TaskDownloader(IEnumerable<Guid> jobIds, int version = 1) {
+    public TaskDownloader(IEnumerable<Guid> jobIds) {
       taskIds = jobIds;
       taskDownloader = new ConcurrentTaskDownloader<ItemTask>(Settings.Default.MaxParallelDownloads, Settings.Default.MaxParallelDownloads);
       taskDownloader.ExceptionOccured += new EventHandler<EventArgs<Exception>>(taskDownloader_ExceptionOccured);
       results = new Dictionary<Guid, HiveTask>();
-      
-      this._version = version;
-      this._client = new swaggerClient(Settings.Default.NewHiveEndpoint, new HttpClient());
-
-      _startMethods = new Dictionary<int, Action>() {
-        {1, StartWCFAsync } ,
-        {2, StartRESTAsync }
-      };
     }
 
     public void StartAsync() {
-      _startMethods[_version]();
-    }
-
-    private void StartWCFAsync() {
       foreach (Guid taskId in taskIds) {
         taskDownloader.DownloadTaskDataAndTask(taskId,
           (localTask, itemTask) => {
@@ -118,6 +103,7 @@ namespace HeuristicLab.Clients.Hive {
       }
     }
 
+    /*
     private void StartRESTAsync() {
       var downloadTasks = new List<System.Threading.Tasks.Task<Tuple<HiveTaskDTO, HiveTaskDataDTO, ICollection<StateLogDTO>>>>();
       foreach (Guid taskId in taskIds) {
@@ -139,6 +125,7 @@ namespace HeuristicLab.Clients.Hive {
         results.Add(task.Result.Item1.Id, hiveTask);
       }
     }
+    */
 
     private void taskDownloader_ExceptionOccured(object sender, EventArgs<Exception> e) {
       OnExceptionOccured(e.Value);

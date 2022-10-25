@@ -68,7 +68,7 @@ namespace HeuristicLab.Clients.Hive {
     private Task DownloadTask(object taskId) {
       Task t = null;
       HiveClient.TryAndRepeat(() => {
-        t = HiveServiceLocator.Instance.CallHiveService(s => s.GetTask((Guid)taskId));
+        t = HiveClient.Instance.GetTask((Guid)taskId);
       }, Settings.Default.MaxRepeatServiceCalls, "Failed to download task.");
       return t;
     }
@@ -83,7 +83,7 @@ namespace HeuristicLab.Clients.Hive {
       try {
         if (abort) return null;
         HiveClient.TryAndRepeat(() => {
-          result = HiveServiceLocator.Instance.CallHiveService(s => s.GetTaskData(task.Id));
+          result = HiveClient.Instance.GetTaskData(task.Id); ;
         }, Settings.Default.MaxRepeatServiceCalls, "Failed to download task data.");
       }
       finally {

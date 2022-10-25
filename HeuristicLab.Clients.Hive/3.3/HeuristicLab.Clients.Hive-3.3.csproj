@@ -151,6 +151,7 @@
     <Compile Include="Wrapper\Extensions.cs" />
     <Compile Include="Wrapper\HiveJobDTOWrapper.cs" />
     <Compile Include="Wrapper\HiveTaskDTOWrapper.cs" />
+    <Compile Include="Wrapper\HiveTaskDataDTOWrapper.cs" />
     <Compile Include="Wrapper\StateLogDTOWrapper.cs" />
     <Compile Include="Wrapper\ProjectDTOWrapper.cs" />
     <None Include="app.config">

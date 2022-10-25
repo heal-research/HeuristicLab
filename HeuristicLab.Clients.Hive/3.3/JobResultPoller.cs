@@ -108,12 +108,9 @@ namespace HeuristicLab.Clients.Hive {
     }
 
     public IEnumerable<LightweightTask> FetchJobResults() {
-      return HiveServiceLocator.Instance.CallHiveService(service => {
-        var responses = new List<LightweightTask>();
-        responses.AddRange(service.GetLightweightJobTasks(jobId));
-        OnJobResultsReceived(responses);
-        return responses;
-      });
+      var responses = HiveClient.Instance.GetLightweightJobTasks(jobId);
+      OnJobResultsReceived(responses);
+      return responses;
     }
 
     public event EventHandler<EventArgs<IEnumerable<LightweightTask>>> JobResultsReceived;

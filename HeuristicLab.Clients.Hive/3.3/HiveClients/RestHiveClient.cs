@@ -654,7 +654,7 @@ namespace HeuristicLab.Clients.Hive {
         refreshableJob.Progress.Message = "Downloading tasks...";
         refreshableJob.Progress.ProgressMode = ProgressMode.Determinate;
         refreshableJob.Progress.ProgressValue = 0.0;
-        downloader = new TaskDownloader(allTasks.Select(x => x.Id), 2);
+        downloader = new TaskDownloader(allTasks.Select(x => x.Id));
         downloader.StartAsync();
 
         while (!downloader.IsFinished) {
@@ -779,6 +779,26 @@ namespace HeuristicLab.Clients.Hive {
       var project = _projectDTOs.First(x => x.Id == projectId);
       var res = resources.Where(r => project.AssignedComputingResources.Contains(r.Id)).ToList();
       return res;
+    }
+
+    public List<LightweightTask> GetLightweightJobTasks(Guid jobId) {
+      var allTasks = _client.HiveTaskGetHiveTasksOfJobAsync(jobId).Result.Select(x => new LightweightHiveTaskDTOWrapper(x)).ToList();
+      return new List<LightweightTask>(allTasks);
+    }
+
+    public Task GetTask(Guid taskId) {
+      var hiveTask = _client.HiveTaskGetByIdAsync(taskId).Result;
+      var statelogs = _client.StateLogGetStateLogsOfHiveTaskAsync(taskId).Result;
+
+      var result = new HiveTaskDTOWrapper(hiveTask) {
+        StateLog = new List<StateLog>(statelogs.Select(x => new StateLogDTOWrapper(x)).OrderBy(x => x.DateTime))
+      };
+      return result;
+    }
+
+    public TaskData GetTaskData(Guid taskId) {
+      var taskData = _client.HiveTaskDataGetDataOfHiveTaskAsync(taskId).Result;
+      return new HiveTaskDataDTOWrapper(taskData);
     }
   }
 }

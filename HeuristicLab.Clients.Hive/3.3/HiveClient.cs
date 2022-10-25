@@ -328,5 +328,20 @@ namespace HeuristicLab.Clients.Hive {
       UpdateClientVersion();
       return _clients[_version].GetAssignedResourcesForProject(jobId);
     }
+
+    public List<LightweightTask> GetLightweightJobTasks(Guid jobId) {
+      UpdateClientVersion();
+      return _clients[_version].GetLightweightJobTasks(jobId);
+    }
+
+    public Task GetTask(Guid taskId) {
+      UpdateClientVersion();
+      return _clients[_version].GetTask(taskId);
+    }
+
+    public TaskData GetTaskData(Guid taskId) {
+      UpdateClientVersion();
+      return _clients[_version].GetTaskData(taskId);
+    }
   }
 }

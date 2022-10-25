@@ -35,5 +35,8 @@ namespace HeuristicLab.Clients.Hive {
     void Refresh();
     void RefreshAsync(Action<Exception> exceptionCallback);
     void RefreshProjectsAndResources();
+    List<LightweightTask> GetLightweightJobTasks(Guid jobId);
+    Task GetTask(Guid taskId);
+    TaskData GetTaskData(Guid taskId);
   }
 }
