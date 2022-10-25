@@ -30,6 +30,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using HEAL.Hive.SwaggerClient;
 using HeuristicLab.Clients.Access;
+using HeuristicLab.Clients.Common;
 using HeuristicLab.Clients.Hive.Wrapper;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -44,6 +45,7 @@ namespace HeuristicLab.Clients.Hive {
     public static RestHiveClient Instance {
       get {
         if (instance == null) instance = new RestHiveClient();
+        instance._client.SetCredentials(HiveClientUtil.GetUsername, HiveClientUtil.GetPassword);
         return instance;
       }
     }
@@ -486,14 +488,6 @@ namespace HeuristicLab.Clients.Hive {
 
         foreach (OptimizerHiveTask hiveJob in refreshableJob.HiveTasks.OfType<OptimizerHiveTask>()) {
           hiveJob.SetIndexInParentOptimizerList(null);
-        }
-
-        // set user id
-        try {
-          refreshableJob.Job.OwnerUserId = _client.HiveUserGetUserByNameAsync(UserInformation.Instance.UserName).Result.Id;
-        }
-        catch (ApiException) {
-          refreshableJob.Job.OwnerUserId = Guid.Empty;
         }
 
         // upload Job

@@ -6,6 +6,14 @@ namespace HeuristicLab.Clients.Common {
     public static int GetHiveVersion() {
       return Settings.Default.UseNewHive ? 2 : 1;
     }
-    
+
+    public static string GetUsername() {
+      return Settings.Default.UserName;
+    }
+
+    public static string GetPassword() {
+      return CryptoService.DecryptString(Settings.Default.Password);
+    }
+
   }
 }
