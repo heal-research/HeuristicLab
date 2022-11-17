@@ -76,7 +76,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
               ISymbolicExpressionTree tree, HashSet<ISymbolicExpressionTreeNode> nodesToOptimize,
               IDataset dataset, string targetVariable, IEnumerable<int> rows,
               SolverOptions options, ref SolverSummary summary) {
-      return OptimizeTree(tree, nodesToOptimize, dataset, targetVariable, rows, weights: null, options, ref summary);
+      return OptimizeTree(tree, nodesToOptimize, dataset, targetVariable, rows, weights: Enumerable.Empty<double>(), options, ref summary);
     }
 
 
