@@ -73,24 +73,24 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       return Enumerable.Range(0, code.Length).Where(i => nodes[i] is SymbolicExpressionTreeTerminalNode).ToDictionary(i => nodes[i], i => code[i].Coeff);
     }
 
-    public static Dictionary<ISymbolicExpressionTreeNode, double> OptimizeTrees(
+    public static Dictionary<ISymbolicExpressionTreeNode, double> OptimizeTerms(
       ISymbolicExpressionTree[] terms, double[] coeff,
       IDataset dataset, string target, IEnumerable<int> rows,
       SolverOptions options, ref SolverSummary summary
       ) {
       var terminalNodes = terms.Select(t => t.Root).SelectMany(t => t.IterateNodesPrefix().Where(x => x is SymbolicExpressionTreeTerminalNode));
       var nodesToOptimize = new HashSet<ISymbolicExpressionTreeNode>(terminalNodes);
-      return OptimizeTrees(terms, coeff, nodesToOptimize, dataset, target, rows, Enumerable.Empty<double>(), options, ref summary);
+      return OptimizeTerms(terms, coeff, nodesToOptimize, dataset, target, rows, Enumerable.Empty<double>(), options, ref summary);
     }
 
-    public static Dictionary<ISymbolicExpressionTreeNode, double> OptimizeTrees(
+    public static Dictionary<ISymbolicExpressionTreeNode, double> OptimizeTerms(
       ISymbolicExpressionTree[] terms, double[] coeff, HashSet<ISymbolicExpressionTreeNode> nodesToOptimize,
       IDataset dataset, string target, IEnumerable<int> rows,
       SolverOptions options, ref SolverSummary summary) {
-      return OptimizeTrees(terms, coeff, nodesToOptimize, dataset, target, rows, Enumerable.Empty<double>(), options, ref summary);
+      return OptimizeTerms(terms, coeff, nodesToOptimize, dataset, target, rows, Enumerable.Empty<double>(), options, ref summary);
     }
 
-    public static Dictionary<ISymbolicExpressionTreeNode, double> OptimizeTrees(
+    public static Dictionary<ISymbolicExpressionTreeNode, double> OptimizeTerms(
       ISymbolicExpressionTree[] terms, double[] coeff, HashSet<ISymbolicExpressionTreeNode> nodesToOptimize,
       IDataset dataset, string target, IEnumerable<int> rows, IEnumerable<double> weights,
       SolverOptions options, ref SolverSummary summary) {
