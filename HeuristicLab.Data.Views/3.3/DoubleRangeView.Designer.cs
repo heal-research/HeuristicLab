@@ -55,10 +55,10 @@ namespace HeuristicLab.Data.Views {
       this.Item2Label.Size = new System.Drawing.Size(29, 13);
       this.Item2Label.Text = "End:";
       // 
-      // IntRangeView
+      // DoubleRangeView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-      this.Name = "IntRangeView";
+      this.Name = "DoubleRangeView";
       this.ResumeLayout(false);
       this.PerformLayout();
     }
