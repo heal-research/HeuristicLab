@@ -41,6 +41,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
   [PluginDependency("HeuristicLab.Attic", "1.0")]
   [PluginDependency("HeuristicLab.Problems.DataAnalysis", "3.4")]
   [PluginDependency("HeuristicLab.Problems.DataAnalysis.Symbolic", "3.4")]
+  [PluginDependency("HeuristicLab.Problems.DataAnalysis.Symbolic.NativeInterpreter", "0.2")]
   [PluginDependency("HeuristicLab.Problems.Instances", "3.3")]
   [PluginDependency("HeuristicLab.Problems.Instances.DataAnalysis", "3.3")]
   public class HeuristicLabProblemsDataAnalysisSymbolicRegressionPlugin : PluginBase {
