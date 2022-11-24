@@ -117,26 +117,26 @@ namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
     #endregion
 
     #region ResultsProperties
-    private double ResultsBestQuality {
+    public double ResultsBestQuality {
       get { return ((DoubleValue)Results["Best Quality"].Value).Value; }
       set { ((DoubleValue)Results["Best Quality"].Value).Value = value; }
     }
 
-    private BinaryVector ResultsBestSolution {
+    public BinaryVector ResultsBestSolution {
       get { return (BinaryVector)Results["Best Solution"].Value; }
       set { Results["Best Solution"].Value = value; }
     }
 
-    private int ResultsBestFoundOnEvaluation {
+    public int ResultsBestFoundOnEvaluation {
       get { return ((IntValue)Results["Evaluation Best Solution Was Found"].Value).Value; }
       set { ((IntValue)Results["Evaluation Best Solution Was Found"].Value).Value = value; }
     }
 
-    private int ResultsEvaluations {
+    public int ResultsEvaluations {
       get { return ((IntValue)Results["Evaluations"].Value).Value; }
       set { ((IntValue)Results["Evaluations"].Value).Value = value; }
     }
-    private int ResultsIterations {
+    public int ResultsIterations {
       get { return ((IntValue)Results["Iterations"].Value).Value; }
       set { ((IntValue)Results["Iterations"].Value).Value = value; }
     }

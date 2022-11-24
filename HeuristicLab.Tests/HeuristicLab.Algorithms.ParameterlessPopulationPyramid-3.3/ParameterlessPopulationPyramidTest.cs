@@ -19,8 +19,6 @@
  */
 #endregion
 
-using System;
-using System.Threading;
 using HeuristicLab.Common;
 using HeuristicLab.Problems.Binary;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -30,27 +28,17 @@ namespace ParameterlessPopulationPyramid.Test {
   public class ParameterlessPopulationPyramidTest {
 
     // Utility function that sets up and executes the run, then asserts the results
-    private PrivateObject DoRun(BinaryProblem problem, int maximumEvaluations, int seed, double bestQuality, int foundOn) {
+    private void DoRun(BinaryProblem problem, int maximumEvaluations, int seed, double bestQuality, int foundOn) {
       var solver = new HeuristicLab.Algorithms.ParameterlessPopulationPyramid.ParameterlessPopulationPyramid();
       solver.Problem = problem;
       solver.MaximumEvaluations = maximumEvaluations;
       solver.Seed = seed;
       solver.SetSeedRandomly = false;
-      PrivateObject hidden = new PrivateObject(solver);
-      try {
-        var ct = new CancellationToken();
-        hidden.Invoke("Initialize", ct);
-        hidden.Invoke("Run", ct);
-      } catch (OperationCanceledException) {
-        // Ignore
-      }
+      solver.Start();
 
-      Assert.AreEqual(maximumEvaluations, hidden.GetProperty("ResultsEvaluations"), "Total Evaluations");
-      double foundQuality = (double)hidden.GetProperty("ResultsBestQuality");
-      Assert.IsTrue(foundQuality.IsAlmost(bestQuality), string.Format("Expected <{0}> Actual <{1}>", bestQuality, foundQuality));
-      Assert.AreEqual(foundOn, hidden.GetProperty("ResultsBestFoundOnEvaluation"), "Found On");
-
-      return hidden;
+      Assert.AreEqual(maximumEvaluations, solver.ResultsEvaluations, "Total Evaluations");
+      Assert.IsTrue(solver.ResultsBestQuality.IsAlmost(bestQuality), string.Format("Expected <{0}> Actual <{1}>", bestQuality, solver.ResultsBestQuality));
+      Assert.AreEqual(foundOn, solver.ResultsBestFoundOnEvaluation, "Found On");
     }
 
     [TestMethod]
