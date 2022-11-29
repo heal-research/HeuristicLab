@@ -21,6 +21,7 @@
 
 using System;
 using System.Linq;
+using System.Reflection;
 using HeuristicLab.Common;
 using HeuristicLab.MainForm;
 using HeuristicLab.PluginInfrastructure;
@@ -48,9 +49,9 @@ namespace HeuristicLab.Tests {
         }
         //check if view can handle null as content by calling OnContentChanged
         IContentView view = (IContentView)Activator.CreateInstance(viewType);
-        var accessor = new PrivateObject(view);
         try {
-          accessor.Invoke("OnContentChanged");
+          var onContentChangedMethod = viewType.GetMethod("OnContentChanged", BindingFlags.Instance | BindingFlags.NonPublic);
+          onContentChangedMethod.Invoke(view, new object[0]);
         } catch (Exception ex) {
           Assert.Fail(viewType.ToString() + Environment.NewLine + ex.Message);
         }
