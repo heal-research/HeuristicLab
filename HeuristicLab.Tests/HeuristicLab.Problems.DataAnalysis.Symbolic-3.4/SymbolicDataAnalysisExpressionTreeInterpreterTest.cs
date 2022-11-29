@@ -243,6 +243,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
 
       var grammar = new TypeCoherentExpressionGrammar();
       grammar.ConfigureAsDefaultRegressionGrammar();
+      //Deactive exp + log as the native interpreter c++) handles infinity and NaNs differently
+      //This could lead to random failures of this unit test
+      grammar.Symbols.First(s => s.Name == TypeCoherentExpressionGrammar.ExponentialFunctionsName).Enabled = false;
 
       var interpreters = new ISymbolicDataAnalysisExpressionTreeInterpreter[] {
         new SymbolicDataAnalysisExpressionTreeLinearInterpreter(),
