@@ -395,8 +395,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
       var summary = new SolverSummary();
       var params1 = ParameterOptimizer.OptimizeTree(tree, nodesToOptimize, ds, "y", rows, options, ref summary);
 
+#pragma warning disable CS0618 // Type or member is obsolete
       SymbolicRegressionParameterOptimizationEvaluator.OptimizeParameters(interpreter, tree,
         new RegressionProblemData(ds, new[] { "x1", "x2", "x3" }, "y"), rows, applyLinearScaling: false, maxIterations: 10, updateVariableWeights: false);
+#pragma warning restore CS0618 // Type or member is obsolete
 
       var params2 = tree.IterateNodesPrefix().OfType<NumberTreeNode>().Select(n => n.Value).ToArray();
 
@@ -467,7 +469,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
       Console.WriteLine();
 
       var coeff = new double[trees.Length + 1];
-      var parameters = ParameterOptimizer.OptimizeTrees(trees, coeff, nodesToOptimize, ds, "y", rows, options, ref summary);
+      var parameters = ParameterOptimizer.OptimizeTerms(trees, coeff, nodesToOptimize, ds, "y", rows, options, ref summary);
 
       Console.Write("Optimized parameters: ");
       foreach (var t in parameters) {
@@ -524,7 +526,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
       Console.WriteLine();
 
       var coeff = new double[trees.Length + 1];
-      var parameters = ParameterOptimizer.OptimizeTrees(trees, coeff, nodesToOptimize, ds, "y", rows, Enumerable.Empty<double>(), options, ref summary);
+      var parameters = ParameterOptimizer.OptimizeTerms(trees, coeff, nodesToOptimize, ds, "y", rows, Enumerable.Empty<double>(), options, ref summary);
 
       Console.Write("Optimized parameters: ");
       foreach (var t in parameters) {
