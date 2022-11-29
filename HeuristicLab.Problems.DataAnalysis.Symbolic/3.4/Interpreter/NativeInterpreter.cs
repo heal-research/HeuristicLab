@@ -82,16 +82,21 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       if (root.SubtreeCount > ushort.MaxValue) throw new ArgumentException("Number of subtrees is too big (>65.535)");
 
       for (int i = 0; i < code.Length; i++) {
-        code[i] = new NativeInstruction { Arity = (ushort)nodes[i].SubtreeCount, OpCode = opCodeMapper(nodes[i]), Length = 1, Optimize = 0 };
+        code[i] = new NativeInstruction {
+          Arity = (ushort)nodes[i].SubtreeCount,
+          OpCode = opCodeMapper(nodes[i]),
+          Length = 1,
+          Optimize = 0
+        };
+
         if (nodes[i] is VariableTreeNode variable) {
           code[i].Coeff = variable.Weight;
           code[i].Data = cachedData[variable.VariableName].AddrOfPinnedObject();
-        } else if (nodes[i] is NumberTreeNode number) {
-          code[i].Coeff = number.Value;
-        } else if (nodes[i] is ConstantTreeNode constant) {
-          code[i].Coeff = constant.Value;
+        } else if (nodes[i] is INumericTreeNode numericTreeNode) {
+          code[i].Coeff = numericTreeNode.Value;
         }
       }
+
       // second pass to calculate lengths
       for (int i = 0; i < code.Length; i++) {
         var c = i - 1;
