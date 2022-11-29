@@ -85,7 +85,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         code[i] = new NativeInstruction {
           Arity = (ushort)nodes[i].SubtreeCount,
           OpCode = opCodeMapper(nodes[i]),
-          Length = 1,
+          Length = nodes[i].GetLength(),
           Optimize = 0
         };
 
@@ -94,15 +94,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           code[i].Data = cachedData[variable.VariableName].AddrOfPinnedObject();
         } else if (nodes[i] is INumericTreeNode numericTreeNode) {
           code[i].Coeff = numericTreeNode.Value;
-        }
-      }
-
-      // second pass to calculate lengths
-      for (int i = 0; i < code.Length; i++) {
-        var c = i - 1;
-        for (int j = 0; j < code[i].Arity; ++j) {
-          code[i].Length += code[c].Length;
-          c -= code[c].Length;
         }
       }
 
