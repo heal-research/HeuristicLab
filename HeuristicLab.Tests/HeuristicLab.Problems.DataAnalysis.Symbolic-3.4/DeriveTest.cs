@@ -42,7 +42,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
       Assert.AreEqual("20", Derive("<num=10>*x+<num=20>*y", "y"));
       Assert.AreEqual("6", Derive("<num=2>*<num=3>*x", "x"));
       Assert.AreEqual("10 * 'y'", Derive("<num=10>*x*y+<num=20>*y", "x"));
-      Assert.AreEqual("-1 / SQR('x')", Derive("1/x", "x"));
+      Assert.AreEqual("1 * -1 / SQR('x')", Derive("1/x", "x"));
       Assert.AreEqual("-1 * 'y' / SQR('x')", Derive("y/x", "x"));
       Assert.AreEqual("('a' + 'b') * (-2 * 'x' + -1) / SQR('x' + 'x' * 'x')",
         Derive("(a+b)/(x+x*x)", "x"));
