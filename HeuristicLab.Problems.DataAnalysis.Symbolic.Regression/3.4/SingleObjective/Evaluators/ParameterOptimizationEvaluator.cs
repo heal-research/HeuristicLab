@@ -144,7 +144,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
         var counter = new EvaluationsCounter();
         var constOptRows = GenerateRowsToEvaluate(RowsPercentage);
         OptimizeParameters(tree, ProblemDataParameter.ActualValue, constOptRows,
-           weights: Enumerable.Empty<double>(), Iterations,
+           rowWeights: Enumerable.Empty<double>(), Iterations,
            updateVariableWeights: UpdateVariableWeights, counter: counter);
 
         if (CountEvaluations) {
@@ -199,9 +199,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       return ParameterOptimizer.CanOptimizeParameters(tree);
     }
 
+    public static void OptimizeParamters(ISymbolicExpressionTree tree, IRegressionProblemData problemData, IEnumerable<int> rows, int maxIterations) {
+      OptimizeParameters(tree, problemData, rows, rowWeights: null, maxIterations);
+    }
+
     public static void OptimizeParameters(
-      ISymbolicExpressionTree tree, IRegressionProblemData problemData, IEnumerable<int> rows, IEnumerable<double> weights,
-      int maxIterations, bool updateVariableWeights = true, EvaluationsCounter counter = null) {
+      ISymbolicExpressionTree tree, IRegressionProblemData problemData, IEnumerable<int> rows, IEnumerable<double> rowWeights, int maxIterations,
+      bool updateVariableWeights = true, EvaluationsCounter counter = null) {
 
       var nodesToOptimize = new HashSet<ISymbolicExpressionTreeNode>();
       var originalNodeValues = new Dictionary<ISymbolicExpressionTreeNode, double>();
@@ -225,9 +229,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
         Iterations = maxIterations
       };
       var summary = new SolverSummary();
-      var optimizedNodeValues = ParameterOptimizer.OptimizeTree(tree, problemData.Dataset, rows, problemData.TargetVariable, weights, nodesToOptimize, options, ref summary);
-      counter.FunctionEvaluations += summary.ResidualEvaluations;
-      counter.GradientEvaluations += summary.JacobianEvaluations;
+      var optimizedNodeValues = ParameterOptimizer.OptimizeTree(tree, nodesToOptimize, problemData.Dataset, problemData.TargetVariable, rows, rowWeights, options, ref summary);
+
+      if (counter != null) {
+        counter.FunctionEvaluations += summary.ResidualEvaluations;
+        counter.GradientEvaluations += summary.JacobianEvaluations;
+      }
 
       if (summary.Success != 0) {
         UpdateNodeValues(optimizedNodeValues);

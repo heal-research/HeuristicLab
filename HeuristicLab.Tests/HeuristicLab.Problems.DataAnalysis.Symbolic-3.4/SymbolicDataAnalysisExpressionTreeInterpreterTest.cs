@@ -28,9 +28,8 @@ using HeuristicLab.NativeInterpreter;
 using HeuristicLab.Problems.DataAnalysis.Symbolic.Regression;
 using HeuristicLab.Random;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
-
-
   [TestClass]
   public class SymbolicDataAnalysisExpressionTreeInterpreterTest {
     private const int N = 1000;
@@ -244,6 +243,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
 
       var grammar = new TypeCoherentExpressionGrammar();
       grammar.ConfigureAsDefaultRegressionGrammar();
+      //Deactivate exp + log as the native interpreter c++) handles infinity and NaNs differently
+      //This could lead to random failures of this unit test
+      grammar.Symbols.First(s => s.Name == TypeCoherentExpressionGrammar.ExponentialFunctionsName).Enabled = false;
 
       var interpreters = new ISymbolicDataAnalysisExpressionTreeInterpreter[] {
         new SymbolicDataAnalysisExpressionTreeLinearInterpreter(),
@@ -328,7 +330,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
       Console.WriteLine();
 
       var summary = new SolverSummary();
-      var parameters = ParameterOptimizer.OptimizeTree(tree, ds, rows, "y", Enumerable.Empty<double>(), nodesToOptimize, options, ref summary);
+      var parameters = ParameterOptimizer.OptimizeTree(tree, nodesToOptimize, ds, "y", rows, options, ref summary);
 
       Console.Write("Optimized parameters: ");
       foreach (var t in parameters) {
@@ -379,7 +381,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
       };
 
 
-      var nodesToOptimize = new List<ISymbolicExpressionTreeNode>(tree.IterateNodesPrefix().Where(x => x is NumberTreeNode));
+      var nodesToOptimize = new HashSet<ISymbolicExpressionTreeNode>(tree.IterateNodesPrefix().Where(x => x is NumberTreeNode));
       int idx = 0;
       Console.Write("Initial parameters: ");
       foreach (var node in nodesToOptimize) {
@@ -394,16 +396,18 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
 
 
       var summary = new SolverSummary();
-      var params1 = ParameterOptimizer.OptimizeTree(tree, ds, rows, "y", Enumerable.Empty<double>(), new HashSet<ISymbolicExpressionTreeNode>(nodesToOptimize), options, ref summary);
+      var params1 = ParameterOptimizer.OptimizeTree(tree, nodesToOptimize, ds, "y", rows, options, ref summary);
 
+#pragma warning disable CS0618 // Type or member is obsolete
       SymbolicRegressionParameterOptimizationEvaluator.OptimizeParameters(interpreter, tree,
         new RegressionProblemData(ds, new[] { "x1", "x2", "x3" }, "y"), rows, applyLinearScaling: false, maxIterations: 10, updateVariableWeights: false);
+#pragma warning restore CS0618 // Type or member is obsolete
 
       var params2 = tree.IterateNodesPrefix().OfType<NumberTreeNode>().Select(n => n.Value).ToArray();
 
       var optimizedMSE = OnlineMeanSquaredErrorCalculator.Calculate(y, interpreter.GetSymbolicExpressionTreeValues(tree, ds, rows), out errorState);
       if (errorState != OnlineCalculatorError.None) optimizedMSE = double.MaxValue;
-      
+
 
       Console.WriteLine("Optimized parameters (native): ");
       foreach (var t in params1) {
@@ -424,7 +428,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
       Console.WriteLine("Jacobian evaluations: " + summary.JacobianEvaluations);
 
       // output costs produced by the managed parameter optimizer to compare to the native code
-      Console.WriteLine($"Managed initial cost: {initialMSE* rows.Count() * 0.5}");
+      Console.WriteLine($"Managed initial cost: {initialMSE * rows.Count() * 0.5}");
       Console.WriteLine($"Managed optimized cost: {optimizedMSE * rows.Count() * 0.5}");
     }
 
@@ -468,7 +472,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
       Console.WriteLine();
 
       var coeff = new double[trees.Length + 1];
-      var parameters = ParameterOptimizer.OptimizeTree(trees, ds, rows, "y", Enumerable.Empty<double>(), nodesToOptimize, options, coeff, ref summary);
+      var parameters = ParameterOptimizer.OptimizeTerms(trees, coeff, nodesToOptimize, ds, "y", rows, options, ref summary);
+
       Console.Write("Optimized parameters: ");
       foreach (var t in parameters) {
         Console.Write(t.Value + " ");
@@ -515,7 +520,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
       var summary = new SolverSummary();
 
       var nodesToOptimize = new HashSet<ISymbolicExpressionTreeNode>(trees.SelectMany(t => t.IterateNodesPrefix().Where(x => x is VariableTreeNode)));
-      //var nodesToOptimize = new HashSet<ISymbolicExpressionTreeNode>();
       int idx = 0;
       Console.Write("Initial parameters: ");
       foreach (var node in nodesToOptimize) {
@@ -525,7 +529,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
       Console.WriteLine();
 
       var coeff = new double[trees.Length + 1];
-      var parameters = ParameterOptimizer.OptimizeTree(trees, ds, rows, "y", Enumerable.Empty<double>(), nodesToOptimize, options, coeff, ref summary);
+      var parameters = ParameterOptimizer.OptimizeTerms(trees, coeff, nodesToOptimize, ds, "y", rows, Enumerable.Empty<double>(), options, ref summary);
+
       Console.Write("Optimized parameters: ");
       foreach (var t in parameters) {
         Console.Write(t.Value + " ");

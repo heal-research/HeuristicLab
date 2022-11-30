@@ -24,48 +24,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Xml.Linq;
-using HEAL.Attic;
-using HeuristicLab.Common;
-using HeuristicLab.Core;
-using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.NativeInterpreter;
-using HeuristicLab.Parameters;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
-  [StorableType("A624630B-0CEB-4D06-9B26-708987A7AE8F")]
-  [Item("ParameterOptimizer", "Operator calling into native C++ code for tree interpretation.")]
-  public sealed class ParameterOptimizer : ParameterizedNamedItem {
-    private const string IterationsParameterName = "Iterations";
-
-    #region parameters
-    public IFixedValueParameter<IntValue> IterationsParameter {
-      get { return (IFixedValueParameter<IntValue>)Parameters[IterationsParameterName]; }
-    }
-    #endregion
-
-    #region parameter properties
-    public int Iterations {
-      get { return IterationsParameter.Value.Value; }
-      set { IterationsParameter.Value.Value = value; }
-    }
-    #endregion
-
-    #region storable ctor and cloning
-    [StorableConstructor]
-    private ParameterOptimizer(StorableConstructorFlag _) : base(_) { }
-
-    public ParameterOptimizer(ParameterOptimizer original, Cloner cloner) : base(original, cloner) { }
-
-    public override IDeepCloneable Clone(Cloner cloner) {
-      return new ParameterOptimizer(this, cloner);
-    }
-    #endregion
-
-    public ParameterOptimizer() {
-      Parameters.Add(new FixedValueParameter<IntValue>(IterationsParameterName, "The number of iterations for the nonlinear least squares optimizer.", new IntValue(10)));
-    }
+  public static class ParameterOptimizer {
 
     private static byte MapSupportedSymbols(ISymbolicExpressionTreeNode node) {
       var opCode = OpCodes.MapSymbolToOpCode(node);
@@ -73,9 +36,27 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       else throw new NotSupportedException($"The native interpreter does not support {node.Symbol.Name}");
     }
 
-    public static Dictionary<ISymbolicExpressionTreeNode, double> OptimizeTree(ISymbolicExpressionTree tree, IDataset dataset, IEnumerable<int> rows, string targetVariable, IEnumerable<double> weights, HashSet<ISymbolicExpressionTreeNode> nodesToOptimize, SolverOptions options, ref SolverSummary summary) {
-      var code = NativeInterpreter.Compile(tree, dataset, MapSupportedSymbols, out List<ISymbolicExpressionTreeNode> nodes);
+    public static Dictionary<ISymbolicExpressionTreeNode, double> OptimizeTree(
+      ISymbolicExpressionTree tree,
+      IDataset dataset, string targetVariable, IEnumerable<int> rows,
+      SolverOptions options, ref SolverSummary summary) {
+      var nodesToOptimize = new HashSet<ISymbolicExpressionTreeNode>(tree.IterateNodesPrefix().Where(x => x is SymbolicExpressionTreeTerminalNode));
+      return OptimizeTree(tree, nodesToOptimize, dataset, targetVariable, rows, weights: Enumerable.Empty<double>(), options, ref summary);
+    }
 
+    public static Dictionary<ISymbolicExpressionTreeNode, double> OptimizeTree(
+              ISymbolicExpressionTree tree, HashSet<ISymbolicExpressionTreeNode> nodesToOptimize,
+              IDataset dataset, string targetVariable, IEnumerable<int> rows,
+              SolverOptions options, ref SolverSummary summary) {
+      return OptimizeTree(tree, nodesToOptimize, dataset, targetVariable, rows, weights: Enumerable.Empty<double>(), options, ref summary);
+    }
+
+
+    public static Dictionary<ISymbolicExpressionTreeNode, double> OptimizeTree(
+            ISymbolicExpressionTree tree, HashSet<ISymbolicExpressionTreeNode> nodesToOptimize,
+            IDataset dataset, string targetVariable, IEnumerable<int> rows, IEnumerable<double> weights,
+            SolverOptions options, ref SolverSummary summary) {
+      var code = NativeInterpreter.Compile(tree, dataset, MapSupportedSymbols, out List<ISymbolicExpressionTreeNode> nodes);
       for (int i = 0; i < code.Length; ++i) {
         code[i].Optimize = nodesToOptimize.Contains(nodes[i]) ? 1 : 0;
       }
@@ -84,27 +65,35 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         var target = dataset.GetDoubleValues(targetVariable, rows).ToArray();
         var rowsArray = rows.ToArray();
         var result = new double[rowsArray.Length];
-        var weightsArray = weights.Any() ? weights.ToArray() : null;
+        double[] weightsArray = null;
+        if (weights.Any()) weightsArray = weights.ToArray();
 
         NativeWrapper.Optimize(code, rowsArray, target, weightsArray, options, result, out summary);
       }
       return Enumerable.Range(0, code.Length).Where(i => nodes[i] is SymbolicExpressionTreeTerminalNode).ToDictionary(i => nodes[i], i => code[i].Coeff);
     }
 
-    public Dictionary<ISymbolicExpressionTreeNode, double> OptimizeTree(ISymbolicExpressionTree tree, IDataset dataset, IEnumerable<int> rows, string targetVariable, IEnumerable<double> weights,
-      HashSet<ISymbolicExpressionTreeNode> nodesToOptimize = null) {
-      var options = new SolverOptions { Iterations = Iterations };
-      var summary = new SolverSummary();
-
-      // if no nodes are specified, use all the nodes
-      if (nodesToOptimize == null) {
-        nodesToOptimize = new HashSet<ISymbolicExpressionTreeNode>(tree.IterateNodesPrefix().Where(x => x is SymbolicExpressionTreeTerminalNode));
-      }
-
-      return OptimizeTree(tree, dataset, rows, targetVariable, weights, nodesToOptimize, options, ref summary);
+    public static Dictionary<ISymbolicExpressionTreeNode, double> OptimizeTerms(
+      ISymbolicExpressionTree[] terms, double[] coeff,
+      IDataset dataset, string target, IEnumerable<int> rows,
+      SolverOptions options, ref SolverSummary summary
+      ) {
+      var terminalNodes = terms.Select(t => t.Root).SelectMany(t => t.IterateNodesPrefix().Where(x => x is SymbolicExpressionTreeTerminalNode));
+      var nodesToOptimize = new HashSet<ISymbolicExpressionTreeNode>(terminalNodes);
+      return OptimizeTerms(terms, coeff, nodesToOptimize, dataset, target, rows, Enumerable.Empty<double>(), options, ref summary);
     }
 
-    public static Dictionary<ISymbolicExpressionTreeNode, double> OptimizeTree(ISymbolicExpressionTree[] terms, IDataset dataset, IEnumerable<int> rows, string targetVariable, IEnumerable<double> weights, HashSet<ISymbolicExpressionTreeNode> nodesToOptimize, SolverOptions options, double[] coeff, ref SolverSummary summary) {
+    public static Dictionary<ISymbolicExpressionTreeNode, double> OptimizeTerms(
+      ISymbolicExpressionTree[] terms, double[] coeff, HashSet<ISymbolicExpressionTreeNode> nodesToOptimize,
+      IDataset dataset, string target, IEnumerable<int> rows,
+      SolverOptions options, ref SolverSummary summary) {
+      return OptimizeTerms(terms, coeff, nodesToOptimize, dataset, target, rows, Enumerable.Empty<double>(), options, ref summary);
+    }
+
+    public static Dictionary<ISymbolicExpressionTreeNode, double> OptimizeTerms(
+      ISymbolicExpressionTree[] terms, double[] coeff, HashSet<ISymbolicExpressionTreeNode> nodesToOptimize,
+      IDataset dataset, string target, IEnumerable<int> rows, IEnumerable<double> weights,
+      SolverOptions options, ref SolverSummary summary) {
       if (options.Iterations == 0) {
         // throw exception? set iterations to 100? return empty dictionary?
         return new Dictionary<ISymbolicExpressionTreeNode, double>();
@@ -127,13 +116,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         termIndices[i] = code.Length + totalCodeSize - 1;
         totalCodeSize += code.Length;
       }
-      var target = dataset.GetDoubleValues(targetVariable, rows).ToArray();
+      var targetValues = dataset.GetDoubleValues(target, rows).ToArray();
       var rowsArray = rows.ToArray();
       var result = new double[rowsArray.Length];
       var codeArray = totalCode.ToArray();
       var weightsArray = weights.Any() ? weights.ToArray() : null;
 
-      NativeWrapper.OptimizeVarPro(codeArray, termIndices, rowsArray, target, weightsArray, coeff, options, result, out summary);
+      NativeWrapper.OptimizeVarPro(codeArray, termIndices, rowsArray, targetValues, weightsArray, coeff, options, result, out summary);
       return Enumerable.Range(0, totalCodeSize).Where(i => codeArray[i].Optimize != 0).ToDictionary(i => totalNodes[i], i => codeArray[i].Coeff);
     }
 
