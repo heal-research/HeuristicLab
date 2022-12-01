@@ -693,9 +693,6 @@
     <Compile Include="TestRandom.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Builder.testsettings">
-      <SubType>Designer</SubType>
-    </None>
     <None Include="HeuristicLab.snk" />
     <None Include="Test Resources\GA_SymbReg.hl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

@@ -27,8 +27,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace HeuristicLab.Tests {
   [TestClass]
-  [DeploymentItem("igraph-0.8.0-pre-x86.dll")]
-  [DeploymentItem("igraph-0.8.0-pre-x64.dll")]
   public class IGraphWrappersGraphTest {
     [TestMethod]
     [TestCategory("ExtLibs")]
