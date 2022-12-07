@@ -96,7 +96,7 @@ namespace HeuristicLab.Encodings.LinearLinkageEncoding.Tests {
         var isValid = true;
         try {
           var lle = LinearLinkage.FromForwardLinks(values);
-        } catch (ArgumentException e) {
+        } catch (ArgumentException) {
           isValid = false;
         }
         Assert.IsFalse(isValid, "[{0}] is invalid and should throw ArgumentException!", string.Join(", ", values));
@@ -111,7 +111,7 @@ namespace HeuristicLab.Encodings.LinearLinkageEncoding.Tests {
         var isValid = true;
         try {
           var lle = LinearLinkage.FromEndLinks(values);
-        } catch (ArgumentException e) {
+        } catch (ArgumentException) {
           isValid = false;
         }
         Assert.IsFalse(isValid, "{0} should be invalid", string.Join(", ", values));
