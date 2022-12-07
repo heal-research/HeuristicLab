@@ -422,7 +422,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
         grammar.Symbols.OfType<AnalyticQuotient>().First().Enabled = true; // enable a function with two arguments
         grammar.Symbols.OfType<Power>().First().Enabled = true; // another function with two arguments
         grammar.Symbols.OfType<And>().First().Enabled = true; // enable Boolean operators
-        grammar.Symbols.OfType<Or>().First().Enabled = true; 
+        grammar.Symbols.OfType<Or>().First().Enabled = true;
         grammar.Symbols.OfType<Xor>().First().Enabled = true;
         grammar.Symbols.OfType<Not>().First().Enabled = true;
         grammar.Symbols.OfType<IfThenElse>().First().Enabled = true; // enable if-then-else function
@@ -436,7 +436,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
         grammar.SetSubtreeCount(grammar.Symbols.OfType<Xor>().First(), 1, 4);
         grammar.ConfigureVariableSymbols(new RegressionProblemData(ds, new string[] { "a", "b", "c" }, "y"));
         var fmt = new SymbolicExpressionTreeStringFormatter();
-        for (int i = 0; i < 100000; i++) {
+        for (int i = 0; i < 10000; i++) {
           var t = ProbabilisticTreeCreator.Create(rand, grammar, 15, 8);
           var p1 = interpreter.GetSymbolicExpressionTreeValues(t, ds, rows).ToArray();
           var p2 = interpreter.GetSymbolicExpressionTreeValues(parser.Parse(formatter.Format(t)), ds, rows).ToArray(); // test formatter, and that parser can read the expression again, and that the evaluation is the same 
