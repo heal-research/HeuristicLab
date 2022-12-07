@@ -30,42 +30,7 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding.Tests {
   ///</summary>
   [TestClass()]
   public class SinglePointCrossoverTest {
-    /// <summary>
-    ///A test for Cross
-    ///</summary>
-    [TestMethod]
-    [TestCategory("Encodings.IntegerVector")]
-    [TestProperty("Time", "short")]
-    public void SinglePointCrossoverCrossTest() {
-      var target = new PrivateObject(typeof(SinglePointCrossover));
-      ItemArray<IntegerVector> parents;
-      TestRandom random = new TestRandom();
-      bool exceptionFired;
-      // The following test checks if there is an exception when there are more than 2 parents
-      random.Reset();
-      parents = new ItemArray<IntegerVector>(new IntegerVector[] { new IntegerVector(5), new IntegerVector(6), new IntegerVector(4) });
-      exceptionFired = false;
-      try {
-        IntegerVector actual;
-        actual = (IntegerVector)target.Invoke("Cross", random, parents);
-      }
-      catch (System.ArgumentException) {
-        exceptionFired = true;
-      }
-      Assert.IsTrue(exceptionFired);
-      // The following test checks if there is an exception when there are less than 2 parents
-      random.Reset();
-      parents = new ItemArray<IntegerVector>(new IntegerVector[] { new IntegerVector(4) });
-      exceptionFired = false;
-      try {
-        IntegerVector actual;
-        actual = (IntegerVector)target.Invoke("Cross", random, parents);
-      }
-      catch (System.ArgumentException) {
-        exceptionFired = true;
-      }
-      Assert.IsTrue(exceptionFired);
-    }
+    
 
     /// <summary>
     ///A test for Apply
