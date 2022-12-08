@@ -151,6 +151,7 @@ namespace HeuristicLab.Persistence.Attic.Tests {
 
     [TestMethod]
     [TestCategory("Persistence.Attic")]
+    [TestCategory("Run.Daily")]
     [TestProperty("Time", "long")]
     public void TestLoadingSamples() {
       CreateAllSamples();

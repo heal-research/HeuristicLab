@@ -42,8 +42,9 @@ namespace ParameterlessPopulationPyramid.Test {
     }
 
     [TestMethod]
-    [TestProperty("Time", "medium")]
     [TestCategory("Algorithms.ParameterlessPopulationPyramid")]
+    [TestCategory("Run.Daily")]
+    [TestProperty("Time", "medium")]
     public void P3DeceptiveTrap() {
       var problem = new DeceptiveTrapProblem();
       problem.Length = 49;
@@ -57,8 +58,9 @@ namespace ParameterlessPopulationPyramid.Test {
 
     // Unlike DeceptiveTrap, DeceptiveStepTrap likely contains neutral (fitness equal) modifications.
     [TestMethod]
-    [TestProperty("Time", "medium")]
     [TestCategory("Algorithms.ParameterlessPopulationPyramid")]
+    [TestCategory("Run.Daily")]
+    [TestProperty("Time", "medium")]
     public void P3DeceptiveStepTrap() {
       var problem = new DeceptiveStepTrapProblem();
       problem.Length = 49;
@@ -73,8 +75,9 @@ namespace ParameterlessPopulationPyramid.Test {
 
     // Unlike the Trap tests, HIFF uses higher order linkage learning.
     [TestMethod]
-    [TestProperty("Time", "medium")]
     [TestCategory("Algorithms.ParameterlessPopulationPyramid")]
+    [TestCategory("Run.Daily")]
+    [TestProperty("Time", "medium")]
     public void P3HIFF() {
       var problem = new HIFFProblem();
       problem.Length = 32;

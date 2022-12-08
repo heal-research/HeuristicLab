@@ -22,7 +22,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using HeuristicLab.Data;
 using HeuristicLab.Random;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -37,6 +36,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Tests {
     [TestMethod]
     [Timeout(3600000)]
     [TestCategory("Encodings.SymbolicExpressionTree")]
+    [TestCategory("Run.Daily")]
     [TestProperty("Time", "long")]
     public void AllArchitectureAlteringOperatorsDistributionTest() {
       var trees = new List<ISymbolicExpressionTree>();
@@ -44,10 +44,6 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Tests {
       var grammar = Grammars.CreateArithmeticAndAdfGrammar();
       var random = new MersenneTwister(31415);
       SymbolicExpressionTreeStringFormatter formatter = new SymbolicExpressionTreeStringFormatter();
-      IntValue maxTreeSize = new IntValue(MAX_TREE_LENGTH);
-      IntValue maxTreeHeigth = new IntValue(MAX_TREE_DEPTH);
-      IntValue maxDefuns = new IntValue(3);
-      IntValue maxArgs = new IntValue(3);
       for (int i = 0; i < POPULATION_SIZE; i++) {
         var tree = ProbabilisticTreeCreator.Create(random, grammar, MAX_TREE_LENGTH, MAX_TREE_DEPTH);
         Util.IsValid(tree);

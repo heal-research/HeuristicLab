@@ -222,6 +222,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     [TestMethod]
     [TestCategory("Algorithms.DataAnalysis")]
+    [TestCategory("Run.Daily")]
     [TestProperty("Time", "long")]
     public void GradientBoostingTestTowerSquaredError() {
       var gbt = new GradientBoostedTreesAlgorithm();
@@ -276,6 +277,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     [TestMethod]
     [TestCategory("Algorithms.DataAnalysis")]
+    [TestCategory("Run.Daily")]
     [TestProperty("Time", "long")]
     public void GradientBoostingTestTowerRelativeError() {
       var gbt = new GradientBoostedTreesAlgorithm();

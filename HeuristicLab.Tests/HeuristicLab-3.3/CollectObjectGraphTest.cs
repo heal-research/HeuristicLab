@@ -109,6 +109,7 @@ namespace HeuristicLab.Tests {
     /// </summary>
     [TestMethod]
     [TestCategory("General")]
+    [TestCategory("Run.Daily")]
     [TestProperty("Time", "long")]
     public void AlgorithmExecutions() {
       var algs = new List<IAlgorithm>();

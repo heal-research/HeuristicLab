@@ -109,6 +109,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
 
     [TestMethod]
     [TestCategory("Problems.DataAnalysis")]
+    [TestCategory("Run.Daily")]
     [TestProperty("Time", "medium")]
     public void PerformanceVariableImpactClassificationTest() {
       int rows = 1500;
