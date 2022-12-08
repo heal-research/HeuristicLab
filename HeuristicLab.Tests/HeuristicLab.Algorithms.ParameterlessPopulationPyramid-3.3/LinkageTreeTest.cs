@@ -20,6 +20,7 @@
 #endregion
 
 using System.Linq;
+using System.Reflection;
 using HeuristicLab.Algorithms.ParameterlessPopulationPyramid;
 using HeuristicLab.Encodings.BinaryVectorEncoding;
 using HeuristicLab.Random;
@@ -49,15 +50,16 @@ namespace ParameterlessPopulationPyramid.Test {
     };
 
     [TestMethod]
-    [TestProperty("Time", "short")]
     [TestCategory("Algorithms.ParameterlessPopulationPyramid")]
     public void LinkageTreeTestAdd() {
       MersenneTwister rand = new MersenneTwister();
       LinkageTree tree = new LinkageTree(Length, rand);
       tree.Add(solutions[0]);
       tree.Add(solutions[1]);
-      PrivateObject hidden = new PrivateObject(tree);
-      int[][][] result = (int[][][])hidden.GetField("occurances");
+
+      var fieldInfo = typeof(LinkageTree).GetField("occurances", BindingFlags.NonPublic | BindingFlags.Instance);
+      int[][][] result = (int[][][])fieldInfo.GetValue(tree);
+
       Assert.AreEqual(1, result[1][0][0]); // Positions 0 and 1 had value 00 exactly once
       Assert.AreEqual(2, result[Length - 1][Length - 2][0]); // Positions 0 and 1 had value 00 exactly once
       Assert.AreEqual(0, result[Length - 1][Length - 2][1]); // Positions 7 and 8 never had value 10
@@ -65,30 +67,30 @@ namespace ParameterlessPopulationPyramid.Test {
     }
 
     [TestMethod]
-    [TestProperty("Time", "short")]
     [TestCategory("Algorithms.ParameterlessPopulationPyramid")]
     public void LinkageTreeTestEntropyDistance() {
       MersenneTwister rand = new MersenneTwister();
       LinkageTree tree = new LinkageTree(Length, rand);
-      PrivateObject hidden = new PrivateObject(tree);
+
+      var entropyDistancesMethod = typeof(LinkageTree).GetMethod("EntropyDistance", BindingFlags.NonPublic | BindingFlags.Instance);
+
       // No information should result in a distance of 0
-      Assert.AreEqual((double)0, hidden.Invoke("EntropyDistance", new object[] { 0, 1 }));
+      Assert.AreEqual((double)0, entropyDistancesMethod.Invoke(tree, new object[] { 0, 1 }));
       foreach (var solution in solutions) {
         tree.Add(solution);
       }
       // Check that 0 and 1 are closer than 0 and 2
-      var linked = (double)hidden.Invoke("EntropyDistance", new object[] { 0, 1 });
-      var unlinked = (double)hidden.Invoke("EntropyDistance", new object[] { 0, 2 });
+      var linked = (double)entropyDistancesMethod.Invoke(tree, new object[] { 0, 1 });
+      var unlinked = (double)entropyDistancesMethod.Invoke(tree, new object[] { 0, 2 });
       Assert.IsTrue(linked < unlinked);
 
       // Reversing the arguments should not change the result
-      var forward = hidden.Invoke("EntropyDistance", new object[] { Length - 1, Length - 2 });
-      var backward = hidden.Invoke("EntropyDistance", new object[] { Length - 2, Length - 1 });
+      var forward = entropyDistancesMethod.Invoke(tree, new object[] { Length - 1, Length - 2 });
+      var backward = entropyDistancesMethod.Invoke(tree, new object[] { Length - 2, Length - 1 });
       Assert.AreEqual(forward, backward);
     }
 
     [TestMethod]
-    [TestProperty("Time", "short")]
     [TestCategory("Algorithms.ParameterlessPopulationPyramid")]
     public void LinkageTreeTestRebuild() {
       // The seed matters as equal sized clusters can appear in any order

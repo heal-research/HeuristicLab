@@ -37,7 +37,6 @@ namespace ParameterlessPopulationPyramid.Test {
       }
     }
     [TestMethod]
-    [TestProperty("Time", "short")]
     [TestCategory("Algorithms.ParameterlessPopulationPyramid")]
     public void EnumerableBoolEqualsTest() {
       bool[] array = new bool[10];
@@ -61,7 +60,6 @@ namespace ParameterlessPopulationPyramid.Test {
     }
 
     [TestMethod]
-    [TestProperty("Time", "short")]
     [TestCategory("Algorithms.ParameterlessPopulationPyramid")]
     public void EnumerableBoolHashCollisionTest() {
       int collisions = 0;
@@ -93,7 +91,6 @@ namespace ParameterlessPopulationPyramid.Test {
     }
 
     [TestMethod]
-    [TestProperty("Time", "short")]
     [TestCategory("Algorithms.ParameterlessPopulationPyramid")]
     public void EnumerableBoolHashSetTest() {
       HashSet<bool[]> set = new HashSet<bool[]>(compare);

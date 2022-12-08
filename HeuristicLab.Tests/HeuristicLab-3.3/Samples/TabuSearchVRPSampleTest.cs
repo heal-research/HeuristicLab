@@ -36,7 +36,6 @@ namespace HeuristicLab.Tests {
 
     [TestMethod]
     [TestCategory("Samples.Create")]
-    [TestProperty("Time", "medium")]
     public void CreateTabuSearchVRPSampleTest() {
       var vrp = CreateTabuSearchVrpSample();
       string path = Path.Combine(SamplesUtils.SamplesDirectory, SampleFileName + SamplesUtils.SampleFileExtension);
@@ -44,7 +43,7 @@ namespace HeuristicLab.Tests {
     }
     [TestMethod]
     [TestCategory("Samples.Execute")]
-    [TestProperty("Time", "long")]
+    [TestCategory("Run.Daily")]
     public void RunTabuSearchVRPSampleTest() {
       var vrp = CreateTabuSearchVrpSample();
       vrp.SetSeedRandomly.Value = false;

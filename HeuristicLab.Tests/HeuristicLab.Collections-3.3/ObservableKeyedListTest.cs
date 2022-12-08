@@ -39,7 +39,6 @@ namespace HeuristicLab.Collections.Tests {
 
     [TestMethod]
     [TestCategory("General")]
-    [TestProperty("Time", "short")]
     public void KeyedListAddDuplicateItemTest() {
       var list = new IntKeyedList();
       var numbers = new List<int>() { 1, 2, 3 };

@@ -34,7 +34,6 @@ namespace HeuristicLab.Problems.TestFunctions.Tests {
     ///</summary>
     [TestMethod]
     [TestCategory("Problems.TestFunctions")]
-    [TestProperty("Time", "short")]
     public void MatyasEvaluateFunctionTest() {
       MatyasEvaluator target = new MatyasEvaluator();
       RealVector point = null;

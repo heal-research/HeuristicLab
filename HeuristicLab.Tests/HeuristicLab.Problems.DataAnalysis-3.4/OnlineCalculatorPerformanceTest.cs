@@ -45,38 +45,32 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
 
     [TestMethod]
     [TestCategory("Problems.DataAnalysis")]
-    [TestProperty("Time", "medium")]
     public void OnlineAccuracyCalculatorPerformanceTest() {
       TestCalculatorPerfomance(OnlineAccuracyCalculator.Calculate);
     }
     [TestMethod]
     [TestCategory("Problems.DataAnalysis")]
-    [TestProperty("Time", "medium")]
     public void OnlineCovarianceCalculatorPerformanceTest() {
       TestCalculatorPerfomance(OnlineCovarianceCalculator.Calculate);
     }
     [TestMethod]
     [TestCategory("Problems.DataAnalysis")]
-    [TestProperty("Time", "medium")]
     public void OnlineMeanAbsolutePercentageErrorCalculatorPerformanceTest() {
       TestCalculatorPerfomance(OnlineMeanAbsolutePercentageErrorCalculator.Calculate);
     }
 
     [TestMethod]
     [TestCategory("Problems.DataAnalysis")]
-    [TestProperty("Time", "medium")]
     public void OnlineMeanSquaredErrorCalculatorPerformanceTest() {
       TestCalculatorPerfomance(OnlineMeanSquaredErrorCalculator.Calculate);
     }
     [TestMethod]
     [TestCategory("Problems.DataAnalysis")]
-    [TestProperty("Time", "medium")]
     public void OnlineNormalizedMeanSquaredErrorCalculatorPerformanceTest() {
       TestCalculatorPerfomance(OnlineNormalizedMeanSquaredErrorCalculator.Calculate);
     }
     [TestMethod]
     [TestCategory("Problems.DataAnalysis")]
-    [TestProperty("Time", "medium")]
     public void OnlinePearsonsRSquaredCalculatorPerformanceTest() {
       TestCalculatorPerfomance(OnlinePearsonsRCalculator.Calculate);
     }

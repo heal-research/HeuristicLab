@@ -33,27 +33,26 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
      {3,1,1,1,2,2,3,1,1,2},
      {6,8,8,1,3,4,3,7,1,2},
      {4,1,1,3,2,1,3,1,1,2},
-     {8,10,10,8,7,10,9,7,1,4},            
-     {1,1,1,1,2,10,3,1,1,2},              
-     {2,1,2,1,2,1,3,1,1,2},                 
-     {2,1,1,1,2,1,1,1,5,2},                 
-     {4,2,1,1,2,1,2,1,1,2},                   
-     {1,1,1,1,1,1,3,1,1,2},    
-     {2,1,1,1,2,1,2,1,1,2},                   
-     {5,3,3,3,2,3,4,4,1,4},                          
-     {8,7,5,10,7,9,5,5,4,4},          
-     {7,4,6,4,6,1,4,3,1,4},                          
-     {4,1,1,1,2,1,2,1,1,2},     
-     {4,1,1,1,2,1,3,1,1,2},      
-     {10,7,7,6,4,10,4,1,2,4},  
-     {6,1,1,1,2,1,3,1,1,2},     
-     {7,3,2,10,5,10,5,4,4,4},   
-     {10,5,5,3,6,7,7,10,1,4} 
+     {8,10,10,8,7,10,9,7,1,4},
+     {1,1,1,1,2,10,3,1,1,2},
+     {2,1,2,1,2,1,3,1,1,2},
+     {2,1,1,1,2,1,1,1,5,2},
+     {4,2,1,1,2,1,2,1,1,2},
+     {1,1,1,1,1,1,3,1,1,2},
+     {2,1,1,1,2,1,2,1,1,2},
+     {5,3,3,3,2,3,4,4,1,4},
+     {8,7,5,10,7,9,5,5,4,4},
+     {7,4,6,4,6,1,4,3,1,4},
+     {4,1,1,1,2,1,2,1,1,2},
+     {4,1,1,1,2,1,3,1,1,2},
+     {10,7,7,6,4,10,4,1,2,4},
+     {6,1,1,1,2,1,3,1,1,2},
+     {7,3,2,10,5,10,5,4,4,4},
+     {10,5,5,3,6,7,7,10,1,4}
       };
 
     [TestMethod]
     [TestCategory("Problems.DataAnalysis")]
-    [TestProperty("Time", "short")]
     public void CalculateMeanAndVarianceTest() {
       System.Random random = new System.Random(31415);
 
@@ -69,7 +68,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
           mean_alglib = variance_alglib = 0.0;
           double tmp = 0;
 
-          alglib.samplemoments(xs, n, out  mean_alglib, out variance_alglib, out tmp, out tmp);
+          alglib.samplemoments(xs, n, out mean_alglib, out variance_alglib, out tmp, out tmp);
 
           var calculator = new OnlineMeanAndVarianceCalculator();
           for (int i = 0; i < n; i++) {
@@ -86,7 +85,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
 
     [TestMethod]
     [TestCategory("Problems.DataAnalysis")]
-    [TestProperty("Time", "short")]
     public void CalculatePearsonsRSquaredTest() {
       System.Random random = new System.Random(31415);
       int n = testData.GetLength(0);
@@ -105,11 +103,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
             double r2_alglib = alglib.pearsoncorrelation(xs, ys, n);
             r2_alglib *= r2_alglib;
 
-            var r2Calculator = new OnlinePearsonsRSquaredCalculator();
+            var r2Calculator = new OnlinePearsonsRCalculator();
             for (int i = 0; i < n; i++) {
               r2Calculator.Add(xs[i], ys[i]);
             }
-            double r2 = r2Calculator.RSquared;
+            double r2 = r2Calculator.R * r2Calculator.R;
 
             Assert.IsTrue(r2_alglib.IsAlmost(r2));
           }
@@ -119,7 +117,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
 
     [TestMethod]
     [TestCategory("Problems.DataAnalysis")]
-    [TestProperty("Time", "short")]
     public void CalculatePearsonsRSquaredOfConstantTest() {
       System.Random random = new System.Random(31415);
       int n = 12;
@@ -135,11 +132,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
         double r2_alglib = alglib.pearsoncorrelation(xs, ys, n);
         r2_alglib *= r2_alglib;
 
-        var r2Calculator = new OnlinePearsonsRSquaredCalculator();
+        var r2Calculator = new OnlinePearsonsRCalculator();
         for (int i = 0; i < n; i++) {
           r2Calculator.Add(xs[i], ys[i]);
         }
-        double r2 = r2Calculator.RSquared;
+        double r2 = r2Calculator.R * r2Calculator.R;
 
         Assert.AreEqual(r2_alglib.ToString(), r2.ToString());
       }
@@ -147,7 +144,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
 
     [TestMethod]
     [TestCategory("Problems.DataAnalysis")]
-    [TestProperty("Time", "short")]
     public void CalculateHoeffdingsDTest() {
       OnlineCalculatorError error;
       // direct perfect dependency

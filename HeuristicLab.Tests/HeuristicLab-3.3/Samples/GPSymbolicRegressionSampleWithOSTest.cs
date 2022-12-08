@@ -43,7 +43,6 @@ namespace HeuristicLab.Tests {
 
     [TestMethod]
     [TestCategory("Samples.Create")]
-    [TestProperty("Time", "medium")]
     public void CreateGPSymbolicRegressionSampleWithOSTest() {
       var osga = CreateGpSymbolicRegressionSample();
       string path = Path.Combine(SamplesUtils.SamplesDirectory, SampleFileName + SamplesUtils.SampleFileExtension);
@@ -51,7 +50,7 @@ namespace HeuristicLab.Tests {
     }
     [TestMethod]
     [TestCategory("Samples.Execute")]
-    [TestProperty("Time", "long")]
+    [TestCategory("Run.Daily")]
     public void RunGPSymbolicRegressionSampleWithOSTest() {
       var osga = CreateGpSymbolicRegressionSample();
       osga.SetSeedRandomly.Value = false;

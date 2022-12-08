@@ -11,7 +11,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   public class GradientBoostingTest {
     [TestMethod]
     [TestCategory("Algorithms.DataAnalysis")]
-    [TestProperty("Time", "short")]
     public void DecisionTreeTest() {
       {
         var xy = new double[,]
@@ -164,7 +163,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     [TestMethod]
     [TestCategory("Algorithms.DataAnalysis")]
-    [TestProperty("Time", "short")]
     public void TestDecisionTreePartialDependence() {
       var provider = new HeuristicLab.Problems.Instances.DataAnalysis.RegressionRealWorldInstanceProvider();
       var instance = provider.GetDataDescriptors().Single(x => x.Name.Contains("Tower"));
@@ -196,7 +194,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     [TestMethod]
     [TestCategory("Algorithms.DataAnalysis")]
-    [TestProperty("Time", "short")]
     public void TestDecisionTreePersistence() {
       var provider = new HeuristicLab.Problems.Instances.DataAnalysis.RegressionRealWorldInstanceProvider();
       var instance = provider.GetDataDescriptors().Single(x => x.Name.Contains("Tower"));
@@ -222,7 +219,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     [TestMethod]
     [TestCategory("Algorithms.DataAnalysis")]
-    [TestProperty("Time", "long")]
+    [TestCategory("Run.Daily")]
     public void GradientBoostingTestTowerSquaredError() {
       var gbt = new GradientBoostedTreesAlgorithm();
       var provider = new HeuristicLab.Problems.Instances.DataAnalysis.RegressionRealWorldInstanceProvider();
@@ -248,7 +245,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     [TestMethod]
     [TestCategory("Algorithms.DataAnalysis")]
-    [TestProperty("Time", "long")]
     public void GradientBoostingTestTowerAbsoluteError() {
       var gbt = new GradientBoostedTreesAlgorithm();
       var provider = new HeuristicLab.Problems.Instances.DataAnalysis.RegressionRealWorldInstanceProvider();
@@ -276,7 +272,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     [TestMethod]
     [TestCategory("Algorithms.DataAnalysis")]
-    [TestProperty("Time", "long")]
+    [TestCategory("Run.Daily")]
     public void GradientBoostingTestTowerRelativeError() {
       var gbt = new GradientBoostedTreesAlgorithm();
       var provider = new HeuristicLab.Problems.Instances.DataAnalysis.RegressionRealWorldInstanceProvider();

@@ -34,7 +34,6 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding.Tests {
     ///</summary>
     [TestMethod]
     [TestCategory("Encodings.BinaryVector")]
-    [TestProperty("Time", "short")]
     public void SinglePointCrossoverApplyTest() {
       TestRandom random = new TestRandom();
       BinaryVector parent1, parent2, expected, actual;

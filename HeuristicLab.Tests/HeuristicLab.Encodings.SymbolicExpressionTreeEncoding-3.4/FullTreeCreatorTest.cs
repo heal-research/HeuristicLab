@@ -22,7 +22,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Random;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -35,7 +34,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Tests {
 
     [TestMethod]
     [TestCategory("Encodings.SymbolicExpressionTree")]
-    [TestProperty("Time", "long")]
+    [TestCategory("Run.Daily")]
     public void FullTreeCreatorDistributionsTest() {
       var randomTrees = new List<ISymbolicExpressionTree>();
       var grammar = Grammars.CreateSimpleArithmeticGrammar();
@@ -52,7 +51,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Tests {
       int maxLength = 0;
       foreach (var tree in randomTrees) {
         Util.IsValid(tree);
-        Assert.IsTrue(tree.Depth-1 == MAX_TREE_DEPTH);
+        Assert.IsTrue(tree.Depth - 1 == MAX_TREE_DEPTH);
         if (maxLength < tree.Length)
           maxLength = tree.Length;
         count += tree.Length;

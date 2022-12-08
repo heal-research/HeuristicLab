@@ -39,7 +39,6 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective.Tests {
     /// </summary>
     [TestMethod]
     [TestCategory("Problems.TestFunctions.MultiObjective")]
-    [TestProperty("Time", "short")]
     public void HypervolumeTestSinglePoint() {
 
       //Front with a single Point
@@ -96,7 +95,6 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective.Tests {
     /// </summary>
     [TestMethod]
     [TestCategory("Problems.TestFunctions.MultiObjective")]
-    [TestProperty("Time", "short")]
     public void HypervolumeTestRandomSinglePoint() {
       //Front with a single Point
       double[] point = new double[2];
@@ -149,7 +147,6 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective.Tests {
     /// </summary>
     [TestMethod]
     [TestCategory("Problems.TestFunctions.MultiObjective")]
-    [TestProperty("Time", "short")]
     public void HypervolumeTestDiagonalPoint() {
       //Front with three points
       double[] point1 = new double[2];
@@ -199,7 +196,6 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective.Tests {
     [TestMethod()]
     [ExpectedException(typeof(ArgumentException))]
     [TestCategory("Problems.TestFunctions.MultiObjective")]
-    [TestProperty("Time", "short")]
     public void HypervolumeTestReferencePointViolationNE() {
       //Front with a single Point
       double[] point = new double[2];
@@ -220,7 +216,6 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective.Tests {
     [TestMethod()]
     [ExpectedException(typeof(ArgumentException))]
     [TestCategory("Problems.TestFunctions.MultiObjective")]
-    [TestProperty("Time", "short")]
     public void HypervolumeTestReferencePointViolationNW() {
       //Front with a single Point
       double[] point = new double[2];
@@ -242,7 +237,6 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective.Tests {
     [TestMethod()]
     [ExpectedException(typeof(ArgumentException))]
     [TestCategory("Problems.TestFunctions.MultiObjective")]
-    [TestProperty("Time", "short")]
     public void HypervolumeTestReferencePointViolationSW() {
       //Front with a single Point
       double[] point = new double[2];
@@ -264,7 +258,6 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective.Tests {
     [TestMethod()]
     [ExpectedException(typeof(ArgumentException))]
     [TestCategory("Problems.TestFunctions.MultiObjective")]
-    [TestProperty("Time", "short")]
     public void HypervolumeTestReferencePointViolationSE() {
       //Front with a single Point
       double[] point = new double[2];

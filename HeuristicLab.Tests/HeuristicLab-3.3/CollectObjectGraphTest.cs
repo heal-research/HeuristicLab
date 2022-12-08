@@ -46,7 +46,6 @@ namespace HeuristicLab.Tests {
     [Description("Verify that the object graph traversal is working by checking the number of objects after traversal.")]
     [TestCategory("General")]
     [TestCategory("Essential")]
-    [TestProperty("Time", "medium")]
     public void TestObjectGraphTraversal() {
       GeneticAlgorithm ga = (GeneticAlgorithm)serializer.Deserialize(@"Test Resources\GA_SymbReg.hl");
       var objects = ga.GetObjectGraphObjects().ToList();
@@ -58,7 +57,6 @@ namespace HeuristicLab.Tests {
     [TestMethod]
     [TestCategory("General")]
     [TestCategory("Essential")]
-    [TestProperty("Time", "medium")]
     public void CollectGASample() {
       GeneticAlgorithm ga = (GeneticAlgorithm)serializer.Deserialize(@"Test Resources\GA_SymbReg.hl");
 
@@ -109,7 +107,7 @@ namespace HeuristicLab.Tests {
     /// </summary>
     [TestMethod]
     [TestCategory("General")]
-    [TestProperty("Time", "long")]
+    [TestCategory("Run.Daily")]
     public void AlgorithmExecutions() {
       var algs = new List<IAlgorithm>();
 
@@ -136,7 +134,6 @@ namespace HeuristicLab.Tests {
     /// </summary>
     [TestMethod]
     [TestCategory("General")]
-    [TestProperty("Time", "medium")]
     public void ParallelAlgorithmExecutions() {
       int n = 60;
       var tasks = new Task[n];

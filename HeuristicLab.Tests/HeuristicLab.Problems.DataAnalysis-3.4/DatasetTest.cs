@@ -40,7 +40,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
 
     [TestMethod]
     [TestCategory("Problems.DataAnalysis")]
-    [TestProperty("Time", "short")]
     public void TestImportRowiseData() {
       var matrix = new double[,] { { 1, 2, 3 }, { 2, 3, 1 }, { 3, 1, 2 }, { 1, 2, 3 }, { 2, 3, 1 } };
       var ds = Dataset.FromRowData(new[] { "X1", "X2", "X3" }, matrix);

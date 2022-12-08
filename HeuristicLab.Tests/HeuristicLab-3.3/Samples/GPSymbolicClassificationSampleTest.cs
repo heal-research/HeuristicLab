@@ -40,16 +40,15 @@ namespace HeuristicLab.Tests {
 
     [TestMethod]
     [TestCategory("Samples.Create")]
-    [TestProperty("Time", "medium")]
     public void CreateGpSymbolicClassificationSampleTest() {
       var ga = CreateGpSymbolicClassificationSample();
       string path = Path.Combine(SamplesUtils.SamplesDirectory, SampleFileName + SamplesUtils.SampleFileExtension);
-      serializer .Serialize(ga, path);
+      serializer.Serialize(ga, path);
     }
 
     [TestMethod]
     [TestCategory("Samples.Execute")]
-    [TestProperty("Time", "long")]
+    [TestCategory("Run.Daily")]
     public void RunGpSymbolicClassificationSampleTest() {
       var ga = CreateGpSymbolicClassificationSample();
       ga.SetSeedRandomly.Value = false;

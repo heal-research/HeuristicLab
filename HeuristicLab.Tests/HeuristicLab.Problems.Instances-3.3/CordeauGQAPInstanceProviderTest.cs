@@ -30,7 +30,6 @@ namespace HeuristicLab.Problems.Instances.Tests {
 
     [TestMethod]
     [TestCategory("Problems.Instances")]
-    [TestProperty("Time", "short")]
     public void GetCordeauGQAPInstanceTest() {
       var target = new CordeauGQAPInstanceProvider();
       StringBuilder erroneousInstances = new StringBuilder();

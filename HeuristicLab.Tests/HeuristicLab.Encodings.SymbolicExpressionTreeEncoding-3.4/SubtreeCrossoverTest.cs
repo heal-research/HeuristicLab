@@ -32,7 +32,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Tests {
 
     [TestMethod]
     [TestCategory("Encodings.SymbolicExpressionTree")]
-    [TestProperty("Time", "long")]
+    [TestCategory("Run.Daily")]
     public void SubtreeCrossoverDistributionsTest() {
       int generations = 5;
       var trees = new List<ISymbolicExpressionTree>();

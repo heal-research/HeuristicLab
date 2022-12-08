@@ -94,7 +94,6 @@ namespace HeuristicLab.Problems.Programmable {
 
     [TestMethod]
     [TestCategory("Samples.Create")]
-    [TestProperty("Time", "medium")]
     public void CreateGaGroupingProblemSampleTest() {
       var ga = CreateGaGroupingProblemSample();
       string path = Path.Combine(SamplesUtils.SamplesDirectory, SampleFileName + SamplesUtils.SampleFileExtension);
@@ -103,13 +102,13 @@ namespace HeuristicLab.Problems.Programmable {
 
     [TestMethod]
     [TestCategory("Samples.Execute")]
-    [TestProperty("Time", "long")]
+    [TestCategory("Run.Daily")]
     public void RunGaGroupingProblemSampleTest() {
       var ga = CreateGaGroupingProblemSample();
       ga.SetSeedRandomly.Value = false;
       SamplesUtils.RunAlgorithm(ga);
       Assert.AreEqual(127, SamplesUtils.GetDoubleResult(ga, "BestQuality"));
-      Assert.AreEqual(129,38, SamplesUtils.GetDoubleResult(ga, "CurrentAverageQuality"));
+      Assert.AreEqual(129, 38, SamplesUtils.GetDoubleResult(ga, "CurrentAverageQuality"));
       Assert.AreEqual(132, SamplesUtils.GetDoubleResult(ga, "CurrentWorstQuality"));
       Assert.AreEqual(99100, SamplesUtils.GetIntResult(ga, "EvaluatedSolutions"));
     }

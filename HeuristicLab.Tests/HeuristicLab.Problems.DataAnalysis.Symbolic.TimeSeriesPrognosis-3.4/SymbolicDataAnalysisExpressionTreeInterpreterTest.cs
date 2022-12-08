@@ -24,7 +24,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Problems.DataAnalysis.Symbolic.Tests;
 using HeuristicLab.Random;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis.Tests {
@@ -37,21 +36,21 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis.Tests 
 
     [TestMethod]
     [TestCategory("Problems.DataAnalysis.Symbolic")]
-    [TestProperty("Time", "long")]
+    [TestCategory("Run.Daily")]
     public void TimeSeriesPrognosisInterpreterTestTypeCoherentGrammarPerformance() {
       TestTypeCoherentGrammarPerformance(new SymbolicTimeSeriesPrognosisExpressionTreeInterpreter("y"), 12.5e6);
     }
 
     [TestMethod]
     [TestCategory("Problems.DataAnalysis.Symbolic")]
-    [TestProperty("Time", "long")]
+    [TestCategory("Run.Daily")]
     public void TimeSeriesPrognosisInterpreterTestFullGrammarPerformance() {
       TestFullGrammarPerformance(new SymbolicTimeSeriesPrognosisExpressionTreeInterpreter("y"), 12.5e6);
     }
 
     [TestMethod]
     [TestCategory("Problems.DataAnalysis.Symbolic")]
-    [TestProperty("Time", "long")]
+    [TestCategory("Run.Daily")]
     public void TimeSeriesPrognosisInterpreterTestArithmeticGrammarPerformance() {
       TestArithmeticGrammarPerformance(new SymbolicTimeSeriesPrognosisExpressionTreeInterpreter("y"), 12.5e6);
     }
@@ -115,7 +114,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis.Tests 
     ///</summary>
     [TestMethod]
     [TestCategory("Problems.DataAnalysis.Symbolic")]
-    [TestProperty("Time", "short")]
     public void TimeSeriesPrognosisInterpreterTestEvaluation() {
       Dataset ds = new Dataset(new string[] { "Y", "A", "B" }, new double[,] {
         { 1.0, 1.0, 1.0 },

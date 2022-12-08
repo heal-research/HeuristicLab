@@ -32,7 +32,6 @@ namespace HeuristicLab.Tests {
     [TestMethod]
     [TestCategory("ExtLibs")]
     [TestCategory("ExtLibs.igraph")]
-    [TestProperty("Time", "short")]
     public void IGraphWrappersVectorConstructionAndFinalizationTest() {
       using (var vector = new Vector(7)) {
         Assert.AreEqual(7, vector.Length);
@@ -55,7 +54,6 @@ namespace HeuristicLab.Tests {
     [TestMethod]
     [TestCategory("ExtLibs")]
     [TestCategory("ExtLibs.igraph")]
-    [TestProperty("Time", "short")]
     public void IGraphWrappersVectorGetSetTest() {
       using (var vector = new Vector(5)) {
         vector[0] = vector[1] = 4;
@@ -78,7 +76,6 @@ namespace HeuristicLab.Tests {
     [TestMethod]
     [TestCategory("ExtLibs")]
     [TestCategory("ExtLibs.igraph")]
-    [TestProperty("Time", "short")]
     public void IGraphWrappersVectorFillTest() {
       using (var vector = new Vector(5)) {
         vector.Fill(2.3);
@@ -89,7 +86,6 @@ namespace HeuristicLab.Tests {
     [TestMethod]
     [TestCategory("ExtLibs")]
     [TestCategory("ExtLibs.igraph")]
-    [TestProperty("Time", "short")]
     public void IGraphWrappersVectorReverseTest() {
       using (var vector = new Vector(5)) {
         vector[0] = vector[1] = 4;
@@ -104,7 +100,6 @@ namespace HeuristicLab.Tests {
     [TestMethod]
     [TestCategory("ExtLibs")]
     [TestCategory("ExtLibs.igraph")]
-    [TestProperty("Time", "short")]
     public void IGraphWrappersVectorShuffleTest() {
       var different = new HashSet<RealVector>(new RealVectorEqualityComparer());
       for (var i = 0; i < 100; i++) {
@@ -131,7 +126,6 @@ namespace HeuristicLab.Tests {
     [TestMethod]
     [TestCategory("ExtLibs")]
     [TestCategory("ExtLibs.igraph")]
-    [TestProperty("Time", "short")]
     public void IGraphWrappersVectorScaleTest() {
       using (var vector = new Vector(5)) {
         vector[0] = vector[1] = 4;

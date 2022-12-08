@@ -2,12 +2,12 @@
 using System.IO;
 using HEAL.Attic;
 using HeuristicLab.Algorithms.GeneticAlgorithm;
-using HeuristicLab.Problems.Instances.DataAnalysis;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using HeuristicLab.Problems.DataAnalysis.Symbolic.Regression;
-using HeuristicLab.Problems.DataAnalysis.Symbolic;
-using HeuristicLab.Selection;
 using HeuristicLab.Optimization;
+using HeuristicLab.Problems.DataAnalysis.Symbolic;
+using HeuristicLab.Problems.DataAnalysis.Symbolic.Regression;
+using HeuristicLab.Problems.Instances.DataAnalysis;
+using HeuristicLab.Selection;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace HeuristicLab.Tests {
   [TestClass]
@@ -17,7 +17,7 @@ namespace HeuristicLab.Tests {
 
     [TestMethod]
     [TestCategory("Samples.Execute")]
-    [TestProperty("Time", "long")]
+    [TestCategory("Run.Daily")]
     public void RunStructureTemplateRegressionSampleTest() {
       var ga = CreateStructureTemplateRegressionSample();
       ga.SetSeedRandomly.Value = false;
@@ -38,7 +38,6 @@ namespace HeuristicLab.Tests {
 
     [TestMethod]
     [TestCategory("Samples.Create")]
-    [TestProperty("Time", "medium")]
     public void CreateStructureTemplateRegressionSampleTest() {
       var ga = CreateStructureTemplateRegressionSample();
       string path = Path.Combine(SamplesUtils.SamplesDirectory, SampleFileName + SamplesUtils.SampleFileExtension);
@@ -57,7 +56,7 @@ namespace HeuristicLab.Tests {
           "PlasticHardening(_) - Elasticity(_)" +
         ")" +
         " * C(_)";
-      foreach(var subFunction in problem.StructureTemplate.SubFunctions) {
+      foreach (var subFunction in problem.StructureTemplate.SubFunctions) {
         subFunction.MaximumSymbolicExpressionTreeDepth = 8;
         subFunction.MaximumSymbolicExpressionTreeLength = 20;
         subFunction.Grammar = new ArithmeticExpressionGrammar();

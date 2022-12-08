@@ -35,7 +35,6 @@ namespace HeuristicLab.Tests {
     [TestMethod]
     [TestCategory("General")]
     [TestCategory("Essential")]
-    [TestProperty("Time", "short")]
     public void TestStorableConstructor() {
       StringBuilder errorMessage = new StringBuilder();
 
@@ -74,7 +73,6 @@ namespace HeuristicLab.Tests {
     [TestMethod]
     [TestCategory("General")]
     [TestCategory("Essential")]
-    [TestProperty("Time", "short")]
     public void TestStorableClass() {
       var errorMessage = new StringBuilder();
 

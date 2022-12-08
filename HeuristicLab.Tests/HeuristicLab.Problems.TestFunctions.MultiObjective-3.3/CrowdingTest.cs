@@ -28,7 +28,6 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective.Tests {
     [TestMethod]
     [ExpectedException(typeof(ArgumentException))]
     [TestCategory("Problems.TestFunctions.MultiObjective")]
-    [TestProperty("Time", "short")]
     public void CrowdingTestEmptyFront() {
       double[][] front = { };
 
@@ -37,7 +36,6 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective.Tests {
 
     [TestMethod]
     [TestCategory("Problems.TestFunctions.MultiObjective")]
-    [TestProperty("Time", "short")]
     public void CrowdingTestSamePoint() {
 
       double[] point = new double[2];
@@ -54,7 +52,6 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective.Tests {
 
     [TestMethod]
     [TestCategory("Problems.TestFunctions.MultiObjective")]
-    [TestProperty("Time", "short")]
     public void CrowdingTestSinglePoint() {
       double[] point = new double[2];
       point[0] = 0;
@@ -66,7 +63,6 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective.Tests {
 
     [TestMethod]
     [TestCategory("Problems.TestFunctions.MultiObjective")]
-    [TestProperty("Time", "short")]
     public void CrowdingTestDiagonal() {
       double[] point = new double[2];
       point[0] = 0;
@@ -85,7 +81,6 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective.Tests {
 
     [TestMethod]
     [TestCategory("Problems.TestFunctions.MultiObjective")]
-    [TestProperty("Time", "short")]
     public void CrowdingTestDiamond() {
       double[] point = new double[2];
       point[0] = 0;
@@ -111,7 +106,6 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective.Tests {
     /// </summary>
     [TestMethod]
     [TestCategory("Problems.TestFunctions.MultiObjective")]
-    [TestProperty("Time", "short")]
     public void CrowdingTestDeltoid() {
       double[] point = new double[2];
       point[0] = 0;

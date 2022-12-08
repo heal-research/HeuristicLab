@@ -46,7 +46,6 @@ namespace HeuristicLab.Tests {
 
     [TestMethod]
     [TestCategory("Problems.DataAnalysis.Symbolic")]
-    [TestProperty("Time", "long")]
     public void MaxCommonSubtreeSimilarityCalculatorTestPerformance() {
       var grammar = new TypeCoherentExpressionGrammar();
       grammar.ConfigureAsDefaultRegressionGrammar();

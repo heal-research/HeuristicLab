@@ -31,7 +31,6 @@ namespace HeuristicLab.Optimization.Tests {
     ///</summary>
     [TestMethod]
     [TestCategory("Problems.Optimization")]
-    [TestProperty("Time", "short")]
     public void ExecutionStateEventRegistrationTest() {
       var alg = new EventTestAlgorithm();
       var problem = new EventTestProblem();
@@ -49,7 +48,6 @@ namespace HeuristicLab.Optimization.Tests {
     ///</summary>
     [TestMethod]
     [TestCategory("Problems.Optimization")]
-    [TestProperty("Time", "short")]
     public void ExecutionStateEventDeregistrationTest() {
       var alg = new EventTestAlgorithm();
       var problem = new EventTestProblem();

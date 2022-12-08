@@ -27,7 +27,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
   public class ThresholdCalculatorsTest {
     [TestMethod]
     [TestCategory("Problems.DataAnalysis")]
-    [TestProperty("Time", "short")]
     public void NormalDistributionCutPointsThresholdCalculatorTest() {
 
       {

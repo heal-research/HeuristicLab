@@ -58,7 +58,6 @@ namespace HeuristicLab.Problems.TravelingSalesman.Tests {
 
     [TestMethod]
     [TestCategory("Problems.TravelingSalesman")]
-    [TestProperty("Time", "short")]
     public void InversionMoveEvaluatorTest() {
       var evaluator = new TSPRoundedEuclideanPathEvaluator();
       var moveEvaluator = new TSPInversionMoveRoundedEuclideanPathEvaluator();
@@ -91,7 +90,6 @@ The move would invert the tour {1} between values {2} and {3}.", moveMatrix.ToSt
 
     [TestMethod]
     [TestCategory("Problems.TravelingSalesman")]
-    [TestProperty("Time", "short")]
     public void TranslocationMoveEvaluatorTest() {
       var evaluator = new TSPRoundedEuclideanPathEvaluator();
       var moveEvaluator = new TSPTranslocationMoveRoundedEuclideanPathEvaluator();

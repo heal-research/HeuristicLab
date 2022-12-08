@@ -36,7 +36,6 @@ namespace HeuristicLab.Tests {
     [TestMethod]
     [TestCategory("General")]
     [TestCategory("Essential")]
-    [TestProperty("Time", "long")]
     public void TestToString() {
       bool success = true;
       // just test for all IItems that the ToString method doesn't throw an exception

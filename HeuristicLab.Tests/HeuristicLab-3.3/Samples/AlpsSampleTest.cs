@@ -43,7 +43,6 @@ namespace HeuristicLab.Tests {
 
     [TestMethod]
     [TestCategory("Samples.Create")]
-    [TestProperty("Time", "medium")]
     public void CreateAlpsGaTspSampleTest() {
       var alpsGa = CreateAlpsGaTspSample();
       string path = Path.Combine(SamplesUtils.SamplesDirectory, TspSampleFileName + SamplesUtils.SampleFileExtension);
@@ -52,7 +51,6 @@ namespace HeuristicLab.Tests {
 
     [TestMethod]
     [TestCategory("Samples.Create")]
-    [TestProperty("Time", "medium")]
     public void CreateAlpsGaSymRegSampleTest() {
       var alpsGa = CreateAlpsGaSymRegSample();
       string path = Path.Combine(SamplesUtils.SamplesDirectory, SymRegSampleFileName + SamplesUtils.SampleFileExtension);
@@ -61,7 +59,7 @@ namespace HeuristicLab.Tests {
 
     [TestMethod]
     [TestCategory("Samples.Execute")]
-    [TestProperty("Time", "long")]
+    [TestCategory("Run.Daily")]
     public void RunAlpsGaTspSampleTest() {
       var alpsGa = CreateAlpsGaTspSample();
       alpsGa.SetSeedRandomly.Value = false;
@@ -74,7 +72,7 @@ namespace HeuristicLab.Tests {
 
     [TestMethod]
     [TestCategory("Samples.Execute")]
-    [TestProperty("Time", "long")]
+    [TestCategory("Run.Daily")]
     public void RunAlpsGaSymRegSampleTest() {
       var alpsGa = CreateAlpsGaSymRegSample();
       alpsGa.SetSeedRandomly.Value = false;

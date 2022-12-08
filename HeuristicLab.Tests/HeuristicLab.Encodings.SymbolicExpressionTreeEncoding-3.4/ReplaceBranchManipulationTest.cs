@@ -21,7 +21,6 @@
 
 using System;
 using System.Collections.Generic;
-using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Random;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -34,7 +33,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Tests {
 
     [TestMethod]
     [TestCategory("Encodings.SymbolicExpressionTree")]
-    [TestProperty("Time", "long")]
+    [TestCategory("Run.Daily")]
     public void ReplaceBranchManipulationDistributionsTest() {
       SymbolicExpressionTreeStringFormatter formatter = new SymbolicExpressionTreeStringFormatter();
       var trees = new List<ISymbolicExpressionTree>();

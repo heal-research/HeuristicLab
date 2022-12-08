@@ -36,7 +36,6 @@ namespace HeuristicLab.Tests {
 
     [TestMethod]
     [TestCategory("Samples.Create")]
-    [TestProperty("Time", "medium")]
     public void CreateGaBppSampleTest() {
       var ga = CreateGaBppSample();
       string path = Path.Combine(SamplesUtils.SamplesDirectory, SampleFileName + SamplesUtils.SampleFileExtension);
@@ -45,14 +44,14 @@ namespace HeuristicLab.Tests {
 
     [TestMethod]
     [TestCategory("Samples.Execute")]
-    [TestProperty("Time", "long")]
+    [TestCategory("Run.Daily")]
     public void RunGaBppSampleTest() {
       var ga = CreateGaBppSample();
       ga.SetSeedRandomly.Value = false;
       SamplesUtils.RunAlgorithm(ga);
       Assert.AreEqual(0.59369488300408157, SamplesUtils.GetDoubleResult(ga, "BestQuality"), 1E-6);
-      Assert.AreEqual(0.51834350243004124, SamplesUtils.GetDoubleResult(ga, "CurrentAverageQuality"),1E-6);
-      Assert.AreEqual(0.36227753691428577, SamplesUtils.GetDoubleResult(ga, "CurrentWorstQuality"),1E-6);
+      Assert.AreEqual(0.51834350243004124, SamplesUtils.GetDoubleResult(ga, "CurrentAverageQuality"), 1E-6);
+      Assert.AreEqual(0.36227753691428577, SamplesUtils.GetDoubleResult(ga, "CurrentWorstQuality"), 1E-6);
       Assert.AreEqual(15250, SamplesUtils.GetIntResult(ga, "EvaluatedSolutions"));
     }
 

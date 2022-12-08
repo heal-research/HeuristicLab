@@ -31,7 +31,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Tests {
   public class NcaAlgorithmTest {
     [TestMethod]
     [TestCategory("Algorithms.DataAnalysis")]
-    [TestProperty("Time", "medium")]
     public void RunNcaAlgorithmTest() {
       var uci = new UCIInstanceProvider();
       var nca = new NcaAlgorithm() {

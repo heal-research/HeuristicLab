@@ -30,7 +30,6 @@ namespace HeuristicLab.Encodings.LinearLinkageEncoding.Tests {
   public class LinearLinkageMoveTests {
     [TestMethod]
     [TestCategory("Encodings.LinearLinkage")]
-    [TestProperty("Time", "short")]
     public void TestLinearLinkageMoveApplyUndo() {
       var random = new MersenneTwister(42);
       for (var p = 0; p < 7; p++) {
@@ -56,7 +55,6 @@ namespace HeuristicLab.Encodings.LinearLinkageEncoding.Tests {
 
     [TestMethod]
     [TestCategory("Encodings.LinearLinkage")]
-    [TestProperty("Time", "short")]
     public void TestLinearLinkageMoveApply() {
       var random = new MersenneTwister(42);
       for (var p = 0; p < 7; p++) {

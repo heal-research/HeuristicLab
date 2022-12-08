@@ -14,7 +14,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
 
     [TestMethod]
     [TestCategory("Problems.DataAnalysis.Symbolic")]
-    [TestProperty("Time", "short")]
     public void BottomUpTreeSimilarityCalculatorTestMapping() {
       TestMatchedNodes("1 + 1", "2 + 2", 0, strict: true);
       TestMatchedNodes("1 + 1", "2 + 2", 3, strict: false);
@@ -65,7 +64,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
 
     [TestMethod]
     [TestCategory("Problems.DataAnalysis.Symbolic")]
-    [TestProperty("Time", "long")]
     public void BottomUpTreeSimilarityCalculatorTestPerformance() {
       var grammar = new TypeCoherentExpressionGrammar();
       grammar.ConfigureAsDefaultRegressionGrammar();
@@ -92,14 +90,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
 
     [TestMethod]
     [TestCategory("Problems.DataAnalysis.Symbolic")]
-    [TestProperty("Time", "long")]
     public void BottomUpTreeSimilarityCalculatorStrictMatchingConsistency() {
       TestMatchingConsistency(strict: true);
     }
 
     [TestMethod]
     [TestCategory("Problems.DataAnalysis.Symbolic")]
-    [TestProperty("Time", "long")]
     public void BottomUpTreeSimilarityCalculatorRelaxedMatchingConsistency() {
       TestMatchingConsistency(strict: false);
     }

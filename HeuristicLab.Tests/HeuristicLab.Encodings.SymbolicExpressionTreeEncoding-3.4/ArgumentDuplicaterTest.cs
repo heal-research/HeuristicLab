@@ -22,7 +22,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Random;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -35,7 +34,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Tests {
 
     [TestMethod]
     [TestCategory("Encodings.SymbolicExpressionTree")]
-    [TestProperty("Time", "long")]
+    [TestCategory("Run.Daily")]
     public void ArgumentDuplicaterDistributionsTest() {
       var trees = new List<ISymbolicExpressionTree>();
       var grammar = Grammars.CreateArithmeticAndAdfGrammar();

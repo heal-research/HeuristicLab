@@ -39,7 +39,7 @@ namespace HeuristicLab.Tests {
 
     [TestMethod]
     [TestCategory("Samples.Execute")]
-    [TestProperty("Time", "long")]
+    [TestCategory("Run.Daily")]
     public void RunShapeConstrainedRegressionSampleTest() {
       var ga = CreateShapeConstrainedRegressionSample();
       ga.SetSeedRandomly.Value = false;
@@ -60,7 +60,6 @@ namespace HeuristicLab.Tests {
 
     [TestMethod]
     [TestCategory("Samples.Create")]
-    [TestProperty("Time", "medium")]
     public void CreateShapeConstrainedRegressionSampleTest() {
       var ga = CreateShapeConstrainedRegressionSample();
       string path = Path.Combine(SamplesUtils.SamplesDirectory, SampleFileName + SamplesUtils.SampleFileExtension);

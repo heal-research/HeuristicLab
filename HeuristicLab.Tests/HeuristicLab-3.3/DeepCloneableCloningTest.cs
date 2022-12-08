@@ -65,7 +65,6 @@ namespace HeuristicLab.Tests {
     [TestMethod]
     [TestCategory("General")]
     [TestCategory("Essential")]
-    [TestProperty("Time", "long")]
     public void TestCloningFinishedExperiment() {
       Experiment experiment = (Experiment)serializer.Deserialize(@"Test Resources\SamplesExperimentFinished.hl");
 
@@ -78,7 +77,6 @@ namespace HeuristicLab.Tests {
     [TestMethod]
     [TestCategory("General")]
     [TestCategory("Essential")]
-    [TestProperty("Time", "long")]
     public void TestCloningAllDeepCloneables() {
       PluginLoader.Assemblies.ToArray();
       bool success = true;

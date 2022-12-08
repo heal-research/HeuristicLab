@@ -35,7 +35,6 @@ namespace HeuristicLab.Encodings.PermutationEncoding.Tests {
     ///</summary>
     [TestMethod]
     [TestCategory("Encodings.Permutation")]
-    [TestProperty("Time", "short")]
     public void UniformLikeCrossoverApplyTest() {
       // test from the paper
       IRandom random = new TestRandom(new int[] { 0 }, new double[] { 0.2, 0.7, 0.2, 0.2 }); // TODO: Initialize to an appropriate value

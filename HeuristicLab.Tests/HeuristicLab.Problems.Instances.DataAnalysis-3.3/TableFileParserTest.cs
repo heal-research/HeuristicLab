@@ -31,7 +31,6 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Tests {
   public class TableFileParserTest {
     [TestMethod]
     [TestCategory("Problems.Instances")]
-    [TestProperty("Time", "short")]
     public void ParseCSV() {
       string tempFileName = Path.GetTempFileName();
       WriteToFile(tempFileName,
@@ -55,7 +54,6 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Tests {
 
     [TestMethod]
     [TestCategory("Problems.Instances")]
-    [TestProperty("Time", "short")]
     public void ParseCSVWithNames() {
       string tempFileName = Path.GetTempFileName();
       WriteToFile(tempFileName,
@@ -80,7 +78,6 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Tests {
 
     [TestMethod]
     [TestCategory("Problems.Instances")]
-    [TestProperty("Time", "short")]
     public void ParseGermanCSV() {
       string tempFileName = Path.GetTempFileName();
       WriteToFile(tempFileName,
@@ -104,7 +101,6 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Tests {
 
     [TestMethod]
     [TestCategory("Problems.Instances")]
-    [TestProperty("Time", "short")]
     public void ParseGermanCSVWithNames() {
       string tempFileName = Path.GetTempFileName();
       WriteToFile(tempFileName,
@@ -129,7 +125,6 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Tests {
 
     [TestMethod]
     [TestCategory("Problems.Instances")]
-    [TestProperty("Time", "short")]
     public void ParseGermanCSVWithoutCommas() {
       string tempFileName = Path.GetTempFileName();
       WriteToFile(tempFileName,
@@ -153,7 +148,6 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Tests {
 
     [TestMethod]
     [TestCategory("Problems.Instances")]
-    [TestProperty("Time", "short")]
     public void ParseGermanCSVWithoutCommasWithNames() {
       string tempFileName = Path.GetTempFileName();
       WriteToFile(tempFileName,
@@ -178,7 +172,6 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Tests {
 
     [TestMethod]
     [TestCategory("Problems.Instances")]
-    [TestProperty("Time", "short")]
     public void ParseEnglishCSVWithoutCommas() {
       string tempFileName = Path.GetTempFileName();
       WriteToFile(tempFileName,
@@ -202,7 +195,6 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Tests {
 
     [TestMethod]
     [TestCategory("Problems.Instances")]
-    [TestProperty("Time", "short")]
     public void ParseEnglishCSVWithoutCommasWithoutSpace() {
       string tempFileName = Path.GetTempFileName();
       WriteToFile(tempFileName,
@@ -226,7 +218,6 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Tests {
 
     [TestMethod]
     [TestCategory("Problems.Instances")]
-    [TestProperty("Time", "short")]
     public void ParseEnglishCSVWithoutCommasWithNames() {
       string tempFileName = Path.GetTempFileName();
       WriteToFile(tempFileName,
@@ -251,7 +242,6 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Tests {
 
     [TestMethod]
     [TestCategory("Problems.Instances")]
-    [TestProperty("Time", "short")]
     public void ParseEnglishCSVWithoutCommasWithoutSpacesWithNames() {
       string tempFileName = Path.GetTempFileName();
       WriteToFile(tempFileName,
@@ -277,7 +267,6 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Tests {
 
     [TestMethod]
     [TestCategory("Problems.Instances")]
-    [TestProperty("Time", "short")]
     public void ParseGermanTabSeparated() {
       string tempFileName = Path.GetTempFileName();
       WriteToFile(tempFileName,
@@ -301,7 +290,6 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Tests {
 
     [TestMethod]
     [TestCategory("Problems.Instances")]
-    [TestProperty("Time", "short")]
     public void ParseGermanTabSeparatedWithNames() {
       string tempFileName = Path.GetTempFileName();
       WriteToFile(tempFileName,
@@ -326,7 +314,6 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Tests {
 
     [TestMethod]
     [TestCategory("Problems.Instances")]
-    [TestProperty("Time", "short")]
     public void ParseEnglishTabSeparated() {
       string tempFileName = Path.GetTempFileName();
       WriteToFile(tempFileName,
@@ -350,7 +337,6 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Tests {
 
     [TestMethod]
     [TestCategory("Problems.Instances")]
-    [TestProperty("Time", "short")]
     public void ParseEnglishTabSeparatedWithNames() {
       string tempFileName = Path.GetTempFileName();
       WriteToFile(tempFileName,
@@ -375,7 +361,6 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Tests {
 
     [TestMethod]
     [TestCategory("Problems.Instances")]
-    [TestProperty("Time", "short")]
     public void ParseTabSeparatedWithoutCommas() {
       string tempFileName = Path.GetTempFileName();
       WriteToFile(tempFileName,
@@ -399,7 +384,6 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Tests {
 
     [TestMethod]
     [TestCategory("Problems.Instances")]
-    [TestProperty("Time", "short")]
     public void ParseTabSeparatedWithoutCommasWithNames() {
       string tempFileName = Path.GetTempFileName();
       WriteToFile(tempFileName,
@@ -424,7 +408,6 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Tests {
 
     [TestMethod]
     [TestCategory("Problems.Instances")]
-    [TestProperty("Time", "short")]
     public void ParseWithEmtpyLines() {
       string tempFileName = Path.GetTempFileName();
       WriteToFile(tempFileName,
@@ -448,7 +431,6 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Tests {
 
     [TestMethod]
     [TestCategory("Problems.Instances")]
-    [TestProperty("Time", "short")]
     public void ParseGermanSpaceSeparated() {
       string tempFileName = Path.GetTempFileName();
       WriteToFile(tempFileName,
@@ -472,7 +454,6 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Tests {
 
     [TestMethod]
     [TestCategory("Problems.Instances")]
-    [TestProperty("Time", "short")]
     public void ParseGermanSpaceSeparatedWithNames() {
       string tempFileName = Path.GetTempFileName();
       WriteToFile(tempFileName,
@@ -497,7 +478,6 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Tests {
 
     [TestMethod]
     [TestCategory("Problems.Instances")]
-    [TestProperty("Time", "short")]
     public void ParseEnglishSpaceSeparated() {
       string tempFileName = Path.GetTempFileName();
       WriteToFile(tempFileName,
@@ -521,7 +501,6 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Tests {
 
     [TestMethod]
     [TestCategory("Problems.Instances")]
-    [TestProperty("Time", "short")]
     public void ParseEnglishSpaceSeparatedWithNames() {
       string tempFileName = Path.GetTempFileName();
       WriteToFile(tempFileName,
@@ -546,7 +525,6 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Tests {
 
     [TestMethod]
     [TestCategory("Problems.Instances")]
-    [TestProperty("Time", "short")]
     public void ParseEnglishSpaceSeparatedWithNamesManyColumns() {
       string tempFileName = Path.GetTempFileName();
       WriteToFile(tempFileName,
@@ -568,7 +546,6 @@ c,3.0000,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 
     [TestMethod]
     [TestCategory("Problems.Instances")]
-    [TestProperty("Time", "short")]
     public void ParseSpaceSeparatedWithoutCommas() {
       string tempFileName = Path.GetTempFileName();
       WriteToFile(tempFileName,
@@ -592,7 +569,6 @@ c,3.0000,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 
     [TestMethod]
     [TestCategory("Problems.Instances")]
-    [TestProperty("Time", "short")]
     public void ParseSpaceSeparatedWithoutCommasWithNames() {
       string tempFileName = Path.GetTempFileName();
       WriteToFile(tempFileName,
@@ -618,7 +594,6 @@ c,3.0000,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 
     [TestMethod]
     [TestCategory("Problems.Instances")]
-    [TestProperty("Time", "short")]
     public void ParseWithColumnTypeConversionDE() {
       // If first entry of a column can be parsed as a double we assume all values are doubles.
       // However, if any of the following entries cannot be parsed as a double we convert the whole column to a string column.
@@ -659,7 +634,6 @@ c,3.0000,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 
     [TestMethod]
     [TestCategory("Problems.Instances")]
-    [TestProperty("Time", "short")]
     public void ParseWithColumnTypeConversionInvariant() {
       // see ParseWithColumnTypeConversionDE above
       // same routine only using invariant culture
@@ -698,7 +672,6 @@ s,0,0,0");
 
     [TestMethod]
     [TestCategory("Problems.Instances")]
-    [TestProperty("Time", "short")]
     public void ParseWithTypeConversion() {
       // the parser tries to determine the column type (double, datetime, string) by looking at the values in the first few rows
       // if the values are of a different type then the type of the column is converted
@@ -794,7 +767,6 @@ str,a string --> column is converted to List<string>
 
     [TestMethod]
     [TestCategory("Problems.Instances")]
-    [TestProperty("Time", "short")]
     public void ParseDateTime() {
       {
         // case 1 dates and datetimes should be parsed as datetime column
@@ -864,7 +836,6 @@ str,a string --> column is converted to List<string>
 
     [TestMethod]
     [TestCategory("Problems.Instances")]
-    [TestProperty("Time", "short")]
     public void CheckTypeConversionAndLongFiles() {
       {
         // case 1 incorrect input after 500 rows should lead to exceptions

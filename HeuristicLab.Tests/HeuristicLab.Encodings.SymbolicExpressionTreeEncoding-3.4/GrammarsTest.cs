@@ -27,7 +27,6 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Tests {
   public class GrammarsTest {
     [TestMethod]
     [TestCategory("Encodings.SymbolicExpressionTree")]
-    [TestProperty("Time", "short")]
     public void MinimumExpressionLengthTest() {
       {
         var grammar = CreateTestGrammar1();
@@ -110,7 +109,6 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Tests {
 
     [TestMethod]
     [TestCategory("Encodings.SymbolicExpressionTree")]
-    [TestProperty("Time", "short")]
     public void MinimumExpressionDepthTest() {
       {
         var grammar = CreateTestGrammar1();

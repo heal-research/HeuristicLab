@@ -10,7 +10,6 @@ namespace HeuristicLab.Tests {
     [TestMethod]
     [TestCategory("General")]
     [TestCategory("Essential")]
-    [TestProperty("Time", "long")]
     public void NamedItemTestNameNotEmpty() {
       StringBuilder sb = new StringBuilder();
       foreach (var namedItem in ApplicationManager.Manager.GetInstances<INamedItem>()) {

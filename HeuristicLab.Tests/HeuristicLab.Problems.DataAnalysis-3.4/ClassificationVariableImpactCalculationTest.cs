@@ -28,7 +28,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
 
     [TestMethod]
     [TestCategory("Problems.DataAnalysis")]
-    [TestProperty("Time", "short")]
     public void ConstantModelVariableImpactTest() {
       IClassificationProblemData problemData = LoadIrisProblem();
       IClassificationModel model = new ConstantModel(5, "y");
@@ -40,7 +39,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
 
     [TestMethod]
     [TestCategory("Problems.DataAnalysis")]
-    [TestProperty("Time", "short")]
     public void KNNIrisVariableImpactTest() {
       IClassificationProblemData problemData = LoadIrisProblem();
       IClassificationSolution solution = NearestNeighbourClassification.CreateNearestNeighbourClassificationSolution(problemData, 3);
@@ -53,7 +51,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
 
     [TestMethod]
     [TestCategory("Problems.DataAnalysis")]
-    [TestProperty("Time", "short")]
     public void LDAIrisVariableImpactTest() {
       IClassificationProblemData problemData = LoadIrisProblem();
       IClassificationSolution solution = LinearDiscriminantAnalysis.CreateLinearDiscriminantAnalysisSolution(problemData);
@@ -66,7 +63,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
 
     [TestMethod]
     [TestCategory("Problems.DataAnalysis")]
-    [TestProperty("Time", "short")]
     public void CustomModelVariableImpactTest() {
       IClassificationProblemData problemData = CreateDefaultProblem();
       ISymbolicExpressionTree tree = CreateCustomExpressionTree();
@@ -80,7 +76,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
 
     [TestMethod]
     [TestCategory("Problems.DataAnalysis")]
-    [TestProperty("Time", "short")]
     public void CustomModelVariableImpactNoInfluenceTest() {
       IClassificationProblemData problemData = CreateDefaultProblem();
       ISymbolicExpressionTree tree = CreateCustomExpressionTreeNoInfluenceX1();
@@ -94,7 +89,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
 
     [TestMethod]
     [TestCategory("Problems.DataAnalysis")]
-    [TestProperty("Time", "short")]
     [ExpectedException(typeof(ArgumentException))]
     public void WrongDataSetVariableImpactClassificationTest() {
       IClassificationProblemData problemData = LoadIrisProblem();
@@ -109,7 +103,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
 
     [TestMethod]
     [TestCategory("Problems.DataAnalysis")]
-    [TestProperty("Time", "medium")]
+    [TestCategory("Run.Daily")]
     public void PerformanceVariableImpactClassificationTest() {
       int rows = 1500;
       int columns = 77;

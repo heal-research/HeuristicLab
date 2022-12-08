@@ -41,7 +41,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Tests {
 
     [TestMethod]
     [TestCategory("Algorithms.DataAnalysis")]
-    [TestProperty("Time", "long")]
     public void GaussianProcessRegressionPerformanceTest() {
       ex = null;
 

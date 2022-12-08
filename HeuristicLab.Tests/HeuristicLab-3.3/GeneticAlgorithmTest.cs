@@ -42,7 +42,6 @@ namespace HeuristicLab.Tests {
 
     [TestMethod]
     [TestCategory("General")]
-    [TestProperty("Time", "long")]
     public void GeneticAlgorithmPerformanceTest() {
       ex = null;
       GeneticAlgorithm ga = (GeneticAlgorithm)serializer.Deserialize(@"Test Resources\GA_TSP.hl");

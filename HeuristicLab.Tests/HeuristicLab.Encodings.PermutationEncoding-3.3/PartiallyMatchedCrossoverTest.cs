@@ -34,7 +34,6 @@ namespace HeuristicLab.Encodings.PermutationEncoding.Tests {
     ///</summary>
     [TestMethod]
     [TestCategory("Encodings.Permutation")]
-    [TestProperty("Time", "short")]
     public void PartiallyMatchedCrossoverApplyTest() {
       TestRandom random = new TestRandom();
       Permutation parent1, parent2, expected, actual;

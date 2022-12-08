@@ -39,7 +39,6 @@ namespace HeuristicLab.Tests {
     [TestMethod]
     [TestCategory("General")]
     [TestCategory("Essential")]
-    [TestProperty("Time", "long")]
     public void TestParameterVisibility() {
       StringBuilder errorMessage = new StringBuilder();
 

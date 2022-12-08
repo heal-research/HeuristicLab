@@ -30,7 +30,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
 
     [TestMethod]
     [TestCategory("Problems.DataAnalysis")]
-    [TestProperty("Time", "short")]
     public void SimplifierAxiomsTest() {
       SymbolicExpressionImporter importer = new SymbolicExpressionImporter();
       SymbolicExpressionTreeStringFormatter formatter = new SymbolicExpressionTreeStringFormatter();

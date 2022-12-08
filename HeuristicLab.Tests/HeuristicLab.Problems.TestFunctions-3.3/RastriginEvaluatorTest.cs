@@ -34,7 +34,6 @@ namespace HeuristicLab.Problems.TestFunctions.Tests {
     ///</summary>
     [TestMethod]
     [TestCategory("Problems.TestFunctions")]
-    [TestProperty("Time", "short")]
     public void RastriginEvaluateFunctionTest() {
       RastriginEvaluator target = new RastriginEvaluator();
       RealVector point = null;

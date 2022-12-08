@@ -34,7 +34,6 @@ namespace HeuristicLab.Problems.TestFunctions.Tests {
     ///</summary>
     [TestMethod]
     [TestCategory("Problems.TestFunctions")]
-    [TestProperty("Time", "short")]
     public void LevyEvaluateFunctionTest() {
       LevyEvaluator target = new LevyEvaluator();
       RealVector point = null;

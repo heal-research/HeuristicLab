@@ -39,7 +39,6 @@ namespace HeuristicLab.Tests {
 
     [TestMethod]
     [TestCategory("Samples.Create")]
-    [TestProperty("Time", "medium")]
     public void CreateGeArtificialAntSampleTest() {
       var geaa = CreateGeArtificialAntSample();
       string path = Path.Combine(SamplesUtils.SamplesDirectory, GeArtificialAntSampleFileName + SamplesUtils.SampleFileExtension);
@@ -48,7 +47,7 @@ namespace HeuristicLab.Tests {
 
     [TestMethod]
     [TestCategory("Samples.Execute")]
-    [TestProperty("Time", "long")]
+    [TestCategory("Run.Daily")]
     public void RunGeArtificalAntSampleTest() {
       var ga = CreateGeArtificialAntSample();
       ga.SetSeedRandomly.Value = false;
@@ -78,7 +77,6 @@ namespace HeuristicLab.Tests {
 
     [TestMethod]
     [TestCategory("Samples.Create")]
-    [TestProperty("Time", "medium")]
     public void CreateGeSymbolicRegressionSampleTest() {
       var geSymbReg = CreateGeSymbolicRegressionSample();
       string path = Path.Combine(SamplesUtils.SamplesDirectory, GeSymbolicRegressionSampleFileName + SamplesUtils.SampleFileExtension);
@@ -87,7 +85,7 @@ namespace HeuristicLab.Tests {
 
     [TestMethod]
     [TestCategory("Samples.Execute")]
-    [TestProperty("Time", "long")]
+    [TestCategory("Run.Daily")]
     public void RunGeSymbolicRegressionSampleTest() {
       var ga = CreateGeSymbolicRegressionSample();
       ga.SetSeedRandomly.Value = false;

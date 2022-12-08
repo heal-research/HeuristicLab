@@ -21,10 +21,8 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
 using System.IO;
-using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -34,9 +32,6 @@ using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Persistence.Core;
-using HeuristicLab.Persistence.Default.Xml;
-using HeuristicLab.Persistence.Interfaces;
 using HeuristicLab.Tests;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -61,7 +56,6 @@ namespace HeuristicLab.Persistence.Attic.Tests {
 
     [TestMethod]
     [TestCategory("Persistence.Attic")]
-    [TestProperty("Time", "short")]
     public void BitmapTest() {
       Icon icon = System.Drawing.SystemIcons.Hand;
       Bitmap bitmap = icon.ToBitmap();
@@ -77,7 +71,6 @@ namespace HeuristicLab.Persistence.Attic.Tests {
 
     [TestMethod]
     [TestCategory("Persistence.Attic")]
-    [TestProperty("Time", "short")]
     public void FontTest() {
       List<Font> fonts = new List<Font>() {
         new Font(FontFamily.GenericSansSerif, 12),
@@ -95,7 +88,6 @@ namespace HeuristicLab.Persistence.Attic.Tests {
 
     [TestMethod]
     [TestCategory("Persistence.Attic")]
-    [TestProperty("Time", "medium")]
     public void ConcurrencyTest() {
       int n = 20;
       Task[] tasks = new Task[n];
@@ -113,7 +105,6 @@ namespace HeuristicLab.Persistence.Attic.Tests {
 
     [TestMethod]
     [TestCategory("Persistence.Attic")]
-    [TestProperty("Time", "medium")]
     public void ConcurrentBitmapTest() {
       Bitmap b = new Bitmap(300, 300);
       System.Random r = new System.Random();
@@ -156,179 +147,7 @@ namespace HeuristicLab.Persistence.Attic.Tests {
 
     [TestMethod]
     [TestCategory("Persistence.Attic")]
-    [TestProperty("Time", "long")]
-    public void ProfileSamples() {
-      // CreateAllSamples();
-      var path = SamplesUtils.SamplesDirectory;
-      foreach (var fileName in Directory.EnumerateFiles(path, "*.hl")) {
-        //ProfilePersistenceToMemory(fileName);
-        ProfilePersistenceToDisk(fileName);
-      }
-    }
-
-    private void ProfilePersistenceToMemory(string fileName) {
-      var REPS = 5;
-      var oldDeserStopwatch = new Stopwatch();
-      var oldSerStopwatch = new Stopwatch();
-      var newDeserStopwatch = new Stopwatch();
-      var newSerStopwatch = new Stopwatch();
-      long oldSize = 0, newSize = 0;
-      var config = ConfigurationService.Instance.GetConfiguration(new XmlFormat());
-      int[] oldCollections = new int[3];
-      int[] newCollections = new int[3];
-
-      for (int i = 0; i < REPS; i++) {
-        var original = XmlParser.Deserialize(fileName);
-        object deserializedObject1 = null;
-        object deserializedObject2 = null;
-        byte[] buf;
-        System.GC.Collect();
-        var collection0 = System.GC.CollectionCount(0);
-        var collection1 = System.GC.CollectionCount(1);
-        var collection2 = System.GC.CollectionCount(2);
-        using (var s = new MemoryStream()) {
-
-          oldSerStopwatch.Start();
-          // serialize manually so that the stream won't be closed
-          var serializer = new Core.Serializer(original, config);
-          serializer.InterleaveTypeInformation = true;
-          using (StreamWriter writer = new StreamWriter(new GZipStream(s, CompressionMode.Compress))) {
-            XmlGenerator generator = new XmlGenerator();
-            foreach (ISerializationToken token in serializer) {
-              writer.Write(generator.Format(token));
-            }
-            writer.Flush();
-            oldSize += s.Length;
-          }
-
-          oldSerStopwatch.Stop();
-          buf = s.GetBuffer();
-        }
-        using (var s = new MemoryStream(buf)) {
-          oldDeserStopwatch.Start();
-          deserializedObject1 = XmlParser.Deserialize(s);
-          oldDeserStopwatch.Stop();
-        }
-
-        System.GC.Collect();
-        oldCollections[0] += System.GC.CollectionCount(0) - collection0;
-        oldCollections[1] += System.GC.CollectionCount(1) - collection1;
-        oldCollections[2] += System.GC.CollectionCount(2) - collection2;
-
-        collection0 = System.GC.CollectionCount(0);
-        collection1 = System.GC.CollectionCount(1);
-        collection2 = System.GC.CollectionCount(2);
-
-        // Protobuf only uses Deflate
-        using (var m = new MemoryStream()) {
-          //         using (var s = new GZipStream(m, CompressionMode.Compress)) { // same as old persistence
-          using (var s = new DeflateStream(m, CompressionMode.Compress)) { // new format
-            newSerStopwatch.Start();
-            (new ProtoBufSerializer()).Serialize(original, s, false);
-            s.Flush();
-            newSerStopwatch.Stop();
-            newSize += m.Length;
-          }
-          buf = m.GetBuffer();
-        }
-        using (var m = new MemoryStream(buf)) {
-          // using (var s = new GZipStream(m, CompressionMode.Decompress)) { // same as old persistence
-          using (var s = new DeflateStream(m, CompressionMode.Decompress)) { // new format
-            newDeserStopwatch.Start();
-            deserializedObject2 = (new ProtoBufSerializer()).Deserialize(s);
-            newDeserStopwatch.Stop();
-          }
-        }
-        //Assert.AreEqual(deserializedObject1.GetObjectGraphObjects().Count(), deserializedObject2.GetObjectGraphObjects().Count());
-
-        System.GC.Collect();
-        newCollections[0] += System.GC.CollectionCount(0) - collection0;
-        newCollections[1] += System.GC.CollectionCount(1) - collection1;
-        newCollections[2] += System.GC.CollectionCount(2) - collection2;
-      }
-
-      Console.WriteLine($"{fileName} " +
-        $"{oldSize / (double)REPS} " +
-        $"{newSize / (double)REPS} " +
-        $"{oldSerStopwatch.ElapsedMilliseconds / (double)REPS} " +
-        $"{newSerStopwatch.ElapsedMilliseconds / (double)REPS} " +
-        $"{oldDeserStopwatch.ElapsedMilliseconds / (double)REPS} " +
-        $"{newDeserStopwatch.ElapsedMilliseconds / (double)REPS} " +
-        $"{oldCollections[0] / (double)REPS} " +
-        $"{newCollections[0] / (double)REPS} " +
-        $"{oldCollections[1] / (double)REPS} " +
-        $"{newCollections[1] / (double)REPS} " +
-        $"{oldCollections[2] / (double)REPS} " +
-        $"{newCollections[2] / (double)REPS} " +
-        $"");
-    }
-
-    private void ProfilePersistenceToDisk(string fileName) {
-      var REPS = 5;
-      var oldDeserStopwatch = new Stopwatch();
-      var oldSerStopwatch = new Stopwatch();
-      var newDeserStopwatch = new Stopwatch();
-      var newSerStopwatch = new Stopwatch();
-      long oldSize = 0, newSize = 0;
-      int[] oldCollections = new int[3];
-      int[] newCollections = new int[3];
-
-      for (int i = 0; i < REPS; i++) {
-        var original = XmlParser.Deserialize(fileName);
-        System.GC.Collect();
-        var collection0 = System.GC.CollectionCount(0);
-        var collection1 = System.GC.CollectionCount(1);
-        var collection2 = System.GC.CollectionCount(2);
-
-        oldSerStopwatch.Start();
-        XmlGenerator.Serialize(original, tempFile);
-        oldSerStopwatch.Stop();
-
-        oldSize += new FileInfo(tempFile).Length;
-        oldDeserStopwatch.Start();
-        var clone = XmlParser.Deserialize(tempFile);
-        oldDeserStopwatch.Stop();
-        System.GC.Collect();
-        oldCollections[0] += System.GC.CollectionCount(0) - collection0;
-        oldCollections[1] += System.GC.CollectionCount(1) - collection1;
-        oldCollections[2] += System.GC.CollectionCount(2) - collection2;
-
-        collection0 = System.GC.CollectionCount(0);
-        collection1 = System.GC.CollectionCount(1);
-        collection2 = System.GC.CollectionCount(2);
-
-        newSerStopwatch.Start();
-        (new ProtoBufSerializer()).Serialize(original, tempFile);
-        newSerStopwatch.Stop();
-        newSize += new FileInfo(tempFile).Length;
-        newDeserStopwatch.Start();
-        var newClone = (new ProtoBufSerializer()).Deserialize(tempFile);
-        newDeserStopwatch.Stop();
-        System.GC.Collect();
-        newCollections[0] += System.GC.CollectionCount(0) - collection0;
-        newCollections[1] += System.GC.CollectionCount(1) - collection1;
-        newCollections[2] += System.GC.CollectionCount(2) - collection2;
-      }
-      Console.WriteLine($"{fileName} " +
-        $"{oldSize / (double)REPS} " +
-        $"{newSize / (double)REPS} " +
-        $"{oldSerStopwatch.ElapsedMilliseconds / (double)REPS} " +
-        $"{newSerStopwatch.ElapsedMilliseconds / (double)REPS} " +
-        $"{oldDeserStopwatch.ElapsedMilliseconds / (double)REPS} " +
-        $"{newDeserStopwatch.ElapsedMilliseconds / (double)REPS} " +
-        $"{oldCollections[0] / (double)REPS} " +
-        $"{newCollections[0] / (double)REPS} " +
-        $"{oldCollections[1] / (double)REPS} " +
-        $"{newCollections[1] / (double)REPS} " +
-        $"{oldCollections[2] / (double)REPS} " +
-        $"{newCollections[2] / (double)REPS} " +
-        $"");
-    }
-
-
-    [TestMethod]
-    [TestCategory("Persistence.Attic")]
-    [TestProperty("Time", "long")]
+    [TestCategory("Run.Daily")]
     public void TestLoadingSamples() {
       CreateAllSamples();
       var path = SamplesUtils.SamplesDirectory;
@@ -346,7 +165,7 @@ namespace HeuristicLab.Persistence.Attic.Tests {
               } else {
                 var g = Mapper.StaticCache.GetGuid(t);
               }
-            } catch (Exception e) {
+            } catch (Exception) {
               Console.WriteLine($"type {t.FullName} in {fileName} is not registered with a GUID in HEAL.Attic");
               ok = false;
             }
@@ -361,9 +180,7 @@ namespace HeuristicLab.Persistence.Attic.Tests {
       }
     }
 
-    [TestMethod]
     [TestCategory("Persistence.Attic")]
-    [TestProperty("Time", "long")]
     public void TestLoadingRunAndStoreSamples() {
       CreateAllSamples();
       var path = SamplesUtils.SamplesDirectory;
@@ -395,7 +212,6 @@ namespace HeuristicLab.Persistence.Attic.Tests {
 
     [TestMethod]
     [TestCategory("Persistence.Attic")]
-    [TestProperty("Time", "short")]
     public void TestIndexedDataTable() {
       var dt = new IndexedDataTable<int>("test", "test description");
       var dr = new IndexedDataRow<int>("test row");
@@ -413,7 +229,6 @@ namespace HeuristicLab.Persistence.Attic.Tests {
 
     [TestMethod]
     [TestCategory("Persistence.Attic")]
-    [TestProperty("Time", "short")]
     public void TestPoint2d() {
       var tag = new IntValue(10);
       var p = new Point2D<double>(1.0, 2.0, tag);
@@ -426,9 +241,5 @@ namespace HeuristicLab.Persistence.Attic.Tests {
       Assert.AreEqual(tag.Value, tag2.Value);
     }
 
-    [ClassInitialize]
-    public static void Initialize(TestContext testContext) {
-      ConfigurationService.Instance.Reset();
-    }
   }
 }

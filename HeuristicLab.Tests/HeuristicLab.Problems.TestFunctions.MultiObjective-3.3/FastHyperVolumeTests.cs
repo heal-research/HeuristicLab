@@ -38,7 +38,6 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective.Tests {
     /// </summary>
     [TestMethod]
     [TestCategory("Problems.TestFunctions.MultiObjective")]
-    [TestProperty("Time", "short")]
     public void FastHypervolumeTestSinglePoint() {
       double[] point = new double[] { 0.5, 0.5, 0.5 };
       double[][] front = { point };
@@ -61,7 +60,6 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective.Tests {
     /// </summary>
     [TestMethod]
     [TestCategory("Problems.TestFunctions.MultiObjective")]
-    [TestProperty("Time", "short")]
     public void FastHypervolumeTestRandomSinglePoint() {
       //Front with a single Point
       double[] point = new double[3];
@@ -99,7 +97,6 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective.Tests {
     /// </summary>
     [TestMethod]
     [TestCategory("Problems.TestFunctions.MultiObjective")]
-    [TestProperty("Time", "short")]
     public void FastHypervolumeTestDiagonalPoint() {
       //Front with three points
       double[] point1 = new double[] { 1, 0, 0 };

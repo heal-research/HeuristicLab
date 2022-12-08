@@ -34,7 +34,6 @@ namespace HeuristicLab.Problems.TestFunctions.Tests {
     ///</summary>
     [TestMethod]
     [TestCategory("Problems.TestFunctions")]
-    [TestProperty("Time", "short")]
     public void SphereEvaluateFunctionTest() {
       SphereEvaluator target = new SphereEvaluator();
       RealVector point = null;

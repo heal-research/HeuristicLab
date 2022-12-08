@@ -33,7 +33,6 @@ namespace HeuristicLab.Tests {
     [TestMethod]
     [TestCategory("General")]
     [TestCategory("Essential")]
-    [TestProperty("Time", "long")]
     public void ContentViewAttributeTest() {
       //get all non-generic and instantiable classes which implement IContentView
       foreach (Type viewType in ApplicationManager.Manager.GetTypes(typeof(IContentView))) {

@@ -29,7 +29,6 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Tests {
 
     [TestMethod]
     [TestCategory("Problems.Instances")]
-    [TestProperty("Time", "short")]
     public void UCIInstanceTest() {
       var target = new UCIInstanceProvider();
       StringBuilder erroneousInstances = new StringBuilder();

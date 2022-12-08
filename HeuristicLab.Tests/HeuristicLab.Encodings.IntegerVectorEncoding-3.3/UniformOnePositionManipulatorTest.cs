@@ -35,7 +35,6 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding.Tests {
     ///</summary>
     [TestMethod()]
     [TestCategory("Encodings.IntegerVector")]
-    [TestProperty("Time", "short")]
     public void UniformOnePositionManipulatorApplyTest() {
       TestRandom random = new TestRandom();
       IntegerVector parent, expected;

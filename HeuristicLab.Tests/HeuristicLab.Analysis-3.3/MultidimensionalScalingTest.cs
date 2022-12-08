@@ -29,7 +29,6 @@ namespace HeuristicLab.Analysis.Tests {
   public class MultidimensionalScalingTest {
     [TestMethod]
     [TestCategory("Algorithms.DataAnalysis")]
-    [TestProperty("Time", "short")]
     public void TestGoodnessOfFit() {
       double stress;
       DoubleMatrix distances3 = new DoubleMatrix(3, 3);

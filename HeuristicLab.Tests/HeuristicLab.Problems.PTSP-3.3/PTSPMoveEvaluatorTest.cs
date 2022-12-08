@@ -82,7 +82,6 @@ namespace HeuristicLab.Problems.PTSP.Tests {
 
     [TestMethod]
     [TestCategory("Problems.ProbabilisticTravelingSalesman")]
-    [TestProperty("Time", "short")]
     public void InversionMoveEvaluatorTest() {
       Func<int, int, double> distance = (a, b) => distances[a, b];
       double variance;
@@ -105,7 +104,6 @@ The move would invert the tour {1} between values {2} and {3}.",
 
     [TestMethod]
     [TestCategory("Problems.ProbabilisticTravelingSalesman")]
-    [TestProperty("Time", "short")]
     public void InsertionMoveEvaluatorTest() {
       Func<int, int, double> distance = (a, b) => distances[a, b];
       double variance;
