@@ -36,7 +36,6 @@ namespace HeuristicLab.Tests {
 
     [TestMethod]
     [TestCategory("Samples.Create")]
-    [TestProperty("Time", "medium")]
     public void CreateLocalSearchKnapsackSampleTest() {
       var ls = CreateLocalSearchKnapsackSample();
       string path = Path.Combine(SamplesUtils.SamplesDirectory, SampleFileName + SamplesUtils.SampleFileExtension);
@@ -45,7 +44,6 @@ namespace HeuristicLab.Tests {
     [TestMethod]
     [TestCategory("Samples.Execute")]
     [TestCategory("Run.Daily")]
-    [TestProperty("Time", "medium")]
     public void RunLocalSearchKnapsackSampleTest() {
       var ls = CreateLocalSearchKnapsackSample();
       ls.SetSeedRandomly.Value = false;

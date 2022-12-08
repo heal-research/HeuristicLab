@@ -50,7 +50,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
 
     [TestMethod]
     [TestCategory("Problems.DataAnalysis.Symbolic")]
-    [TestProperty("Time", "short")]
     public void TestIntervalInterpreterAdd() {
       EvaluateTest("x1 + x2", new Interval(5, 14));
       EvaluateTest("x1 + x2", new Interval(5, 16), variableRanges);
@@ -58,7 +57,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
 
     [TestMethod]
     [TestCategory("Problems.DataAnalysis.Symbolic")]
-    [TestProperty("Time", "short")]
     public void TestIntervalInterpreterLogAdd() {
       EvaluateTest("log(x1 + x2)", new Interval(Math.Log(5), Math.Log(14)));
       EvaluateTest("log(x1 + x2)", new Interval(Math.Log(5), Math.Log(16)), variableRanges);
@@ -66,7 +64,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
 
     [TestMethod]
     [TestCategory("Problems.DataAnalysis.Symbolic")]
-    [TestProperty("Time", "short")]
     public void TestIntervalInterpreterLogAddMul() {
       EvaluateTest("log(3*x1 + x2)", new Interval(Math.Log(11), Math.Log(30)));
       EvaluateTest("log(3*x1 + x2)", new Interval(Math.Log(7), Math.Log(36)), variableRanges);
@@ -74,7 +71,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
 
     [TestMethod]
     [TestCategory("Problems.DataAnalysis.Symbolic")]
-    [TestProperty("Time", "short")]
     public void TestIntervalInterpreterSin() {
       EvaluateTest("sin(x1+x2)", new Interval(-1, 1));
       EvaluateTest("sin(x1+x2)", new Interval(-1, 1), variableRanges);
@@ -96,7 +92,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
 
     [TestMethod]
     [TestCategory("Problems.DataAnalysis.Symbolic")]
-    [TestProperty("Time", "short")]
     public void TestIntervalInterpreterCos() {
       EvaluateTest("cos(x1+x2)", new Interval(-1, 1));
       EvaluateTest("cos(x1+x2)", new Interval(-1, 1), variableRanges);
@@ -119,7 +114,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
 
     [TestMethod]
     [TestCategory("Problems.DataAnalysis.Symbolic")]
-    [TestProperty("Time", "short")]
     public void TestIntervalInterpreterTan() {
       // critical values:
       // lim tan(x) = -inf for x => -pi/2
@@ -138,7 +132,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
 
     [TestMethod]
     [TestCategory("Problems.DataAnalysis.Symbolic")]
-    [TestProperty("Time", "short")]
     public void TestIntervalInterpreterTanh() {
       // critical values:
       // lim tanh(x) = -1 for x => -inf
@@ -156,7 +149,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
 
     [TestMethod]
     [TestCategory("Problems.DataAnalysis.Symbolic")]
-    [TestProperty("Time", "short")]
     public void TestIntervalInterpreterExp() {
       EvaluateTest("exp(x1-x2)", new Interval(Math.Exp(-3), Math.Exp(6)));
       EvaluateTest("exp(x1-x2)", new Interval(Math.Exp(-5), Math.Exp(6)), variableRanges);

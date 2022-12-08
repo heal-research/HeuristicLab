@@ -29,7 +29,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
   public class DerivativeTest {
     [TestMethod]
     [TestCategory("Problems.DataAnalysis.Symbolic")]
-    [TestProperty("Time", "short")]
     public void DeriveExpressions() {
       var formatter = new InfixExpressionFormatter();
       Assert.AreEqual("0", Derive("<num=3>", "x"));

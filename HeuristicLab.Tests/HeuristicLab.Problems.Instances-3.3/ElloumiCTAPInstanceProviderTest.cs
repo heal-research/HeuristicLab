@@ -30,7 +30,6 @@ namespace HeuristicLab.Problems.Instances.Tests {
 
     [TestMethod]
     [TestCategory("Problems.Instances")]
-    [TestProperty("Time", "short")]
     public void GetElloumiCTAPInstanceTest() {
       var target = new ElloumiCTAPInstanceProvider();
       StringBuilder erroneousInstances = new StringBuilder();

@@ -32,7 +32,6 @@ namespace HeuristicLab.Analysis.Tests {
 
     [TestMethod]
     [TestCategory("Analysis.Statistics")]
-    [TestProperty("Time", "short")]
     public void CohensdTest1() {
       //compared to R lsr package/cohenD(..)
       var result = SampleSizeDetermination.CalculateCohensD(x, y);
@@ -41,7 +40,6 @@ namespace HeuristicLab.Analysis.Tests {
 
     [TestMethod]
     [TestCategory("Analysis.Statistics")]
-    [TestProperty("Time", "short")]
     public void CohensdTest2() {
       //compared to R lsr package/cohenD(..)
       var result = SampleSizeDetermination.CalculateCohensD(x, z);
@@ -50,7 +48,6 @@ namespace HeuristicLab.Analysis.Tests {
 
     [TestMethod]
     [TestCategory("Analysis.Statistics")]
-    [TestProperty("Time", "short")]
     public void HedgesGTest1() {
       //compared to R effsize package/cohen.d(..,hedges.correction=TRUE)
       var result = SampleSizeDetermination.CalculateHedgesG(x, y);
@@ -59,7 +56,6 @@ namespace HeuristicLab.Analysis.Tests {
 
     [TestMethod]
     [TestCategory("Analysis.Statistics")]
-    [TestProperty("Time", "short")]
     public void HedgesGTest2() {
       //compared to R effsize package/cohen.d(..,hedges.correction=TRUE)
       var result = SampleSizeDetermination.CalculateHedgesG(x, z);

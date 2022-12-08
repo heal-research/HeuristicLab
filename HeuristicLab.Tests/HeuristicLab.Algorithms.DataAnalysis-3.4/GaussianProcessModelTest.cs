@@ -30,7 +30,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Tests {
   public class GaussianProcessModelTest {
     [TestMethod]
     [TestCategory("General")]
-    [TestProperty("Time", "medium")]
     public void GaussianProcessModelOutputTest() {
       var provider = new RegressionCSVInstanceProvider();
       var problemData = provider.ImportData(@"Test Resources\co2.txt");

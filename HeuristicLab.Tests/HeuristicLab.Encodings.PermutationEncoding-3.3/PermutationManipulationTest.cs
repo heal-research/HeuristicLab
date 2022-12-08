@@ -26,7 +26,6 @@ namespace HeuristicLab.Encodings.PermutationEncoding.Tests {
   public class PermutationManipulationTest {
     [TestMethod]
     [TestCategory("Encodings.Permutation")]
-    [TestProperty("Time", "short")]
     public void TestPermutationSwap() {
       var permutation = new Permutation(PermutationTypes.Absolute, new[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 });
       permutation.Swap(0, 0);
@@ -50,7 +49,6 @@ namespace HeuristicLab.Encodings.PermutationEncoding.Tests {
 
     [TestMethod]
     [TestCategory("Encodings.Permutation")]
-    [TestProperty("Time", "short")]
     public void TestPermutationReverse() {
       var permutation = new Permutation(PermutationTypes.Absolute, new[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 });
       permutation.Reverse(0, 0);
@@ -79,7 +77,6 @@ namespace HeuristicLab.Encodings.PermutationEncoding.Tests {
 
     [TestMethod]
     [TestCategory("Encodings.Permutation")]
-    [TestProperty("Time", "short")]
     public void TestPermutationMove() {
       var permutation = new Permutation(PermutationTypes.Absolute, new[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 });
       permutation.Move(0, 0, 0);
@@ -145,7 +142,6 @@ namespace HeuristicLab.Encodings.PermutationEncoding.Tests {
 
     [TestMethod]
     [TestCategory("Encodings.Permutation")]
-    [TestProperty("Time", "short")]
     public void TestPermutationReplace() {
       var permutation = new Permutation(PermutationTypes.Absolute, new[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 });
       permutation.Replace(0, new int[0]);

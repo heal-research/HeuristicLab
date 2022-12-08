@@ -30,7 +30,6 @@ namespace HeuristicLab.Problems.Instances.Tests {
 
     [TestMethod]
     [TestCategory("Problems.Instances")]
-    [TestProperty("Time", "medium")]
     public void GetTSPLIBTSPInstanceTest() {
       var target = new TSPLIBTSPInstanceProvider();
       StringBuilder erroneousInstances = new StringBuilder();
@@ -49,7 +48,6 @@ namespace HeuristicLab.Problems.Instances.Tests {
 
     [TestMethod]
     [TestCategory("Problems.Instances")]
-    [TestProperty("Time", "short")]
     public void GetTSPLIBATSPInstanceTest() {
       var target = new TSPLIBATSPInstanceProvider();
       StringBuilder erroneousInstances = new StringBuilder();
@@ -68,7 +66,6 @@ namespace HeuristicLab.Problems.Instances.Tests {
 
     [TestMethod]
     [TestCategory("Problems.Instances")]
-    [TestProperty("Time", "short")]
     public void GetTSPLIBCVRPInstanceTest() {
       var target = new TSPLIBCVRPInstanceProvider();
       StringBuilder erroneousInstances = new StringBuilder();

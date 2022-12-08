@@ -18,7 +18,6 @@ namespace HeuristicLab.Tests {
     [TestMethod]
     [TestCategory("Samples.Execute")]
     [TestCategory("Run.Daily")]
-    [TestProperty("Time", "long")]
     public void RunStructureTemplateRegressionSampleTest() {
       var ga = CreateStructureTemplateRegressionSample();
       ga.SetSeedRandomly.Value = false;
@@ -39,7 +38,6 @@ namespace HeuristicLab.Tests {
 
     [TestMethod]
     [TestCategory("Samples.Create")]
-    [TestProperty("Time", "medium")]
     public void CreateStructureTemplateRegressionSampleTest() {
       var ga = CreateStructureTemplateRegressionSample();
       string path = Path.Combine(SamplesUtils.SamplesDirectory, SampleFileName + SamplesUtils.SampleFileExtension);

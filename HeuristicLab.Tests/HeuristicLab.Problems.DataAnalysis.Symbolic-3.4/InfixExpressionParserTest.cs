@@ -31,7 +31,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
   public class InfixExpressionParserTest {
     [TestMethod]
     [TestCategory("Problems.DataAnalysis.Symbolic")]
-    [TestProperty("Time", "short")]
     public void InfixExpressionParserTestFormatting() {
       var formatter = new InfixExpressionFormatter();
       var parser = new InfixExpressionParser();

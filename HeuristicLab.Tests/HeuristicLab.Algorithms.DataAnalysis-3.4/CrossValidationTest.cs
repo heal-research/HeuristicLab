@@ -31,7 +31,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Tests {
   public class CrossValidationTest {
     [TestMethod]
     [TestCategory("Algorithms.DataAnalysis")]
-    [TestProperty("Time", "medium")]
     public void RunCrossValidationTest() {
       var instanceProvider = new VariousInstanceProvider();
       

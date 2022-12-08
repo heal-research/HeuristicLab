@@ -37,7 +37,6 @@ namespace HeuristicLab.Tests {
 
     [TestMethod]
     [TestCategory("Samples.Create")]
-    [TestProperty("Time", "medium")]
     public void CreateGpArtificialAntSampleTest() {
       var ga = CreateGpArtificialAntSample();
       string path = Path.Combine(SamplesUtils.SamplesDirectory, SampleFileName + SamplesUtils.SampleFileExtension);
@@ -47,7 +46,6 @@ namespace HeuristicLab.Tests {
     [TestMethod]
     [TestCategory("Samples.Execute")]
     [TestCategory("Run.Daily")]
-    [TestProperty("Time", "long")]
     public void RunGpArtificialAntSampleTest() {
       var ga = CreateGpArtificialAntSample();
       ga.SetSeedRandomly.Value = false;

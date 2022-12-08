@@ -28,7 +28,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
 
     [TestMethod]
     [TestCategory("Problems.DataAnalysis")]
-    [TestProperty("Time", "short")]
     public void ConstantModelVariableImpactTest() {
       IRegressionProblemData problemData = LoadDefaultTowerProblem();
       IRegressionModel model = new ConstantModel(5, "y");
@@ -40,7 +39,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
 
     [TestMethod]
     [TestCategory("Problems.DataAnalysis")]
-    [TestProperty("Time", "short")]
     public void LinearRegressionModelVariableImpactTowerTest() {
       IRegressionProblemData problemData = LoadDefaultTowerProblem();
       double rmsError;
@@ -53,7 +51,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
 
     [TestMethod]
     [TestCategory("Problems.DataAnalysis")]
-    [TestProperty("Time", "short")]
     public void LinearRegressionModelVariableImpactMibaTest() {
       IRegressionProblemData problemData = LoadDefaultMibaProblem();
       double rmsError;
@@ -66,7 +63,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
 
     [TestMethod]
     [TestCategory("Problems.DataAnalysis")]
-    [TestProperty("Time", "short")]
     public void RandomForestModelVariableImpactTowerTest() {
       IRegressionProblemData problemData = LoadDefaultTowerProblem();
       double rmsError;
@@ -81,7 +77,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
 
     [TestMethod]
     [TestCategory("Problems.DataAnalysis")]
-    [TestProperty("Time", "short")]
     public void CustomModelVariableImpactTest() {
       IRegressionProblemData problemData = CreateDefaultProblem();
       ISymbolicExpressionTree tree = CreateCustomExpressionTree();
@@ -94,7 +89,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
 
     [TestMethod]
     [TestCategory("Problems.DataAnalysis")]
-    [TestProperty("Time", "short")]
     public void CustomModelVariableImpactNoInfluenceTest() {
       IRegressionProblemData problemData = CreateDefaultProblem();
       ISymbolicExpressionTree tree = CreateCustomExpressionTreeNoInfluenceX1();
@@ -107,7 +101,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
 
     [TestMethod]
     [TestCategory("Problems.DataAnalysis")]
-    [TestProperty("Time", "short")]
     [ExpectedException(typeof(ArgumentException))]
     public void WrongDataSetVariableImpactRegressionTest() {
       IRegressionProblemData problemData = LoadDefaultTowerProblem();
@@ -121,7 +114,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
 
     [TestMethod]
     [TestCategory("Problems.DataAnalysis")]
-    [TestProperty("Time", "medium")]
     public void PerformanceVariableImpactRegressionTest() {
       int rows = 20000;
       int columns = 77;

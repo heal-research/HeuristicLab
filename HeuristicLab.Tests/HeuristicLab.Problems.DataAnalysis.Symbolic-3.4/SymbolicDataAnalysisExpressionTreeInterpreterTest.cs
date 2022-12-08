@@ -54,21 +54,18 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
     [TestMethod]
     [TestCategory("Problems.DataAnalysis.Symbolic")]
     [TestCategory("Run.Daily")]
-    [TestProperty("Time", "long")]
     public void StandardInterpreterTestTypeCoherentGrammarPerformance() {
       TestTypeCoherentGrammarPerformance(new SymbolicDataAnalysisExpressionTreeInterpreter(), 12.5e6);
     }
     [TestMethod]
     [TestCategory("Problems.DataAnalysis.Symbolic")]
     [TestCategory("Run.Daily")]
-    [TestProperty("Time", "long")]
     public void StandardInterpreterTestFullGrammarPerformance() {
       TestFullGrammarPerformance(new SymbolicDataAnalysisExpressionTreeInterpreter(), 12.5e6);
     }
     [TestMethod]
     [TestCategory("Problems.DataAnalysis.Symbolic")]
     [TestCategory("Run.Daily")]
-    [TestProperty("Time", "long")]
     public void StandardInterpreterTestArithmeticGrammarPerformance() {
       TestArithmeticGrammarPerformance(new SymbolicDataAnalysisExpressionTreeInterpreter(), 12.5e6);
     }
@@ -76,21 +73,18 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
     [TestMethod]
     [TestCategory("Problems.DataAnalysis.Symbolic")]
     [TestCategory("Run.Daily")]
-    [TestProperty("Time", "long")]
     public void CompiledInterpreterTestTypeCoherentGrammarPerformance() {
       TestTypeCoherentGrammarPerformance(new SymbolicDataAnalysisExpressionCompiledTreeInterpreter(), 12.5e6);
     }
     [TestMethod]
     [TestCategory("Problems.DataAnalysis.Symbolic")]
     [TestCategory("Run.Daily")]
-    [TestProperty("Time", "long")]
     public void CompiledInterpreterTestFullGrammarPerformance() {
       TestFullGrammarPerformance(new SymbolicDataAnalysisExpressionCompiledTreeInterpreter(), 12.5e6);
     }
     [TestMethod]
     [TestCategory("Problems.DataAnalysis.Symbolic")]
     [TestCategory("Run.Daily")]
-    [TestProperty("Time", "long")]
     public void CompiledInterpreterTestArithmeticGrammarPerformance() {
       TestArithmeticGrammarPerformance(new SymbolicDataAnalysisExpressionCompiledTreeInterpreter(), 12.5e6);
     }
@@ -98,14 +92,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
     [TestMethod]
     [TestCategory("Problems.DataAnalysis.Symbolic")]
     [TestCategory("Run.Daily")]
-    [TestProperty("Time", "long")]
     public void ILEmittingInterpreterTestTypeCoherentGrammarPerformance() {
       TestTypeCoherentGrammarPerformance(new SymbolicDataAnalysisExpressionTreeILEmittingInterpreter(), 7.5e6);
     }
     [TestMethod]
     [TestCategory("Problems.DataAnalysis.Symbolic")]
     [TestCategory("Run.Daily")]
-    [TestProperty("Time", "long")]
     public void ILEmittingInterpreterTestArithmeticGrammarPerformance() {
       TestArithmeticGrammarPerformance(new SymbolicDataAnalysisExpressionTreeILEmittingInterpreter(), 7.5e6);
     }
@@ -113,21 +105,18 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
     [TestMethod]
     [TestCategory("Problems.DataAnalysis.Symbolic")]
     [TestCategory("Run.Daily")]
-    [TestProperty("Time", "long")]
     public void LinearInterpreterTestTypeCoherentGrammarPerformance() {
       TestTypeCoherentGrammarPerformance(new SymbolicDataAnalysisExpressionTreeLinearInterpreter(), 12.5e6);
     }
     [TestMethod]
     [TestCategory("Problems.DataAnalysis.Symbolic")]
     [TestCategory("Run.Daily")]
-    [TestProperty("Time", "long")]
     public void LinearInterpreterTestFullGrammarPerformance() {
       TestFullGrammarPerformance(new SymbolicDataAnalysisExpressionTreeLinearInterpreter(), 12.5e6);
     }
     [TestMethod]
     [TestCategory("Problems.DataAnalysis.Symbolic")]
     [TestCategory("Run.Daily")]
-    [TestProperty("Time", "long")]
     public void LinearInterpreterTestArithmeticGrammarPerformance() {
       TestArithmeticGrammarPerformance(new SymbolicDataAnalysisExpressionTreeLinearInterpreter(), 12.5e6);
     }
@@ -135,14 +124,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
     [TestMethod]
     [TestCategory("Problems.DataAnalysis.Symbolic")]
     [TestCategory("Run.Daily")]
-    [TestProperty("Time", "long")]
     public void BatchInterpreterTestTypeCoherentGrammarPerformance() {
       TestTypeCoherentGrammarPerformance(new SymbolicDataAnalysisExpressionTreeBatchInterpreter(), 12.5e6);
     }
     [TestMethod]
     [TestCategory("Problems.DataAnalysis.Symbolic")]
     [TestCategory("Run.Daily")]
-    [TestProperty("Time", "long")]
     public void BatchInterpreterTestArithmeticGrammarPerformance() {
       TestArithmeticGrammarPerformance(new SymbolicDataAnalysisExpressionTreeBatchInterpreter(), 12.5e6);
     }
@@ -198,7 +185,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
     ///</summary>
     [TestMethod]
     [TestCategory("Problems.DataAnalysis.Symbolic")]
-    [TestProperty("Time", "short")]
     public void StandardInterpreterTestEvaluation() {
       var interpreter = new SymbolicDataAnalysisExpressionTreeInterpreter();
       EvaluateTerminals(interpreter, ds);
@@ -213,7 +199,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
     ///</summary>
     [TestMethod]
     [TestCategory("Problems.DataAnalysis.Symbolic")]
-    [TestProperty("Time", "short")]
     public void ILEmittingInterpreterTestEvaluation() {
       var interpreter = new SymbolicDataAnalysisExpressionTreeILEmittingInterpreter();
       EvaluateTerminals(interpreter, ds);
@@ -224,7 +209,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
 
     [TestMethod]
     [TestCategory("Problems.DataAnalysis.Symbolic")]
-    [TestProperty("Time", "short")]
     public void CompiledInterpreterTestEvaluation() {
       var interpreter = new SymbolicDataAnalysisExpressionCompiledTreeInterpreter();
       EvaluateTerminals(interpreter, ds);
@@ -234,7 +218,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
 
     [TestMethod]
     [TestCategory("Problems.DataAnalysis.Symbolic")]
-    [TestProperty("Time", "short")]
     public void LinearInterpreterTestEvaluation() {
       var interpreter = new SymbolicDataAnalysisExpressionTreeLinearInterpreter();
       //ADFs are not supported by the linear interpreter
@@ -246,7 +229,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
 
     [TestMethod]
     [TestCategory("Problems.DataAnalysis.Symbolic")]
-    [TestProperty("Time", "short")]
     public void TestInterpretersEstimatedValuesConsistency() {
       var twister = new MersenneTwister();
       int seed = twister.Next(0, int.MaxValue);
@@ -294,7 +276,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
     [TestMethod]
     [TestCategory("Problems.DataAnalysis.Symbolic")]
     [TestCategory("Run.Daily")]
-    [TestProperty("Time", "long")]
     public void NativeInterpreterTestTypeCoherentGrammarPerformance() {
       TestTypeCoherentGrammarPerformance(new NativeInterpreter(), 12.5e6);
     }
@@ -302,14 +283,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
     [TestMethod]
     [TestCategory("Problems.DataAnalysis.Symbolic")]
     [TestCategory("Run.Daily")]
-    [TestProperty("Time", "long")]
     public void NativeInterpreterTestArithmeticGrammarPerformance() {
       TestArithmeticGrammarPerformance(new NativeInterpreter(), 12.5e6);
     }
 
     [TestMethod]
     [TestCategory("Problems.DataAnalysis.Symbolic")]
-    [TestProperty("Time", "short")]
     public void NativeInterpreterTestParameterOptimization() {
       var parser = new InfixExpressionParser();
       var random = new FastRandom(Environment.TickCount);
@@ -365,7 +344,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
 
     [TestMethod]
     [TestCategory("Problems.DataAnalysis.Symbolic")]
-    [TestProperty("Time", "short")]
     public void ParameterOptimizationConsistency() {
       var parser = new InfixExpressionParser();
       var random = new FastRandom(1234);
@@ -449,7 +427,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
 
     [TestMethod]
     [TestCategory("Problems.DataAnalysis.Symbolic")]
-    [TestProperty("Time", "short")]
     public void NativeInterpreterTestParameterOptimizationVarPro() {
       var parser = new InfixExpressionParser();
       var random = new FastRandom(1234);
@@ -508,7 +485,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
 
     [TestMethod]
     [TestCategory("Problems.DataAnalysis.Symbolic")]
-    [TestProperty("Time", "short")]
     public void NativeInterpreterTestParameterOptimizationVarProNoParameters() {
       var parser = new InfixExpressionParser();
       var random = new FastRandom(1234);
@@ -565,7 +541,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
 
     [TestMethod]
     [TestCategory("Problems.DataAnalysis.Symbolic")]
-    [TestProperty("Time", "short")]
     public void TestCompiledInterpreterEstimatedValuesConsistency() {
       const double delta = 1e-8;
 

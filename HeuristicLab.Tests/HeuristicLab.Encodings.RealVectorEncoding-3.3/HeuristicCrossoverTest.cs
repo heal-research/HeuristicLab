@@ -34,7 +34,6 @@ namespace HeuristicLab.Encodings.RealVectorEncoding.Tests {
     ///</summary>
     [TestMethod()]
     [TestCategory("Encodings.RealVector")]
-    [TestProperty("Time", "short")]
     public void HeuristicCrossoverApplyTest() {
       TestRandom random = new TestRandom();
       RealVector parent1, parent2, expected, actual;

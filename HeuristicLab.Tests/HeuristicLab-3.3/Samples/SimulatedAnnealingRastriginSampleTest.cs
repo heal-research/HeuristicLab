@@ -37,7 +37,6 @@ namespace HeuristicLab.Tests {
 
     [TestMethod]
     [TestCategory("Samples.Create")]
-    [TestProperty("Time", "medium")]
     public void CreateSimulatedAnnealingRastriginSampleTest() {
       var sa = CreateSimulatedAnnealingRastriginSample();
       string path = Path.Combine(SamplesUtils.SamplesDirectory, SampleFileName + SamplesUtils.SampleFileExtension);
@@ -46,7 +45,6 @@ namespace HeuristicLab.Tests {
     [TestMethod]
     [TestCategory("Samples.Execute")]
     [TestCategory("Run.Daily")]
-    [TestProperty("Time", "medium")]
     public void RunSimulatedAnnealingRastriginSampleTest() {
       var sa = CreateSimulatedAnnealingRastriginSample();
       sa.SetSeedRandomly.Value = false;

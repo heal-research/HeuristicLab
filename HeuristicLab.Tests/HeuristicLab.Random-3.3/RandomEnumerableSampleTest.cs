@@ -30,7 +30,6 @@ namespace HeuristicLab.Random.Tests {
     [TestMethod]
     [TestCategory("General")]
     [TestCategory("Run.Daily")]
-    [TestProperty("Time", "long")]
     public void SampleProportionalWithoutRepetitionTest() {
       {
         // select 1 of 100 uniformly (weights = 0)

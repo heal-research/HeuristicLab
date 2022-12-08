@@ -36,7 +36,6 @@ namespace HeuristicLab.Tests {
 
     [TestMethod]
     [TestCategory("Samples.Create")]
-    [TestProperty("Time", "medium")]
     public void CreateGaBppSampleTest() {
       var ga = CreateGaBppSample();
       string path = Path.Combine(SamplesUtils.SamplesDirectory, SampleFileName + SamplesUtils.SampleFileExtension);
@@ -46,7 +45,6 @@ namespace HeuristicLab.Tests {
     [TestMethod]
     [TestCategory("Samples.Execute")]
     [TestCategory("Run.Daily")]
-    [TestProperty("Time", "long")]
     public void RunGaBppSampleTest() {
       var ga = CreateGaBppSample();
       ga.SetSeedRandomly.Value = false;

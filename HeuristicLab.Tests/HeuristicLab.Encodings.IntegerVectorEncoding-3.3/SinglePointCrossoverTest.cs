@@ -37,7 +37,6 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding.Tests {
     ///</summary>
     [TestMethod]
     [TestCategory("Encodings.IntegerVector")]
-    [TestProperty("Time", "short")]
     public void SinglePointCrossoverApplyTest() {
       TestRandom random = new TestRandom();
       IntegerVector parent1, parent2, expected, actual;

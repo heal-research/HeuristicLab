@@ -56,7 +56,6 @@ namespace HeuristicLab.Persistence.Attic.Tests {
 
     [TestMethod]
     [TestCategory("Persistence.Attic")]
-    [TestProperty("Time", "short")]
     public void BitmapTest() {
       Icon icon = System.Drawing.SystemIcons.Hand;
       Bitmap bitmap = icon.ToBitmap();
@@ -72,7 +71,6 @@ namespace HeuristicLab.Persistence.Attic.Tests {
 
     [TestMethod]
     [TestCategory("Persistence.Attic")]
-    [TestProperty("Time", "short")]
     public void FontTest() {
       List<Font> fonts = new List<Font>() {
         new Font(FontFamily.GenericSansSerif, 12),
@@ -90,7 +88,6 @@ namespace HeuristicLab.Persistence.Attic.Tests {
 
     [TestMethod]
     [TestCategory("Persistence.Attic")]
-    [TestProperty("Time", "medium")]
     public void ConcurrencyTest() {
       int n = 20;
       Task[] tasks = new Task[n];
@@ -108,7 +105,6 @@ namespace HeuristicLab.Persistence.Attic.Tests {
 
     [TestMethod]
     [TestCategory("Persistence.Attic")]
-    [TestProperty("Time", "medium")]
     public void ConcurrentBitmapTest() {
       Bitmap b = new Bitmap(300, 300);
       System.Random r = new System.Random();
@@ -152,7 +148,6 @@ namespace HeuristicLab.Persistence.Attic.Tests {
     [TestMethod]
     [TestCategory("Persistence.Attic")]
     [TestCategory("Run.Daily")]
-    [TestProperty("Time", "long")]
     public void TestLoadingSamples() {
       CreateAllSamples();
       var path = SamplesUtils.SamplesDirectory;
@@ -186,7 +181,6 @@ namespace HeuristicLab.Persistence.Attic.Tests {
     }
 
     [TestCategory("Persistence.Attic")]
-    [TestProperty("Time", "long")]
     public void TestLoadingRunAndStoreSamples() {
       CreateAllSamples();
       var path = SamplesUtils.SamplesDirectory;
@@ -218,7 +212,6 @@ namespace HeuristicLab.Persistence.Attic.Tests {
 
     [TestMethod]
     [TestCategory("Persistence.Attic")]
-    [TestProperty("Time", "short")]
     public void TestIndexedDataTable() {
       var dt = new IndexedDataTable<int>("test", "test description");
       var dr = new IndexedDataRow<int>("test row");
@@ -236,7 +229,6 @@ namespace HeuristicLab.Persistence.Attic.Tests {
 
     [TestMethod]
     [TestCategory("Persistence.Attic")]
-    [TestProperty("Time", "short")]
     public void TestPoint2d() {
       var tag = new IntValue(10);
       var p = new Point2D<double>(1.0, 2.0, tag);

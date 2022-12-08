@@ -94,7 +94,6 @@ namespace HeuristicLab.Problems.Programmable {
 
     [TestMethod]
     [TestCategory("Samples.Create")]
-    [TestProperty("Time", "medium")]
     public void CreateGaGroupingProblemSampleTest() {
       var ga = CreateGaGroupingProblemSample();
       string path = Path.Combine(SamplesUtils.SamplesDirectory, SampleFileName + SamplesUtils.SampleFileExtension);
@@ -104,7 +103,6 @@ namespace HeuristicLab.Problems.Programmable {
     [TestMethod]
     [TestCategory("Samples.Execute")]
     [TestCategory("Run.Daily")]
-    [TestProperty("Time", "long")]
     public void RunGaGroupingProblemSampleTest() {
       var ga = CreateGaGroupingProblemSample();
       ga.SetSeedRandomly.Value = false;

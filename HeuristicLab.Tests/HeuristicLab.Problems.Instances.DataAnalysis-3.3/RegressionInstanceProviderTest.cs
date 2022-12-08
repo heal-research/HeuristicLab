@@ -29,7 +29,6 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Tests {
 
     [TestMethod]
     [TestCategory("Problems.Instances")]
-    [TestProperty("Time", "medium")]
     public void GetKeijzerInstanceTest() {
       var target = new KeijzerInstanceProvider();
       StringBuilder erroneousInstances = new StringBuilder();
@@ -48,7 +47,6 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Tests {
 
     [TestMethod]
     [TestCategory("Problems.Instances")]
-    [TestProperty("Time", "short")]
     public void GetKornInstanceTest() {
       var target = new KornsInstanceProvider();
       StringBuilder erroneousInstances = new StringBuilder();
@@ -67,7 +65,6 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Tests {
 
     [TestMethod]
     [TestCategory("Problems.Instances")]
-    [TestProperty("Time", "short")]
     public void GetNguyenInstanceTest() {
       var target = new NguyenInstanceProvider();
       StringBuilder erroneousInstances = new StringBuilder();
@@ -86,7 +83,6 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Tests {
 
     [TestMethod]
     [TestCategory("Problems.Instances")]
-    [TestProperty("Time", "short")]
     public void GetRealWorldInstanceTest() {
       var target = new RegressionRealWorldInstanceProvider();
       StringBuilder erroneousInstances = new StringBuilder();
@@ -105,7 +101,6 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Tests {
 
     [TestMethod]
     [TestCategory("Problems.Instances")]
-    [TestProperty("Time", "short")]
     public void GetVariousInstanceTest() {
       var target = new VariousInstanceProvider();
       StringBuilder erroneousInstances = new StringBuilder();
@@ -124,7 +119,6 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Tests {
 
     [TestMethod]
     [TestCategory("Problems.Instances")]
-    [TestProperty("Time", "short")]
     public void GetVladislavlevaInstanceTest() {
       var target = new VladislavlevaInstanceProvider();
       StringBuilder erroneousInstances = new StringBuilder();

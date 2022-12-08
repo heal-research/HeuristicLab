@@ -27,7 +27,6 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective.Tests {
     [TestMethod]
     [ExpectedException(typeof(ArgumentException))]
     [TestCategory("Problems.TestFunctions.MultiObjective")]
-    [TestProperty("Time", "short")]
     public void SpacingTestEmptyFront() {
       double[][] front = { };
 
@@ -36,7 +35,6 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective.Tests {
 
     [TestMethod]
     [TestCategory("Problems.TestFunctions.MultiObjective")]
-    [TestProperty("Time", "short")]
     public void SpacingTestSamePoint() {
 
       double[] point = new double[2];
@@ -53,7 +51,6 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective.Tests {
 
     [TestMethod]
     [TestCategory("Problems.TestFunctions.MultiObjective")]
-    [TestProperty("Time", "short")]
     public void SpacingTestSinglePoint() {
       double[] point = new double[2];
       point[0] = 0;
@@ -65,7 +62,6 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective.Tests {
 
     [TestMethod]
     [TestCategory("Problems.TestFunctions.MultiObjective")]
-    [TestProperty("Time", "short")]
     public void SpacingTestQuadratic() {
       double[] point = new double[2];
       point[0] = 0;
@@ -87,7 +83,6 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective.Tests {
 
     [TestMethod]
     [TestCategory("Problems.TestFunctions.MultiObjective")]
-    [TestProperty("Time", "short")]
     public void SpacingTestRectangular() {
       double[] point = new double[2];
       point[0] = 0;
@@ -114,7 +109,6 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective.Tests {
     /// </summary>
     [TestMethod]
     [TestCategory("Problems.TestFunctions.MultiObjective")]
-    [TestProperty("Time", "short")]
     public void SpacingTestDeltoid() {
       double[] point = new double[2];
       point[0] = 0;

@@ -41,7 +41,6 @@ namespace HeuristicLab.Tests {
 
     [TestMethod]
     [TestCategory("Scripts.Create")]
-    [TestProperty("Time", "short")]
     public void CreateGridSearchRFRegressionScriptTest() {
       var script = CreateGridSearchRFRegressionScript();
       string path = Path.Combine(ScriptingUtils.ScriptsDirectory, ScriptFileName + ScriptingUtils.ScriptFileExtension);
@@ -51,7 +50,6 @@ namespace HeuristicLab.Tests {
     [TestMethod]
     [TestCategory("Scripts.Execute")]
     [TestCategory("Run.Daily")]
-    [TestProperty("Time", "long")]
     public void RunGridSearchRFRegressionScriptTest() {
       var script = CreateGridSearchRFRegressionScript();
 

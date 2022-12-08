@@ -35,7 +35,6 @@ namespace HeuristicLab.Tests {
 
     [TestMethod]
     [TestCategory("Samples.Create")]
-    [TestProperty("Time", "medium")]
     public void CreateOSESGriewankSampleTest() {
       var es = CreateOSESGriewankSample();
       string path = Path.Combine(SamplesUtils.SamplesDirectory, SampleFileName + SamplesUtils.SampleFileExtension);
@@ -45,7 +44,6 @@ namespace HeuristicLab.Tests {
     [TestMethod]
     [TestCategory("Samples.Execute")]
     [TestCategory("Run.Daily")]
-    [TestProperty("Time", "long")]
     public void RunOSESGriewankSampleTest() {
       var es = CreateOSESGriewankSample();
       es.SetSeedRandomly.Value = false;

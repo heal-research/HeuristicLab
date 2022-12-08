@@ -28,7 +28,6 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective.Tests {
     [TestMethod]
     [ExpectedException(typeof(ArgumentException))]
     [TestCategory("Problems.TestFunctions.MultiObjective")]
-    [TestProperty("Time", "short")]
     public void GenerationalDistanceTestEmptyOptimalFront() {
 
       double[] point = new double[2];
@@ -42,7 +41,6 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective.Tests {
     [TestMethod]
     [ExpectedException(typeof(ArgumentException))]
     [TestCategory("Problems.TestFunctions.MultiObjective")]
-    [TestProperty("Time", "short")]
     public void GenerationalDistanceTestEmptyFront() {
 
       double[] point = new double[2];
@@ -55,7 +53,6 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective.Tests {
 
     [TestMethod]
     [TestCategory("Problems.TestFunctions.MultiObjective")]
-    [TestProperty("Time", "short")]
     public void GenerationalDistanceTestSamePoint() {
 
       double[] point = new double[2];
@@ -72,7 +69,6 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective.Tests {
 
     [TestMethod]
     [TestCategory("Problems.TestFunctions.MultiObjective")]
-    [TestProperty("Time", "short")]
     public void GenerationalDistanceTestSinglePoint() {
       double[] point = new double[2];
       point[0] = 0;
@@ -88,7 +84,6 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective.Tests {
 
     [TestMethod]
     [TestCategory("Problems.TestFunctions.MultiObjective")]
-    [TestProperty("Time", "short")]
     public void GenerationalDistanceTestDifferentSizes() {
       double[] point = new double[2];
       point[0] = 0;
@@ -107,7 +102,6 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective.Tests {
 
     [TestMethod]
     [TestCategory("Problems.TestFunctions.MultiObjective")]
-    [TestProperty("Time", "short")]
     public void GenerationalDistanceTestQuadratic() {
       double[] point = new double[2];
       point[0] = 0;

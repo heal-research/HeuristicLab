@@ -44,7 +44,6 @@ namespace ParameterlessPopulationPyramid.Test {
     [TestMethod]
     [TestCategory("Algorithms.ParameterlessPopulationPyramid")]
     [TestCategory("Run.Daily")]
-    [TestProperty("Time", "medium")]
     public void P3DeceptiveTrap() {
       var problem = new DeceptiveTrapProblem();
       problem.Length = 49;
@@ -60,7 +59,6 @@ namespace ParameterlessPopulationPyramid.Test {
     [TestMethod]
     [TestCategory("Algorithms.ParameterlessPopulationPyramid")]
     [TestCategory("Run.Daily")]
-    [TestProperty("Time", "medium")]
     public void P3DeceptiveStepTrap() {
       var problem = new DeceptiveStepTrapProblem();
       problem.Length = 49;
@@ -77,7 +75,6 @@ namespace ParameterlessPopulationPyramid.Test {
     [TestMethod]
     [TestCategory("Algorithms.ParameterlessPopulationPyramid")]
     [TestCategory("Run.Daily")]
-    [TestProperty("Time", "medium")]
     public void P3HIFF() {
       var problem = new HIFFProblem();
       problem.Length = 32;

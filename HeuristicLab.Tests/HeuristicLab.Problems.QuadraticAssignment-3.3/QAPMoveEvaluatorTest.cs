@@ -85,7 +85,6 @@ namespace HeuristicLab.Problems.QuadraticAssignment.Tests {
 
     [TestMethod]
     [TestCategory("Problems.Assignment")]
-    [TestProperty("Time", "short")]
     public void Swap2MoveEvaluatorFastEvaluationTest() {
 
       for (int i = 0; i < 500; i++) {
@@ -127,7 +126,6 @@ namespace HeuristicLab.Problems.QuadraticAssignment.Tests {
 
     [TestMethod]
     [TestCategory("Problems.Assignment")]
-    [TestProperty("Time", "short")]
     public void Swap2MoveEvaluatorTest() {
       for (int i = 0; i < 500; i++) {
         int index1 = random.Next(ProblemSize);
@@ -160,7 +158,6 @@ namespace HeuristicLab.Problems.QuadraticAssignment.Tests {
 
     [TestMethod]
     [TestCategory("Problems.Assignment")]
-    [TestProperty("Time", "short")]
     public void InversionMoveEvaluatorTest() {
       for (int i = 0; i < 500; i++) {
         int index1 = random.Next(ProblemSize);
@@ -194,7 +191,6 @@ namespace HeuristicLab.Problems.QuadraticAssignment.Tests {
 
     [TestMethod]
     [TestCategory("Problems.Assignment")]
-    [TestProperty("Time", "short")]
     public void TranslocationMoveEvaluatorTest() {
       for (int i = 0; i < 500; i++) {
         int index1 = random.Next(assignment.Length - 1);
@@ -234,7 +230,6 @@ namespace HeuristicLab.Problems.QuadraticAssignment.Tests {
 
     [TestMethod]
     [TestCategory("Problems.Assignment")]
-    [TestProperty("Time", "short")]
     public void ScrambleMoveEvaluatorTest() {
       for (int i = 0; i < 500; i++) {
         ScrambleMove scramble = StochasticScrambleMultiMoveGenerator.GenerateRandomMove(assignment, random);

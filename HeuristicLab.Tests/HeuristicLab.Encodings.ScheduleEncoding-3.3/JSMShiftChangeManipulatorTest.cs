@@ -37,7 +37,6 @@ namespace HeuristicLab.Encodings.ScheduleEncoding.Tests {
     ///</summary>
     [TestMethod]
     [TestCategory("Encodings.Schedule")]
-    [TestProperty("Time", "short")]
     public void ApplyTest() {
       IRandom random = new TestRandom(new int[] { 2, 1, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2 }, null);
       JSMEncoding individual = TestUtils.CreateTestJSM1();

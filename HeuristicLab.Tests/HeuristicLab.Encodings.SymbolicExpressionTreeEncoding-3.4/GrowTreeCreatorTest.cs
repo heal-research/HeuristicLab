@@ -35,7 +35,6 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Tests {
     [TestMethod]
     [TestCategory("Encodings.SymbolicExpressionTree")]
     [TestCategory("Run.Daily")]
-    [TestProperty("Time", "long")]
     public void GrowTreeCreatorDistributionsTest() {
       var randomTrees = new List<ISymbolicExpressionTree>();
       var grammar = Grammars.CreateSimpleArithmeticGrammar();

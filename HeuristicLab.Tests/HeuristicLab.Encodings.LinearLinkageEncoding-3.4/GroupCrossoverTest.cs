@@ -28,7 +28,6 @@ namespace HeuristicLab.Encodings.LinearLinkageEncoding.Tests {
   public class GroupCrossoverTest {
     [TestMethod()]
     [TestCategory("Encodings.LinearLinkage")]
-    [TestProperty("Time", "short")]
     public void EqualParentsTest() {
       var random = new FastRandom(0);
       var parent = LinearLinkage.SingleElementGroups(10);
@@ -44,7 +43,6 @@ namespace HeuristicLab.Encodings.LinearLinkageEncoding.Tests {
     // Multi-objective Genetic Algorithms for grouping problems. Korkmaz, E.E. Applied Intelligence (2010) 33: 179. 
     [TestMethod()]
     [TestCategory("Encodings.LinearLinkage")]
-    [TestProperty("Time", "short")]
     public void ExampleFromPaperTest() {
       var parent1 = LinearLinkage.FromEndLinks(new[] { 3, 4, 3, 3, 4 });
 

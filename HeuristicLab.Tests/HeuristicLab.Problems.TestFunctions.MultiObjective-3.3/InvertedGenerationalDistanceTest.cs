@@ -28,7 +28,6 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective.Tests {
     [TestMethod]
     [ExpectedException(typeof(ArgumentException))]
     [TestCategory("Problems.TestFunctions.MultiObjective")]
-    [TestProperty("Time", "short")]
     public void InvertedGenerationalDistanceTestEmptyOptimalFront() {
 
       double[] point = new double[2];
@@ -42,7 +41,6 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective.Tests {
     [TestMethod]
     [ExpectedException(typeof(ArgumentException))]
     [TestCategory("Problems.TestFunctions.MultiObjective")]
-    [TestProperty("Time", "short")]
     public void InvertedGenerationalDistanceTestEmptyFront() {
 
       double[] point = new double[2];
@@ -55,7 +53,6 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective.Tests {
 
     [TestMethod]
     [TestCategory("Problems.TestFunctions.MultiObjective")]
-    [TestProperty("Time", "short")]
     public void InvertedGenerationalDistanceTestSamePoint() {
       double[] point = new double[2];
       point[0] = 0.5;
@@ -71,7 +68,6 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective.Tests {
 
     [TestMethod]
     [TestCategory("Problems.TestFunctions.MultiObjective")]
-    [TestProperty("Time", "short")]
     public void InvertedGenerationalDistanceTestSinglePoint() {
       double[] point = new double[2];
       point[0] = 0;
@@ -87,7 +83,6 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective.Tests {
 
     [TestMethod]
     [TestCategory("Problems.TestFunctions.MultiObjective")]
-    [TestProperty("Time", "short")]
     public void InvertedGenerationalDistanceTestDifferentSizes() {
       double[] point = new double[2];
       point[0] = 0;
@@ -106,7 +101,6 @@ namespace HeuristicLab.Problems.TestFunctions.MultiObjective.Tests {
 
     [TestMethod]
     [TestCategory("Problems.TestFunctions.MultiObjective")]
-    [TestProperty("Time", "short")]
     public void InvertedGenerationalDistanceTestQuadratic() {
       double[] point = new double[2];
       point[0] = 0;

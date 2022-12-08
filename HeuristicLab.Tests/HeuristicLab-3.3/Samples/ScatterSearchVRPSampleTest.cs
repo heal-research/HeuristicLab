@@ -35,7 +35,6 @@ namespace HeuristicLab.Tests {
 
     [TestMethod]
     [TestCategory("Samples.Create")]
-    [TestProperty("Time", "medium")]
     public void CreateScatterSearchVRPSampleTest() {
       var ss = CreateScatterSearchVRPSample();
       string path = Path.Combine(SamplesUtils.SamplesDirectory, SampleFileName + SamplesUtils.SampleFileExtension);
@@ -45,7 +44,6 @@ namespace HeuristicLab.Tests {
     [TestMethod]
     [TestCategory("Samples.Execute")]
     [TestCategory("Run.Daily")]
-    [TestProperty("Time", "long")]
     public void RunScatterSearchVRPSampleTest() {
       var ss = CreateScatterSearchVRPSample();
       ss.SetSeedRandomly.Value = false;

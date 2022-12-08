@@ -35,7 +35,6 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding.Tests {
     ///</summary>
     [TestMethod]
     [TestCategory("Encodings.BinaryVector")]
-    [TestProperty("Time", "short")]
     public void SomePositionsBitflipManipulatorApplyTest() {
       TestRandom random = new TestRandom();
       BinaryVector parent, expected;

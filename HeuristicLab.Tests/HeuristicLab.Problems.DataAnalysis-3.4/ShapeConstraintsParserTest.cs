@@ -11,7 +11,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
   public class ShapeConstraintsParserTest {
     [TestMethod]
     [TestCategory("Problems.DataAnalysis.ShapeConstraintsParser")]
-    [TestProperty("Time", "short")]
     public void Parse_ValidText_ShapeConstraintsCount5() {
       string expression =
          "f in [-inf. .. 0] where G in [-10 .. 10], c in [-1234.23 .. 7.53e-4] with weight: 1.2 \n"+
@@ -25,7 +24,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
 
     [TestMethod]
     [TestCategory("Problems.DataAnalysis.ShapeConstraintsParser")]
-    [TestProperty("Time", "short")]
     public void Parse_ValidTextWithLineComment_ShapeConstraintsCount4() {
       string expression =
          "f in [-inf. .. 0] where G in [-10 .. 10], c in [-1234.23 .. 7.53e-4] with weight: 1.2 \n" +
@@ -39,7 +37,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
 
     [TestMethod]
     [TestCategory("Problems.DataAnalysis.ShapeConstraintsParser")]
-    [TestProperty("Time", "short")]
     public void Parse_ValidTextWithLineCommentBeforeRegionList_ShapeConstraintsCount5() {
       string expression =
          "f in [-inf. .. 0] #where G in [-10 .. 10], c in [-1234.23 .. 7.53e-4] with weight: 1.2 \n" +
@@ -53,7 +50,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
 
     [TestMethod]
     [TestCategory("Problems.DataAnalysis.ShapeConstraintsParser")]
-    [TestProperty("Time", "short")]
     public void Parse_ValidTextWithTwoShapeConstraintInLine_ShapeConstraintsCount2() {
       string expression =
          "f in [-inf. .. 0] df / dG in [-inf. .. 0]";
@@ -63,7 +59,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
 
     [TestMethod]
     [TestCategory("Problems.DataAnalysis.ShapeConstraintsParser")]
-    [TestProperty("Time", "short")]
     public void Parse_ValidTextWithLineCommentBeforeRegionList_RegionCount0() {
       string expression =
          "f in [-inf. .. 0] #where G in [-10 .. 10], c in [-1234.23 .. 7.53e-4] with weight: 1.2";
@@ -73,7 +68,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
 
     [TestMethod]
     [TestCategory("Problems.DataAnalysis.ShapeConstraintsParser")]
-    [TestProperty("Time", "short")]
     [ExpectedException(typeof(ArgumentException))]
     public void Parse_InvalidText_ThrowException() {
       string expression =
@@ -83,7 +77,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
 
     [TestMethod]
     [TestCategory("Problems.DataAnalysis.ShapeConstraintsParser")]
-    [TestProperty("Time", "short")]
     public void Parse_WithNegativeInf_ReturnsCorrectLowerBound() {
       string expression =
          "f in [-inf. .. 0]";
@@ -93,7 +86,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
 
     [TestMethod]
     [TestCategory("Problems.DataAnalysis.ShapeConstraintsParser")]
-    [TestProperty("Time", "short")]
     public void Parse_WithPositiveInf_ReturnsCorrectUpperBound() {
       string expression =
          "f in [0 .. inf.]";
@@ -103,7 +95,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
 
     [TestMethod]
     [TestCategory("Problems.DataAnalysis.ShapeConstraintsParser")]
-    [TestProperty("Time", "short")]
     public void Parse_WithAlternateIntervalSeparator_ThrowsNoException() {
       string expression =
          "f in [0, inf.]";
@@ -112,7 +103,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
 
     [TestMethod]
     [TestCategory("Problems.DataAnalysis.ShapeConstraintsParser")]
-    [TestProperty("Time", "short")]
     public void Parse_WithNoDerivative_IsDerivativeFalse() {
       string expression =
          "f in [-inf. .. 0] where G in [-10 .. 10], c in [-1234.23 .. 7.53e-4] with weight: 1.2";
@@ -122,7 +112,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
 
     [TestMethod]
     [TestCategory("Problems.DataAnalysis.ShapeConstraintsParser")]
-    [TestProperty("Time", "short")]
     public void Parse_WithFirstDerivative_NumberOfDerivations1() {
       string expression =
          "∂f/∂c in [0 .. inf.]";
@@ -132,7 +121,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
 
     [TestMethod]
     [TestCategory("Problems.DataAnalysis.ShapeConstraintsParser")]
-    [TestProperty("Time", "short")]
     public void Parse_WithSecondDerivative_NumberOfDerivations2() {
       string expression =
          "d²f / dG² in [0 .. inf.]";
@@ -142,7 +130,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
 
     [TestMethod]
     [TestCategory("Problems.DataAnalysis.ShapeConstraintsParser")]
-    [TestProperty("Time", "short")]
     public void Parse_WithThirdDerivative_NumberOfDerivations3() {
       string expression =
          "∂³f/∂c³ in [0 .. inf.]";
@@ -152,7 +139,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
 
     [TestMethod]
     [TestCategory("Problems.DataAnalysis.ShapeConstraintsParser")]
-    [TestProperty("Time", "short")]
     public void Parse_With2Regions_RegionCount2() {
       string expression =
          "f in [-inf. .. 0] where G in [-10 .. 10], c in [-1234.23 .. 7.53e-4] with weight: 1.2";
@@ -162,7 +148,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
 
     [TestMethod]
     [TestCategory("Problems.DataAnalysis.ShapeConstraintsParser")]
-    [TestProperty("Time", "short")]
     public void Parse_WithFirstRegion_ReturnsCorrectLowerBound() {
       string expression =
          "f in [-inf. .. 0] where G in [-10 .. 10], c in [-1234.23 .. 7.53e-4] with weight: 1.2";
@@ -172,7 +157,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
 
     [TestMethod]
     [TestCategory("Problems.DataAnalysis.ShapeConstraintsParser")]
-    [TestProperty("Time", "short")]
     public void Parse_WithFirstRegion_ReturnsCorrectUpperBound() {
       string expression =
          "f in [-inf. .. 0] where G in [-10 .. 10], c in [-1234.23 .. 7.53e-4] with weight: 1.2";
@@ -182,7 +166,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
 
     [TestMethod]
     [TestCategory("Problems.DataAnalysis.ShapeConstraintsParser")]
-    [TestProperty("Time", "short")]
     public void Parse_WithSecondRegion_ReturnsCorrectLowerBound() {
       string expression =
          "f in [-inf. .. 0] where G in [-10 .. 10], c in [-1234.23 .. 7.53e-4] with weight: 1.2";
@@ -192,7 +175,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
 
     [TestMethod]
     [TestCategory("Problems.DataAnalysis.ShapeConstraintsParser")]
-    [TestProperty("Time", "short")]
     public void Parse_WithSecondRegion_ReturnsCorrectUpperBound() {
       string expression =
          "f in [-inf. .. 0] where G in [-10 .. 10], c in [-1234.23 .. 7.53e-4] with weight: 1.2";
@@ -203,7 +185,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
 
     [TestMethod]
     [TestCategory("Problems.DataAnalysis.ShapeConstraintsParser")]
-    [TestProperty("Time", "short")]
     public void Parse_WithWeight_ReturnsCorrectWeight() {
       string expression =
          "f in [-inf. .. 0] where G in [-10 .. 10], c in [-1234.23 .. 7.53e-4] with weight: 1.2";

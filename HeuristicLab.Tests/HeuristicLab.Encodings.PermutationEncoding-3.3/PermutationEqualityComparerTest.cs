@@ -26,7 +26,6 @@ namespace HeuristicLab.Encodings.PermutationEncoding.Tests {
   public class PermutationEqualityComparerTest {
     [TestMethod]
     [TestCategory("Encodings.Permutation")]
-    [TestProperty("Time", "short")]
     public void TestPermutationEqualityComparer() {
       PermutationEqualityComparer comparer = new PermutationEqualityComparer();
       Permutation p = new Permutation(PermutationTypes.RelativeUndirected, new int[] { 3, 2, 0, 1, 4 });

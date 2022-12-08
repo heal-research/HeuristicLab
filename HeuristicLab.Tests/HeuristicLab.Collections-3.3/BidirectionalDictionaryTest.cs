@@ -45,7 +45,6 @@ namespace HeuristicLab.Collections.Tests {
 
     [TestMethod]
     [TestCategory("General")]
-    [TestProperty("Time", "short")]
     public void TestBidirectionalDictionary() {
       var dict1 = new BidirectionalDictionary<int, double>();
       dict1.Add(4, 2.0);

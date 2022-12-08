@@ -34,7 +34,6 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Tests {
     [TestMethod]
     [TestCategory("Encodings.SymbolicExpressionTree")]
     [TestCategory("Run.Daily")]
-    [TestProperty("Time", "medium")]
     public void ChangeNodeTypeManipulationDistributionsTest() {
       SymbolicExpressionTreeStringFormatter formatter = new SymbolicExpressionTreeStringFormatter();
       var trees = new List<ISymbolicExpressionTree>();

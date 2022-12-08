@@ -34,7 +34,6 @@ namespace HeuristicLab.Encodings.PermutationEncoding.Tests {
     ///</summary>
     [TestMethod]
     [TestCategory("Encodings.Permutation")]
-    [TestProperty("Time", "short")]
     public void InversionManipulatorApplyTest() {
       TestRandom random = new TestRandom();
       Permutation parent, expected;

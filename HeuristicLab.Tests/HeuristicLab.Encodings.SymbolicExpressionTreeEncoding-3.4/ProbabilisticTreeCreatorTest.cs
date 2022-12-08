@@ -35,7 +35,6 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Tests {
     [TestMethod()]
     [TestCategory("Encodings.SymbolicExpressionTree")]
     [TestCategory("Run.Daily")]
-    [TestProperty("Time", "long")]
     public void ProbabilisticTreeCreaterDistributionsTest() {
       var randomTrees = new List<ISymbolicExpressionTree>();
       var grammar = Grammars.CreateSimpleArithmeticGrammar();
@@ -72,7 +71,6 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Tests {
 
     [TestMethod]
     [TestCategory("Encodings.SymbolicExpressionTree")]
-    [TestProperty("Time", "short")]
     public void ProbabilisticTreeCreatorSpecificTreeSizesTest() {
       var grammar = Grammars.CreateSimpleArithmeticGrammar();
       var random = new MersenneTwister(31415);

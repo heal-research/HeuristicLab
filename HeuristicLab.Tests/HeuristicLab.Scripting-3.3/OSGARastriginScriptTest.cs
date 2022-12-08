@@ -41,7 +41,6 @@ namespace HeuristicLab.Tests {
 
     [TestMethod]
     [TestCategory("Scripts.Create")]
-    [TestProperty("Time", "short")]
     public void CreateOSGARastriginScriptTest() {
       var script = CreateOSGARastriginScript();
       string path = Path.Combine(ScriptingUtils.ScriptsDirectory, ScriptFileName + ScriptingUtils.ScriptFileExtension);
@@ -51,7 +50,6 @@ namespace HeuristicLab.Tests {
     [TestMethod]
     [TestCategory("Scripts.Execute")]
     [TestCategory("Run.Daily")]
-    [TestProperty("Time", "long")]
     public void RunOSGARastriginScriptTest() {
       var script = CreateOSGARastriginScript();
 

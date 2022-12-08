@@ -37,7 +37,6 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Tests {
     [Timeout(3600000)]
     [TestCategory("Encodings.SymbolicExpressionTree")]
     [TestCategory("Run.Daily")]
-    [TestProperty("Time", "long")]
     public void AllArchitectureAlteringOperatorsDistributionTest() {
       var trees = new List<ISymbolicExpressionTree>();
       var newTrees = new List<ISymbolicExpressionTree>();

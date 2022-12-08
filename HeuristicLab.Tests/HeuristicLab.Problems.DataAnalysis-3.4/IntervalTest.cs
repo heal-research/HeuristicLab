@@ -29,7 +29,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
 
     [TestMethod]
     [TestCategory("Problems.DataAnalysis")]
-    [TestProperty("Time", "short")]
     public void AddIntervalTest() {
       //add        [x1,x2] + [y1,y2] = [x1 + y1,x2 + y2]
 
@@ -43,7 +42,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
 
     [TestMethod]
     [TestCategory("Problems.DataAnalysis")]
-    [TestProperty("Time", "short")]
     public void SubtractIntervalTest() {
       //subtract   [x1,x2] − [y1,y2] = [x1 − y2,x2 − y1]
 
@@ -57,7 +55,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
 
     [TestMethod]
     [TestCategory("Problems.DataAnalysis")]
-    [TestProperty("Time", "short")]
     public void MultiplyIntervalTest() {
       //multiply   [x1,x2] * [y1,y2] = [min(x1*y1,x1*y2,x2*y1,x2*y2),max(x1*y1,x1*y2,x2*y1,x2*y2)]
 
@@ -74,7 +71,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
 
     [TestMethod]
     [TestCategory("Problems.DataAnalysis")]
-    [TestProperty("Time", "short")]
     public void DivideIntervalTest() {
       //divide  [x1, x2] / [y1, y2] = [x1, x2] * (1/[y1, y2]), where 1 / [y1,y2] = [1 / y2,1 / y1] if 0 not in [y_1, y_2].
 
@@ -95,7 +91,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
 
     [TestMethod]
     [TestCategory("Problems.DataAnalysis")]
-    [TestProperty("Time", "short")]
     public void SineIntervalTest() {
       //sine depends on interval
       //sin([0, 2*pi]) = [-1, 1]
@@ -113,7 +108,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
 
     [TestMethod]
     [TestCategory("Problems.DataAnalysis")]
-    [TestProperty("Time", "short")]
     public void CosineIntervalTest() {
       //Cosine uses sine Interval.Sine(Interval.Subtract(a, new Interval(Math.PI / 2, Math.PI / 2)));
       CheckLowerAndUpperBoundOfInterval(Interval.Cosine(new Interval(0, 2 * Math.PI)), new Interval(-1, 1));
@@ -122,7 +116,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
 
     [TestMethod]
     [TestCategory("Problems.DataAnalysis")]
-    [TestProperty("Time", "short")]
     public void LogIntervalTest() {
       //Log([3, 5]) = [log(3), log(5)]
       CheckLowerAndUpperBoundOfInterval(new Interval(Math.Log(3), Math.Log(5)), Interval.Logarithm(new Interval(3, 5)));
@@ -137,7 +130,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
 
     [TestMethod]
     [TestCategory("Problems.DataAnalysis")]
-    [TestProperty("Time", "short")]
     public void ExponentialIntervalTest() {
       //Exp([0, 1]) = [exp(0), exp(1)]
       CheckLowerAndUpperBoundOfInterval(new Interval(1, Math.Exp(1)), Interval.Exponential(new Interval(0, 1)));
@@ -146,7 +138,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
 
     [TestMethod]
     [TestCategory("Problems.DataAnalysis")]
-    [TestProperty("Time", "short")]
     public void SquareIntervalTest() {
       CheckLowerAndUpperBoundOfInterval(new Interval(1, 4), Interval.Square(new Interval(1, 2)));
       CheckLowerAndUpperBoundOfInterval(new Interval(1, 4), Interval.Square(new Interval(-2, -1)));
@@ -155,7 +146,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
 
     [TestMethod]
     [TestCategory("Problems.DataAnalysis")]
-    [TestProperty("Time", "short")]
     public void SquarerootIntervalTest() {
       CheckLowerAndUpperBoundOfInterval(new Interval(-2, 2), Interval.SquareRoot(new Interval(1, 4)));
       CheckLowerAndUpperBoundOfInterval(new Interval(double.NaN, double.NaN), Interval.SquareRoot(new Interval(-4, -1)));
@@ -163,7 +153,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
 
     [TestMethod]
     [TestCategory("Problems.DataAnalysis")]
-    [TestProperty("Time", "short")]
     public void CubeIntervalTest() {
       CheckLowerAndUpperBoundOfInterval(new Interval(1, 8), Interval.Cube(new Interval(1, 2)));
       CheckLowerAndUpperBoundOfInterval(new Interval(-8, -1), Interval.Cube(new Interval(-2, -1)));
@@ -172,7 +161,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
 
     [TestMethod]
     [TestCategory("Problems.DataAnalysis")]
-    [TestProperty("Time", "short")]
     public void CubeRootIntervalTest() {
       CheckLowerAndUpperBoundOfInterval(new Interval(1, 2), Interval.CubicRoot(new Interval(1, 8)));
       CheckLowerAndUpperBoundOfInterval(new Interval(-2, -2), Interval.CubicRoot(new Interval(-8, -8)));
@@ -185,7 +173,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
 
     [TestMethod]
     [TestCategory("Problems.DataAnalysis")]
-    [TestProperty("Time", "short")]
     public void AbsoluteIntervalTest() {
       Assert.AreEqual(new Interval(2, 5), Interval.Absolute(new Interval(-5, -2)));
       Assert.AreEqual(new Interval(2, 5), Interval.Absolute(new Interval(2, 5)));
@@ -196,7 +183,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
 
     [TestMethod]
     [TestCategory("Problems.DataAnalysis")]
-    [TestProperty("Time", "short")]
     public void AnalyticalQuotientIntervalTest() {
       //Analytical Quotient ==> a / sqrt(b^2 + 1)
       var aPos = new Interval(3, 5);
@@ -226,7 +212,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
 
     [TestMethod]
     [TestCategory("Problems.DataAnalysis")]
-    [TestProperty("Time", "short")]
     public void IsNegativeIntervalTest() {
       Assert.IsTrue(new Interval(-2, -1).IsNegative);
       Assert.IsFalse(new Interval(-2, 0).IsNegative);
@@ -236,7 +221,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
 
     [TestMethod]
     [TestCategory("Problems.DataAnalysis")]
-    [TestProperty("Time", "short")]
     public void IsPositiveIntervalTest() {
       Assert.IsTrue(new Interval(3, 5).IsPositive);
       Assert.IsFalse(new Interval(0, 5).IsPositive);
@@ -246,7 +230,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
 
     [TestMethod]
     [TestCategory("Problems.DataAnalysis")]
-    [TestProperty("Time", "short")]
     public void IsAlmostIntervalTest() {
       var negativeLowerBound = -2E-13;
       var negativeUpperBound = -1E-13;
@@ -270,7 +253,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
 
     [TestMethod]
     [TestCategory("Problems.DataAnalysis")]
-    [TestProperty("Time", "short")]
     public void ContaintsTest() {
       var negativeInterval = new Interval(-10, -5);
       var positiveInterval = new Interval(5, 10);
@@ -308,7 +290,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
 
     [TestMethod]
     [TestCategory("Problems.DataAnalysis")]
-    [TestProperty("Time", "short")]
     public void GetIntervalTest() {
       var values = new List<double>() { -2.5, -9, 2, 7, 0 ,12, 12.4, 12.4, 9.29, 1002, -29.9};
       var valuesNan = new List<double>() { double.NaN, 2, 4, 19, -2, -12.2};
@@ -326,7 +307,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
 
     [TestMethod]
     [TestCategory("Problems.DataAnalysis")]
-    [TestProperty("Time", "short")]
     public void GeometricTest() {
       CheckLowerAndUpperBoundOfInterval(new Interval(-1, -0.936456687290796), Interval.Cosine(new Interval(3, 3.5)));
       CheckLowerAndUpperBoundOfInterval(new Interval(-1, -0.936456687290796), Interval.Cosine(new Interval(-3.5, -3)));
@@ -370,7 +350,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
 
     [TestMethod]
     [TestCategory("Problems.DataAnalysis")]
-    [TestProperty("Time", "short")]
     public void EqualsTest() {
       var interval1 = new Interval(0, 12);
       var interval2 = new Interval(-12, 8);
@@ -385,7 +364,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
     }
     //[TestMethod]
     //[TestCategory("Problems.DataAnalysis")]
-    //[TestProperty("Time", "short")]
     //public void RootTest() {
     //  var posInterval = new Interval(3, 5);
     //  var negInterval = new Interval(-6, -2);

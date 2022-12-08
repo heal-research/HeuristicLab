@@ -49,7 +49,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
     [TestMethod]
     [TestCategory("Problems.DataAnalysis")]
     [TestCategory("Run.Daily")]
-    [TestProperty("Time", "long")]
     public void SymbolicDataAnalysisExpressionSemanticSimilarityCrossoverPerformanceTest() {
       var problem = new SymbolicRegressionSingleObjectiveProblem();
       var crossover = problem.OperatorsParameter.Value.OfType<SymbolicDataAnalysisExpressionSemanticSimilarityCrossover<IRegressionProblemData>>().First();
@@ -59,7 +58,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
     [TestMethod]
     [TestCategory("Problems.DataAnalysis")]
     [TestCategory("Run.Daily")]
-    [TestProperty("Time", "long")]
     public void SymbolicDataAnalysisExpressionProbabilisticFunctionalCrossoverPerformanceTest() {
       var problem = new SymbolicRegressionSingleObjectiveProblem();
       var crossover = problem.OperatorsParameter.Value.OfType<SymbolicDataAnalysisExpressionProbabilisticFunctionalCrossover<IRegressionProblemData>>().First();
@@ -69,7 +67,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
     [TestMethod]
     [TestCategory("Problems.DataAnalysis")]
     [TestCategory("Run.Daily")]
-    [TestProperty("Time", "long")]
     public void SymbolicDataAnalysisExpressionDeterministicBestCrossoverPerformanceTest() {
       var problem = new SymbolicRegressionSingleObjectiveProblem();
       var crossover = problem.OperatorsParameter.Value.OfType<SymbolicDataAnalysisExpressionDeterministicBestCrossover<IRegressionProblemData>>().First();
@@ -79,7 +76,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
     [TestMethod]
     [TestCategory("Problems.DataAnalysis")]
     [TestCategory("Run.Daily")]
-    [TestProperty("Time", "long")]
     public void SymbolicDataAnalysisExpressionContextAwareCrossoverPerformanceTest() {
       var problem = new SymbolicRegressionSingleObjectiveProblem();
       var crossover = problem.OperatorsParameter.Value.OfType<SymbolicDataAnalysisExpressionContextAwareCrossover<IRegressionProblemData>>().First();
@@ -89,7 +85,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
     [TestMethod]
     [TestCategory("Problems.DataAnalysis")]
     [TestCategory("Run.Daily")]
-    [TestProperty("Time", "long")]
     public void SymbolicDataAnalysisExpressionDepthConstrainedCrossoverPerformanceTest() {
       var problem = new SymbolicRegressionSingleObjectiveProblem();
       var crossover = problem.OperatorsParameter.Value.OfType<SymbolicDataAnalysisExpressionDepthConstrainedCrossover<IRegressionProblemData>>().First();

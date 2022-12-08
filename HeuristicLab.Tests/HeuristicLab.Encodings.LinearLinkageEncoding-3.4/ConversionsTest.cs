@@ -64,7 +64,6 @@ namespace HeuristicLab.Encodings.LinearLinkageEncoding.Tests {
 
     [TestMethod()]
     [TestCategory("Encodings.LinearLinkage")]
-    [TestProperty("Time", "short")]
     public void EndLinksRoundtripTest() {
       foreach (var values in validForwardEncoding) {
         var expected = LinearLinkage.FromForwardLinks(values);
@@ -77,7 +76,6 @@ namespace HeuristicLab.Encodings.LinearLinkageEncoding.Tests {
 
     [TestMethod()]
     [TestCategory("Encodings.LinearLinkage")]
-    [TestProperty("Time", "short")]
     public void GroupsRoundtripTest() {
       foreach (var values in validForwardEncoding) {
         var expected = LinearLinkage.FromForwardLinks(values);
@@ -90,7 +88,6 @@ namespace HeuristicLab.Encodings.LinearLinkageEncoding.Tests {
 
     [TestMethod()]
     [TestCategory("Encodings.LinearLinkage")]
-    [TestProperty("Time", "short")]
     public void InvalidForwardLinksTest() {
       foreach (var values in invalidForwardEncoding) {
         var isValid = true;
@@ -105,7 +102,6 @@ namespace HeuristicLab.Encodings.LinearLinkageEncoding.Tests {
 
     [TestMethod()]
     [TestCategory("Encodings.LinearLinkage")]
-    [TestProperty("Time", "short")]
     public void InvalidEndLinksTest() {
       foreach (var values in invalidEndEncoding) {
         var isValid = true;
@@ -120,7 +116,6 @@ namespace HeuristicLab.Encodings.LinearLinkageEncoding.Tests {
 
     [TestMethod]
     [TestCategory("Encodings.LinearLinkage")]
-    [TestProperty("Time", "short")]
     public void ConvertFromLLEtoLLEe() {
       var random = new MersenneTwister(42);
       var lle = MaxGroupsLinearLinkageCreator.Apply(random, 32, 8);
@@ -129,7 +124,6 @@ namespace HeuristicLab.Encodings.LinearLinkageEncoding.Tests {
 
     [TestMethod]
     [TestCategory("Encodings.LinearLinkage")]
-    [TestProperty("Time", "short")]
     public void ConvertFromLLEtoLLEb() {
       var random = new MersenneTwister(42);
       var lle = MaxGroupsLinearLinkageCreator.Apply(random, 32, 8);

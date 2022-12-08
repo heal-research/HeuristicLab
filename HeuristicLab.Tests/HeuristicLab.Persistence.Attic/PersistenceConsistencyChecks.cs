@@ -10,7 +10,6 @@ namespace HeuristicLab.Tests.Persistence.Attic {
   public class PersistenceConsistencyChecks {
     [TestCategory("Persistence.Attic")]
     [TestCategory("Essential")]
-    [TestProperty("Time", "short")]
     [TestMethod]
     public void CheckDuplicateGUIDs() {
       // easy to produce duplicate GUIDs with copy&paste

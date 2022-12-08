@@ -33,7 +33,6 @@ namespace HeuristicLab.Tests {
   public class EnumerableStatisticExtensionsTest {
     [TestMethod]
     [TestCategory("General")]
-    [TestProperty("Time", "short")]
     public void QuantileTest() {
       {
         Assert.AreEqual(2.0, new double[] { 2.0 }.Quantile(0.5));
@@ -103,7 +102,6 @@ namespace HeuristicLab.Tests {
 
     [TestMethod]
     [TestCategory("General")]
-    [TestProperty("Time", "medium")]
     public void QuantilePerformanceTest() {
       int n = 10;
       var sw0 = new Stopwatch();

@@ -31,7 +31,6 @@ namespace HeuristicLab.Tests {
     [TestMethod]
     [TestCategory("Samples.Execute")]
     [TestCategory("Run.Daily")]
-    [TestProperty("Time", "long")]
     public void RunGpLawnMowerSampleTest() {
       var ga = CreateGpLawnMowerSample();
       ga.SetSeedRandomly.Value = false;

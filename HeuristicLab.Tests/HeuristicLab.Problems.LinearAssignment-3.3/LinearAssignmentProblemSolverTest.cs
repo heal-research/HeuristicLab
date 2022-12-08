@@ -35,7 +35,6 @@ namespace HeuristicLab.Problems.LinearAssignment.Tests {
     ///</summary>
     [TestMethod]
     [TestCategory("Problems.Assignment")]
-    [TestProperty("Time", "short")]
     public void SolveTest() {
       double[,] costs = new double[,] {
         {  5,  9,  3,  6 },

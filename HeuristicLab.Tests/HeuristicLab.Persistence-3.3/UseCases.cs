@@ -335,7 +335,6 @@ namespace HeuristicLab.Persistence.Tests {
 
     [TestMethod]
     [TestCategory("Persistence")]
-    [TestProperty("Time", "short")]
     public void ComplexStorable() {
       Root r = InitializeComplexStorable();
       XmlGenerator.Serialize(r, tempFile);
@@ -345,7 +344,6 @@ namespace HeuristicLab.Persistence.Tests {
 
     [TestMethod]
     [TestCategory("Persistence")]
-    [TestProperty("Time", "short")]
     public void ComplexEasyStorable() {
       Root r = InitializeComplexStorable();
       ReadableXmlGenerator.Serialize(r, tempFile);
@@ -436,7 +434,6 @@ namespace HeuristicLab.Persistence.Tests {
 
     [TestMethod]
     [TestCategory("Persistence")]
-    [TestProperty("Time", "short")]
     public void SelfReferences() {
       C c = new C();
       C[][] cs = new C[2][];
@@ -463,7 +460,6 @@ namespace HeuristicLab.Persistence.Tests {
 
     [TestMethod]
     [TestCategory("Persistence")]
-    [TestProperty("Time", "short")]
     public void ArrayCreation() {
       ArrayList[] arrayListArray = new ArrayList[4];
       arrayListArray[0] = new ArrayList();
@@ -492,7 +488,6 @@ namespace HeuristicLab.Persistence.Tests {
 
     [TestMethod]
     [TestCategory("Persistence")]
-    [TestProperty("Time", "short")]
     public void CustomSerializationProperty() {
       Manager m = new Manager();
       XmlGenerator.Serialize(m, tempFile);
@@ -508,7 +503,6 @@ namespace HeuristicLab.Persistence.Tests {
 
     [TestMethod]
     [TestCategory("Persistence")]
-    [TestProperty("Time", "short")]
     public void Primitives() {
       PrimitivesTest sdt = new PrimitivesTest();
       XmlGenerator.Serialize(sdt, tempFile);
@@ -520,7 +514,6 @@ namespace HeuristicLab.Persistence.Tests {
 
     [TestMethod]
     [TestCategory("Persistence")]
-    [TestProperty("Time", "short")]
     public void MultiDimensionalArray() {
       string[,] mDimString = new string[,] {
         {"ora", "et", "labora"},
@@ -556,7 +549,6 @@ namespace HeuristicLab.Persistence.Tests {
 
     [TestMethod]
     [TestCategory("Persistence")]
-    [TestProperty("Time", "short")]
     public void NestedTypeTest() {
       NestedType t = new NestedType();
       XmlGenerator.Serialize(t, tempFile);
@@ -570,7 +562,6 @@ namespace HeuristicLab.Persistence.Tests {
 
     [TestMethod]
     [TestCategory("Persistence")]
-    [TestProperty("Time", "short")]
     public void SimpleArray() {
       string[] strings = { "ora", "et", "labora" };
       XmlGenerator.Serialize(strings, tempFile);
@@ -582,7 +573,6 @@ namespace HeuristicLab.Persistence.Tests {
 
     [TestMethod]
     [TestCategory("Persistence")]
-    [TestProperty("Time", "short")]
     public void PrimitiveRoot() {
       XmlGenerator.Serialize(12.3f, tempFile);
       object o = XmlParser.Deserialize(tempFile);
@@ -636,7 +626,6 @@ namespace HeuristicLab.Persistence.Tests {
 
     [TestMethod]
     [TestCategory("Persistence")]
-    [TestProperty("Time", "short")]
     public void Number2StringDecomposer() {
       NumberTest sdt = new NumberTest();
       XmlGenerator.Serialize(sdt, tempFile,
@@ -654,7 +643,6 @@ namespace HeuristicLab.Persistence.Tests {
 
     [TestMethod]
     [TestCategory("Persistence")]
-    [TestProperty("Time", "short")]
     public void Enums() {
       EnumTest et = new EnumTest();
       et.simpleEnum = SimpleEnum.two;
@@ -669,7 +657,6 @@ namespace HeuristicLab.Persistence.Tests {
 
     [TestMethod]
     [TestCategory("Persistence")]
-    [TestProperty("Time", "short")]
     public void TestAliasingWithOverriddenEquals() {
       List<IntWrapper> ints = new List<IntWrapper>();
       ints.Add(new IntWrapper(1));
@@ -686,7 +673,6 @@ namespace HeuristicLab.Persistence.Tests {
 
     [TestMethod]
     [TestCategory("Persistence")]
-    [TestProperty("Time", "short")]
     public void TestSavingException() {
       List<int> list = new List<int> { 1, 2, 3 };
       XmlGenerator.Serialize(list, tempFile);
@@ -702,7 +688,6 @@ namespace HeuristicLab.Persistence.Tests {
 
     [TestMethod]
     [TestCategory("Persistence")]
-    [TestProperty("Time", "short")]
     public void TestTypeStringConversion() {
       string name = typeof(List<int>[]).AssemblyQualifiedName;
       string shortName =
@@ -714,7 +699,6 @@ namespace HeuristicLab.Persistence.Tests {
 
     [TestMethod]
     [TestCategory("Persistence")]
-    [TestProperty("Time", "short")]
     public void TestHexadecimalPublicKeyToken() {
       string name = "TestClass, TestAssembly, Version=1.2.3.4, PublicKey=1234abc";
       string shortName = "TestClass, TestAssembly";
@@ -724,7 +708,6 @@ namespace HeuristicLab.Persistence.Tests {
 
     [TestMethod]
     [TestCategory("Persistence")]
-    [TestProperty("Time", "short")]
     public void TestMultipleFailure() {
       List<NonSerializable> l = new List<NonSerializable>();
       l.Add(new NonSerializable());
@@ -746,7 +729,6 @@ namespace HeuristicLab.Persistence.Tests {
 
     [TestMethod]
     [TestCategory("Persistence")]
-    [TestProperty("Time", "short")]
     public void TestAssemblyVersionCheck() {
       IntWrapper i = new IntWrapper(1);
       Serializer s = new Serializer(i, ConfigurationService.Instance.GetDefaultConfig(new XmlFormat()));
@@ -785,7 +767,6 @@ namespace HeuristicLab.Persistence.Tests {
 
     [TestMethod]
     [TestCategory("Persistence")]
-    [TestProperty("Time", "short")]
     public void InheritanceTest() {
       New n = new New();
       XmlGenerator.Serialize(n, tempFile);
@@ -832,7 +813,6 @@ namespace HeuristicLab.Persistence.Tests {
 
     [TestMethod]
     [TestCategory("Persistence")]
-    [TestProperty("Time", "short")]
     public void InstantiateParentChainReference() {
       GrandParent gp = new GrandParent();
       gp.parent = new Parent();
@@ -856,7 +836,6 @@ namespace HeuristicLab.Persistence.Tests {
 
     [TestMethod]
     [TestCategory("Persistence")]
-    [TestProperty("Time", "short")]
     public void StructTest() {
       TestStruct s = new TestStruct(10);
       XmlGenerator.Serialize(s, tempFile);
@@ -866,7 +845,6 @@ namespace HeuristicLab.Persistence.Tests {
 
     [TestMethod]
     [TestCategory("Persistence")]
-    [TestProperty("Time", "short")]
     public void PointTest() {
       Point p = new Point(12, 34);
       XmlGenerator.Serialize(p, tempFile);
@@ -876,7 +854,6 @@ namespace HeuristicLab.Persistence.Tests {
 
     [TestMethod]
     [TestCategory("Persistence")]
-    [TestProperty("Time", "short")]
     public void NullableValueTypes() {
       double?[] d = new double?[] { null, 1, 2, 3 };
       XmlGenerator.Serialize(d, tempFile);
@@ -889,7 +866,6 @@ namespace HeuristicLab.Persistence.Tests {
 
     [TestMethod]
     [TestCategory("Persistence")]
-    [TestProperty("Time", "short")]
     public void BitmapTest() {
       Icon icon = System.Drawing.SystemIcons.Hand;
       Bitmap bitmap = icon.ToBitmap();
@@ -928,7 +904,6 @@ namespace HeuristicLab.Persistence.Tests {
 
     [TestMethod]
     [TestCategory("Persistence")]
-    [TestProperty("Time", "short")]
     public void HookTest() {
       PersistenceHooks hookTest = new PersistenceHooks();
       hookTest.a = 2;
@@ -959,7 +934,6 @@ namespace HeuristicLab.Persistence.Tests {
 
     [TestMethod]
     [TestCategory("Persistence")]
-    [TestProperty("Time", "short")]
     public void TestCustomConstructor() {
       CustomConstructor cc = new CustomConstructor();
       Assert.AreEqual(cc.Value, "default");
@@ -970,7 +944,6 @@ namespace HeuristicLab.Persistence.Tests {
 
     [TestMethod]
     [TestCategory("Persistence")]
-    [TestProperty("Time", "short")]
     public void TestRejectionJustifications() {
       NonSerializable ns = new NonSerializable();
       try {
@@ -983,7 +956,6 @@ namespace HeuristicLab.Persistence.Tests {
 
     [TestMethod]
     [TestCategory("Persistence")]
-    [TestProperty("Time", "short")]
     public void TestStreaming() {
       using (MemoryStream stream = new MemoryStream()) {
         Root r = InitializeComplexStorable();
@@ -1031,7 +1003,6 @@ namespace HeuristicLab.Persistence.Tests {
 
     [TestMethod]
     [TestCategory("Persistence")]
-    [TestProperty("Time", "short")]
     public void TestLinkInheritance() {
       HookInheritanceTestDerivedClass c = new HookInheritanceTestDerivedClass();
       c.a = new object();
@@ -1059,7 +1030,6 @@ namespace HeuristicLab.Persistence.Tests {
 
     [TestMethod]
     [TestCategory("Persistence")]
-    [TestProperty("Time", "short")]
     public void TestStorableClassDiscoveryAllFields() {
       AllFieldsStorable afs = new AllFieldsStorable();
       XmlGenerator.Serialize(afs, tempFile);
@@ -1089,7 +1059,6 @@ namespace HeuristicLab.Persistence.Tests {
 
     [TestMethod]
     [TestCategory("Persistence")]
-    [TestProperty("Time", "short")]
     public void TestStorableClassDiscoveryAllProperties() {
       AllPropertiesStorable afs = new AllPropertiesStorable();
       XmlGenerator.Serialize(afs, tempFile);
@@ -1120,7 +1089,6 @@ namespace HeuristicLab.Persistence.Tests {
 
     [TestMethod]
     [TestCategory("Persistence")]
-    [TestProperty("Time", "short")]
     public void TestStorableClassDiscoveryAllFieldsAndAllProperties() {
       AllFieldsAndAllPropertiesStorable afs = new AllFieldsAndAllPropertiesStorable();
       XmlGenerator.Serialize(afs, tempFile);
@@ -1150,7 +1118,6 @@ namespace HeuristicLab.Persistence.Tests {
 
     [TestMethod]
     [TestCategory("Persistence")]
-    [TestProperty("Time", "short")]
     public void TestStorableClassDiscoveryMarkedOnly() {
       MarkedOnlyStorable afs = new MarkedOnlyStorable();
       XmlGenerator.Serialize(afs, tempFile);
@@ -1163,7 +1130,6 @@ namespace HeuristicLab.Persistence.Tests {
 
     [TestMethod]
     [TestCategory("Persistence")]
-    [TestProperty("Time", "short")]
     public void TestLineEndings() {
       List<string> lineBreaks = new List<string> { "\r\n", "\n", "\r", "\n\r", Environment.NewLine };
       List<string> lines = new List<string>();
@@ -1179,7 +1145,6 @@ namespace HeuristicLab.Persistence.Tests {
 
     [TestMethod]
     [TestCategory("Persistence")]
-    [TestProperty("Time", "short")]
     public void TestSpecialNumbers() {
       List<double> specials = new List<double>() { 1.0 / 0, -1.0 / 0, 0.0 / 0 };
       Assert.IsTrue(double.IsPositiveInfinity(specials[0]));
@@ -1194,7 +1159,6 @@ namespace HeuristicLab.Persistence.Tests {
 
     [TestMethod]
     [TestCategory("Persistence")]
-    [TestProperty("Time", "short")]
     public void TestStringSplit() {
       string s = "1.2;2.3;3.4;;;4.9";
       var l = s.EnumerateSplit(';').ToList();
@@ -1206,7 +1170,6 @@ namespace HeuristicLab.Persistence.Tests {
 
     [TestMethod]
     [TestCategory("Persistence")]
-    [TestProperty("Time", "medium")]
     public void TestCompactNumberArraySerializer() {
       System.Random r = new System.Random();
       double[] a = new double[CompactNumberArray2StringSerializer.SPLIT_THRESHOLD * 2 + 1];
@@ -1240,7 +1203,6 @@ namespace HeuristicLab.Persistence.Tests {
 
     [TestMethod]
     [TestCategory("Persistence")]
-    [TestProperty("Time", "short")]
     public void TestHashSetSerializer() {
       var hashSets = new List<HashSet<int>>() {
         new HashSet<int>(new[] { 1, 2, 3 }),
@@ -1260,7 +1222,6 @@ namespace HeuristicLab.Persistence.Tests {
 
     [TestMethod]
     [TestCategory("Persistence")]
-    [TestProperty("Time", "short")]
     public void TestConcreteDictionarySerializer() {
       var dictionaries = new List<Dictionary<int, int>>() {
         new Dictionary<int, int>(),
@@ -1306,7 +1267,6 @@ namespace HeuristicLab.Persistence.Tests {
 
     [TestMethod]
     [TestCategory("Persistence")]
-    [TestProperty("Time", "short")]
     public void TestReadOnlyFail() {
       try {
         XmlGenerator.Serialize(new ReadOnlyFail(), tempFile);
@@ -1334,7 +1294,6 @@ namespace HeuristicLab.Persistence.Tests {
 
     [TestMethod]
     [TestCategory("Persistence")]
-    [TestProperty("Time", "short")]
     public void TestWriteOnlyFail() {
       try {
         XmlGenerator.Serialize(new WriteOnlyFail(), tempFile);
@@ -1369,7 +1328,6 @@ namespace HeuristicLab.Persistence.Tests {
 
     [TestMethod]
     [TestCategory("Persistence")]
-    [TestProperty("Time", "short")]
     public void TestOneWaySerialization() {
       var test = new OneWayTest();
       var serializer = new Serializer(test, ConfigurationService.Instance.GetDefaultConfig(new XmlFormat()));
@@ -1391,7 +1349,6 @@ namespace HeuristicLab.Persistence.Tests {
 
     [TestMethod]
     [TestCategory("Persistence")]
-    [TestProperty("Time", "short")]
     public void TestTypeCacheExport() {
       var test = new List<List<int>>();
       test.Add(new List<int>() { 1, 2, 3 });
@@ -1408,7 +1365,6 @@ namespace HeuristicLab.Persistence.Tests {
 
     [TestMethod]
     [TestCategory("Persistence")]
-    [TestProperty("Time", "short")]
     public void TupleTest() {
       var t1 = Tuple.Create(1);
       var t2 = Tuple.Create('1', "2");
@@ -1422,7 +1378,6 @@ namespace HeuristicLab.Persistence.Tests {
 
     [TestMethod]
     [TestCategory("Persistence")]
-    [TestProperty("Time", "short")]
     public void FontTest() {
       List<Font> fonts = new List<Font>() {
         new Font(FontFamily.GenericSansSerif, 12),
@@ -1440,7 +1395,6 @@ namespace HeuristicLab.Persistence.Tests {
 
     [TestMethod]
     [TestCategory("Persistence")]
-    [TestProperty("Time", "medium")]
     public void ConcurrencyTest() {
       int n = 20;
       Task[] tasks = new Task[n];
@@ -1458,7 +1412,6 @@ namespace HeuristicLab.Persistence.Tests {
 
     [TestMethod]
     [TestCategory("Persistence")]
-    [TestProperty("Time", "medium")]
     public void ConcurrentBitmapTest() {
       Bitmap b = new Bitmap(300, 300);
       System.Random r = new System.Random();
@@ -1487,7 +1440,6 @@ namespace HeuristicLab.Persistence.Tests {
 
     [TestMethod]
     [TestCategory("Persistence")]
-    [TestProperty("Time", "short")]
     public void TestInternalClassOfGeneric() {
       var s = new G<int, char>.S();
       var typeName = s.GetType().AssemblyQualifiedName;
@@ -1500,7 +1452,6 @@ namespace HeuristicLab.Persistence.Tests {
 
     [TestMethod]
     [TestCategory("Persistence")]
-    [TestProperty("Time", "short")]
     public void TestInternalClassOfGeneric2() {
       var s = new G<int, float>.S2<int, char>();
       var typeName = s.GetType().AssemblyQualifiedName;
@@ -1513,7 +1464,6 @@ namespace HeuristicLab.Persistence.Tests {
 
     [TestMethod]
     [TestCategory("Persistence")]
-    [TestProperty("Time", "short")]
     public void TestSpecialCharacters() {
       var s = "abc" + "\x15" + "def";
       XmlGenerator.Serialize(s, tempFile);
@@ -1523,7 +1473,6 @@ namespace HeuristicLab.Persistence.Tests {
 
     [TestMethod]
     [TestCategory("Persistence")]
-    [TestProperty("Time", "short")]
     public void TestByteArray() {
       var b = new byte[3];
       b[0] = 0;
@@ -1536,7 +1485,6 @@ namespace HeuristicLab.Persistence.Tests {
 
     [TestMethod]
     [TestCategory("Persistence")]
-    [TestProperty("Time", "short")]
     public void TestOptionalNumberEnumerable() {
       var values = new List<double?> { 0, null, double.NaN, double.PositiveInfinity, double.MaxValue, 1 };
       XmlGenerator.Serialize(values, tempFile);
@@ -1546,7 +1494,6 @@ namespace HeuristicLab.Persistence.Tests {
 
     [TestMethod]
     [TestCategory("Persistence")]
-    [TestProperty("Time", "short")]
     public void TestOptionalDateTimeEnumerable() {
       var values = new List<DateTime?> { DateTime.MinValue, null, DateTime.Now, DateTime.Now.Add(TimeSpan.FromDays(1)),
         DateTime.ParseExact("10.09.2014 12:21", "dd.MM.yyyy hh:mm", CultureInfo.InvariantCulture), DateTime.MaxValue};
@@ -1557,7 +1504,6 @@ namespace HeuristicLab.Persistence.Tests {
 
     [TestMethod]
     [TestCategory("Persistence")]
-    [TestProperty("Time", "short")]
     public void TestStringEnumerable() {
       var values = new List<string> { "", null, "s", "string", string.Empty, "123", "<![CDATA[nice]]>", "<![CDATA[nasty unterminated" };
       XmlGenerator.Serialize(values, tempFile);
@@ -1567,7 +1513,6 @@ namespace HeuristicLab.Persistence.Tests {
 
     [TestMethod]
     [TestCategory("Persistence")]
-    [TestProperty("Time", "short")]
     public void TestUnicodeCharArray() {
       var s = Encoding.UTF8.GetChars(new byte[] { 0, 1, 2, 03, 04, 05, 06, 07, 08, 09, 0xa, 0xb });
       XmlGenerator.Serialize(s, tempFile);
@@ -1577,7 +1522,6 @@ namespace HeuristicLab.Persistence.Tests {
 
     [TestMethod]
     [TestCategory("Persistence")]
-    [TestProperty("Time", "short")]
     public void TestUnicode() {
       var s = Encoding.UTF8.GetString(new byte[] { 0, 1, 2, 03, 04, 05, 06, 07, 08, 09, 0xa, 0xb });
       XmlGenerator.Serialize(s, tempFile);
@@ -1587,7 +1531,6 @@ namespace HeuristicLab.Persistence.Tests {
 
     [TestMethod]
     [TestCategory("Persistence")]
-    [TestProperty("Time", "short")]
     public void TestQueue() {
       var q = new Queue<int>(new[] { 1, 2, 3, 4, 0 });
       XmlGenerator.Serialize(q, tempFile);

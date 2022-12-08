@@ -189,7 +189,6 @@ namespace HeuristicLab.Problems.QuadraticAssignment.Tests {
 
     [TestMethod]
     [TestCategory("Problems.Assignment")]
-    [TestProperty("Time", "long")]
     public void TestQAPLIBInstances() {
       var provider = new QAPLIBInstanceProvider();
       var qap = new QuadraticAssignmentProblem();
@@ -210,7 +209,6 @@ namespace HeuristicLab.Problems.QuadraticAssignment.Tests {
 
     [TestMethod]
     [TestCategory("Problems.Assignment")]
-    [TestProperty("Time", "long")]
     public void TestQAPLIBSolutions() {
       var provider = new QAPLIBInstanceProvider();
       var qap = new QuadraticAssignmentProblem();
@@ -230,7 +228,6 @@ namespace HeuristicLab.Problems.QuadraticAssignment.Tests {
 
     [TestMethod]
     [TestCategory("Problems.Assignment")]
-    [TestProperty("Time", "short")]
     public void TestQAPLIBLowerBounds() {
       var provider = new QAPLIBInstanceProvider();
       var qap = new QuadraticAssignmentProblem();

@@ -30,7 +30,6 @@ namespace HeuristicLab.Problems.Instances.Tests {
 
     [TestMethod]
     [TestCategory("Problems.Instances")]
-    [TestProperty("Time", "medium")]
     public void GetDIMACSGcolInstancesTest() {
       var target = new GcolInstanceProvider();
       StringBuilder erroneousInstances = new StringBuilder();

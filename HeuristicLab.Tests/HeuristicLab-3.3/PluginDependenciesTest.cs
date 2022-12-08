@@ -62,7 +62,6 @@ namespace HeuristicLab.Tests {
     [TestMethod]
     [TestCategory("General")]
     [TestCategory("Essential")]
-    [TestProperty("Time", "short")]
     public void CheckReferenceAssembliesForPluginDependencies() {
       StringBuilder errorMessage = new StringBuilder();
       foreach (Assembly pluginAssembly in loadedPlugins.Keys) {
@@ -97,7 +96,6 @@ namespace HeuristicLab.Tests {
     [TestMethod]
     [TestCategory("General")]
     [TestCategory("Essential")]
-    [TestProperty("Time", "short")]
     public void CheckPluginDependenciesForReferencedAssemblies() {
       StringBuilder errorMessage = new StringBuilder();
       foreach (Assembly pluginAssembly in loadedPlugins.Keys) {

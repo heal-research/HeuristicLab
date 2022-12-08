@@ -50,7 +50,6 @@ namespace ParameterlessPopulationPyramid.Test {
     };
 
     [TestMethod]
-    [TestProperty("Time", "short")]
     [TestCategory("Algorithms.ParameterlessPopulationPyramid")]
     public void LinkageTreeTestAdd() {
       MersenneTwister rand = new MersenneTwister();
@@ -68,7 +67,6 @@ namespace ParameterlessPopulationPyramid.Test {
     }
 
     [TestMethod]
-    [TestProperty("Time", "short")]
     [TestCategory("Algorithms.ParameterlessPopulationPyramid")]
     public void LinkageTreeTestEntropyDistance() {
       MersenneTwister rand = new MersenneTwister();
@@ -93,7 +91,6 @@ namespace ParameterlessPopulationPyramid.Test {
     }
 
     [TestMethod]
-    [TestProperty("Time", "short")]
     [TestCategory("Algorithms.ParameterlessPopulationPyramid")]
     public void LinkageTreeTestRebuild() {
       // The seed matters as equal sized clusters can appear in any order

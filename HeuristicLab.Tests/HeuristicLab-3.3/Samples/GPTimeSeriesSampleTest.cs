@@ -37,7 +37,6 @@ namespace HeuristicLab.Tests {
 
     [TestMethod]
     [TestCategory("Samples.Create")]
-    [TestProperty("Time", "medium")]
     public void CreateGpTimeSeriesSampleTest() {
       var ga = CreateGpTimeSeriesSample();
       string path = Path.Combine(SamplesUtils.SamplesDirectory, SampleFileName + SamplesUtils.SampleFileExtension);
@@ -46,7 +45,6 @@ namespace HeuristicLab.Tests {
     [TestMethod]
     [TestCategory("Samples.Execute")]
     [TestCategory("Run.Daily")]
-    [TestProperty("Time", "long")]
     public void RunGpTimeSeriesSampleTest() {
       var osga = CreateGpTimeSeriesSample();
       osga.SetSeedRandomly.Value = false;

@@ -32,7 +32,6 @@ namespace HeuristicLab.Problems.VehicleRouting.Tests {
     [TestMethod]
     [TestCategory("Problems.VehicleRouting")]
     [TestCategory("Run.Daily")]
-    [TestProperty("Time", "long")]
     public void TestVRPInstances() {
       var vrp = new VehicleRoutingProblem();
       var providers = ProblemInstanceManager.GetProviders(vrp);

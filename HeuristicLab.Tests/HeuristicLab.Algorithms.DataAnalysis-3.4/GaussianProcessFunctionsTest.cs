@@ -30,7 +30,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Tests {
   public class GaussianProcessFunctionsTest {
     [TestMethod]
     [TestCategory("Algorithms.DataAnalysis")]
-    [TestProperty("Time", "short")]
     public void MeanConstTest() {
       TestMeanFunction(new MeanConst(), 0,
         new double[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
@@ -44,7 +43,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Tests {
 
     [TestMethod]
     [TestCategory("Algorithms.DataAnalysis")]
-    [TestProperty("Time", "short")]
     public void MeanZeroTest() {
       TestMeanFunction(new MeanZero(), 0,
         new double[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
@@ -58,7 +56,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Tests {
 
     [TestMethod]
     [TestCategory("Algorithms.DataAnalysis")]
-    [TestProperty("Time", "short")]
     public void MeanSumTest() {
       var sum = new MeanSum();
       sum.Terms.Add(new MeanConst());
@@ -85,7 +82,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Tests {
     }
     [TestMethod]
     [TestCategory("Algorithms.DataAnalysis")]
-    [TestProperty("Time", "short")]
     public void MeanProdTest() {
       var prod = new MeanProduct();
       prod.Factors.Add(new MeanConst());
@@ -158,7 +154,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Tests {
 
     [TestMethod]
     [TestCategory("Algorithms.DataAnalysis")]
-    [TestProperty("Time", "short")]
     public void MeanLinear() {
       TestMeanFunction(new MeanLinear(), 0,
         new double[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
@@ -186,7 +181,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Tests {
 
     [TestMethod]
     [TestCategory("Algorithms.DataAnalysis")]
-    [TestProperty("Time", "short")]
     public void CovSeIsoTest() {
       TestCovarianceFunction(new CovarianceSquaredExponentialIso(), 0,
         new double[,]
@@ -276,7 +270,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Tests {
 
     [TestMethod]
     [TestCategory("Algorithms.DataAnalysis")]
-    [TestProperty("Time", "short")]
     public void CovNnTest() {
       TestCovarianceFunction(new CovarianceNeuralNetwork(), 0,
         new double[,]
@@ -367,7 +360,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Tests {
 
     [TestMethod]
     [TestCategory("Algorithms.DataAnalysis")]
-    [TestProperty("Time", "short")]
     public void CovRQIsoTest() {
       TestCovarianceFunction(new CovarianceRationalQuadraticIso(), 0,
         new double[,]
@@ -482,7 +474,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Tests {
 
     [TestMethod]
     [TestCategory("Algorithms.DataAnalysis")]
-    [TestProperty("Time", "short")]
     public void CovRQArdTest() {
       TestCovarianceFunction(new CovarianceRationalQuadraticArd(), 0,
         new double[,]
@@ -708,7 +699,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Tests {
 
     [TestMethod]
     [TestCategory("Algorithms.DataAnalysis")]
-    [TestProperty("Time", "short")]
     public void CovMaternIsoTest() {
       var cov = new CovarianceMaternIso();
       cov.DParameter.Value = cov.DParameter.ValidValues.Single(x => x.Value == 1);
@@ -895,7 +885,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Tests {
 
     [TestMethod]
     [TestCategory("Algorithms.DataAnalysis")]
-    [TestProperty("Time", "short")]
     public void CovLinearTest() {
       TestCovarianceFunction(new CovarianceLinear(), 0,
         new double[,]
@@ -919,7 +908,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Tests {
 
     [TestMethod]
     [TestCategory("Algorithms.DataAnalysis")]
-    [TestProperty("Time", "short")]
     public void CovLinearArdTest() {
       TestCovarianceFunction(new CovarianceLinearArd(), 0,
         new double[,]
@@ -1093,7 +1081,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Tests {
 
     [TestMethod]
     [TestCategory("Algorithms.DataAnalysis")]
-    [TestProperty("Time", "short")]
     public void CovPeriodicTest() {
       TestCovarianceFunction(new CovariancePeriodic(), 0,
         new double[,]
@@ -1213,7 +1200,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Tests {
 
     [TestMethod]
     [TestCategory("Algorithms.DataAnalysis")]
-    [TestProperty("Time", "short")]
     public void CovSEardTest() {
       TestCovarianceFunction(new CovarianceSquaredExponentialArd(), 0,
         new double[,]
@@ -1412,7 +1398,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Tests {
 
     [TestMethod]
     [TestCategory("Algorithms.DataAnalysis")]
-    [TestProperty("Time", "short")]
     public void CovSumTest() {
       var cov = new CovarianceSum();
       cov.Terms.Add(new CovarianceSquaredExponentialIso());
@@ -1512,7 +1497,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Tests {
 
     [TestMethod]
     [TestCategory("Algorithms.DataAnalysis")]
-    [TestProperty("Time", "short")]
     public void CovScaleTest() {
       var cov = new CovarianceScale();
       cov.CovarianceFunctionParameter.Value = new CovarianceSquaredExponentialIso();
@@ -1636,7 +1620,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Tests {
 
     [TestMethod]
     [TestCategory("Algorithms.DataAnalysis")]
-    [TestProperty("Time", "short")]
     public void CovProdTest() {
       var cov = new CovarianceProduct();
       cov.Factors.Add(new CovarianceSquaredExponentialIso());

@@ -35,7 +35,6 @@ namespace HeuristicLab.Encodings.RealVectorEncoding.Tests {
     ///</summary>
     [TestMethod()]
     [TestCategory("Encodings.RealVector")]
-    [TestProperty("Time", "short")]
     public void MichalewiczNonUniformOnePositionManipulatorApplyTest() {
       TestRandom random = new TestRandom();
       RealVector parent, expected;

@@ -44,7 +44,6 @@ namespace HeuristicLab.Collections.Tests {
 
     [TestMethod]
     [TestCategory("General")]
-    [TestProperty("Time", "short")]
     public void TestBidirectionalLookup() {
       var lookup1 = new BidirectionalLookup<int, double>();
       lookup1.Add(4, 2);

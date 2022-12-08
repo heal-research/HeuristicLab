@@ -32,7 +32,6 @@ namespace HeuristicLab.Tests {
     [TestMethod]
     [TestCategory("General")]
     [TestCategory("Essential")]
-    [TestProperty("Time", "medium")]
     public void TestCloningConstructor() {
       StringBuilder errorMessage = new StringBuilder();
 
