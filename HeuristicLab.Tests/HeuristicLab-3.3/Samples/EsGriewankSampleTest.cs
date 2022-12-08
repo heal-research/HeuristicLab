@@ -45,6 +45,7 @@ namespace HeuristicLab.Tests {
 
     [TestMethod]
     [TestCategory("Samples.Execute")]
+    [TestCategory("Run.Daily")]
     [TestProperty("Time", "long")]
     public void RunEsGriewankSampleTest() {
       var es = CreateEsGriewankSample();

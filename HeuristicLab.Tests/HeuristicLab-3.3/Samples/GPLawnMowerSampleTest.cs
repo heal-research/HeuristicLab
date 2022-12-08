@@ -30,6 +30,7 @@ namespace HeuristicLab.Tests {
   public class GPLawnMowerSampleTest {
     [TestMethod]
     [TestCategory("Samples.Execute")]
+    [TestCategory("Run.Daily")]
     [TestProperty("Time", "long")]
     public void RunGpLawnMowerSampleTest() {
       var ga = CreateGpLawnMowerSample();

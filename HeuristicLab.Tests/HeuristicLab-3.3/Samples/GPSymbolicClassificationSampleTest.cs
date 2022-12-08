@@ -44,11 +44,12 @@ namespace HeuristicLab.Tests {
     public void CreateGpSymbolicClassificationSampleTest() {
       var ga = CreateGpSymbolicClassificationSample();
       string path = Path.Combine(SamplesUtils.SamplesDirectory, SampleFileName + SamplesUtils.SampleFileExtension);
-      serializer .Serialize(ga, path);
+      serializer.Serialize(ga, path);
     }
 
     [TestMethod]
     [TestCategory("Samples.Execute")]
+    [TestCategory("Run.Daily")]
     [TestProperty("Time", "long")]
     public void RunGpSymbolicClassificationSampleTest() {
       var ga = CreateGpSymbolicClassificationSample();

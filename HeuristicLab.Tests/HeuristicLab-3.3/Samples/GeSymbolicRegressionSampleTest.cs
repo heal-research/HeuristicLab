@@ -48,6 +48,7 @@ namespace HeuristicLab.Tests {
 
     [TestMethod]
     [TestCategory("Samples.Execute")]
+    [TestCategory("Run.Daily")]
     [TestProperty("Time", "long")]
     public void RunGeArtificalAntSampleTest() {
       var ga = CreateGeArtificialAntSample();
@@ -87,6 +88,7 @@ namespace HeuristicLab.Tests {
 
     [TestMethod]
     [TestCategory("Samples.Execute")]
+    [TestCategory("Run.Daily")]
     [TestProperty("Time", "long")]
     public void RunGeSymbolicRegressionSampleTest() {
       var ga = CreateGeSymbolicRegressionSample();

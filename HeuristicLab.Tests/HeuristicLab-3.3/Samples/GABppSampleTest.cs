@@ -45,14 +45,15 @@ namespace HeuristicLab.Tests {
 
     [TestMethod]
     [TestCategory("Samples.Execute")]
+    [TestCategory("Run.Daily")]
     [TestProperty("Time", "long")]
     public void RunGaBppSampleTest() {
       var ga = CreateGaBppSample();
       ga.SetSeedRandomly.Value = false;
       SamplesUtils.RunAlgorithm(ga);
       Assert.AreEqual(0.59369488300408157, SamplesUtils.GetDoubleResult(ga, "BestQuality"), 1E-6);
-      Assert.AreEqual(0.51834350243004124, SamplesUtils.GetDoubleResult(ga, "CurrentAverageQuality"),1E-6);
-      Assert.AreEqual(0.36227753691428577, SamplesUtils.GetDoubleResult(ga, "CurrentWorstQuality"),1E-6);
+      Assert.AreEqual(0.51834350243004124, SamplesUtils.GetDoubleResult(ga, "CurrentAverageQuality"), 1E-6);
+      Assert.AreEqual(0.36227753691428577, SamplesUtils.GetDoubleResult(ga, "CurrentWorstQuality"), 1E-6);
       Assert.AreEqual(15250, SamplesUtils.GetIntResult(ga, "EvaluatedSolutions"));
     }
 

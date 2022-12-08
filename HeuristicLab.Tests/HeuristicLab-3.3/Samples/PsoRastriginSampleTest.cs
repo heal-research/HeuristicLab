@@ -44,6 +44,7 @@ namespace HeuristicLab.Tests {
     }
     [TestMethod]
     [TestCategory("Samples.Execute")]
+    [TestCategory("Run.Daily")]
     [TestProperty("Time", "medium")]
     public void RunPsoRastriginSampleTest() {
       var pso = CreatePsoRastriginSample();
@@ -79,7 +80,7 @@ namespace HeuristicLab.Tests {
       pso.NeighborBestAttraction.Value = 1.193;
       pso.PersonalBestAttraction.Value = 1.193;
       pso.SwarmSize.Value = 40;
-            
+
       pso.TopologyInitializer = pso.TopologyInitializerParameter.ValidValues.OfType<SPSORandomTopologyInitializer>().First();
       pso.TopologyUpdater = pso.TopologyUpdaterParameter.ValidValues.OfType<SPSOAdaptiveRandomTopologyUpdater>().First();
       pso.Seed.Value = 0;

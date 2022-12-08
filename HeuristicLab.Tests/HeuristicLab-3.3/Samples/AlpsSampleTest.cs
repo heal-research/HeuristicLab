@@ -61,6 +61,7 @@ namespace HeuristicLab.Tests {
 
     [TestMethod]
     [TestCategory("Samples.Execute")]
+    [TestCategory("Run.Daily")]
     [TestProperty("Time", "long")]
     public void RunAlpsGaTspSampleTest() {
       var alpsGa = CreateAlpsGaTspSample();
@@ -74,6 +75,7 @@ namespace HeuristicLab.Tests {
 
     [TestMethod]
     [TestCategory("Samples.Execute")]
+    [TestCategory("Run.Daily")]
     [TestProperty("Time", "long")]
     public void RunAlpsGaSymRegSampleTest() {
       var alpsGa = CreateAlpsGaSymRegSample();

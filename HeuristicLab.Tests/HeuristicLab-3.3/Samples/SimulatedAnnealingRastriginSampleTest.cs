@@ -45,6 +45,7 @@ namespace HeuristicLab.Tests {
     }
     [TestMethod]
     [TestCategory("Samples.Execute")]
+    [TestCategory("Run.Daily")]
     [TestProperty("Time", "medium")]
     public void RunSimulatedAnnealingRastriginSampleTest() {
       var sa = CreateSimulatedAnnealingRastriginSample();

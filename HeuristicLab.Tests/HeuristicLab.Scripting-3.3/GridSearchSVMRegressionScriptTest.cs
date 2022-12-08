@@ -50,6 +50,7 @@ namespace HeuristicLab.Tests {
 
     [TestMethod]
     [TestCategory("Scripts.Execute")]
+    [TestCategory("Run.Daily")]
     [TestProperty("Time", "medium")]
     public void RunGridSearchSVMRegressionScriptTest() {
       var script = CreateGridSearchSVMRegressionScript();

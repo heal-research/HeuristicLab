@@ -49,6 +49,7 @@ namespace HeuristicLab.Tests {
 
     [TestMethod]
     [TestCategory("Scripts.Execute")]
+    [TestCategory("Run.Daily")]
     [TestProperty("Time", "long")]
     public void RunGAQAPScriptTest() {
       var script = CreateGAQAPScript();

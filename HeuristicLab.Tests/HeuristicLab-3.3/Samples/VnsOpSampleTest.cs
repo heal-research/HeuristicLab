@@ -44,6 +44,7 @@ namespace HeuristicLab.Tests {
     }
     [TestMethod]
     [TestCategory("Samples.Execute")]
+    [TestCategory("Run.Daily")]
     [TestProperty("Time", "long")]
     public void RunVnsOpSampleTest() {
       var vns = CreateVnsOpSample();
@@ -61,7 +62,7 @@ namespace HeuristicLab.Tests {
       OrienteeringProblem opProblem = new OrienteeringProblem();
       opProblem.BestKnownQuality = new DoubleValue(1188);
       opProblem.BestKnownSolution = new IntegerVector(new[] {
-0, 1, 3, 6, 11, 17, 24, 18, 13, 19, 14, 20, 26, 34, 27, 35, 42, 48, 53, 57, 52, 47, 41, 33, 25, 32, 40, 46, 39, 31, 38, 50, 44, 37, 30, 23, 16, 10, 15, 22, 29, 21, 28, 36, 43, 49, 54, 58, 61, 63 
+0, 1, 3, 6, 11, 17, 24, 18, 13, 19, 14, 20, 26, 34, 27, 35, 42, 48, 53, 57, 52, 47, 41, 33, 25, 32, 40, 46, 39, 31, 38, 50, 44, 37, 30, 23, 16, 10, 15, 22, 29, 21, 28, 36, 43, 49, 54, 58, 61, 63
       });
       opProblem.Coordinates = new DoubleMatrix(new double[,] {
 { 7, 0 },{ 6, 1 },{ 8, 1 },{ 5, 2 },{ 7, 2 },{ 9, 2 },{ 4, 3 },{ 6, 3 },{ 8, 3 },{ 10, 3 },{ 3, 4 },{ 5, 4 },{ 7, 4 },{ 9, 4 },{ 11, 4 },{ 2, 5 },{ 4, 5 },{ 6, 5 },{ 8, 5 },{ 10, 5 },{ 12, 5 },{ 1, 6 },{ 3, 6 },{ 5, 6 },{ 7, 6 },{ 9, 6 },{ 11, 6 },{ 13, 6 },{ 0, 7 },{ 2, 7 },{ 4, 7 },{ 6, 7 },{ 8, 7 },{ 10, 7 },{ 12, 7 },{ 14, 7 },{ 1, 8 },{ 3, 8 },{ 5, 8 },{ 7, 8 },{ 9, 8 },{ 11, 8 },{ 13, 8 },{ 2, 9 },{ 4, 9 },{ 6, 9 },{ 8, 9 },{ 10, 9 },{ 12, 9 },{ 3, 10 },{ 5, 10 },{ 7, 10 },{ 9, 10 },{ 11, 10 },{ 4, 11 },{ 6, 11 },{ 8, 11 },{ 10, 11 },{ 5, 12 },{ 7, 12 },{ 9, 12 },{ 6, 13 },{ 8, 13 },{ 7, 14 }

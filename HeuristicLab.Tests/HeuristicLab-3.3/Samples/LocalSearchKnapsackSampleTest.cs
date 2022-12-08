@@ -44,6 +44,7 @@ namespace HeuristicLab.Tests {
     }
     [TestMethod]
     [TestCategory("Samples.Execute")]
+    [TestCategory("Run.Daily")]
     [TestProperty("Time", "medium")]
     public void RunLocalSearchKnapsackSampleTest() {
       var ls = CreateLocalSearchKnapsackSample();
@@ -60,16 +61,16 @@ namespace HeuristicLab.Tests {
       #region Problem Configuration
       KnapsackProblem problem = new KnapsackProblem();
       problem.BestKnownQuality = new DoubleValue(362);
-      problem.BestKnownSolution = new HeuristicLab.Encodings.BinaryVectorEncoding.BinaryVector(new bool[] { 
+      problem.BestKnownSolution = new HeuristicLab.Encodings.BinaryVectorEncoding.BinaryVector(new bool[] {
        true , false, false, true , true , true , true , true , false, true , true , true , true , true , true , false, true , false, true , true , false, true , true , false, true , false, true , true , true , false, true , true , false, true , true , false, true , false, true , true , true , true , true , true , true , true , true , true , true , true , true , false, true , false, false, true , true , false, true , true , true , true , true , true , true , true , false, true , false, true , true , true , true , false, true , true , true , true , true , true , true , true});
       problem.EvaluatorParameter.Value = new KnapsackEvaluator();
       problem.SolutionCreatorParameter.Value = new RandomBinaryVectorCreator();
       problem.KnapsackCapacity.Value = 297;
       problem.Maximization.Value = true;
       problem.Penalty.Value = 1;
-      problem.Values = new IntArray(new int[] { 
+      problem.Values = new IntArray(new int[] {
   6, 1, 1, 6, 7, 8, 7, 4, 2, 5, 2, 6, 7, 8, 7, 1, 7, 1, 9, 4, 2, 6, 5,  3, 5, 3, 3, 6, 5, 2, 4, 9, 4, 5, 7, 1, 4, 3, 5, 5, 8, 3, 6, 7, 3, 9, 7, 7, 5, 5, 7, 1, 4, 4, 3, 9, 5, 1, 6, 2, 2, 6, 1, 6, 5, 4, 4, 7, 1,  8, 9, 9, 7, 4, 3, 8, 7, 5, 7, 4, 4, 5});
-      problem.Weights = new IntArray(new int[] { 
+      problem.Weights = new IntArray(new int[] {
  1, 9, 3, 6, 5, 3, 8, 1, 7, 4, 2, 1, 2, 7, 9, 9, 8, 4, 9, 2, 4, 8, 3, 7, 5, 7, 5, 5, 1, 9, 8, 7, 8, 9, 1, 3, 3, 8, 8, 5, 1, 2, 4, 3, 6, 9, 4, 4, 9, 7, 4, 5, 1, 9, 7, 6, 7, 4, 7, 1, 2, 1, 2, 9, 8, 6, 8, 4, 7, 6, 7, 5, 3, 9, 4, 7, 4, 6, 1, 2, 5, 4});
       problem.Name = "Knapsack Problem";
       problem.Description = "Represents a Knapsack problem.";
