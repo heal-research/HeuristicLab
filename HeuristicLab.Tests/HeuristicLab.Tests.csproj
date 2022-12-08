@@ -441,7 +441,7 @@
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <Private>false</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
@@ -469,34 +469,34 @@
     <Compile Include="HeuristicLab-3.3\PluginDependenciesTest.cs" />
     <Compile Include="HeuristicLab-3.3\PluginLoader.cs" />
     <Compile Include="HeuristicLab-3.3\Samples\AlpsSampleTest.cs" />
-    <Compile Include="HeuristicLab-3.3\Samples\GABppSampleTest.cs" />
-    <Compile Include="HeuristicLab-3.3\Samples\GPRobocodeSampleTest.cs" />
-    <Compile Include="HeuristicLab-3.3\Samples\GPSymbolicRegressionSampleWithOSTest.cs" />
-    <Compile Include="HeuristicLab-3.3\Samples\OSESGriewankSampleTest.cs" />
-    <Compile Include="HeuristicLab-3.3\Samples\GAGroupingProblemSampleTest.cs" />
-    <Compile Include="HeuristicLab-3.3\Samples\ShapeConstrainedRegressionSampleTest.cs" />
-    <Compile Include="HeuristicLab-3.3\Samples\StructureTemplateRegressionSampleTest.cs" />
-    <Compile Include="HeuristicLab-3.3\Samples\VnsOpSampleTest.cs" />
     <Compile Include="HeuristicLab-3.3\Samples\EsGriewankSampleTest.cs" />
+    <Compile Include="HeuristicLab-3.3\Samples\GABppSampleTest.cs" />
+    <Compile Include="HeuristicLab-3.3\Samples\GAGroupingProblemSampleTest.cs" />
+    <Compile Include="HeuristicLab-3.3\Samples\GATspSampleTest.cs" />
     <Compile Include="HeuristicLab-3.3\Samples\GaussianProcessRegressionSampleTest.cs" />
     <Compile Include="HeuristicLab-3.3\Samples\GAVrpSampleTest.cs" />
     <Compile Include="HeuristicLab-3.3\Samples\GeSymbolicRegressionSampleTest.cs" />
     <Compile Include="HeuristicLab-3.3\Samples\GPArtificialAntSampleTest.cs" />
     <Compile Include="HeuristicLab-3.3\Samples\GPLawnMowerSampleTest.cs" />
+    <Compile Include="HeuristicLab-3.3\Samples\GPMultiplexerSampleTest.cs" />
+    <Compile Include="HeuristicLab-3.3\Samples\GPRobocodeSampleTest.cs" />
     <Compile Include="HeuristicLab-3.3\Samples\GPSymbolicClassificationSampleTest.cs" />
     <Compile Include="HeuristicLab-3.3\Samples\GPSymbolicRegressionSampleTest.cs" />
+    <Compile Include="HeuristicLab-3.3\Samples\GPSymbolicRegressionSampleWithOSTest.cs" />
     <Compile Include="HeuristicLab-3.3\Samples\GPTimeSeriesSampleTest.cs" />
-    <Compile Include="HeuristicLab-3.3\Samples\GPMultiplexerSampleTest.cs" />
+    <Compile Include="HeuristicLab-3.3\Samples\IslandGaTspSampleTest.cs" />
     <Compile Include="HeuristicLab-3.3\Samples\LocalSearchKnapsackSampleTest.cs" />
+    <Compile Include="HeuristicLab-3.3\Samples\OSESGriewankSampleTest.cs" />
     <Compile Include="HeuristicLab-3.3\Samples\PsoRastriginSampleTest.cs" />
     <Compile Include="HeuristicLab-3.3\Samples\RAPGASchedulingSampleTest.cs" />
     <Compile Include="HeuristicLab-3.3\Samples\SamplesUtils.cs" />
-    <Compile Include="HeuristicLab-3.3\Samples\GATspSampleTest.cs" />
-    <Compile Include="HeuristicLab-3.3\Samples\IslandGaTspSampleTest.cs" />
     <Compile Include="HeuristicLab-3.3\Samples\ScatterSearchVRPSampleTest.cs" />
+    <Compile Include="HeuristicLab-3.3\Samples\ShapeConstrainedRegressionSampleTest.cs" />
     <Compile Include="HeuristicLab-3.3\Samples\SimulatedAnnealingRastriginSampleTest.cs" />
+    <Compile Include="HeuristicLab-3.3\Samples\StructureTemplateRegressionSampleTest.cs" />
     <Compile Include="HeuristicLab-3.3\Samples\TabuSearchTspSampleTest.cs" />
     <Compile Include="HeuristicLab-3.3\Samples\TabuSearchVRPSampleTest.cs" />
+    <Compile Include="HeuristicLab-3.3\Samples\VnsOpSampleTest.cs" />
     <Compile Include="HeuristicLab-3.3\Samples\VnsTspSampleTest.cs" />
     <Compile Include="HeuristicLab-3.3\StorableTest.cs" />
     <Compile Include="HeuristicLab-3.3\ThreadSafeLogTest.cs" />
@@ -582,6 +582,7 @@
     <Compile Include="HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.4\ChangeNodeTypeManipulationTest.cs" />
     <Compile Include="HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.4\FullTreeCreatorTest.cs" />
     <Compile Include="HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.4\Grammars.cs" />
+    <Compile Include="HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.4\GrammarsTest.cs" />
     <Compile Include="HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.4\GrowTreeCreatorTest.cs" />
     <Compile Include="HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.4\ProbabilisticTreeCreatorTest.cs" />
     <Compile Include="HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.4\ReplaceBranchManipulationTest.cs" />
@@ -589,7 +590,6 @@
     <Compile Include="HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.4\SubroutineDeleterTest.cs" />
     <Compile Include="HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.4\SubroutineDuplicaterTest.cs" />
     <Compile Include="HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.4\SubtreeCrossoverTest.cs" />
-    <Compile Include="HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.4\GrammarsTest.cs" />
     <Compile Include="HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.4\Util.cs" />
     <Compile Include="HeuristicLab.IGraph\IGraphLayoutTest.cs" />
     <Compile Include="HeuristicLab.IGraph\IGraphWrappersGraphTest.cs" />
@@ -615,6 +615,7 @@
     <Compile Include="HeuristicLab.Problems.DataAnalysis.Symbolic-3.4\DeriveTest.cs" />
     <Compile Include="HeuristicLab.Problems.DataAnalysis.Symbolic-3.4\InfixExpressionParserTest.cs" />
     <Compile Include="HeuristicLab.Problems.DataAnalysis.Symbolic-3.4\IntervalInterpreterTest.cs" />
+    <Compile Include="HeuristicLab.Problems.DataAnalysis.Symbolic-3.4\SymbolicDataAnalysisExpressionCrossoverTest.cs" />
     <Compile Include="HeuristicLab.Problems.DataAnalysis.Symbolic-3.4\SymbolicExpressionTreeBottomUpSimilarityCalculatorTest.cs" />
     <Compile Include="HeuristicLab.Problems.DataAnalysis.Symbolic-3.4\SymbolicExpressionTreeMaxCommonSubtreeSimilarityCalculatorTest.cs" />
     <Compile Include="HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis-3.4\SymbolicDataAnalysisExpressionTreeInterpreterTest.cs" />
@@ -622,7 +623,6 @@
     <Compile Include="HeuristicLab.Problems.Instances-3.3\DIMACSGcolInstanceProviderTest.cs" />
     <Compile Include="HeuristicLab.Problems.Instances.DataAnalysis-3.3\RegressionInstanceProviderTest.cs" />
     <Compile Include="HeuristicLab.Problems.Instances.DataAnalysis-3.3\TableFileParserTest.cs" />
-    <Compile Include="HeuristicLab.Problems.DataAnalysis.Symbolic-3.4\SymbolicDataAnalysisExpressionCrossoverTest.cs" />
     <Compile Include="HeuristicLab.Problems.DataAnalysis.Symbolic-3.4\SymbolicDataAnalysisExpressionTreeInterpreterTest.cs" />
     <Compile Include="HeuristicLab.Problems.DataAnalysis.Symbolic-3.4\SymbolicDataAnalysisExpressionTreeSimplifierTest.cs" />
     <Compile Include="HeuristicLab.Problems.DataAnalysis.Symbolic-3.4\Util.cs" />
