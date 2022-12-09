@@ -1,4 +1,5 @@
 # HeuristicLab
+![TeamCity build status](https://builder.heuristiclab.com/app/rest/builds/buildType:id:bt3/statusIcon.svg)
 
 ## About HeuristicLab
 
