@@ -100,6 +100,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
 
     private void dataGridView_CellValueChanged(object sender, DataGridViewCellEventArgs e) {
       if (e.ColumnIndex < 0 || e.RowIndex < 0) return;
+      if (Content == null) return;
 
       var key = dataGridView.Rows[e.RowIndex].HeaderCell.Value.ToString();
       var gridData = dataGridView[e.ColumnIndex, e.RowIndex].Value;
