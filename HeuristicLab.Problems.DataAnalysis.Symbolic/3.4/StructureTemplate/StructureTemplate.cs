@@ -100,7 +100,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         applyLinearScaling = value;
         if (applyLinearScaling) LinearScaling.AddLinearScalingTerms(Tree);
         else LinearScaling.RemoveLinearScalingTerms(Tree);
-
+        containsNumericParameters = null; // reset cached value
         OnChanged();
       }
     }
