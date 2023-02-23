@@ -26,9 +26,8 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
-using HeuristicLab.Common;
 using HeuristicLab.MainForm;
-using HeuristicLab.MainForm.WindowsForms;
+
 namespace HeuristicLab.Problems.DataAnalysis.Views {
   [View("ROC Curves")]
   [Content(typeof(IDiscriminantFunctionClassificationSolution))]
@@ -37,12 +36,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     private const string yAxisTitle = "True Positive Rate";
     private const string TrainingSamples = "Training";
     private const string TestSamples = "Test";
-    private Dictionary<string, List<ROCPoint>> cachedRocPoints;
+    private Dictionary<string, IReadOnlyList<RocAucCalculator.RocPoint>> cachedRocPoints;
 
     public DiscriminantFunctionClassificationRocCurvesView() {
       InitializeComponent();
 
-      cachedRocPoints = new Dictionary<string, List<ROCPoint>>();
+      cachedRocPoints = new Dictionary<string, IReadOnlyList<RocAucCalculator.RocPoint>>();
 
       cmbSamples.Items.Add(TrainingSamples);
       cmbSamples.Items.Add(TestSamples);
@@ -96,7 +95,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         chart.Annotations.Clear();
         cachedRocPoints.Clear();
 
-        int slices = 100;
         IEnumerable<int> rows;
 
         if (cmbSamples.SelectedItem.ToString() == TrainingSamples) {
@@ -107,66 +105,31 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
 
         double[] estimatedValues = Content.GetEstimatedValues(rows).ToArray();
         double[] targetClassValues = Content.ProblemData.Dataset.GetDoubleValues(Content.ProblemData.TargetVariable, rows).ToArray();
-        double minThreshold = estimatedValues.Min();
-        double maxThreshold = estimatedValues.Max();
-        double thresholdIncrement = (maxThreshold - minThreshold) / slices;
-        minThreshold -= thresholdIncrement;
-        maxThreshold += thresholdIncrement;
-
-        List<double> classValues = Content.ProblemData.ClassValues.ToList();
-
-        foreach (double classValue in classValues) {
-          List<ROCPoint> rocPoints = new List<ROCPoint>();
-          int positives = targetClassValues.Where(c => c.IsAlmost(classValue)).Count();
-          int negatives = targetClassValues.Length - positives;
-
-          for (double lowerThreshold = minThreshold; lowerThreshold < maxThreshold; lowerThreshold += thresholdIncrement) {
-            for (double upperThreshold = lowerThreshold + thresholdIncrement; upperThreshold < maxThreshold; upperThreshold += thresholdIncrement) {
-              //only adapt lower threshold for binary classification problems and upper class prediction              
-              if (classValues.Count == 2 && classValue == classValues[1]) upperThreshold = double.PositiveInfinity;
-
-              int truePositives = 0;
-              int falsePositives = 0;
-
-              for (int row = 0; row < estimatedValues.Length; row++) {
-                if (lowerThreshold < estimatedValues[row] && estimatedValues[row] < upperThreshold) {
-                  if (targetClassValues[row].IsAlmost(classValue)) truePositives++;
-                  else falsePositives++;
-                }
-              }
-
-              double truePositiveRate = ((double)truePositives) / positives;
-              double falsePositiveRate = ((double)falsePositives) / negatives;
-
-              ROCPoint rocPoint = new ROCPoint(truePositiveRate, falsePositiveRate, lowerThreshold, upperThreshold);
-              if (!rocPoints.Any(x => x.TruePositiveRate >= rocPoint.TruePositiveRate && x.FalsePositiveRate <= rocPoint.FalsePositiveRate)) {
-                rocPoints.RemoveAll(x => x.FalsePositiveRate >= rocPoint.FalsePositiveRate && x.TruePositiveRate <= rocPoint.TruePositiveRate);
-                rocPoints.Add(rocPoint);
-              }
-            }
-            //only adapt upper threshold for binary classification problems and upper class prediction              
-            if (classValues.Count == 2 && classValue == classValues[0]) lowerThreshold = double.PositiveInfinity;
-          }
-
-          string className = Content.ProblemData.ClassNames.ElementAt(classValues.IndexOf(classValue));
-          cachedRocPoints[className] = rocPoints.OrderBy(x => x.FalsePositiveRate).ToList(); ;
-
-          Series series = new Series(className);
-          series.ChartType = SeriesChartType.Line;
-          series.MarkerStyle = MarkerStyle.Diamond;
-          series.MarkerSize = 5;
+        
+        var rocCurves = RocAucCalculator.CalculateRocCurves(targetClassValues, estimatedValues, Content.ProblemData.ClassValues.ToList(), Content.ProblemData.ClassNames.ToList());
+        
+        foreach (var kvp in rocCurves) {
+          var className = kvp.Key;
+          var rocCurve = kvp.Value;
+      
+          cachedRocPoints[className] = rocCurve;
+          double auc = RocAucCalculator.CalculateAreaUnderCurve(rocCurve);
+          
+          var series = new Series(className) {
+            ChartType = SeriesChartType.Line,
+            MarkerStyle = MarkerStyle.Diamond,
+            MarkerSize = 5,
+            LegendToolTip = "AUC: " + auc
+          };
+          FillSeriesWithDataPoints(series, rocCurve);
           chart.Series.Add(series);
-          FillSeriesWithDataPoints(series, cachedRocPoints[className]);
-
-          double auc = CalculateAreaUnderCurve(series);
-          series.LegendToolTip = "AUC: " + auc;
         }
       }
     }
 
-    private void FillSeriesWithDataPoints(Series series, IEnumerable<ROCPoint> rocPoints) {
+    private void FillSeriesWithDataPoints(Series series, IEnumerable<RocAucCalculator.RocPoint> rocPoints) {
       series.Points.Add(new DataPoint(0, 0));
-      foreach (ROCPoint rocPoint in rocPoints) {
+      foreach (var rocPoint in rocPoints) {
         DataPoint point = new DataPoint();
         point.XValue = rocPoint.FalsePositiveRate;
         point.YValues[0] = rocPoint.TruePositiveRate;
@@ -182,21 +145,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         series.Points.Add(point);
       }
       series.Points.Add(new DataPoint(1, 1));
-    }
-
-    private double CalculateAreaUnderCurve(Series series) {
-      if (series.Points.Count < 1) throw new ArgumentException("Could not calculate area under curve if less than 1 data points were given.");
-
-      double auc = 0.0;
-      for (int i = 1; i < series.Points.Count; i++) {
-        double width = series.Points[i].XValue - series.Points[i - 1].XValue;
-        double y1 = series.Points[i - 1].YValues[0];
-        double y2 = series.Points[i].YValues[0];
-
-        auc += (y1 + y2) * width / 2;
-      }
-
-      return auc;
     }
 
     private void cmbSamples_SelectedIndexChanged(object sender, System.EventArgs e) {
@@ -244,21 +192,5 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         this.toolTip.SetToolTip(chart, newTooltipText);
     }
     #endregion
-
-
-    private class ROCPoint {
-      public ROCPoint(double truePositiveRate, double falsePositiveRate, double lowerThreshold, double upperThreshold) {
-        this.TruePositiveRate = truePositiveRate;
-        this.FalsePositiveRate = falsePositiveRate;
-        this.LowerThreshold = lowerThreshold;
-        this.UpperThreshold = upperThreshold;
-
-      }
-      public double TruePositiveRate { get; private set; }
-      public double FalsePositiveRate { get; private set; }
-      public double LowerThreshold { get; private set; }
-      public double UpperThreshold { get; private set; }
-    }
-
   }
 }

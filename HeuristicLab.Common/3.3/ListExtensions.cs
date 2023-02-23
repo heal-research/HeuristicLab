@@ -59,5 +59,15 @@ namespace HeuristicLab.Common {
       }
       private readonly Comparison<T> comparison;
     }
+    
+    public static int IndexOf<T>(this IReadOnlyList<T> list, T value, IEqualityComparer<T> comparer = null) {
+      if (comparer == null) comparer = EqualityComparer<T>.Default; 
+      for (int i = 0; i < list.Count; i++) {
+        if (comparer.Equals(list[i], value)) {
+          return i;
+        }
+      }
+      return -1;
+    }
   }
 }
