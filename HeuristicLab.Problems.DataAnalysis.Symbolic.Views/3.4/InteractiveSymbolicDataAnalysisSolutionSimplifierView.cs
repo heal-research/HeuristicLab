@@ -39,7 +39,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
     private readonly Dictionary<ISymbolicExpressionTreeNode, Interval> nodeIntervals = new Dictionary<ISymbolicExpressionTreeNode, Interval>();
     private readonly Dictionary<ISymbolicExpressionTreeNode, double> nodeImpacts = new Dictionary<ISymbolicExpressionTreeNode, double>();
 
-    private readonly ISymbolicDataAnalysisSolutionImpactValuesCalculator impactCalculator;
+    protected readonly ISymbolicDataAnalysisSolutionImpactValuesCalculator impactCalculator;
 
     private readonly Progress progress = new Progress();
     private CancellationTokenSource cancellationTokenSource;
@@ -175,6 +175,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       nodeIntervals.Clear();
       nodeImpacts.Clear();
       UpdateView();
+      parametersViewHost.Content = impactCalculator;
       viewHost.Content = this.Content;
     }
 

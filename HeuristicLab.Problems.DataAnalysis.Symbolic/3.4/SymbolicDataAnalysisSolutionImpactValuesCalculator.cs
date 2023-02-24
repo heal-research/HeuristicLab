@@ -29,7 +29,7 @@ using HEAL.Attic;
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableType("E725708A-508E-47DC-B667-DAA569FD1DC2")]
   [Item("SymbolicDataAnalysisSolutionImpactValuesCalculator", "Calculates the impact values and replacements values for symbolic expression tree nodes.")]
-  public abstract class SymbolicDataAnalysisSolutionImpactValuesCalculator : Item, ISymbolicDataAnalysisSolutionImpactValuesCalculator {
+  public abstract class SymbolicDataAnalysisSolutionImpactValuesCalculator : ParameterizedNamedItem, ISymbolicDataAnalysisSolutionImpactValuesCalculator {
     protected SymbolicDataAnalysisSolutionImpactValuesCalculator() { }
     protected SymbolicDataAnalysisSolutionImpactValuesCalculator(SymbolicDataAnalysisSolutionImpactValuesCalculator original, Cloner cloner)
       : base(original, cloner) { }

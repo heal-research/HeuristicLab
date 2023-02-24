@@ -20,15 +20,26 @@
 #endregion
 
 using System.Collections.Generic;
+using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HEAL.Attic;
+using HeuristicLab.Parameters;
+using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
   [StorableType("54D82779-7A37-43E4-AFD6-0C3E8D24F6EE")]
   [Item("SymbolicClassificationSolutionImpactValuesCalculator", "Calculate symbolic expression tree node impact values for classification problems.")]
   public class SymbolicClassificationSolutionImpactValuesCalculator : SymbolicDataAnalysisSolutionImpactValuesCalculator {
-    public SymbolicClassificationSolutionImpactValuesCalculator() { }
+    public ConstrainedValueParameter<SymbolicClassificationSingleObjectiveEvaluator> EvaluatorParameter {
+      get { return (ConstrainedValueParameter<SymbolicClassificationSingleObjectiveEvaluator>)Parameters["Evaluator"]; }
+    }
+    
+    public SymbolicClassificationSolutionImpactValuesCalculator() {
+      var evaluators = new ItemSet<SymbolicClassificationSingleObjectiveEvaluator>(ApplicationManager.Manager.GetInstances<SymbolicClassificationSingleObjectiveEvaluator>());
+      Parameters.Add(new ConstrainedValueParameter<SymbolicClassificationSingleObjectiveEvaluator>("Evaluator", evaluators, evaluators.OfType<SymbolicClassificationSingleObjectiveMeanSquaredErrorEvaluator>().Single()));
+    }
+
     protected SymbolicClassificationSolutionImpactValuesCalculator(SymbolicClassificationSolutionImpactValuesCalculator original, Cloner cloner)
       : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -36,17 +47,20 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
     }
     [StorableConstructor]
     protected SymbolicClassificationSolutionImpactValuesCalculator(StorableConstructorFlag _) : base(_) { }
+    
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      if (!Parameters.ContainsKey("Evaluator")) {
+        var evaluators = new ItemSet<SymbolicClassificationSingleObjectiveEvaluator>(ApplicationManager.Manager.GetInstances<SymbolicClassificationSingleObjectiveEvaluator>());
+        Parameters.Add(new ConstrainedValueParameter<SymbolicClassificationSingleObjectiveEvaluator>("Evaluator", evaluators, evaluators.OfType<SymbolicClassificationSingleObjectiveMeanSquaredErrorEvaluator>().Single()));
+      }
+    }
 
     protected override double CalculateQualityForImpacts(ISymbolicDataAnalysisModel model, IDataAnalysisProblemData problemData, IEnumerable<int> rows) {
       var classificationModel = (ISymbolicClassificationModel)model;
       var classificationProblemData = (IClassificationProblemData)problemData;
-      OnlineCalculatorError errorState;
-      var dataset = problemData.Dataset;
       classificationModel.RecalculateModelParameters(classificationProblemData, rows);
-      var targetClassValues = dataset.GetDoubleValues(classificationProblemData.TargetVariable, rows);
-      var originalClassValues = classificationModel.GetEstimatedClassValues(dataset, rows);
-      var qualityForImpactsCalculation = OnlineAccuracyCalculator.Calculate(targetClassValues, originalClassValues, out errorState);
-      if (errorState != OnlineCalculatorError.None) qualityForImpactsCalculation = 0.0;
+      double qualityForImpactsCalculation = EvaluatorParameter.Value.Evaluate(classificationModel.SymbolicExpressionTree, classificationProblemData, rows, model.Interpreter);
       return qualityForImpactsCalculation;
     }
   }
