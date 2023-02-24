@@ -27,6 +27,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using HeuristicLab.Common;
+using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views;
 using HeuristicLab.MainForm;
@@ -150,6 +151,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       base.RegisterContentEvents();
       Content.ModelChanged += Content_Changed;
       Content.ProblemDataChanged += Content_Changed;
+      foreach (var valueParameter in impactCalculator.Parameters.OfType<IValueParameter>()) {
+        valueParameter.ValueChanged += Content_Changed;
+      }
       treeChart.Repainted += treeChart_Repainted;
       Progress.ShowOnControl(grpSimplify, progress);
       progress.StopRequested += progress_StopRequested;
@@ -158,6 +162,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       base.DeregisterContentEvents();
       Content.ModelChanged -= Content_Changed;
       Content.ProblemDataChanged -= Content_Changed;
+      foreach (var valueParameter in impactCalculator.Parameters.OfType<IValueParameter>()) {
+        valueParameter.ValueChanged -= Content_Changed;
+      }
       treeChart.Repainted -= treeChart_Repainted;
       Progress.HideFromControl(grpSimplify, false);
       progress.StopRequested -= progress_StopRequested;
@@ -175,7 +182,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       nodeIntervals.Clear();
       nodeImpacts.Clear();
       UpdateView();
-      parametersViewHost.Content = impactCalculator;
+      parametersViewHost.Content = impactCalculator.Parameters;
       viewHost.Content = this.Content;
     }
 
