@@ -61,7 +61,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
       var classificationProblemData = (IClassificationProblemData)problemData;
       classificationModel.RecalculateModelParameters(classificationProblemData, rows);
       double qualityForImpactsCalculation = EvaluatorParameter.Value.Evaluate(classificationModel.SymbolicExpressionTree, classificationProblemData, rows, model.Interpreter);
-      return qualityForImpactsCalculation;
+      return EvaluatorParameter.Value.Maximization ? qualityForImpactsCalculation : -qualityForImpactsCalculation;
     }
   }
 }

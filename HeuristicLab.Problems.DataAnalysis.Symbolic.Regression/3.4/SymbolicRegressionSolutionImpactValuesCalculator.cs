@@ -59,8 +59,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     protected override double CalculateQualityForImpacts(ISymbolicDataAnalysisModel model, IDataAnalysisProblemData problemData, IEnumerable<int> rows) {
       var regressionModel = (ISymbolicRegressionModel)model;
       var regressionProblemData = (IRegressionProblemData)problemData;
-      double quality = EvaluatorParameter.Value.Evaluate(regressionModel.SymbolicExpressionTree, regressionProblemData, rows, regressionModel.Interpreter);
-      return quality;
+      double qualityForImpactsCalculation = EvaluatorParameter.Value.Evaluate(regressionModel.SymbolicExpressionTree, regressionProblemData, rows, regressionModel.Interpreter);
+      return EvaluatorParameter.Value.Maximization ? qualityForImpactsCalculation : -qualityForImpactsCalculation;
     }
   }
 }
