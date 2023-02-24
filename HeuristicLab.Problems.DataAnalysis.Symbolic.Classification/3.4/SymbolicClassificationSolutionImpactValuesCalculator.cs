@@ -20,24 +20,21 @@
 #endregion
 
 using System.Collections.Generic;
-using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HEAL.Attic;
 using HeuristicLab.Parameters;
-using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
   [StorableType("54D82779-7A37-43E4-AFD6-0C3E8D24F6EE")]
   [Item("SymbolicClassificationSolutionImpactValuesCalculator", "Calculate symbolic expression tree node impact values for classification problems.")]
   public class SymbolicClassificationSolutionImpactValuesCalculator : SymbolicDataAnalysisSolutionImpactValuesCalculator {
-    public ConstrainedValueParameter<SymbolicClassificationSingleObjectiveEvaluator> EvaluatorParameter {
-      get { return (ConstrainedValueParameter<SymbolicClassificationSingleObjectiveEvaluator>)Parameters["Evaluator"]; }
+    public IValueParameter<SymbolicClassificationSingleObjectiveEvaluator> EvaluatorParameter {
+      get { return (IValueParameter<SymbolicClassificationSingleObjectiveEvaluator>)Parameters["Evaluator"]; }
     }
     
     public SymbolicClassificationSolutionImpactValuesCalculator() {
-      var evaluators = new ItemSet<SymbolicClassificationSingleObjectiveEvaluator>(ApplicationManager.Manager.GetInstances<SymbolicClassificationSingleObjectiveEvaluator>());
-      Parameters.Add(new ConstrainedValueParameter<SymbolicClassificationSingleObjectiveEvaluator>("Evaluator", evaluators, evaluators.OfType<SymbolicClassificationSingleObjectiveMeanSquaredErrorEvaluator>().Single()));
+      Parameters.Add(new ValueParameter<SymbolicClassificationSingleObjectiveEvaluator>("Evaluator", new SymbolicClassificationSingleObjectiveMeanSquaredErrorEvaluator()));
     }
 
     protected SymbolicClassificationSolutionImpactValuesCalculator(SymbolicClassificationSolutionImpactValuesCalculator original, Cloner cloner)
@@ -51,8 +48,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
       if (!Parameters.ContainsKey("Evaluator")) {
-        var evaluators = new ItemSet<SymbolicClassificationSingleObjectiveEvaluator>(ApplicationManager.Manager.GetInstances<SymbolicClassificationSingleObjectiveEvaluator>());
-        Parameters.Add(new ConstrainedValueParameter<SymbolicClassificationSingleObjectiveEvaluator>("Evaluator", evaluators, evaluators.OfType<SymbolicClassificationSingleObjectiveMeanSquaredErrorEvaluator>().Single()));
+        Parameters.Add(new ValueParameter<SymbolicClassificationSingleObjectiveEvaluator>("Evaluator", new SymbolicClassificationSingleObjectiveMeanSquaredErrorEvaluator()));
       }
     }
 

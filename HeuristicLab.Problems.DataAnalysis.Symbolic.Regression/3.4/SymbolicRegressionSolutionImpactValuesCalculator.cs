@@ -20,24 +20,21 @@
 #endregion
 
 using System.Collections.Generic;
-using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HEAL.Attic;
 using HeuristicLab.Parameters;
-using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
   [StorableType("927C21BD-8913-406F-ADEA-DA4FED3FE4A2")]
   [Item("SymbolicRegressionSolutionImpactValuesCalculator", "Calculate symbolic expression tree node impact values for regression problems.")]
   public class SymbolicRegressionSolutionImpactValuesCalculator : SymbolicDataAnalysisSolutionImpactValuesCalculator {
-    public ConstrainedValueParameter<SymbolicRegressionSingleObjectiveEvaluator> EvaluatorParameter {
-      get { return (ConstrainedValueParameter<SymbolicRegressionSingleObjectiveEvaluator>)Parameters["Evaluator"]; }
+    public IValueParameter<SymbolicRegressionSingleObjectiveEvaluator> EvaluatorParameter {
+      get { return (IValueParameter<SymbolicRegressionSingleObjectiveEvaluator>)Parameters["Evaluator"]; }
     }
 
     public SymbolicRegressionSolutionImpactValuesCalculator() {
-      var evaluators = new ItemSet<SymbolicRegressionSingleObjectiveEvaluator>(ApplicationManager.Manager.GetInstances<SymbolicRegressionSingleObjectiveEvaluator>());
-      Parameters.Add(new ConstrainedValueParameter<SymbolicRegressionSingleObjectiveEvaluator>("Evaluator", evaluators, evaluators.OfType<SymbolicRegressionSingleObjectivePearsonRSquaredEvaluator>().Single()));
+      Parameters.Add(new ValueParameter<SymbolicRegressionSingleObjectiveEvaluator>("Evaluator", new SymbolicRegressionSingleObjectivePearsonRSquaredEvaluator()));
     }
 
     protected SymbolicRegressionSolutionImpactValuesCalculator(SymbolicRegressionSolutionImpactValuesCalculator original, Cloner cloner)
@@ -51,8 +48,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
       if (!Parameters.ContainsKey("Evaluator")) {
-        var evaluators = new ItemSet<SymbolicRegressionSingleObjectiveEvaluator>(ApplicationManager.Manager.GetInstances<SymbolicRegressionSingleObjectiveEvaluator>());
-        Parameters.Add(new ConstrainedValueParameter<SymbolicRegressionSingleObjectiveEvaluator>("Evaluator", evaluators, evaluators.OfType<SymbolicRegressionSingleObjectivePearsonRSquaredEvaluator>().Single()));
+        Parameters.Add(new ValueParameter<SymbolicRegressionSingleObjectiveEvaluator>("Evaluator", new SymbolicRegressionSingleObjectivePearsonRSquaredEvaluator()));
       }
     }
 
