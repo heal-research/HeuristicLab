@@ -154,5 +154,17 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
 
       return quality;
     }
+    
+    public override double Evaluate(
+      ISymbolicExpressionTree tree, 
+      IClassificationProblemData problemData, 
+      IEnumerable<int> rows, 
+      ISymbolicDataAnalysisExpressionTreeInterpreter interpreter,
+      bool applyLinearScaling = true, 
+      double lowerEstimationLimit = double.MinValue, 
+      double upperEstimationLimit = double.MaxValue) {
+      return Calculate(interpreter, tree, lowerEstimationLimit, upperEstimationLimit, problemData, rows, applyLinearScaling,
+        ModelCreatorParameter.ActualValue, NormalizedMeanSquaredErrorWeightingFactorParameter.Value.Value, FalseNegativeRateWeightingFactor, FalsePositiveRateWeightingFactor);
+    }
   }
 }

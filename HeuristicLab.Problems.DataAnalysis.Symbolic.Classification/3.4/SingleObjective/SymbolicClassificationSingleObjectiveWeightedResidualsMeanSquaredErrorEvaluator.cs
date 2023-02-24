@@ -137,5 +137,17 @@ The weight gets multiplied to the squared error. Note that the Evaluator acts li
 
       return quality;
     }
+    
+    public override double Evaluate(
+      ISymbolicExpressionTree tree, 
+      IClassificationProblemData problemData, 
+      IEnumerable<int> rows, 
+      ISymbolicDataAnalysisExpressionTreeInterpreter interpreter,
+      bool applyLinearScaling = true, 
+      double lowerEstimationLimit = double.MinValue, 
+      double upperEstimationLimit = double.MaxValue) {
+      return Calculate(interpreter, tree, lowerEstimationLimit, upperEstimationLimit, problemData, rows, applyLinearScaling,
+        DefiniteResidualsWeight, PositiveClassResidualsWeight, NegativeClassesResidualsWeight);
+    }
   }
 }

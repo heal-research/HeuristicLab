@@ -19,8 +19,10 @@
  */
 #endregion
 
+using System.Collections.Generic;
 using HeuristicLab.Common;
 using HEAL.Attic;
+using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
   [StorableType("48C7BDD3-9EED-4D61-AF72-A895556052A7")]
@@ -32,5 +34,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
     }
 
     protected SymbolicClassificationSingleObjectiveEvaluator() : base() { }
+    
+    public abstract double Evaluate(
+      ISymbolicExpressionTree tree,
+      IClassificationProblemData problemData,
+      IEnumerable<int> rows,
+      ISymbolicDataAnalysisExpressionTreeInterpreter interpreter,
+      bool applyLinearScaling = true,
+      double lowerEstimationLimit = double.MinValue,
+      double upperEstimationLimit = double.MaxValue);
   }
 }

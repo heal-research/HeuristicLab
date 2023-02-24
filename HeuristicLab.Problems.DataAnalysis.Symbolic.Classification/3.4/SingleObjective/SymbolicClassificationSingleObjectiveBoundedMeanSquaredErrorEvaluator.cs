@@ -86,5 +86,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
 
       return mse;
     }
+
+    public override double Evaluate(
+      ISymbolicExpressionTree tree, 
+      IClassificationProblemData problemData, 
+      IEnumerable<int> rows, 
+      ISymbolicDataAnalysisExpressionTreeInterpreter interpreter,
+      bool applyLinearScaling = true, 
+      double lowerEstimationLimit = double.MinValue, 
+      double upperEstimationLimit = double.MaxValue) {
+      return Calculate(interpreter, tree, lowerEstimationLimit, upperEstimationLimit, problemData, rows, applyLinearScaling);
+    }
   }
 }
