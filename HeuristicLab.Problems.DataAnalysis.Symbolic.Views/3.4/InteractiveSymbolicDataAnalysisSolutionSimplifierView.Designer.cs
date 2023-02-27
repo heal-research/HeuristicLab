@@ -50,27 +50,18 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       this.viewHost = new HeuristicLab.MainForm.WindowsForms.ViewHost();
       this.splitContainer = new System.Windows.Forms.SplitContainer();
       this.grpSimplify = new System.Windows.Forms.GroupBox();
-      this.tabControl = new System.Windows.Forms.TabControl();
-      this.tabPageTree = new System.Windows.Forms.TabPage();
-      this.panelTree = new System.Windows.Forms.Panel();
       this.treeStatusValue = new System.Windows.Forms.Label();
-      this.treeChart = new HeuristicLab.Problems.DataAnalysis.Symbolic.Views.InteractiveSymbolicExpressionTreeChart();
-      this.tabPageParameter = new System.Windows.Forms.TabPage();
-      this.parametersViewHost = new HeuristicLab.MainForm.WindowsForms.ViewHost();
       this.flowLayoutPanel = new System.Windows.Forms.FlowLayoutPanel();
       this.btnSimplify = new System.Windows.Forms.Button();
       this.btnOptimizeParameters = new System.Windows.Forms.Button();
       this.grpViewHost = new System.Windows.Forms.GroupBox();
+      this.treeChart = new HeuristicLab.Problems.DataAnalysis.Symbolic.Views.InteractiveSymbolicExpressionTreeChart();
       this.toolTip = new System.Windows.Forms.ToolTip(this.components);
       ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
       this.splitContainer.Panel1.SuspendLayout();
       this.splitContainer.Panel2.SuspendLayout();
       this.splitContainer.SuspendLayout();
       this.grpSimplify.SuspendLayout();
-      this.tabControl.SuspendLayout();
-      this.tabPageTree.SuspendLayout();
-      this.panelTree.SuspendLayout();
-      this.tabPageParameter.SuspendLayout();
       this.flowLayoutPanel.SuspendLayout();
       this.grpViewHost.SuspendLayout();
       this.SuspendLayout();
@@ -86,7 +77,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       this.viewHost.Location = new System.Drawing.Point(6, 16);
       this.viewHost.Name = "viewHost";
       this.viewHost.ReadOnly = false;
-      this.viewHost.Size = new System.Drawing.Size(372, 466);
+      this.viewHost.Size = new System.Drawing.Size(336, 383);
       this.viewHost.TabIndex = 0;
       this.viewHost.ViewsLabelVisible = true;
       this.viewHost.ViewType = null;
@@ -104,56 +95,23 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       // splitContainer.Panel2
       // 
       this.splitContainer.Panel2.Controls.Add(this.grpViewHost);
-      this.splitContainer.Size = new System.Drawing.Size(649, 488);
-      this.splitContainer.SplitterDistance = 261;
+      this.splitContainer.Size = new System.Drawing.Size(565, 405);
+      this.splitContainer.SplitterDistance = 213;
       this.splitContainer.TabIndex = 1;
       // 
       // grpSimplify
       // 
       this.grpSimplify.AutoSize = true;
-      this.grpSimplify.Controls.Add(this.tabControl);
+      this.grpSimplify.Controls.Add(this.treeStatusValue);
       this.grpSimplify.Controls.Add(this.flowLayoutPanel);
+      this.grpSimplify.Controls.Add(this.treeChart);
       this.grpSimplify.Dock = System.Windows.Forms.DockStyle.Fill;
       this.grpSimplify.Location = new System.Drawing.Point(0, 0);
       this.grpSimplify.Name = "grpSimplify";
-      this.grpSimplify.Size = new System.Drawing.Size(261, 488);
+      this.grpSimplify.Size = new System.Drawing.Size(213, 405);
       this.grpSimplify.TabIndex = 1;
       this.grpSimplify.TabStop = false;
       this.grpSimplify.Text = "Simplify";
-      // 
-      // tabControl
-      // 
-      this.tabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-      this.tabControl.Controls.Add(this.tabPageTree);
-      this.tabControl.Controls.Add(this.tabPageParameter);
-      this.tabControl.Location = new System.Drawing.Point(6, 16);
-      this.tabControl.Name = "tabControl";
-      this.tabControl.SelectedIndex = 0;
-      this.tabControl.Size = new System.Drawing.Size(249, 434);
-      this.tabControl.TabIndex = 4;
-      // 
-      // tabPageTree
-      // 
-      this.tabPageTree.Controls.Add(this.panelTree);
-      this.tabPageTree.Location = new System.Drawing.Point(4, 22);
-      this.tabPageTree.Name = "tabPageTree";
-      this.tabPageTree.Padding = new System.Windows.Forms.Padding(3);
-      this.tabPageTree.Size = new System.Drawing.Size(241, 408);
-      this.tabPageTree.TabIndex = 0;
-      this.tabPageTree.Text = "Tree";
-      this.tabPageTree.UseVisualStyleBackColor = true;
-      // 
-      // panelTree
-      // 
-      this.panelTree.Controls.Add(this.treeStatusValue);
-      this.panelTree.Controls.Add(this.treeChart);
-      this.panelTree.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.panelTree.Location = new System.Drawing.Point(3, 3);
-      this.panelTree.Name = "panelTree";
-      this.panelTree.Size = new System.Drawing.Size(235, 402);
-      this.panelTree.TabIndex = 4;
       // 
       // treeStatusValue
       // 
@@ -161,62 +119,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       this.treeStatusValue.AutoSize = true;
       this.treeStatusValue.BackColor = System.Drawing.Color.White;
       this.treeStatusValue.ForeColor = System.Drawing.Color.Red;
-      this.treeStatusValue.Location = new System.Drawing.Point(0, 386);
+      this.treeStatusValue.Location = new System.Drawing.Point(6, 351);
       this.treeStatusValue.Name = "treeStatusValue";
       this.treeStatusValue.Size = new System.Drawing.Size(63, 13);
       this.treeStatusValue.TabIndex = 3;
       this.treeStatusValue.Text = "Invalid Tree";
       this.treeStatusValue.Visible = false;
-      // 
-      // treeChart
-      // 
-      this.treeChart.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-      this.treeChart.BackgroundColor = System.Drawing.Color.White;
-      this.treeChart.LineColor = System.Drawing.Color.Black;
-      this.treeChart.Location = new System.Drawing.Point(3, 3);
-      this.treeChart.MinimumHorizontalDistance = 30;
-      this.treeChart.MinimumHorizontalPadding = 20;
-      this.treeChart.MinimumVerticalDistance = 30;
-      this.treeChart.MinimumVerticalPadding = 20;
-      this.treeChart.ModifyTree = null;
-      this.treeChart.Name = "treeChart";
-      this.treeChart.PreferredNodeHeight = 46;
-      this.treeChart.PreferredNodeWidth = 70;
-      this.treeChart.Size = new System.Drawing.Size(229, 396);
-      this.treeChart.SuspendRepaint = false;
-      this.treeChart.TabIndex = 0;
-      this.treeChart.TextFont = new System.Drawing.Font("Times New Roman", 8F);
-      this.treeChart.Tree = null;
-      this.treeChart.SymbolicExpressionTreeNodeDoubleClicked += new System.Windows.Forms.MouseEventHandler(this.treeChart_SymbolicExpressionTreeNodeDoubleClicked);
-      // 
-      // tabPageParameter
-      // 
-      this.tabPageParameter.Controls.Add(this.parametersViewHost);
-      this.tabPageParameter.Location = new System.Drawing.Point(4, 22);
-      this.tabPageParameter.Name = "tabPageParameter";
-      this.tabPageParameter.Padding = new System.Windows.Forms.Padding(3);
-      this.tabPageParameter.Size = new System.Drawing.Size(241, 408);
-      this.tabPageParameter.TabIndex = 1;
-      this.tabPageParameter.Text = "Parameters";
-      this.tabPageParameter.UseVisualStyleBackColor = true;
-      // 
-      // parametersViewHost
-      // 
-      this.parametersViewHost.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-      this.parametersViewHost.Caption = "View";
-      this.parametersViewHost.Content = null;
-      this.parametersViewHost.Enabled = false;
-      this.parametersViewHost.Location = new System.Drawing.Point(6, 6);
-      this.parametersViewHost.Name = "parametersViewHost";
-      this.parametersViewHost.ReadOnly = false;
-      this.parametersViewHost.Size = new System.Drawing.Size(229, 396);
-      this.parametersViewHost.TabIndex = 0;
-      this.parametersViewHost.ViewsLabelVisible = true;
-      this.parametersViewHost.ViewType = null;
       // 
       // flowLayoutPanel
       // 
@@ -224,9 +132,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
             | System.Windows.Forms.AnchorStyles.Right)));
       this.flowLayoutPanel.Controls.Add(this.btnSimplify);
       this.flowLayoutPanel.Controls.Add(this.btnOptimizeParameters);
-      this.flowLayoutPanel.Location = new System.Drawing.Point(6, 453);
+      this.flowLayoutPanel.Location = new System.Drawing.Point(6, 370);
       this.flowLayoutPanel.Name = "flowLayoutPanel";
-      this.flowLayoutPanel.Size = new System.Drawing.Size(249, 29);
+      this.flowLayoutPanel.Size = new System.Drawing.Size(204, 29);
       this.flowLayoutPanel.TabIndex = 2;
       this.flowLayoutPanel.WrapContents = false;
       // 
@@ -266,10 +174,27 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       this.grpViewHost.Dock = System.Windows.Forms.DockStyle.Fill;
       this.grpViewHost.Location = new System.Drawing.Point(0, 0);
       this.grpViewHost.Name = "grpViewHost";
-      this.grpViewHost.Size = new System.Drawing.Size(384, 488);
+      this.grpViewHost.Size = new System.Drawing.Size(348, 405);
       this.grpViewHost.TabIndex = 1;
       this.grpViewHost.TabStop = false;
       this.grpViewHost.Text = "Details";
+      // 
+      // treeChart
+      // 
+      this.treeChart.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.treeChart.BackgroundColor = System.Drawing.Color.White;
+      this.treeChart.LineColor = System.Drawing.Color.Black;
+      this.treeChart.Location = new System.Drawing.Point(6, 16);
+      this.treeChart.ModifyTree = null;
+      this.treeChart.Name = "treeChart";
+      this.treeChart.Size = new System.Drawing.Size(201, 348);
+      this.treeChart.SuspendRepaint = false;
+      this.treeChart.TabIndex = 0;
+      this.treeChart.TextFont = new System.Drawing.Font("Times New Roman", 8F);
+      this.treeChart.Tree = null;
+      this.treeChart.SymbolicExpressionTreeNodeDoubleClicked += new System.Windows.Forms.MouseEventHandler(this.treeChart_SymbolicExpressionTreeNodeDoubleClicked);
       // 
       // InteractiveSymbolicDataAnalysisSolutionSimplifierView
       // 
@@ -278,18 +203,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       this.Controls.Add(this.splitContainer);
       this.DoubleBuffered = true;
       this.Name = "InteractiveSymbolicDataAnalysisSolutionSimplifierView";
-      this.Size = new System.Drawing.Size(649, 488);
+      this.Size = new System.Drawing.Size(565, 405);
       this.splitContainer.Panel1.ResumeLayout(false);
       this.splitContainer.Panel1.PerformLayout();
       this.splitContainer.Panel2.ResumeLayout(false);
       ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).EndInit();
       this.splitContainer.ResumeLayout(false);
       this.grpSimplify.ResumeLayout(false);
-      this.tabControl.ResumeLayout(false);
-      this.tabPageTree.ResumeLayout(false);
-      this.panelTree.ResumeLayout(false);
-      this.panelTree.PerformLayout();
-      this.tabPageParameter.ResumeLayout(false);
+      this.grpSimplify.PerformLayout();
       this.flowLayoutPanel.ResumeLayout(false);
       this.flowLayoutPanel.PerformLayout();
       this.grpViewHost.ResumeLayout(false);
@@ -309,10 +230,5 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
     protected System.Windows.Forms.Button btnOptimizeParameters;
     private System.Windows.Forms.Label treeStatusValue;
     private System.Windows.Forms.ToolTip toolTip;
-    private System.Windows.Forms.TabControl tabControl;
-    private System.Windows.Forms.TabPage tabPageTree;
-    private System.Windows.Forms.Panel panelTree;
-    private System.Windows.Forms.TabPage tabPageParameter;
-    private MainForm.WindowsForms.ViewHost parametersViewHost;
   }
 }

@@ -32,9 +32,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
     public IValueParameter<SymbolicClassificationSingleObjectiveEvaluator> EvaluatorParameter {
       get { return (IValueParameter<SymbolicClassificationSingleObjectiveEvaluator>)Parameters["Evaluator"]; }
     }
-    
-    public SymbolicClassificationSolutionImpactValuesCalculator() {
-      Parameters.Add(new ValueParameter<SymbolicClassificationSingleObjectiveEvaluator>("Evaluator", new SymbolicClassificationSingleObjectiveMeanSquaredErrorEvaluator()));
+
+    public SymbolicClassificationSolutionImpactValuesCalculator(SymbolicClassificationSingleObjectiveEvaluator evaluator = null) {
+      if (evaluator == null) evaluator = new SymbolicClassificationSingleObjectiveMeanSquaredErrorEvaluator();
+      Parameters.Add(new ValueParameter<SymbolicClassificationSingleObjectiveEvaluator>("Evaluator", evaluator));
     }
 
     protected SymbolicClassificationSolutionImpactValuesCalculator(SymbolicClassificationSolutionImpactValuesCalculator original, Cloner cloner)

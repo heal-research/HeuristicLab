@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
@@ -35,14 +36,64 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
     private VisualTreeNode<ISymbolicExpressionTreeNode> currSelected; // currently selected node
     private enum EditOp { NoOp, CopySubtree, CutSubtree }
     private EditOp lastOp = EditOp.NoOp;
+    
+    private ISymbolicDataAnalysisSolutionImpactValuesCalculator impactCalculator = null;
+    
 
     // delegate to notify the parent container (the view) about the tree edit operations that it needs to perform
     public ModifyTree ModifyTree { get; set; }
+
+    public void InitializeAvailableImpactCalculators(IEnumerable<ISymbolicDataAnalysisSolutionImpactValuesCalculator> availableImpactCalculators) {
+      foreach (ToolStripMenuItem menuItem in impactCalculatorToolStripMenuItem.DropDownItems) {
+        menuItem.Click -= ImpactCalculatorMenuItemOnClick;
+      }
+      impactCalculatorToolStripMenuItem.DropDownItems.Clear();
+
+      var noImpactCalculatorMenuItem = new ToolStripMenuItem("None") { Tag = null };
+      noImpactCalculatorMenuItem.Click += ImpactCalculatorMenuItemOnClick;
+      impactCalculatorToolStripMenuItem.DropDownItems.Add(noImpactCalculatorMenuItem);
+      
+      foreach (var impactCalculator in availableImpactCalculators) {
+        var menuItem = new ToolStripMenuItem(impactCalculator.Name) { Tag = impactCalculator, Checked = impactCalculator == availableImpactCalculators.First()};
+        menuItem.Click += ImpactCalculatorMenuItemOnClick;
+        impactCalculatorToolStripMenuItem.DropDownItems.Add(menuItem);
+      }
+
+      if (availableImpactCalculators.Any()) {
+        impactCalculatorToolStripMenuItem.Visible = true;
+        ImpactCalculator = availableImpactCalculators.First();
+      } else {
+        impactCalculatorToolStripMenuItem.Visible = false;
+        ImpactCalculator = null;
+      }
+    }
+
+    private void ImpactCalculatorMenuItemOnClick(object sender, EventArgs e) {
+      var clickedMenuItem = (ToolStripMenuItem)sender;
+
+      foreach (ToolStripMenuItem menuItem in impactCalculatorToolStripMenuItem.DropDownItems) {
+        menuItem.Checked = menuItem == clickedMenuItem;
+      }
+
+      var impactCalculator = (ISymbolicDataAnalysisSolutionImpactValuesCalculator)clickedMenuItem.Tag;
+      ImpactCalculator = impactCalculator;
+    }
+
+    public ISymbolicDataAnalysisSolutionImpactValuesCalculator ImpactCalculator {
+      get { return impactCalculator; }
+      private set {
+        if (value == impactCalculator) return;
+        impactCalculator = value;
+        ImpactCalculatorChanged?.Invoke(this, EventArgs.Empty);
+      }
+    }
+    public event EventHandler ImpactCalculatorChanged;
 
     public InteractiveSymbolicExpressionTreeChart() {
       InitializeComponent();
       currSelected = null;
       tempNode = null;
+      InitializeAvailableImpactCalculators(Enumerable.Empty<ISymbolicDataAnalysisSolutionImpactValuesCalculator>());
     }
 
     private void contextMenuStrip_Opened(object sender, EventArgs e) {

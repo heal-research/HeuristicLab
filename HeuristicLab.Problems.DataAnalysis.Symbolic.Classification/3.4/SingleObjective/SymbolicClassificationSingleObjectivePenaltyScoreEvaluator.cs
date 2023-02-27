@@ -112,6 +112,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
       double lowerEstimationLimit = double.MinValue, 
       double upperEstimationLimit = double.MaxValue) {
       var model = ModelCreatorParameter.ActualValue.CreateSymbolicClassificationModel(problemData.TargetVariable, tree, SymbolicDataAnalysisTreeInterpreterParameter.ActualValue, EstimationLimitsParameter.ActualValue.Lower, EstimationLimitsParameter.ActualValue.Upper);
+      if (applyLinearScaling) model.Scale(problemData);
+      model.RecalculateModelParameters(problemData, rows);
       return Calculate(model, problemData, rows);
     }
   }

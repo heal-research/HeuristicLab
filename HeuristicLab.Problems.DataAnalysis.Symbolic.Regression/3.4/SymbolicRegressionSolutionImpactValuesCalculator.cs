@@ -33,8 +33,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       get { return (IValueParameter<SymbolicRegressionSingleObjectiveEvaluator>)Parameters["Evaluator"]; }
     }
 
-    public SymbolicRegressionSolutionImpactValuesCalculator() {
-      Parameters.Add(new ValueParameter<SymbolicRegressionSingleObjectiveEvaluator>("Evaluator", new SymbolicRegressionSingleObjectivePearsonRSquaredEvaluator()));
+    public SymbolicRegressionSolutionImpactValuesCalculator(SymbolicRegressionSingleObjectiveEvaluator evaluator = null) {
+      if (evaluator == null) evaluator = new SymbolicRegressionSingleObjectivePearsonRSquaredEvaluator();
+      Parameters.Add(new ValueParameter<SymbolicRegressionSingleObjectiveEvaluator>("Evaluator", evaluator));
     }
 
     protected SymbolicRegressionSolutionImpactValuesCalculator(SymbolicRegressionSolutionImpactValuesCalculator original, Cloner cloner)

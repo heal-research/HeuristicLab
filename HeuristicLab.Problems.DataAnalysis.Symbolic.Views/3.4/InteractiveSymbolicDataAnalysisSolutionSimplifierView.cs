@@ -27,7 +27,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using HeuristicLab.Common;
-using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views;
 using HeuristicLab.MainForm;
@@ -40,7 +39,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
     private readonly Dictionary<ISymbolicExpressionTreeNode, Interval> nodeIntervals = new Dictionary<ISymbolicExpressionTreeNode, Interval>();
     private readonly Dictionary<ISymbolicExpressionTreeNode, double> nodeImpacts = new Dictionary<ISymbolicExpressionTreeNode, double>();
 
-    protected readonly ISymbolicDataAnalysisSolutionImpactValuesCalculator impactCalculator;
+    private ISymbolicDataAnalysisSolutionImpactValuesCalculator impactCalculator;
 
     private readonly Progress progress = new Progress();
     private CancellationTokenSource cancellationTokenSource;
@@ -48,13 +47,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
     private enum TreeState { Valid, Invalid }
     private TreeState treeState;
 
-    protected InteractiveSymbolicDataAnalysisSolutionSimplifierView(ISymbolicDataAnalysisSolutionImpactValuesCalculator impactCalculator) {
+    protected InteractiveSymbolicDataAnalysisSolutionSimplifierView(params ISymbolicDataAnalysisSolutionImpactValuesCalculator[] availableImpactCalculator) {
       InitializeComponent();
       this.Caption = "Interactive Solution Simplifier";
-      this.impactCalculator = impactCalculator;
-
+      
       // initialize the tree modifier that will be used to perform edit operations over the tree
       treeChart.ModifyTree = Modify;
+      
+      // setup impact calculators
+      impactCalculator = availableImpactCalculator.FirstOrDefault();
+      treeChart.InitializeAvailableImpactCalculators(availableImpactCalculator);
     }
 
     /// <summary>
@@ -151,21 +153,18 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       base.RegisterContentEvents();
       Content.ModelChanged += Content_Changed;
       Content.ProblemDataChanged += Content_Changed;
-      foreach (var valueParameter in impactCalculator.Parameters.OfType<IValueParameter>()) {
-        valueParameter.ValueChanged += Content_Changed;
-      }
       treeChart.Repainted += treeChart_Repainted;
+      treeChart.ImpactCalculatorChanged += treeChart_ImpactCalculatorChanged;
       Progress.ShowOnControl(grpSimplify, progress);
       progress.StopRequested += progress_StopRequested;
     }
+    
     protected override void DeregisterContentEvents() {
       base.DeregisterContentEvents();
       Content.ModelChanged -= Content_Changed;
       Content.ProblemDataChanged -= Content_Changed;
-      foreach (var valueParameter in impactCalculator.Parameters.OfType<IValueParameter>()) {
-        valueParameter.ValueChanged -= Content_Changed;
-      }
       treeChart.Repainted -= treeChart_Repainted;
+      treeChart.ImpactCalculatorChanged -= treeChart_ImpactCalculatorChanged;
       Progress.HideFromControl(grpSimplify, false);
       progress.StopRequested -= progress_StopRequested;
     }
@@ -182,7 +181,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       nodeIntervals.Clear();
       nodeImpacts.Clear();
       UpdateView();
-      parametersViewHost.Content = impactCalculator.Parameters;
       viewHost.Content = this.Content;
     }
 
@@ -242,11 +240,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       var impactAndReplacementValues = new Dictionary<ISymbolicExpressionTreeNode, Tuple<double, double>>();
       foreach (var node in tree.Root.GetSubtree(0).GetSubtree(0).IterateNodesPrefix()) {
         if (progress.ProgressState == ProgressState.StopRequested) continue;
-        impactCalculator.CalculateImpactAndReplacementValues(Content.Model, node, Content.ProblemData, Content.ProblemData.TrainingIndices, 
-          out double impactValue, out double replacementValue, out _);
+        if (impactCalculator != null) {
+          impactCalculator.CalculateImpactAndReplacementValues(Content.Model, node, Content.ProblemData, Content.ProblemData.TrainingIndices,
+            out double impactValue, out double replacementValue, out _);
+          impactAndReplacementValues.Add(node, new Tuple<double, double>(impactValue, replacementValue));
+        } else {
+          impactAndReplacementValues.Add(node, new Tuple<double, double>(0, 0));  
+        }
         double newProgressValue = progress.ProgressValue + 1.0 / (tree.Length - 2);
         progress.ProgressValue = Math.Min(newProgressValue, 1);
-        impactAndReplacementValues.Add(node, new Tuple<double, double>(impactValue, replacementValue));
+        
       }
       return impactAndReplacementValues;
     }
@@ -338,6 +341,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       treeChart.RepaintNodes();
     }
 
+    private void treeChart_ImpactCalculatorChanged(object sender, EventArgs e) {
+      impactCalculator = treeChart.ImpactCalculator;
+      UpdateView();
+    }
+    
     private void btnSimplify_Click(object sender, EventArgs e) {
       var simplifiedExpressionTree = TreeSimplifier.Simplify(Content.Model.SymbolicExpressionTree);
       UpdateModel(simplifiedExpressionTree);

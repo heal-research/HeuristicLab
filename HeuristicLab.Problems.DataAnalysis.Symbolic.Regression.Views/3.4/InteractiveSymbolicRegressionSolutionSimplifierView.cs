@@ -32,7 +32,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression.Views {
     }
 
     public InteractiveSymbolicRegressionSolutionSimplifierView()
-      : base(new SymbolicRegressionSolutionImpactValuesCalculator()) {
+      : base(
+        new SymbolicRegressionSolutionImpactValuesCalculator(new SymbolicRegressionSingleObjectivePearsonRSquaredEvaluator()) { Name = "R²" },
+        new SymbolicRegressionSolutionImpactValuesCalculator(new SymbolicRegressionSingleObjectiveMeanSquaredErrorEvaluator()) { Name = "MSE" },
+        new SymbolicRegressionSolutionImpactValuesCalculator(new SymbolicRegressionSingleObjectiveMeanAbsoluteErrorEvaluator()) { Name = "MAE" }
+      ) {
       InitializeComponent();
       this.Caption = "Interactive Regression Solution Simplifier";
     }

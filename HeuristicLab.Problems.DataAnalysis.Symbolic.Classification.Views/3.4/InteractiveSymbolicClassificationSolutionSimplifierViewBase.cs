@@ -31,7 +31,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification.Views {
     }
 
     protected InteractiveSymbolicClassificationSolutionSimplifierViewBase()
-      : base(new SymbolicClassificationSolutionImpactValuesCalculator()) {
+      : base(
+        new SymbolicClassificationSolutionImpactValuesCalculator(new SymbolicClassificationSingleObjectiveAccuracyEvaluator() ) { Name = "Accuracy"},
+        new SymbolicClassificationSolutionImpactValuesCalculator(new SymbolicClassificationSingleObjectiveRocAucEvaluator()) { Name = "ROC-AUC" },
+        new SymbolicClassificationSolutionImpactValuesCalculator(new SymbolicClassificationSingleObjectivePearsonRSquaredEvaluator()) { Name = "R²" },
+        new SymbolicClassificationSolutionImpactValuesCalculator(new SymbolicClassificationSingleObjectiveMeanSquaredErrorEvaluator()) { Name = "MSE" }
+        ) {
       InitializeComponent();
       this.Caption = "Interactive Classification Solution Simplifier";
     }
