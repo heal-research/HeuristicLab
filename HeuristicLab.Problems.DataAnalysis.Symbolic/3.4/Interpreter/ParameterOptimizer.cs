@@ -147,7 +147,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       (byte)OpCode.Cos,
       (byte)OpCode.Tan,
       (byte)OpCode.Tanh,
-      // (byte)OpCode.Power, // these symbols are handled differently in the NativeInterpreter than in HL
+      (byte)OpCode.Power, // these symbols are handled differently in the NativeInterpreter than in HL
       // (byte)OpCode.Root,
       (byte)OpCode.SquareRoot,
       (byte)OpCode.Square,

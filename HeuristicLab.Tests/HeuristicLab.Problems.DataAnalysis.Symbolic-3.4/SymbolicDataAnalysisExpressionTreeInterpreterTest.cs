@@ -341,6 +341,57 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
       Console.WriteLine("Jacobian evaluations: " + summary.JacobianEvaluations);
     }
 
+    [TestMethod]
+    [TestCategory("Problems.DataAnalysis.Symbolic")]
+    [TestProperty("Time", "long")]
+    public void NativeInterpreterTestPower() {
+      var parser = new InfixExpressionParser();
+      var random = new FastRandom(Environment.TickCount);
+      const int nRows = 20;
+
+      var x1 = Enumerable.Range(0, nRows)
+        .Select(_ => UniformDistributedRandom.NextDouble(random, 0, 3)).ToArray();
+
+      var y = Enumerable.Range(0, nRows)
+        .Select(i => Math.Pow(x1[i], 2.5) )
+        .ToArray();
+
+      var initialAlpha = new double[] { 1 };
+      var ds = new Dataset(new[] { "x1", "y" }, new[] { x1, y });
+
+      var expr = "pow(x1, <num>)";
+      var tree = parser.Parse(expr);
+      var rows = Enumerable.Range(0, nRows).ToArray();
+      var options = new SolverOptions {
+        Iterations = 100,
+      };
+
+      var nodesToOptimize = new HashSet<ISymbolicExpressionTreeNode>(tree.IterateNodesPrefix().Where(x => x is NumberTreeNode));
+      int idx = 0;
+      Console.Write("Initial parameters: ");
+      foreach (var node in nodesToOptimize.OfType<NumberTreeNode>()) {
+        node.Value = initialAlpha[idx++];
+        Console.Write(node.Value + " ");
+      }
+      Console.WriteLine();
+
+      var summary = new SolverSummary();
+      var parameters = ParameterOptimizer.OptimizeTree(tree, nodesToOptimize, ds, "y", rows, options, ref summary);
+
+      Console.Write("Optimized parameters: ");
+      foreach (var t in parameters) {
+        Console.Write(t.Value + " ");
+      }
+      Console.WriteLine();
+
+      Console.WriteLine("Optimization summary:");
+      Console.WriteLine("Optimization success: " + summary.Success);
+      Console.WriteLine("Iterations:           " + summary.Iterations);
+      Console.WriteLine("Initial cost:         " + summary.InitialCost);
+      Console.WriteLine("Final cost:           " + summary.FinalCost);
+      Console.WriteLine("Residual evaluations: " + summary.ResidualEvaluations);
+      Console.WriteLine("Jacobian evaluations: " + summary.JacobianEvaluations);
+    }
 
     [TestMethod]
     [TestCategory("Problems.DataAnalysis.Symbolic")]
