@@ -70,10 +70,8 @@ namespace HeuristicLab.Problems.DataAnalysis {
       for (double lowerThreshold = minThreshold; lowerThreshold < maxThreshold; lowerThreshold += thresholdIncrement) {
         for (double upperThreshold = lowerThreshold + thresholdIncrement; upperThreshold < maxThreshold; upperThreshold += thresholdIncrement) {
           //only adapt lower threshold for binary classification problems and upper class prediction              
-          if (classValues.Count == 2 && classValue == classValues[1]) {
-            upperThreshold = double.PositiveInfinity;
-          }
-
+          if (classValues.Count == 2 && classValue == classValues[1]) upperThreshold = double.PositiveInfinity;
+          
           int truePositives = 0;
           int falsePositives = 0;
 

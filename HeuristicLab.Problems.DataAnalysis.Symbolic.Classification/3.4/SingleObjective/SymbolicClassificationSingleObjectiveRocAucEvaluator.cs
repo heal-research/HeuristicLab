@@ -50,13 +50,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
     public override IOperation InstrumentedApply() {
       IEnumerable<int> rows = GenerateRowsToEvaluate();
       var solution = SymbolicExpressionTreeParameter.ActualValue;
-      double quality = Calculate(SymbolicDataAnalysisTreeInterpreterParameter.ActualValue, solution, ProblemDataParameter.ActualValue, rows);
+      var estimationLimits = EstimationLimitsParameter.ActualValue;
+      double quality = Calculate(SymbolicDataAnalysisTreeInterpreterParameter.ActualValue, solution, ProblemDataParameter.ActualValue, rows, estimationLimits.Lower, estimationLimits.Upper);
       QualityParameter.ActualValue = new DoubleValue(quality);
       return base.InstrumentedApply();
     }
 
-    public static double Calculate(ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, ISymbolicExpressionTree solution, IClassificationProblemData problemData, IEnumerable<int> rows) {
-      var estimatedValues = interpreter.GetSymbolicExpressionTreeValues(solution, problemData.Dataset, rows).ToList();
+    public static double Calculate(ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, ISymbolicExpressionTree solution, IClassificationProblemData problemData, IEnumerable<int> rows, double lowerEstimationLimit = double.MinValue, double upperEstimationLimit = double.MaxValue) {
+      var estimatedValues = interpreter.GetSymbolicExpressionTreeValues(solution, problemData.Dataset, rows).LimitToRange(lowerEstimationLimit, upperEstimationLimit).ToList();
       var targetValues = problemData.Dataset.GetDoubleValues(problemData.TargetVariable, rows).ToList();
       
       var auc = RocAucCalculator.CalculateRocAuc(targetValues, estimatedValues, problemData.PositiveClass, problemData.ClassValues.ToList(), problemData.ClassNames.ToList());
@@ -81,7 +82,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
       bool applyLinearScaling = true, 
       double lowerEstimationLimit = double.MinValue, 
       double upperEstimationLimit = double.MaxValue) {
-      return Calculate(interpreter, tree, problemData, rows);
+      return Calculate(interpreter, tree, problemData, rows, lowerEstimationLimit, upperEstimationLimit);
     }
   }
 }
