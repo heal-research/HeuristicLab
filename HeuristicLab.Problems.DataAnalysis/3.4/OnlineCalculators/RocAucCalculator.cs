@@ -70,7 +70,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       for (double lowerThreshold = minThreshold; lowerThreshold < maxThreshold; lowerThreshold += thresholdIncrement) {
         for (double upperThreshold = lowerThreshold + thresholdIncrement; upperThreshold < maxThreshold; upperThreshold += thresholdIncrement) {
           //only adapt lower threshold for binary classification problems and upper class prediction              
-          if (classValues.Count == 2 && classValue == classValues[1]) upperThreshold = double.PositiveInfinity;
+          if (classValues.Count == 2 && classValue.IsAlmost(classValues[1])) upperThreshold = double.PositiveInfinity;
           
           int truePositives = 0;
           int falsePositives = 0;
@@ -87,7 +87,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
           var rocPoint = new RocPoint(truePositiveRate, falsePositiveRate, lowerThreshold, upperThreshold);
           if (!rocPoints.Any(x => x.TruePositiveRate >= rocPoint.TruePositiveRate && x.FalsePositiveRate <= rocPoint.FalsePositiveRate)) {
-            rocPoints.RemoveAll(x => x.FalsePositiveRate >= rocPoint.FalsePositiveRate && x.TruePositiveRate <= rocPoint.TruePositiveRate);
+            rocPoints.RemoveAll(x => x.TruePositiveRate <= rocPoint.TruePositiveRate && x.FalsePositiveRate >= rocPoint.FalsePositiveRate);
             rocPoints.Add(rocPoint);
           }
 
@@ -95,7 +95,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
         }
 
         //only adapt upper threshold for binary classification problems and upper class prediction              
-        if (classValues.Count == 2 && classValue == classValues[0]) lowerThreshold = double.PositiveInfinity;
+        if (classValues.Count == 2 && classValue.IsAlmost(classValues[0])) lowerThreshold = double.PositiveInfinity;
         
         if (thresholdIncrement.IsAlmost(0.0)) break;
       }
@@ -104,7 +104,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
 
     public static double CalculateAreaUnderCurve(IReadOnlyList<RocPoint> rocPoints) {
-      //if (rocPoints.Count < 1) return 0.0;//throw new ArgumentException("Could not calculate area under curve if less than 1 data points were given.");
+      if (rocPoints.Count < 1) return 0.0; //throw new ArgumentException("Could not calculate area under curve if less than 1 data points were given.");
 
       double auc = 0.0;
       for (int i = 1; i < rocPoints.Count; i++) {
@@ -113,6 +113,15 @@ namespace HeuristicLab.Problems.DataAnalysis {
         double y2 = rocPoints[i].TruePositiveRate;
 
         auc += (y1 + y2) * width / 2;
+      }
+      
+      if (rocPoints[0].FalsePositiveRate > 0.0) {
+        var lowestPoint = rocPoints[0];
+        auc += lowestPoint.TruePositiveRate * lowestPoint.FalsePositiveRate / 2;
+      }
+      if (rocPoints[rocPoints.Count - 1].FalsePositiveRate < 1.0) {
+        var highestPoint = rocPoints[rocPoints.Count - 1];
+        auc += (highestPoint.TruePositiveRate + 1.0) * (1.0 - highestPoint.FalsePositiveRate) / 2 ;
       }
 
       return auc;
