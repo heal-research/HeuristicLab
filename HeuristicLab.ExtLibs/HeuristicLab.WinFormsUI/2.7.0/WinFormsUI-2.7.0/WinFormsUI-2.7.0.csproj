@@ -1,25 +1,11 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{EAF5F178-406C-4844-B1DC-D3AAF3992FDF}</ProjectGuid>
+    <TargetFramework>net7.0-windows</TargetFramework>
     <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>WeifenLuo.WinFormsUI</RootNamespace>
     <AssemblyName>WeifenLuo.WinFormsUI.Docking-2.7.0</AssemblyName>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>HeuristicLab.snk</AssemblyOriginatorKeyFile>
-    <FileUpgradeFlags>
-    </FileUpgradeFlags>
-    <UpgradeBackupLocation>
-    </UpgradeBackupLocation>
-    <OldToolsVersion>3.5</OldToolsVersion>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
-    <TargetFrameworkProfile>
-    </TargetFrameworkProfile>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -35,182 +21,79 @@
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
     <OutputPath>$(SolutionDir)\bin\</OutputPath>
-    <DefineConstants>TRACE;DEBUG</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>$(SolutionDir)\bin\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>$(SolutionDir)\bin\</OutputPath>
-    <DefineConstants>TRACE;DEBUG</DefineConstants>
-    <DebugType>full</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
-    <OutputPath>$(SolutionDir)\bin\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>$(SolutionDir)\bin\</OutputPath>
-    <DefineConstants>TRACE;DEBUG</DefineConstants>
-    <DebugType>full</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
-    <OutputPath>$(SolutionDir)\bin\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Data" />
     <Reference Include="System.Design" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Docking\AutoHideStripBase.cs">
+    <Compile Update="Docking\AutoHideStripBase.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Docking\DockAreasEditor.cs" />
-    <Compile Include="Docking\DockContent.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Docking\DockContentCollection.cs" />
-    <Compile Include="Docking\DockContentEventArgs.cs" />
-    <Compile Include="Docking\DockContentHandler.cs" />
-    <Compile Include="Docking\DockOutlineBase.cs" />
-    <Compile Include="Docking\DockPane.cs">
+    <Compile Update="Docking\DockPane.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Docking\DockPane.SplitterControl.cs">
+    <Compile Update="Docking\DockPane.SplitterControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Docking\DockPaneCaptionBase.cs">
+    <Compile Update="Docking\DockPaneCaptionBase.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Docking\DockPaneCollection.cs" />
-    <Compile Include="Docking\DockPanel.Appearance.cs">
+    <Compile Update="Docking\DockPanel.Appearance.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Docking\DockPanel.AutoHideWindow.cs">
+    <Compile Update="Docking\DockPanel.AutoHideWindow.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Docking\DockPanel.cs" />
-    <Compile Include="Docking\DockPanel.DockDragHandler.cs">
+    <Compile Update="Docking\DockPanel.DockDragHandler.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Docking\DockPanel.DragHandler.cs">
+    <Compile Update="Docking\DockPanel.DragHandler.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Docking\DockPanel.FocusManager.cs">
+    <Compile Update="Docking\DockPanel.FocusManager.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Docking\DockPanel.MdiClientController.cs">
+    <Compile Update="Docking\DockPanel.MdiClientController.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Docking\DockPanel.Persistor.cs">
+    <Compile Update="Docking\DockPanel.Persistor.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Docking\DockPanel.SplitterDragHandler.cs">
+    <Compile Update="Docking\DockPanel.SplitterDragHandler.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Docking\DockPanelExtender.cs" />
-    <Compile Include="Docking\DockPanelSkin.cs" />
-    <Compile Include="Docking\DockPaneStripBase.cs">
+    <Compile Update="Docking\DockPaneStripBase.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Docking\DockWindow.cs">
+    <Compile Update="Docking\DockWindow.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Docking\DockWindow.SplitterControl.cs">
+    <Compile Update="Docking\DockWindow.SplitterControl.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Docking\DockWindowCollection.cs" />
-    <Compile Include="Docking\DragForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Docking\DummyControl.cs">
+    <Compile Update="Docking\DummyControl.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Docking\Enums.cs" />
-    <Compile Include="Docking\FloatWindow.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Docking\FloatWindowCollection.cs" />
-    <Compile Include="Docking\Helpers\DockHelper.cs" />
-    <Compile Include="Docking\Helpers\DrawHelper.cs" />
-    <Compile Include="Docking\Helpers\ResourceHelper.cs" />
-    <Compile Include="Docking\Helpers\Win32Helper.cs" />
-    <Compile Include="Docking\InertButtonBase.cs">
+    <Compile Update="Docking\InertButtonBase.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Docking\Interfaces.cs" />
-    <Compile Include="Docking\Localization.cs" />
-    <Compile Include="Docking\Measures.cs" />
-    <Compile Include="Docking\NestedDockingStatus.cs" />
-    <Compile Include="Docking\NestedPaneCollection.cs" />
-    <Compile Include="Docking\Resources.Designer.cs" />
-    <Compile Include="Docking\Skins\DockPanelSkinBuilder.cs" />
-    <Compile Include="Docking\Skins\Style.cs" />
-    <Compile Include="Docking\SplitterBase.cs">
+    <Compile Update="Docking\SplitterBase.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Docking\Strings.Designer.cs" />
-    <Compile Include="Docking\VisibleNestedPaneCollection.cs" />
-    <Compile Include="Docking\VS2005AutoHideStrip.cs">
+    <Compile Update="Docking\VS2005AutoHideStrip.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Docking\VS2005DockPaneCaption.cs">
+    <Compile Update="Docking\VS2005DockPaneCaption.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Docking\VS2005DockPaneStrip.cs">
+    <Compile Update="Docking\VS2005DockPaneStrip.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Docking\Win32\Enums.cs" />
-    <Compile Include="Docking\Win32\NativeMethods.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Docking\Resources\Thumbs.db" />
-    <None Include="HeuristicLab.snk" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
@@ -229,43 +112,10 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
-    <Content Include="Docking\DockPanel.bmp" />
-    <Content Include="Docking\Resources\DockIndicator_PaneDiamond.bmp" />
-    <Content Include="Docking\Resources\DockIndicator_PaneDiamond_Bottom.bmp" />
-    <Content Include="Docking\Resources\Dockindicator_PaneDiamond_Fill.bmp" />
-    <Content Include="Docking\Resources\DockIndicator_PaneDiamond_Hotspot.bmp" />
-    <Content Include="Docking\Resources\DockIndicator_PaneDiamond_HotspotIndex.bmp" />
-    <Content Include="Docking\Resources\DockIndicator_PaneDiamond_Left.bmp" />
-    <Content Include="Docking\Resources\DockIndicator_PaneDiamond_Right.bmp" />
-    <Content Include="Docking\Resources\DockIndicator_PaneDiamond_Top.bmp" />
-    <Content Include="Docking\Resources\DockIndicator_PanelBottom.bmp" />
-    <Content Include="Docking\Resources\DockIndicator_PanelBottom_Active.bmp" />
-    <Content Include="Docking\Resources\DockIndicator_PanelFill.bmp" />
-    <Content Include="Docking\Resources\DockIndicator_PanelFill_Active.bmp" />
-    <Content Include="Docking\Resources\DockIndicator_PanelLeft.bmp" />
-    <Content Include="Docking\Resources\DockIndicator_PanelLeft_Active.bmp" />
-    <Content Include="Docking\Resources\DockIndicator_PanelRight.bmp" />
-    <Content Include="Docking\Resources\DockIndicator_PanelRight_Active.bmp" />
-    <Content Include="Docking\Resources\DockIndicator_PanelTop.bmp" />
-    <Content Include="Docking\Resources\DockIndicator_PanelTop_Active.bmp" />
-    <Content Include="Docking\Resources\DockPane_AutoHide.bmp" />
-    <Content Include="Docking\Resources\DockPane_Close.bmp" />
-    <Content Include="Docking\Resources\DockPane_Dock.bmp" />
-    <Content Include="Docking\Resources\DockPane_Option.bmp" />
-    <Content Include="Docking\Resources\DockPane_OptionOverflow.bmp" />
+    <PackageReference Include="Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers" Version="0.4.421302">
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Windows.Compatibility" Version="7.0.1" />
   </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Docking\Resources.resx" />
-    <EmbeddedResource Include="Docking\Strings.resx" />
-  </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>
