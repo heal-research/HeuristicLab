@@ -4,15 +4,6 @@
     <OutputType>Library</OutputType>
     <RootNamespace>ICSharpCode.NRefactory.Cecil</RootNamespace>
     <AssemblyName>ICSharpCode.NRefactory.Cecil</AssemblyName>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <OutputPath>$(SolutionDir)\bin\</OutputPath>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <PropertyGroup>
-    <SignAssembly>true</SignAssembly>
-  </PropertyGroup>
-  <PropertyGroup>
-    <AssemblyOriginatorKeyFile>HeuristicLab.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
     <Content Include="ICSharpCode.NRefactory License-5.5.0.txt" />

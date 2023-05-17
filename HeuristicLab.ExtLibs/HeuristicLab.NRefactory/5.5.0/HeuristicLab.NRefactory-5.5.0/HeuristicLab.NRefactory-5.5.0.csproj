@@ -3,20 +3,7 @@
     <TargetFramework>net7.0-windows</TargetFramework>
     <OutputType>Library</OutputType>
     <RootNamespace>HeuristicLab.NRefactory</RootNamespace>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <OutputPath>$(SolutionDir)\bin\</OutputPath>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
-  <PropertyGroup>
-    <SignAssembly>true</SignAssembly>
-  </PropertyGroup>
-  <PropertyGroup>
-    <AssemblyOriginatorKeyFile>HeuristicLab.snk</AssemblyOriginatorKeyFile>
-  </PropertyGroup>
-  <ItemGroup>
-    <Compile Include="Plugin.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
   <ItemGroup>
     <Content Include="ICSharpCode.NRefactory License-5.5.0.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -29,22 +16,6 @@
     <ProjectReference Include="..\NRefactory.CSharp-5.5.0\ICSharpCode.NRefactory.CSharp-5.5.0.csproj" />
     <ProjectReference Include="..\NRefactory.Xml-5.5.0\ICSharpCode.NRefactory.Xml-5.5.0.csproj" />
   </ItemGroup>
-  <PropertyGroup>
-    <PreBuildEvent Condition=" '$(OS)' == 'Windows_NT' ">
-      set Path=%25Path%25;$(ProjectDir);$(SolutionDir)
-      set ProjectDir=$(ProjectDir)
-      set SolutionDir=$(SolutionDir)
-      set Outdir=$(Outdir)
-
-      call PreBuildEvent.cmd
-    </PreBuildEvent>
-    <PreBuildEvent Condition=" '$(OS)' != 'Windows_NT' ">
-      export ProjectDir=$(ProjectDir)
-      export SolutionDir=$(SolutionDir)
-
-      $SolutionDir/PreBuildEvent.sh
-    </PreBuildEvent>
-  </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers" Version="0.4.421302">
       <PrivateAssets>all</PrivateAssets>

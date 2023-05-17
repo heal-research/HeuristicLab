@@ -1,9 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0</TargetFrameworks>
-    <SignAssembly>True</SignAssembly>
     <AssemblyOriginatorKeyFile>SimSharp.snk</AssemblyOriginatorKeyFile>
-    <DelaySign>False</DelaySign>
     <AssemblyName>SimSharp-3.3.2</AssemblyName>
     <RootNamespace>SimSharp</RootNamespace>
     <Version>3.3.2</Version>
@@ -26,19 +24,11 @@ Sim# allows modeling processes easily and with little boiler plate code. A proce
     2) When the simulation is stopped, the already elapsed time was wrongly scaled.
     </PackageReleaseNotes>
     <NeutralLanguage />
-    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <IncludeSource>True</IncludeSource>
     <IncludeSymbols>True</IncludeSymbols>
     <NoWarn>$(NoWarn);1591;1734</NoWarn>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)'=='Release'">
-    <DefineConstants>
-    </DefineConstants>
   </PropertyGroup>
   <PropertyGroup>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\SimSharp.xml</DocumentationFile>

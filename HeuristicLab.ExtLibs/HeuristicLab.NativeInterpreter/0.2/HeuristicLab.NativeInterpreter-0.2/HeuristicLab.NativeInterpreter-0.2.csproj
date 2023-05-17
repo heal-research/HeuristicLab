@@ -4,14 +4,6 @@
     <OutputType>Library</OutputType>
     <RootNamespace>HeuristicLab.Problems.DataAnalysis.Symbolic.NativeInterpreter</RootNamespace>
     <AssemblyName>HeuristicLab.Problems.DataAnalysis.Symbolic.NativeInterpreter-0.2</AssemblyName>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <OutputPath>..\..\..\..\bin\</OutputPath>
-  </PropertyGroup>
-  <PropertyGroup>
-    <SignAssembly>true</SignAssembly>
-  </PropertyGroup>
-  <PropertyGroup>
-    <AssemblyOriginatorKeyFile>HeuristicLab.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\HeuristicLab.PluginInfrastructure\3.3\HeuristicLab.PluginInfrastructure-3.3.csproj" />

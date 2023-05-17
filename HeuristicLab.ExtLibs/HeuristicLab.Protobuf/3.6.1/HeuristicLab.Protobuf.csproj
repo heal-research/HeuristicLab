@@ -2,13 +2,7 @@
   <PropertyGroup>
     <TargetFramework>net7.0-windows</TargetFramework>
     <OutputType>Library</OutputType>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <OutputPath>$(SolutionDir)\bin\</OutputPath>
   </PropertyGroup>
-  <ItemGroup>
-    <Compile Include="Plugin.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
   <ItemGroup>
     <Content Include="Google.Protobuf.License.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -27,19 +21,4 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\HeuristicLab.PluginInfrastructure\3.3\HeuristicLab.PluginInfrastructure-3.3.csproj" />
   </ItemGroup>
-  <PropertyGroup>
-    <PreBuildEvent Condition=" '$(OS)' == 'Windows_NT' ">set Path=%25Path%25;$(ProjectDir);$(SolutionDir)
-set ProjectDir=$(ProjectDir)
-set SolutionDir=$(SolutionDir)
-set Outdir=$(Outdir)
-
-call PreBuildEvent.cmd
-</PreBuildEvent>
-    <PreBuildEvent Condition=" '$(OS)' != 'Windows_NT' ">
-export ProjectDir=$(ProjectDir)
-export SolutionDir=$(SolutionDir)
-
-$SolutionDir/PreBuildEvent.sh
-</PreBuildEvent>
-  </PropertyGroup>
 </Project>

@@ -4,16 +4,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>ICSharpCode.NRefactory.Xml</RootNamespace>
     <AssemblyName>ICSharpCode.NRefactory.Xml</AssemblyName>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <OutputPath>$(SolutionDir)\bin\</OutputPath>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-  </PropertyGroup>
-  <PropertyGroup>
-    <SignAssembly>true</SignAssembly>
-  </PropertyGroup>
-  <PropertyGroup>
-    <AssemblyOriginatorKeyFile>HeuristicLab.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\NRefactory-5.5.0\ICSharpCode.NRefactory-5.5.0.csproj" />

@@ -1,56 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <OutputPath>$(SolutionDir)\bin\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;DOTNET4;NREFACTORY</DefineConstants>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <OutputPath>$(SolutionDir)\bin\</OutputPath>
-    <DefineConstants>TRACE;DOTNET4;NREFACTORY</DefineConstants>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
-    <OutputPath>$(SolutionDir)\bin\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;DOTNET4;NREFACTORY</DefineConstants>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
-    <OutputPath>$(SolutionDir)\bin\</OutputPath>
-    <DefineConstants>TRACE;DOTNET4;NREFACTORY</DefineConstants>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
-    <OutputPath>$(SolutionDir)\bin\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;DOTNET4;NREFACTORY</DefineConstants>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
-    <OutputPath>$(SolutionDir)\bin\</OutputPath>
-    <DefineConstants>TRACE;DOTNET4;NREFACTORY</DefineConstants>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
   <PropertyGroup>
     <TargetFramework>net7.0-windows</TargetFramework>
-    <SignAssembly>true</SignAssembly>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <OutputType>Library</OutputType>
+    <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
     <UseWindowsForms>true</UseWindowsForms>
     <UseWPF>true</UseWPF>
-    <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
-  </PropertyGroup>
-  <PropertyGroup>
-    <AssemblyOriginatorKeyFile>HeuristicLab.snk</AssemblyOriginatorKeyFile>
-  </PropertyGroup>
-  <PropertyGroup>
-    <RootNamespace>ICSharpCode.AvalonEdit</RootNamespace>
-  </PropertyGroup>
-  <PropertyGroup>
-    <OutputType>Library</OutputType>
-  </PropertyGroup>
-  <PropertyGroup>
-    <StartupObject />
-  </PropertyGroup>
-  <PropertyGroup>
     <AssemblyName>ICSharpCode.AvalonEdit</AssemblyName>
+    <RootNamespace>ICSharpCode.AvalonEdit</RootNamespace>
+    <DefineConstants>TRACE;DOTNET4;NREFACTORY</DefineConstants>
+    <StartupObject />
   </PropertyGroup>
   <ItemGroup>
     <Compile Update="Document\DocumentChangeOperation.cs">
