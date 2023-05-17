@@ -11,29 +11,6 @@
     <Reference Include="System.IO.Compression" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Update="Advanced\AvailablePluginsView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Advanced\BasicUpdateView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Advanced\EditProductsView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Advanced\InstalledPluginsView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Advanced\UploadPluginsView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Advanced\InstallationManagerControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Advanced\MultiSelectListView.cs">
-      <SubType>Component</SubType>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="Advanced\DeploymentService\services.heuristiclab.com.cer" />
     <Content Include="Resources\HeuristicLab.ico" />
     <Content Include="Resources\UpdateAvailable.ico" />

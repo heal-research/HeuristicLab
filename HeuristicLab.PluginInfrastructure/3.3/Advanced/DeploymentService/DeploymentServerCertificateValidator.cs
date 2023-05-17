@@ -21,7 +21,11 @@
 
 using System;
 using System.IdentityModel.Selectors;
+#if NETFRAMEWORK
 using System.IdentityModel.Tokens;
+#else
+using Microsoft.IdentityModel.Tokens;
+#endif
 using System.Security.Cryptography.X509Certificates;
 
 namespace HeuristicLab.PluginInfrastructure.Advanced.DeploymentService {

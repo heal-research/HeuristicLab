@@ -13,11 +13,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Update="NetronVisualization.cs">
-      <SubType>Component</SubType>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\..\..\..\HeuristicLab.PluginInfrastructure\3.3\HeuristicLab.PluginInfrastructure-3.3.csproj" />
     <ProjectReference Include="..\Netron.Diagramming.Core-3.0.2672.12446\Netron.Diagramming.Core-3.0.2672.12446.csproj" />
   </ItemGroup>

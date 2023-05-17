@@ -37,9 +37,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Update="UI\DiagramControlBase.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <EmbeddedResource Include="Resources\down.ico" />
     <EmbeddedResource Include="Resources\idea.gif" />
     <EmbeddedResource Include="Resources\minus.ico" />
@@ -108,8 +105,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Update="Docs\Model.cd">
-      <SubType>
-      </SubType>
     </None>
   </ItemGroup>
   <ItemGroup>
