@@ -3,28 +3,8 @@
     <TargetFramework>net7.0-windows</TargetFramework>
     <OutputType>Library</OutputType>
     <RootNamespace>HeuristicLab.Problems.DataAnalysis.Views</RootNamespace>
-    <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>HeuristicLab.snk</AssemblyOriginatorKeyFile>
-    <PublishUrl>publish\</PublishUrl>
-    <Install>true</Install>
-    <InstallFrom>Disk</InstallFrom>
-    <UpdateEnabled>false</UpdateEnabled>
-    <UpdateMode>Foreground</UpdateMode>
-    <UpdateInterval>7</UpdateInterval>
-    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
-    <UpdatePeriodically>false</UpdatePeriodically>
-    <UpdateRequired>false</UpdateRequired>
-    <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
-    <UseApplicationTrust>false</UseApplicationTrust>
-    <BootstrapperEnabled>true</BootstrapperEnabled>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <UseWindowsForms>true</UseWindowsForms>
     <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
-    <OutputPath>$(SolutionDir)\bin\</OutputPath>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="ALGLIB-3.17.0, Version=3.17.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
@@ -42,187 +22,6 @@
     <Reference Update="System.Xml.Linq">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Update="Classification\ClassificationSolutionVariableImpactsView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Controls\DensityChart.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Controls\DensityTrackbar.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Controls\FactorPartialDependencePlot.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Controls\PartialDependencePlot.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Classification\ClassificationEnsembleSolutionEstimatedClassValuesView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Classification\ClassificationEnsembleSolutionModelView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Classification\ClassificationFeatureCorrelationView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Classification\ClassificationSolutionComparisonView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Classification\ClassificationTimeframeFeatureCorrelationView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Classification\DiscriminantFunctionClassificationModelView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Clustering\ClusteringSolutionVisualizationView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="FeatureCorrelation\AbstractFeatureCorrelationView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="DataAnalysisSolutionEvaluationView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="FeatureCorrelation\FeatureCorrelationView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="ModifiableDatasetView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Plugin.cs" />
-    <Compile Update="ProblemDataView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Regression\ConfidenceRegressionSolutionEstimatedValuesView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Regression\ConfidenceRegressionSolutionLineChartView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Regression\IntervalCollectionView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Regression\RegressionEnsembleSolutionModelWeightsView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Regression\RegressionFeatureCorrelationView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Regression\RegressionSolutionLineChartViewBase.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Regression\RegressionSolutionPartialDependencePlotView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Regression\RegressionSolutionResidualsLineChartView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Regression\RegressionSolutionResidualAnalysisView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Regression\RegressionSolutionVariableImpactsView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Regression\RegressionSolutionGradientView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Regression\RegressionTimeframeFeatureCorrelationView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Regression\RegressionEnsembleSolutionModelView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Regression\RegressionSolutionErrorCharacteristicsCurveView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Regression\RegressionSolutionEstimatedValuesView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Regression\RegressionSolutionLineChartView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Regression\RegressionSolutionResidualHistogram.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Regression\RegressionSolutionScatterPlotView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Regression\RunCollectionPartialDependencePlotView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Regression\ShapeConstraintsView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Regression\ShapeConstraintView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Solution Views\ClassificationSolutionView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Classification\ClassificationSolutionConfusionMatrixView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Classification\ClassificationSolutionEstimatedClassValuesView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Classification\DiscriminantFunctionClassificationSolutionEstimatedClassValuesView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Classification\DiscriminantFunctionClassificationRocCurvesView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Classification\DiscriminantFunctionClassificationSolutionThresholdView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Clustering\ClusteringSolutionEstimatedClusterView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Solution Views\ClusteringSolutionView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Solution Views\ClassificationEnsembleSolutionView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Solution Views\DiscriminantFunctionClassificationSolutionView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Solution Views\DataAnalysisSolutionView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Controls\DoubleLimitView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Solution Views\NamedDataAnalysisSolutionView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Solution Views\RegressionEnsembleSolutionView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Solution Views\RegressionSolutionView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="FeatureCorrelation\TimeframeFeatureCorrelationView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Solution Views\TimeSeriesPrognosisSolutionView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="TimeSeriesPrognosis\TimeSeriesPrognosisResidualsLineChartView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="TimeSeriesPrognosis\TimeSeriesPrognosisLineChartView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="TimeSeriesPrognosis\TimeSeriesPrognosisResultsView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="TimeSeriesPrognosis\TimeSeriesPrognosisSolutionErrorCharacteristicsCurveView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\HeuristicLab.Algorithms.DataAnalysis\3.4\HeuristicLab.Algorithms.DataAnalysis-3.4.csproj" />
@@ -246,23 +45,6 @@
     <ProjectReference Include="..\..\HeuristicLab.Visualization.ChartControlsExtensions\3.3\HeuristicLab.Visualization.ChartControlsExtensions-3.3.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
-      <Install>false</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5 SP1</ProductName>
-      <Install>true</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
-      <Visible>False</Visible>
-      <ProductName>Windows Installer 3.1</ProductName>
-      <Install>true</Install>
-    </BootstrapperPackage>
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="Resources\shapeConstraintsHelp.rtf" />
   </ItemGroup>
   <ItemGroup>
@@ -272,19 +54,4 @@
     </PackageReference>
     <PackageReference Include="System.Windows.Forms.DataVisualization" Version="1.0.0-prerelease.20110.1" />
   </ItemGroup>
-  <PropertyGroup>
-    <PreBuildEvent Condition=" '$(OS)' == 'Windows_NT' ">set Path=%25Path%25;$(ProjectDir);$(SolutionDir)
-set ProjectDir=$(ProjectDir)
-set SolutionDir=$(SolutionDir)
-set Outdir=$(Outdir)
-
-call PreBuildEvent.cmd
-</PreBuildEvent>
-    <PreBuildEvent Condition=" '$(OS)' != 'Windows_NT' ">
-export ProjectDir=$(ProjectDir)
-export SolutionDir=$(SolutionDir)
-
-$SolutionDir/PreBuildEvent.sh
-</PreBuildEvent>
-  </PropertyGroup>
 </Project>

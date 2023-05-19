@@ -4,21 +4,29 @@
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>$(SolutionDir)\HeuristicLab.snk</AssemblyOriginatorKeyFile>
     <OutDir>$(SolutionDir)\bin\</OutDir>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <DebugType>embedded</DebugType>
   </PropertyGroup>
-  <PropertyGroup>
-    <PreBuildEvent Condition=" '$(OS)' == 'Windows_NT' ">
-set Path=%25Path%25;$(ProjectDir);$(SolutionDir)
-set ProjectDir=$(ProjectDir)
-set SolutionDir=$(SolutionDir)
-set Outdir=$(Outdir)
+<!--  <PropertyGroup>-->
+<!--    <PreBuildEvent Condition=" '$(OS)' == 'Windows_NT' ">-->
+<!--set Path=%25Path%25;$(ProjectDir);$(SolutionDir)-->
+<!--set ProjectDir=$(ProjectDir)-->
+<!--set SolutionDir=$(SolutionDir)-->
+<!--set Outdir=$(Outdir)-->
 
-call PreBuildEvent.cmd
-    </PreBuildEvent>
-    <PreBuildEvent Condition=" '$(OS)' != 'Windows_NT' ">
-export ProjectDir=$(ProjectDir)
-export SolutionDir=$(SolutionDir)
+<!--call PreBuildEvent.cmd-->
+<!--    </PreBuildEvent>-->
+<!--    <PreBuildEvent Condition=" '$(OS)' != 'Windows_NT' ">-->
+<!--export ProjectDir=$(ProjectDir)-->
+<!--export SolutionDir=$(SolutionDir)-->
 
-$SolutionDir/PreBuildEvent.sh
-    </PreBuildEvent>
-  </PropertyGroup>
+<!--$SolutionDir/PreBuildEvent.sh-->
+<!--    </PreBuildEvent>-->
+<!--  </PropertyGroup>-->
+  <Target Name="PreBuild_Windows_NT" BeforeTargets="PreBuildEvent" Condition="'$(OS)' == 'Windows_NT'">
+    <Exec Command="set Path=%25Path%25;$(ProjectDir);$(SolutionDir)&#xA;set ProjectDir=$(ProjectDir)&#xA;set SolutionDir=$(SolutionDir)&#xA;set Outdir=$(Outdir)&#xA;&#xA;call PreBuildEvent.cmd" />
+  </Target>
+  <Target Name="PreBuild_Not_Windows_NT" AfterTargets="PreBuildEvent" Condition=" '$(OS)' != 'Windows_NT'">
+    <Exec Command="export ProjectDir=$(ProjectDir)&#xA;export SolutionDir=$(SolutionDir)&#xA;&#xA;$SolutionDir/PreBuildEvent.sh" />
+  </Target>
 </Project>

@@ -9,37 +9,26 @@
     <OutDir>bin\$(Platform)\$(Configuration)</OutDir>
   </PropertyGroup>
   <ItemGroup>
-    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
-      <Install>false</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5 SP1</ProductName>
-      <Install>true</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
-      <Visible>False</Visible>
-      <ProductName>Windows Installer 3.1</ProductName>
-      <Install>true</Install>
-    </BootstrapperPackage>
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\ProtocolBuffers\ProtocolBuffers-2.4.1.473.csproj" />
   </ItemGroup>
-  <PropertyGroup>
-    <PostBuildEvent Condition=" '$(OS)' == 'Windows_NT' ">
-copy "$(TargetPath)" "$(SolutionDir)"
-copy "$(TargetDir)Google.ProtocolBuffers-2.4.1.473.dll" "$(SolutionDir)"
-copy "$(ProjectDir)..\..\lib\protoc.exe" "$(SolutionDir)"
-	</PostBuildEvent>
-    <PostBuildEvent Condition=" '$(OS)' != 'Windows_NT' ">
-cp "$(TargetPath)*" "$(SolutionDir)"
-cp "$(TargetDir)Google.ProtocolBuffers-2.4.1.473.dll" "$(SolutionDir)"
-cp "$(ProjectDir)../../lib/protoc.exe" "$(SolutionDir)"
-	</PostBuildEvent>
-  </PropertyGroup>
+<!--  <PropertyGroup>-->
+<!--    <PostBuildEvent Condition=" '$(OS)' == 'Windows_NT' ">-->
+<!--copy "$(TargetPath)" "$(SolutionDir)"-->
+<!--copy "$(TargetDir)Google.ProtocolBuffers-2.4.1.473.dll" "$(SolutionDir)"-->
+<!--copy "$(ProjectDir)..\..\lib\protoc.exe" "$(SolutionDir)"-->
+<!--	</PostBuildEvent>-->
+<!--    <PostBuildEvent Condition=" '$(OS)' != 'Windows_NT' ">-->
+<!--cp "$(TargetPath)*" "$(SolutionDir)"-->
+<!--cp "$(TargetDir)Google.ProtocolBuffers-2.4.1.473.dll" "$(SolutionDir)"-->
+<!--cp "$(ProjectDir)../../lib/protoc.exe" "$(SolutionDir)"-->
+<!--	</PostBuildEvent>-->
+<!--  </PropertyGroup>-->
+  <Target Name="PostBuild_Windows_NT" BeforeTargets="PostBuildEvent" Condition="'$(OS)' == 'Windows_NT'">
+    <Exec Command="copy &quot;$(TargetPath)&quot; &quot;$(SolutionDir)&quot;&#xA;copy &quot;$(TargetDir)Google.ProtocolBuffers-2.4.1.473.dll&quot; &quot;$(SolutionDir)&quot;&#xA;copy &quot;$(ProjectDir)..\..\lib\protoc.exe&quot; &quot;$(SolutionDir)&quot;" />
+  </Target>
+  <Target Name="PostBuild_Not_Windows_NT" AfterTargets="PostBuildEvent" Condition="'$(OS)' != 'Windows_NT'">
+    <Exec Command="cp &quot;$(TargetPath)*&quot; &quot;$(SolutionDir)&quot;&#xA;cp &quot;$(TargetDir)Google.ProtocolBuffers-2.4.1.473.dll&quot; &quot;$(SolutionDir)&quot;&#xA;cp &quot;$(ProjectDir)../../lib/protoc.exe&quot; &quot;$(SolutionDir)&quot;" />
+  </Target>
   <ItemGroup>
     <PackageReference Include="Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers" Version="0.4.421302">
       <PrivateAssets>all</PrivateAssets>
