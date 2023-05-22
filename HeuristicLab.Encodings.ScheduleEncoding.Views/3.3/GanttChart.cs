@@ -40,7 +40,7 @@ namespace HeuristicLab.Encodings.ScheduleEncoding.Views {
 
     public void AddJobColor(int jobNr) {
       if (!jobColors.ContainsKey(jobNr)) {
-        Random r = new Random(jobNr + 1);
+        System.Random r = new System.Random(jobNr + 1);
         jobColors[jobNr] = Color.FromArgb(r.Next(256), r.Next(256), r.Next(256));
         chart.Legends[0].CustomItems.Clear();
         if (jobColors.Count > 1) {
