@@ -104,9 +104,10 @@ namespace HeuristicLab.PluginInfrastructure {
       foreach (var desc in PluginDescriptionIterator.IterateDependenciesBottomUp(plugins.Where(x => x.PluginState != PluginState.Disabled))) {
         foreach (string fileName in desc.AssemblyLocations) {
           // load assembly reflection only first to get the full assembly name
-          var reflectionOnlyAssembly = Assembly.ReflectionOnlyLoadFrom(fileName);
+          //var reflectionOnlyAssembly = Assembly.ReflectionOnlyLoadFrom(fileName);
           // load the assembly into execution context using full assembly name
-          var asm = Assembly.Load(reflectionOnlyAssembly.FullName);
+          //var asm = Assembly.Load(reflectionOnlyAssembly.FullName);
+          var asm = Assembly.LoadFrom(fileName);
           RegisterLoadedAssembly(asm);
           // instantiate and load all plugins in this assembly
           foreach (var plugin in GetInstances<IPlugin>(asm)) {

@@ -180,7 +180,7 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
       // try to load each .dll file in the plugin directory into the reflection only context
       foreach (string filename in Directory.GetFiles(baseDir, "*.dll").Union(Directory.GetFiles(baseDir, "*.exe"))) {
         try {
-          Assembly asm = Assembly.ReflectionOnlyLoadFrom(filename);
+          Assembly asm = Assembly.LoadFrom(filename);
           RegisterLoadedAssembly(asm);
           assemblies.Add(asm);
         }
@@ -510,14 +510,14 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
         foreach (string assemblyLocation in desc.AssemblyLocations) {
           if (desc.PluginState != PluginState.Disabled) {
             try {
-              string assemblyName = (from assembly in AppDomain.CurrentDomain.ReflectionOnlyGetAssemblies()
+              string assemblyName = (from assembly in AppDomain.CurrentDomain.GetAssemblies()
                                      where string.Equals(Path.GetFullPath(assembly.Location), Path.GetFullPath(assemblyLocation), StringComparison.CurrentCultureIgnoreCase)
                                      select assembly.FullName).Single();
               // now load the assemblies into the execution context  
               // this can still lead to an exception
               // even when the assemby was successfully loaded into the reflection only context before 
               // when loading the assembly using it's assemblyName it can be loaded from a different location than before (e.g. the GAC)
-              Assembly.Load(assemblyName);
+              //Assembly.Load(assemblyName);
               assemblyNames.Add(assemblyName);
             }
             catch (BadImageFormatException) {
@@ -612,7 +612,8 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
     // register assembly in the assembly cache for the ReflectionOnlyAssemblyResolveEvent
     private void RegisterLoadedAssembly(Assembly asm) {
       if (reflectionOnlyAssemblies.ContainsKey(asm.FullName) || reflectionOnlyAssemblies.ContainsKey(asm.GetName().Name)) {
-        throw new ArgumentException("An assembly with the name " + asm.GetName().Name + " has been registered already.", "asm");
+        return;
+        //throw new ArgumentException("An assembly with the name " + asm.GetName().Name + " has been registered already.", "asm");
       }
       reflectionOnlyAssemblies.Add(asm.FullName, asm);
       reflectionOnlyAssemblies.Add(asm.GetName().Name, asm); // add short name

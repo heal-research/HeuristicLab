@@ -400,5 +400,7 @@ FodyWeavers.xsd
 *.msp
 
 # JetBrains Rider
+.idea
 *.sln.iml
+
 Google.ProtocolBuffers-2.4.1.473.dll

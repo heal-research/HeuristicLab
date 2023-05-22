@@ -9,6 +9,7 @@ namespace Netron.Diagramming.Core {
   public class GenericFormatter<F> : IGenericFormatter where F : IFormatter, new() {
     IFormatter m_Formatter = new F();
 
+#pragma warning disable SYSLIB0011
     /// <summary>
     /// Deserializes the specified serialization stream.
     /// </summary>
@@ -25,6 +26,7 @@ namespace Netron.Diagramming.Core {
     public void Serialize<T>(Stream serializationStream, T graph) {
       m_Formatter.Serialize(serializationStream, graph);
     }
+#pragma warning restore SYSLIB0011
   }
 
 }
