@@ -5,9 +5,6 @@
     <RootNamespace>HeuristicLab.Persistence</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Update="System.Core">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
     <Reference Include="System.IO.Compression" />
   </ItemGroup>
   <ItemGroup>
@@ -29,18 +26,12 @@
     <Folder Include="Transformers\" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="HEAL.Attic, Version=1.0.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\bin\HEAL.Attic.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Remove="Transformers\BitmapTransformer.cs" />
     <Compile Remove="Transformers\FontTransformer.cs" />
     <Compile Remove="Transformers\KnownStorableTypesMap.cs" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="HEAL.Attic" Version="1.8.0" />
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="7.0.0" />
     <PackageReference Include="Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers" Version="0.4.421302">
       <PrivateAssets>all</PrivateAssets>

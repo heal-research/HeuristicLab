@@ -11,18 +11,6 @@
   <ItemGroup>
     <ProjectReference Include="..\ProtocolBuffers\ProtocolBuffers-2.4.1.473.csproj" />
   </ItemGroup>
-<!--  <PropertyGroup>-->
-<!--    <PostBuildEvent Condition=" '$(OS)' == 'Windows_NT' ">-->
-<!--copy "$(TargetPath)" "$(SolutionDir)"-->
-<!--copy "$(TargetDir)Google.ProtocolBuffers-2.4.1.473.dll" "$(SolutionDir)"-->
-<!--copy "$(ProjectDir)..\..\lib\protoc.exe" "$(SolutionDir)"-->
-<!--	</PostBuildEvent>-->
-<!--    <PostBuildEvent Condition=" '$(OS)' != 'Windows_NT' ">-->
-<!--cp "$(TargetPath)*" "$(SolutionDir)"-->
-<!--cp "$(TargetDir)Google.ProtocolBuffers-2.4.1.473.dll" "$(SolutionDir)"-->
-<!--cp "$(ProjectDir)../../lib/protoc.exe" "$(SolutionDir)"-->
-<!--	</PostBuildEvent>-->
-<!--  </PropertyGroup>-->
   <Target Name="PostBuild_Windows_NT" BeforeTargets="PostBuildEvent" Condition="'$(OS)' == 'Windows_NT'">
     <Exec Command="copy &quot;$(TargetPath)&quot; &quot;$(SolutionDir)&quot;&#xA;copy &quot;$(TargetDir)Google.ProtocolBuffers-2.4.1.473.dll&quot; &quot;$(SolutionDir)&quot;&#xA;copy &quot;$(ProjectDir)..\..\lib\protoc.exe&quot; &quot;$(SolutionDir)&quot;" />
   </Target>

@@ -7,18 +7,11 @@
     <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ALGLIB-3.17.0, Version=3.17.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="ALGLIB-3.17.0">
       <HintPath>..\..\bin\ALGLIB-3.17.0.dll</HintPath>
-      <Private>False</Private>
     </Reference>
-    <Reference Include="EPPlus-4.0.3, Version=4.0.3.0, Culture=neutral, PublicKeyToken=ea159fdaa78159a1, processorArchitecture=MSIL">
-      <Private>False</Private>
+    <Reference Include="EPPlus-4.0.3">
       <HintPath>..\..\bin\EPPlus-4.0.3.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Update="System.Core">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
   </ItemGroup>
   <ItemGroup>

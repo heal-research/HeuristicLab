@@ -5,29 +5,14 @@
     <RootNamespace>HeuristicLab.Problems.DataAnalysis.Symbolic</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ALGLIB-3.17.0, Version=3.17.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="ALGLIB-3.17.0">
       <HintPath>..\..\bin\ALGLIB-3.17.0.dll</HintPath>
-      <Private>False</Private>
     </Reference>
-    <Reference Include="AutoDiff-1.0, Version=1.0.0.14388, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+    <Reference Include="AutoDiff-1.0">
       <HintPath>..\..\bin\AutoDiff-1.0.dll</HintPath>
-      <Private>False</Private>
     </Reference>
-    <Reference Include="HEAL.Attic, Version=1.4.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\bin\HEAL.Attic.dll</HintPath>
-    </Reference>
-    <Reference Include="HeuristicLab.Problems.DataAnalysis.Symbolic.NativeInterpreter-0.2, Version=0.2.0.1, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="HeuristicLab.Problems.DataAnalysis.Symbolic.NativeInterpreter-0.2">
       <HintPath>..\..\bin\HeuristicLab.Problems.DataAnalysis.Symbolic.NativeInterpreter-0.2.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Update="System.Core">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
-    <Reference Update="System.Xml.Linq">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -50,6 +35,7 @@
     <ProjectReference Include="..\..\HeuristicLab.Selection\3.3\HeuristicLab.Selection-3.3.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="HEAL.Attic" Version="1.8.0" />
     <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
     <PackageReference Include="Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers" Version="0.4.421302">
       <PrivateAssets>all</PrivateAssets>

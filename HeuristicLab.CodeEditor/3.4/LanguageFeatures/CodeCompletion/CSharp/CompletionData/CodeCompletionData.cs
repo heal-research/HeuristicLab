@@ -74,6 +74,10 @@ namespace HeuristicLab.CodeEditor {
       }
     }
 
+    public void Complete(TextArea textArea, ICSharpCode.AvalonEdit.Document.ISegment completionSegment, EventArgs insertionRequestEventArgs) {
+      throw new NotImplementedException();
+    }
+
     public virtual ImageSource Image { get; set; }
     public double Priority { get; set; }
     public string Text { get { return CompletionText; } }

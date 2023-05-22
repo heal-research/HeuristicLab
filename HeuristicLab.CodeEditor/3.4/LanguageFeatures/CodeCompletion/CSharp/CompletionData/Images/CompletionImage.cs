@@ -281,20 +281,20 @@ namespace ICSharpCode.AvalonEdit.CodeCompletion {
     /// Gets an overlay image for the specified accessibility.
     /// Returns null if no overlay exists (for example, public members don't use overlays).
     /// </summary>
-    public static ImageSource GetAccessibilityOverlay(Accessibility accessibility) {
+    public static ImageSource GetAccessibilityOverlay(NRefactory.TypeSystem.Accessibility accessibility) {
       return accessibilityOverlays[GetAccessibilityOverlayIndex(accessibility)];
     }
 
-    static int GetAccessibilityOverlayIndex(Accessibility accessibility) {
+    static int GetAccessibilityOverlayIndex(NRefactory.TypeSystem.Accessibility accessibility) {
       switch (accessibility) {
-        case Accessibility.Private:
+        case NRefactory.TypeSystem.Accessibility.Private:
           return 1;
-        case Accessibility.Protected:
+        case NRefactory.TypeSystem.Accessibility.Protected:
           return 2;
-        case Accessibility.Internal:
+        case NRefactory.TypeSystem.Accessibility.Internal:
           return 3;
-        case Accessibility.ProtectedOrInternal:
-        case Accessibility.ProtectedAndInternal:
+        case NRefactory.TypeSystem.Accessibility.ProtectedOrInternal:
+        case NRefactory.TypeSystem.Accessibility.ProtectedAndInternal:
           return 4;
         default:
           return 0;
@@ -333,7 +333,7 @@ namespace ICSharpCode.AvalonEdit.CodeCompletion {
     /// <summary>
     /// Gets this image combined with the specified accessibility overlay.
     /// </summary>
-    public ImageSource GetImage(Accessibility accessibility, bool isStatic = false) {
+    public ImageSource GetImage(NRefactory.TypeSystem.Accessibility accessibility, bool isStatic = false) {
       int accessibilityIndex = GetAccessibilityOverlayIndex(accessibility);
       int index;
       if (isStatic && showStaticOverlay)
