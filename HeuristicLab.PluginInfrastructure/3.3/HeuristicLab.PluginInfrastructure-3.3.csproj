@@ -4,12 +4,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>HeuristicLab.PluginInfrastructure</RootNamespace>
     <UseWindowsForms>true</UseWindowsForms>
-    <StartupObject />
   </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="System.IdentityModel" />
-    <Reference Include="System.IO.Compression" />
-  </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Advanced\DeploymentService\services.heuristiclab.com.cer" />
     <Content Include="Resources\HeuristicLab.ico" />

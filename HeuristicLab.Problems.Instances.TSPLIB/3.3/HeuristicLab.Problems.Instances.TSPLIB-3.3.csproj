@@ -5,9 +5,6 @@
     <RootNamespace>HeuristicLab.Problems.Instances.TSPLIB</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System.IO.Compression" />
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="Data\atsp.zip" />
     <EmbeddedResource Include="Data\tsp.zip" />
     <EmbeddedResource Include="Data\tsp.opt.tour.zip" />

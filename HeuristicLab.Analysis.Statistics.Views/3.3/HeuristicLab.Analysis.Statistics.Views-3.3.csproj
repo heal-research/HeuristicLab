@@ -7,11 +7,6 @@
     <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ALGLIB-3.17.0">
-      <HintPath>..\..\bin\ALGLIB-3.17.0.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="InfoResources\ChartAnalysisInfo.rtf" />
     <EmbeddedResource Include="InfoResources\SampleSizeInfluenceInfo.rtf" />
     <EmbeddedResource Include="InfoResources\StatisticalTestsInfo.rtf" />

@@ -7,14 +7,6 @@
     <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Calendar.DayView">
-      <HintPath>..\..\bin\Calendar.DayView.dll</HintPath>
-    </Reference>
-    <Reference Include="HeuristicLab.DayView-1.0">
-      <HintPath>..\..\bin\HeuristicLab.DayView-1.0.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\..\HeuristicLab.Clients.Access.Administration\3.3\HeuristicLab.Clients.Access.Administration-3.3.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.Clients.Access.Views\3.3\HeuristicLab.Clients.Access.Views-3.3.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.Clients.Access\3.3\HeuristicLab.Clients.Access-3.3.csproj" />
@@ -28,6 +20,7 @@
     <ProjectReference Include="..\..\HeuristicLab.Core\3.3\HeuristicLab.Core-3.3.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.Data.Views\3.3\HeuristicLab.Data.Views-3.3.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.Data\3.3\HeuristicLab.Data-3.3.csproj" />
+    <ProjectReference Include="..\..\HeuristicLab.ExtLibs\HeuristicLab.DayView\1.0\HeuristicLab.DayView-1.0.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.MainForm.WindowsForms\3.3\HeuristicLab.MainForm.WindowsForms-3.3.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.MainForm\3.3\HeuristicLab.MainForm-3.3.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.Optimization\3.3\HeuristicLab.Optimization-3.3.csproj" />

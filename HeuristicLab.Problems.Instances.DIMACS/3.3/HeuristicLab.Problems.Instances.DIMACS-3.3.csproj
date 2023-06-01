@@ -5,9 +5,6 @@
     <RootNamespace>HeuristicLab.Problems.Instances.DIMACS</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System.IO.Compression" />
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="Data\col.zip" />
   </ItemGroup>
   <ItemGroup>

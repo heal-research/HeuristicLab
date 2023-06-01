@@ -5,19 +5,6 @@
     <RootNamespace>HeuristicLab.Algorithms.DataAnalysis</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ALGLIB-3.17.0">
-      <HintPath>..\..\bin\ALGLIB-3.17.0.dll</HintPath>
-      <Aliases>global</Aliases>
-    </Reference>
-    <Reference Include="ALGLIB-3.7.0">
-      <HintPath>..\..\bin\ALGLIB-3.7.0.dll</HintPath>
-      <Aliases>alglib_3_7</Aliases>
-    </Reference>
-    <Reference Include="LibSVM-3.12">
-      <HintPath>..\..\bin\LibSVM-3.12.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\..\HeuristicLab.Algorithms.GradientDescent\3.3\HeuristicLab.Algorithms.GradientDescent-3.3.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm\3.3\HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm-3.3.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.Analysis\3.3\HeuristicLab.Analysis-3.3.csproj" />
@@ -28,6 +15,9 @@
     <ProjectReference Include="..\..\HeuristicLab.Data\3.3\HeuristicLab.Data-3.3.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.Encodings.RealVectorEncoding\3.3\HeuristicLab.Encodings.RealVectorEncoding-3.3.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.Encodings.SymbolicExpressionTreeEncoding\3.4\HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.4.csproj" />
+    <ProjectReference Include="..\..\HeuristicLab.ExtLibs\HeuristicLab.ALGLIB\3.17.0\ALGLIB-3.17.0\ALGLIB-3.17.0.csproj" />
+    <ProjectReference Include="..\..\HeuristicLab.ExtLibs\HeuristicLab.ALGLIB\3.7.0\ALGLIB-3.7.0\ALGLIB-3.7.0.csproj" Aliases="alglib_3_7" Private="true" ExcludeAssets="all" />
+    <ProjectReference Include="..\..\HeuristicLab.ExtLibs\HeuristicLab.LibSVM\3.12\LibSVM-3.12\LibSVM-3.12.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.Operators\3.3\HeuristicLab.Operators-3.3.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.Optimization\3.3\HeuristicLab.Optimization-3.3.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.Parameters\3.3\HeuristicLab.Parameters-3.3.csproj" />

@@ -5,11 +5,6 @@
     <RootNamespace>HeuristicLab.Problems.ExternalEvaluation.GP</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Google.ProtocolBuffers-2.4.1.473">
-      <HintPath>..\..\bin\Google.ProtocolBuffers-2.4.1.473.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="ExternalEvaluationGrammar.txt" />
   </ItemGroup>
   <ItemGroup>

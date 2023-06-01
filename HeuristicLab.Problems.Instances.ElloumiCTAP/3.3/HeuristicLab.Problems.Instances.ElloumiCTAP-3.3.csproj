@@ -5,9 +5,6 @@
     <RootNamespace>HeuristicLab.Problems.Instances.ElloumiCTAP</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System.IO.Compression" />
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="Data\ElloumiCTAP.dat.zip" />
     <EmbeddedResource Include="Data\ElloumiCTAP.sol.zip" />
   </ItemGroup>

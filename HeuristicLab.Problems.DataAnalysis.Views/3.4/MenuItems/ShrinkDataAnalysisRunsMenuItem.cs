@@ -29,8 +29,6 @@ using HeuristicLab.MainForm.WindowsForms;
 using HeuristicLab.Optimization;
 using HeuristicLab.Optimizer;
 
-using MenuItem = HeuristicLab.MainForm.WindowsForms.MenuItem;
-
 namespace HeuristicLab.Problems.DataAnalysis.Views {
   internal sealed class ShrinkDataAnalysisRunsMenuItem : MenuItem, IOptimizerUserInterfaceItemProvider {
     public override string Name {

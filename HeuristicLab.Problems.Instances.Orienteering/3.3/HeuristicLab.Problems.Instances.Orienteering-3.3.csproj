@@ -5,9 +5,6 @@
     <RootNamespace>HeuristicLab.Problems.Instances.Orienteering</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System.IO.Compression" />
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="Data\Schilde.zip" />
   </ItemGroup>
   <ItemGroup>

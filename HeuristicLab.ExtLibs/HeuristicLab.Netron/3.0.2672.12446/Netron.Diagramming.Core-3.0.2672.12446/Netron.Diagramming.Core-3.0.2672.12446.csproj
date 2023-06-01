@@ -8,9 +8,6 @@
     <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System.Design" />
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="Resources\down.ico" />
     <EmbeddedResource Include="Resources\idea.gif" />
     <EmbeddedResource Include="Resources\minus.ico" />

@@ -7,12 +7,6 @@
     <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="HeuristicLab.Analysis-3.3" />
-    <Reference Include="HeuristicLab.Collections-3.3" />
-    <Reference Include="HeuristicLab.Optimization-3.3" />
-    <Reference Include="HeuristicLab.Visualization.ChartControlsExtensions-3.3" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\..\HeuristicLab.Common.Resources\3.3\HeuristicLab.Common.Resources-3.3.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.Common\3.3\HeuristicLab.Common-3.3.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.Core.Views\3.3\HeuristicLab.Core.Views-3.3.csproj" />

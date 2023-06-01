@@ -7,12 +7,6 @@
     <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ALGLIB-3.17.0">
-      <HintPath>..\..\bin\ALGLIB-3.17.0.dll</HintPath>
-    </Reference>
-    <Reference Include="System.IO.Compression" />
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="Classification\Data\UCI.zip" />
     <EmbeddedResource Include="Regression\Data\RegressionRealWorld.zip" />
     <EmbeddedResource Include="Regression\Data\MibaFriction.zip" />

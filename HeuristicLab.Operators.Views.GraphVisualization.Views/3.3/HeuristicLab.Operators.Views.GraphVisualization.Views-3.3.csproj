@@ -12,6 +12,7 @@
     <ProjectReference Include="..\..\HeuristicLab.Common\3.3\HeuristicLab.Common-3.3.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.Core.Views\3.3\HeuristicLab.Core.Views-3.3.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.Core\3.3\HeuristicLab.Core-3.3.csproj" />
+    <ProjectReference Include="..\..\HeuristicLab.ExtLibs\HeuristicLab.Netron\3.0.2672.12446\HeuristicLab.Netron-3.0.2672.12446\HeuristicLab.Netron-3.0.2672.12446.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.MainForm.WindowsForms\3.3\HeuristicLab.MainForm.WindowsForms-3.3.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.MainForm\3.3\HeuristicLab.MainForm-3.3.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.Operators.Views.GraphVisualization\3.3\HeuristicLab.Operators.Views.GraphVisualization-3.3.csproj" />
@@ -25,13 +26,5 @@
     <PackageReference Include="Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers" Version="0.4.421302">
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Reference Include="HeuristicLab.Netron-3.0.2672.12446">
-      <HintPath>..\..\bin\HeuristicLab.Netron-3.0.2672.12446.dll</HintPath>
-    </Reference>
-    <Reference Include="Netron.Diagramming.Core-3.0.2672.12446">
-      <HintPath>..\..\bin\Netron.Diagramming.Core-3.0.2672.12446.dll</HintPath>
-    </Reference>
   </ItemGroup>
 </Project>

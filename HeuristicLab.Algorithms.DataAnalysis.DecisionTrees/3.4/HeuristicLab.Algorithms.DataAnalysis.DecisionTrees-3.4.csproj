@@ -5,12 +5,6 @@
     <RootNamespace>HeuristicLab.Algorithms.DataAnalysis</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ALGLIB-3.17.0">
-      <HintPath>..\..\bin\ALGLIB-3.17.0.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Data.Linq" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\..\HeuristicLab.Algorithms.DataAnalysis.Glmnet\3.4\HeuristicLab.Algorithms.DataAnalysis.Glmnet-3.4.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.Algorithms.DataAnalysis\3.4\HeuristicLab.Algorithms.DataAnalysis-3.4.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.Analysis\3.3\HeuristicLab.Analysis-3.3.csproj" />

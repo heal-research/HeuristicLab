@@ -8,12 +8,6 @@
     <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Update="System.Core">
-      <HintPath>C:\Program Files\Reference Assemblies\Microsoft\Framework\v3.5\System.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Security" />
-  </ItemGroup>
-  <ItemGroup>
     <Compile Remove="Style\ExcelRichTextHtmlUtility.cs" />
     <Compile Remove="Utils\EncryptedPackageHandler.cs" />
     <Compile Remove="Utils\IValidationResult.cs" />
