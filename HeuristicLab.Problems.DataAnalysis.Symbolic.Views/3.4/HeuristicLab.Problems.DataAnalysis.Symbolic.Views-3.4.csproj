@@ -16,7 +16,7 @@
     <ProjectReference Include="..\..\HeuristicLab.Data\3.3\HeuristicLab.Data-3.3.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views\3.4\HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views-3.4.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.Encodings.SymbolicExpressionTreeEncoding\3.4\HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.4.csproj" />
-    <ProjectReference Include="..\..\HeuristicLab.ExtLibs\HeuristicLab.EPPlus\4.0.3\HeuristicLab.EPPlus-4.0.3\HeuristicLab.EPPlus-4.0.3.csproj" />
+    <ProjectReference Include="..\..\HeuristicLab.ExtLibs\HeuristicLab.EPPlus\4.0.3\EPPlus-4.0.3\EPPlus-4.0.3.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.MainForm.WindowsForms\3.3\HeuristicLab.MainForm.WindowsForms-3.3.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.MainForm\3.3\HeuristicLab.MainForm-3.3.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.Optimization\3.3\HeuristicLab.Optimization-3.3.csproj" />

@@ -23,12 +23,8 @@
     <ProjectReference Include="..\..\HeuristicLab.Problems.QuadraticAssignment\3.3\HeuristicLab.Problems.QuadraticAssignment-3.3.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="System.ServiceModel.Duplex" Version="6.0.0" />
-    <PackageReference Include="System.ServiceModel.NetTcp" Version="6.0.0" />
-    <PackageReference Include="System.ServiceModel.Federation" Version="6.0.0" />
     <PackageReference Include="Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers" Version="0.4.421302">
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="System.Windows.Forms.DataVisualization" Version="1.0.0-prerelease.20110.1" />
   </ItemGroup>
 </Project>

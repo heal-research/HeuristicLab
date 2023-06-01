@@ -11,7 +11,9 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\HeuristicLab.PluginInfrastructure\3.3\HeuristicLab.PluginInfrastructure-3.3.csproj" />
-    <ProjectReference Include="..\Mono.Cecil-0.9.5\Mono.Cecil-0.9.5.csproj" />
+    <ProjectReference Include="..\Mono.Cecil-0.9.5\Mono.Cecil-0.9.5.csproj">
+      <TreatAsUsed>true</TreatAsUsed>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers" Version="0.4.421302">

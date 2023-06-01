@@ -20,16 +20,11 @@
     <ProjectReference Include="..\..\HeuristicLab.Optimization.Views\3.3\HeuristicLab.Optimization.Views-3.3.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.Optimization\3.3\HeuristicLab.Optimization-3.3.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.PluginInfrastructure\3.3\HeuristicLab.PluginInfrastructure-3.3.csproj" />
-    <ProjectReference Include="..\..\HeuristicLab.Problems.Programmable.Views\3.3\HeuristicLab.Problems.Programmable.Views-3.3.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.Problems.Programmable\3.3\HeuristicLab.Problems.Programmable-3.3.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.Scripting.Views\3.3\HeuristicLab.Scripting.Views-3.3.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.Scripting\3.3\HeuristicLab.Scripting-3.3.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
-    <PackageReference Include="System.ServiceModel.Duplex" Version="6.0.0" />
-    <PackageReference Include="System.ServiceModel.NetTcp" Version="6.0.0" />
-    <PackageReference Include="System.ServiceModel.Federation" Version="6.0.0" />
     <PackageReference Include="Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers" Version="0.4.421302">
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>

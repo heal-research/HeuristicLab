@@ -33,7 +33,6 @@
     <Content Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_ActualSize.png" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
     <PackageReference Include="Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers" Version="0.4.421302">
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>

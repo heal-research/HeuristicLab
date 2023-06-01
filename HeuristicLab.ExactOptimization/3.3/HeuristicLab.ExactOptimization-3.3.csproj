@@ -15,19 +15,15 @@
     <ProjectReference Include="..\..\HeuristicLab.Common\3.3\HeuristicLab.Common-3.3.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.Core\3.3\HeuristicLab.Core-3.3.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.Data\3.3\HeuristicLab.Data-3.3.csproj" />
-    <ProjectReference Include="..\..\HeuristicLab.Encodings.BinaryVectorEncoding\3.3\HeuristicLab.Encodings.BinaryVectorEncoding-3.3.csproj" />
-    <ProjectReference Include="..\..\HeuristicLab.Encodings.PermutationEncoding\3.3\HeuristicLab.Encodings.PermutationEncoding-3.3.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.Optimization\3.3\HeuristicLab.Optimization-3.3.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.Parameters\3.3\HeuristicLab.Parameters-3.3.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.PluginInfrastructure\3.3\HeuristicLab.PluginInfrastructure-3.3.csproj" />
-    <ProjectReference Include="..\..\HeuristicLab.Problems.Knapsack\3.3\HeuristicLab.Problems.Knapsack-3.3.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.Problems.Programmable\3.3\HeuristicLab.Problems.Programmable-3.3.csproj" />
-    <ProjectReference Include="..\..\HeuristicLab.Problems.TravelingSalesman\3.3\HeuristicLab.Problems.TravelingSalesman-3.3.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.Scripting\3.3\HeuristicLab.Scripting-3.3.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="HEAL.Attic" Version="1.8.0" />
-    <PackageReference Include="Google.OrTools.dll" Version="9.6.2534" />
+    <PackageReference Include="Google.OrTools" Version="9.6.2534" />
+    <PackageReference Include="Google.OrTools.runtime.win-x64" Version="9.6.2534" />
     <PackageReference Include="Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers" Version="0.4.421302">
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>

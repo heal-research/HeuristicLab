@@ -8,7 +8,6 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\HeuristicLab.Algorithms.DataAnalysis\3.4\HeuristicLab.Algorithms.DataAnalysis-3.4.csproj" />
-    <ProjectReference Include="..\..\HeuristicLab.Analysis.Views\3.3\HeuristicLab.Analysis.Views-3.3.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.Analysis\3.3\HeuristicLab.Analysis-3.3.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.Collections\3.3\HeuristicLab.Collections-3.3.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.Common.Resources\3.3\HeuristicLab.Common.Resources-3.3.csproj" />
@@ -22,7 +21,6 @@
     <ProjectReference Include="..\..\HeuristicLab.Optimization.Views\3.3\HeuristicLab.Optimization.Views-3.3.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.Optimization\3.3\HeuristicLab.Optimization-3.3.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.Optimizer\3.3\HeuristicLab.Optimizer-3.3.csproj" />
-    <ProjectReference Include="..\..\HeuristicLab.Parameters.Views\3.3\HeuristicLab.Parameters.Views-3.3.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.PluginInfrastructure\3.3\HeuristicLab.PluginInfrastructure-3.3.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.Problems.DataAnalysis\3.4\HeuristicLab.Problems.DataAnalysis-3.4.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.Visualization.ChartControlsExtensions\3.3\HeuristicLab.Visualization.ChartControlsExtensions-3.3.csproj" />
@@ -31,11 +29,8 @@
     <EmbeddedResource Include="Resources\shapeConstraintsHelp.rtf" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="HEAL.Attic" Version="1.8.0" />
-    <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
     <PackageReference Include="Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers" Version="0.4.421302">
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="System.Windows.Forms.DataVisualization" Version="1.0.0-prerelease.20110.1" />
   </ItemGroup>
 </Project>

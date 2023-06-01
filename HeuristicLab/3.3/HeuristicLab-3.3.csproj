@@ -77,19 +77,26 @@
     <ProjectReference Include="..\..\HeuristicLab.Encodings.SymbolicExpressionTreeEncoding\3.4\HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.4.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.ExtLibs\HeuristicLab.ALGLIB\3.15.0\ALGLIB-3.15.0\ALGLIB-3.15.0.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.ExtLibs\HeuristicLab.ALGLIB\3.15.0\HeuristicLab.ALGLIB-3.15.0\HeuristicLab.ALGLIB-3.15.0.csproj" />
+    <ProjectReference Include="..\..\HeuristicLab.ExtLibs\HeuristicLab.ALGLIB\3.17.0\ALGLIB-3.17.0\ALGLIB-3.17.0.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.ExtLibs\HeuristicLab.ALGLIB\3.17.0\HeuristicLab.ALGLIB-3.17.0\HeuristicLab.ALGLIB-3.17.0.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.ExtLibs\HeuristicLab.ALGLIB\3.7.0\ALGLIB-3.7.0\ALGLIB-3.7.0.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.ExtLibs\HeuristicLab.ALGLIB\3.7.0\HeuristicLab.ALGLIB-3.7.0\HeuristicLab.ALGLIB-3.7.0.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.ExtLibs\HeuristicLab.Attic\1.0.0\HeuristicLab.Attic.csproj" />
+    <ProjectReference Include="..\..\HeuristicLab.ExtLibs\HeuristicLab.AutoDiff\1.0\AutoDiff-1.0\AutoDiff-1.0.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.ExtLibs\HeuristicLab.AutoDiff\1.0\HeuristicLab.AutoDiff-1.0\HeuristicLab.AutoDiff-1.0.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.ExtLibs\HeuristicLab.Cecil\0.9.5\HeuristicLab.Cecil-0.9.5\HeuristicLab.Cecil-0.9.5.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.ExtLibs\HeuristicLab.Cecil\0.9.5\Mono.Cecil-0.9.5\Mono.Cecil-0.9.5.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.ExtLibs\HeuristicLab.DotNetScilab\1.0\DotNetScilab-1.0\DotNetScilab-1.0.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.ExtLibs\HeuristicLab.DotNetScilab\1.0\HeuristicLab.DotNetScilab-1.0\HeuristicLab.DotNetScilab-1.0.csproj" />
-    <ProjectReference Include="..\..\HeuristicLab.ExtLibs\HeuristicLab.GeoIP\1.12\HeuristicLab.GeoIP.csproj" />
+    <ProjectReference Include="..\..\HeuristicLab.ExtLibs\HeuristicLab.EPPlus\4.0.3\EPPlus-4.0.3\EPPlus-4.0.3.csproj" />
+    <ProjectReference Include="..\..\HeuristicLab.ExtLibs\HeuristicLab.EPPlus\4.0.3\HeuristicLab.EPPlus-4.0.3\HeuristicLab.EPPlus-4.0.3.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.ExtLibs\HeuristicLab.LibSVM\3.12\HeuristicLab.LibSVM-3.12\HeuristicLab.LibSVM-3.12.csproj" />
+    <ProjectReference Include="..\..\HeuristicLab.ExtLibs\HeuristicLab.LibSVM\3.12\LibSVM-3.12\LibSVM-3.12.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.ExtLibs\HeuristicLab.MathJax\2.7.5\HeuristicLab.MathJax-2.7.5\HeuristicLab.MathJax-2.7.5.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.ExtLibs\HeuristicLab.MatlabConnector\1.0\HeuristicLab.MatlabConnector-1.0\HeuristicLab.MatlabConnector-1.0.csproj" />
+    <ProjectReference Include="..\..\HeuristicLab.ExtLibs\HeuristicLab.NativeInterpreter\0.2\HeuristicLab.NativeInterpreter-0.2\HeuristicLab.NativeInterpreter-0.2.csproj" />
+    <ProjectReference Include="..\..\HeuristicLab.ExtLibs\HeuristicLab.Netron\3.0.2672.12446\HeuristicLab.Netron-3.0.2672.12446\HeuristicLab.Netron-3.0.2672.12446.csproj" />
+    <ProjectReference Include="..\..\HeuristicLab.ExtLibs\HeuristicLab.Netron\3.0.2672.12446\Netron.Diagramming.Core-3.0.2672.12446\Netron.Diagramming.Core-3.0.2672.12446.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.ExtLibs\HeuristicLab.OrTools\7.0.0\HeuristicLab.OrTools-7.0.0\HeuristicLab.OrTools-7.0.0.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.ExtLibs\HeuristicLab.ProtobufCS\2.4.1\HeuristicLab.ProtobufCS\HeuristicLab.ProtobufCS-2.4.1.473.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.ExtLibs\HeuristicLab.ProtobufCS\2.4.1\ProtobufCS\src\ProtocolBuffers\ProtocolBuffers-2.4.1.473.csproj" />
@@ -98,6 +105,7 @@
     <ProjectReference Include="..\..\HeuristicLab.ExtLibs\HeuristicLab.SimSharp\3.3.2\HeuristicLab.SimSharp-3.3.2\HeuristicLab.SimSharp-3.3.2.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.ExtLibs\HeuristicLab.SimSharp\3.3.2\SimSharp-3.3.2\SimSharp-3.3.2.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.ExtLibs\HeuristicLab.WinFormsUI\2.7.0\HeuristicLab.WinFormsUI-2.7.0\HeuristicLab.WinFormsUI-2.7.0.csproj" />
+    <ProjectReference Include="..\..\HeuristicLab.ExtLibs\HeuristicLab.WinFormsUI\2.7.0\WinFormsUI-2.7.0\WinFormsUI-2.7.0.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.Hive\3.3\HeuristicLab.Hive-3.3.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.MainForm.WindowsForms\3.3\HeuristicLab.MainForm.WindowsForms-3.3.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.MainForm\3.3\HeuristicLab.MainForm-3.3.csproj" />
@@ -190,7 +198,6 @@
     <Content Include="HeuristicLab.ico" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
     <PackageReference Include="Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers" Version="0.4.421302">
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>

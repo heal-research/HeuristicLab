@@ -10,8 +10,6 @@
   <ItemGroup>
     <PackageReference Include="Google.OrTools" Version="9.6.2534" />
     <PackageReference Include="Google.OrTools.runtime.win-x64" Version="9.6.2534" />
-    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
-    <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
     <PackageReference Include="Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers" Version="0.4.421302">
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
