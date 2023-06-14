@@ -17,6 +17,3 @@ A copy of the GNU General Public License is available at
 http://www.fsf.org/licensing/licenses
 >>> END OF LICENSE >>>
 *************************************************************************/
-[assembly:System.Reflection.AssemblyCompanyAttribute("ALGLIB Project")]
-[assembly:System.Reflection.AssemblyProductAttribute("ALGLIB for C# (managed)")]
-[assembly:System.Reflection.AssemblyInformationalVersionAttribute("3.17.0.0")]

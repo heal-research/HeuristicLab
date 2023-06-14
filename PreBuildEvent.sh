@@ -1,3 +1,4 @@
+
 export AIFile=$ProjectDir/Properties/AssemblyInfo.cs.frame
 export PluginFile=$ProjectDir/Plugin.cs.frame
 

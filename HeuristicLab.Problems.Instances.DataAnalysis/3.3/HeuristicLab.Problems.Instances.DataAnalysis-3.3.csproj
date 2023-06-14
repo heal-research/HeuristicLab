@@ -4,8 +4,6 @@
     <OutputType>Library</OutputType>
     <RootNamespace>HeuristicLab.Problems.Instances.DataAnalysis</RootNamespace>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <UseWindowsForms>true</UseWindowsForms>
-    <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
     <OutputPath>..\..\bin\</OutputPath>
   </PropertyGroup>
   <PropertyGroup>

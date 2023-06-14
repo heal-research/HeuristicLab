@@ -1,4 +1,4 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.3.32825.248
@@ -184,27 +184,27 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HeuristicLab.Common.Resourc
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HeuristicLab.Operators.Programmable-3.3", "HeuristicLab.Operators.Programmable\3.3\HeuristicLab.Operators.Programmable-3.3.csproj", "{5BEDBE28-89B0-4176-989B-B4156DAC8191}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ALGLIB-3.17.0", "HeuristicLab.ExtLibs\HeuristicLab.ALGLIB\3.17.0\ALGLIB-3.17.0\ALGLIB-3.17.0.csproj", "{A9CED8BA-9055-4DA6-A302-A4207C465AF0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ALGLIB-3.17.0", "HeuristicLab.ExtLibs\HeuristicLab.ALGLIB\3.17.0\ALGLIB-3.17.0\ALGLIB-3.17.0.csproj", "{A9CED8BA-9055-4DA6-A302-A4207C465AF0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.ALGLIB-3.17.0", "HeuristicLab.ExtLibs\HeuristicLab.ALGLIB\3.17.0\HeuristicLab.ALGLIB-3.17.0\HeuristicLab.ALGLIB-3.17.0.csproj", "{8A56F216-2B71-4F72-B86B-2DE489D578DB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HeuristicLab.ALGLIB-3.17.0", "HeuristicLab.ExtLibs\HeuristicLab.ALGLIB\3.17.0\HeuristicLab.ALGLIB-3.17.0\HeuristicLab.ALGLIB-3.17.0.csproj", "{8A56F216-2B71-4F72-B86B-2DE489D578DB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ALGLIB-3.15.0", "HeuristicLab.ExtLibs\HeuristicLab.ALGLIB\3.15.0\ALGLIB-3.15.0\ALGLIB-3.15.0.csproj", "{BFFE7AFD-0996-4381-BF06-5D031B3E54A8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ALGLIB-3.15.0", "HeuristicLab.ExtLibs\HeuristicLab.ALGLIB\3.15.0\ALGLIB-3.15.0\ALGLIB-3.15.0.csproj", "{BFFE7AFD-0996-4381-BF06-5D031B3E54A8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.ALGLIB-3.15.0", "HeuristicLab.ExtLibs\HeuristicLab.ALGLIB\3.15.0\HeuristicLab.ALGLIB-3.15.0\HeuristicLab.ALGLIB-3.15.0.csproj", "{6CAB3410-EBD4-40D9-ABD6-AA95BB684C65}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HeuristicLab.ALGLIB-3.15.0", "HeuristicLab.ExtLibs\HeuristicLab.ALGLIB\3.15.0\HeuristicLab.ALGLIB-3.15.0\HeuristicLab.ALGLIB-3.15.0.csproj", "{6CAB3410-EBD4-40D9-ABD6-AA95BB684C65}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ALGLIB-3.7.0", "HeuristicLab.ExtLibs\HeuristicLab.ALGLIB\3.7.0\ALGLIB-3.7.0\ALGLIB-3.7.0.csproj", "{AE723DEF-1A44-4F9C-8670-DBCAB79626A2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ALGLIB-3.7.0", "HeuristicLab.ExtLibs\HeuristicLab.ALGLIB\3.7.0\ALGLIB-3.7.0\ALGLIB-3.7.0.csproj", "{AE723DEF-1A44-4F9C-8670-DBCAB79626A2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.ALGLIB-3.7.0", "HeuristicLab.ExtLibs\HeuristicLab.ALGLIB\3.7.0\HeuristicLab.ALGLIB-3.7.0\HeuristicLab.ALGLIB-3.7.0.csproj", "{6F1D7847-D610-4E52-A184-405DAEFA41A9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HeuristicLab.ALGLIB-3.7.0", "HeuristicLab.ExtLibs\HeuristicLab.ALGLIB\3.7.0\HeuristicLab.ALGLIB-3.7.0\HeuristicLab.ALGLIB-3.7.0.csproj", "{6F1D7847-D610-4E52-A184-405DAEFA41A9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoDiff-1.0", "HeuristicLab.ExtLibs\HeuristicLab.AutoDiff\1.0\AutoDiff-1.0\AutoDiff-1.0.csproj", "{62551FD3-C21F-4E16-A7FC-6A017508809C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AutoDiff-1.0", "HeuristicLab.ExtLibs\HeuristicLab.AutoDiff\1.0\AutoDiff-1.0\AutoDiff-1.0.csproj", "{62551FD3-C21F-4E16-A7FC-6A017508809C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.AutoDiff-1.0", "HeuristicLab.ExtLibs\HeuristicLab.AutoDiff\1.0\HeuristicLab.AutoDiff-1.0\HeuristicLab.AutoDiff-1.0.csproj", "{C8BB29AC-C64A-4EF4-9773-9208F9AE0B49}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HeuristicLab.AutoDiff-1.0", "HeuristicLab.ExtLibs\HeuristicLab.AutoDiff\1.0\HeuristicLab.AutoDiff-1.0\HeuristicLab.AutoDiff-1.0.csproj", "{C8BB29AC-C64A-4EF4-9773-9208F9AE0B49}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.NativeInterpreter-0.2", "HeuristicLab.ExtLibs\HeuristicLab.NativeInterpreter\0.2\HeuristicLab.NativeInterpreter-0.2\HeuristicLab.NativeInterpreter-0.2.csproj", "{E05AC63F-6924-4C83-BD0A-EDF3C103C1D8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HeuristicLab.NativeInterpreter-0.2", "HeuristicLab.ExtLibs\HeuristicLab.NativeInterpreter\0.2\HeuristicLab.NativeInterpreter-0.2\HeuristicLab.NativeInterpreter-0.2.csproj", "{E05AC63F-6924-4C83-BD0A-EDF3C103C1D8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibSVM-3.12", "HeuristicLab.ExtLibs\HeuristicLab.LibSVM\3.12\LibSVM-3.12\LibSVM-3.12.csproj", "{4C41E3A3-B2FD-46EA-98FB-F21433E58FBE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibSVM-3.12", "HeuristicLab.ExtLibs\HeuristicLab.LibSVM\3.12\LibSVM-3.12\LibSVM-3.12.csproj", "{4C41E3A3-B2FD-46EA-98FB-F21433E58FBE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.LibSVM-3.12", "HeuristicLab.ExtLibs\HeuristicLab.LibSVM\3.12\HeuristicLab.LibSVM-3.12\HeuristicLab.LibSVM-3.12.csproj", "{005C27BE-ED6E-4602-8199-5F9EB7591CEB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HeuristicLab.LibSVM-3.12", "HeuristicLab.ExtLibs\HeuristicLab.LibSVM\3.12\HeuristicLab.LibSVM-3.12\HeuristicLab.LibSVM-3.12.csproj", "{005C27BE-ED6E-4602-8199-5F9EB7591CEB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
