@@ -22,7 +22,6 @@
     <BootstrapperEnabled>true</BootstrapperEnabled>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <OutputPath>$(SolutionDir)\bin\</OutputPath>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <AssemblyTitle>HeuristicLab.AutoDiff</AssemblyTitle>
     <Description>Provides an interface to AutoDiff</Description>
     <Product>HeuristicLab</Product>

@@ -22,7 +22,6 @@
     <BootstrapperEnabled>true</BootstrapperEnabled>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <OutputPath>$(SolutionDir)\bin\</OutputPath>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <AssemblyTitle>HeuristicLab.ALGLIB</AssemblyTitle>
     <Description>Provides an interface to ALGLIB</Description>
     <Product>HeuristicLab</Product>

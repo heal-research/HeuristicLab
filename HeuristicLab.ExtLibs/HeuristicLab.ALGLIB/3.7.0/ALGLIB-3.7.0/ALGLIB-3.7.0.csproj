@@ -22,7 +22,6 @@
     <BootstrapperEnabled>true</BootstrapperEnabled>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <OutputPath>$(SolutionDir)\bin\</OutputPath>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <AssemblyTitle>ALGLIB-3.7.0</AssemblyTitle>
     <Description>ALGLIB® - numerical analysis library, 1999-2013</Description>
     <Company>ALGLIB project</Company>
