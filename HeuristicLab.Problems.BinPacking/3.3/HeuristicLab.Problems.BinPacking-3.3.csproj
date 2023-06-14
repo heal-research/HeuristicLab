@@ -16,7 +16,6 @@
     <AssemblyOriginatorKeyFile>HeuristicLab.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System.IO.Compression" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="3D\Instances\ContainerPackingInstances.zip" />

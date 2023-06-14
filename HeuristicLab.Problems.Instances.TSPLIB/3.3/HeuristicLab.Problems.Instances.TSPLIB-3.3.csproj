@@ -18,7 +18,6 @@
     <AssemblyOriginatorKeyFile>HeuristicLab.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System.IO.Compression" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Data\atsp.zip" />

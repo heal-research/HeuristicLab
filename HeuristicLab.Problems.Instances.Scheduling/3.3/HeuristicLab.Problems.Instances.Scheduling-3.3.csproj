@@ -60,7 +60,6 @@
       <HintPath>..\bin\HeuristicLab.PluginInfrastructure-3.3.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="System.IO.Compression" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Data\JSSPORLIB.zip" />
