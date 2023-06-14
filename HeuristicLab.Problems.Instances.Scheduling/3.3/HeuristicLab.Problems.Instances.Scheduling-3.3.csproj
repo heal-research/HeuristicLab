@@ -56,12 +56,6 @@
     <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="HeuristicLab.PluginInfrastructure-3.3">
-      <HintPath>..\bin\HeuristicLab.PluginInfrastructure-3.3.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="Data\JSSPORLIB.zip" />
   </ItemGroup>
   <ItemGroup>
