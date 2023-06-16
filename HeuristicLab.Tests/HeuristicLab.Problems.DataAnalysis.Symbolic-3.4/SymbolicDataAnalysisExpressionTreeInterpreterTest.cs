@@ -328,7 +328,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
       Console.WriteLine();
 
       var summary = new SolverSummary();
-      var parameters = ParameterOptimizer.OptimizeTree(tree, ds, rows, "y", Enumerable.Empty<double>(), nodesToOptimize, options, ref summary);
+      var parameters = ParameterOptimizer.OptimizeTree(tree, nodesToOptimize, ds, "y", rows, Enumerable.Empty<double>(),options, ref summary);
 
       Console.Write("Optimized parameters: ");
       foreach (var t in parameters) {
@@ -394,7 +394,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
 
 
       var summary = new SolverSummary();
-      var params1 = ParameterOptimizer.OptimizeTree(tree, ds, rows, "y", Enumerable.Empty<double>(), new HashSet<ISymbolicExpressionTreeNode>(nodesToOptimize), options, ref summary);
+      var params1 = ParameterOptimizer.OptimizeTree(tree, new HashSet<ISymbolicExpressionTreeNode>(nodesToOptimize), ds, "y", rows, Enumerable.Empty<double>(), options, ref summary);
 
       SymbolicRegressionParameterOptimizationEvaluator.OptimizeParameters(interpreter, tree,
         new RegressionProblemData(ds, new[] { "x1", "x2", "x3" }, "y"), rows, applyLinearScaling: false, maxIterations: 10, updateVariableWeights: false);
@@ -468,7 +468,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
       Console.WriteLine();
 
       var coeff = new double[trees.Length + 1];
-      var parameters = ParameterOptimizer.OptimizeTree(trees, ds, rows, "y", Enumerable.Empty<double>(), nodesToOptimize, options, coeff, ref summary);
+      var parameters = ParameterOptimizer.OptimizeTerms(trees, coeff, nodesToOptimize, ds, "y", rows, Enumerable.Empty<double>(), options, ref summary);
       Console.Write("Optimized parameters: ");
       foreach (var t in parameters) {
         Console.Write(t.Value + " ");
@@ -525,7 +525,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
       Console.WriteLine();
 
       var coeff = new double[trees.Length + 1];
-      var parameters = ParameterOptimizer.OptimizeTree(trees, ds, rows, "y", Enumerable.Empty<double>(), nodesToOptimize, options, coeff, ref summary);
+      var parameters = ParameterOptimizer.OptimizeTerms(trees, coeff, nodesToOptimize, ds, "y", rows, Enumerable.Empty<double>(), options, ref summary);
       Console.Write("Optimized parameters: ");
       foreach (var t in parameters) {
         Console.Write(t.Value + " ");
