@@ -32,8 +32,6 @@ bld/
 [Ll]og/
 [Ll]ogs/
 *.exe
-**/Properties/AssemblyInfo.cs
-Plugin.cs
 HeuristicLab.Problems.ExternalEvaluation/3.4/Protos/ExternalEvaluationMessages.cs
 
 

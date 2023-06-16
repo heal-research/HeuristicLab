@@ -6,11 +6,9 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{96396439-A764-4022-A8D2-BE021449B8D1}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
-		Build.cmd = Build.cmd
 		ConfigMerger.exe = ConfigMerger.exe
 		..\documentation\License\gpl-3.0.txt = ..\documentation\License\gpl-3.0.txt
 		MergeConfigs.cmd = MergeConfigs.cmd
-		PreBuildEvent.cmd = PreBuildEvent.cmd
 		Directory.Build.props = Directory.Build.props
 		.analyzerconfig = .analyzerconfig
 	EndProjectSection
@@ -424,8 +422,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Problems.ExternalEvaluation.Views-3.4", "HeuristicLab.Problems.ExternalEvaluation.Views\3.4\HeuristicLab.Problems.ExternalEvaluation.Views-3.4.csproj", "{F7E5B975-FDF2-45A4-91CB-FF6D3C33D65E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Problems.NK-3.3", "HeuristicLab.Problems.NK\3.3\HeuristicLab.Problems.NK-3.3.csproj", "{C3AD50E6-E717-490E-ABC7-32EF7FB03C97}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "OutdatedPlugins", "OutdatedPlugins", "{D1B1DE45-F9C7-4FBF-B73C-E759BC4223D5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Algorithms.CMAEvolutionStrategy-3.4", "HeuristicLab.Algorithms.CMAEvolutionStrategy\3.4\HeuristicLab.Algorithms.CMAEvolutionStrategy-3.4.csproj", "{291010E4-2F4E-4D29-A795-753CFF293FDB}"
 EndProject
