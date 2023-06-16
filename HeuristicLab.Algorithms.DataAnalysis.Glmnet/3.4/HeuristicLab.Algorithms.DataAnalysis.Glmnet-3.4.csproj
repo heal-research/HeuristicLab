@@ -39,9 +39,6 @@
     <OutputPath>..\..\bin\</OutputPath>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System.Data.Linq" />
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="glmnet-license-gpl2.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
