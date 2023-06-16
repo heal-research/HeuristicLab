@@ -50,8 +50,6 @@
   <ItemGroup>
     <Reference Update="System.Core">
     </Reference>
-    <Reference Include="System.Data.Linq">
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\HeuristicLab.Collections\3.3\HeuristicLab.Collections-3.3.csproj" />
