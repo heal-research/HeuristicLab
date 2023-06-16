@@ -202,10 +202,4 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
   </ItemGroup>
-  <Target Name="PostBuild_Windows_NT" BeforeTargets="PostBuildEvent" Condition="'$(OS)' == 'Windows_NT'">
-    <Exec Command="set Path=%25Path%25;$(ProjectDir);$(SolutionDir)&#xA;set ProjectDir=$(ProjectDir)&#xA;set SolutionDir=$(SolutionDir)&#xA;set OutDir=$(OutDir)&#xA;set TargetDir=$(TargetDir)&#xA;set Platform=$(PlatformName)&#xA;set Configuration=$(ConfigurationName)&#xA;&#xA;call &quot;$(SolutionDir)\MergeConfigs.cmd&quot;" />
-  </Target>
-  <Target Name="PostBuild_Not_Windows_NT" AfterTargets="PostBuildEvent" Condition="'$(OS)' != 'Windows_NT'">
-    <Exec Command="export OutDir=$(OutDir)&#xA;export ProjectDir=$(ProjectDir)&#xA;export SolutionDir=$(SolutionDir)&#xA;export TargetDir=$(TargetDir)&#xA;&#xA;$SolutionDir/MergeConfigs.sh" />
-  </Target>
 </Project>
