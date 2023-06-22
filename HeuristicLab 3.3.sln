@@ -6,7 +6,6 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{96396439-A764-4022-A8D2-BE021449B8D1}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
-		..\documentation\License\gpl-3.0.txt = ..\documentation\License\gpl-3.0.txt
 		Directory.Build.props = Directory.Build.props
 		.analyzerconfig = .analyzerconfig
 	EndProjectSection
@@ -1194,13 +1193,9 @@ Global
 		{7818EB78-08A8-4EE7-935F-C1277E29E6A7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{7818EB78-08A8-4EE7-935F-C1277E29E6A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{69ADF470-3183-4552-A99D-E92AEFEA2134}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{69ADF470-3183-4552-A99D-E92AEFEA2134}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{69ADF470-3183-4552-A99D-E92AEFEA2134}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{69ADF470-3183-4552-A99D-E92AEFEA2134}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A9673FFC-CC91-4D95-A76C-6123EE1CB679}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A9673FFC-CC91-4D95-A76C-6123EE1CB679}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A9673FFC-CC91-4D95-A76C-6123EE1CB679}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A9673FFC-CC91-4D95-A76C-6123EE1CB679}.Release|Any CPU.Build.0 = Release|Any CPU
 		{6D4409AA-D4F7-4E84-8569-73E5E533C2CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{6D4409AA-D4F7-4E84-8569-73E5E533C2CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6D4409AA-D4F7-4E84-8569-73E5E533C2CD}.Release|Any CPU.ActiveCfg = Release|Any CPU

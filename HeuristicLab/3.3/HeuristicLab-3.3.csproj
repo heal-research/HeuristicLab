@@ -86,8 +86,6 @@
     <ProjectReference Include="..\..\HeuristicLab.ExtLibs\HeuristicLab.AutoDiff\1.0\HeuristicLab.AutoDiff-1.0\HeuristicLab.AutoDiff-1.0.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.ExtLibs\HeuristicLab.Cecil\0.9.5\HeuristicLab.Cecil-0.9.5\HeuristicLab.Cecil-0.9.5.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.ExtLibs\HeuristicLab.Cecil\0.9.5\Mono.Cecil-0.9.5\Mono.Cecil-0.9.5.csproj" />
-    <ProjectReference Include="..\..\HeuristicLab.ExtLibs\HeuristicLab.DotNetScilab\1.0\DotNetScilab-1.0\DotNetScilab-1.0.csproj" />
-    <ProjectReference Include="..\..\HeuristicLab.ExtLibs\HeuristicLab.DotNetScilab\1.0\HeuristicLab.DotNetScilab-1.0\HeuristicLab.DotNetScilab-1.0.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.ExtLibs\HeuristicLab.EPPlus\4.0.3\EPPlus-4.0.3\EPPlus-4.0.3.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.ExtLibs\HeuristicLab.EPPlus\4.0.3\HeuristicLab.EPPlus-4.0.3\HeuristicLab.EPPlus-4.0.3.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.ExtLibs\HeuristicLab.LibSVM\3.12\HeuristicLab.LibSVM-3.12\HeuristicLab.LibSVM-3.12.csproj" />
