@@ -19,10 +19,12 @@
  */
 #endregion
 
+extern alias alglib_3_17;
 using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+
 namespace HeuristicLab.Problems.DataAnalysis.Tests {
 
   [TestClass()]
@@ -68,7 +70,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
           mean_alglib = variance_alglib = 0.0;
           double tmp = 0;
 
-          alglib.samplemoments(xs, n, out mean_alglib, out variance_alglib, out tmp, out tmp);
+          alglib_3_17.alglib.samplemoments(xs, n, out mean_alglib, out variance_alglib, out tmp, out tmp);
 
           var calculator = new OnlineMeanAndVarianceCalculator();
           for (int i = 0; i < n; i++) {
@@ -100,7 +102,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
                                     select testData[rows, c2] * c2Scale;
             double[] xs = x.ToArray();
             double[] ys = y.ToArray();
-            double r2_alglib = alglib.pearsoncorrelation(xs, ys, n);
+            double r2_alglib = alglib_3_17.alglib.pearsoncorrelation(xs, ys, n);
             r2_alglib *= r2_alglib;
 
             var r2Calculator = new OnlinePearsonsRCalculator();
@@ -129,7 +131,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
           .Concat(Enumerable.Repeat(150494407424305.47, n - 1));
         double[] xs = x.ToArray();
         double[] ys = y.ToArray();
-        double r2_alglib = alglib.pearsoncorrelation(xs, ys, n);
+        double r2_alglib = alglib_3_17.alglib.pearsoncorrelation(xs, ys, n);
         r2_alglib *= r2_alglib;
 
         var r2Calculator = new OnlinePearsonsRCalculator();
