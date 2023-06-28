@@ -103,20 +103,18 @@ namespace HeuristicLab.Common {
       instance.SaveContent(content, filename, compressed, cancellationToken);
       content.Filename = filename;
     }
-    public static void SaveAsync(IStorableContent content, string filename, bool compressed, Action<IStorableContent, Exception> savingCompletedCallback, CancellationToken cancellationToken = default(CancellationToken)) {
+    public static async Task SaveAsync(IStorableContent content, string filename, bool compressed, Action<IStorableContent, Exception> savingCompletedCallback, CancellationToken cancellationToken = default(CancellationToken)) {
       if (instance == null) throw new InvalidOperationException("ContentManager is not initialized.");
-      var action = new Action<IStorableContent, string, bool, CancellationToken>(instance.SaveContent);
-      action.BeginInvoke(content, filename, compressed, cancellationToken, delegate (IAsyncResult result) {
-        Exception error = null;
-        try {
-          action.EndInvoke(result);
+      Exception exception = null;
+      try {
+        await Task.Run(() => {
+          instance.SaveContent(content, filename, compressed, cancellationToken);
           content.Filename = filename;
-        } catch (Exception ex) {
-          error = ex;
-        }
-        savingCompletedCallback(content, error);
-      }, null);
-
+        }, cancellationToken);
+      } catch (Exception ex) {
+        exception = ex;
+      }
+      savingCompletedCallback(content, exception);
     }
     protected abstract void SaveContent(IStorableContent content, string filename, bool compressed, CancellationToken cancellationToken);
   }

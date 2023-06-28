@@ -24,6 +24,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
 using HeuristicLab.Optimization;
@@ -68,17 +69,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       ToolStripItem.Enabled = runCollection.Any(run => run.Parameters.Any(p => p.Value is IDataAnalysisProblemData));
     }
 
-    public override void Execute() {
+    public override async void Execute() {
       IContentView activeView = (IContentView)MainFormManager.MainForm.ActiveView;
       var content = activeView.Content;
+      
       Progress.Show(content, "Removing duplicate datasets.", ProgressMode.Indeterminate);
-
-      Action<IContentView> action = (view) => DatasetUtil.RemoveDuplicateDatasets(view.Content);
-
-      action.BeginInvoke(activeView, delegate (IAsyncResult result) {
-        action.EndInvoke(result);
+      try {
+        await Task.Run(() => DatasetUtil.RemoveDuplicateDatasets(activeView.Content));
+      } finally {
         Progress.Hide(content);
-      }, null);
+      }
     }
   }
 }

@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using HeuristicLab.Clients.Common;
 using CcSettings = HeuristicLab.Clients.Common.Properties;
@@ -89,23 +90,14 @@ namespace HeuristicLab.Clients.Access.Views {
       savePasswordCheckBox.Checked = CcSettings.Settings.Default.SavePassword;
     }
 
-    public void ExecuteActionAsync(Action action) {
-      var call = new Func<Exception>(delegate() {
-        try {
-          action();
-        }
-        catch (Exception ex) {
-          return ex;
-        }
-        finally {
-          HideProgressBar();
-        }
-        return null;
-      });
-      call.BeginInvoke(delegate(IAsyncResult result) {
-        Exception ex = call.EndInvoke(result);
-        if (ex != null) PluginInfrastructure.ErrorHandling.ShowErrorDialog(ex);
-      }, null);
+    public async Task ExecuteActionAsync(Action action) {
+      try {
+        await Task.Run(action);
+      } catch (Exception ex) {
+        PluginInfrastructure.ErrorHandling.ShowErrorDialog(ex);
+      } finally {
+        HideProgressBar();
+      }
     }
 
     #region validation events
