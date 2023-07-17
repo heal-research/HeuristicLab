@@ -287,6 +287,16 @@ namespace HeuristicLab.Analysis.Views {
         Content.XAxisGrid = xAxisGridCheckBox.Checked;
       }
     }
+    private void xAxisLogScaleCheckBox_CheckedChanged(object sender, System.EventArgs e) {
+      if (!SuppressEvents && Content != null) {
+        Content.XAxisLogScale = xAxisLogScaleCheckBox.Checked;
+      }
+    }
+    private void yAxisLogScaleCheckBox_CheckedChanged(object sender, System.EventArgs e) {
+      if (!SuppressEvents && Content != null) {
+        Content.YAxisLogScale = yAxisLogScaleCheckBox.Checked;
+      }
+    }
     #endregion
 
     private string FormatFont(Font f) {

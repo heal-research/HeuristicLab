@@ -220,6 +220,28 @@ namespace HeuristicLab.Analysis {
       }
     }
 
+    [Storable(DefaultValue =false)]
+    private bool xAxisLogScale;
+    public bool XAxisLogScale {
+      get { return xAxisLogScale; }
+      set {
+        if (xAxisLogScale == value) return;
+        xAxisLogScale = value;
+        OnPropertyChanged("XAxisLogScale");
+      }
+    }
+
+    [Storable(DefaultValue = false)]
+    private bool yAxisLogScale;
+    public bool YAxisLogScale {
+      get { return yAxisLogScale; }
+      set {
+        if (yAxisLogScale == value) return;
+        yAxisLogScale = value;
+        OnPropertyChanged("YAxisLogScale");
+      }
+    }
+
     #region Persistence Properties
     [Storable(Name = "TitleFont")]
     private Font StorableTitleFont {

@@ -245,6 +245,9 @@ namespace HeuristicLab.Analysis.Views {
       if (!Content.VisualProperties.AxisTitleColor.IsEmpty) area.AxisY.TitleForeColor = Content.VisualProperties.AxisTitleColor;
       area.AxisY.Title = Content.VisualProperties.YAxisTitle;
       area.AxisY.MajorGrid.Enabled = Content.VisualProperties.YAxisGrid;
+
+      area.AxisX.IsLogarithmic = Content.VisualProperties.XAxisLogScale;
+      area.AxisY.IsLogarithmic = Content.VisualProperties.YAxisLogScale;
     }
 
     private void RecalculateAxesScale(ChartArea area) {
@@ -555,11 +558,17 @@ namespace HeuristicLab.Analysis.Views {
     }
 
     private void FillSeriesWithRowValues(Series series, ScatterPlotDataRow row) {
+      bool yLogarithmic = Content.VisualProperties.YAxisLogScale;
+      bool xLogarithmic = Content.VisualProperties.XAxisLogScale;
+
       bool zerosOnly = true;
       for (int i = 0; i < row.Points.Count; i++) {
         var value = row.Points[i];
         DataPoint point = new DataPoint();
-        if (IsInvalidValue(value.X) || IsInvalidValue(value.Y))
+        if (value.X <= 0 && xLogarithmic 
+          || value.Y <= 0 && yLogarithmic
+          || IsInvalidValue(value.X) 
+          || IsInvalidValue(value.Y))
           point.IsEmpty = true;
         else {
           point.XValue = value.X;
