@@ -1,3 +1,5 @@
+syntax = "proto2";
+
 package HeuristicLab.Problems.ExternalEvaluation;
 option java_package = "com.heuristiclab.problems.externalevaluation";
 
@@ -76,13 +78,13 @@ message QualityMessage {
 
 message SingleObjectiveQualityMessage {
   extend QualityMessage {
-    required SingleObjectiveQualityMessage qualityMessage = 1000;  // unique QualityMessage extension number
+    optional SingleObjectiveQualityMessage qualityMessage = 1000;  // unique QualityMessage extension number
   }
   required double quality = 1;
 }
 message MultiObjectiveQualityMessage {
   extend QualityMessage {
-    required MultiObjectiveQualityMessage qualityMessage = 1001;  // unique QualityMessage extension number
+    optional MultiObjectiveQualityMessage qualityMessage = 1001;  // unique QualityMessage extension number
   }
   repeated double qualities = 1;
 }

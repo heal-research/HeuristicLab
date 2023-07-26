@@ -33,7 +33,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
   public class SolutionMessageBuilder : NamedItem {
     public override bool CanChangeName { get { return false; } }
     public override bool CanChangeDescription { get { return false; } }
-    private Dictionary<Type, Action<IItem, string, SolutionMessage.Builder>> dispatcher;
+    private Dictionary<Type, Action<IItem, string, SolutionMessage>> dispatcher;
 
     [Storable]
     private CheckedItemList<IItemToSolutionMessageConverter> convertersList;
@@ -60,18 +60,19 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
       : base() {
       name = ItemName;
       description = ItemDescription;
-      convertersList = new CheckedItemList<IItemToSolutionMessageConverter>();
-      convertersList.Add(new BoolConverter());
-      convertersList.Add(new DateTimeValueConverter());
-      convertersList.Add(new DoubleConverter());
-      convertersList.Add(new IntegerConverter());
-      convertersList.Add(new StringConverter());
-      convertersList.Add(new TimeSpanValueConverter());
+      convertersList = new CheckedItemList<IItemToSolutionMessageConverter> {
+        new BoolConverter(),
+        new DateTimeValueConverter(),
+        new DoubleConverter(),
+        new IntegerConverter(),
+        new StringConverter(),
+        new TimeSpanValueConverter()
+      };
 
       RegisterEventHandlers();
     }
 
-    public void AddToMessage(IItem item, string name, SolutionMessage.Builder builder) {
+    public void AddToMessage(IItem item, string name, SolutionMessage builder) {
       if (dispatcher == null) BuildDispatcher();
       Type itemType = item.GetType();
       while (!dispatcher.ContainsKey(itemType)) {
@@ -99,7 +100,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
     }
 
     private void BuildDispatcher() {
-      dispatcher = new Dictionary<Type, Action<IItem, string, SolutionMessage.Builder>>();
+      dispatcher = new Dictionary<Type, Action<IItem, string, SolutionMessage>>();
       foreach (var c in convertersList.CheckedItems.OrderBy(x => x.Index).Select(x => x.Value)) {
         var types = c.ItemTypes;
         foreach (var t in types) {

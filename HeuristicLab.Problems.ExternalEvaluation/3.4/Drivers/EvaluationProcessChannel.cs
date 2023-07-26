@@ -22,7 +22,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
-using Google.ProtocolBuffers;
+using Google.Protobuf;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HEAL.Attic;
@@ -116,7 +116,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
       }
     }
 
-    public override IMessage Receive(IBuilder builder, ExtensionRegistry extensions) {
+    public override IMessage Receive(IMessage builder, ExtensionRegistry extensions) {
       try {
         return streamingChannel.Receive(builder, extensions);
       } catch {
