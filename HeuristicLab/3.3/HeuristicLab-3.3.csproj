@@ -91,7 +91,6 @@
     <ProjectReference Include="..\..\HeuristicLab.ExtLibs\HeuristicLab.LibSVM\3.12\HeuristicLab.LibSVM-3.12\HeuristicLab.LibSVM-3.12.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.ExtLibs\HeuristicLab.LibSVM\3.12\LibSVM-3.12\LibSVM-3.12.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.ExtLibs\HeuristicLab.MathJax\2.7.5\HeuristicLab.MathJax-2.7.5\HeuristicLab.MathJax-2.7.5.csproj" />
-    <ProjectReference Include="..\..\HeuristicLab.ExtLibs\HeuristicLab.MatlabConnector\1.0\HeuristicLab.MatlabConnector-1.0\HeuristicLab.MatlabConnector-1.0.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.ExtLibs\HeuristicLab.NativeInterpreter\0.2\HeuristicLab.NativeInterpreter-0.2\HeuristicLab.NativeInterpreter-0.2.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.ExtLibs\HeuristicLab.Netron\3.0.2672.12446\HeuristicLab.Netron-3.0.2672.12446\HeuristicLab.Netron-3.0.2672.12446.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.ExtLibs\HeuristicLab.Netron\3.0.2672.12446\Netron.Diagramming.Core-3.0.2672.12446\Netron.Diagramming.Core-3.0.2672.12446.csproj" />
