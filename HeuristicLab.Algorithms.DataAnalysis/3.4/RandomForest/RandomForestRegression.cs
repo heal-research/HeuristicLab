@@ -20,7 +20,6 @@
 #endregion
 
 extern alias alglib_3_7;
-using alglib_3_7;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
