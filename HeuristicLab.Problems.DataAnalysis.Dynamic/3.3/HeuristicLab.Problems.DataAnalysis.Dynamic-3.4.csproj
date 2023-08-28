@@ -123,6 +123,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DynamicSymbolicRegressionProblem.cs" />
+    <Compile Include="DynamicSymbolicRegressionProblemState.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TimeWindowedDynamicSymbolicRegressionProblemState.cs" />

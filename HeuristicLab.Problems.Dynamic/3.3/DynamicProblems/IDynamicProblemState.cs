@@ -26,7 +26,7 @@ namespace HeuristicLab.Problems.Dynamic {
   [StorableType("52BFF6E4-2832-44DF-99D0-B6D8F834D148")]
   public interface IDynamicProblemState<in TState> 
     : IParameterizedNamedItem 
-  where TState : IDynamicProblemState<TState>
+    where TState : IDynamicProblemState<TState>
   {
     void Initialize(IRandom random);
     void Update(IRandom random, long version);

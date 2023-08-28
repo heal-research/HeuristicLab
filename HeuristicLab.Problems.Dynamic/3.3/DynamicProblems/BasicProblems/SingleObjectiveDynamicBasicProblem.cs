@@ -181,7 +181,9 @@ namespace HeuristicLab.Problems.Dynamic {
     }
 
     protected virtual void AnalyzeProblem(ResultCollection results, IRandom random, bool dummy) {
-      foreach (var tracker in Trackers) tracker.OnAnalyze(results);
+      foreach (var tracker in Trackers) {
+        tracker.OnAnalyze(results);
+      }
     }
 
     protected abstract void Update(long version);

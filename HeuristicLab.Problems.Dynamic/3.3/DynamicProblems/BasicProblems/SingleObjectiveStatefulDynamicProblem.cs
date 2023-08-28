@@ -31,7 +31,8 @@ using HeuristicLab.Random;
 
 namespace HeuristicLab.Problems.Dynamic {
   [StorableType("F444C6C0-A8F0-406F-9617-587E29A37644")]
-  public abstract class SingleObjectiveStatefulDynamicProblem<TEncoding, TSolution, TState> : SingleObjectiveDynamicBasicProblem<TEncoding, TSolution, TState>
+  public abstract class SingleObjectiveStatefulDynamicProblem<TEncoding, TSolution, TState>
+    : SingleObjectiveDynamicBasicProblem<TEncoding, TSolution, TState>
     where TEncoding : class, IEncoding 
     where TSolution : class, IItem
     where TState : class, IDynamicProblemState<TState>
@@ -93,7 +94,9 @@ namespace HeuristicLab.Problems.Dynamic {
       StateVersion = 0;
       State = (TState)InitialState.Clone();
       State.Initialize(EnvironmentRandom ?? new FastRandom(0));
-      foreach (var tracker in Trackers) tracker.OnEpochChange(GetData(), 0, 0);
+      foreach (var tracker in Trackers) {
+        tracker.OnEpochChange(GetData(), 0, 0);
+      }
       
     }
 

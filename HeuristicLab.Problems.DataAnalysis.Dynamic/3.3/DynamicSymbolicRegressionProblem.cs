@@ -26,18 +26,20 @@ using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Optimization;
 
 namespace HeuristicLab.Problems.Dynamic {
-  [Item("Time Windowed Dynamic Symbolic Regression Problem", "Applies a dynamic time window on a regression problem")]
-  [Creatable(CreatableAttribute.Categories.Problems, Priority = 211)]
-  [StorableType("B8C7B816-9332-4786-8C5A-187B2A4AAAC6")]
-  public class TimeWindowedDynamicSymbolicRegressionProblem : SingleObjectiveStatefulDynamicProblem<SymbolicExpressionTreeEncoding, SymbolicExpressionTree, TimeWindowedDynamicSymbolicRegressionProblemState> {
+  [Item("Dynamic Symbolic Regression Problem", "Applies different dataset partitions as a regression problem.")]
+  [Creatable(CreatableAttribute.Categories.Problems, Priority = 210)]
+  [StorableType("47E9498A-545C-47FE-AD2E-9B10DB683320")]
+  public class DynamicSymbolicRegressionProblem 
+    : SingleObjectiveStatefulDynamicProblem<SymbolicExpressionTreeEncoding, SymbolicExpressionTree, DynamicSymbolicRegressionProblemState> 
+  {
 
     #region Propeties
     public override bool Maximization => !Parameters.ContainsKey(StateParameterName) || (State?.Maximization??true);
     #endregion
 
     #region Constructors and Cloning
-    public TimeWindowedDynamicSymbolicRegressionProblem() {
-      InitialState = new TimeWindowedDynamicSymbolicRegressionProblemState();
+    public DynamicSymbolicRegressionProblem() {
+      InitialState = new DynamicSymbolicRegressionProblemState();
       Encoding = InitialState.Encoding;
       SolutionCreator = InitialState.SolutionCreator;
       RegisterProblemEventHandlers();
@@ -48,7 +50,7 @@ namespace HeuristicLab.Problems.Dynamic {
     }
 
     [StorableConstructor]
-    protected TimeWindowedDynamicSymbolicRegressionProblem(StorableConstructorFlag _) : base(_) { }
+    protected DynamicSymbolicRegressionProblem(StorableConstructorFlag _) : base(_) { }
 
     
     [StorableHook(HookType.AfterDeserialization)]
@@ -57,10 +59,10 @@ namespace HeuristicLab.Problems.Dynamic {
     }
     
 
-    protected TimeWindowedDynamicSymbolicRegressionProblem(TimeWindowedDynamicSymbolicRegressionProblem original, Cloner cloner) : base(original, cloner) { }
+    protected DynamicSymbolicRegressionProblem(DynamicSymbolicRegressionProblem original, Cloner cloner) : base(original, cloner) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new TimeWindowedDynamicSymbolicRegressionProblem(this, cloner);
+      return new DynamicSymbolicRegressionProblem(this, cloner);
     }
     #endregion
 
