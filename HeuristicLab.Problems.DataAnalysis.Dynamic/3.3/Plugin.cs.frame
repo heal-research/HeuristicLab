@@ -24,11 +24,9 @@ using System.Collections.Generic;
 using System.Text;
 using HeuristicLab.PluginInfrastructure;
 
-namespace HeuristicLab.Problems.Dynamic {
-  [Plugin("HeuristicLab.Problems.Dynamic","Provides dynamic benchmark problems.", "3.4.16.$WCREV$")]
-  [PluginFile("HeuristicLab.Problems.Dynamic-3.4.dll", PluginFileType.Assembly)]
-  [PluginFile("concorde.exe", PluginFileType.Data)]
-  [PluginFile("cygwin1.dll", PluginFileType.Data)]
+namespace HeuristicLab.Problems.DataAnalysis.Dynamic {
+  [Plugin("HeuristicLab.Problems.DataAnalysis.Dynamic","", "3.4.16.$WCREV$")]
+  [PluginFile("HeuristicLab.Problems.DataAnalysis.Dynamic-3.4.dll", PluginFileType.Assembly)]
   [PluginDependency("HeuristicLab.ALGLIB", "3.17")]
   [PluginDependency("HeuristicLab.Analysis", "3.3")]
   [PluginDependency("HeuristicLab.Algorithms.ALPS", "3.3")]

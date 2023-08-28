@@ -13,8 +13,8 @@ using HeuristicLab.Problems.DataAnalysis.Symbolic.Regression;
 
 namespace HeuristicLab.Problems.Dynamic {
   [StorableType("A1A271EC-8B81-452A-A9FB-7BDF223C18E4")]
-  public class TimeWindowedSymbolicRegressionProblemState 
-    : SingleObjectiveBasicProblem<SymbolicExpressionTreeEncoding>, IDynamicProblemState<TimeWindowedSymbolicRegressionProblemState>
+  public class TimeWindowedDynamicSymbolicRegressionProblemState 
+    : SingleObjectiveBasicProblem<SymbolicExpressionTreeEncoding>, IDynamicProblemState<TimeWindowedDynamicSymbolicRegressionProblemState>
   {
     public const string ProblemParameterName = "InnerProblem";
     public const string WindowStartParameterName = "WindowStart";
@@ -61,10 +61,10 @@ namespace HeuristicLab.Problems.Dynamic {
     }
 
     [StorableConstructor]
-    protected TimeWindowedSymbolicRegressionProblemState(StorableConstructorFlag _) : base(_) { }
-    protected TimeWindowedSymbolicRegressionProblemState(TimeWindowedSymbolicRegressionProblemState original, Cloner cloner) : base(original, cloner) { }
+    protected TimeWindowedDynamicSymbolicRegressionProblemState(StorableConstructorFlag _) : base(_) { }
+    protected TimeWindowedDynamicSymbolicRegressionProblemState(TimeWindowedDynamicSymbolicRegressionProblemState original, Cloner cloner) : base(original, cloner) { }
 
-    public TimeWindowedSymbolicRegressionProblemState() {
+    public TimeWindowedDynamicSymbolicRegressionProblemState() {
       Parameters.Add(new ValueParameter<SymbolicRegressionSingleObjectiveProblem>(ProblemParameterName, new SymbolicRegressionSingleObjectiveProblem()));
       Parameters.Add(new FixedValueParameter<IntValue>(WindowStartParameterName, new IntValue(0)));
       Parameters.Add(new FixedValueParameter<IntValue>(WindowSizeParameterName, new IntValue(100)));
@@ -83,7 +83,7 @@ namespace HeuristicLab.Problems.Dynamic {
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new TimeWindowedSymbolicRegressionProblemState(this, cloner);
+      return new TimeWindowedDynamicSymbolicRegressionProblemState(this, cloner);
     }
 
     public void Initialize(IRandom random) {
@@ -94,8 +94,8 @@ namespace HeuristicLab.Problems.Dynamic {
       WindowStart += MoveSize;
     }
 
-    public void MergeFrom(TimeWindowedSymbolicRegressionProblemState original) {
-      // todo?
+    public void MergeFrom(TimeWindowedDynamicSymbolicRegressionProblemState original) {
+      //clone?
     }
 
     public override bool Maximization => !Parameters.ContainsKey(ProblemParameterName) || (Problem?.Maximization.Value??true);

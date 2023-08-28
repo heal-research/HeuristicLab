@@ -33,12 +33,12 @@ namespace HeuristicLab.Random {
   /// </summary>
   [Item("NormalDistributedRandom", "A pseudo random number generator which uses the Ziggurat method to create normally distributed random numbers.")]
   [StorableType("240F7050-C05B-4E85-82C3-2871FE2138B1")]
-  [Obsolete("Use NormalDistributedRandomPolar instead.")]
+  //[Obsolete("Use NormalDistributedRandomPolar instead.")]
   public sealed class NormalDistributedRandom : Item, IRandom {
     [Storable]
     private double mu;
     /// <summary>
-    /// Gets or sets the value for µ.
+    /// Gets or sets the value for Âµ.
     /// </summary>
     public double Mu {
       get { return mu; }
@@ -465,7 +465,7 @@ namespace HeuristicLab.Random {
     }
 
     /// <summary>
-    /// Initializes a new instance of <see cref="NormalDistributedRandom"/> with µ = 0 and sigma = 1
+    /// Initializes a new instance of <see cref="NormalDistributedRandom"/> with Âµ = 0 and sigma = 1
     /// and a new random number generator.
     /// </summary>
     public NormalDistributedRandom() {
@@ -479,7 +479,7 @@ namespace HeuristicLab.Random {
     /// <note type="caution">The random number generator is not copied!</note>
     /// </summary>    
     /// <param name="uniformRandom">The random number generator.</param>
-    /// <param name="mu">The value for µ.</param>
+    /// <param name="mu">The value for Âµ.</param>
     /// <param name="sigma">The value for sigma.</param>
     public NormalDistributedRandom(IRandom uniformRandom, double mu, double sigma) {
       this.mu = mu;

@@ -83,13 +83,13 @@ namespace HeuristicLab.Problems.Dynamic {
     public void OnEvaluation(TSol solution, object quality, long version, long time) { }
 
     public void OnEpochChange(TState data, long version, long time) {
-      var alg = HideAlgorithm? (IAlgorithm)Algorithm.Clone(): Algorithm;
+      var alg = HideAlgorithm ? (IAlgorithm)Algorithm.Clone() : Algorithm;
       ((TState)alg.Problem).MergeFrom((TState)data.Clone());
       alg.Prepare(HideAlgorithm);
       alg.Start();
       alg.Runs.Last().Name = $"Epoch {version} {Algorithm.Name}";
       alg.Runs.Last().Parameters[VersionResultName] = new IntValue((int)version);
-      if(HideAlgorithm) Algorithm.Runs.Add(alg.Runs.Last());
+      if (HideAlgorithm) Algorithm.Runs.Add(alg.Runs.Last());
     }
 
     public void OnAnalyze(ResultCollection results) {
