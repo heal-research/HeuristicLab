@@ -132,8 +132,7 @@ namespace HeuristicLab.Problems.Dynamic {
       try {
         q = Evaluate(individual, random, true);
         foreach (var tracker in Trackers.OfType<IMultiObjectiveDynamicProblemTracker<TSolution, TData>>())
-          tracker.OnEvaluation((TSolution)individual[Encoding.Name], q, EpochClock.CurrentEpoch,
-            EpochClock.CurrentTime);
+          tracker.OnEvaluation(GetData(), (TSolution)individual[Encoding.Name], q, EpochClock.CurrentEpoch, EpochClock.CurrentTime);
 
       } finally {
         rwLock.ReleaseReaderLock();
@@ -178,7 +177,7 @@ namespace HeuristicLab.Problems.Dynamic {
     }
 
     protected virtual void AnalyzeProblem(ResultCollection results, IRandom random, bool dummy) {
-      foreach (var tracker in Trackers) tracker.OnAnalyze(results);
+      foreach (var tracker in Trackers) tracker.OnAnalyze(GetData(), results);
     }
 
     protected abstract void Update(long version);

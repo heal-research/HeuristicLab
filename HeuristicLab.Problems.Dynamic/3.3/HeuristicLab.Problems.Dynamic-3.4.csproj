@@ -144,7 +144,6 @@
     <Compile Include="Operators\SingleObjectiveProblemStateAnalyzer.cs" />
     <Compile Include="Operators\ALPSLayersAnalyzer.cs" />
     <Compile Include="Trackers\SlimAnyTimeQualityTracker.cs" />
-    <Compile Include="Trackers\GenericAlgorithmTracker.cs" />
     <Compile Include="Trackers\AnyTimeQualityTracker.cs" />
     <Compile Include="Trackers\CharacteristicCalculator.cs" />
     <Compile Include="EpochClocks\CountingClock.cs" />

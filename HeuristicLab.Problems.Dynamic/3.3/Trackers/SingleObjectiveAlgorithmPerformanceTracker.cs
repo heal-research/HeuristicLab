@@ -69,7 +69,7 @@ namespace HeuristicLab.Problems.Dynamic {
     #endregion
 
     #region tracker functions
-    public void OnEvaluation(IItem solution, double quality, long version, long time) {
+    public void OnEvaluation(object _, IItem solution, double quality, long version, long time) {
       if (quality < minCur) minCur = quality;
       if (quality > maxCur) maxCur = quality;
 
@@ -89,7 +89,7 @@ namespace HeuristicLab.Problems.Dynamic {
       
     }
 
-    public void OnAnalyze(ResultCollection results) {
+    public void OnAnalyze(object _, ResultCollection results) {
       var a1 = 0;
       var aMin = 0.0;
       var aMax = 0.0;

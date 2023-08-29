@@ -73,7 +73,7 @@ namespace HeuristicLab.Problems.Dynamic {
     #endregion
 
     #region tracker functions
-    public virtual void OnEvaluation(IItem solution, double quality, long version, long time) {
+    public virtual void OnEvaluation(object _, IItem solution, double quality, long version, long time) {
       lock (locker) Qualities.Add(Tuple.Create(time, version, quality));
     }
 
@@ -81,7 +81,7 @@ namespace HeuristicLab.Problems.Dynamic {
       lock (locker) EpochChanges.Add(Tuple.Create(time, version));
     }
 
-    public virtual void OnAnalyze(ResultCollection results) {
+    public virtual void OnAnalyze(object _, ResultCollection results) {
       //fetch data
       List<Tuple<long, long, double>> qs;
       List<Tuple<long, long>> ecs;

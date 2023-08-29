@@ -26,9 +26,9 @@ using HeuristicLab.Optimization;
 namespace HeuristicLab.Problems.Dynamic {
 
   [StorableType("FF4CED77-3293-4FCA-B903-92B877B4ABFF")]
-  public interface IDynamicProblemTracker<in TProblemData> : IParameterizedNamedItem {
-    void OnEpochChange(TProblemData data, long version, long time);
-    void OnAnalyze(ResultCollection results);
+  public interface IDynamicProblemTracker<in TState> : IParameterizedNamedItem {
+    void OnEpochChange(TState state, long version, long time);
+    void OnAnalyze(TState state, ResultCollection results);
     void Reset();
   }
 }
