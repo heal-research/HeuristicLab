@@ -100,16 +100,17 @@ namespace HeuristicLab.Problems.Dynamic {
       var plot = (IndexedDataTable<double>)plotResult.Value;
       if (!plot.Rows.TryGetValue(MaximumQualitiesRowName, out maxRow))
         plot.Rows.Add(maxRow = new IndexedDataRow<double>(MaximumQualitiesRowName, "", new List<Tuple<double, double>>()));
+      if (!plot.Rows.TryGetValue(AverageQualitiesRowName, out avgRow))
+        plot.Rows.Add(avgRow = new IndexedDataRow<double>(AverageQualitiesRowName, "", new List<Tuple<double, double>>()));
       if (!plot.Rows.TryGetValue(MinimumQualitiesRowName, out minRow))
         plot.Rows.Add(minRow = new IndexedDataRow<double>(MinimumQualitiesRowName, "", new List<Tuple<double, double>>()));
+      if (!plot.Rows.TryGetValue(BestQualitiesRowName, out bestRow))
+        plot.Rows.Add(bestRow = new IndexedDataRow<double>(BestQualitiesRowName, "", new List<Tuple<double, double>>()));
       if (!plot.Rows.TryGetValue(EpochChangesRowName, out epochRow))
         plot.Rows.Add(epochRow = new IndexedDataRow<double>(EpochChangesRowName, "", new List<Tuple<double, double>>()) {
           VisualProperties = new DataRowVisualProperties() { SecondYAxis = true, ChartType = DataRowVisualProperties.DataRowChartType.StepLine }
         });
-      if (!plot.Rows.TryGetValue(AverageQualitiesRowName, out avgRow))
-        plot.Rows.Add(avgRow = new IndexedDataRow<double>(AverageQualitiesRowName, "", new List<Tuple<double, double>>()));
-      if (!plot.Rows.TryGetValue(BestQualitiesRowName, out bestRow))
-        plot.Rows.Add(bestRow = new IndexedDataRow<double>(BestQualitiesRowName, "", new List<Tuple<double, double>>()));
+      
       //fill rows with data (always use AddRange)
       if (ecs.Count != 0) {
         epochRow.Values.AddRange(ecs.Select(x=> new Tuple<double, double>(x.Item1, x.Item2)));
