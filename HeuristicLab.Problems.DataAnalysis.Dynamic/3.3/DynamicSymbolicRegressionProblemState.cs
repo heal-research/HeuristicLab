@@ -18,8 +18,14 @@ namespace HeuristicLab.Problems.Dynamic {
   {
     public const string ProblemParameterName = "InnerProblem";
 
+    public enum PartitionsUpdateMode {
+      Wrapping,
+      KeepLast
+    }
+
     public IValueParameter<IntMatrix> TrainingPartitionsParameter => (IValueParameter<IntMatrix>)Parameters["TrainingPartitions"];
     public IValueParameter<IntMatrix> TestPartitionsParameter => (IValueParameter<IntMatrix>)Parameters["TestPartitions"];
+    public IFixedValueParameter<EnumValue<PartitionsUpdateMode>> ProgressModeParameter => (IFixedValueParameter<EnumValue<PartitionsUpdateMode>>)Parameters["PartitionsUpdate"];
     
     public IValueParameter<IntArray> CurrentTrainingPartitionParameter => (IValueParameter<IntArray>)Parameters["CurrentTrainingPartition"];
     public IValueParameter<IntArray> CurrentTestPartitionParameter => (IValueParameter<IntArray>)Parameters["CurrentTestPartition"];
@@ -35,6 +41,10 @@ namespace HeuristicLab.Problems.Dynamic {
     public IntMatrix TestPartitions {
       get { return TestPartitionsParameter.Value; }
       set { TestPartitionsParameter.Value = value; }
+    }
+    public PartitionsUpdateMode PartitionsUpdate {
+      get { return ProgressModeParameter.Value.Value; }
+      set { ProgressModeParameter.Value.Value = value; }
     }
     
     public IntArray CurrentTrainingPartition {
@@ -60,6 +70,7 @@ namespace HeuristicLab.Problems.Dynamic {
       Parameters.Add(new ValueParameter<SymbolicRegressionSingleObjectiveProblem>(ProblemParameterName, new SymbolicRegressionSingleObjectiveProblem()));
       Parameters.Add(new ValueParameter<IntMatrix>("TrainingPartitions", new IntMatrix(new int[4, 2] { { 0,  5}, { 5, 10}, {10, 15}, {15, 20} })));
       Parameters.Add(new ValueParameter<IntMatrix>("TestPartitions",     new IntMatrix(new int[4, 2] { { 5, 10}, {10, 15}, {15, 20}, {20, 25} })));
+      Parameters.Add(new FixedValueParameter<EnumValue<PartitionsUpdateMode>>("PartitionsUpdate", new EnumValue<PartitionsUpdateMode>(PartitionsUpdateMode.KeepLast)));
       Parameters.Add(new ValueParameter<IntArray>("CurrentTrainingPartition", new IntArray(2)));
       Parameters.Add(new ValueParameter<IntArray>("CurrentTestPartition",     new IntArray(2)));
       
@@ -84,8 +95,12 @@ namespace HeuristicLab.Problems.Dynamic {
     }
 
     public void Update(IRandom random, long version) {
-      int index = (int)(version % TrainingPartitions.Rows);
-
+      int index = PartitionsUpdate switch {
+        PartitionsUpdateMode.Wrapping => (int)(version % TrainingPartitions.Rows),
+        PartitionsUpdateMode.KeepLast => (int)Math.Min(version, TrainingPartitions.Rows - 1),
+        _ => 0
+      };
+      
       CurrentTrainingPartition[0] = TrainingPartitions[index, 0];
       CurrentTrainingPartition[1] = TrainingPartitions[index, 1];
       
