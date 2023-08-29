@@ -94,10 +94,6 @@ namespace HeuristicLab.Problems.Dynamic {
       StateVersion = 0;
       State = (TState)InitialState.Clone();
       State.Initialize(EnvironmentRandom ?? new FastRandom(0));
-      foreach (var tracker in Trackers) {
-        tracker.OnEpochChange(GetData(), 0, 0);
-      }
-      
     }
 
     protected override void AnalyzeProblem(ResultCollection results, IRandom random, bool dummy) {

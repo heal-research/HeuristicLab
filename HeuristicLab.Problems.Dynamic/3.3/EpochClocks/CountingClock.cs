@@ -49,6 +49,7 @@ namespace HeuristicLab.Problems.Dynamic {
 
     public long CurrentEpoch => Interlocked.Read(ref version);
     public long CurrentTime => Interlocked.Read(ref lastTick);
+    public bool IsRunning => running;
 
     #region Constructors and cloning
     public CountingClock() {

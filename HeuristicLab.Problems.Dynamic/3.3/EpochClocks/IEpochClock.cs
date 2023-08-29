@@ -31,6 +31,8 @@ namespace HeuristicLab.Problems.Dynamic {
     long CurrentEpoch { get; }
     long CurrentTime { get; }
     
+    bool IsRunning { get; }
+    
     void Start(bool throwEvent = true);
     void Pause();
     void Resume();

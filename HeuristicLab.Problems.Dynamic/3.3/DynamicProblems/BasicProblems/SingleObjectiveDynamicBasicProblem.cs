@@ -115,7 +115,7 @@ namespace HeuristicLab.Problems.Dynamic {
       Parameters.Add(new FixedValueParameter<BoolValue>(SetSeedRandomlyParameterName, "", new BoolValue(false)));
       Parameters.Add(new FixedValueParameter<CheckedItemList<IDynamicProblemTracker<TData>>>(TrackersParameterName,
         new CheckedItemList<IDynamicProblemTracker<TData>> {
-        {new AnyTimeQualityTracker(),false},
+        {new AnyTimeQualityTracker(),true},
         {new SingleObjectiveAlgorithmPerformanceTracker(),true},
         {new SlimAnyTimeQualityTracker(),true},
         }));
@@ -209,14 +209,18 @@ namespace HeuristicLab.Problems.Dynamic {
       switch (alg.ExecutionState) {
         case ExecutionState.Prepared:
           EpochClock.Reset();
+          ClockVersion = 0;
+          ClockTime = 0;
           EnvironmentRandom = null;
+          InitPending = true;
+          foreach (var tracker in Trackers) {
+            tracker.Reset();
+          }
           AlgorithmReset();
           break;
         case ExecutionState.Started:
           ResetEnvironmentRandom();
-          InitPending = true;
-          foreach (var tracker in Trackers) tracker.Reset();
-          SafeUpdate();
+          SafeUpdate(); // do we really want to trigger an epoch change on algorithm start?
           break;
         case ExecutionState.Paused:
           EpochClock.Pause();
@@ -235,12 +239,18 @@ namespace HeuristicLab.Problems.Dynamic {
         InitPending = false;
         AlgorithmStart();
         EpochClock.Start(false);
+      } else if (!EpochClock.IsRunning) {
+        EpochClock.Resume();
       }
 
       try {
         Update(ClockVersion);
-        foreach (var tracker in Trackers) tracker.OnEpochChange(GetData(), ClockVersion, ClockTime);
-      } finally { rwLock.ReleaseWriterLock(); }
+        foreach (var tracker in Trackers) {
+          tracker.OnEpochChange(GetData(), ClockVersion, ClockTime);
+        }
+      } finally {
+        rwLock.ReleaseWriterLock();
+      }
       EpochChanged?.Invoke(this, ClockVersion);
     }
 
