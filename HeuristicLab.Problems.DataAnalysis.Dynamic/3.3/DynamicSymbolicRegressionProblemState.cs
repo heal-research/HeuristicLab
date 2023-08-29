@@ -127,12 +127,12 @@ namespace HeuristicLab.Problems.Dynamic {
       base.Analyze(individuals, qualities, results, random);
     }
 
-    private IEnumerable<int> GetTrainingIndices() {
+    public IEnumerable<int> GetTrainingIndices() {
       int begin = CurrentTrainingPartition[0];
       int end = CurrentTrainingPartition[1];
       return Enumerable.Range(begin, end - begin);
     }
-    private IEnumerable<int> GetTestIndices() {
+    public IEnumerable<int> GetTestIndices() {
       int begin = CurrentTestPartition[0];
       int end = CurrentTestPartition[1];
       return Enumerable.Range(begin, end - begin);

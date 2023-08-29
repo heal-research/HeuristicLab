@@ -123,6 +123,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AnyTimeTestPartitionQualityTracker.cs" />
     <Compile Include="DynamicSymbolicRegressionProblem.cs" />
     <Compile Include="DynamicSymbolicRegressionProblemState.cs" />
     <Compile Include="Plugin.cs" />

@@ -32,7 +32,7 @@ namespace HeuristicLab.Problems.Dynamic {
   [Item("Any Time Quality Tracker", "")]
   [StorableType("EDAC98B7-C40A-4995-A63C-9EE12E0BB14B")]
   public class AnyTimeQualityTracker : ParameterizedNamedItem, ISingleObjectiveDynamicProblemTracker<IItem, object> {
-    public const string PlotResultName = "Any Time Performance";
+    protected virtual string PlotResultName { get => "Any Time Performance"; }
     public const string MinimumQualitiesRowName = "Minimum Qualities";
     public const string AverageQualitiesRowName = "Average Qualities";
     public const string MaximumQualitiesRowName = "Maximum Qualities";
@@ -73,15 +73,15 @@ namespace HeuristicLab.Problems.Dynamic {
     #endregion
 
     #region tracker functions
-    public void OnEvaluation(IItem solution, double quality, long version, long time) {
+    public virtual void OnEvaluation(IItem solution, double quality, long version, long time) {
       lock (locker) Qualities.Add(Tuple.Create(time, version, quality));
     }
 
-    public void OnEpochChange(object _, long version, long time) {
+    public virtual void OnEpochChange(object _, long version, long time) {
       lock (locker) EpochChanges.Add(Tuple.Create(time, version));
     }
 
-    public void OnAnalyze(ResultCollection results) {
+    public virtual void OnAnalyze(ResultCollection results) {
       //fetch data
       List<Tuple<long, long, double>> qs;
       List<Tuple<long, long>> ecs;
