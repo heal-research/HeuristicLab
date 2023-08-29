@@ -30,12 +30,17 @@ namespace HeuristicLab.Problems.DataAnalysis.Dynamic;
 [Item("Test Partition Any Time Quality Tracker", "")]
 [StorableType("D08F3BF6-182E-4588-BBFD-86E0F849CA48")]
 public class AnyTimeTestPartitionQualityTracker : AnyTimeQualityTracker {
+  [Storable] private DynamicSymbolicRegressionProblemState latestState;
+  
   protected override string PlotResultName { get => "Test Partition Any Time Performance"; }
   
   public AnyTimeTestPartitionQualityTracker() {
   }
   [StorableConstructor] protected AnyTimeTestPartitionQualityTracker(StorableConstructorFlag _) : base(_) { }
-  protected AnyTimeTestPartitionQualityTracker(AnyTimeTestPartitionQualityTracker original, Cloner cloner) : base(original, cloner) { }
+
+  protected AnyTimeTestPartitionQualityTracker(AnyTimeTestPartitionQualityTracker original, Cloner cloner) : base(original, cloner) {
+    latestState = cloner.Clone(original.latestState);
+  }
   public override IDeepCloneable Clone(Cloner cloner) { return new AnyTimeTestPartitionQualityTracker(this, cloner); }
 
   public override void OnEvaluation(IItem solution, double quality, long version, long time) {
@@ -55,7 +60,6 @@ public class AnyTimeTestPartitionQualityTracker : AnyTimeQualityTracker {
     base.OnEvaluation(solution, testQuality, version, time);
   }
 
-  private DynamicSymbolicRegressionProblemState latestState;
   public override void OnEpochChange(object state, long version, long time) {
     latestState = (DynamicSymbolicRegressionProblemState)state;
     base.OnEpochChange(state, version, time);
