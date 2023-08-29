@@ -94,54 +94,53 @@ namespace HeuristicLab.Problems.Dynamic {
 
       //get or generate rows
       IResult plotResult;
-      ScatterPlotDataRow maxRow, minRow, epochRow, avgRow, bestRow;
+      IndexedDataRow<double> maxRow, minRow, epochRow, avgRow, bestRow;
       if (!results.TryGetValue(PlotResultName, out plotResult))
-        results.Add(plotResult = new Result(PlotResultName, new ScatterPlot("AnyTimePerformance", "")));
-      var plot = (ScatterPlot)plotResult.Value;
+        results.Add(plotResult = new Result(PlotResultName, new IndexedDataTable<double>("AnyTimePerformance", "")));
+      var plot = (IndexedDataTable<double>)plotResult.Value;
       if (!plot.Rows.TryGetValue(MaximumQualitiesRowName, out maxRow))
-        plot.Rows.Add(maxRow = new ScatterPlotDataRow(MaximumQualitiesRowName, "", new List<Point2D<double>>()));
+        plot.Rows.Add(maxRow = new IndexedDataRow<double>(MaximumQualitiesRowName, "", new List<Tuple<double, double>>()));
       if (!plot.Rows.TryGetValue(MinimumQualitiesRowName, out minRow))
-        plot.Rows.Add(minRow = new ScatterPlotDataRow(MinimumQualitiesRowName, "", new List<Point2D<double>>()));
+        plot.Rows.Add(minRow = new IndexedDataRow<double>(MinimumQualitiesRowName, "", new List<Tuple<double, double>>()));
       if (!plot.Rows.TryGetValue(EpochChangesRowName, out epochRow))
-        plot.Rows.Add(epochRow = new ScatterPlotDataRow(EpochChangesRowName, "", new List<Point2D<double>>()));
+        plot.Rows.Add(epochRow = new IndexedDataRow<double>(EpochChangesRowName, "", new List<Tuple<double, double>>()) {
+          VisualProperties = new DataRowVisualProperties() { SecondYAxis = true, ChartType = DataRowVisualProperties.DataRowChartType.StepLine }
+        });
       if (!plot.Rows.TryGetValue(AverageQualitiesRowName, out avgRow))
-        plot.Rows.Add(avgRow = new ScatterPlotDataRow(AverageQualitiesRowName, "", new List<Point2D<double>>()));
+        plot.Rows.Add(avgRow = new IndexedDataRow<double>(AverageQualitiesRowName, "", new List<Tuple<double, double>>()));
       if (!plot.Rows.TryGetValue(BestQualitiesRowName, out bestRow))
-        plot.Rows.Add(bestRow = new ScatterPlotDataRow(BestQualitiesRowName, "", new List<Point2D<double>>()));
+        plot.Rows.Add(bestRow = new IndexedDataRow<double>(BestQualitiesRowName, "", new List<Tuple<double, double>>()));
       //fill rows with data (always use AddRange)
       if (ecs.Count != 0) {
-        epochRow.Points.AddRange(ecs.Select(x=>new Point2D<double>(x.Item1, x.Item2)));
+        epochRow.Values.AddRange(ecs.Select(x=> new Tuple<double, double>(x.Item1, x.Item2)));
         LastResolvedEpochChange = ecs.Last();
       }
 
-      if(qs.Count ==0) return;
+      if(qs.Count == 0) return;
+      
       //calculate cumulative Minimum
-      var points2 = new List<Point2D<double>>();
+      var newMinPoints = new List<Tuple<double, double>>();
       foreach (var tuple in qs) {
         if (tuple.Item2 == LastMinimumResolvedQuality.Item2 &&
             !(tuple.Item3 < LastMinimumResolvedQuality.Item3)) continue;
         LastMinimumResolvedQuality = tuple;
-        points2.Add(new Point2D<double>(LastMinimumResolvedQuality.Item1, LastMinimumResolvedQuality.Item3));
+        newMinPoints.Add(new Tuple<double, double>(LastMinimumResolvedQuality.Item1, LastMinimumResolvedQuality.Item3));
       }
-      points2.Add(new Point2D<double>(qs.Last().Item1, LastMinimumResolvedQuality.Item3));
-      minRow.Points.AddRange(points2);
+      newMinPoints.Add(new Tuple<double, double>(qs.Last().Item1, LastMinimumResolvedQuality.Item3));
+      minRow.Values.AddRange(newMinPoints);
 
       //calculate cumulative Maximum
-      var points3 = new List<Point2D<double>>();
+      var newMaxPoints = new List<Tuple<double, double>>();
       foreach (var tuple in qs) {
         if (tuple.Item2 == LastMaximumResolvedQuality.Item2 &&
             !(tuple.Item3 > LastMaximumResolvedQuality.Item3)) continue;
         LastMaximumResolvedQuality = tuple;
-        points3.Add(new Point2D<double>(LastMaximumResolvedQuality.Item1, LastMaximumResolvedQuality.Item3));
+        newMaxPoints.Add(new Tuple<double, double>(LastMaximumResolvedQuality.Item1, LastMaximumResolvedQuality.Item3));
       }
-
-      points3.Add(new Point2D<double>(qs.Last().Item1, LastMaximumResolvedQuality.Item3));
-      maxRow.Points.AddRange(points3);
-      avgRow.Points.AddRange(qs
-                             .GroupBy(x=>x.Item2)
-                             .Select(g=>new Point2D<double>(
-                               g.Max(x=>x.Item1), 
-                               g.Average(x=>x.Item3))));
+      newMaxPoints.Add(new Tuple<double, double>(qs.Last().Item1, LastMaximumResolvedQuality.Item3));
+      maxRow.Values.AddRange(newMaxPoints);
+      
+      avgRow.Values.AddRange(qs.GroupBy(x => x.Item2).Select(g => new Tuple<double, double>(g.Max(x => x.Item1), g.Average(x => x.Item3))));
     }
 
     public void Reset() {
