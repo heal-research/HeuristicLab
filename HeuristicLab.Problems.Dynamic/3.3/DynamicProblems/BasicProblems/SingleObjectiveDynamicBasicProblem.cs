@@ -38,11 +38,11 @@ using HeuristicLab.Random;
 namespace HeuristicLab.Problems.Dynamic {
 
   [StorableType("DED64F8F-7529-43A5-A13A-3705B31D12BA")]
-  public abstract class SingleObjectiveDynamicBasicProblem<TEncoding, TSolution, TData> :
+  public abstract class SingleObjectiveDynamicBasicProblem<TEncoding, TSolution, TState> :
     SingleObjectiveBasicProblem<TEncoding>, ISingleObjectiveDynamicProblemDefinition
     where TEncoding : class, IEncoding
     where TSolution : class, IItem
-    where TData : class {
+    where TState : class {
     [Storable] private bool InitPending = false;
 
     #region ParameterNames
@@ -62,8 +62,8 @@ namespace HeuristicLab.Problems.Dynamic {
       (IFixedValueParameter<IntValue>)Parameters[SeedParameterName];
     public IFixedValueParameter<BoolValue> SetSeedRandomlyParameter =>
       (IFixedValueParameter<BoolValue>)Parameters[SetSeedRandomlyParameterName];
-    public IFixedValueParameter<CheckedItemList<IDynamicProblemTracker<TData>>> TrackersParameter =>
-      (IFixedValueParameter<CheckedItemList<IDynamicProblemTracker<TData>>>)Parameters[TrackersParameterName];
+    public IFixedValueParameter<CheckedItemList<IDynamicProblemTracker<TState>>> TrackersParameter =>
+      (IFixedValueParameter<CheckedItemList<IDynamicProblemTracker<TState>>>)Parameters[TrackersParameterName];
     #endregion
 
     #region Properties
@@ -71,7 +71,7 @@ namespace HeuristicLab.Problems.Dynamic {
     public bool SetSeedRandomly { get { return SetSeedRandomlyParameter.Value.Value; } set { SetSeedRandomlyParameter.Value.Value = value; } }
     public IEpochClock EpochClock => EpochClockParameter.Value;
     public ProblemUpdatePolicy ProblemUpdatePolicy => UpdatePolicyParameter.Value.Value;
-    public IEnumerable<IDynamicProblemTracker<TData>> Trackers => TrackersParameter.Value.CheckedItems.Select(x => x.Value);
+    public IEnumerable<IDynamicProblemTracker<TState>> Trackers => TrackersParameter.Value.CheckedItems.Select(x => x.Value);
     #endregion
 
     #region Fields and Storbales
@@ -97,7 +97,7 @@ namespace HeuristicLab.Problems.Dynamic {
         Operators.Add(new SingleObjectiveProblemStateAnalyzer() { Problem = this });
     }
 
-    protected SingleObjectiveDynamicBasicProblem(SingleObjectiveDynamicBasicProblem<TEncoding, TSolution, TData> original, Cloner cloner)
+    protected SingleObjectiveDynamicBasicProblem(SingleObjectiveDynamicBasicProblem<TEncoding, TSolution, TState> original, Cloner cloner)
       : base(original, cloner) {
       Dirty = original.Dirty;
       ClockVersion = original.ClockVersion;
@@ -113,9 +113,9 @@ namespace HeuristicLab.Problems.Dynamic {
       Parameters.Add(new FixedValueParameter<EnumValue<ProblemUpdatePolicy>>(UpdatePolicyParameterName, "Determines when the problem state changes", new EnumValue<ProblemUpdatePolicy>(ProblemUpdatePolicy.Immediate)));
       Parameters.Add(new FixedValueParameter<IntValue>(SeedParameterName, "Random Seed", new IntValue(0)));
       Parameters.Add(new FixedValueParameter<BoolValue>(SetSeedRandomlyParameterName, "", new BoolValue(false)));
-      Parameters.Add(new FixedValueParameter<CheckedItemList<IDynamicProblemTracker<TData>>>(TrackersParameterName,
-        new CheckedItemList<IDynamicProblemTracker<TData>> {
-        {new AnyTimeQualityTracker(),true},
+      Parameters.Add(new FixedValueParameter<CheckedItemList<IDynamicProblemTracker<TState>>>(TrackersParameterName,
+        new CheckedItemList<IDynamicProblemTracker<TState>> {
+        {new AnyTimeQualityTracker<TSolution, TState>(),true},
         {new SingleObjectiveAlgorithmPerformanceTracker(),true},
         {new SlimAnyTimeQualityTracker(),true},
         }));
@@ -132,7 +132,7 @@ namespace HeuristicLab.Problems.Dynamic {
       double q;
       try {
         q = Evaluate(individual, random, true);
-        foreach (var tracker in Trackers.OfType<ISingleObjectiveDynamicProblemTracker<TSolution, TData>>())
+        foreach (var tracker in Trackers.OfType<ISingleObjectiveDynamicProblemTracker<TSolution, TState>>())
           tracker.OnEvaluation(GetData(), (TSolution)individual[Encoding.Name], q, EpochClock.CurrentEpoch,
             EpochClock.CurrentTime);
 
@@ -254,7 +254,7 @@ namespace HeuristicLab.Problems.Dynamic {
       EpochChanged?.Invoke(this, ClockVersion);
     }
 
-    protected abstract TData GetData();
+    protected abstract TState GetData();
 
     private void ResetEnvironmentRandom() {
       if (SetSeedRandomly) Seed = new System.Random().Next();

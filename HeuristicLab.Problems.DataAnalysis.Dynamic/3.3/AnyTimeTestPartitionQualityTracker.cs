@@ -29,7 +29,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Dynamic;
 
 [Item("Test Partition Any Time Quality Tracker", "")]
 [StorableType("D08F3BF6-182E-4588-BBFD-86E0F849CA48")]
-public class AnyTimeTestPartitionQualityTracker : AnyTimeQualityTracker {
+public class AnyTimeTestPartitionQualityTracker : AnyTimeQualityTracker<ISymbolicExpressionTree, DynamicSymbolicRegressionProblemState> {
   protected override string PlotResultName { get => "Test Partition Any Time Performance"; }
   
   public AnyTimeTestPartitionQualityTracker() {
@@ -40,18 +40,14 @@ public class AnyTimeTestPartitionQualityTracker : AnyTimeQualityTracker {
   }
   public override IDeepCloneable Clone(Cloner cloner) { return new AnyTimeTestPartitionQualityTracker(this, cloner); }
 
-  public override void OnEvaluation(object state, IItem solution, double quality, long version, long time) {
-    if (state is not DynamicSymbolicRegressionProblemState dynSymRegState) return;
-    
-    var tree = (ISymbolicExpressionTree)solution;
-    
-    double testQuality = dynSymRegState.Problem.Evaluator.Evaluate(
-      tree,
-      dynSymRegState.Problem.ProblemData, 
-      dynSymRegState.GetTestIndices(), 
-      dynSymRegState.Problem.SymbolicExpressionTreeInterpreter, 
-      dynSymRegState.Problem.ApplyLinearScaling.Value, 
-      dynSymRegState.Problem.EstimationLimits?.Lower ?? 0, dynSymRegState.Problem.EstimationLimits?.Upper ?? 1);
+  public override void OnEvaluation(DynamicSymbolicRegressionProblemState state, ISymbolicExpressionTree solution, double quality, long version, long time) {
+    double testQuality = state.Problem.Evaluator.Evaluate(
+      solution,
+      state.Problem.ProblemData, 
+      state.GetTestIndices(), 
+      state.Problem.SymbolicExpressionTreeInterpreter, 
+      state.Problem.ApplyLinearScaling.Value, 
+      state.Problem.EstimationLimits?.Lower ?? 0, state.Problem.EstimationLimits?.Upper ?? 1);
     
     base.OnEvaluation(state, solution, testQuality, version, time);
   }

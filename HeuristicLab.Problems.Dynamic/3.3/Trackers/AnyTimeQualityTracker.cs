@@ -31,7 +31,10 @@ using HeuristicLab.Optimization;
 namespace HeuristicLab.Problems.Dynamic {
   [Item("Any Time Quality Tracker", "")]
   [StorableType("EDAC98B7-C40A-4995-A63C-9EE12E0BB14B")]
-  public class AnyTimeQualityTracker : ParameterizedNamedItem, ISingleObjectiveDynamicProblemTracker<IItem, object> {
+  public class AnyTimeQualityTracker<TSolution, TState> 
+    : ParameterizedNamedItem, ISingleObjectiveDynamicProblemTracker<TSolution, TState> 
+    where TSolution : IItem 
+  {
     protected virtual string PlotResultName { get => "Any Time Performance"; }
     public const string MinimumQualitiesRowName = "Minimum Qualities";
     public const string AverageQualitiesRowName = "Average Qualities";
@@ -59,7 +62,7 @@ namespace HeuristicLab.Problems.Dynamic {
     protected AnyTimeQualityTracker(StorableConstructorFlag _) : base(_) {
     }
 
-    protected AnyTimeQualityTracker(AnyTimeQualityTracker original, Cloner cloner) : base(original, cloner) {
+    protected AnyTimeQualityTracker(AnyTimeQualityTracker<TSolution, TState> original, Cloner cloner) : base(original, cloner) {
       Qualities = original.Qualities.ToList();
       EpochChanges = original.EpochChanges.ToList();
       LastResolvedEpochChange = original.LastResolvedEpochChange;
@@ -68,20 +71,20 @@ namespace HeuristicLab.Problems.Dynamic {
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new AnyTimeQualityTracker(this, cloner);
+      return new AnyTimeQualityTracker<TSolution, TState>(this, cloner);
     }
     #endregion
 
     #region tracker functions
-    public virtual void OnEvaluation(object _, IItem solution, double quality, long version, long time) {
+    public virtual void OnEvaluation(TState state, TSolution solution, double quality, long version, long time) {
       lock (locker) Qualities.Add(Tuple.Create(time, version, quality));
     }
 
-    public virtual void OnEpochChange(object _, long version, long time) {
+    public virtual void OnEpochChange(TState state, long version, long time) {
       lock (locker) EpochChanges.Add(Tuple.Create(time, version));
     }
 
-    public virtual void OnAnalyze(object _, ResultCollection results) {
+    public virtual void OnAnalyze(TState state, ResultCollection results) {
       //fetch data
       List<Tuple<long, long, double>> qs;
       List<Tuple<long, long>> ecs;
