@@ -25,16 +25,18 @@ using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Problems.Dynamic;
 
-namespace HeuristicLab.Problems.DataAnalysis.Dynamic; 
+namespace HeuristicLab.Problems.DataAnalysis.Dynamic;
 
 [Item("Test Partition Any Time Quality Tracker", "")]
 [StorableType("D08F3BF6-182E-4588-BBFD-86E0F849CA48")]
-public class AnyTimeTestPartitionQualityTracker : AnyTimeQualityTracker<ISymbolicExpressionTree, DynamicSymbolicRegressionProblemState> {
+public class AnyTimeTestPartitionQualityTracker
+  : AnyTimeQualityTracker<ISymbolicExpressionTree, DynamicSymbolicRegressionProblemState>
+{
   protected override string PlotResultName { get => "Test Partition Any Time Performance"; }
   
   public AnyTimeTestPartitionQualityTracker() {
   }
-  [StorableConstructor] protected AnyTimeTestPartitionQualityTracker(StorableConstructorFlag _) : base(_) { }
+  [StorableConstructor]protected AnyTimeTestPartitionQualityTracker(StorableConstructorFlag _) : base(_) { }
 
   protected AnyTimeTestPartitionQualityTracker(AnyTimeTestPartitionQualityTracker original, Cloner cloner) : base(original, cloner) {
   }
@@ -43,11 +45,11 @@ public class AnyTimeTestPartitionQualityTracker : AnyTimeQualityTracker<ISymboli
   public override void OnEvaluation(DynamicSymbolicRegressionProblemState state, ISymbolicExpressionTree solution, double quality, long version, long time) {
     double testQuality = state.Problem.Evaluator.Evaluate(
       solution,
-      state.Problem.ProblemData, 
-      state.GetTestIndices(), 
-      state.Problem.SymbolicExpressionTreeInterpreter, 
-      state.Problem.ApplyLinearScaling.Value, 
-      state.Problem.EstimationLimits?.Lower ?? 0, state.Problem.EstimationLimits?.Upper ?? 1);
+      state.Problem.ProblemData,
+      state.GetTestIndices(),
+      state.Problem.SymbolicExpressionTreeInterpreter,
+      state.Problem.ApplyLinearScaling.Value,
+      state.Problem.EstimationLimits.Lower, state.Problem.EstimationLimits.Upper);
     
     base.OnEvaluation(state, solution, testQuality, version, time);
   }

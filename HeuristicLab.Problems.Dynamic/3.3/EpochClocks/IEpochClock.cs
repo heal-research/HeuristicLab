@@ -25,7 +25,6 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.Problems.Dynamic {
-
   [StorableType("0D21494D-233C-4EF0-8263-06F3AAEEF4C8")]
   public interface IEpochClock : IParameterizedNamedItem {
     long CurrentEpoch { get; }

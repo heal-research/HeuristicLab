@@ -36,7 +36,6 @@ using HeuristicLab.Problems.Dynamic.Operators;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.Problems.Dynamic {
-
   [StorableType("BA2F4B70-8112-43E7-84B3-8B5901D41D35")]
   public abstract class MultiObjectiveDynamicBasicProblem<TEncoding, TSolution, TData> :
     MultiObjectiveBasicProblem<TEncoding>,
@@ -44,8 +43,8 @@ namespace HeuristicLab.Problems.Dynamic {
     where TEncoding : class, IEncoding
     where TSolution : class, IItem
     where TData : class {
-    [Storable] private bool InitPending =false;
-    
+    [Storable] private bool InitPending = false;
+
     #region ParameterNames
     public const string EpochClockParameterName = "EpochClock";
     public const string UpdatePolicyParameterName = "AutomaticProblemUpdatePolicy";
@@ -72,19 +71,15 @@ namespace HeuristicLab.Problems.Dynamic {
     public bool SetSeedRandomly { get { return SetSeedRandomlyParameter.Value.Value; } set { SetSeedRandomlyParameter.Value.Value = value; } }
     public IEpochClock EpochClock => EpochClockParameter.Value;
     public ProblemUpdatePolicy ProblemUpdatePolicy => UpdatePolicyParameter.Value.Value;
-    public IEnumerable<IDynamicProblemTracker<TData>> Trackers => TrackersParameter.Value.CheckedItems.Select(x=>x.Value);
+    public IEnumerable<IDynamicProblemTracker<TData>> Trackers => TrackersParameter.Value.CheckedItems.Select(x => x.Value);
     #endregion
 
     #region Fields and Storbales
     private readonly ReaderWriterLock rwLock = new ReaderWriterLock();
-    [Storable]
-    private bool Dirty { get; set; }
-    [Storable]
-    private long ClockVersion { get; set; }
-    [Storable]
-    private long ClockTime { get; set; }
-    [Storable]
-    protected IRandom EnvironmentRandom { get; set; }
+    [Storable] private bool Dirty { get; set; }
+    [Storable] private long ClockVersion { get; set; }
+    [Storable] private long ClockTime { get; set; }
+    [Storable] protected IRandom EnvironmentRandom { get; set; }
     #endregion
 
     #region Constructors and cloning
@@ -94,8 +89,8 @@ namespace HeuristicLab.Problems.Dynamic {
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
       RegisterEventHandlers();
-      if(!Operators.OfType<MultiObjectiveProblemStateAnalyzer>().Any())
-        Operators.Add(new MultiObjectiveProblemStateAnalyzer(){Problem = this});
+      if (!Operators.OfType<MultiObjectiveProblemStateAnalyzer>().Any())
+        Operators.Add(new MultiObjectiveProblemStateAnalyzer() { Problem = this });
     }
 
     protected MultiObjectiveDynamicBasicProblem(MultiObjectiveDynamicBasicProblem<TEncoding, TSolution, TData> original, Cloner cloner)
@@ -119,7 +114,7 @@ namespace HeuristicLab.Problems.Dynamic {
           //TODO add generic algPerf trackers here
         }));
       RegisterEventHandlers();
-      Operators.Add(new MultiObjectiveProblemStateAnalyzer(){Problem = this});
+      Operators.Add(new MultiObjectiveProblemStateAnalyzer() { Problem = this });
     }
     #endregion
 
@@ -133,7 +128,6 @@ namespace HeuristicLab.Problems.Dynamic {
         q = Evaluate(individual, random, true);
         foreach (var tracker in Trackers.OfType<IMultiObjectiveDynamicProblemTracker<TSolution, TData>>())
           tracker.OnEvaluation(GetData(), (TSolution)individual[Encoding.Name], q, EpochClock.CurrentEpoch, EpochClock.CurrentTime);
-
       } finally {
         rwLock.ReleaseReaderLock();
       }
@@ -147,7 +141,9 @@ namespace HeuristicLab.Problems.Dynamic {
       rwLock.AcquireReaderLock(-1);
       try {
         Analyze(individuals, qualities, results, random, true);
-      } finally { rwLock.ReleaseReaderLock(); }
+      } finally {
+        rwLock.ReleaseReaderLock();
+      }
     }
 
     public override void RegisterAlgorithmEvents(IAlgorithm algorithm) {
@@ -164,15 +160,16 @@ namespace HeuristicLab.Problems.Dynamic {
       rwLock.AcquireReaderLock(-1);
       try {
         AnalyzeProblem(results, random, true);
-      } finally { rwLock.ReleaseReaderLock(); }
+      } finally {
+        rwLock.ReleaseReaderLock();
+      }
     }
 
     #endregion
 
     #region protected Methods
 
-    protected virtual void Analyze(Individual[] individuals, double[][] qualities, ResultCollection results,
-                                   IRandom random, bool dummy) {
+    protected virtual void Analyze(Individual[] individuals, double[][] qualities, ResultCollection results, IRandom random, bool dummy) {
       base.Analyze(individuals, qualities, results, random);
     }
 
@@ -208,7 +205,7 @@ namespace HeuristicLab.Problems.Dynamic {
           break;
         case ExecutionState.Started:
           ResetEnvironmentRandom();
-          InitPending = true;//AlgorithmStart();
+          InitPending = true; //AlgorithmStart();
           //EpochClock.Start(false);
           break;
         case ExecutionState.Paused:
@@ -233,7 +230,9 @@ namespace HeuristicLab.Problems.Dynamic {
       try {
         Update(ClockVersion);
         foreach (var tracker in Trackers) tracker.OnEpochChange(GetData(), ClockVersion, ClockTime);
-      } finally { rwLock.ReleaseWriterLock(); }
+      } finally {
+        rwLock.ReleaseWriterLock();
+      }
       EpochChanged?.Invoke(this, ClockVersion);
     }
 

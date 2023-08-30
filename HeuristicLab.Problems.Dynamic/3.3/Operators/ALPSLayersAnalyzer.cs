@@ -14,7 +14,7 @@ using HeuristicLab.Parameters;
 namespace HeuristicLab.Problems.Dynamic.Operators {
   [Item("ALPS Single-objective basic Analyzer", "Calls the script's Analyze method to be able to write into the results collection.")]
   [StorableType("D5930EC6-BF72-4A0C-848C-F28FB767D5DE")]
-  public class AlpsLayersAnalyzer : BasicSingleObjectiveAnalyzer/*, ILayerAnalyzer*/ {
+  public class AlpsLayersAnalyzer : BasicSingleObjectiveAnalyzer /*, ILayerAnalyzer*/ {
     public string LayerParameterName = "Layer";
     public IValueLookupParameter<IntValue> LayerParameter => (IValueLookupParameter<IntValue>)Parameters[LayerParameterName];
 
@@ -27,7 +27,6 @@ namespace HeuristicLab.Problems.Dynamic.Operators {
     }
 
     public AlpsLayersAnalyzer(AlpsLayersAnalyzer original, Cloner cloner) : base(original, cloner) { }
-
 
 
     [StorableConstructor]
@@ -48,6 +47,5 @@ namespace HeuristicLab.Problems.Dynamic.Operators {
       var res = (ResultCollection)results[rname].Value;
       AnalyzeFunc(individuals, qualities, results, res, layer, random);
     }
-
   }
 }

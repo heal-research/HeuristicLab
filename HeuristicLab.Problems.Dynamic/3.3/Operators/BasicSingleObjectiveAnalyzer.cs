@@ -33,7 +33,7 @@ using System.Runtime.InteropServices;
 namespace HeuristicLab.Optimization {
   [Item("Single-objective basic Analyzer", "Calls the script's Analyze method to be able to write into the results collection.")]
   [StorableType("9AF5F2F5-EE28-4581-92C5-1AFB0B46D996")]
-  public abstract class BasicSingleObjectiveAnalyzer : SingleSuccessorOperator/*, ISingleObjectiveAnalysisOperator*/, IAnalyzer, IStochasticOperator {
+  public abstract class BasicSingleObjectiveAnalyzer : SingleSuccessorOperator /*, ISingleObjectiveAnalysisOperator*/, IAnalyzer, IStochasticOperator {
     public bool EnabledByDefault => true;
 
     public ILookupParameter<IEncoding> EncodingParameter => (ILookupParameter<IEncoding>)Parameters["Encoding"];
@@ -46,8 +46,7 @@ namespace HeuristicLab.Optimization {
 
     public abstract void Analyze(Individual[] individuals, double[] qualities, ResultCollection results, IRandom random);
 
-    [Storable]
-    public ISingleObjectiveProblemDefinition Problem { get; set; } 
+    [Storable] public ISingleObjectiveProblemDefinition Problem { get; set; }
 
 
     [StorableConstructor]

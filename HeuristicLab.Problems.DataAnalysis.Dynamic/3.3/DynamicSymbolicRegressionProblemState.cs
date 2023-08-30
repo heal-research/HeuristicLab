@@ -13,8 +13,8 @@ using HeuristicLab.Problems.DataAnalysis.Symbolic.Regression;
 
 namespace HeuristicLab.Problems.Dynamic {
   [StorableType("7CAE47C8-96B2-44D4-83A9-0E5E4A408494")]
-  public class DynamicSymbolicRegressionProblemState 
-    : SingleObjectiveBasicProblem<SymbolicExpressionTreeEncoding>, IDynamicProblemState<DynamicSymbolicRegressionProblemState>
+  public class DynamicSymbolicRegressionProblemState
+    : SingleObjectiveBasicProblem<SymbolicExpressionTreeEncoding>, IDynamicProblemState<DynamicSymbolicRegressionProblemState> 
   {
     public const string ProblemParameterName = "InnerProblem";
 
@@ -32,8 +32,6 @@ namespace HeuristicLab.Problems.Dynamic {
     
     public IValueParameter<SymbolicRegressionSingleObjectiveProblem> ProblemParameter => (IValueParameter<SymbolicRegressionSingleObjectiveProblem>)Parameters[ProblemParameterName];
     
-    
-
     public IntMatrix TrainingPartitions {
       get { return TrainingPartitionsParameter.Value; }
       set { TrainingPartitionsParameter.Value = value; }
@@ -46,7 +44,6 @@ namespace HeuristicLab.Problems.Dynamic {
       get { return ProgressModeParameter.Value.Value; }
       set { ProgressModeParameter.Value.Value = value; }
     }
-    
     public IntArray CurrentTrainingPartition {
       get { return CurrentTrainingPartitionParameter.Value; }
       set { CurrentTrainingPartitionParameter.Value = value; }
@@ -112,15 +109,15 @@ namespace HeuristicLab.Problems.Dynamic {
       throw new NotImplementedException();
     }
 
-    public override bool Maximization => !Parameters.ContainsKey(ProblemParameterName) || (Problem?.Maximization.Value??true);
+    public override bool Maximization => !Parameters.ContainsKey(ProblemParameterName) || (Problem?.Maximization.Value ?? true);
     public override double Evaluate(Individual individual, IRandom random) {
       return Problem.Evaluator.Evaluate(
-        individual.SymbolicExpressionTree(Encoding.Name), 
-        ProblemData, 
-        GetTrainingIndices(), 
-        Problem.SymbolicExpressionTreeInterpreter, 
-        Problem.ApplyLinearScaling.Value, 
-        Problem.EstimationLimits?.Lower ?? 0, Problem.EstimationLimits?.Upper ?? 1);
+        individual.SymbolicExpressionTree(Encoding.Name),
+        ProblemData,
+        GetTrainingIndices(),
+        Problem.SymbolicExpressionTreeInterpreter,
+        Problem.ApplyLinearScaling.Value,
+        Problem.EstimationLimits.Lower, Problem.EstimationLimits.Upper);
     }
 
     public override void Analyze(Individual[] individuals, double[] qualities, ResultCollection results, IRandom random) {

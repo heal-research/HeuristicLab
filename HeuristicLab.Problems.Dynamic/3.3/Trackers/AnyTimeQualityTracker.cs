@@ -31,9 +31,9 @@ using HeuristicLab.Optimization;
 namespace HeuristicLab.Problems.Dynamic {
   [Item("Any Time Quality Tracker", "")]
   [StorableType("EDAC98B7-C40A-4995-A63C-9EE12E0BB14B")]
-  public class AnyTimeQualityTracker<TSolution, TState> 
-    : ParameterizedNamedItem, ISingleObjectiveDynamicProblemTracker<TSolution, TState> 
-    where TSolution : IItem 
+  public class AnyTimeQualityTracker<TSolution, TState>
+    : ParameterizedNamedItem, ISingleObjectiveDynamicProblemTracker<TSolution, TState>
+    where TSolution : IItem
   {
     protected virtual string PlotResultName { get => "Any Time Performance"; }
     public const string MinimumQualitiesRowName = "Minimum Qualities";
@@ -116,11 +116,11 @@ namespace HeuristicLab.Problems.Dynamic {
       
       //fill rows with data (always use AddRange)
       if (ecs.Count != 0) {
-        epochRow.Values.AddRange(ecs.Select(x=> new Tuple<double, double>(x.Item1, x.Item2)));
+        epochRow.Values.AddRange(ecs.Select(x => new Tuple<double, double>(x.Item1, x.Item2)));
         LastResolvedEpochChange = ecs.Last();
       }
 
-      if(qs.Count == 0) return;
+      if (qs.Count == 0) return;
       
       //calculate cumulative Minimum
       var newMinPoints = new List<Tuple<double, double>>();

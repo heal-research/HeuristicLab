@@ -31,12 +31,9 @@ namespace HeuristicLab.Problems.Dynamic {
   [Item("Counting Clock", "Represents a problem whose objective is to maximize the number of true values.")]
   [StorableType("6E7664A8-56FA-4399-AC6C-3C4E5FD5CDDA")]
   public class CountingClock : ParameterizedNamedItem, IEpochClock {
-    [Storable]
-    private long version;
-    [Storable]
-    private long lastTick;
-    [Storable]
-    private bool running;
+    [Storable] private long version;
+    [Storable] private long lastTick;
+    [Storable] private bool running;
 
     private const string IntervalSizeParameterName = "IntervalSize";
 
@@ -97,7 +94,7 @@ namespace HeuristicLab.Problems.Dynamic {
       lastTick = -1;
       version = -1;
       if (throwEvent)
-        NewVersion?.Invoke(this,new EventArgs<long, long>(CurrentEpoch, CurrentTime));
+        NewVersion?.Invoke(this, new EventArgs<long, long>(CurrentEpoch, CurrentTime));
     }
 
     #endregion
@@ -108,7 +105,7 @@ namespace HeuristicLab.Problems.Dynamic {
       long v = Interlocked.Increment(ref lastTick);
       if (v % IntervalSize == 0) {
         Interlocked.Increment(ref version);
-        NewVersion?.Invoke(this,new EventArgs<long, long>(CurrentEpoch, CurrentTime));
+        NewVersion?.Invoke(this, new EventArgs<long, long>(CurrentEpoch, CurrentTime));
       }
     }
   }

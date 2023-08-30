@@ -72,7 +72,6 @@ namespace HeuristicLab.Problems.Dynamic {
     public void OnEvaluation(object _, IItem solution, double quality, long version, long time) {
       if (quality < minCur) minCur = quality;
       if (quality > maxCur) maxCur = quality;
-
     }
 
     public void OnEpochChange(object _, long version, long time) {
@@ -86,7 +85,6 @@ namespace HeuristicLab.Problems.Dynamic {
       }
       maxCur = double.MinValue;
       minCur = double.MaxValue;
-      
     }
 
     public void OnAnalyze(object _, ResultCollection results) {
@@ -103,11 +101,11 @@ namespace HeuristicLab.Problems.Dynamic {
       if (eps == 0) return;
       var mine = (minSum + aMin) / eps;
       var mane = (maxSum + aMax) / eps;
-      results.AddOrUpdateResult(MinResultName,new DoubleValue(mine));
-      results.AddOrUpdateResult(MaxResultName,new DoubleValue(mane));
-      if(epCount<=1) return;
-      results.AddOrUpdateResult(MinOnlineResultName,new DoubleValue(minLast));
-      results.AddOrUpdateResult(MaxOnlineResultName,new DoubleValue(maxLast));
+      results.AddOrUpdateResult(MinResultName, new DoubleValue(mine));
+      results.AddOrUpdateResult(MaxResultName, new DoubleValue(mane));
+      if (epCount <= 1) return;
+      results.AddOrUpdateResult(MinOnlineResultName, new DoubleValue(minLast));
+      results.AddOrUpdateResult(MaxOnlineResultName, new DoubleValue(maxLast));
     }
 
     public void Reset() {

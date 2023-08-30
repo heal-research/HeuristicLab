@@ -30,7 +30,7 @@ using HeuristicLab.Parameters;
 namespace HeuristicLab.Problems.Dynamic.Operators {
   [Item("Problem State Analyzer (multi objective)", "Calls the script's Analyze method to be able to write into the results collection.")]
   [StorableType("69EB3EFA-1E3B-4A7A-AB8B-9F59196211ED")]
-  public sealed class MultiObjectiveProblemStateAnalyzer : SingleSuccessorOperator, IAnalyzer, IStochasticOperator/*, IMultiObjectiveAnalysisOperator*/ {
+  public sealed class MultiObjectiveProblemStateAnalyzer : SingleSuccessorOperator, IAnalyzer, IStochasticOperator /*, IMultiObjectiveAnalysisOperator*/ {
     public bool EnabledByDefault => true;
     public ILookupParameter<IEncoding> EncodingParameter => (ILookupParameter<IEncoding>)Parameters["Encoding"];
 
@@ -40,8 +40,7 @@ namespace HeuristicLab.Problems.Dynamic.Operators {
 
     public Action<Individual[], double[][], ResultCollection, IRandom> AnalyzeAction { get; set; }
 
-    [Storable]
-    public IMultiObjectiveProblemDefinition Problem { get; set; } 
+    [Storable] public IMultiObjectiveProblemDefinition Problem { get; set; }
 
 
     [StorableConstructor]
@@ -66,6 +65,5 @@ namespace HeuristicLab.Problems.Dynamic.Operators {
       ((IDynamicProblemDefinition)Problem).AnalyzeProblem(results, random);
       return base.Apply();
     }
-
   }
 }

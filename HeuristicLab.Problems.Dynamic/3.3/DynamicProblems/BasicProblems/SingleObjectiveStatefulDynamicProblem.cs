@@ -33,7 +33,7 @@ namespace HeuristicLab.Problems.Dynamic {
   [StorableType("F444C6C0-A8F0-406F-9617-587E29A37644")]
   public abstract class SingleObjectiveStatefulDynamicProblem<TEncoding, TSolution, TState>
     : SingleObjectiveDynamicBasicProblem<TEncoding, TSolution, TState>
-    where TEncoding : class, IEncoding 
+    where TEncoding : class, IEncoding
     where TSolution : class, IItem
     where TState : class, IDynamicProblemState<TState>
   {
@@ -65,7 +65,7 @@ namespace HeuristicLab.Problems.Dynamic {
 
     protected SingleObjectiveStatefulDynamicProblem() {
       Parameters.Add(new FixedValueParameter<DoubleValue>(StateVersionParameterName, "The version of the problem state", new DoubleValue(0)));
-      Parameters.Add(new ValueParameter<TState>(StateParameterName, "The internal (changing) problem state"){Hidden = true});
+      Parameters.Add(new ValueParameter<TState>(StateParameterName, "The internal (changing) problem state") { Hidden = true });
       Parameters.Add(new ValueParameter<TState>(InitialStateParameterName, "The initial (unchanging) problem state"));
     }
 
@@ -86,7 +86,7 @@ namespace HeuristicLab.Problems.Dynamic {
 
     protected sealed override void AlgorithmReset() { }
 
-    protected override void AlgorithmStart(){
+    protected override void AlgorithmStart() {
       ResetState();
     }
 

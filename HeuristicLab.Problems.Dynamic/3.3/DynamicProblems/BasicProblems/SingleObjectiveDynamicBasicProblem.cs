@@ -36,7 +36,6 @@ using HeuristicLab.Problems.Dynamic.Operators;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.Problems.Dynamic {
-
   [StorableType("DED64F8F-7529-43A5-A13A-3705B31D12BA")]
   public abstract class SingleObjectiveDynamicBasicProblem<TEncoding, TSolution, TState> :
     SingleObjectiveBasicProblem<TEncoding>, ISingleObjectiveDynamicProblemDefinition
@@ -76,14 +75,10 @@ namespace HeuristicLab.Problems.Dynamic {
 
     #region Fields and Storbales
     private readonly ReaderWriterLock rwLock = new ReaderWriterLock();
-    [Storable]
-    private bool Dirty { get; set; }
-    [Storable]
-    private long ClockVersion { get; set; }
-    [Storable]
-    private long ClockTime { get; set; }
-    [Storable]
-    protected IRandom EnvironmentRandom { get; set; }
+    [Storable] private bool Dirty { get; set; }
+    [Storable] private long ClockVersion { get; set; }
+    [Storable] private long ClockTime { get; set; }
+    [Storable] protected IRandom EnvironmentRandom { get; set; }
     #endregion
 
     #region Constructors and cloning
@@ -115,9 +110,9 @@ namespace HeuristicLab.Problems.Dynamic {
       Parameters.Add(new FixedValueParameter<BoolValue>(SetSeedRandomlyParameterName, "", new BoolValue(false)));
       Parameters.Add(new FixedValueParameter<CheckedItemList<IDynamicProblemTracker<TState>>>(TrackersParameterName,
         new CheckedItemList<IDynamicProblemTracker<TState>> {
-        {new AnyTimeQualityTracker<TSolution, TState>(),true},
-        {new SingleObjectiveAlgorithmPerformanceTracker(),true},
-        {new SlimAnyTimeQualityTracker(),true},
+          { new AnyTimeQualityTracker<TSolution, TState>(), true },
+          { new SingleObjectiveAlgorithmPerformanceTracker(), true },
+          { new SlimAnyTimeQualityTracker(), true },
         }));
       RegisterEventHandlers();
       Operators.Add(new SingleObjectiveProblemStateAnalyzer() { Problem = this });
@@ -135,7 +130,6 @@ namespace HeuristicLab.Problems.Dynamic {
         foreach (var tracker in Trackers.OfType<ISingleObjectiveDynamicProblemTracker<TSolution, TState>>())
           tracker.OnEvaluation(GetData(), (TSolution)individual[Encoding.Name], q, EpochClock.CurrentEpoch,
             EpochClock.CurrentTime);
-
       } finally {
         rwLock.ReleaseReaderLock();
       }
@@ -168,15 +162,16 @@ namespace HeuristicLab.Problems.Dynamic {
       rwLock.AcquireReaderLock(-1);
       try {
         AnalyzeProblem(results, random, true);
-      } finally { rwLock.ReleaseReaderLock(); }
+      } finally {
+        rwLock.ReleaseReaderLock();
+      }
     }
 
     #endregion
 
     #region protected Methods
 
-    protected virtual void Analyze(Individual[] individuals, double[] qualities, ResultCollection results,
-                                   IRandom random, bool dummy) {
+    protected virtual void Analyze(Individual[] individuals, double[] qualities, ResultCollection results, IRandom random, bool dummy) {
       base.Analyze(individuals, qualities, results, random);
     }
 

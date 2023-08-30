@@ -33,7 +33,7 @@ using HeuristicLab.Optimization;
 using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Problems.Dynamic {
-  [Item("Slim Any Time Quality Tracker", "")] 
+  [Item("Slim Any Time Quality Tracker", "")]
   [StorableType("20617025-09E8-49DC-905E-8C4581201568")]
   public class SlimAnyTimeQualityTracker : ParameterizedNamedItem, ISingleObjectiveDynamicProblemTracker<IItem, object> {
     public const string PlotResultName = "Slim Any Time Performance";
@@ -108,9 +108,6 @@ namespace HeuristicLab.Problems.Dynamic {
       } else {
         plot = (ScatterPlot)((HiddenResults)plotResult.Value).Scope.Variables[PlotResultName].Value;
       }
-        
-      
-      
       
       if (!plot.Rows.TryGetValue(MaximumQualitiesRowName, out maxRow))
         plot.Rows.Add(maxRow = new ScatterPlotDataRow(MaximumQualitiesRowName, "", new List<Point2D<double>>()));
@@ -124,11 +121,11 @@ namespace HeuristicLab.Problems.Dynamic {
         plot.Rows.Add(bestRow = new ScatterPlotDataRow(BestQualitiesRowName, "", new List<Point2D<double>>()));
       //fill rows with data (always use AddRange)
       if (ecs.Count != 0) {
-        epochRow.Points.AddRange(ecs.Select(x=>new Point2D<double>(x.Item1, x.Item2)));
+        epochRow.Points.AddRange(ecs.Select(x => new Point2D<double>(x.Item1, x.Item2)));
         LastResolvedEpochChange = ecs.Last();
       }
 
-      if(qs.Count ==0) return;
+      if (qs.Count == 0) return;
       //calculate cumulative Minimum
       var points2 = new List<Point2D<double>>();
       foreach (var tuple in qs) {
@@ -152,10 +149,10 @@ namespace HeuristicLab.Problems.Dynamic {
       points3.Add(new Point2D<double>(qs.Last().Item1, LastMaximumResolvedQuality.Item3));
       maxRow.Points.AddRange(points3);
       avgRow.Points.AddRange(qs
-                             .GroupBy(x=>x.Item2)
-                             .Select(g=>new Point2D<double>(
-                               g.Max(x=>x.Item1), 
-                               g.Average(x=>x.Item3))));
+        .GroupBy(x => x.Item2)
+        .Select(g => new Point2D<double>(
+          g.Max(x => x.Item1),
+          g.Average(x => x.Item3))));
     }
 
     public void Reset() {
@@ -175,7 +172,7 @@ namespace HeuristicLab.Problems.Dynamic {
     [StorableConstructor]
     public HiddenResults(StorableConstructorFlag _) : base(_) { }
 
-    public HiddenResults(){}
+    public HiddenResults() { }
 
     public HiddenResults(HiddenResults original, Cloner cloner) : base(original, cloner) {
       Scope = cloner.Clone(original.Scope);

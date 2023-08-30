@@ -72,8 +72,9 @@ namespace HeuristicLab.Problems.Dynamic {
     public void Start(bool throwEvent) {
       lastTick = DateTime.Now;
       version = 0;
-      if (throwEvent) 
+      if (throwEvent) {
         NewVersion?.Invoke(this, new EventArgs<long, long>(version, lastTick.Ticks));
+      }
       Resume();
     }
 
@@ -96,8 +97,9 @@ namespace HeuristicLab.Problems.Dynamic {
     public void Reset(bool throwEvent) {
       lastTick = DateTime.MinValue;
       version = -1;
-      if (throwEvent) 
-        NewVersion?.Invoke(this,new EventArgs<long, long>(version, lastTick.Ticks));
+      if (throwEvent) {
+        NewVersion?.Invoke(this, new EventArgs<long, long>(version, lastTick.Ticks));
+      }
     }
 
     public void Tick() {
@@ -117,7 +119,7 @@ namespace HeuristicLab.Problems.Dynamic {
         if (token.IsCancellationRequested) continue;
         lastTick = DateTime.Now;
         long v = Interlocked.Increment(ref version);
-        NewVersion?.Invoke(this,new EventArgs<long, long>(v, lastTick.Ticks));
+        NewVersion?.Invoke(this, new EventArgs<long, long>(v, lastTick.Ticks));
       }
     }
   }

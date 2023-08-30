@@ -24,7 +24,6 @@ using HeuristicLab.Core;
 using HeuristicLab.Optimization;
 
 namespace HeuristicLab.Problems.Dynamic {
-
   [StorableType("FF4CED77-3293-4FCA-B903-92B877B4ABFF")]
   public interface IDynamicProblemTracker<in TState> : IParameterizedNamedItem {
     void OnEpochChange(TState state, long version, long time);

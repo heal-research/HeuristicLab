@@ -29,12 +29,11 @@ namespace HeuristicLab.Problems.Dynamic {
   [Item("Dynamic Symbolic Regression Problem", "Applies different dataset partitions as a regression problem.")]
   [Creatable(CreatableAttribute.Categories.Problems, Priority = 210)]
   [StorableType("47E9498A-545C-47FE-AD2E-9B10DB683320")]
-  public class DynamicSymbolicRegressionProblem 
-    : SingleObjectiveStatefulDynamicProblem<SymbolicExpressionTreeEncoding, SymbolicExpressionTree, DynamicSymbolicRegressionProblemState> 
+  public class DynamicSymbolicRegressionProblem
+    : SingleObjectiveStatefulDynamicProblem<SymbolicExpressionTreeEncoding, SymbolicExpressionTree, DynamicSymbolicRegressionProblemState>
   {
-
     #region Propeties
-    public override bool Maximization => !Parameters.ContainsKey(StateParameterName) || (State?.Maximization??true);
+    public override bool Maximization => State?.Maximization ?? true;
     #endregion
 
     #region Constructors and Cloning
@@ -46,7 +45,7 @@ namespace HeuristicLab.Problems.Dynamic {
     }
 
     private void RegisterProblemEventHandlers() {
-      InitialState.SolutionCreatorChanged += (a,b)=> SolutionCreator = InitialState.SolutionCreator;
+      InitialState.SolutionCreatorChanged += (a, b) => SolutionCreator = InitialState.SolutionCreator;
     }
 
     [StorableConstructor]
@@ -57,7 +56,6 @@ namespace HeuristicLab.Problems.Dynamic {
     private void AfterDeserialization() {
       RegisterProblemEventHandlers();
     }
-    
 
     protected DynamicSymbolicRegressionProblem(DynamicSymbolicRegressionProblem original, Cloner cloner) : base(original, cloner) { }
 

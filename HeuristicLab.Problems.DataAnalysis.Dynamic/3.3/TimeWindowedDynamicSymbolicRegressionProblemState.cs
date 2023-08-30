@@ -13,7 +13,7 @@ using HeuristicLab.Problems.DataAnalysis.Symbolic.Regression;
 
 namespace HeuristicLab.Problems.Dynamic {
   [StorableType("A1A271EC-8B81-452A-A9FB-7BDF223C18E4")]
-  public class TimeWindowedDynamicSymbolicRegressionProblemState 
+  public class TimeWindowedDynamicSymbolicRegressionProblemState
     : SingleObjectiveBasicProblem<SymbolicExpressionTreeEncoding>, IDynamicProblemState<TimeWindowedDynamicSymbolicRegressionProblemState>
   {
     public const string ProblemParameterName = "InnerProblem";
@@ -98,14 +98,14 @@ namespace HeuristicLab.Problems.Dynamic {
       //clone?
     }
 
-    public override bool Maximization => !Parameters.ContainsKey(ProblemParameterName) || (Problem?.Maximization.Value??true);
+    public override bool Maximization => Problem?.Maximization.Value ?? true;
     public override double Evaluate(Individual individual, IRandom random) {
       return Problem.Evaluator.Evaluate(
-        individual.SymbolicExpressionTree(Encoding.Name), 
-        ProblemData, 
-        GetWindow().ToArray(), 
-        Problem.SymbolicExpressionTreeInterpreter, 
-        Problem.ApplyLinearScaling.Value, 
+        individual.SymbolicExpressionTree(Encoding.Name),
+        ProblemData,
+        GetWindow().ToArray(),
+        Problem.SymbolicExpressionTreeInterpreter,
+        Problem.ApplyLinearScaling.Value,
         Problem.EstimationLimits?.Lower ?? 0, Problem.EstimationLimits?.Upper ?? 1);
     }
 
@@ -116,7 +116,6 @@ namespace HeuristicLab.Problems.Dynamic {
       for (var i = WindowStart; i < windowEnd; i++) {
         yield return i % size + min;
       }
-
     }
   }
 }

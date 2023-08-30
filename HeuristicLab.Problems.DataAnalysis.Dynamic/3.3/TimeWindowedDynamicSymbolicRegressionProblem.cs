@@ -29,10 +29,11 @@ namespace HeuristicLab.Problems.Dynamic {
   [Item("Time Windowed Dynamic Symbolic Regression Problem", "Applies a dynamic time window on a regression problem")]
   [Creatable(CreatableAttribute.Categories.Problems, Priority = 211)]
   [StorableType("B8C7B816-9332-4786-8C5A-187B2A4AAAC6")]
-  public class TimeWindowedDynamicSymbolicRegressionProblem : SingleObjectiveStatefulDynamicProblem<SymbolicExpressionTreeEncoding, SymbolicExpressionTree, TimeWindowedDynamicSymbolicRegressionProblemState> {
-
+  public class TimeWindowedDynamicSymbolicRegressionProblem
+    : SingleObjectiveStatefulDynamicProblem<SymbolicExpressionTreeEncoding, SymbolicExpressionTree, TimeWindowedDynamicSymbolicRegressionProblemState>
+  {
     #region Propeties
-    public override bool Maximization => !Parameters.ContainsKey(StateParameterName) || (State?.Maximization??true);
+    public override bool Maximization => State?.Maximization ?? true;
     #endregion
 
     #region Constructors and Cloning
@@ -44,18 +45,16 @@ namespace HeuristicLab.Problems.Dynamic {
     }
 
     private void RegisterProblemEventHandlers() {
-      InitialState.SolutionCreatorChanged += (a,b)=> SolutionCreator = InitialState.SolutionCreator;
+      InitialState.SolutionCreatorChanged += (a, b) => SolutionCreator = InitialState.SolutionCreator;
     }
 
     [StorableConstructor]
     protected TimeWindowedDynamicSymbolicRegressionProblem(StorableConstructorFlag _) : base(_) { }
-
     
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
       RegisterProblemEventHandlers();
     }
-    
 
     protected TimeWindowedDynamicSymbolicRegressionProblem(TimeWindowedDynamicSymbolicRegressionProblem original, Cloner cloner) : base(original, cloner) { }
 

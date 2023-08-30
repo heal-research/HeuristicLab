@@ -30,12 +30,9 @@ namespace HeuristicLab.Problems.Dynamic {
   [Item("Characteristic Calculator", "")]
   [StorableType("389790FF-2F4F-4526-9500-876926CF2E28")]
   public abstract class CharacteristicCalculator : ParameterizedNamedItem, ICharacteristicCalculator {
+    [Storable] public IProblem Problem { get; set; }
 
-    [Storable]
-    public IProblem Problem { get; set; }
-
-    [Storable]
-    protected CheckedItemList<StringValue> characteristics;
+    [Storable] protected CheckedItemList<StringValue> characteristics;
     public ReadOnlyCheckedItemList<StringValue> Characteristics => characteristics.AsReadOnly();
 
     [StorableConstructor]

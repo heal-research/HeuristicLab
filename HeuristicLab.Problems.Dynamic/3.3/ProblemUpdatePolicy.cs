@@ -23,5 +23,10 @@ using HEAL.Attic;
 
 namespace HeuristicLab.Problems.Dynamic {
   [StorableType("477851AC-1082-424C-8A93-0F4791E07D7A")]
-  public enum ProblemUpdatePolicy { Immediate, OnNextEvaluate, OnNextAnalyze, Never }
+  public enum ProblemUpdatePolicy {
+    Immediate,
+    OnNextEvaluate,
+    OnNextAnalyze,
+    Never
+  }
 }
