@@ -46,7 +46,7 @@ public class AnyTimeTestPartitionQualityTracker
     double testQuality = state.Problem.Evaluator.Evaluate(
       solution,
       state.Problem.ProblemData,
-      state.GetTestIndices(),
+      state.Problem.ProblemData.TestIndices,
       state.Problem.SymbolicExpressionTreeInterpreter,
       state.Problem.ApplyLinearScaling.Value,
       state.Problem.EstimationLimits.Lower, state.Problem.EstimationLimits.Upper);
