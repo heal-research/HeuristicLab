@@ -127,6 +127,7 @@
     <Compile Include="ProblemData\DynamicRegressionProblemData.cs" />
     <Compile Include="ProblemInstances\DynamicRegressionDataDescriptor.cs" />
     <Compile Include="ProblemInstances\DynamicRegressionInstanceProvider.cs" />
+    <Compile Include="ProblemInstances\DynSymRegCsvInstanceProvider.cs" />
     <Compile Include="Problems\DynamicSymbolicRegressionProblem.cs" />
     <Compile Include="Problems\DynamicSymbolicRegressionProblemState.cs" />
     <Compile Include="Problems\TimeWindowedDynamicSymbolicRegressionProblem.cs" />

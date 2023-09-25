@@ -1,4 +1,5 @@
-﻿using HEAL.Attic;
+﻿using System.Collections.Generic;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -30,8 +31,19 @@ public class DynamicRegressionProblemData : RegressionProblemData {
     get { return ProgressModeParameter.Value.Value; }
     set { ProgressModeParameter.Value.Value = value; }
   }
+
+
+  public DynamicRegressionProblemData(IDataset dataset, IEnumerable<string> allowedInputVariables, string targetVariable) 
+    : base(dataset, allowedInputVariables, targetVariable) {
+    Parameters.Add(new ValueParameter<IntMatrix>("TrainingPartitions", new IntMatrix()));
+    Parameters.Add(new ValueParameter<IntMatrix>("TestPartitions",     new IntMatrix()));
+    Parameters.Add(new FixedValueParameter<EnumValue<PartitionsUpdateMode>>("PartitionsUpdate", new EnumValue<PartitionsUpdateMode>(PartitionsUpdateMode.KeepLast)));
+    
+    TrainingPartitionParameter.Hidden = true;
+    TestPartitionParameter.Hidden = true;
+  }
   
-  public DynamicRegressionProblemData() {
+  public DynamicRegressionProblemData() : base() {
     Parameters.Add(new ValueParameter<IntMatrix>("TrainingPartitions", new IntMatrix(new int[4, 2] { { 0,  5}, { 5, 10}, {10, 15}, {15, 20} })));
     Parameters.Add(new ValueParameter<IntMatrix>("TestPartitions",     new IntMatrix(new int[4, 2] { { 5, 10}, {10, 15}, {15, 20}, {20, 25} })));
     Parameters.Add(new FixedValueParameter<EnumValue<PartitionsUpdateMode>>("PartitionsUpdate", new EnumValue<PartitionsUpdateMode>(PartitionsUpdateMode.KeepLast)));
