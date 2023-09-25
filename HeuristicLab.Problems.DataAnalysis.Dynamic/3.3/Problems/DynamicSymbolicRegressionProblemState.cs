@@ -108,6 +108,7 @@ public class DynamicSymbolicRegressionProblemState
     var model = new SymbolicRegressionModel(ProblemData.TargetVariable, tree, 
       Problem.SymbolicExpressionTreeInterpreter,
       Problem.EstimationLimits.Lower, Problem.EstimationLimits.Upper);
+    if (Problem.ApplyLinearScaling.Value) model.Scale(ProblemData);
     var solution = model.CreateRegressionSolution(ProblemData);
     
     results[BestTrainingSolutionParameter.ActualName].Value = solution;
