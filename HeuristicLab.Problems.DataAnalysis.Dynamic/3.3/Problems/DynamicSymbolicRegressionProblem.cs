@@ -25,6 +25,8 @@ using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
+using HeuristicLab.Problems.DataAnalysis.Symbolic;
+using HeuristicLab.Problems.DataAnalysis.Symbolic.Regression;
 using HeuristicLab.Problems.Dynamic;
 using HeuristicLab.Problems.Instances;
 
@@ -40,18 +42,27 @@ public class DynamicSymbolicRegressionProblem
   public override bool Maximization => Parameters.ContainsKey(StateParameterName) ? State.Maximization : true;
   
   private const string ProblemDataParameterName = "ProblemData";
-  public IValueParameter<DynamicRegressionProblemData> ProblemDataParameter => (IValueParameter<DynamicRegressionProblemData>)Parameters[ProblemDataParameterName];
+  private const string GrammarParameterName = "Grammar";
+  private const string InterpreterParameterName = "Interpreter";
   
-  public DynamicRegressionProblemData ProblemData {
-    get { return ProblemDataParameter.Value; }
-    set { ProblemDataParameter.Value = value; }
-  }
-
+  public IValueParameter<DynamicRegressionProblemData> ProblemDataParameter => (IValueParameter<DynamicRegressionProblemData>)Parameters[ProblemDataParameterName];
+  public IValueParameter<ISymbolicDataAnalysisGrammar> GrammarParameter => (IValueParameter<ISymbolicDataAnalysisGrammar>)Parameters[GrammarParameterName];
+  public IValueParameter<ISymbolicDataAnalysisExpressionTreeInterpreter> InterpreterParameter => (IValueParameter<ISymbolicDataAnalysisExpressionTreeInterpreter>)Parameters[InterpreterParameterName];
+  
+  public DynamicRegressionProblemData ProblemData { get { return ProblemDataParameter.Value; } set { ProblemDataParameter.Value = value; } }
+  public ISymbolicDataAnalysisGrammar Grammar { get { return GrammarParameter.Value; } set { GrammarParameter.Value = value; } }
+  public ISymbolicDataAnalysisExpressionTreeInterpreter Interpreter { get { return InterpreterParameter.Value; } set { InterpreterParameter.Value = value; } }
+  
   #endregion
-
+  
+  
   #region Constructors and Cloning
   public DynamicSymbolicRegressionProblem() {
     Parameters.Add(new ValueParameter<DynamicRegressionProblemData>(ProblemDataParameterName));
+    Parameters.Add(new ValueParameter<ISymbolicDataAnalysisGrammar>(GrammarParameterName, new TypeCoherentExpressionGrammar()));
+    Parameters.Add(new ValueParameter<ISymbolicDataAnalysisExpressionTreeInterpreter>(InterpreterParameterName, new SymbolicDataAnalysisExpressionTreeLinearInterpreter()) { Hidden = true });
+    
+    
     
     Load(new DynamicRegressionProblemData());
     RegisterProblemEventHandlers();
@@ -81,13 +92,22 @@ public class DynamicSymbolicRegressionProblem
   protected override double Evaluate(Individual individual, IRandom random, bool dummy) {
     return State.Evaluate(individual, random);
   }
+
+  protected override void Analyze(Individual[] individuals, double[] qualities, ResultCollection results, IRandom random, bool dummy) {
+    base.Analyze(individuals, qualities, results, random, dummy);
+    State.Analyze(individuals, qualities, results, random);
+  }
+
   #endregion
 
   public void Load(DynamicRegressionProblemData data) {
     ProblemDataParameter.Value = data;
     
-    InitialState = new DynamicSymbolicRegressionProblemState(data);
+    Grammar.ConfigureVariableSymbols(data);
+    InitialState = new DynamicSymbolicRegressionProblemState(data, Interpreter, Grammar);
     Encoding = InitialState.Encoding;
     SolutionCreator = InitialState.SolutionCreator;
+    
+    Grammar.ConfigureVariableSymbols(data);
   }
 }

@@ -8,6 +8,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
+using HeuristicLab.Problems.DataAnalysis.Symbolic;
 using HeuristicLab.Problems.DataAnalysis.Symbolic.Regression;
 using HeuristicLab.Problems.Dynamic;
 
@@ -25,16 +26,24 @@ public class DynamicSymbolicRegressionProblemState
     get { return (DynamicRegressionProblemData)Problem.ProblemData; }
     set { Problem.ProblemData = value; }
   }
+  
+  private const string BestTrainingSolutionParameterName = "Best Training Solution";
+  public IResultParameter<ISymbolicRegressionSolution> BestTrainingSolutionParameter => (IResultParameter<ISymbolicRegressionSolution>)Parameters[BestTrainingSolutionParameterName];
+
 
   [StorableConstructor]
   protected DynamicSymbolicRegressionProblemState(StorableConstructorFlag _) : base(_) { }
   protected DynamicSymbolicRegressionProblemState(DynamicSymbolicRegressionProblemState original, Cloner cloner) : base(original, cloner) { }
 
-  public DynamicSymbolicRegressionProblemState(DynamicRegressionProblemData dynamicRegressionProblemData) {
-    var problem = new SymbolicRegressionSingleObjectiveProblem() {
-      ProblemData = dynamicRegressionProblemData
+  public DynamicSymbolicRegressionProblemState(DynamicRegressionProblemData dynamicRegressionProblemData, ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, ISymbolicDataAnalysisGrammar grammar) {
+    var problem = new SymbolicRegressionSingleObjectiveProblem {
+      ProblemData = dynamicRegressionProblemData,
+      SymbolicExpressionTreeInterpreter = interpreter,
+      SymbolicExpressionTreeGrammar = grammar
     };
     Parameters.Add(new ValueParameter<SymbolicRegressionSingleObjectiveProblem>(ProblemParameterName, problem));
+    
+    Parameters.Add(new ResultParameter<ISymbolicRegressionSolution>(BestTrainingSolutionParameterName, "") { Hidden = true });
    
     ConfigureEncoding();
   }
@@ -88,5 +97,19 @@ public class DynamicSymbolicRegressionProblemState
 
   public override void Analyze(Individual[] individuals, double[] qualities, ResultCollection results, IRandom random) {
     base.Analyze(individuals, qualities, results, random);
+    
+    var best = GetBestIndividual(individuals, qualities).Item1;
+
+    if (!results.ContainsKey(BestTrainingSolutionParameter.ActualName)) {
+      results.Add(new Result(BestTrainingSolutionParameter.ActualName, typeof(SymbolicRegressionSolution)));
+    }
+
+    var tree = (ISymbolicExpressionTree)best.SymbolicExpressionTree(Encoding.Name).Clone();
+    var model = new SymbolicRegressionModel(ProblemData.TargetVariable, tree, 
+      Problem.SymbolicExpressionTreeInterpreter,
+      Problem.EstimationLimits.Lower, Problem.EstimationLimits.Upper);
+    var solution = model.CreateRegressionSolution(ProblemData);
+    
+    results[BestTrainingSolutionParameter.ActualName].Value = solution;
   }
 }
