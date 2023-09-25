@@ -33,7 +33,7 @@ namespace HeuristicLab.Problems.Dynamic {
     : SingleObjectiveStatefulDynamicProblem<SymbolicExpressionTreeEncoding, SymbolicExpressionTree, DynamicSymbolicRegressionProblemState>
   {
     #region Propeties
-    public override bool Maximization => State?.Maximization ?? true;
+    public override bool Maximization => Parameters.ContainsKey(StateParameterName) ? State.Maximization : true;
     #endregion
 
     #region Constructors and Cloning

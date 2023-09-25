@@ -98,7 +98,7 @@ namespace HeuristicLab.Problems.Dynamic {
       //clone?
     }
 
-    public override bool Maximization => Problem?.Maximization.Value ?? true;
+    public override bool Maximization => Parameters.ContainsKey(ProblemParameterName) ? Problem.Maximization.Value : true;
     public override double Evaluate(Individual individual, IRandom random) {
       return Problem.Evaluator.Evaluate(
         individual.SymbolicExpressionTree(Encoding.Name),
