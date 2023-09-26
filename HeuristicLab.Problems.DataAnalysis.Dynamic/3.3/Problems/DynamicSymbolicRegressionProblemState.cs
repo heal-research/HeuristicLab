@@ -19,31 +19,35 @@ public class DynamicSymbolicRegressionProblemState
   : SingleObjectiveBasicProblem<SymbolicExpressionTreeEncoding>, IDynamicProblemState<DynamicSymbolicRegressionProblemState> 
 {
   public const string ProblemParameterName = "InnerProblem";
+  private const string OptimizeParametersParameterName = "Optimize Parameters";
   public IValueParameter<SymbolicRegressionSingleObjectiveProblem> ProblemParameter => (IValueParameter<SymbolicRegressionSingleObjectiveProblem>)Parameters[ProblemParameterName];
+  public IFixedValueParameter<BoolValue> OptimizeParametersParameter => (IFixedValueParameter<BoolValue>)Parameters[OptimizeParametersParameterName];
+  
   
   public SymbolicRegressionSingleObjectiveProblem Problem => ProblemParameter.Value;
-  public DynamicRegressionProblemData ProblemData {
-    get { return (DynamicRegressionProblemData)Problem.ProblemData; }
-    set { Problem.ProblemData = value; }
-  }
+  public DynamicRegressionProblemData ProblemData { get { return (DynamicRegressionProblemData)Problem.ProblemData; } set { Problem.ProblemData = value; } }
+  public bool OptimizeParameters { get { return OptimizeParametersParameter.Value.Value; } set { OptimizeParametersParameter.Value.Value = value; } }
   
-  private const string BestTrainingSolutionParameterName = "Best Training Solution";
+  private const string BestTrainingSolutionParameterName = "Current Best Training Solution";
   public IResultParameter<ISymbolicRegressionSolution> BestTrainingSolutionParameter => (IResultParameter<ISymbolicRegressionSolution>)Parameters[BestTrainingSolutionParameterName];
-
-
+  
+  
   [StorableConstructor]
   protected DynamicSymbolicRegressionProblemState(StorableConstructorFlag _) : base(_) { }
   protected DynamicSymbolicRegressionProblemState(DynamicSymbolicRegressionProblemState original, Cloner cloner) : base(original, cloner) { }
 
-  public DynamicSymbolicRegressionProblemState(DynamicRegressionProblemData dynamicRegressionProblemData, ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, ISymbolicDataAnalysisGrammar grammar) {
+  public DynamicSymbolicRegressionProblemState(DynamicSymbolicRegressionProblem dynamicProblem) {
     var problem = new SymbolicRegressionSingleObjectiveProblem {
-      ProblemData = dynamicRegressionProblemData,
-      SymbolicExpressionTreeInterpreter = interpreter,
-      SymbolicExpressionTreeGrammar = grammar
+      ProblemData = dynamicProblem.ProblemData,
+      EvaluatorParameter = { Value = dynamicProblem.ModelEvaluator },
+      SymbolicExpressionTreeInterpreter = dynamicProblem.Interpreter,
+      SymbolicExpressionTreeGrammar = dynamicProblem.Grammar,
+      ApplyLinearScaling = { Value = dynamicProblem.ApplyLinearScaling },
     };
+
     Parameters.Add(new ValueParameter<SymbolicRegressionSingleObjectiveProblem>(ProblemParameterName, problem));
-    
     Parameters.Add(new ResultParameter<ISymbolicRegressionSolution>(BestTrainingSolutionParameterName, "") { Hidden = true });
+    Parameters.Add(dynamicProblem.OptimizeParametersParameter);
    
     ConfigureEncoding();
   }
@@ -86,8 +90,19 @@ public class DynamicSymbolicRegressionProblemState
 
   public override bool Maximization => !Parameters.ContainsKey(ProblemParameterName) || (Problem?.Maximization.Value ?? true);
   public override double Evaluate(Individual individual, IRandom random) {
+    var tree = individual.SymbolicExpressionTree(Encoding.Name);
+
+    if (OptimizeParameters) {
+      ParameterOptimization.OptimizeTreeParameters(
+        ProblemData, 
+        tree,
+        rows: ProblemData.TrainingIndices,
+        interpreter: Problem.SymbolicExpressionTreeInterpreter,
+        lowerEstimationLimit: Problem.EstimationLimits.Lower, upperEstimationLimit: Problem.EstimationLimits.Upper);
+    }
+    
     return Problem.Evaluator.Evaluate(
-      individual.SymbolicExpressionTree(Encoding.Name),
+      tree,
       ProblemData,
       ProblemData.TrainingIndices,
       Problem.SymbolicExpressionTreeInterpreter,

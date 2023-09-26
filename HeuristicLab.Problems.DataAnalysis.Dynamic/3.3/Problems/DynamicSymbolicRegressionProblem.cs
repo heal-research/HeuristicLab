@@ -19,9 +19,11 @@
  */
 #endregion
 
+using System;
 using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
+using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
@@ -36,40 +38,55 @@ namespace HeuristicLab.Problems.DataAnalysis.Dynamic;
 [Creatable(CreatableAttribute.Categories.Problems, Priority = 210)]
 [StorableType("47E9498A-545C-47FE-AD2E-9B10DB683320")]
 public class DynamicSymbolicRegressionProblem
-  : SingleObjectiveStatefulDynamicProblem<SymbolicExpressionTreeEncoding, SymbolicExpressionTree, DynamicSymbolicRegressionProblemState>,
-    IProblemInstanceConsumer<DynamicRegressionProblemData> {
+  : SingleObjectiveStatefulDynamicProblem<SymbolicExpressionTreeEncoding, SymbolicExpressionTree, DynamicSymbolicRegressionProblemState>, IProblemInstanceConsumer<DynamicRegressionProblemData> {
   #region Propeties
   public override bool Maximization => Parameters.ContainsKey(StateParameterName) ? State.Maximization : true;
   
   private const string ProblemDataParameterName = "ProblemData";
+  private const string ModelEvaluatorParameterName = "Model Evaluator";
   private const string GrammarParameterName = "Grammar";
   private const string InterpreterParameterName = "Interpreter";
+  private const string ApplyLinearScalingParameterName = "Apply Linear Scaling";
+  private const string OptimizeParametersParameterName = "Optimize Parameters";
+  
   
   public IValueParameter<DynamicRegressionProblemData> ProblemDataParameter => (IValueParameter<DynamicRegressionProblemData>)Parameters[ProblemDataParameterName];
+  public IValueParameter<ISymbolicRegressionSingleObjectiveEvaluator> ModelEvaluatorParameter => (IValueParameter<ISymbolicRegressionSingleObjectiveEvaluator>)Parameters[ModelEvaluatorParameterName];
   public IValueParameter<ISymbolicDataAnalysisGrammar> GrammarParameter => (IValueParameter<ISymbolicDataAnalysisGrammar>)Parameters[GrammarParameterName];
   public IValueParameter<ISymbolicDataAnalysisExpressionTreeInterpreter> InterpreterParameter => (IValueParameter<ISymbolicDataAnalysisExpressionTreeInterpreter>)Parameters[InterpreterParameterName];
+  public IFixedValueParameter<BoolValue> ApplyLinearScalingParameter => (IFixedValueParameter<BoolValue>)Parameters[ApplyLinearScalingParameterName];
+  public IFixedValueParameter<BoolValue> OptimizeParametersParameter => (IFixedValueParameter<BoolValue>)Parameters[OptimizeParametersParameterName];
   
   public DynamicRegressionProblemData ProblemData { get { return ProblemDataParameter.Value; } set { ProblemDataParameter.Value = value; } }
+  public ISymbolicRegressionSingleObjectiveEvaluator ModelEvaluator { get { return ModelEvaluatorParameter.Value; } set { ModelEvaluatorParameter.Value = value; } }
   public ISymbolicDataAnalysisGrammar Grammar { get { return GrammarParameter.Value; } set { GrammarParameter.Value = value; } }
   public ISymbolicDataAnalysisExpressionTreeInterpreter Interpreter { get { return InterpreterParameter.Value; } set { InterpreterParameter.Value = value; } }
-  
+  public bool ApplyLinearScaling { get { return ApplyLinearScalingParameter.Value.Value; } set { ApplyLinearScalingParameter.Value.Value = value; } }
+  public bool OptimizeParameters { get { return OptimizeParametersParameter.Value.Value; } set { OptimizeParametersParameter.Value.Value = value; } }
   #endregion
   
   
   #region Constructors and Cloning
   public DynamicSymbolicRegressionProblem() {
     Parameters.Add(new ValueParameter<DynamicRegressionProblemData>(ProblemDataParameterName));
+    Parameters.Add(new ValueParameter<ISymbolicRegressionSingleObjectiveEvaluator>(ModelEvaluatorParameterName, new SymbolicRegressionSingleObjectivePearsonRSquaredEvaluator()));
     Parameters.Add(new ValueParameter<ISymbolicDataAnalysisGrammar>(GrammarParameterName, new TypeCoherentExpressionGrammar()));
     Parameters.Add(new ValueParameter<ISymbolicDataAnalysisExpressionTreeInterpreter>(InterpreterParameterName, new SymbolicDataAnalysisExpressionTreeLinearInterpreter()) { Hidden = true });
-    
-    
+    Parameters.Add(new FixedValueParameter<BoolValue>(ApplyLinearScalingParameterName, new BoolValue(true)));
+    Parameters.Add(new FixedValueParameter<BoolValue>(OptimizeParametersParameterName, new BoolValue(false)));
     
     Load(new DynamicRegressionProblemData());
     RegisterProblemEventHandlers();
   }
 
   private void RegisterProblemEventHandlers() {
-    InitialState.SolutionCreatorChanged += (a, b) => SolutionCreator = InitialState.SolutionCreator;
+    ProblemDataParameter.ValueChanged += (a, b) => UpdateInitialState();
+    ModelEvaluatorParameter.ValueChanged += (a, b) => UpdateInitialState();
+    GrammarParameter.ValueChanged += (a, b) => UpdateInitialState();
+    InterpreterParameter.ValueChanged += (a, b) => UpdateInitialState();
+    ApplyLinearScalingParameter.ValueChanged += (a, b) => UpdateInitialState();
+    SolutionCreatorParameter.ValueChanged += (a, b) => UpdateInitialState();
+    OptimizeParametersParameter.ValueChanged += (a, b) => UpdateInitialState();
   }
 
   [StorableConstructor]
@@ -81,7 +98,9 @@ public class DynamicSymbolicRegressionProblem
     RegisterProblemEventHandlers();
   }
 
-  protected DynamicSymbolicRegressionProblem(DynamicSymbolicRegressionProblem original, Cloner cloner) : base(original, cloner) { }
+  protected DynamicSymbolicRegressionProblem(DynamicSymbolicRegressionProblem original, Cloner cloner) : base(original, cloner) {
+    RegisterEventHandlers();
+  }
 
   public override IDeepCloneable Clone(Cloner cloner) {
     return new DynamicSymbolicRegressionProblem(this, cloner);
@@ -101,13 +120,17 @@ public class DynamicSymbolicRegressionProblem
   #endregion
 
   public void Load(DynamicRegressionProblemData data) {
-    ProblemDataParameter.Value = data;
+    ProblemData = data;
+  }
+
+  private void UpdateInitialState() {
+    Grammar.ConfigureVariableSymbols(ProblemData);
     
-    Grammar.ConfigureVariableSymbols(data);
-    InitialState = new DynamicSymbolicRegressionProblemState(data, Interpreter, Grammar);
+    EventHandler updateCreatorHandler = (_, _) => SolutionCreator = InitialState.SolutionCreator;
+    if (InitialState is not null) InitialState.SolutionCreatorChanged -= updateCreatorHandler;
+    InitialState = new DynamicSymbolicRegressionProblemState(this);
+    InitialState.SolutionCreatorChanged += updateCreatorHandler;
     Encoding = InitialState.Encoding;
     SolutionCreator = InitialState.SolutionCreator;
-    
-    Grammar.ConfigureVariableSymbols(data);
   }
 }
