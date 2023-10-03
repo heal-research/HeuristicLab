@@ -7,11 +7,14 @@ using HeuristicLab.Parameters;
 
 namespace HeuristicLab.Problems.DataAnalysis.Dynamic;
 
+[StorableType("92934716-3F99-4102-881F-794EA841A054")]
 public enum PartitionsUpdateMode {
   Wrapping,
   KeepLast
 }
 
+[Item("DynamicRegressionProblemData", "")]
+[StorableType("279D12A9-8E7A-49C6-8C70-B3CBADD85249")]
 public class DynamicRegressionProblemData : RegressionProblemData {
   
   public IValueParameter<IntMatrix> TrainingPartitionsParameter => (IValueParameter<IntMatrix>)Parameters["TrainingPartitions"];
@@ -52,7 +55,7 @@ public class DynamicRegressionProblemData : RegressionProblemData {
     TestPartitionParameter.Hidden = true;
   }
   
-  [StorableConstructor] protected DynamicRegressionProblemData(DynamicRegressionProblemData _) : base(_) { }
+  [StorableConstructor] protected DynamicRegressionProblemData(StorableConstructorFlag _) : base(_) { }
   protected DynamicRegressionProblemData(RegressionProblemData original, Cloner cloner) : base(original, cloner) { }
   public override IDeepCloneable Clone(Cloner cloner) { return new DynamicRegressionProblemData(this, cloner); }
 }

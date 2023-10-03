@@ -87,12 +87,10 @@ namespace HeuristicLab.Optimization {
           if ((value != null) && !ProblemType.IsInstanceOfType(value)) throw new ArgumentException("Invalid problem type.");
           if (problem != null) {
             DeregisterProblemEvents();
-            problem.DeregisterAlgorithmEvents(this);
           }
           problem = value;
           if (problem != null) {
             RegisterProblemEvents();
-            problem.RegisterAlgorithmEvents(this);
           }
           OnProblemChanged();
           Prepare();
@@ -330,12 +328,14 @@ namespace HeuristicLab.Optimization {
     }
 
     protected virtual void DeregisterProblemEvents() {
+      problem.DeregisterAlgorithmEvents(this);
       problem.OperatorsChanged -= new EventHandler(Problem_OperatorsChanged);
       problem.Reset -= new EventHandler(Problem_Reset);
     }
     protected virtual void RegisterProblemEvents() {
       problem.OperatorsChanged += new EventHandler(Problem_OperatorsChanged);
       problem.Reset += new EventHandler(Problem_Reset);
+      problem.RegisterAlgorithmEvents(this);
     }
     protected virtual void Problem_OperatorsChanged(object sender, EventArgs e) { }
     protected virtual void Problem_Reset(object sender, EventArgs e) {

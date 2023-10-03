@@ -120,7 +120,7 @@ namespace HeuristicLab.Problems.Dynamic {
 
     #region Problem Methods
     public sealed override double[] Evaluate(Individual individual, IRandom random) {
-      if (Dirty && ProblemUpdatePolicy == ProblemUpdatePolicy.OnNextEvaluate)
+      if (Dirty && ProblemUpdatePolicy == ProblemUpdatePolicy.BeforeNextEvaluate)
         SafeUpdate();
       rwLock.AcquireReaderLock(-1);
       double[] q;
@@ -137,7 +137,7 @@ namespace HeuristicLab.Problems.Dynamic {
 
     public override void Analyze(Individual[] individuals, double[][] qualities, ResultCollection results, IRandom random) {
       base.Analyze(individuals, qualities, results, random);
-      if (Dirty && ProblemUpdatePolicy == ProblemUpdatePolicy.OnNextAnalyze) SafeUpdate();
+      if (Dirty && ProblemUpdatePolicy == ProblemUpdatePolicy.BeforeNextAnalyze) SafeUpdate();
       rwLock.AcquireReaderLock(-1);
       try {
         Analyze(individuals, qualities, results, random, true);
@@ -156,7 +156,7 @@ namespace HeuristicLab.Problems.Dynamic {
 
     public event EventHandler<long> EpochChanged;
     public void AnalyzeProblem(ResultCollection results, IRandom random) {
-      if (Dirty && ProblemUpdatePolicy == ProblemUpdatePolicy.OnNextAnalyze) SafeUpdate();
+      if (Dirty && ProblemUpdatePolicy == ProblemUpdatePolicy.BeforeNextAnalyze) SafeUpdate();
       rwLock.AcquireReaderLock(-1);
       try {
         AnalyzeProblem(results, random, true);

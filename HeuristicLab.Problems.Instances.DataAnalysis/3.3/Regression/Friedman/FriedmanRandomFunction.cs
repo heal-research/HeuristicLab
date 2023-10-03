@@ -136,14 +136,15 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
       var z = new double[nl];
       var y = new double[nl];
       for (int i = 0; i < nRows; i++) {
-        for (int j = 0; j < nl; j++) z[j] = xs[j][i] - mu[j];
+        for (int j = 0; j < nl; j++) 
+          z[j] = xs[j][i] - mu[j];
         alglib.rmatrixmv(nl, nl, v, 0, 0, 0, z, 0, ref y, 0);
 
         // dot prod
         var s = 0.0;
         for (int j = 0; j < nl; j++) s += z[j] * y[j];
 
-        yield return s;
+        yield return Math.Exp(-0.5 * s);
       }
     }
   }

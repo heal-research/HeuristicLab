@@ -121,7 +121,7 @@ namespace HeuristicLab.Problems.Dynamic {
 
     #region Problem Methods
     public sealed override double Evaluate(Individual individual, IRandom random) {
-      if (Dirty && ProblemUpdatePolicy == ProblemUpdatePolicy.OnNextEvaluate)
+      if (Dirty && ProblemUpdatePolicy == ProblemUpdatePolicy.BeforeNextEvaluate)
         SafeUpdate();
       rwLock.AcquireReaderLock(-1);
       double q;
@@ -133,19 +133,24 @@ namespace HeuristicLab.Problems.Dynamic {
       } finally {
         rwLock.ReleaseReaderLock();
       }
+      if (Dirty && ProblemUpdatePolicy == ProblemUpdatePolicy.AfterNextEvaluate)
+        SafeUpdate();
       EpochClock.Tick();
       return q;
     }
 
     public override void Analyze(Individual[] individuals, double[] qualities, ResultCollection results, IRandom random) {
       base.Analyze(individuals, qualities, results, random);
-      if (Dirty && ProblemUpdatePolicy == ProblemUpdatePolicy.OnNextAnalyze) SafeUpdate();
+      if (Dirty && ProblemUpdatePolicy == ProblemUpdatePolicy.BeforeNextAnalyze) 
+        SafeUpdate();
       rwLock.AcquireReaderLock(-1);
       try {
         Analyze(individuals, qualities, results, random, true);
       } finally {
         rwLock.ReleaseReaderLock();
       }
+      if (Dirty && ProblemUpdatePolicy == ProblemUpdatePolicy.AfterNextAnalyze) 
+        SafeUpdate();
     }
 
     public override void RegisterAlgorithmEvents(IAlgorithm algorithm) {
@@ -158,13 +163,16 @@ namespace HeuristicLab.Problems.Dynamic {
 
     public event EventHandler<long> EpochChanged;
     public void AnalyzeProblem(ResultCollection results, IRandom random) {
-      if (Dirty && ProblemUpdatePolicy == ProblemUpdatePolicy.OnNextAnalyze) SafeUpdate();
+      if (Dirty && ProblemUpdatePolicy == ProblemUpdatePolicy.BeforeNextAnalyze) 
+        SafeUpdate();
       rwLock.AcquireReaderLock(-1);
       try {
         AnalyzeProblem(results, random, true);
       } finally {
         rwLock.ReleaseReaderLock();
       }
+      if (Dirty && ProblemUpdatePolicy == ProblemUpdatePolicy.AfterNextAnalyze) 
+        SafeUpdate();
     }
 
     #endregion
@@ -240,6 +248,8 @@ namespace HeuristicLab.Problems.Dynamic {
 
       try {
         Update(ClockVersion);
+        Dirty = false;
+        
         foreach (var tracker in Trackers) {
           tracker.OnEpochChange(GetData(), ClockVersion, ClockTime);
         }
@@ -266,10 +276,10 @@ namespace HeuristicLab.Problems.Dynamic {
     private void OnNewVersion(object sender, EventArgs<long, long> e) {
       ClockVersion = e.Value;
       ClockTime = e.Value2;
-      if (ProblemUpdatePolicy == ProblemUpdatePolicy.Immediate)
+      Dirty = true;
+      if (ProblemUpdatePolicy == ProblemUpdatePolicy.Immediate) {
         SafeUpdate();
-      else
-        Dirty = true;
+      }
     }
     #endregion
   }

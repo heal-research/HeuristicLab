@@ -299,7 +299,7 @@ namespace HeuristicLab.Algorithms.ALPS {
       Parameters.Add(new ConstrainedValueParameter<IManipulator>("Mutator", "The operator used to mutate solutions."));
       Parameters.Add(new ValueParameter<PercentValue>("MutationProbability", "The probability that the mutation operator is applied on a solution.", new PercentValue(0.05)));
       Parameters.Add(new ValueParameter<IntValue>("Elites", "The numer of elite solutions which are kept in each generation.", new IntValue(1)));
-      Parameters.Add(new FixedValueParameter<BoolValue>("ReevaluateElites", "Flag to determine if elite individuals should be reevaluated (i.e., if stochastic fitness functions are used.)", new BoolValue(false)) { Hidden = true });
+      Parameters.Add(new FixedValueParameter<BoolValue>("ReevaluateElites", "Flag to determine if elite individuals should be reevaluated (i.e., if stochastic fitness functions are used.)", new BoolValue(true)) { Hidden = true });
       Parameters.Add(new ValueParameter<BoolValue>("PlusSelection", "Include the parents in the selection of the invividuals for the next generation.", new BoolValue(false)));
 
       Parameters.Add(new ValueParameter<EnumValue<AgingScheme>>("AgingScheme", "The aging scheme for setting the age-limits for the layers.", new EnumValue<AgingScheme>(ALPS.AgingScheme.Polynomial)));

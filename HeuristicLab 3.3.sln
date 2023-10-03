@@ -479,6 +479,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Problems.Dynam
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Problems.DataAnalysis.Dynamic-3.4", "HeuristicLab.Problems.DataAnalysis.Dynamic\3.3\HeuristicLab.Problems.DataAnalysis.Dynamic-3.4.csproj", "{F82D2F4E-089F-4037-9A15-333234C74D68}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamicRegressionProblemDataGenerator", "DynamicRegressionProblemDataGenerator\DynamicRegressionProblemDataGenerator.csproj", "{D11EE008-E7EB-410B-A30D-EE55562B5F98}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -2333,6 +2335,18 @@ Global
 		{F82D2F4E-089F-4037-9A15-333234C74D68}.Release|x64.Build.0 = Release|x64
 		{F82D2F4E-089F-4037-9A15-333234C74D68}.Release|x86.ActiveCfg = Release|x86
 		{F82D2F4E-089F-4037-9A15-333234C74D68}.Release|x86.Build.0 = Release|x86
+		{D11EE008-E7EB-410B-A30D-EE55562B5F98}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D11EE008-E7EB-410B-A30D-EE55562B5F98}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D11EE008-E7EB-410B-A30D-EE55562B5F98}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{D11EE008-E7EB-410B-A30D-EE55562B5F98}.Debug|x64.Build.0 = Debug|Any CPU
+		{D11EE008-E7EB-410B-A30D-EE55562B5F98}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D11EE008-E7EB-410B-A30D-EE55562B5F98}.Debug|x86.Build.0 = Debug|Any CPU
+		{D11EE008-E7EB-410B-A30D-EE55562B5F98}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D11EE008-E7EB-410B-A30D-EE55562B5F98}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D11EE008-E7EB-410B-A30D-EE55562B5F98}.Release|x64.ActiveCfg = Release|Any CPU
+		{D11EE008-E7EB-410B-A30D-EE55562B5F98}.Release|x64.Build.0 = Release|Any CPU
+		{D11EE008-E7EB-410B-A30D-EE55562B5F98}.Release|x86.ActiveCfg = Release|Any CPU
+		{D11EE008-E7EB-410B-A30D-EE55562B5F98}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
