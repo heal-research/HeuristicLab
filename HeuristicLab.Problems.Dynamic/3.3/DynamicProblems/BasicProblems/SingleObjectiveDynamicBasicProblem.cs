@@ -75,6 +75,9 @@ namespace HeuristicLab.Problems.Dynamic {
 
     #region Fields and Storbales
     private readonly ReaderWriterLock rwLock = new ReaderWriterLock();
+    [Storable] private readonly RealTimeClock realTimeClock;
+    [Storable] private readonly CountingClock evaluationCountingClock;
+    [Storable] private readonly CountingClock generationCountingClock;
     [Storable] private bool Dirty { get; set; }
     [Storable] private long ClockVersion { get; set; }
     [Storable] private long ClockTime { get; set; }
@@ -100,11 +103,18 @@ namespace HeuristicLab.Problems.Dynamic {
       EnvironmentRandom = cloner.Clone(original.EnvironmentRandom);
       RegisterEventHandlers();
       InitPending = original.InitPending;
+      realTimeClock = cloner.Clone(original.realTimeClock);
+      evaluationCountingClock = cloner.Clone(original.evaluationCountingClock);
+      generationCountingClock = cloner.Clone(original.generationCountingClock);
     }
 
     protected SingleObjectiveDynamicBasicProblem() {
-      var clocks = new ItemSet<IEpochClock>(ApplicationManager.Manager.GetInstances(typeof(IEpochClock)).Cast<IEpochClock>());
-      Parameters.Add(new ConstrainedValueParameter<IEpochClock>(EpochClockParameterName, "", clocks, clocks.OfType<CountingClock>().Single()));
+      realTimeClock = new RealTimeClock() { Name = "Real-time Clock"};
+      evaluationCountingClock = new CountingClock() { Name = "Evaluation Counting Clock" };
+      generationCountingClock = new CountingClock() { Name = "Generation Counting Clock" };
+      
+      var clocks = new ItemSet<IEpochClock>(new IEpochClock[] { realTimeClock, evaluationCountingClock, generationCountingClock});
+      Parameters.Add(new ConstrainedValueParameter<IEpochClock>(EpochClockParameterName, "", clocks, evaluationCountingClock));
       Parameters.Add(new FixedValueParameter<EnumValue<ProblemUpdatePolicy>>(UpdatePolicyParameterName, "Determines when the problem state changes", new EnumValue<ProblemUpdatePolicy>(ProblemUpdatePolicy.Immediate)));
       Parameters.Add(new FixedValueParameter<IntValue>(SeedParameterName, "Random Seed", new IntValue(0)));
       Parameters.Add(new FixedValueParameter<BoolValue>(SetSeedRandomlyParameterName, "", new BoolValue(false)));
@@ -135,7 +145,8 @@ namespace HeuristicLab.Problems.Dynamic {
       }
       if (Dirty && ProblemUpdatePolicy == ProblemUpdatePolicy.AfterNextEvaluate)
         SafeUpdate();
-      EpochClock.Tick();
+      if (EpochClock == realTimeClock || EpochClock == evaluationCountingClock)
+        EpochClock.Tick();
       return q;
     }
 
@@ -151,6 +162,8 @@ namespace HeuristicLab.Problems.Dynamic {
       }
       if (Dirty && ProblemUpdatePolicy == ProblemUpdatePolicy.AfterNextAnalyze) 
         SafeUpdate();
+      if (EpochClock == realTimeClock || EpochClock == generationCountingClock)
+        EpochClock.Tick();
     }
 
     public override void RegisterAlgorithmEvents(IAlgorithm algorithm) {

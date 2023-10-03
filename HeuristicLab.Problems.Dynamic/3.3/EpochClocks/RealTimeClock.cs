@@ -114,7 +114,9 @@ namespace HeuristicLab.Problems.Dynamic {
       while (!token.IsCancellationRequested) {
         var now = DateTime.Now;
         if (now < lastTick + IntervalSize) {
-          await Task.Delay(lastTick + IntervalSize - now, token);
+          try {
+            await Task.Delay(lastTick + IntervalSize - now, token);
+          } catch (OperationCanceledException) { }
         }
         if (token.IsCancellationRequested) continue;
         lastTick = DateTime.Now;
