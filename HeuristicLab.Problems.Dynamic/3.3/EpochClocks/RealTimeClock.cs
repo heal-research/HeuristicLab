@@ -60,7 +60,8 @@ namespace HeuristicLab.Problems.Dynamic {
     protected RealTimeClock(RealTimeClock original, Cloner cloner) : base(original, cloner) {
       version = original.CurrentEpoch;
       lastTick = original.lastTick;
-      if (original.cts != null) throw new InvalidOperationException();
+      // ToDo: Algorithm creates run and clones the clock before stopping it.
+      //if (original.cts != null) throw new InvalidOperationException();
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
