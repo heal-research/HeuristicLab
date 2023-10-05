@@ -21,9 +21,14 @@ public class DynamicSymbolicRegressionProblemState
 {
   public const string ProblemParameterName = "InnerProblem";
   private const string OptimizeParametersParameterName = "Optimize Parameters";
+  private const string ImpactFactorRepetitionsBestSolutionParameterName = "ImpactFactorRepetionsBestSolution";
+  private const string ImpactFactorRepetitionsPopulationParameterName = "ImpactFactorRepetionsPopulation";
+  
   public IValueParameter<SymbolicRegressionSingleObjectiveProblem> ProblemParameter => (IValueParameter<SymbolicRegressionSingleObjectiveProblem>)Parameters[ProblemParameterName];
   public IFixedValueParameter<BoolValue> OptimizeParametersParameter => (IFixedValueParameter<BoolValue>)Parameters[OptimizeParametersParameterName];
-  
+  public IFixedValueParameter<IntValue> ImpactFactorRepetitionsBestSolutionParameter => (IFixedValueParameter<IntValue>)Parameters[ImpactFactorRepetitionsBestSolutionParameterName];
+  public IFixedValueParameter<IntValue> ImpactFactorRepetitionsPopulationParameter => (IFixedValueParameter<IntValue>)Parameters[ImpactFactorRepetitionsPopulationParameterName];
+
   
   public SymbolicRegressionSingleObjectiveProblem Problem => ProblemParameter.Value;
   public DynamicRegressionProblemData ProblemData { get { return (DynamicRegressionProblemData)Problem.ProblemData; } set { Problem.ProblemData = value; } }
@@ -52,6 +57,9 @@ public class DynamicSymbolicRegressionProblemState
     Parameters.Add(new ValueParameter<SymbolicRegressionSingleObjectiveProblem>(ProblemParameterName, problem));
     Parameters.Add(new ResultParameter<ISymbolicRegressionSolution>(BestTrainingSolutionParameterName, "") { Hidden = true });
     Parameters.Add(dynamicProblem.OptimizeParametersParameter);
+    
+    Parameters.Add(dynamicProblem.ImpactFactorRepetitionsBestSolutionParameter);
+    Parameters.Add(dynamicProblem.ImpactFactorRepetitionsPopulationParameter);
    
     ConfigureEncoding();
   }
@@ -131,13 +139,16 @@ public class DynamicSymbolicRegressionProblemState
     var solution = model.CreateRegressionSolution(ProblemData);
     
     results[BestTrainingSolutionParameter.ActualName].Value = solution;
-    
-    
-    //AnalyzeVariableImpacts(results, "BestSolutionVariableImpacts", best);
-    //AnalyzeVariableImpacts(results, "AggregatedVariableImpacts", individuals);
+
+    if (ImpactFactorRepetitionsBestSolutionParameter.Value.Value > 0) {
+      AnalyzeVariableImpacts(results, "BestSolutionVariableImpacts", ImpactFactorRepetitionsBestSolutionParameter.Value.Value, best);
+    }
+    if (ImpactFactorRepetitionsPopulationParameter.Value.Value > 0) {
+      AnalyzeVariableImpacts(results, "PopulationVariableImpacts", ImpactFactorRepetitionsPopulationParameter.Value.Value, individuals);
+    }
   }
 
-  private void AnalyzeVariableImpacts(ResultCollection results, string resultName, params Individual[] individuals) {
+  private void AnalyzeVariableImpacts(ResultCollection results, string resultName, int repetitions, params Individual[] individuals) {
     if (!results.ContainsKey(resultName)) {
       var newTable = new DataTable(resultName) {
         VisualProperties = {
@@ -145,13 +156,15 @@ public class DynamicSymbolicRegressionProblemState
           YAxisMinimumFixedValue = 0.0, YAxisMaximumFixedValue = 1.0, YAxisMinimumAuto = false, YAxisMaximumAuto = false
         }
       };
-      var variableRows = Problem.ProblemData.InputVariables.Select(v => new DataRow(v.Value, $"Impact of {v.Value}"));
+      var variableRows = Problem.ProblemData.InputVariables.CheckedItems
+        .Select(v => v.Value.Value)
+        .Select(v => new DataRow(v, $"Impact of {v}"));
       newTable.Rows.AddRange(variableRows);
       results.Add(new Result(resultName, "", newTable));
     }
     
     var aggregatedDataTable = (DataTable)results[resultName].Value;
-    var allSolutionImpacts = individuals.Select(i => i.SymbolicExpressionTree()).Select(CalculateImpact).ToList();
+    var allSolutionImpacts = individuals.Select(i => i.SymbolicExpressionTree()).Select(t => CalculateImpact(t, repetitions)).ToList();
     var solutionsImpact = new Dictionary<string, double>();
     foreach (var solutionImpacts in allSolutionImpacts) {
       foreach (var solutionImpact in solutionImpacts) {
@@ -165,7 +178,7 @@ public class DynamicSymbolicRegressionProblemState
     }
   }
   
-  private Dictionary<string, double> CalculateImpact(ISymbolicExpressionTree tree) {
+  private Dictionary<string, double> CalculateImpact(ISymbolicExpressionTree tree, int repetitions) {
     var problemData = this.Problem.ProblemData;
     var interpreter = this.Problem.SymbolicExpressionTreeInterpreter;
     var estimationLimits = this.Problem.EstimationLimits;
@@ -178,7 +191,7 @@ public class DynamicSymbolicRegressionProblemState
       problemData,
       model.GetEstimatedValues(problemData.Dataset, trainingIndices).ToList(),
       trainingIndices,
-      repetitions: 10
+      repetitions: repetitions
     ).ToDictionary(x => x.Item1, x => x.Item2);
   }
 }

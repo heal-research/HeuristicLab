@@ -52,7 +52,8 @@ public class DynamicSymbolicRegressionProblem
   private const string MaximumTreeDepthParameterName = "MaximumTreeDepth";
   private const string MaximumTreeLengthParameterName = "MaximumTreeSize";
   private const string EstimationLimitsParameterName = "EstimationLimits";
-
+  private const string ImpactFactorRepetitionsBestSolutionParameterName = "ImpactFactorRepetionsBestSolution";
+  private const string ImpactFactorRepetitionsPopulationParameterName = "ImpactFactorRepetionsPopulation";
   
   
   public IValueParameter<DynamicRegressionProblemData> ProblemDataParameter => (IValueParameter<DynamicRegressionProblemData>)Parameters[ProblemDataParameterName];
@@ -64,6 +65,9 @@ public class DynamicSymbolicRegressionProblem
   public IFixedValueParameter<IntValue> MaximumTreeDepthParameter => (IFixedValueParameter<IntValue>)Parameters[MaximumTreeDepthParameterName];
   public IFixedValueParameter<IntValue> MaximumTreeLengthParameter => (IFixedValueParameter<IntValue>)Parameters[MaximumTreeLengthParameterName];
   public IFixedValueParameter<DoubleLimit> EstimationLimitsParameter => (IFixedValueParameter<DoubleLimit>)Parameters[EstimationLimitsParameterName];
+  public IFixedValueParameter<IntValue> ImpactFactorRepetitionsBestSolutionParameter => (IFixedValueParameter<IntValue>)Parameters[ImpactFactorRepetitionsBestSolutionParameterName];
+  public IFixedValueParameter<IntValue> ImpactFactorRepetitionsPopulationParameter => (IFixedValueParameter<IntValue>)Parameters[ImpactFactorRepetitionsPopulationParameterName];
+  
   
   public DynamicRegressionProblemData ProblemData { get { return ProblemDataParameter.Value; } set { ProblemDataParameter.Value = value; } }
   public ISymbolicRegressionSingleObjectiveEvaluator ModelEvaluator { get { return ModelEvaluatorParameter.Value; } set { ModelEvaluatorParameter.Value = value; } }
@@ -88,6 +92,8 @@ public class DynamicSymbolicRegressionProblem
     Parameters.Add(new FixedValueParameter<IntValue>(MaximumTreeDepthParameterName, new IntValue(8)));
     Parameters.Add(new FixedValueParameter<IntValue>(MaximumTreeLengthParameterName, new IntValue(25)));
     Parameters.Add(new FixedValueParameter<DoubleLimit>(EstimationLimitsParameterName, new DoubleLimit(double.MinValue, double.MaxValue)));
+    Parameters.Add(new FixedValueParameter<IntValue>(ImpactFactorRepetitionsBestSolutionParameterName, new IntValue(0)));
+    Parameters.Add(new FixedValueParameter<IntValue>(ImpactFactorRepetitionsPopulationParameterName, new IntValue(0)));
     
     RegisterProblemEventHandlers();
     
