@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using HEAL.Attic;
+using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -43,6 +44,9 @@ public class DynamicSymbolicRegressionProblemState
       SymbolicExpressionTreeInterpreter = dynamicProblem.Interpreter,
       SymbolicExpressionTreeGrammar = dynamicProblem.Grammar,
       ApplyLinearScaling = { Value = dynamicProblem.ApplyLinearScaling },
+      MaximumSymbolicExpressionTreeDepthParameter = { Value = { Value = dynamicProblem.MaximumTreeDepth } },
+      MaximumSymbolicExpressionTreeLengthParameter = { Value = { Value = dynamicProblem.MaximumTreeLength } },
+      EstimationLimits = { Lower = dynamicProblem.EstimationLimits.Lower, Upper = dynamicProblem.EstimationLimits.Upper }
     };
 
     Parameters.Add(new ValueParameter<SymbolicRegressionSingleObjectiveProblem>(ProblemParameterName, problem));
@@ -127,5 +131,54 @@ public class DynamicSymbolicRegressionProblemState
     var solution = model.CreateRegressionSolution(ProblemData);
     
     results[BestTrainingSolutionParameter.ActualName].Value = solution;
+    
+    
+    //AnalyzeVariableImpacts(results, "BestSolutionVariableImpacts", best);
+    //AnalyzeVariableImpacts(results, "AggregatedVariableImpacts", individuals);
+  }
+
+  private void AnalyzeVariableImpacts(ResultCollection results, string resultName, params Individual[] individuals) {
+    if (!results.ContainsKey(resultName)) {
+      var newTable = new DataTable(resultName) {
+        VisualProperties = {
+          XAxisTitle = "Generation", YAxisTitle = "Impact",
+          YAxisMinimumFixedValue = 0.0, YAxisMaximumFixedValue = 1.0, YAxisMinimumAuto = false, YAxisMaximumAuto = false
+        }
+      };
+      var variableRows = Problem.ProblemData.InputVariables.Select(v => new DataRow(v.Value, $"Impact of {v.Value}"));
+      newTable.Rows.AddRange(variableRows);
+      results.Add(new Result(resultName, "", newTable));
+    }
+    
+    var aggregatedDataTable = (DataTable)results[resultName].Value;
+    var allSolutionImpacts = individuals.Select(i => i.SymbolicExpressionTree()).Select(CalculateImpact).ToList();
+    var solutionsImpact = new Dictionary<string, double>();
+    foreach (var solutionImpacts in allSolutionImpacts) {
+      foreach (var solutionImpact in solutionImpacts) {
+        if (!solutionsImpact.ContainsKey(solutionImpact.Key)) solutionsImpact.Add(solutionImpact.Key, 0.0);
+        solutionsImpact[solutionImpact.Key] += solutionImpact.Value;
+      }
+    }
+    foreach (var bestSolutionImpact in solutionsImpact) {
+      var row = aggregatedDataTable.Rows[bestSolutionImpact.Key];
+      row.Values.Add(bestSolutionImpact.Value / individuals.Length);
+    }
+  }
+  
+  private Dictionary<string, double> CalculateImpact(ISymbolicExpressionTree tree) {
+    var problemData = this.Problem.ProblemData;
+    var interpreter = this.Problem.SymbolicExpressionTreeInterpreter;
+    var estimationLimits = this.Problem.EstimationLimits;
+      
+    var model = new SymbolicRegressionModel(problemData.TargetVariable, tree, interpreter, estimationLimits.Lower, estimationLimits.Upper);
+    var trainingIndices = problemData.TrainingIndices.ToList();
+    
+    return RegressionSolutionVariableImpactsCalculator.CalculateImpacts(
+      model,
+      problemData,
+      model.GetEstimatedValues(problemData.Dataset, trainingIndices).ToList(),
+      trainingIndices,
+      repetitions: 10
+    ).ToDictionary(x => x.Item1, x => x.Item2);
   }
 }

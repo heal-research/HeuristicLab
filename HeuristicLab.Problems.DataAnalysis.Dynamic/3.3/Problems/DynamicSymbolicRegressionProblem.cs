@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using System.Linq;
 using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -45,9 +46,13 @@ public class DynamicSymbolicRegressionProblem
   private const string ProblemDataParameterName = "ProblemData";
   private const string ModelEvaluatorParameterName = "Model Evaluator";
   private const string GrammarParameterName = "Grammar";
-  private const string InterpreterParameterName = "Interpreter";
+  private const string InterpreterParameterName = "SymbolicExpressionTreeInterpreter";
   private const string ApplyLinearScalingParameterName = "Apply Linear Scaling";
   private const string OptimizeParametersParameterName = "Optimize Parameters";
+  private const string MaximumTreeDepthParameterName = "MaximumTreeDepth";
+  private const string MaximumTreeLengthParameterName = "MaximumTreeSize";
+  private const string EstimationLimitsParameterName = "EstimationLimits";
+
   
   
   public IValueParameter<DynamicRegressionProblemData> ProblemDataParameter => (IValueParameter<DynamicRegressionProblemData>)Parameters[ProblemDataParameterName];
@@ -56,6 +61,9 @@ public class DynamicSymbolicRegressionProblem
   public IValueParameter<ISymbolicDataAnalysisExpressionTreeInterpreter> InterpreterParameter => (IValueParameter<ISymbolicDataAnalysisExpressionTreeInterpreter>)Parameters[InterpreterParameterName];
   public IFixedValueParameter<BoolValue> ApplyLinearScalingParameter => (IFixedValueParameter<BoolValue>)Parameters[ApplyLinearScalingParameterName];
   public IFixedValueParameter<BoolValue> OptimizeParametersParameter => (IFixedValueParameter<BoolValue>)Parameters[OptimizeParametersParameterName];
+  public IFixedValueParameter<IntValue> MaximumTreeDepthParameter => (IFixedValueParameter<IntValue>)Parameters[MaximumTreeDepthParameterName];
+  public IFixedValueParameter<IntValue> MaximumTreeLengthParameter => (IFixedValueParameter<IntValue>)Parameters[MaximumTreeLengthParameterName];
+  public IFixedValueParameter<DoubleLimit> EstimationLimitsParameter => (IFixedValueParameter<DoubleLimit>)Parameters[EstimationLimitsParameterName];
   
   public DynamicRegressionProblemData ProblemData { get { return ProblemDataParameter.Value; } set { ProblemDataParameter.Value = value; } }
   public ISymbolicRegressionSingleObjectiveEvaluator ModelEvaluator { get { return ModelEvaluatorParameter.Value; } set { ModelEvaluatorParameter.Value = value; } }
@@ -63,6 +71,9 @@ public class DynamicSymbolicRegressionProblem
   public ISymbolicDataAnalysisExpressionTreeInterpreter Interpreter { get { return InterpreterParameter.Value; } set { InterpreterParameter.Value = value; } }
   public bool ApplyLinearScaling { get { return ApplyLinearScalingParameter.Value.Value; } set { ApplyLinearScalingParameter.Value.Value = value; } }
   public bool OptimizeParameters { get { return OptimizeParametersParameter.Value.Value; } set { OptimizeParametersParameter.Value.Value = value; } }
+  public int MaximumTreeDepth { get { return MaximumTreeDepthParameter.Value.Value; } set { MaximumTreeDepthParameter.Value.Value = value; } }
+  public int MaximumTreeLength { get { return MaximumTreeLengthParameter.Value.Value; } set { MaximumTreeLengthParameter.Value.Value = value; } }
+  public DoubleLimit EstimationLimits { get { return EstimationLimitsParameter.Value; } }
   #endregion
   
   
@@ -74,9 +85,13 @@ public class DynamicSymbolicRegressionProblem
     Parameters.Add(new ValueParameter<ISymbolicDataAnalysisExpressionTreeInterpreter>(InterpreterParameterName, new SymbolicDataAnalysisExpressionTreeLinearInterpreter()) { Hidden = true });
     Parameters.Add(new FixedValueParameter<BoolValue>(ApplyLinearScalingParameterName, new BoolValue(true)));
     Parameters.Add(new FixedValueParameter<BoolValue>(OptimizeParametersParameterName, new BoolValue(false)));
+    Parameters.Add(new FixedValueParameter<IntValue>(MaximumTreeDepthParameterName, new IntValue(8)));
+    Parameters.Add(new FixedValueParameter<IntValue>(MaximumTreeLengthParameterName, new IntValue(25)));
+    Parameters.Add(new FixedValueParameter<DoubleLimit>(EstimationLimitsParameterName, new DoubleLimit(double.MinValue, double.MaxValue)));
+    
+    RegisterProblemEventHandlers();
     
     Load(new DynamicRegressionProblemData());
-    RegisterProblemEventHandlers();
   }
 
   private void RegisterProblemEventHandlers() {
@@ -84,9 +99,11 @@ public class DynamicSymbolicRegressionProblem
     ModelEvaluatorParameter.ValueChanged += (a, b) => UpdateInitialState();
     GrammarParameter.ValueChanged += (a, b) => UpdateInitialState();
     InterpreterParameter.ValueChanged += (a, b) => UpdateInitialState();
-    ApplyLinearScalingParameter.ValueChanged += (a, b) => UpdateInitialState();
+    ApplyLinearScalingParameter.Value.ValueChanged += (a, b) => UpdateInitialState();
     SolutionCreatorParameter.ValueChanged += (a, b) => UpdateInitialState();
-    OptimizeParametersParameter.ValueChanged += (a, b) => UpdateInitialState();
+    OptimizeParametersParameter.Value.ValueChanged += (a, b) => UpdateInitialState();
+    MaximumTreeDepthParameter.Value.ValueChanged += (a, b) => UpdateInitialState();
+    MaximumTreeLengthParameter.Value.ValueChanged += (a, b) => UpdateInitialState();
   }
 
   [StorableConstructor]
@@ -125,6 +142,7 @@ public class DynamicSymbolicRegressionProblem
 
   private void UpdateInitialState() {
     Grammar.ConfigureVariableSymbols(ProblemData);
+    UpdateEstimationLimits();
     
     EventHandler updateCreatorHandler = (_, _) => SolutionCreator = InitialState.SolutionCreator;
     if (InitialState is not null) InitialState.SolutionCreatorChanged -= updateCreatorHandler;
@@ -132,5 +150,19 @@ public class DynamicSymbolicRegressionProblem
     InitialState.SolutionCreatorChanged += updateCreatorHandler;
     Encoding = InitialState.Encoding;
     SolutionCreator = InitialState.SolutionCreator;
+  }
+  
+  private void UpdateEstimationLimits() {
+    const double PunishmentFactor = 10;
+    if (ProblemData.TrainingIndices.Any()) {
+      var targetValues = ProblemData.Dataset.GetDoubleValues(ProblemData.TargetVariable, ProblemData.TrainingIndices).ToList();
+      var mean = targetValues.Average();
+      var range = targetValues.Max() - targetValues.Min();
+      EstimationLimits.Upper = mean + PunishmentFactor * range;
+      EstimationLimits.Lower = mean - PunishmentFactor * range;
+    } else {
+      EstimationLimits.Upper = double.MaxValue;
+      EstimationLimits.Lower = double.MinValue;
+    }
   }
 }

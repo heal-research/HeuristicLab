@@ -62,7 +62,8 @@ namespace HeuristicLab.Problems.DataAnalysis {
     private const string ReplacementParameterName = "Replacement Method";
     private const string FactorReplacementParameterName = "Factor Replacement Method";
     private const string DataPartitionParameterName = "DataPartition";
-
+    private const string RepetitionsParameterName = "Repetitions";
+    
     public IFixedValueParameter<EnumValue<ReplacementMethodEnum>> ReplacementParameter {
       get { return (IFixedValueParameter<EnumValue<ReplacementMethodEnum>>)Parameters[ReplacementParameterName]; }
     }
@@ -72,7 +73,10 @@ namespace HeuristicLab.Problems.DataAnalysis {
     public IFixedValueParameter<EnumValue<DataPartitionEnum>> DataPartitionParameter {
       get { return (IFixedValueParameter<EnumValue<DataPartitionEnum>>)Parameters[DataPartitionParameterName]; }
     }
-
+    public IFixedValueParameter<IntValue> RepetitionsParameter {
+      get { return (IFixedValueParameter<IntValue>)Parameters[RepetitionsParameterName]; }
+    }
+    
     public ReplacementMethodEnum ReplacementMethod {
       get { return ReplacementParameter.Value.Value; }
       set { ReplacementParameter.Value.Value = value; }
@@ -84,6 +88,10 @@ namespace HeuristicLab.Problems.DataAnalysis {
     public DataPartitionEnum DataPartition {
       get { return DataPartitionParameter.Value.Value; }
       set { DataPartitionParameter.Value.Value = value; }
+    }
+    public int Repetitions {
+      get { return RepetitionsParameter.Value.Value; }
+      set { RepetitionsParameter.Value.Value = value; }
     }
     #endregion
 
@@ -97,27 +105,34 @@ namespace HeuristicLab.Problems.DataAnalysis {
       Parameters.Add(new FixedValueParameter<EnumValue<ReplacementMethodEnum>>(ReplacementParameterName, "The replacement method for variables during impact calculation.", new EnumValue<ReplacementMethodEnum>(ReplacementMethodEnum.Shuffle)));
       Parameters.Add(new FixedValueParameter<EnumValue<FactorReplacementMethodEnum>>(FactorReplacementParameterName, "The replacement method for factor variables during impact calculation.", new EnumValue<FactorReplacementMethodEnum>(FactorReplacementMethodEnum.Best)));
       Parameters.Add(new FixedValueParameter<EnumValue<DataPartitionEnum>>(DataPartitionParameterName, "The data partition on which the impacts are calculated.", new EnumValue<DataPartitionEnum>(DataPartitionEnum.Training)));
+      Parameters.Add(new FixedValueParameter<IntValue>(RepetitionsParameterName, "The number of repetitions for the impact calculation.", new IntValue(1)));
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new RegressionSolutionVariableImpactsCalculator(this, cloner);
     }
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      if (!Parameters.ContainsKey(RepetitionsParameterName))
+        Parameters.Add(new FixedValueParameter<IntValue>(RepetitionsParameterName, "The number of repetitions for the impact calculation.", new IntValue(1)));
+    }
     #endregion
 
     //mkommend: annoying name clash with static method, open to better naming suggestions
     public IEnumerable<Tuple<string, double>> Calculate(IRegressionSolution solution) {
-      return CalculateImpacts(solution, ReplacementMethod, FactorReplacementMethod, DataPartition);
+      return CalculateImpacts(solution, ReplacementMethod, FactorReplacementMethod, DataPartition, Repetitions);
     }
 
     public static IEnumerable<Tuple<string, double>> CalculateImpacts(
       IRegressionSolution solution,
       ReplacementMethodEnum replacementMethod = ReplacementMethodEnum.Shuffle,
       FactorReplacementMethodEnum factorReplacementMethod = FactorReplacementMethodEnum.Best,
-      DataPartitionEnum dataPartition = DataPartitionEnum.Training) {
+      DataPartitionEnum dataPartition = DataPartitionEnum.Training, 
+      int repetitions = 1) {
 
       IEnumerable<int> rows = GetPartitionRows(dataPartition, solution.ProblemData);
       IEnumerable<double> estimatedValues = solution.GetEstimatedValues(rows);
-      return CalculateImpacts(solution.Model, solution.ProblemData, estimatedValues, rows, replacementMethod, factorReplacementMethod);
+      return CalculateImpacts(solution.Model, solution.ProblemData, estimatedValues, rows, replacementMethod, factorReplacementMethod, repetitions);
     }
 
     public static IEnumerable<Tuple<string, double>> CalculateImpacts(
@@ -126,7 +141,8 @@ namespace HeuristicLab.Problems.DataAnalysis {
      IEnumerable<double> estimatedValues,
      IEnumerable<int> rows,
      ReplacementMethodEnum replacementMethod = ReplacementMethodEnum.Shuffle,
-     FactorReplacementMethodEnum factorReplacementMethod = FactorReplacementMethodEnum.Best) {
+     FactorReplacementMethodEnum factorReplacementMethod = FactorReplacementMethodEnum.Best,
+     int repetitions = 1) {
 
       //fholzing: try and catch in case a different dataset is loaded, otherwise statement is neglectable
       var missingVariables = model.VariablesUsedForPrediction.Except(problemData.Dataset.VariableNames);
@@ -139,9 +155,13 @@ namespace HeuristicLab.Problems.DataAnalysis {
       var impacts = new Dictionary<string, double>();
       var inputvariables = new HashSet<string>(problemData.AllowedInputVariables.Union(model.VariablesUsedForPrediction));
       var modifiableDataset = ((Dataset)(problemData.Dataset).Clone()).ToModifiable();
-
-      foreach (var inputVariable in inputvariables) {
-        impacts[inputVariable] = CalculateImpact(inputVariable, model, problemData, modifiableDataset, rows, replacementMethod, factorReplacementMethod, targetValues, originalQuality);
+      
+      for (int repetition = 0; repetition < repetitions; repetition++) {
+        foreach (var inputVariable in inputvariables) {
+          var impact = CalculateImpact(inputVariable, model, problemData, modifiableDataset, rows, replacementMethod, factorReplacementMethod, targetValues, originalQuality);
+          if (!impacts.ContainsKey(inputVariable)) impacts.Add(inputVariable, 0.0);
+          impacts[inputVariable] += impact / repetitions;
+        }
       }
 
       return impacts.Select(i => Tuple.Create(i.Key, i.Value));
