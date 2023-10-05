@@ -2,15 +2,17 @@
 using System.IO;
 using System.Linq;
 using System.Text;
+using HeuristicLab.Common;
 using HeuristicLab.Problems.Instances.DataAnalysis;
 using HeuristicLab.Random;
+using MathNet.Numerics.Statistics;
 using Xunit;
 
 namespace DynamicRegressionProblemDataGenerator {
   public class FriedmanDataGenerator {
     
     [Theory, Trait("Generate", "Benchmark")]
-    [InlineData(@"C:\Users\P41107\Desktop\Friedman_Test_{0}_{1}.csv", 100, 10, 2, 0, 142)]
+    [InlineData(@"C:\Users\P41107\Desktop\Friedman_Test_{0}_{1}.csv", 100, 10, 1, 0, 142)]
     void Generate_Test(string fileName, int trainingRowsPerEpoch, int testRowsPerEpoch, int numberOfFeaturesPerState, double noiseRatio, uint seed) {
       var random = new MersenneTwister(seed);
       
@@ -60,8 +62,12 @@ namespace DynamicRegressionProblemDataGenerator {
         if (!data.ContainsKey(targetName)) data.Add(targetName, new List<double>());
         double[] summedTargets = new double[epochTargetsPerState[0].Length];
         foreach (double[] t in epochTargetsPerState) {
+          double tMean = t.Mean();
+          double tVariance = Statistics.StandardDeviation(t);
+          if (tVariance.IsAlmost(0.0) || double.IsNaN(tVariance)) tVariance = 1.0;
           for (int r = 0; r < t.Length; r++) {
-            summedTargets[r] += t[r];
+            summedTargets[r] += (t[r] - tMean) / tVariance;
+            //summedTargets[r] += t[r];
           }
         }
         data[targetName].AddRange(summedTargets);
