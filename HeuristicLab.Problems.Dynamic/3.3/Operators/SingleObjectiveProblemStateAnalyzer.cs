@@ -40,14 +40,14 @@ namespace HeuristicLab.Problems.Dynamic.Operators {
 
     public Action<Individual[], double[], ResultCollection, IRandom> AnalyzeAction { get; set; }
 
-    [Storable] public ISingleObjectiveProblemDefinition Problem { get; set; }
+    [Storable] public IProblem Problem { get; set; }
 
 
     [StorableConstructor]
     private SingleObjectiveProblemStateAnalyzer(StorableConstructorFlag _) : base(_) { }
 
     private SingleObjectiveProblemStateAnalyzer(SingleObjectiveProblemStateAnalyzer original, Cloner cloner) : base(original, cloner) {
-      Problem = original.Problem;
+      Problem = cloner.Clone(original.Problem);
     }
     public SingleObjectiveProblemStateAnalyzer() {
       Parameters.Add(new LookupParameter<IEncoding>("Encoding", "An item that holds the problem's encoding."));

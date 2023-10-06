@@ -56,6 +56,6 @@ public class DynamicRegressionProblemData : RegressionProblemData {
   }
   
   [StorableConstructor] protected DynamicRegressionProblemData(StorableConstructorFlag _) : base(_) { }
-  protected DynamicRegressionProblemData(RegressionProblemData original, Cloner cloner) : base(original, cloner) { }
+  protected DynamicRegressionProblemData(DynamicRegressionProblemData original, Cloner cloner) : base(original, cloner) { }
   public override IDeepCloneable Clone(Cloner cloner) { return new DynamicRegressionProblemData(this, cloner); }
 }

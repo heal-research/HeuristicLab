@@ -122,7 +122,6 @@ namespace HeuristicLab.Problems.Dynamic {
         new CheckedItemList<IDynamicProblemTracker<TState>> {
           { new AnyTimeQualityTracker<TSolution, TState>(), true },
           { new SingleObjectiveAlgorithmPerformanceTracker(), true },
-          { new SlimAnyTimeQualityTracker(), true },
         }));
       RegisterEventHandlers();
       Operators.Add(new SingleObjectiveProblemStateAnalyzer() { Problem = this });

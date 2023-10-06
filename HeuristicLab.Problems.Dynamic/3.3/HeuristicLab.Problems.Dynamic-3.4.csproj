@@ -85,46 +85,6 @@
       <HintPath>..\..\bin\ALGLIB-3.17.0.dll</HintPath>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.IO, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.IO.4.3.0\lib\net462\System.IO.dll</HintPath>
-      <Private>True</Private>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.Net.Http, Version=4.1.1.3, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.Net.Http.4.3.4\lib\net46\System.Net.Http.dll</HintPath>
-      <Private>True</Private>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.Runtime, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.Runtime.4.3.0\lib\net462\System.Runtime.dll</HintPath>
-      <Private>True</Private>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.Runtime.InteropServices.RuntimeInformation, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.Runtime.InteropServices.RuntimeInformation.4.3.0\lib\net45\System.Runtime.InteropServices.RuntimeInformation.dll</HintPath>
-      <Private>True</Private>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.Security.Cryptography.Algorithms, Version=4.2.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.Security.Cryptography.Algorithms.4.3.0\lib\net463\System.Security.Cryptography.Algorithms.dll</HintPath>
-      <Private>True</Private>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.Security.Cryptography.Encoding, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.Security.Cryptography.Encoding.4.3.0\lib\net46\System.Security.Cryptography.Encoding.dll</HintPath>
-      <Private>True</Private>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.Security.Cryptography.Primitives, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.Security.Cryptography.Primitives.4.3.0\lib\net46\System.Security.Cryptography.Primitives.dll</HintPath>
-      <Private>True</Private>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.Security.Cryptography.X509Certificates, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.Security.Cryptography.X509Certificates.4.3.0\lib\net461\System.Security.Cryptography.X509Certificates.dll</HintPath>
-      <Private>True</Private>
-      <Private>True</Private>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DynamicProblems\BasicProblems\MultiObjectiveDynamicBasicProblem.cs" />
@@ -143,7 +103,6 @@
     <Compile Include="Operators\BasicSingleObjectiveAnalyzer.cs" />
     <Compile Include="Operators\SingleObjectiveProblemStateAnalyzer.cs" />
     <Compile Include="Operators\ALPSLayersAnalyzer.cs" />
-    <Compile Include="Trackers\SlimAnyTimeQualityTracker.cs" />
     <Compile Include="Trackers\AnyTimeQualityTracker.cs" />
     <Compile Include="Trackers\CharacteristicCalculator.cs" />
     <Compile Include="EpochClocks\CountingClock.cs" />
@@ -159,14 +118,9 @@
     <None Include="Properties\AssemblyInfo.cs.frame" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\HeuristicLab.Algorithms.ALPS\3.3\HeuristicLab.Algorithms.ALPS-3.3.csproj">
-      <Project>{59F354CB-FE13-4253-AED2-AD86372BEC27}</Project>
-      <Name>HeuristicLab.Algorithms.ALPS-3.3</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Analysis\3.3\HeuristicLab.Analysis-3.3.csproj">
-      <Project>{887425B4-4348-49ED-A457-B7D2C26DDBF9}</Project>
+      <Project>{887425b4-4348-49ed-a457-b7d2c26ddbf9}</Project>
       <Name>HeuristicLab.Analysis-3.3</Name>
-      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Collections\3.3\HeuristicLab.Collections-3.3.csproj">
       <Project>{958b43bc-cc5c-4fa2-8628-2b3b01d890b6}</Project>
@@ -188,31 +142,9 @@
       <Name>HeuristicLab.Data-3.3</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Encodings.BinaryVectorEncoding\3.3\HeuristicLab.Encodings.BinaryVectorEncoding-3.3.csproj">
-      <Project>{66d249c3-a01d-42a8-82a2-919bc8ec3d83}</Project>
-      <Name>HeuristicLab.Encodings.BinaryVectorEncoding-3.3</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Encodings.PermutationEncoding\3.3\HeuristicLab.Encodings.PermutationEncoding-3.3.csproj">
-      <Project>{dbecb8b0-b166-4133-baf1-ed67c3fd7fca}</Project>
-      <Name>HeuristicLab.Encodings.PermutationEncoding-3.3</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Encodings.RealVectorEncoding\3.3\HeuristicLab.Encodings.RealVectorEncoding-3.3.csproj">
-      <Project>{BB6D334A-4BB6-4674-9883-31A6EBB32CAB}</Project>
-      <Name>HeuristicLab.Encodings.RealVectorEncoding-3.3</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Encodings.SymbolicExpressionTreeEncoding\3.4\HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.4.csproj">
-      <Project>{06D4A186-9319-48A0-BADE-A2058D462EEA}</Project>
-      <Name>HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.4</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Operators\3.3\HeuristicLab.Operators-3.3.csproj">
       <Project>{23da7ff4-d5b8-41b6-aa96-f0561d24f3ee}</Project>
       <Name>HeuristicLab.Operators-3.3</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Optimization.Operators\3.3\HeuristicLab.Optimization.Operators-3.3.csproj">
-      <Project>{25087811-f74c-4128-bc86-8324271da13e}</Project>
-      <Name>HeuristicLab.Optimization.Operators-3.3</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Optimization\3.3\HeuristicLab.Optimization-3.3.csproj">
@@ -225,51 +157,14 @@
       <Name>HeuristicLab.Parameters-3.3</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Persistence\3.3\HeuristicLab.Persistence-3.3.csproj">
-      <Project>{102bc7d3-0ef9-439c-8f6d-96ff0fdb8e1b}</Project>
-      <Name>HeuristicLab.Persistence-3.3</Name>
-      <Private>False</Private>
-    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.PluginInfrastructure\3.3\HeuristicLab.PluginInfrastructure-3.3.csproj">
       <Project>{94186a6a-5176-4402-ae83-886557b53cca}</Project>
       <Name>HeuristicLab.PluginInfrastructure-3.3</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Problems.DataAnalysis.Symbolic.Regression\3.4\HeuristicLab.Problems.DataAnalysis.Symbolic.Regression-3.4.csproj">
-      <Project>{5ac82412-911b-4fa2-a013-edc5e3f3fcc2}</Project>
-      <Name>HeuristicLab.Problems.DataAnalysis.Symbolic.Regression-3.4</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Problems.DataAnalysis.Symbolic\3.4\HeuristicLab.Problems.DataAnalysis.Symbolic-3.4.csproj">
-      <Project>{3D28463F-EC96-4D82-AFEE-38BE91A0CA00}</Project>
-      <Name>HeuristicLab.Problems.DataAnalysis.Symbolic-3.4</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Problems.DataAnalysis\3.4\HeuristicLab.Problems.DataAnalysis-3.4.csproj">
-      <Project>{DF87C13E-A889-46FF-8153-66DCAA8C5674}</Project>
-      <Name>HeuristicLab.Problems.DataAnalysis-3.4</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Problems.Instances.TSPLIB\3.3\HeuristicLab.Problems.Instances.TSPLIB-3.3.csproj">
-      <Project>{CE0F99D6-1C56-48A9-9B68-3E5B833703EF}</Project>
-      <Name>HeuristicLab.Problems.Instances.TSPLIB-3.3</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Problems.Instances\3.3\HeuristicLab.Problems.Instances-3.3.csproj">
-      <Project>{3540e29e-4793-49e7-8ee2-fea7f61c3994}</Project>
-      <Name>HeuristicLab.Problems.Instances-3.3</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Problems.QuadraticAssignment\3.3\HeuristicLab.Problems.QuadraticAssignment-3.3.csproj">
-      <Project>{79271bc8-4446-40e2-bb89-9be4e17174fe}</Project>
-      <Name>HeuristicLab.Problems.QuadraticAssignment-3.3</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Problems.TravelingSalesman\3.3\HeuristicLab.Problems.TravelingSalesman-3.3.csproj">
-      <Project>{D767C38D-8014-46B0-9A32-03A3AECCE34A}</Project>
-      <Name>HeuristicLab.Problems.TravelingSalesman-3.3</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Random\3.3\HeuristicLab.Random-3.3.csproj">
       <Project>{F4539FB6-4708-40C9-BE64-0A1390AEA197}</Project>
       <Name>HeuristicLab.Random-3.3</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Selection\3.3\HeuristicLab.Selection-3.3.csproj">
-      <Project>{2C36CD4F-E5F5-43A4-801A-201EA895FE17}</Project>
-      <Name>HeuristicLab.Selection-3.3</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
