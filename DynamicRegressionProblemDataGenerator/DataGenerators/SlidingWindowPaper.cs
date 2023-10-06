@@ -5,15 +5,12 @@ using System.Linq;
 using System.Text;
 using MathNet.Numerics;
 using MathNet.Numerics.Distributions;
-using MathNet.Numerics.LinearAlgebra.Double;
 using MathNet.Numerics.Statistics;
 using Xunit;
-using Xunit.Abstractions;
-using Xunit.Sdk;
 using Vector = MathNet.Numerics.LinearAlgebra.Double.DenseVector;
 
-namespace DynamicRegressionProblemDataGenerator {
-  public class SlidingWindowSymbolicRegressionPaperDataGenerator {
+namespace DynamicRegressionProblemDataGenerator.DataGenerators {
+  public class SlidingWindowPaper {
 
     private static readonly IReadOnlyList<double> EpochHiddenStates = Enumerable.Empty<double>()
       .Concat(Generate.Repeat(100, 1.0))
@@ -33,7 +30,7 @@ namespace DynamicRegressionProblemDataGenerator {
     [InlineData(@"C:\Users\P41107\Desktop\F1.csv", 100, 10, 42)]
     public void Generate_F1(string fileName, int trainingRowsPerEpoch, int testRowsPerEpoch, int seed) {
       var random = new Random(seed);
-
+      
       var uniformDist = new ContinuousUniform(1, 10, random);
       var normalDist = new Normal(0, 1, random);
 

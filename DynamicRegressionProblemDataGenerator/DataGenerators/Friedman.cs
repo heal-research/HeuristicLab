@@ -8,8 +8,8 @@ using HeuristicLab.Random;
 using MathNet.Numerics.Statistics;
 using Xunit;
 
-namespace DynamicRegressionProblemDataGenerator {
-  public class FriedmanDataGenerator {
+namespace DynamicRegressionProblemDataGenerator.DataGenerators {
+  public class Friedman {
     
     [Theory, Trait("Generate", "Benchmark")]
     [InlineData(@"C:\Users\P41107\Desktop\Friedman_Test_{0}_{1}.csv", 100, 10, 1, 0, 142)]
