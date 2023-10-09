@@ -19,7 +19,7 @@
         <DebugSymbols>true</DebugSymbols>
         <DebugType>full</DebugType>
         <Optimize>false</Optimize>
-        <OutputPath>bin\Debug\</OutputPath>
+        <OutputPath>$(SolutionDir)\bin\</OutputPath>
         <DefineConstants>DEBUG;TRACE</DefineConstants>
         <ErrorReport>prompt</ErrorReport>
         <WarningLevel>4</WarningLevel>
@@ -28,19 +28,14 @@
         <PlatformTarget>AnyCPU</PlatformTarget>
         <DebugType>pdbonly</DebugType>
         <Optimize>true</Optimize>
-        <OutputPath>bin\Release\</OutputPath>
+      <OutputPath>$(SolutionDir)\bin\</OutputPath>
         <DefineConstants>TRACE</DefineConstants>
         <ErrorReport>prompt</ErrorReport>
         <WarningLevel>4</WarningLevel>
     </PropertyGroup>
     <ItemGroup>
-        <Reference Include="Microsoft.CSharp" />
         <Reference Include="mscorlib" />
         <Reference Include="System"/>
-        <Reference Include="System.Core"/>
-        <Reference Include="System.Data"/>
-        <Reference Include="System.Numerics" />
-        <Reference Include="System.Xml"/>
     </ItemGroup>
     <ItemGroup>
         <Compile Include="AnalyzeExperiments\AnalyzeExperiment.cs" />
@@ -88,6 +83,14 @@
       <ProjectReference Include="..\HeuristicLab.Optimization\3.3\HeuristicLab.Optimization-3.3.csproj">
         <Project>{14ab8d24-25bc-400c-a846-4627aa945192}</Project>
         <Name>HeuristicLab.Optimization-3.3</Name>
+      </ProjectReference>
+      <ProjectReference Include="..\HeuristicLab.PluginInfrastructure\3.3\HeuristicLab.PluginInfrastructure-3.3.csproj">
+        <Project>{94186a6a-5176-4402-ae83-886557b53cca}</Project>
+        <Name>HeuristicLab.PluginInfrastructure-3.3</Name>
+      </ProjectReference>
+      <ProjectReference Include="..\HeuristicLab.PluginInfrastructure\3.3\HeuristicLab.PluginInfrastructure-3.3.csproj">
+        <Project>{94186a6a-5176-4402-ae83-886557b53cca}</Project>
+        <Name>HeuristicLab.PluginInfrastructure-3.3</Name>
       </ProjectReference>
       <ProjectReference Include="..\HeuristicLab.Problems.DataAnalysis.Dynamic\3.3\HeuristicLab.Problems.DataAnalysis.Dynamic-3.4.csproj">
         <Project>{f82d2f4e-089f-4037-9a15-333234c74d68}</Project>
