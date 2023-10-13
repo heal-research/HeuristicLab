@@ -49,6 +49,10 @@
       <None Include="App.config" />
     </ItemGroup>
     <ItemGroup>
+      <ProjectReference Include="..\HeuristicLab.Algorithms.ALPS\3.3\HeuristicLab.Algorithms.ALPS-3.3.csproj">
+        <Project>{59f354cb-fe13-4253-aed2-ad86372bec27}</Project>
+        <Name>HeuristicLab.Algorithms.ALPS-3.3</Name>
+      </ProjectReference>
       <ProjectReference Include="..\HeuristicLab.Algorithms.GeneticAlgorithm\3.3\HeuristicLab.Algorithms.GeneticAlgorithm-3.3.csproj">
         <Project>{a51da44f-cb35-4f6f-99f5-2a2e904ab93b}</Project>
         <Name>HeuristicLab.Algorithms.GeneticAlgorithm-3.3</Name>
