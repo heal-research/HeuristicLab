@@ -131,6 +131,10 @@ public class DynamicSymbolicRegressionProblemState
       results.Add(new Result(BestTrainingSolutionParameter.ActualName, typeof(SymbolicRegressionSolution)));
     }
 
+    AddIndividualQualities(qualities, results);
+    
+    
+
     var tree = (ISymbolicExpressionTree)best.SymbolicExpressionTree(Encoding.Name).Clone();
     var model = new SymbolicRegressionModel(ProblemData.TargetVariable, tree, 
       Problem.SymbolicExpressionTreeInterpreter,
@@ -141,14 +145,41 @@ public class DynamicSymbolicRegressionProblemState
     results[BestTrainingSolutionParameter.ActualName].Value = solution;
 
     if (ImpactFactorRepetitionsBestSolutionParameter.Value.Value > 0) {
-      AnalyzeVariableImpacts(results, "BestSolutionVariableImpacts", ImpactFactorRepetitionsBestSolutionParameter.Value.Value, best);
+      AnalyzeVariableImpacts(results, "BestSolutionVariableImpacts", ImpactFactorRepetitionsBestSolutionParameter.Value.Value, writeIndividuals: false, best);
     }
     if (ImpactFactorRepetitionsPopulationParameter.Value.Value > 0) {
-      AnalyzeVariableImpacts(results, "PopulationVariableImpacts", ImpactFactorRepetitionsPopulationParameter.Value.Value, individuals);
+      AnalyzeVariableImpacts(results, "PopulationVariableImpacts", ImpactFactorRepetitionsPopulationParameter.Value.Value, writeIndividuals: true, individuals);
     }
   }
 
-  private void AnalyzeVariableImpacts(ResultCollection results, string resultName, int repetitions, params Individual[] individuals) {
+  private void AddIndividualQualities(double[] qualities, ResultCollection results) {
+    string resultName = "IndividualQualities";
+    
+    if (!results.ContainsKey(resultName)) {
+      var newTable = new DataTable("IndividualQualities") {
+        VisualProperties = {
+          XAxisTitle = "Generation + Individual", YAxisTitle = "Quality",
+          //YAxisMinimumFixedValue = 0.0, YAxisMaximumFixedValue = 1.0, YAxisMinimumAuto = false, YAxisMaximumAuto = false
+        }
+      };
+      newTable.Rows.Add(new DataRow("Generation"));
+      newTable.Rows.Add(new DataRow("Individual"));
+      newTable.Rows.Add(new DataRow("Quality"));
+      results.Add(new Result(resultName, "", newTable));
+    }
+    
+    var dataTable = (DataTable)results[resultName].Value;
+    
+    int lastGeneration = dataTable != null ? (int)Math.Round(dataTable.Rows["Generation"].Values.DefaultIfEmpty(-1).Last()) : -1;
+    for (int i = 0; i < qualities.Length; i++) {
+      dataTable.Rows["Generation"].Values.Add(lastGeneration + 1);
+      dataTable.Rows["Individual"].Values.Add(i);
+      dataTable.Rows["Quality"].Values.Add(qualities[i]);
+    }
+  }
+
+  private void AnalyzeVariableImpacts(ResultCollection results, string resultName, int repetitions, bool writeIndividuals, params Individual[] individuals) {
+    string individualResultsName = resultName + "Individuals";
     if (!results.ContainsKey(resultName)) {
       var newTable = new DataTable(resultName) {
         VisualProperties = {
@@ -162,17 +193,49 @@ public class DynamicSymbolicRegressionProblemState
       newTable.Rows.AddRange(variableRows);
       results.Add(new Result(resultName, "", newTable));
     }
+
+    if (writeIndividuals && !results.ContainsKey(individualResultsName)) {
+      var newTable = new DataTable(individualResultsName) {
+        VisualProperties = {
+          XAxisTitle = "Generation + Individual", YAxisTitle = "Impact",
+          YAxisMinimumFixedValue = 0.0, YAxisMaximumFixedValue = 1.0, YAxisMinimumAuto = false, YAxisMaximumAuto = false
+        }
+      };
+      newTable.Rows.Add(new DataRow("Generation"));
+      newTable.Rows.Add(new DataRow("Individual"));
+      var variableRows = Problem.ProblemData.InputVariables.CheckedItems
+        .Select(v => v.Value.Value)
+        .Select(v => new DataRow(v, $"Impact of {v}"));
+      newTable.Rows.AddRange(variableRows);
+      results.Add(new Result(individualResultsName, "", newTable));
+    }
     
     var aggregatedDataTable = (DataTable)results[resultName].Value;
+    var individualsDataTable = writeIndividuals ? (DataTable)results[individualResultsName].Value : null;
     var allSolutionImpacts = individuals.Select(i => i.SymbolicExpressionTree()).Select(t => CalculateImpact(t, repetitions)).ToList();
-    var solutionsImpact = new Dictionary<string, double>();
+    var sumImpacts = new Dictionary<string, double>();
+    
+    int lastGeneration = individualsDataTable != null ? (int)Math.Round(individualsDataTable.Rows["Generation"].Values.DefaultIfEmpty(-1).Last()) : -1;
+    int individualIdx = 0;
     foreach (var solutionImpacts in allSolutionImpacts) {
-      foreach (var solutionImpact in solutionImpacts) {
-        if (!solutionsImpact.ContainsKey(solutionImpact.Key)) solutionsImpact.Add(solutionImpact.Key, 0.0);
-        solutionsImpact[solutionImpact.Key] += solutionImpact.Value;
+      
+      if (individualsDataTable != null) {
+        individualsDataTable.Rows["Generation"].Values.Add(lastGeneration + 1);
+        individualsDataTable.Rows["Individual"].Values.Add(individualIdx);
       }
+      
+      foreach (var solutionImpact in solutionImpacts) {
+        if (!sumImpacts.ContainsKey(solutionImpact.Key)) sumImpacts.Add(solutionImpact.Key, 0.0);
+        sumImpacts[solutionImpact.Key] += solutionImpact.Value;
+
+        if (individualsDataTable != null) {
+          individualsDataTable.Rows[solutionImpact.Key].Values.Add(solutionImpact.Value);
+        }
+      }
+
+      individualIdx++;
     }
-    foreach (var bestSolutionImpact in solutionsImpact) {
+    foreach (var bestSolutionImpact in sumImpacts) {
       var row = aggregatedDataTable.Rows[bestSolutionImpact.Key];
       row.Values.Add(bestSolutionImpact.Value / individuals.Length);
     }

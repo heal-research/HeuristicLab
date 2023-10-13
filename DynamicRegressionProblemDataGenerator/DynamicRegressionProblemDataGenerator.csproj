@@ -13,6 +13,7 @@
         <AssemblyName>DynamicRegressionProblemDataGenerator</AssemblyName>
         <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
         <FileAlignment>512</FileAlignment>
+        <LangVersion>default</LangVersion>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
         <PlatformTarget>AnyCPU</PlatformTarget>
@@ -38,7 +39,7 @@
         <Reference Include="System"/>
     </ItemGroup>
     <ItemGroup>
-        <Compile Include="AnalyzeExperiments\AnalyzeExperiment.cs" />
+        <Compile Include="AnalyzeExperiments\ExtractRunData.cs" />
         <Compile Include="DataGenerators\Friedman.cs" />
         <Compile Include="DataGenerators\SlidingWindowPaper.cs" />
         <Compile Include="ExperimentGenerators\ExperimentGenerator.cs" />
@@ -84,6 +85,10 @@
         <Project>{14ab8d24-25bc-400c-a846-4627aa945192}</Project>
         <Name>HeuristicLab.Optimization-3.3</Name>
       </ProjectReference>
+      <ProjectReference Include="..\HeuristicLab.Parameters\3.3\HeuristicLab.Parameters-3.3.csproj">
+        <Project>{56f9106a-079f-4c61-92f6-86a84c2d84b7}</Project>
+        <Name>HeuristicLab.Parameters-3.3</Name>
+      </ProjectReference>
       <ProjectReference Include="..\HeuristicLab.PluginInfrastructure\3.3\HeuristicLab.PluginInfrastructure-3.3.csproj">
         <Project>{94186a6a-5176-4402-ae83-886557b53cca}</Project>
         <Name>HeuristicLab.PluginInfrastructure-3.3</Name>
@@ -119,6 +124,10 @@
       <ProjectReference Include="..\HeuristicLab.Random\3.3\HeuristicLab.Random-3.3.csproj">
         <Project>{f4539fb6-4708-40c9-be64-0a1390aea197}</Project>
         <Name>HeuristicLab.Random-3.3</Name>
+      </ProjectReference>
+      <ProjectReference Include="..\HeuristicLab.Selection\3.3\HeuristicLab.Selection-3.3.csproj">
+        <Project>{2c36cd4f-e5f5-43a4-801a-201ea895fe17}</Project>
+        <Name>HeuristicLab.Selection-3.3</Name>
       </ProjectReference>
     </ItemGroup>
     <ItemGroup>

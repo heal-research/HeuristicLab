@@ -27,8 +27,8 @@ namespace DynamicRegressionProblemDataGenerator.DataGenerators {
       .ToList();
     
     [Theory, Trait("Generate", "Benchmark")]
-    [InlineData(@"C:\Users\P41107\Desktop\F1.csv", 100, 10, 42)]
-    public void Generate_F1(string fileName, int trainingRowsPerEpoch, int testRowsPerEpoch, int seed) {
+    [InlineData(@"C:\Users\P41107\Desktop\F1.csv", 100, 10, 42, false)]
+    public void Generate_F1(string fileName, int trainingRowsPerEpoch, int testRowsPerEpoch, int seed, bool randomizeEpochs) {
       var random = new Random(seed);
       
       var uniformDist = new ContinuousUniform(1, 10, random);
@@ -41,13 +41,19 @@ namespace DynamicRegressionProblemDataGenerator.DataGenerators {
         { "y", new List<double>() }
       };
       var partitions = new List<(int TrainStart, int TrainEnd, int TestStart, int TestEnd)>();
+      var x1 = new Vector(uniformDist.Samples().Take(trainingRowsPerEpoch + testRowsPerEpoch).ToArray());
+      var x2 = new Vector(uniformDist.Samples().Take(trainingRowsPerEpoch + testRowsPerEpoch).ToArray());
+      var x3 = new Vector(uniformDist.Samples().Take(trainingRowsPerEpoch + testRowsPerEpoch).ToArray());
+      
       
       for (int epoch = 0; epoch < EpochHiddenStates.Count; epoch++) {
         double h = EpochHiddenStates[epoch];
-        var x1 = new Vector(uniformDist.Samples().Take(trainingRowsPerEpoch + testRowsPerEpoch).ToArray());
-        var x2 = new Vector(uniformDist.Samples().Take(trainingRowsPerEpoch + testRowsPerEpoch).ToArray());
-        var x3 = new Vector(uniformDist.Samples().Take(trainingRowsPerEpoch + testRowsPerEpoch).ToArray());
-        
+        if (randomizeEpochs) {
+          x1 = new Vector(uniformDist.Samples().Take(trainingRowsPerEpoch + testRowsPerEpoch).ToArray());
+          x2 = new Vector(uniformDist.Samples().Take(trainingRowsPerEpoch + testRowsPerEpoch).ToArray());
+          x3 = new Vector(uniformDist.Samples().Take(trainingRowsPerEpoch + testRowsPerEpoch).ToArray());
+        }
+
         var y = x1.PointwiseMultiply(h * x2 + (1 - h) * x3);
 
         data["x1"].AddRange(x1);
@@ -66,8 +72,8 @@ namespace DynamicRegressionProblemDataGenerator.DataGenerators {
     }
     
     [Theory, Trait("Generate", "Benchmark")]
-    [InlineData(@"C:\Users\P41107\Desktop\F2.csv", 100, 10, 43)]
-    public void Generate_F2(string filename, int trainingRowsPerEpoch, int testRowsPerEpoch, int seed) {
+    [InlineData(@"C:\Users\P41107\Desktop\F2.csv", 100, 10, 43, false)]
+    public void Generate_F2(string filename, int trainingRowsPerEpoch, int testRowsPerEpoch, int seed, bool randomizeEpochs) {
       var random = new Random(seed);
 
       var uniformDist = new ContinuousUniform(1, 10, random);
@@ -85,22 +91,33 @@ namespace DynamicRegressionProblemDataGenerator.DataGenerators {
         { "y", new List<double>() }
       };
       var partitions = new List<(int TrainStart, int TrainEnd, int TestStart, int TestEnd)>();
+      
+      var x1 = new Vector(uniformDist.Samples().Take(trainingRowsPerEpoch + testRowsPerEpoch).ToArray());
+      var x2 = new Vector(uniformDist.Samples().Take(trainingRowsPerEpoch + testRowsPerEpoch).ToArray());
+      var x3 = new Vector(uniformDist.Samples().Take(trainingRowsPerEpoch + testRowsPerEpoch).ToArray());
+      var x4 = new Vector(uniformDist.Samples().Take(trainingRowsPerEpoch + testRowsPerEpoch).ToArray());
+      var x5 = new Vector(uniformDist.Samples().Take(trainingRowsPerEpoch + testRowsPerEpoch).ToArray());
+      var x6 = new Vector(uniformDist.Samples().Take(trainingRowsPerEpoch + testRowsPerEpoch).ToArray());
+      var x7 = new Vector(uniformDist.Samples().Take(trainingRowsPerEpoch + testRowsPerEpoch).ToArray());
+      var x8 = new Vector(uniformDist.Samples().Take(trainingRowsPerEpoch + testRowsPerEpoch).ToArray());
      
       for (int epoch = 0; epoch < EpochHiddenStates.Count; epoch++) {
         double h = EpochHiddenStates[epoch];
-        var x1 = new Vector(uniformDist.Samples().Take(trainingRowsPerEpoch + testRowsPerEpoch).ToArray());
-        var x2 = new Vector(uniformDist.Samples().Take(trainingRowsPerEpoch + testRowsPerEpoch).ToArray());
-        var x3 = new Vector(uniformDist.Samples().Take(trainingRowsPerEpoch + testRowsPerEpoch).ToArray());
-        var x4 = new Vector(uniformDist.Samples().Take(trainingRowsPerEpoch + testRowsPerEpoch).ToArray());
-        var x5 = new Vector(uniformDist.Samples().Take(trainingRowsPerEpoch + testRowsPerEpoch).ToArray());
-        var x6 = new Vector(uniformDist.Samples().Take(trainingRowsPerEpoch + testRowsPerEpoch).ToArray());
-        var x7 = new Vector(uniformDist.Samples().Take(trainingRowsPerEpoch + testRowsPerEpoch).ToArray());
-        var x8 = new Vector(uniformDist.Samples().Take(trainingRowsPerEpoch + testRowsPerEpoch).ToArray());
+        if (randomizeEpochs) {
+          x1 = new Vector(uniformDist.Samples().Take(trainingRowsPerEpoch + testRowsPerEpoch).ToArray());
+          x2 = new Vector(uniformDist.Samples().Take(trainingRowsPerEpoch + testRowsPerEpoch).ToArray());
+          x3 = new Vector(uniformDist.Samples().Take(trainingRowsPerEpoch + testRowsPerEpoch).ToArray());
+          x4 = new Vector(uniformDist.Samples().Take(trainingRowsPerEpoch + testRowsPerEpoch).ToArray());
+          x5 = new Vector(uniformDist.Samples().Take(trainingRowsPerEpoch + testRowsPerEpoch).ToArray());
+          x6 = new Vector(uniformDist.Samples().Take(trainingRowsPerEpoch + testRowsPerEpoch).ToArray());
+          x7 = new Vector(uniformDist.Samples().Take(trainingRowsPerEpoch + testRowsPerEpoch).ToArray());
+          x8 = new Vector(uniformDist.Samples().Take(trainingRowsPerEpoch + testRowsPerEpoch).ToArray());
+        }
 
         var left = x1.PointwiseMultiply(x2) + x3.PointwiseMultiply(x4);
         var right = h * x5.PointwiseMultiply(x6) + (1 - h) * x7.PointwiseMultiply(x8);
 
-        var y = left / left.Variance() + right / right.Variance();
+        var y = left / left.StandardDeviation() + right / right.StandardDeviation();
         
         data["x1"].AddRange(x1);
         data["x2"].AddRange(x2);
@@ -123,8 +140,8 @@ namespace DynamicRegressionProblemDataGenerator.DataGenerators {
     }
     
     [Theory, Trait("Generate", "Benchmark")]
-    [InlineData(@"C:\Users\P41107\Desktop\F3.csv", 100, 10, 44)]
-    public void Generate_F3(string filename, int trainingRowsPerEpoch, int testRowsPerEpoch, int seed) {
+    [InlineData(@"C:\Users\P41107\Desktop\F3.csv", 100, 10, 44, false)]
+    public void Generate_F3(string filename, int trainingRowsPerEpoch, int testRowsPerEpoch, int seed, bool randomizeEpochs) {
       var random = new Random(seed);
 
       var uniformDist = new ContinuousUniform(1, 10, random);
@@ -144,24 +161,38 @@ namespace DynamicRegressionProblemDataGenerator.DataGenerators {
         { "y", new List<double>() }
       };
       var partitions = new List<(int TrainStart, int TrainEnd, int TestStart, int TestEnd)>();
+      
+      var x1 = new Vector(uniformDist.Samples().Take(trainingRowsPerEpoch + testRowsPerEpoch).ToArray());
+      var x2 = new Vector(uniformDist.Samples().Take(trainingRowsPerEpoch + testRowsPerEpoch).ToArray());
+      var x3 = new Vector(uniformDist.Samples().Take(trainingRowsPerEpoch + testRowsPerEpoch).ToArray());
+      var x4 = new Vector(uniformDist.Samples().Take(trainingRowsPerEpoch + testRowsPerEpoch).ToArray());
+      var x5 = new Vector(uniformDist.Samples().Take(trainingRowsPerEpoch + testRowsPerEpoch).ToArray());
+      var x6 = new Vector(uniformDist.Samples().Take(trainingRowsPerEpoch + testRowsPerEpoch).ToArray());
+      var x7 = new Vector(uniformDist.Samples().Take(trainingRowsPerEpoch + testRowsPerEpoch).ToArray());
+      var x8 = new Vector(uniformDist.Samples().Take(trainingRowsPerEpoch + testRowsPerEpoch).ToArray());
+      var x9 = new Vector(uniformDist.Samples().Take(trainingRowsPerEpoch + testRowsPerEpoch).ToArray());
+      var x10 = new Vector(uniformDist.Samples().Take(trainingRowsPerEpoch + testRowsPerEpoch).ToArray());
      
       for (int epoch = 0; epoch < EpochHiddenStates.Count; epoch++) {
         double h = EpochHiddenStates[epoch];
-        var x1 = new Vector(uniformDist.Samples().Take(trainingRowsPerEpoch + testRowsPerEpoch).ToArray());
-        var x2 = new Vector(uniformDist.Samples().Take(trainingRowsPerEpoch + testRowsPerEpoch).ToArray());
-        var x3 = new Vector(uniformDist.Samples().Take(trainingRowsPerEpoch + testRowsPerEpoch).ToArray());
-        var x4 = new Vector(uniformDist.Samples().Take(trainingRowsPerEpoch + testRowsPerEpoch).ToArray());
-        var x5 = new Vector(uniformDist.Samples().Take(trainingRowsPerEpoch + testRowsPerEpoch).ToArray());
-        var x6 = new Vector(uniformDist.Samples().Take(trainingRowsPerEpoch + testRowsPerEpoch).ToArray());
-        var x7 = new Vector(uniformDist.Samples().Take(trainingRowsPerEpoch + testRowsPerEpoch).ToArray());
-        var x8 = new Vector(uniformDist.Samples().Take(trainingRowsPerEpoch + testRowsPerEpoch).ToArray());
-        var x9 = new Vector(uniformDist.Samples().Take(trainingRowsPerEpoch + testRowsPerEpoch).ToArray());
-        var x10 = new Vector(uniformDist.Samples().Take(trainingRowsPerEpoch + testRowsPerEpoch).ToArray());
+
+        if (randomizeEpochs) {
+          x1 = new Vector(uniformDist.Samples().Take(trainingRowsPerEpoch + testRowsPerEpoch).ToArray());
+          x2 = new Vector(uniformDist.Samples().Take(trainingRowsPerEpoch + testRowsPerEpoch).ToArray());
+          x3 = new Vector(uniformDist.Samples().Take(trainingRowsPerEpoch + testRowsPerEpoch).ToArray());
+          x4 = new Vector(uniformDist.Samples().Take(trainingRowsPerEpoch + testRowsPerEpoch).ToArray());
+          x5 = new Vector(uniformDist.Samples().Take(trainingRowsPerEpoch + testRowsPerEpoch).ToArray());
+          x6 = new Vector(uniformDist.Samples().Take(trainingRowsPerEpoch + testRowsPerEpoch).ToArray());
+          x7 = new Vector(uniformDist.Samples().Take(trainingRowsPerEpoch + testRowsPerEpoch).ToArray());
+          x8 = new Vector(uniformDist.Samples().Take(trainingRowsPerEpoch + testRowsPerEpoch).ToArray());
+          x9 = new Vector(uniformDist.Samples().Take(trainingRowsPerEpoch + testRowsPerEpoch).ToArray());
+          x10 = new Vector(uniformDist.Samples().Take(trainingRowsPerEpoch + testRowsPerEpoch).ToArray());
+        }
         
         var left = x1.PointwiseMultiply(x2).PointwiseMultiply(x3) + x4.PointwiseMultiply(x5).PointwiseMultiply(x6);
         var right = h * x7.PointwiseMultiply(x8) + (1 - h) * x9.PointwiseMultiply(x10);
 
-        var y = left / left.Variance() + right / right.Variance();
+        var y = left / left.StandardDeviation() + right / right.StandardDeviation();
         
         data["x1"].AddRange(x1);
         data["x2"].AddRange(x2);

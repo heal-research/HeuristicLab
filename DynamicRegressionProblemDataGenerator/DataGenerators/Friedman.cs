@@ -12,8 +12,10 @@ namespace DynamicRegressionProblemDataGenerator.DataGenerators {
   public class Friedman {
     
     [Theory, Trait("Generate", "Benchmark")]
-    [InlineData(@"C:\Users\P41107\Desktop\Friedman_Test_{0}_{1}.csv", 100, 10, 1, 0, 142)]
-    void Generate_Test(string fileName, int trainingRowsPerEpoch, int testRowsPerEpoch, int numberOfFeaturesPerState, double noiseRatio, uint seed) {
+    [InlineData(@"C:\Users\P41107\Desktop\Friedman_Test_{0}_{1}.csv", 1000, 100, 1, 0, 142, false)]
+    [InlineData(@"C:\Users\P41107\Desktop\Friedman_Test_{0}_{1}.csv", 1000, 100, 2, 0, 143, false)]
+    [InlineData(@"C:\Users\P41107\Desktop\Friedman_Test_{0}_{1}.csv", 1000, 100, 3, 0, 144, false)]
+    void Generate(string fileName, int trainingRowsPerEpoch, int testRowsPerEpoch, int numberOfFeaturesPerState, double noiseRatio, uint seed, bool randomizeEpochs) {
       var random = new MersenneTwister(seed);
       
       var friedmanGenerator = new FriedmanRandomFunction(trainingRowsPerEpoch, testRowsPerEpoch, numberOfFeaturesPerState, noiseRatio, random);
@@ -33,6 +35,12 @@ namespace DynamicRegressionProblemDataGenerator.DataGenerators {
       var data = new Dictionary<string, List<double>>();
       var partitions = new List<(int TrainStart, int TrainEnd, int TestStart, int TestEnd)>();
 
+      var statesData = new[] {
+        friedmanGenerator.GenerateRegressionData(),
+        friedmanGenerator.GenerateRegressionData(),
+        friedmanGenerator.GenerateRegressionData()
+      };
+      
       var inputNames = new List<string>();
       string targetName = null;
      
@@ -45,7 +53,12 @@ namespace DynamicRegressionProblemDataGenerator.DataGenerators {
         foreach ((double state, int i) in epochStates.Select((s, i) => (s, i))) {
           char statePrefix = (char)('A' + i);
 
-          var stateData = friedmanGenerator.GenerateRegressionData();
+          if (randomizeEpochs) {
+            statesData[i] = friedmanGenerator.GenerateRegressionData();
+          }
+
+          var stateData = statesData[i];
+
           foreach (string originalVariableName in stateData.AllowedInputVariables) {
             string newVariableName = $"{statePrefix}_{originalVariableName}";
             epochInputs.Add(newVariableName, stateData.Dataset.GetDoubleValues(originalVariableName).ToArray());
@@ -63,11 +76,10 @@ namespace DynamicRegressionProblemDataGenerator.DataGenerators {
         double[] summedTargets = new double[epochTargetsPerState[0].Length];
         foreach (double[] t in epochTargetsPerState) {
           double tMean = t.Mean();
-          double tVariance = Statistics.StandardDeviation(t);
-          if (tVariance.IsAlmost(0.0) || double.IsNaN(tVariance)) tVariance = 1.0;
+          double tStandardDeviation = Statistics.StandardDeviation(t);
+          if (tStandardDeviation.IsAlmost(0.0) || double.IsNaN(tStandardDeviation)) tStandardDeviation = 1.0;
           for (int r = 0; r < t.Length; r++) {
-            summedTargets[r] += (t[r] - tMean) / tVariance;
-            //summedTargets[r] += t[r];
+            summedTargets[r] += (t[r] - tMean) / tStandardDeviation;
           }
         }
         data[targetName].AddRange(summedTargets);
@@ -82,7 +94,6 @@ namespace DynamicRegressionProblemDataGenerator.DataGenerators {
       WriteToFile(data, partitions, fileName, inputNames.ToArray().Concat(new[] { targetName }).ToArray());
 
     }
-    
     
     private static void WriteToFile(
       Dictionary<string, List<double>> data, List<(int TrainStart, int TrainEnd, int TestStart, int TestEnd)> partitions,
