@@ -241,7 +241,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification.Views {
     }
 
     private void AddCharts(ExcelWorksheet chartsWorksheet, DiscriminantFunctionClassificationSolution solution) {
-      List<char> columns = new List<char> { 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z' };
+      var colStartIdx = 13; // column M
       var scatterPlot = chartsWorksheet.Drawings.AddChart("scatterPlot", eChartType.XYScatter);
       scatterPlot.SetSize(800, 400);
       scatterPlot.SetPosition(0, 0);
@@ -251,12 +251,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification.Views {
 
       for (int i = 0; i <= thresholds.Count; ++i) {
         string header = "Class" + i;
-        chartsWorksheet.Names.AddFormula(header, String.Format("OFFSET('Estimated Values'!${0}$1, 1, 0, COUNTA('Estimated Values'!${0}:${0})-1)", columns[i]));
+        chartsWorksheet.Names.AddFormula(header, String.Format("OFFSET('Estimated Values'!${0}$1, 1, 0, COUNTA('Estimated Values'!${0}:${0})-1)", ExcelCellAddress.GetColumnLetter(colStartIdx + i)));
         var series = scatterPlot.Series.Add(header, "XKey");
         series.Header = header;
 
         if (i < thresholds.Count) {
-          chartsWorksheet.Names.AddFormula("Threshold" + i, String.Format("OFFSET('Estimated Values'!${0}$1, 1, 0, COUNTA('Estimated Values'!${0}:${0})-1)", columns[i + thresholds.Count + 1]));
+          chartsWorksheet.Names.AddFormula("Threshold" + i, String.Format("OFFSET('Estimated Values'!${0}$1, 1, 0, COUNTA('Estimated Values'!${0}:${0})-1)", ExcelCellAddress.GetColumnLetter(colStartIdx + i + thresholds.Count + 1)));
           var s = scatterPlot.Series.Add("Threshold" + i, "XKey");
           s.Header = "Threshold" + i;
         }
