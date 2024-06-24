@@ -168,9 +168,4 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\HeuristicLab.NRefactory\5.5.0\NRefactory-5.5.0\ICSharpCode.NRefactory-5.5.0.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers" Version="0.4.421302">
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
-  </ItemGroup>
 </Project>

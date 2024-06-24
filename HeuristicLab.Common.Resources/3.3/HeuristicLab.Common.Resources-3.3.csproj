@@ -32,9 +32,4 @@
     <Content Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Experiment_Stopped.png" />
     <Content Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_ActualSize.png" />
   </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers" Version="0.4.421302">
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
-  </ItemGroup>
 </Project>

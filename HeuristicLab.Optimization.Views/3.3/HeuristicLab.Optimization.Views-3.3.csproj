@@ -27,11 +27,6 @@
     <ProjectReference Include="..\..\HeuristicLab.Analysis\3.3\HeuristicLab.Analysis-3.3.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers" Version="0.4.421302">
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Remove="ProblemInstanceProviderView.cs" />
     <Compile Remove="ProblemInstanceProviderView.Designer.cs" />
     <Compile Remove="RunCollectionViews\RunCollectionResultAggregationView.cs" />

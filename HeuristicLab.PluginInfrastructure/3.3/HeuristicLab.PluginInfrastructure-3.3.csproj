@@ -19,8 +19,5 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="System.ServiceModel.Federation" Version="6.0.0" />
-    <PackageReference Include="Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers" Version="0.4.421302">
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
   </ItemGroup>
 </Project>
