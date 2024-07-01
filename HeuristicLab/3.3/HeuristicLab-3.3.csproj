@@ -94,7 +94,6 @@
     <ProjectReference Include="..\..\HeuristicLab.ExtLibs\HeuristicLab.NativeInterpreter\0.2\HeuristicLab.NativeInterpreter-0.2\HeuristicLab.NativeInterpreter-0.2.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.ExtLibs\HeuristicLab.Netron\3.0.2672.12446\HeuristicLab.Netron-3.0.2672.12446\HeuristicLab.Netron-3.0.2672.12446.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.ExtLibs\HeuristicLab.Netron\3.0.2672.12446\Netron.Diagramming.Core-3.0.2672.12446\Netron.Diagramming.Core-3.0.2672.12446.csproj" />
-    <ProjectReference Include="..\..\HeuristicLab.ExtLibs\HeuristicLab.OrTools\7.0.0\HeuristicLab.OrTools-7.0.0\HeuristicLab.OrTools-7.0.0.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.ExtLibs\HeuristicLab.Protobuf\3.6.1\HeuristicLab.Protobuf.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.ExtLibs\HeuristicLab.SimSharp\3.3.2\HeuristicLab.SimSharp-3.3.2\HeuristicLab.SimSharp-3.3.2.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.ExtLibs\HeuristicLab.SimSharp\3.3.2\SimSharp-3.3.2\SimSharp-3.3.2.csproj" />
