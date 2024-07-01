@@ -78,7 +78,7 @@ namespace HeuristicLab.Encodings.ScheduleEncoding.Views {
 
     void chart_MouseClick(object sender, MouseEventArgs e) {
       Point pos = e.Location;
-      HitTestResult[] results = chart.HitTest(pos.X, pos.Y, false, ChartElementType.DataPoint);
+      IList<HitTestResult> results = chart.HitTest(pos.X, pos.Y, false, ChartElementType.DataPoint);
       ResetDataColors();
 
       foreach (HitTestResult result in results) {
