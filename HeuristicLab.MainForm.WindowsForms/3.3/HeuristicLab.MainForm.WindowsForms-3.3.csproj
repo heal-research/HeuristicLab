@@ -11,6 +11,6 @@
     <ProjectReference Include="..\..\HeuristicLab.Common\3.3\HeuristicLab.Common-3.3.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.ExtLibs\HeuristicLab.WinFormsUI\2.7.0\WinFormsUI-2.7.0\WinFormsUI-2.7.0.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.MainForm\3.3\HeuristicLab.MainForm-3.3.csproj" />
-    <ProjectReference Include="..\..\HeuristicLab.PluginInfrastructure\3.3\HeuristicLab.PluginInfrastructure-3.3.csproj" />
+    <ProjectReference Include="..\..\HeuristicLab.PluginInfrastructure.Views\3.3\HeuristicLab.PluginInfrastructure.Views-3.3.csproj" />
   </ItemGroup>
 </Project>

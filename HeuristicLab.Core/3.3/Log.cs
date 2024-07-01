@@ -90,7 +90,7 @@ namespace HeuristicLab.Core {
       return DateTime.Now.ToString() + "\t" + message;
     }
     public static string FormatException(Exception ex) {
-      return DateTime.Now.ToString() + "\t" + "Exception occurred:" + Environment.NewLine + ErrorHandling.BuildErrorMessage(ex);
+      return DateTime.Now.ToString() + "\t" + "Exception occurred:" + Environment.NewLine + ErrorHandlingMessage.BuildErrorMessage(ex);
     }
 
     public event EventHandler<EventArgs<string>> MessageAdded;

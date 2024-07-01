@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <OutputType>Library</OutputType>
+    <RootNamespace>HeuristicLab.PluginInfrastructure.Views</RootNamespace>
+    <UseWindowsForms>true</UseWindowsForms>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\HeuristicLab.PluginInfrastructure\3.3\HeuristicLab.PluginInfrastructure-3.3.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Advanced\DeploymentService\services.heuristiclab.com.cer" />
+  </ItemGroup>
+</Project>

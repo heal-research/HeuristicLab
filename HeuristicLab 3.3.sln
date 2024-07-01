@@ -544,6 +544,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinFormsUI-2.7.0", "Heurist
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Tests", "HeuristicLab.Tests\HeuristicLab.Tests.csproj", "{B62872C1-6752-4758-9823-751A2D28C388}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.PluginInfrastructure.Views-3.3", "HeuristicLab.PluginInfrastructure.Views\3.3\HeuristicLab.PluginInfrastructure.Views-3.3.csproj", "{F2CFA602-F16F-4DFD-AB70-9D5BDFC83EBC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -1266,6 +1268,10 @@ Global
 		{B62872C1-6752-4758-9823-751A2D28C388}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B62872C1-6752-4758-9823-751A2D28C388}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B62872C1-6752-4758-9823-751A2D28C388}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F2CFA602-F16F-4DFD-AB70-9D5BDFC83EBC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F2CFA602-F16F-4DFD-AB70-9D5BDFC83EBC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F2CFA602-F16F-4DFD-AB70-9D5BDFC83EBC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F2CFA602-F16F-4DFD-AB70-9D5BDFC83EBC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
