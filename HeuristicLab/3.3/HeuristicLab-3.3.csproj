@@ -9,13 +9,7 @@
     <ApplicationIcon>HeuristicLab.ico</ApplicationIcon>
     <UseWindowsForms>true</UseWindowsForms>
     <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
-    <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
-  <ItemGroup>
-    <None Update="app.manifest">
-      <SubType>Designer</SubType>
-    </None>
-  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\HeuristicLab.Algorithms.ALPS\3.3\HeuristicLab.Algorithms.ALPS-3.3.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.Algorithms.Benchmarks.Views\3.3\HeuristicLab.Algorithms.Benchmarks.Views-3.3.csproj" />
