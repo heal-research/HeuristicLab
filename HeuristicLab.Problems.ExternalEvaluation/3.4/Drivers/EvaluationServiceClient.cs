@@ -21,7 +21,7 @@
 
 using System;
 using System.IO;
-using Google.ProtocolBuffers;
+using Google.Protobuf;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -83,7 +83,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
           tries++;
           CheckAndOpenChannel();
           Channel.Send(solution);
-          result = (QualityMessage)Channel.Receive(QualityMessage.CreateBuilder(), qualityExtensions);
+          result = (QualityMessage)Channel.Receive(new QualityMessage(), qualityExtensions);
           success = true;
         } catch (InvalidOperationException) {
           throw;
@@ -132,7 +132,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
       var info = (ReceiveAsyncInfo)callbackInfo;
       QualityMessage message = null;
       try {
-        message = (QualityMessage)Channel.Receive(QualityMessage.CreateBuilder(), info.QualityExtensions);
+        message = (QualityMessage)Channel.Receive(new QualityMessage(), info.QualityExtensions);
       } catch { }
       if (message != null && message.SolutionId != info.SolutionMessage.SolutionId) throw new InvalidDataException(Name + ": Received a quality for a different solution.");
       info.CallbackDelegate.Invoke(message);

@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using System.Threading.Tasks;
 using HeuristicLab.Clients.Common;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -157,24 +158,19 @@ namespace HeuristicLab.Clients.Access.Administration {
     }
     #endregion
 
-    public void ExecuteActionAsync(Action action, Action<Exception> exceptionCallback) {
-      var call = new Func<Exception>(delegate() {
-        try {
-          OnRefreshing();
-          action();
-        }
-        catch (Exception ex) {
-          return ex;
-        }
-        finally {
-          OnRefreshed();
-        }
-        return null;
-      });
-      call.BeginInvoke(delegate(IAsyncResult result) {
-        Exception ex = call.EndInvoke(result);
-        if (ex != null) exceptionCallback(ex);
-      }, null);
+    public async Task ExecuteActionAsync(Action action, Action<Exception> exceptionCallback) {
+      try {
+        await Task.Run(() => {
+          try {
+            OnRefreshing();
+            action();
+          }  finally {
+            OnRefreshed();
+          }
+        });
+      } catch (Exception ex) {
+        exceptionCallback(ex);
+      }
     }
 
     #region Events

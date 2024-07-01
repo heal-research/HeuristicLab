@@ -20,7 +20,7 @@
 #endregion
 
 using System.IO;
-using Google.ProtocolBuffers;
+using Google.Protobuf;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
@@ -42,13 +42,15 @@ namespace HeuristicLab.Problems.ExternalEvaluation.GP {
     }
     public SymbolicExpressionTreeBinaryConverter() : base() { }
 
-    protected override void ConvertSymbolicExpressionTree(SymbolicExpressionTree tree, string name, SolutionMessage.Builder builder) {
+    protected override void ConvertSymbolicExpressionTree(SymbolicExpressionTree tree, string name, SolutionMessage builder) {
       using (MemoryStream memoryStream = new MemoryStream()) {
         Persistence.Default.Xml.XmlGenerator.Serialize(tree, memoryStream);
         byte[] byteRep = memoryStream.ToArray();
-        SolutionMessage.Types.RawVariable.Builder rawVariable = SolutionMessage.Types.RawVariable.CreateBuilder();
-        rawVariable.SetName(name).SetData(ByteString.CopyFrom(byteRep));
-        builder.AddRawVars(rawVariable.Build());
+        SolutionMessage.Types.RawVariable rawVariable = new SolutionMessage.Types.RawVariable {
+          Name = name,
+          Data = ByteString.CopyFrom(byteRep)
+        };
+        builder.RawVars.Add(rawVariable);
       }
     }
   }

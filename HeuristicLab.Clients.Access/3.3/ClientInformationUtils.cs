@@ -57,6 +57,7 @@ namespace HeuristicLab.Clients.Access {
     }
 
     public static ClientConfiguration GetClientConfiguration() {
+#if NETFRAMEWORK
       try {
         string filePath = AppDomain.CurrentDomain.SetupInformation.ConfigurationFile;
         byte[] fileContent = File.ReadAllBytes(filePath);
@@ -69,6 +70,9 @@ namespace HeuristicLab.Clients.Access {
       catch {
         return null;
       }
+#else
+      return null;
+#endif
     }
 
     public static string GetHLVersion() {

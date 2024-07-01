@@ -72,13 +72,19 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
     /// </summary>
     public void DiscoverAndCheckPlugins() {
       OnInitializing(PluginInfrastructureEventArgs.Empty);
+#if NETFRAMEWORK
       AppDomainSetup setup = AppDomain.CurrentDomain.SetupInformation;
       setup.ApplicationBase = pluginDir;
       AppDomain pluginDomain = null;
+#endif
       try {
-        pluginDomain = AppDomain.CreateDomain("plugin domain", null, setup);
         Type pluginValidatorType = typeof(PluginValidator);
+#if NETFRAMEWORK
+        pluginDomain = AppDomain.CreateDomain("plugin domain", null, setup);
         PluginValidator remoteValidator = (PluginValidator)pluginDomain.CreateInstanceAndUnwrap(pluginValidatorType.Assembly.FullName, pluginValidatorType.FullName, true, BindingFlags.NonPublic | BindingFlags.Instance, null, null, null, null);
+#else
+        PluginValidator remoteValidator = (PluginValidator)Activator.CreateInstance(pluginValidatorType.Assembly.FullName, pluginValidatorType.FullName, true, BindingFlags.NonPublic | BindingFlags.Instance, null, null, null, null).Unwrap();
+#endif
         remoteValidator.PluginDir = pluginDir;
         // forward all events from the remoteValidator to listeners
         remoteValidator.PluginLoaded +=
@@ -92,7 +98,9 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
       }
       finally {
         // discard the AppDomain that was used for plugin discovery
+#if NETFRAMEWORK
         AppDomain.Unload(pluginDomain);
+#endif
         // unload all plugins
         foreach (var pluginDescription in plugins.Where(x => x.PluginState == PluginState.Loaded)) {
           pluginDescription.Unload();
@@ -116,14 +124,19 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
       // and remotely tell it to start the application
 
       OnApplicationStarting(new PluginInfrastructureEventArgs(appInfo));
+#if NETFRAMEWORK
       AppDomain applicationDomain = null;
+#endif
       try {
+        Type applicationManagerType = typeof(DefaultApplicationManager);
+#if NETFRAMEWORK
         AppDomainSetup setup = AppDomain.CurrentDomain.SetupInformation;
         setup.PrivateBinPath = pluginDir;
         applicationDomain = AppDomain.CreateDomain(AppDomain.CurrentDomain.FriendlyName, null, setup);
-        Type applicationManagerType = typeof(DefaultApplicationManager);
-        DefaultApplicationManager applicationManager =
-          (DefaultApplicationManager)applicationDomain.CreateInstanceAndUnwrap(applicationManagerType.Assembly.FullName, applicationManagerType.FullName, true, BindingFlags.NonPublic | BindingFlags.Instance, null, null, null, null);
+        DefaultApplicationManager applicationManager = (DefaultApplicationManager)applicationDomain.CreateInstanceAndUnwrap(applicationManagerType.Assembly.FullName, applicationManagerType.FullName, true, BindingFlags.NonPublic | BindingFlags.Instance, null, null, null, null);
+#else
+        DefaultApplicationManager applicationManager = (DefaultApplicationManager)Activator.CreateInstance(applicationManagerType.Assembly.FullName, applicationManagerType.FullName, true, BindingFlags.NonPublic | BindingFlags.Instance, null, null, null, null).Unwrap();        
+#endif
         applicationManager.PluginLoaded += applicationManager_PluginLoaded;
         applicationManager.PluginUnloaded += applicationManager_PluginUnloaded;
         applicationManager.PrepareApplicationDomain(applications, plugins);
@@ -132,7 +145,9 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
       }
       finally {
         // make sure domain is unloaded in all cases
+#if NETFRAMEWORK
         AppDomain.Unload(applicationDomain);
+#endif
       }
     }
 

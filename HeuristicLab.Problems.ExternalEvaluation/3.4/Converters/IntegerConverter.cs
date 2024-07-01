@@ -46,24 +46,29 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
       get { return itemTypes; }
     }
 
-    public void AddItemToBuilder(IItem item, string name, SolutionMessage.Builder builder) {
+    public void AddItemToBuilder(IItem item, string name, SolutionMessage builder) {
       ValueTypeValue<int> value = (item as ValueTypeValue<int>);
       if (value != null) {
-        SolutionMessage.Types.IntegerVariable.Builder var = SolutionMessage.Types.IntegerVariable.CreateBuilder();
-        var.SetName(name).SetData(value.Value);
-        builder.AddIntegerVars(var.Build());
+        SolutionMessage.Types.IntegerVariable var = new SolutionMessage.Types.IntegerVariable();
+        var.Name = name;
+        var.Data = value.Value;
+        builder.IntegerVars.Add(var);
       } else {
         ValueTypeArray<int> array = (item as ValueTypeArray<int>);
         if (array != null) {
-          SolutionMessage.Types.IntegerArrayVariable.Builder var = SolutionMessage.Types.IntegerArrayVariable.CreateBuilder();
-          var.SetName(name).AddRangeData(array).SetLength(array.Length);
-          builder.AddIntegerArrayVars(var.Build());
+          SolutionMessage.Types.IntegerArrayVariable var = new SolutionMessage.Types.IntegerArrayVariable();
+          var.Name = name;
+          var.Data.AddRange(array);
+          var.Length = array.Length;
+          builder.IntegerArrayVars.Add(var);
         } else {
           ValueTypeMatrix<int> matrix = (item as ValueTypeMatrix<int>);
           if (matrix != null) {
-            SolutionMessage.Types.IntegerArrayVariable.Builder var = SolutionMessage.Types.IntegerArrayVariable.CreateBuilder();
-            var.SetName(name).AddRangeData(matrix.AsEnumerable()).SetLength(matrix.Columns);
-            builder.AddIntegerArrayVars(var.Build());
+            SolutionMessage.Types.IntegerArrayVariable var = new SolutionMessage.Types.IntegerArrayVariable();
+            var.Name = name;
+            var.Data.AddRange(matrix.AsEnumerable());
+            var.Length = matrix.Columns;
+            builder.IntegerArrayVars.Add(var);
           } else {
             throw new ArgumentException(ItemName + ": Item is not of a supported type.", "item");
           }

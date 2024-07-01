@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.ServiceModel;
+using System.Threading.Tasks;
 using HeuristicLab.Clients.Common;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -70,19 +71,14 @@ namespace HeuristicLab.Clients.OKB.Query {
         OnRefreshed();
       }
     }
-    public void RefreshAsync(Action<Exception> exceptionCallback) {
-      var call = new Func<Exception>(delegate () {
-        try {
+    public async Task RefreshAsync(Action<Exception> exceptionCallback) {
+      try {
+        await Task.Run(() => {
           Refresh();
-        } catch (Exception ex) {
-          return ex;
-        }
-        return null;
-      });
-      call.BeginInvoke(delegate (IAsyncResult result) {
-        Exception ex = call.EndInvoke(result);
-        if (ex != null) exceptionCallback(ex);
-      }, null);
+        });
+      } catch (Exception ex) {
+        exceptionCallback(ex);
+      }
     }
     #endregion
 

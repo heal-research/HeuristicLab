@@ -211,19 +211,14 @@ namespace HeuristicLab.Clients.Hive {
       }
     }
 
-    public void RefreshAsync(Action<Exception> exceptionCallback) {
-      var call = new Func<Exception>(delegate () {
-        try {
+    public async System.Threading.Tasks.Task RefreshAsync(Action<Exception> exceptionCallback) {
+      try {
+        await System.Threading.Tasks.Task.Run(() => {
           Refresh();
-        } catch (Exception ex) {
-          return ex;
-        }
-        return null;
-      });
-      call.BeginInvoke(delegate (IAsyncResult result) {
-        Exception ex = call.EndInvoke(result);
-        if (ex != null) exceptionCallback(ex);
-      }, null);
+        });
+      } catch (Exception ex) {
+        exceptionCallback(ex);
+      }
     }
 
     private void RefreshResourceGenealogy() {
@@ -357,19 +352,14 @@ namespace HeuristicLab.Clients.Hive {
           HiveServiceLocator.Instance.CallHiveService(s => s.UpdateProject((Project)item));
       }
     }
-    public static void StoreAsync(Action<Exception> exceptionCallback, IHiveItem item, CancellationToken cancellationToken) {
-      var call = new Func<Exception>(delegate () {
-        try {
+    public static async System.Threading.Tasks.Task StoreAsync(Action<Exception> exceptionCallback, IHiveItem item, CancellationToken cancellationToken) {
+      try {
+        await System.Threading.Tasks.Task.Run(() => {
           Store(item, cancellationToken);
-        } catch (Exception ex) {
-          return ex;
-        }
-        return null;
-      });
-      call.BeginInvoke(delegate (IAsyncResult result) {
-        Exception ex = call.EndInvoke(result);
-        if (ex != null) exceptionCallback(ex);
-      }, null);
+        }, cancellationToken);
+      } catch (Exception ex) {
+        exceptionCallback(ex);
+      }
     }
     #endregion
 

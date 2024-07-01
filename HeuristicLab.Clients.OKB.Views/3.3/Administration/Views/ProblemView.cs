@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using HeuristicLab.Common;
 using HeuristicLab.Core.Views;
@@ -276,18 +277,17 @@ namespace HeuristicLab.Clients.OKB.Administration {
     #endregion
 
     #region Helpers
-    private void CallAsync(Action call, string errorMessage, Action continueWith) {
+    private async Task CallAsync(Action call, string errorMessage, Action continueWith) {
       BeginAsyncCall();
-      call.BeginInvoke(delegate(IAsyncResult result) {
-        Exception exception = null;
-        try {
-          call.EndInvoke(result);
-        }
-        catch (Exception ex) {
-          exception = ex;
-        }
-        EndAsyncCall(errorMessage, exception, continueWith);
-      }, null);
+      Exception exception = null;
+      try {
+        await Task.Run(() => {
+          call();
+        });
+      } catch (Exception ex) {
+        exception = ex;
+      }
+      EndAsyncCall(errorMessage, exception, continueWith);
     }
     private void BeginAsyncCall() {
       if (InvokeRequired)

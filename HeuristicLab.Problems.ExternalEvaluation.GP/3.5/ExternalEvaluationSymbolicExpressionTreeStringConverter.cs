@@ -57,12 +57,14 @@ namespace HeuristicLab.Problems.ExternalEvaluation.GP {
       formatter.Indent = false;
     }
 
-    protected override void ConvertSymbolicExpressionTree(SymbolicExpressionTree tree, string name, SolutionMessage.Builder builder) {
+    protected override void ConvertSymbolicExpressionTree(SymbolicExpressionTree tree, string name, SolutionMessage builder) {
       string stringRep = formatter.Format(tree);
       stringRep.Replace(Environment.NewLine, "");
-      SolutionMessage.Types.StringVariable.Builder stringVariable = SolutionMessage.Types.StringVariable.CreateBuilder();
-      stringVariable.SetName(name).SetData(stringRep);
-      builder.AddStringVars(stringVariable.Build());
+      SolutionMessage.Types.StringVariable stringVariable = new SolutionMessage.Types.StringVariable {
+        Name = name,
+        Data = stringRep
+      };
+      builder.StringVars.Add(stringVariable);
     }
   }
 }

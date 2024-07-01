@@ -612,8 +612,13 @@ namespace WeifenLuo.WinFormsUI.Docking
 				return DockHelper.IsDockStateValid(dockState, DockAreas);
 		}
 
+#if NETFRAMEWORK
 		private ContextMenu m_tabPageContextMenu = null;
 		public ContextMenu TabPageContextMenu
+#else
+		private ContextMenuStrip m_tabPageContextMenu = null;
+		public ContextMenuStrip TabPageContextMenu
+#endif
 		{
 			get	{	return m_tabPageContextMenu;	}
 			set	{	m_tabPageContextMenu = value;	}

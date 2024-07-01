@@ -25,6 +25,7 @@ namespace HeuristicLab {
   static class Program {
     [STAThread]
     static void Main(string[] args) {
+      System.Windows.Forms.Application.SetHighDpiMode(System.Windows.Forms.HighDpiMode.DpiUnawareGdiScaled);
       HeuristicLab.PluginInfrastructure.Main.Run(args);
     }
   }

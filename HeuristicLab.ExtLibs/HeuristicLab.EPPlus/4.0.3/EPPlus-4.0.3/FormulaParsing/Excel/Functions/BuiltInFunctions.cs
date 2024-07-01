@@ -34,6 +34,10 @@ using OfficeOpenXml.FormulaParsing.Excel.Functions.Numeric;
 using OfficeOpenXml.FormulaParsing.Excel.Functions.RefAndLookup;
 using OfficeOpenXml.FormulaParsing.Excel.Functions.Information;
 
+#if NETCOREAPP3_0_OR_GREATER
+using Index = OfficeOpenXml.FormulaParsing.Excel.Functions.RefAndLookup.Index;
+#endif
+
 namespace OfficeOpenXml.FormulaParsing.Excel.Functions
 {
     public class BuiltInFunctions : FunctionsModule

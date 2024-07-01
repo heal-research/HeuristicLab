@@ -81,12 +81,6 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
-  <PropertyGroup>
-    <SignAssembly>true</SignAssembly>
-  </PropertyGroup>
-  <PropertyGroup>
-    <AssemblyOriginatorKeyFile>HeuristicLab.snk</AssemblyOriginatorKeyFile>
-  </PropertyGroup>
   <ItemGroup>
     <Reference Include="HeuristicLab.Clients.Common-3.3">
       <HintPath>..\..\bin\HeuristicLab.Clients.Common-3.3.dll</HintPath>
@@ -177,48 +171,5 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
   </ItemGroup>
-  <ItemGroup>
-    <None Include="HeuristicLab.snk" />
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PreBuildEvent Condition=" '$(OS)' == 'Windows_NT' ">set Path=%25Path%25;$(ProjectDir);$(SolutionDir)
-set ProjectDir=$(ProjectDir)
-set SolutionDir=$(SolutionDir)
-set Outdir=$(Outdir)
-
-call PreBuildEvent.cmd</PreBuildEvent>
-    <PreBuildEvent Condition=" '$(OS)' != 'Windows_NT' ">
-export ProjectDir=$(ProjectDir)
-export SolutionDir=$(SolutionDir)
-
-$SolutionDir/PreBuildEvent.sh
-    </PreBuildEvent>
-    <PostBuildEvent Condition=" '$(OS)' == 'Windows_NT' ">
-      set Path=%25Path%25;$(ProjectDir);$(SolutionDir)
-      set ProjectDir=$(ProjectDir)
-      set SolutionDir=$(SolutionDir)
-      set OutDir=$(OutDir)
-      set TargetDir=$(TargetDir)
-      set Platform=$(PlatformName)
-      set Configuration=$(ConfigurationName)
-
-      call "$(SolutionDir)MergeConfigs.cmd"
-    </PostBuildEvent>
-    <PostBuildEvent Condition=" '$(OS)' != 'Windows_NT' ">
-export OutDir=$(OutDir)
-export ProjectDir=$(ProjectDir)
-export SolutionDir=$(SolutionDir)
-export TargetDir=$(TargetDir)
-
-$SolutionDir/MergeConfigs.sh
-    </PostBuildEvent>
-  </PropertyGroup>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>

@@ -24,7 +24,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Threading;
-using Google.ProtocolBuffers;
+using Google.Protobuf;
 using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -115,9 +115,9 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
 
     public override double Evaluate(Individual individual, IRandom random) {
       var qualityMessage = Evaluate(BuildSolutionMessage(individual));
-      if (!qualityMessage.HasExtension(SingleObjectiveQualityMessage.QualityMessage_))
+      if (!qualityMessage.HasExtension(SingleObjectiveQualityMessage.Extensions.QualityMessage_))
         throw new InvalidOperationException("The received message is not a SingleObjectiveQualityMessage.");
-      return qualityMessage.GetExtension(SingleObjectiveQualityMessage.QualityMessage_).Quality;
+      return qualityMessage.GetExtension(SingleObjectiveQualityMessage.Extensions.QualityMessage_).Quality;
     }
     public virtual QualityMessage Evaluate(SolutionMessage solutionMessage) {
       return Cache == null
@@ -135,9 +135,9 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
     #endregion
 
     public virtual ExtensionRegistry GetQualityMessageExtensions() {
-      var extensions = ExtensionRegistry.CreateInstance();
-      extensions.Add(SingleObjectiveQualityMessage.QualityMessage_);
-      return extensions;
+      return new ExtensionRegistry() {
+        SingleObjectiveQualityMessage.Extensions.QualityMessage_
+      };
     }
 
     #region Evaluation
@@ -168,7 +168,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
 
     private SolutionMessage BuildSolutionMessage(Individual individual, int solutionId = 0) {
       lock (clientLock) {
-        SolutionMessage.Builder protobufBuilder = SolutionMessage.CreateBuilder();
+        SolutionMessage protobufBuilder = new SolutionMessage();
         protobufBuilder.SolutionId = solutionId;
         foreach (var variable in individual.Values) {
           try {
@@ -178,7 +178,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
             throw new InvalidOperationException(string.Format("ERROR while building solution message: Parameter {0} cannot be added to the message", Name), ex);
           }
         }
-        return protobufBuilder.Build();
+        return protobufBuilder;
       }
     }
     #endregion

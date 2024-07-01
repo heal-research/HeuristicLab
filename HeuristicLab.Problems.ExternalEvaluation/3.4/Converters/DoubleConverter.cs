@@ -46,24 +46,29 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
       get { return itemTypes; }
     }
 
-    public void AddItemToBuilder(IItem item, string name, SolutionMessage.Builder builder) {
+    public void AddItemToBuilder(IItem item, string name, SolutionMessage builder) {
       ValueTypeValue<double> value = (item as ValueTypeValue<double>);
       if (value != null) {
-        SolutionMessage.Types.DoubleVariable.Builder var = SolutionMessage.Types.DoubleVariable.CreateBuilder();
-        var.SetName(name).SetData(value.Value);
-        builder.AddDoubleVars(var.Build());
+        SolutionMessage.Types.DoubleVariable var = new SolutionMessage.Types.DoubleVariable();
+        var.Name = name;
+        var.Data = value.Value;
+        builder.DoubleVars.Add(var);
       } else {
         ValueTypeArray<double> array = (item as ValueTypeArray<double>);
         if (array != null) {
-          SolutionMessage.Types.DoubleArrayVariable.Builder var = SolutionMessage.Types.DoubleArrayVariable.CreateBuilder();
-          var.SetName(name).AddRangeData(array).SetLength(array.Length);
-          builder.AddDoubleArrayVars(var.Build());
+          SolutionMessage.Types.DoubleArrayVariable var = new SolutionMessage.Types.DoubleArrayVariable();
+          var.Name = name;
+          var.Data.AddRange(array.AsEnumerable());
+          var.Length = array.Length;
+          builder.DoubleArrayVars.Add(var);
         } else {
           ValueTypeMatrix<double> matrix = (item as ValueTypeMatrix<double>);
           if (matrix != null) {
-            SolutionMessage.Types.DoubleArrayVariable.Builder var = SolutionMessage.Types.DoubleArrayVariable.CreateBuilder();
-            var.SetName(name).AddRangeData(matrix.AsEnumerable()).SetLength(matrix.Columns);
-            builder.AddDoubleArrayVars(var.Build());
+            SolutionMessage.Types.DoubleArrayVariable var = new SolutionMessage.Types.DoubleArrayVariable();
+            var.Name = name;
+            var.Data.AddRange(matrix.AsEnumerable());
+            var.Length = matrix.Columns;
+            builder.DoubleArrayVars.Add(var);
           } else {
             throw new ArgumentException(ItemName + ": Item is not of a supported type.", "item");
           }

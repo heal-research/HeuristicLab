@@ -19,6 +19,7 @@
  */
 #endregion
 
+extern alias alglib_3_17;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -678,52 +679,52 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
       // special functions
       Action<double> checkAiry = (x) => {
         double ai, aip, bi, bip;
-        alglib.airy(x, out ai, out aip, out bi, out bip);
+        alglib_3_17.alglib.airy(x, out ai, out aip, out bi, out bip);
         Evaluate(interpreter, ds, "(airya " + x + ")", 0, ai);
         Evaluate(interpreter, ds, "(airyb " + x + ")", 0, bi);
       };
 
       Action<double> checkBessel = (x) => {
-        Evaluate(interpreter, ds, "(bessel " + x + ")", 0, alglib.besseli0(x));
+        Evaluate(interpreter, ds, "(bessel " + x + ")", 0, alglib_3_17.alglib.besseli0(x));
       };
 
       Action<double> checkSinCosIntegrals = (x) => {
         double si, ci;
-        alglib.sinecosineintegrals(x, out si, out ci);
+        alglib_3_17.alglib.sinecosineintegrals(x, out si, out ci);
         Evaluate(interpreter, ds, "(cosint " + x + ")", 0, ci);
         Evaluate(interpreter, ds, "(sinint " + x + ")", 0, si);
       };
       Action<double> checkHypSinCosIntegrals = (x) => {
         double shi, chi;
-        alglib.hyperbolicsinecosineintegrals(x, out shi, out chi);
+        alglib_3_17.alglib.hyperbolicsinecosineintegrals(x, out shi, out chi);
         Evaluate(interpreter, ds, "(hypcosint " + x + ")", 0, chi);
         Evaluate(interpreter, ds, "(hypsinint " + x + ")", 0, shi);
       };
       Action<double> checkFresnelSinCosIntegrals = (x) => {
         double c = 0, s = 0;
-        alglib.fresnelintegral(x, ref c, ref s);
+        alglib_3_17.alglib.fresnelintegral(x, ref c, ref s);
         Evaluate(interpreter, ds, "(fresnelcosint " + x + ")", 0, c);
         Evaluate(interpreter, ds, "(fresnelsinint " + x + ")", 0, s);
       };
       Action<double> checkNormErf = (x) => {
-        Evaluate(interpreter, ds, "(norm " + x + ")", 0, alglib.normaldistribution(x));
-        Evaluate(interpreter, ds, "(erf " + x + ")", 0, alglib.errorfunction(x));
+        Evaluate(interpreter, ds, "(norm " + x + ")", 0, alglib_3_17.alglib.normaldistribution(x));
+        Evaluate(interpreter, ds, "(erf " + x + ")", 0, alglib_3_17.alglib.errorfunction(x));
       };
 
       Action<double> checkGamma = (x) => {
-        Evaluate(interpreter, ds, "(gamma " + x + ")", 0, alglib.gammafunction(x));
+        Evaluate(interpreter, ds, "(gamma " + x + ")", 0, alglib_3_17.alglib.gammafunction(x));
       };
       Action<double> checkPsi = (x) => {
         try {
-          Evaluate(interpreter, ds, "(psi " + x + ")", 0, alglib.psi(x));
-        } catch (alglib.alglibexception) { // ignore cases where alglib throws an exception
+          Evaluate(interpreter, ds, "(psi " + x + ")", 0, alglib_3_17.alglib.psi(x));
+        } catch (alglib_3_17.alglib.alglibexception) { // ignore cases where alglib throws an exception
         }
       };
       Action<double> checkDawson = (x) => {
-        Evaluate(interpreter, ds, "(dawson " + x + ")", 0, alglib.dawsonintegral(x));
+        Evaluate(interpreter, ds, "(dawson " + x + ")", 0, alglib_3_17.alglib.dawsonintegral(x));
       };
       Action<double> checkExpInt = (x) => {
-        Evaluate(interpreter, ds, "(expint " + x + ")", 0, alglib.exponentialintegralei(x));
+        Evaluate(interpreter, ds, "(expint " + x + ")", 0, alglib_3_17.alglib.exponentialintegralei(x));
       };
 
       foreach (var e in new[] { -2.0, -1.0, 0.0, 1.0, 2.0 }) {

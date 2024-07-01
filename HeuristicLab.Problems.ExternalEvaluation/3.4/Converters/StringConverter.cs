@@ -45,29 +45,32 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
       get { return itemTypes; }
     }
 
-    public void AddItemToBuilder(IItem item, string name, SolutionMessage.Builder builder) {
+    public void AddItemToBuilder(IItem item, string name, SolutionMessage builder) {
       IStringConvertibleValue value = (item as IStringConvertibleValue);
       if (value != null) {
-        SolutionMessage.Types.StringVariable.Builder var = SolutionMessage.Types.StringVariable.CreateBuilder();
-        var.SetName(name).SetData(value.GetValue());
-        builder.AddStringVars(var.Build());
+        SolutionMessage.Types.StringVariable var = new SolutionMessage.Types.StringVariable();
+        var.Name = name;
+        var.Data = value.GetValue();
+        builder.StringVars.Add(var);
       } else {
         IStringConvertibleArray array = (item as IStringConvertibleArray);
         if (array != null) {
-          SolutionMessage.Types.StringArrayVariable.Builder var = SolutionMessage.Types.StringArrayVariable.CreateBuilder();
-          var.SetName(name).SetLength(array.Length);
+          SolutionMessage.Types.StringArrayVariable var = new SolutionMessage.Types.StringArrayVariable();
+          var.Name = name;
+          var.Length = array.Length;
           for (int i = 0; i < array.Length; i++)
-            var.AddData(array.GetValue(i));
-          builder.AddStringArrayVars(var.Build());
+            var.Data.Add(array.GetValue(i));
+          builder.StringArrayVars.Add(var);
         } else {
           IStringConvertibleMatrix matrix = (item as IStringConvertibleMatrix);
           if (matrix != null) {
-            SolutionMessage.Types.StringArrayVariable.Builder var = SolutionMessage.Types.StringArrayVariable.CreateBuilder();
-            var.SetName(name).SetLength(matrix.Columns);
+            SolutionMessage.Types.StringArrayVariable var = new SolutionMessage.Types.StringArrayVariable();
+            var.Name = name;
+            var.Length = matrix.Columns;
             for (int i = 0; i < matrix.Rows; i++)
               for (int j = 0; j < matrix.Columns; j++)
-                var.AddData(matrix.GetValue(i, j));
-            builder.AddStringArrayVars(var.Build());
+                var.Data.Add(matrix.GetValue(i, j));
+            builder.StringArrayVars.Add(var);
           } else {
             throw new ArgumentException(ItemName + ": Item is not of a supported type.", "item");
           }

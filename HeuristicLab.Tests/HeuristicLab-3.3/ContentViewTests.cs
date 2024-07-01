@@ -30,7 +30,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace HeuristicLab.Tests {
   [TestClass]
   public class ContentViewTests {
-    [TestMethod]
+    [STATestMethod]
     [TestCategory("General")]
     [TestCategory("Essential")]
     public void ContentViewAttributeTest() {

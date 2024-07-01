@@ -2,6 +2,7 @@ using System.IO;
 using System.Runtime.Serialization;
 
 namespace Netron.Diagramming.Core {
+#pragma warning disable SYSLIB0011
   /// <summary>
   /// Generic implementation of the <see cref="IGenericFormatter"/> interface.
   /// </summary>
@@ -26,5 +27,6 @@ namespace Netron.Diagramming.Core {
       m_Formatter.Serialize(serializationStream, graph);
     }
   }
+#pragma warning restore SYSLIB0011
 
 }

@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using System.Threading.Tasks;
 using HeuristicLab.Clients.Common;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -49,43 +50,33 @@ namespace HeuristicLab.Clients.Access {
       usersAndGroups = new ItemList<UserGroupBase>();
       usersAndGroups.AddRange(CallAccessService<ItemList<UserGroupBase>>(s => new ItemList<UserGroupBase>(s.GetAllLeightweightUsersAndGroups())));
     }
-    public void RefreshAsync(Action<Exception> exceptionCallback) {
-      var call = new Func<Exception>(delegate() {
-        try {
-          OnRefreshing();
-          Refresh();
-        }
-        catch (Exception ex) {
-          return ex;
-        }
-        finally {
-          OnRefreshed();
-        }
-        return null;
-      });
-      call.BeginInvoke(delegate(IAsyncResult result) {
-        Exception ex = call.EndInvoke(result);
-        if (ex != null) exceptionCallback(ex);
-      }, null);
+    public async Task RefreshAsync(Action<Exception> exceptionCallback) {
+      try {
+        await Task.Run(() => {
+          try {
+            OnRefreshing();
+            Refresh();
+          } finally {
+            OnRefreshed();
+          }
+        });
+      } catch (Exception ex) {
+        exceptionCallback(ex);
+      }
     }
-    public void ExecuteActionAsync(Action action, Action<Exception> exceptionCallback) {
-      var call = new Func<Exception>(delegate() {
-        try {
-          OnRefreshing();
-          action();
-        }
-        catch (Exception ex) {
-          return ex;
-        }
-        finally {
-          OnRefreshed();
-        }
-        return null;
-      });
-      call.BeginInvoke(delegate(IAsyncResult result) {
-        Exception ex = call.EndInvoke(result);
-        if (ex != null) exceptionCallback(ex);
-      }, null);
+    public async Task ExecuteActionAsync(Action action, Action<Exception> exceptionCallback) {
+      try {
+        await Task.Run(() => {
+          try {
+            OnRefreshing();
+            action();
+          } finally {
+            OnRefreshed();
+          }
+        });
+      } catch (Exception ex) {
+        exceptionCallback(ex);
+      }
     }
     #endregion
 

@@ -32,8 +32,6 @@ bld/
 [Ll]og/
 [Ll]ogs/
 *.exe
-**/Properties/AssemblyInfo.cs
-Plugin.cs
 HeuristicLab.Problems.ExternalEvaluation/3.4/Protos/ExternalEvaluationMessages.cs
 
 
@@ -400,5 +398,7 @@ FodyWeavers.xsd
 *.msp
 
 # JetBrains Rider
+.idea
 *.sln.iml
+
 Google.ProtocolBuffers-2.4.1.473.dll

@@ -23,6 +23,7 @@ using System;
 using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
+using MethodInvoker = System.Windows.Forms.MethodInvoker;
 
 namespace HeuristicLab.MainForm.WindowsForms {
   public partial class View : UserControl, IView {

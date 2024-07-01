@@ -19,7 +19,7 @@
  */
 #endregion
 
-using Google.ProtocolBuffers;
+using Google.Protobuf;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HEAL.Attic;
@@ -50,7 +50,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
 
     public abstract void Send(IMessage message);
 
-    public abstract IMessage Receive(IBuilder builder, ExtensionRegistry extensions);
+    public abstract IMessage Receive(IMessage builder, ExtensionRegistry extensions);
 
     public virtual void Close() {
       IsInitialized = false;

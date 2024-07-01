@@ -54,7 +54,7 @@ namespace HeuristicLab.MainForm {
 
     public static bool CanViewType(MemberInfo viewType, Type content) {
       ContentAttribute[] attributes = (ContentAttribute[])viewType.GetCustomAttributes(typeof(ContentAttribute), false);
-      return attributes.Any(a => content.IsAssignableTo(a.contentType));
+      return attributes.Any(a => TypeExtension.IsAssignableTo(content, a.contentType));
     }
 
     internal static IEnumerable<Type> GetDefaultViewableTypes(Type viewType) {

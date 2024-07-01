@@ -67,7 +67,7 @@ namespace HeuristicLab.Encodings.ScheduleEncoding.Views {
     private void RedrawGanttChart(Schedule content) {
       ResetGanttChart();
       int resCount = 0;
-      Random random = new Random(1);
+      System.Random random = new System.Random(1);
       foreach (Resource r in content.Resources) {
         foreach (ScheduledTask t in content.Resources[resCount].Tasks) {
           int categoryNr = 0;

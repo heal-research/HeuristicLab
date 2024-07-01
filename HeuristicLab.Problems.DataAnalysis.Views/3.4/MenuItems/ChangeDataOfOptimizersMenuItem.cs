@@ -27,9 +27,9 @@ using System.Linq;
 using System.Windows.Forms;
 using HeuristicLab.Common;
 using HeuristicLab.MainForm;
+using HeuristicLab.MainForm.WindowsForms;
 using HeuristicLab.Optimization;
 using HeuristicLab.Optimizer;
-using MenuItem = HeuristicLab.MainForm.WindowsForms.MenuItem;
 
 namespace HeuristicLab.Problems.DataAnalysis.Views {
   internal sealed class ChangeDataOfOptimizersMenuItem : MenuItem, IOptimizerUserInterfaceItemProvider {
