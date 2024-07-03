@@ -20,8 +20,10 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using System.ServiceModel;
 using HeuristicLab.Clients.Common;
+using Microsoft.Extensions.Configuration;
 
 namespace HeuristicLab.Clients.Hive {
   public class HiveServiceLocator : IHiveServiceLocator {
@@ -51,19 +53,23 @@ namespace HeuristicLab.Clients.Hive {
 
     public int EndpointRetries { get; private set; }
 
-    public string WorkingEndpoint { get; private set; }
+    public WCFClientConfiguration WorkingEndpoint { get; private set; }
 
+    private static readonly Lazy<IConfigurationRoot> configurationRoot = new Lazy<IConfigurationRoot>(() => new ConfigurationBuilder().AddJsonFile("appsettings.json").Build());
+
+    private static List<WCFClientConfiguration> GetConfigurations() {
+      configurationRoot.Value.Reload();
+      return configurationRoot.Value.GetRequiredSection("HiveService").Get<List<WCFClientConfiguration>>();
+    }
 
     public string GetEndpointInformation() {
       string message = "Configured endpoints: " + Environment.NewLine;
 
-      var configurations = Settings.Default.EndpointConfigurationPriorities;
-      foreach (var endpointConfigurationName in configurations) {
-        var cl = ClientFactory.CreateClient<HiveServiceClient, IHiveService>(endpointConfigurationName);
-        message += endpointConfigurationName + ": " + cl.Endpoint.Address + Environment.NewLine;
+      foreach (var config in GetConfigurations()) {
+        message += "HiveService: " + config.Address + Environment.NewLine;
       }
 
-      if (string.IsNullOrEmpty(WorkingEndpoint)) {
+      if (WorkingEndpoint is null) {
         message += "No working endpoint found, check you configuration.";
       } else {
         message += "Used endpoint: " + WorkingEndpoint;
@@ -77,17 +83,14 @@ namespace HeuristicLab.Clients.Hive {
         return CreateClient(WorkingEndpoint);
       }
 
-      var configurations = Settings.Default.EndpointConfigurationPriorities;
-
       Exception exception = null;
-      foreach (var endpointConfigurationName in configurations) {
+      foreach (var config in GetConfigurations()) {
         try {
-          var cl = CreateClient(endpointConfigurationName);
+          var cl = CreateClient(config);
           cl.Open();
-          WorkingEndpoint = endpointConfigurationName;
+          WorkingEndpoint = config;
           return cl;
-        }
-        catch (EndpointNotFoundException exc) {
+        } catch (EndpointNotFoundException exc) {
           exception = exc;
           EndpointRetries++;
         }
@@ -96,13 +99,13 @@ namespace HeuristicLab.Clients.Hive {
       throw exception ?? new Exception("No endpoint for Hive service found.");
     }
 
-    private HiveServiceClient CreateClient(string endpointConfigurationName) {
+    private HiveServiceClient CreateClient(WCFClientConfiguration config) {
       HiveServiceClient cl = null;
 
       if (string.IsNullOrEmpty(username) && string.IsNullOrEmpty(password))
-        cl = ClientFactory.CreateClient<HiveServiceClient, IHiveService>(endpointConfigurationName);
+        cl = ClientFactory.CreateCoreClient<HiveServiceClient, IHiveService>(config);
       else
-        cl = ClientFactory.CreateClient<HiveServiceClient, IHiveService>(endpointConfigurationName, null, username, password);
+        cl = ClientFactory.CreateCoreClient<HiveServiceClient, IHiveService>(config, username, password);
 
       return cl;
     }
@@ -113,12 +116,10 @@ namespace HeuristicLab.Clients.Hive {
 
       try {
         return call(client);
-      }
-      finally {
+      } finally {
         try {
           client.Close();
-        }
-        catch (Exception) {
+        } catch (Exception) {
           client.Abort();
         }
       }
@@ -130,12 +131,10 @@ namespace HeuristicLab.Clients.Hive {
 
       try {
         call(client);
-      }
-      finally {
+      } finally {
         try {
           client.Close();
-        }
-        catch (Exception) {
+        } catch (Exception) {
           client.Abort();
         }
       }
@@ -145,8 +144,7 @@ namespace HeuristicLab.Clients.Hive {
       if (client.ClientCredentials.UserName.UserName == Settings.Default.AnonymousUserName) {
         try {
           client.Close();
-        }
-        catch (Exception) {
+        } catch (Exception) {
           client.Abort();
         }
         throw new AnonymousUserException();
