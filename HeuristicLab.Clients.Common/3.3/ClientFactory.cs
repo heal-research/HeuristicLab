@@ -28,6 +28,42 @@ using HeuristicLab.Clients.Common.Properties;
 
 namespace HeuristicLab.Clients.Common {
   public static class ClientFactory {
+
+    #region CreateCoreClient Methods
+    public static TClient CreateCoreClient<TClient, TInterface>(WCFClientConfiguration config) where TClient : ClientBase<TInterface>, TInterface where TInterface : class {
+
+      var binding = new BasicHttpBinding {
+        MaxBufferPoolSize = config.MaxBufferPoolSize,
+        MaxReceivedMessageSize = config.MaxReceivedMessageSize,
+        ReaderQuotas = new System.Xml.XmlDictionaryReaderQuotas {
+          MaxArrayLength = config.MaxArrayLength,
+          MaxBytesPerRead = config.MaxBytesPerRead,
+          MaxDepth = config.MaxDepth,
+          MaxNameTableCharCount = config.MaxNameTableCharCount,
+          MaxStringContentLength = config.MaxStringContentLength
+        },
+        Security = new BasicHttpSecurity {
+          Mode = BasicHttpSecurityMode.TransportWithMessageCredential,
+          Message = new BasicHttpMessageSecurity {
+            ClientCredentialType = BasicHttpMessageCredentialType.UserName
+          },
+          Transport = new HttpTransportSecurity {
+            ClientCredentialType = HttpClientCredentialType.None
+          }
+        }
+      };
+
+      var endpoint = new EndpointAddress(config.Address);
+      var client = (TClient)Activator.CreateInstance(typeof(TClient), binding, endpoint);
+      client.ClientCredentials.UserName.UserName = Settings.Default.UserName;
+      client.ClientCredentials.UserName.Password = CryptoService.DecryptString(Settings.Default.Password);
+      client.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = X509CertificateValidationMode.ChainTrust;
+      client.ClientCredentials.ServiceCertificate.Authentication.RevocationMode = X509RevocationMode.NoCheck;
+      return client;
+    }
+
+    #endregion
+
     #region CreateClient Methods
     public static T CreateClient<T, I>()
       where T : ClientBase<I>, I
