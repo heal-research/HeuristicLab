@@ -24,6 +24,7 @@ using System.Threading.Tasks;
 using HeuristicLab.Clients.Common;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
+using Microsoft.Extensions.Configuration;
 
 namespace HeuristicLab.Clients.Access {
   [Item("AccessClient", "Access client.")]
@@ -42,6 +43,13 @@ namespace HeuristicLab.Clients.Access {
       get { return usersAndGroups; }
     }
     #endregion
+
+    private static readonly Lazy<IConfigurationRoot> configurationRoot = new Lazy<IConfigurationRoot>(() => new ConfigurationBuilder().AddJsonFile("appsettings.json").Build());
+
+    private static WCFClientConfiguration GetClientConfiguration() {
+      configurationRoot.Value.Reload();
+      return configurationRoot.Value.GetRequiredSection("AccessService").Get<WCFClientConfiguration>();
+    }
 
     private AccessClient() { }
 
@@ -95,29 +103,26 @@ namespace HeuristicLab.Clients.Access {
 
     #region Helpers
     public static void CallAccessService(Action<IAccessService> call) {
-      AccessServiceClient client = ClientFactory.CreateClient<AccessServiceClient, IAccessService>();
+      AccessServiceClient client = ClientFactory.CreateCoreClient<AccessServiceClient, IAccessService>(GetClientConfiguration());
       try {
         call(client);
-      }
-      finally {
+      } finally {
         try {
           client.Close();
-        }
-        catch (Exception) {
+        } catch (Exception) {
           client.Abort();
         }
       }
     }
+
     public static T CallAccessService<T>(Func<IAccessService, T> call) {
-      AccessServiceClient client = ClientFactory.CreateClient<AccessServiceClient, IAccessService>();
+      AccessServiceClient client = ClientFactory.CreateCoreClient<AccessServiceClient, IAccessService>(GetClientConfiguration());
       try {
         return call(client);
-      }
-      finally {
+      } finally {
         try {
           client.Close();
-        }
-        catch (Exception) {
+        } catch (Exception) {
           client.Abort();
         }
       }
