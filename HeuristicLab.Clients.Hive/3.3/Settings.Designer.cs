@@ -34,7 +34,7 @@ namespace HeuristicLab.Clients.Hive {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("HeuristicLab 3.3.exe")]
+        [global::System.Configuration.DefaultSettingValueAttribute("HeuristicLab 3.3.dll")]
         public string HLBinaryName {
             get {
                 return ((string)(this["HLBinaryName"]));

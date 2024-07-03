@@ -22,12 +22,86 @@
 using System;
 using System.Security.Cryptography.X509Certificates;
 using System.ServiceModel;
+using System.ServiceModel.Channels;
 using System.ServiceModel.Description;
 using System.ServiceModel.Security;
 using HeuristicLab.Clients.Common.Properties;
 
 namespace HeuristicLab.Clients.Common {
   public static class ClientFactory {
+
+    #region CreateCoreClient Methods
+
+    public static Binding GetBinding(WCFClientConfiguration config) {
+      Binding binding = null;
+      switch (config.Binding) {
+        case WCFClientConfiguration.BindingType.BASICHTTP:
+          binding = new BasicHttpBinding {
+            MaxBufferSize = config.MaxBufferSize,
+            MaxBufferPoolSize = config.MaxBufferPoolSize,
+            MaxReceivedMessageSize = config.MaxReceivedMessageSize,
+            ReaderQuotas = new System.Xml.XmlDictionaryReaderQuotas {
+              MaxArrayLength = config.MaxArrayLength,
+              MaxBytesPerRead = config.MaxBytesPerRead,
+              MaxDepth = config.MaxDepth,
+              MaxNameTableCharCount = config.MaxNameTableCharCount,
+              MaxStringContentLength = config.MaxStringContentLength
+            },
+            SendTimeout = config.SendTimeout,
+            ReceiveTimeout = config.ReceiveTimeout,
+            Security = new BasicHttpSecurity {
+              Mode = BasicHttpSecurityMode.TransportWithMessageCredential,
+              Message = new BasicHttpMessageSecurity {
+                ClientCredentialType = BasicHttpMessageCredentialType.UserName
+              },
+              Transport = new HttpTransportSecurity {
+                ClientCredentialType = HttpClientCredentialType.None
+              }
+            }
+          };
+          break;
+        case WCFClientConfiguration.BindingType.NETTCP:
+          binding = new NetTcpBinding {
+            MaxBufferSize = config.MaxBufferSize,
+            MaxBufferPoolSize = config.MaxBufferPoolSize,
+            MaxReceivedMessageSize = config.MaxReceivedMessageSize,
+            ReaderQuotas = new System.Xml.XmlDictionaryReaderQuotas {
+              MaxArrayLength = config.MaxArrayLength,
+              MaxBytesPerRead = config.MaxBytesPerRead,
+              MaxDepth = config.MaxDepth,
+              MaxNameTableCharCount = config.MaxNameTableCharCount,
+              MaxStringContentLength = config.MaxStringContentLength,
+            },
+            SendTimeout = config.SendTimeout,
+            ReceiveTimeout = config.ReceiveTimeout,
+            Security = new NetTcpSecurity {
+              Mode = SecurityMode.TransportWithMessageCredential,
+              Message = new MessageSecurityOverTcp {
+                ClientCredentialType = MessageCredentialType.UserName
+              },
+              Transport = new TcpTransportSecurity {
+                ClientCredentialType = TcpClientCredentialType.None
+              }
+            }
+          };
+          break;
+      }
+      return binding;
+    }
+
+    public static T CreateCoreClient<T, I>(WCFClientConfiguration config, string username = null, string password = null) where T : ClientBase<I>, I where I : class {
+      var binding = GetBinding(config);
+      var endpoint = new EndpointAddress(config.Address);
+      var client = (T)Activator.CreateInstance(typeof(T), binding, endpoint);
+      client.ClientCredentials.UserName.UserName = username ?? Settings.Default.UserName;
+      client.ClientCredentials.UserName.Password = password ?? CryptoService.DecryptString(Settings.Default.Password);
+      client.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = X509CertificateValidationMode.ChainTrust;
+      client.ClientCredentials.ServiceCertificate.Authentication.RevocationMode = X509RevocationMode.NoCheck;
+      return client;
+    }
+
+    #endregion
+
     #region CreateClient Methods
     public static T CreateClient<T, I>()
       where T : ClientBase<I>, I
@@ -67,35 +141,6 @@ namespace HeuristicLab.Clients.Common {
       // we currently don't know why this is the case, because we observed a valid OCSP request/response using wireshark
       client.ClientCredentials.ServiceCertificate.Authentication.RevocationMode = X509RevocationMode.NoCheck;
       return client;
-    }
-    #endregion
-
-    #region CreateChannelFactory Methods
-    public static ChannelFactory<I> CreateChannelFactory<I>(string endpointConfigurationName)
-      where I : class {
-      return CreateChannelFactory<I>(endpointConfigurationName, null);
-    }
-    public static ChannelFactory<I> CreateChannelFactory<I>(string endpointConfigurationName, string remoteAddress)
-      where I : class {
-      return CreateChannelFactory<I>(endpointConfigurationName, remoteAddress, Settings.Default.UserName, CryptoService.DecryptString(Settings.Default.Password));
-    }
-    public static ChannelFactory<I> CreateChannelFactory<I>(string endpointConfigurationName, string remoteAddress, string userName, string password)
-      where I : class {
-      ChannelFactory<I> channelFactory = new ChannelFactory<I>(endpointConfigurationName);
-
-      if (!string.IsNullOrEmpty(remoteAddress)) {
-        SetEndpointAddress(channelFactory.Endpoint, remoteAddress);
-      }
-
-      channelFactory.Credentials.UserName.UserName = userName;
-      channelFactory.Credentials.UserName.Password = password;
-      channelFactory.Credentials.ServiceCertificate.Authentication.CertificateValidationMode = X509CertificateValidationMode.ChainTrust;
-
-      // we (jkarder + abeham) have disabled the revocation check for now
-      // the certificate requires OCSP instead of CRL for revocation checks, but the OCSP check fails
-      // we currently don't know why this is the case, because we observed a valid OCSP request/response using wireshark
-      channelFactory.Credentials.ServiceCertificate.Authentication.RevocationMode = X509RevocationMode.NoCheck;
-      return channelFactory;
     }
     #endregion
 

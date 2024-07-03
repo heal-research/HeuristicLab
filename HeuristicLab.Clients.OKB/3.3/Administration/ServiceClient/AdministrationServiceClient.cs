@@ -424,18 +424,18 @@ namespace HeuristicLab.Clients.OKB.Administration
         {
         }
         
-        public AdministrationServiceClient(string endpointConfigurationName) : 
-                base(endpointConfigurationName)
+        public AdministrationServiceClient(string endpointConfigurationName) //: 
+                //base(endpointConfigurationName)
         {
         }
         
-        public AdministrationServiceClient(string endpointConfigurationName, string remoteAddress) : 
-                base(endpointConfigurationName, remoteAddress)
+        public AdministrationServiceClient(string endpointConfigurationName, string remoteAddress)// : 
+                //base(endpointConfigurationName, remoteAddress)
         {
         }
         
-        public AdministrationServiceClient(string endpointConfigurationName, System.ServiceModel.EndpointAddress remoteAddress) : 
-                base(endpointConfigurationName, remoteAddress)
+        public AdministrationServiceClient(string endpointConfigurationName, System.ServiceModel.EndpointAddress remoteAddress)// : 
+                //base(endpointConfigurationName, remoteAddress)
         {
         }
         

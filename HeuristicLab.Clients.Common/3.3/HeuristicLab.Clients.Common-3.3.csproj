@@ -7,6 +7,9 @@
     <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="System.ServiceModel.NetTcp" Version="8.0.0" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\..\HeuristicLab.PluginInfrastructure\3.3\HeuristicLab.PluginInfrastructure-3.3.csproj" />
   </ItemGroup>
 </Project>

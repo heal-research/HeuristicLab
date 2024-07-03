@@ -1893,18 +1893,18 @@ namespace HeuristicLab.Clients.OKB.Query
         {
         }
         
-        public QueryServiceClient(string endpointConfigurationName) : 
-                base(endpointConfigurationName)
+        public QueryServiceClient(string endpointConfigurationName) //: 
+               // base(endpointConfigurationName)
         {
         }
         
-        public QueryServiceClient(string endpointConfigurationName, string remoteAddress) : 
-                base(endpointConfigurationName, remoteAddress)
+        public QueryServiceClient(string endpointConfigurationName, string remoteAddress) //: 
+               // base(endpointConfigurationName, remoteAddress)
         {
         }
         
-        public QueryServiceClient(string endpointConfigurationName, System.ServiceModel.EndpointAddress remoteAddress) : 
-                base(endpointConfigurationName, remoteAddress)
+        public QueryServiceClient(string endpointConfigurationName, System.ServiceModel.EndpointAddress remoteAddress) //: 
+                //base(endpointConfigurationName, remoteAddress)
         {
         }
         

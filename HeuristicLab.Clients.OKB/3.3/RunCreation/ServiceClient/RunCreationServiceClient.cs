@@ -1329,18 +1329,18 @@ namespace HeuristicLab.Clients.OKB.RunCreation
         {
         }
         
-        public RunCreationServiceClient(string endpointConfigurationName) : 
-                base(endpointConfigurationName)
+        public RunCreationServiceClient(string endpointConfigurationName) //: 
+               // base(endpointConfigurationName)
         {
         }
         
-        public RunCreationServiceClient(string endpointConfigurationName, string remoteAddress) : 
-                base(endpointConfigurationName, remoteAddress)
+        public RunCreationServiceClient(string endpointConfigurationName, string remoteAddress) //: 
+                //base(endpointConfigurationName, remoteAddress)
         {
         }
         
-        public RunCreationServiceClient(string endpointConfigurationName, System.ServiceModel.EndpointAddress remoteAddress) : 
-                base(endpointConfigurationName, remoteAddress)
+        public RunCreationServiceClient(string endpointConfigurationName, System.ServiceModel.EndpointAddress remoteAddress) //: 
+                //base(endpointConfigurationName, remoteAddress)
         {
         }
         
