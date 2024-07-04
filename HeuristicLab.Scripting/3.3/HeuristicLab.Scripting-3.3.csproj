@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net8.0-windows</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <OutputType>Library</OutputType>
     <RootNamespace>HeuristicLab.Scripting</RootNamespace>
   </PropertyGroup>
@@ -23,10 +23,13 @@
     <ProjectReference Include="..\..\HeuristicLab.PluginInfrastructure\3.3\HeuristicLab.PluginInfrastructure-3.3.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="System.CodeDom" Version="7.0.0" />
+  </ItemGroup>
+  <ItemGroup>
     <EmbeddedResource Update="Scripts\Templates\ScriptTemplates.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ScriptTemplates.Designer.cs</LastGenOutput>
       <CustomToolNamespace>HeuristicLab.Scripting</CustomToolNamespace>
     </EmbeddedResource>
-  </ItemGroup> 
+  </ItemGroup>
 </Project>

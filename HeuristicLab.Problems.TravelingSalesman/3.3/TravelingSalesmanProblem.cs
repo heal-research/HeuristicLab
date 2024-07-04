@@ -271,7 +271,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
         if (Evaluator is ITSPDistanceMatrixEvaluator)
           error += Environment.NewLine + "Please review that the " + DistanceMatrixParameter.Name + " parameter is defined or choose another evaluator.";
         else error += Environment.NewLine + "Please review that the " + CoordinatesParameter.Name + " parameter is defined or choose another evaluator.";
-        PluginInfrastructure.ErrorHandling.ShowErrorDialog(error, null);
+        throw new InvalidOperationException(error);
       }
       SolutionCreator.LengthParameter.Hidden = SolutionCreator.LengthParameter.Value != null;
       SolutionCreator.PermutationTypeParameter.Value = new PermutationType(PermutationTypes.RelativeUndirected);

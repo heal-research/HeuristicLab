@@ -12,4 +12,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\HeuristicLab.PluginInfrastructure.Views\3.3\HeuristicLab.PluginInfrastructure.Views-3.3.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="System.ServiceModel.Federation" Version="6.0.0" />
+  </ItemGroup>
 </Project>
