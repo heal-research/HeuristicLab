@@ -691,7 +691,7 @@ namespace HeuristicLab.Persistence.Tests {
     public void TestTypeStringConversion() {
       string name = typeof(List<int>[]).AssemblyQualifiedName;
       string shortName =
-        "System.Collections.Generic.List`1[[System.Int32, mscorlib]][], mscorlib";
+        "System.Collections.Generic.List`1[[System.Int32, System.Private.CoreLib]][], System.Private.CoreLib";
       Assert.AreEqual(name, TypeNameParser.Parse(name).ToString());
       Assert.AreEqual(shortName, TypeNameParser.Parse(name).ToString(false));
       Assert.AreEqual(shortName, typeof(List<int>[]).VersionInvariantName());
