@@ -103,56 +103,56 @@ namespace HeuristicLab.Clients.Common {
     #endregion
 
     #region CreateClient Methods
-    public static T CreateClient<T, I>()
-      where T : ClientBase<I>, I
-      where I : class {
-      return CreateClient<T, I>(null, null);
-    }
-    public static T CreateClient<T, I>(string endpointConfigurationName)
-      where T : ClientBase<I>, I
-      where I : class {
-      return CreateClient<T, I>(endpointConfigurationName, null);
-    }
-    public static T CreateClient<T, I>(string endpointConfigurationName, string remoteAddress)
-      where T : ClientBase<I>, I
-      where I : class {
-      return CreateClient<T, I>(endpointConfigurationName, remoteAddress, Settings.Default.UserName, CryptoService.DecryptString(Settings.Default.Password));
-    }
-    public static T CreateClient<T, I>(string endpointConfigurationName, string remoteAddress, string userName, string password)
-      where T : ClientBase<I>, I
-      where I : class {
-      T client;
-      if (string.IsNullOrEmpty(endpointConfigurationName)) {
-        client = Activator.CreateInstance<T>();
-      } else {
-        client = (T)Activator.CreateInstance(typeof(T), endpointConfigurationName);
-      }
-
-      if (!string.IsNullOrEmpty(remoteAddress)) {
-        SetEndpointAddress(client.Endpoint, remoteAddress);
-      }
-
-      client.ClientCredentials.UserName.UserName = userName;
-      client.ClientCredentials.UserName.Password = password;
-      client.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = X509CertificateValidationMode.ChainTrust;
-
-      // we (jkarder + abeham) have disabled the revocation check for now
-      // the certificate requires OCSP instead of CRL for revocation checks, but the OCSP check fails
-      // we currently don't know why this is the case, because we observed a valid OCSP request/response using wireshark
-      client.ClientCredentials.ServiceCertificate.Authentication.RevocationMode = X509RevocationMode.NoCheck;
-      return client;
-    }
+    //public static T CreateClient<T, I>()
+    //  where T : ClientBase<I>, I
+    //  where I : class {
+    //  return CreateClient<T, I>(null, null);
+    //}
+    //public static T CreateClient<T, I>(string endpointConfigurationName)
+    //  where T : ClientBase<I>, I
+    //  where I : class {
+    //  return CreateClient<T, I>(endpointConfigurationName, null);
+    //}
+    //public static T CreateClient<T, I>(string endpointConfigurationName, string remoteAddress)
+    //  where T : ClientBase<I>, I
+    //  where I : class {
+    //  return CreateClient<T, I>(endpointConfigurationName, remoteAddress, Settings.Default.UserName, CryptoService.DecryptString(Settings.Default.Password));
+    //}
+    //public static T CreateClient<T, I>(string endpointConfigurationName, string remoteAddress, string userName, string password)
+    //  where T : ClientBase<I>, I
+    //  where I : class {
+    //  T client;
+    //  if (string.IsNullOrEmpty(endpointConfigurationName)) {
+    //    client = Activator.CreateInstance<T>();
+    //  } else {
+    //    client = (T)Activator.CreateInstance(typeof(T), endpointConfigurationName);
+    //  }
+    
+    //  if (!string.IsNullOrEmpty(remoteAddress)) {
+    //    SetEndpointAddress(client.Endpoint, remoteAddress);
+    //  }
+    //
+    //  client.ClientCredentials.UserName.UserName = userName;
+    //  client.ClientCredentials.UserName.Password = password;
+    //  client.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = X509CertificateValidationMode.ChainTrust;
+    //
+    //  // we (jkarder + abeham) have disabled the revocation check for now
+    //  // the certificate requires OCSP instead of CRL for revocation checks, but the OCSP check fails
+    //  // we currently don't know why this is the case, because we observed a valid OCSP request/response using wireshark
+    //  client.ClientCredentials.ServiceCertificate.Authentication.RevocationMode = X509RevocationMode.NoCheck;
+    //  return client;
+    //}
     #endregion
 
     #region Helpers
-    private static void SetEndpointAddress(ServiceEndpoint endpoint, string remoteAddress) {
-      // change the endpoint address and preserve the identity certificate defined in the config file
-      EndpointAddressBuilder endpointAddressBuilder = new EndpointAddressBuilder(endpoint.Address);
-      UriBuilder uriBuilder = new UriBuilder(endpointAddressBuilder.Uri);
-      uriBuilder.Host = remoteAddress;
-      endpointAddressBuilder.Uri = uriBuilder.Uri;
-      endpoint.Address = endpointAddressBuilder.ToEndpointAddress();
-    }
+    //private static void SetEndpointAddress(ServiceEndpoint endpoint, string remoteAddress) {
+    //  // change the endpoint address and preserve the identity certificate defined in the config file
+    //  EndpointAddressBuilder endpointAddressBuilder = new EndpointAddressBuilder(endpoint.Address);
+    //  UriBuilder uriBuilder = new UriBuilder(endpointAddressBuilder.Uri);
+    //  uriBuilder.Host = remoteAddress;
+    //  endpointAddressBuilder.Uri = uriBuilder.Uri;
+    //  endpoint.Address = endpointAddressBuilder.ToEndpointAddress();
+    //}
     #endregion
   }
 }
