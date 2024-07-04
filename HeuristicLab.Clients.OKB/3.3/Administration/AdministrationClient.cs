@@ -184,32 +184,34 @@ namespace HeuristicLab.Clients.OKB.Administration {
 
     #region Helpers
     private static void CallAdministrationService(Action<IAdministrationService> call) {
-      AdministrationServiceClient client = ClientFactory.CreateClient<AdministrationServiceClient, IAdministrationService>();
-      try {
-        call(client);
-      }
-      finally {
-        try {
-          client.Close();
-        }
-        catch (Exception) {
-          client.Abort();
-        }
-      }
+      throw new NotImplementedException("Service is not yet migrated to core version");
+      //AdministrationServiceClient client = ClientFactory.CreateClient<AdministrationServiceClient, IAdministrationService>();
+      //try {
+      //  call(client);
+      //}
+      //finally {
+      //  try {
+      //    client.Close();
+      //  }
+      //  catch (Exception) {
+      //    client.Abort();
+      //  }
+      //}
     }
     private static T CallAdministrationService<T>(Func<IAdministrationService, T> call) {
-      AdministrationServiceClient client = ClientFactory.CreateClient<AdministrationServiceClient, IAdministrationService>();
-      try {
-        return call(client);
-      }
-      finally {
-        try {
-          client.Close();
-        }
-        catch (Exception) {
-          client.Abort();
-        }
-      }
+      throw new NotImplementedException("Service is not yet migrated to core version");
+      //AdministrationServiceClient client = ClientFactory.CreateClient<AdministrationServiceClient, IAdministrationService>();
+      //try {
+      //  return call(client);
+      //}
+      //finally {
+      //  try {
+      //    client.Close();
+      //  }
+      //  catch (Exception) {
+      //    client.Abort();
+      //  }
+      //}
     }
     #endregion
   }

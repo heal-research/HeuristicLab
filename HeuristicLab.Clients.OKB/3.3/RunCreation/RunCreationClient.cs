@@ -226,28 +226,30 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
 
     #region Helpers
     private void CallRunCreationService(Action<IRunCreationService> call) {
-      RunCreationServiceClient client = ClientFactory.CreateClient<RunCreationServiceClient, IRunCreationService>();
-      try {
-        call(client);
-      } finally {
-        try {
-          client.Close();
-        } catch (Exception) {
-          client.Abort();
-        }
-      }
+      throw new NotImplementedException("Service is not yet migrated to core version");
+      //RunCreationServiceClient client = ClientFactory.CreateClient<RunCreationServiceClient, IRunCreationService>();
+      //try {
+      //  call(client);
+      //} finally {
+      //  try {
+      //    client.Close();
+      //  } catch (Exception) {
+      //    client.Abort();
+      //  }
+      //}
     }
     private T CallRunCreationService<T>(Func<IRunCreationService, T> call) {
-      RunCreationServiceClient client = ClientFactory.CreateClient<RunCreationServiceClient, IRunCreationService>();
-      try {
-        return call(client);
-      } finally {
-        try {
-          client.Close();
-        } catch (Exception) {
-          client.Abort();
-        }
-      }
+      throw new NotImplementedException("Service is not yet migrated to core version");
+      //RunCreationServiceClient client = ClientFactory.CreateClient<RunCreationServiceClient, IRunCreationService>();
+      //try {
+      //  return call(client);
+      //} finally {
+      //  try {
+      //    client.Close();
+      //  } catch (Exception) {
+      //    client.Abort();
+      //  }
+      //}
     }
     #endregion
   }

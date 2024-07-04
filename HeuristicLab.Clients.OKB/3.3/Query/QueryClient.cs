@@ -178,8 +178,9 @@ namespace HeuristicLab.Clients.OKB.Query {
     }
 
     private QueryServiceClient CreateClient(string endpointConfigurationName) {
-      var cl = ClientFactory.CreateClient<QueryServiceClient, IQueryService>(endpointConfigurationName);
-      return cl;
+      throw new NotImplementedException("Service is not yet migrated to core version");
+      //var cl = ClientFactory.CreateClient<QueryServiceClient, IQueryService>(endpointConfigurationName);
+      //return cl;
     }
 
     private T CallQueryService<T>(Func<IQueryService, T> call) {
