@@ -19,27 +19,31 @@
  */
 #endregion
 
-using System.Web.Http;
 using System.Web.Security;
 using HeuristicLab.Services.WebApp.Controllers.DataTransfer;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace HeuristicLab.Services.WebApp.Controllers {
 
   [Authorize]
-  public class AuthenticationController : ApiController {
+  public class AuthenticationController : ControllerBase {
 
     [AllowAnonymous]
     public bool Login(User user) {
+      // TODO ASP.NET membership should be replaced with ASP.NET Core identity. For more details see https://docs.microsoft.com/aspnet/core/migration/proper-to-2x/membership-to-core-identity.
       if (ModelState.IsValid && Membership.ValidateUser(user.Username, user.Password)) {
         FormsAuthentication.SetAuthCookie(user.Username, user.RememberMe);
         return true;
       }
+      // TODO ASP.NET membership should be replaced with ASP.NET Core identity. For more details see https://docs.microsoft.com/aspnet/core/migration/proper-to-2x/membership-to-core-identity.
       FormsAuthentication.SignOut();
       return false;
     }
 
     [HttpGet, HttpPost]
     public bool Logout() {
+      // TODO ASP.NET membership should be replaced with ASP.NET Core identity. For more details see https://docs.microsoft.com/aspnet/core/migration/proper-to-2x/membership-to-core-identity.
       FormsAuthentication.SignOut();
       return true;
     }

@@ -572,17 +572,21 @@ namespace HeuristicLab.Services.Access {
           context.UserGroupBases.InsertOnSubmit(accessUser);
           context.SubmitChanges();
         }
+        // TODO ASP.NET membership should be replaced with ASP.NET Core identity. For more details see https://docs.microsoft.com/aspnet/core/migration/proper-to-2x/membership-to-core-identity.
         MembershipUser membershipUser = Membership.GetUser((object)accessUser.Id);
         if (membershipUser != null) {
           membershipUser.Email = aspMembership.Email;
           membershipUser.IsApproved = aspMembership.IsApproved;
           membershipUser.Comment = aspMembership.Comment;
+          // TODO ASP.NET membership should be replaced with ASP.NET Core identity. For more details see https://docs.microsoft.com/aspnet/core/migration/proper-to-2x/membership-to-core-identity.
           Membership.UpdateUser(membershipUser);
         }
       } else {
+        // TODO ASP.NET membership should be replaced with ASP.NET Core identity. For more details see https://docs.microsoft.com/aspnet/core/migration/proper-to-2x/membership-to-core-identity.
         MembershipUser membershipUser = Membership.CreateUser(aspUser.UserName, Membership.GeneratePassword(32, 8), aspMembership.Email);
         membershipUser.IsApproved = aspMembership.IsApproved;
         membershipUser.Comment = aspMembership.Comment;
+        // TODO ASP.NET membership should be replaced with ASP.NET Core identity. For more details see https://docs.microsoft.com/aspnet/core/migration/proper-to-2x/membership-to-core-identity.
         Membership.UpdateUser(membershipUser);
 
         Guid userId = (Guid)membershipUser.ProviderUserKey;
@@ -606,6 +610,7 @@ namespace HeuristicLab.Services.Access {
 
       if (user.Id != null && user.Id != Guid.Empty) {
         //delete asp.net user
+        // TODO ASP.NET membership should be replaced with ASP.NET Core identity. For more details see https://docs.microsoft.com/aspnet/core/migration/proper-to-2x/membership-to-core-identity.
         Membership.DeleteUser(user.UserName);
         using (DA.AccessServiceDataContext context = new DA.AccessServiceDataContext()) {
           var query = context.UserGroupBases.OfType<DA.User>().Where(x => x.Id == user.Id);
@@ -630,11 +635,13 @@ namespace HeuristicLab.Services.Access {
         RoleVerifier.AuthenticateForAllRoles(AccessServiceRoles.Administrator);
       }
 
+      // TODO ASP.NET membership should be replaced with ASP.NET Core identity. For more details see https://docs.microsoft.com/aspnet/core/migration/proper-to-2x/membership-to-core-identity.
       MembershipUser membershipUser = Membership.GetUser((object)user.Id);
       if (membershipUser != null) {
         membershipUser.Email = user.Email;
         membershipUser.IsApproved = user.IsApproved;
         membershipUser.Comment = user.Comment;
+        // TODO ASP.NET membership should be replaced with ASP.NET Core identity. For more details see https://docs.microsoft.com/aspnet/core/migration/proper-to-2x/membership-to-core-identity.
         Membership.UpdateUser(membershipUser);
       }
 
@@ -653,6 +660,7 @@ namespace HeuristicLab.Services.Access {
     public void AddUserToRole(DT.Role role, DT.User user) {
       RoleVerifier.AuthenticateForAllRoles(AccessServiceRoles.Administrator);
 
+      // TODO ASP.NET membership should be replaced with ASP.NET Core identity. For more details see https://docs.microsoft.com/aspnet/core/migration/proper-to-2x/membership-to-core-identity.
       MembershipUser msUser = Membership.GetUser((object)user.Id);
       if (msUser != null) {
         Roles.AddUserToRole(msUser.UserName, role.Name);
@@ -662,6 +670,7 @@ namespace HeuristicLab.Services.Access {
     public void RemoveUserFromRole(DT.Role role, DT.User user) {
       RoleVerifier.AuthenticateForAllRoles(AccessServiceRoles.Administrator);
 
+      // TODO ASP.NET membership should be replaced with ASP.NET Core identity. For more details see https://docs.microsoft.com/aspnet/core/migration/proper-to-2x/membership-to-core-identity.
       MembershipUser msUser = Membership.GetUser((object)user.Id);
       if (msUser != null) {
         Roles.RemoveUserFromRole(msUser.UserName, role.Name);
@@ -669,6 +678,7 @@ namespace HeuristicLab.Services.Access {
     }
 
     public bool ChangePassword(Guid userId, string oldPassword, string newPassword) {
+      // TODO ASP.NET membership should be replaced with ASP.NET Core identity. For more details see https://docs.microsoft.com/aspnet/core/migration/proper-to-2x/membership-to-core-identity.
       MembershipUser msUser = Membership.GetUser(userId);
       if (msUser != null) {
         return msUser.ChangePassword(oldPassword, newPassword);
@@ -679,6 +689,7 @@ namespace HeuristicLab.Services.Access {
     public string ResetPassword(Guid userId) {
       RoleVerifier.AuthenticateForAllRoles(AccessServiceRoles.Administrator);
 
+      // TODO ASP.NET membership should be replaced with ASP.NET Core identity. For more details see https://docs.microsoft.com/aspnet/core/migration/proper-to-2x/membership-to-core-identity.
       MembershipUser msUser = Membership.GetUser(userId);
       if (msUser != null) {
         return msUser.ResetPassword();

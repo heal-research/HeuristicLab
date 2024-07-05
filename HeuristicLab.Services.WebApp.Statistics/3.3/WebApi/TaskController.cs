@@ -26,16 +26,17 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Web.Http;
 using HeuristicLab.Services.Access;
 using HeuristicLab.Services.Hive;
 using HeuristicLab.Services.Hive.DataAccess.Interfaces;
 using DA = HeuristicLab.Services.Hive.DataAccess;
 using DT = HeuristicLab.Services.WebApp.Statistics.WebApi.DataTransfer;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace HeuristicLab.Services.WebApp.Statistics.WebApi {
   [Authorize]
-  public class TaskController : ApiController {
+  public class TaskController : ControllerBase {
     private IPersistenceManager PersistenceManager {
       get { return ServiceLocator.Instance.PersistenceManager; }
     }

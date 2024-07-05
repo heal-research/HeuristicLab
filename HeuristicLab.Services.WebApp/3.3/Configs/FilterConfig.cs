@@ -19,7 +19,6 @@
  */
 #endregion
 
-using System.Web.Mvc;
 
 namespace HeuristicLab.Services.WebApp.Configs {
   public class FilterConfig {

@@ -21,14 +21,14 @@
 
 using System;
 using System.Linq;
-using System.Web.Http;
 using HeuristicLab.Services.Hive;
 using HeuristicLab.Services.Hive.DataAccess.Interfaces;
 using DA = HeuristicLab.Services.Hive.DataAccess;
 using DT = HeuristicLab.Services.WebApp.Statistics.WebApi.DataTransfer;
+using Microsoft.AspNetCore.Mvc;
 
 namespace HeuristicLab.Services.WebApp.Statistics.WebApi {
-  public class GroupController : ApiController {
+  public class GroupController : ControllerBase {
     private IPersistenceManager PersistenceManager {
       get { return ServiceLocator.Instance.PersistenceManager; }
     }

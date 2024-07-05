@@ -21,14 +21,15 @@
 
 using System;
 using System.Linq;
-using System.Web.Http;
 using HeuristicLab.Services.Hive;
 using HeuristicLab.Services.Hive.DataAccess.Interfaces;
 using DT = HeuristicLab.Services.WebApp.Statistics.WebApi.DataTransfer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace HeuristicLab.Services.WebApp.Statistics.WebApi {
   [Authorize(Roles = HiveRoles.Administrator)]
-  public class ExceptionController : ApiController {
+  public class ExceptionController : ControllerBase {
     private IPersistenceManager PersistenceManager {
       get { return ServiceLocator.Instance.PersistenceManager; }
     }

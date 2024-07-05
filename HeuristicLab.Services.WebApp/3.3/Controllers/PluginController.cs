@@ -21,14 +21,15 @@
 
 using System.Collections.Generic;
 using System.Linq;
-using System.Web.Http;
 using HeuristicLab.Services.Hive;
 using DTO = HeuristicLab.Services.WebApp.Controllers.DataTransfer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace HeuristicLab.Services.WebApp.Controllers {
 
   [Authorize(Roles = HiveRoles.Administrator)]
-  public class PluginController : ApiController {
+  public class PluginController : ControllerBase {
 
     private readonly PluginManager pluginManager = PluginManager.Instance;
 

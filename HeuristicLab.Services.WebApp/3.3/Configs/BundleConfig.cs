@@ -26,7 +26,8 @@ using System.Web.Optimization;
 namespace HeuristicLab.Services.WebApp.Configs {
   public class BundleConfig {
 
-    public static void RegisterBundles(BundleCollection bundles) {
+    public static void RegisterBundles(// TODO Script and style bundling works differently in ASP.NET Core. BundleCollection should be replaced by alternative bundling technologies. For more details see https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification.
+BundleCollection bundles) {
       bundles.IgnoreList.Clear();
 
       // IESupport

@@ -23,7 +23,6 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Web;
-using System.Web.Http;
 
 namespace HeuristicLab.Services.WebApp {
   public class PluginManager {

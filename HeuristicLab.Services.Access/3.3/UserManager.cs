@@ -28,7 +28,8 @@ using DA = HeuristicLab.Services.Access.DataAccess;
 namespace HeuristicLab.Services.Access {
   public class UserManager : IUserManager {
     public MembershipUser CurrentUser {
-      get { return TryAndRepeat(() => { return Membership.GetUser(); }); }
+      get { return TryAndRepeat(() => { // TODO ASP.NET membership should be replaced with ASP.NET Core identity. For more details see https://docs.microsoft.com/aspnet/core/migration/proper-to-2x/membership-to-core-identity.
+return Membership.GetUser(); }); }
     }
 
     public Guid CurrentUserId {
@@ -36,10 +37,12 @@ namespace HeuristicLab.Services.Access {
     }
 
     public MembershipUser GetUserByName(string username) {
+      // TODO ASP.NET membership should be replaced with ASP.NET Core identity. For more details see https://docs.microsoft.com/aspnet/core/migration/proper-to-2x/membership-to-core-identity.
       return Membership.GetUser(username);
     }
 
     public MembershipUser GetUserById(Guid userId) {
+      // TODO ASP.NET membership should be replaced with ASP.NET Core identity. For more details see https://docs.microsoft.com/aspnet/core/migration/proper-to-2x/membership-to-core-identity.
       return Membership.GetUser(userId);
     }
 
