@@ -96,7 +96,7 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
     /// <summary>
     /// Gets the error message why this plugin has been disabled.
     /// </summary>
-    internal string LoadingErrorInformation {
+    public string LoadingErrorInformation {
       get {
         return loadingErrorInformation;
       }

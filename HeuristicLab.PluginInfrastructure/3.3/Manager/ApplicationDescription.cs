@@ -41,7 +41,7 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
     /// <summary>
     /// Gets or sets the version of the application.
     /// </summary>
-    internal Version Version {
+    public Version Version {
       get { return version; }
       set { version = value; }
     }
@@ -59,7 +59,7 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
     /// <summary>
     /// Gets or sets the boolean flag if the application should be automatically restarted.
     /// </summary>
-    internal bool AutoRestart {
+    public bool AutoRestart {
       get { return autoRestart; }
       set { autoRestart = value; }
     }

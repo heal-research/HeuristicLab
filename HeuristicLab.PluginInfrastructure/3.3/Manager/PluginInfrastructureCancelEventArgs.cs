@@ -26,9 +26,9 @@ using System.ComponentModel;
 namespace HeuristicLab.PluginInfrastructure.Manager {
   // to be replaced by GenericEventArgs
   [Serializable]
-  internal sealed class PluginInfrastructureCancelEventArgs : CancelEventArgs {
-    internal IEnumerable<IPluginDescription> Plugins { get; private set; }
-    internal PluginInfrastructureCancelEventArgs(IEnumerable<IPluginDescription> plugins)
+  public sealed class PluginInfrastructureCancelEventArgs : CancelEventArgs {
+    public IEnumerable<IPluginDescription> Plugins { get; private set; }
+    public PluginInfrastructureCancelEventArgs(IEnumerable<IPluginDescription> plugins)
       : base() {
       this.Plugins = plugins;
     }
