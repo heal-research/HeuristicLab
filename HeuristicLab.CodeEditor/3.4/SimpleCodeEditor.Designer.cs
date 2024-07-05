@@ -34,6 +34,7 @@
       this.TextEditor.Location = new System.Drawing.Point(3, 3);
       this.TextEditor.Multiline = true;
       this.TextEditor.Name = "TextEditor";
+      this.TextEditor.ScrollBars = System.Windows.Forms.ScrollBars.Both;
       this.TextEditor.Size = new System.Drawing.Size(158, 57);
       this.TextEditor.TabIndex = 0;
       this.TextEditor.TextChanged += new System.EventHandler(this.TextEditor_TextChanged);
