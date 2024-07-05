@@ -19,12 +19,13 @@
  */
 #endregion
 
-using ICSharpCode.NRefactory.CSharp;
-using ICSharpCode.NRefactory.CSharp.TypeSystem;
-using ICSharpCode.NRefactory.Editor;
+//using ICSharpCode.NRefactory.CSharp;
+//using ICSharpCode.NRefactory.CSharp.TypeSystem;
+//using ICSharpCode.NRefactory.Editor;
 
 namespace HeuristicLab.CodeEditor {
   internal class CSharpParsingHelpers {
+    /*
     public static SyntaxTree CreateSyntaxTree(IDocument document) {
       var parser = new CSharpParser();
       var syntaxTree = parser.Parse(document, document.FileName);
@@ -37,5 +38,6 @@ namespace HeuristicLab.CodeEditor {
       var unresolvedFile = syntaxTree.ToTypeSystem();
       return unresolvedFile;
     }
+    */
   }
 }

@@ -19,14 +19,14 @@
  */
 #endregion
 
-using ICSharpCode.AvalonEdit.CodeCompletion;
-using ICSharpCode.NRefactory.Editor;
+//using ICSharpCode.AvalonEdit.CodeCompletion;
+//using ICSharpCode.NRefactory.Editor;
 
 namespace HeuristicLab.CodeEditor {
-  internal interface IUpdatableOverloadProvider : IOverloadProvider {
+  internal interface IUpdatableOverloadProvider /*: IOverloadProvider*/ {
     bool RequestClose { get; set; }
 
-    void Update(IDocument document, int offset);
+    //void Update(IDocument document, int offset);
     void Update(CSharpCodeCompletionContext completionContext);
   }
 }

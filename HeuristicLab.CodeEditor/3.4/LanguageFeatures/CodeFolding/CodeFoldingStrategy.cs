@@ -22,7 +22,8 @@
 using ICSharpCode.AvalonEdit.Folding;
 
 namespace HeuristicLab.CodeEditor {
-  internal abstract class CodeFoldingStrategy : ICodeFoldingStrategy {
+  internal abstract class CodeFoldingStrategy /*: ICodeFoldingStrategy */{
+    /*
     protected readonly CodeEditor codeEditor;
     protected readonly FoldingManager foldingManager;
 
@@ -43,5 +44,6 @@ namespace HeuristicLab.CodeEditor {
       var foldings = codeFoldingResult.FoldingData;
       foldingManager.UpdateFoldings(foldings, firstErrorOffset);
     }
+    */
   }
 }

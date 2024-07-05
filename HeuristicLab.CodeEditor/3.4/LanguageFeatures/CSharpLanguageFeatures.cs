@@ -20,7 +20,8 @@
 #endregion
 
 namespace HeuristicLab.CodeEditor {
-  internal class CSharpLanguageFeatures : LanguageFeatures {
+  internal class CSharpLanguageFeatures /*: LanguageFeatures*/ {
+    /*
     public CSharpLanguageFeatures(CodeEditor codeEditor)
       : base(codeEditor, new CSharpCodeFoldingStrategy(codeEditor), new CSharpCodeCompletionStrategy(codeEditor)) {
     }
@@ -28,5 +29,6 @@ namespace HeuristicLab.CodeEditor {
     public static ILanguageFeatures Apply(CodeEditor codeEditor) {
       return new CSharpLanguageFeatures(codeEditor);
     }
+    */
   }
 }

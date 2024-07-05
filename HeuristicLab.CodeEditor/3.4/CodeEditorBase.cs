@@ -26,7 +26,8 @@ using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using HeuristicLab.Common;
-using ICSharpCode.NRefactory.TypeSystem;
+using Microsoft.CodeAnalysis;
+//using ICSharpCode.NRefactory.TypeSystem;
 
 namespace HeuristicLab.CodeEditor {
   public class CodeEditorBase : UserControl {
@@ -59,6 +60,7 @@ namespace HeuristicLab.CodeEditor {
     public virtual void ClearEditHistory() { }
 
     public virtual void ShowCompileErrors(CompilerErrorCollection compileErrors) { }
+    public virtual void ShowCompileErrors(List<Diagnostic> compileErrors) { }
 
     #region Events
     public event EventHandler TextEditorTextChanged;
@@ -79,11 +81,11 @@ namespace HeuristicLab.CodeEditor {
       if (handler != null) handler(this, new EventArgs<IEnumerable<Assembly>>(args));
     }
 
-    public event EventHandler<EventArgs<IEnumerable<IUnresolvedAssembly>>> InternalAssembliesLoaded;
-    protected virtual void OnInternalAssembliesLoaded(IEnumerable<IUnresolvedAssembly> args) {
-      var handler = InternalAssembliesLoaded;
-      if (handler != null) handler(this, new EventArgs<IEnumerable<IUnresolvedAssembly>>(args));
-    }
+    //public event EventHandler<EventArgs<IEnumerable<IUnresolvedAssembly>>> InternalAssembliesLoaded;
+    //protected virtual void OnInternalAssembliesLoaded(IEnumerable<IUnresolvedAssembly> args) {
+    //  var handler = InternalAssembliesLoaded;
+    //  if (handler != null) handler(this, new EventArgs<IEnumerable<IUnresolvedAssembly>>(args));
+    //}
 
     public event EventHandler<EventArgs<IEnumerable<Assembly>>> AssembliesUnloading;
     protected virtual void OnAssembliesUnloading(IEnumerable<Assembly> args) {
@@ -97,11 +99,11 @@ namespace HeuristicLab.CodeEditor {
       if (handler != null) handler(this, new EventArgs<IEnumerable<Assembly>>(args));
     }
 
-    public event EventHandler<EventArgs<IEnumerable<IUnresolvedAssembly>>> InternalAssembliesUnloaded;
-    protected virtual void OnInternalAssembliesUnloaded(IEnumerable<IUnresolvedAssembly> args) {
-      var handler = InternalAssembliesUnloaded;
-      if (handler != null) handler(this, new EventArgs<IEnumerable<IUnresolvedAssembly>>(args));
-    }
+    //public event EventHandler<EventArgs<IEnumerable<IUnresolvedAssembly>>> InternalAssembliesUnloaded;
+    //protected virtual void OnInternalAssembliesUnloaded(IEnumerable<IUnresolvedAssembly> args) {
+    //  var handler = InternalAssembliesUnloaded;
+    //  if (handler != null) handler(this, new EventArgs<IEnumerable<IUnresolvedAssembly>>(args));
+    //}
     #endregion
   }
 }

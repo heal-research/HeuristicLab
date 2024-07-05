@@ -23,15 +23,16 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using ICSharpCode.AvalonEdit.CodeCompletion;
-using ICSharpCode.NRefactory.Completion;
-using ICSharpCode.NRefactory.CSharp;
-using ICSharpCode.NRefactory.CSharp.Completion;
-using ICSharpCode.NRefactory.CSharp.Resolver;
-using ICSharpCode.NRefactory.TypeSystem;
-using ICompletionData = ICSharpCode.NRefactory.Completion.ICompletionData;
+//using ICSharpCode.NRefactory.Completion;
+//using ICSharpCode.NRefactory.CSharp;
+//using ICSharpCode.NRefactory.CSharp.Completion;
+//using ICSharpCode.NRefactory.CSharp.Resolver;
+//using ICSharpCode.NRefactory.TypeSystem;
+//using ICompletionData = ICSharpCode.NRefactory.Completion.ICompletionData;
 
 namespace HeuristicLab.CodeEditor {
-  internal class CSharpCodeCompletionDataFactory : ICompletionDataFactory, IParameterCompletionDataFactory {
+  internal class CSharpCodeCompletionDataFactory /*: ICompletionDataFactory, IParameterCompletionDataFactory*/ {
+    /*
     private readonly CSharpCodeCompletionContext context;
 
     public CSharpCodeCompletionDataFactory(CSharpCodeCompletionContext context) {
@@ -158,5 +159,6 @@ namespace HeuristicLab.CodeEditor {
       bool protectedAccessAllowed = lookup.IsProtectedAccessAllowed(type);
       return protectedAccessAllowed ? methods : methods.Where(x => !x.IsProtected);
     }
+    */
   }
 }

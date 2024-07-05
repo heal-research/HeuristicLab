@@ -169,6 +169,7 @@
     <ProjectReference Include="..\..\HeuristicLab.Problems.VehicleRouting.Views\3.4\HeuristicLab.Problems.VehicleRouting.Views-3.4.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.Problems.VehicleRouting\3.4\HeuristicLab.Problems.VehicleRouting-3.4.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.Random\3.3\HeuristicLab.Random-3.3.csproj" />
+    <ProjectReference Include="..\..\HeuristicLab.Scripting.Views\3.3\HeuristicLab.Scripting.Views-3.3.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.Scripting\3.3\HeuristicLab.Scripting-3.3.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.Selection\3.3\HeuristicLab.Selection-3.3.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.SequentialEngine\3.3\HeuristicLab.SequentialEngine-3.3.csproj" />

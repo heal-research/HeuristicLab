@@ -23,12 +23,13 @@ using System;
 using System.Collections.Generic;
 using System.Windows.Media;
 using ICSharpCode.AvalonEdit.Editing;
-using ICSharpCode.NRefactory.Editor;
-using ACC = ICSharpCode.AvalonEdit.CodeCompletion;
-using NCC = ICSharpCode.NRefactory.Completion;
+//using ICSharpCode.NRefactory.Editor;
+//using ACC = ICSharpCode.AvalonEdit.CodeCompletion;
+//using NCC = ICSharpCode.NRefactory.Completion;
 
 namespace HeuristicLab.CodeEditor {
-  internal class CompletionData : NCC.ICompletionData, ACC.ICompletionData {
+  internal class CompletionData /*: NCC.ICompletionData, ACC.ICompletionData*/ {
+    /*
     public string TriggerWord { get; set; }
     public int TriggerWordLength { get; set; }
 
@@ -90,5 +91,6 @@ namespace HeuristicLab.CodeEditor {
     protected virtual object CreateFancyDescription() {
       return Description;
     }
+    */
   }
 }

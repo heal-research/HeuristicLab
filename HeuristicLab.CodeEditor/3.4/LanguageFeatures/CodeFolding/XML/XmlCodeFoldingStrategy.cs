@@ -46,7 +46,8 @@ using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Folding;
 
 namespace HeuristicLab.CodeEditor {
-  internal class XmlCodeFoldingStrategy : CodeFoldingStrategy {
+  internal class XmlCodeFoldingStrategy /*: CodeFoldingStrategy */ {
+    /*
     /// <summary>
     /// Holds information about the start of a fold in an xml string.
     /// </summary>
@@ -237,5 +238,6 @@ namespace HeuristicLab.CodeEditor {
 
       return encodedValue.ToString();
     }
+    */
   }
 }

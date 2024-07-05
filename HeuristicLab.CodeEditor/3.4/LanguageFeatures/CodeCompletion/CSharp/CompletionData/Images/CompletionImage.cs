@@ -27,13 +27,14 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using ICSharpCode.NRefactory.TypeSystem;
+//using ICSharpCode.NRefactory.TypeSystem;
 
 namespace ICSharpCode.AvalonEdit.CodeCompletion {
   /// <summary>
   /// Provides icons for code-completion.
   /// </summary>
   public class CompletionImage {
+    /*
     #region Non-Entity Images
     static readonly BitmapImage namespaceImage = LoadBitmap("NameSpace");
 
@@ -366,5 +367,6 @@ namespace ICSharpCode.AvalonEdit.CodeCompletion {
       return "[CompletionImage " + imageName + "]";
     }
     #endregion
+    */
   }
 }

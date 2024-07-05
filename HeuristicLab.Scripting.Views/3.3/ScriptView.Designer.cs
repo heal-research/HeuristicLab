@@ -60,11 +60,7 @@ namespace HeuristicLab.Scripting.Views {
       this.lineColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
       this.columnColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
       this.descriptionColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-#if __MonoCS__
       this.codeEditor = new HeuristicLab.CodeEditor.SimpleCodeEditor();
-#else
-      this.codeEditor = new HeuristicLab.CodeEditor.CodeEditor();
-#endif
       this.splitContainer1 = new System.Windows.Forms.SplitContainer();
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
       this.infoTabControl.SuspendLayout();

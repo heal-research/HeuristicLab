@@ -23,7 +23,8 @@ using System;
 using System.Windows.Input;
 
 namespace HeuristicLab.CodeEditor {
-  internal abstract class LanguageFeatures : ILanguageFeatures {
+  internal abstract class LanguageFeatures /*: ILanguageFeatures*/ {
+    /*
     protected readonly CodeEditor codeEditor;
     protected readonly CommandBinding commandBinding;
 
@@ -84,5 +85,6 @@ namespace HeuristicLab.CodeEditor {
       }
     }
     #endregion
+    */
   }
 }

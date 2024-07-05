@@ -34,16 +34,17 @@ using ICSharpCode.AvalonEdit.Editing;
 using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Indentation.CSharp;
 using ICSharpCode.AvalonEdit.Search;
-using ICSharpCode.NRefactory.Editor;
+//using ICSharpCode.NRefactory.Editor;
 using ICSharpCode.SharpDevelop.Editor;
 using Forms = System.Windows.Forms;
 using Input = System.Windows.Input;
-using ISegment = ICSharpCode.NRefactory.Editor.ISegment;
+//using ISegment = ICSharpCode.NRefactory.Editor.ISegment;
 //using ISegment = ICSharpCode.AvalonEdit.Document.ISegment;
 using Media = System.Windows.Media;
 
 namespace HeuristicLab.CodeEditor {
   public partial class CodeEditor : CodeEditorBase {
+    /*
     private static readonly Media.Color WarningColor = Media.Colors.Blue;
     private static readonly Media.Color ErrorColor = Media.Colors.Red;
     private static readonly Media.Color ReadOnlyColor = Media.Colors.Moccasin;
@@ -452,5 +453,6 @@ namespace HeuristicLab.CodeEditor {
           break;
       }
     }
+    */
   }
 }

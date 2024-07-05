@@ -41,12 +41,13 @@ using System.IO;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using ICSharpCode.NRefactory.CSharp;
-using ICSharpCode.NRefactory.TypeSystem;
-using ICSharpCode.NRefactory.Xml;
+//using ICSharpCode.NRefactory.CSharp;
+//using ICSharpCode.NRefactory.TypeSystem;
+//using ICSharpCode.NRefactory.Xml;
 
 namespace HeuristicLab.CodeEditor {
   sealed class CSharpInsightItem {
+    /*
     public readonly IParameterizedMember Method;
 
     public CSharpInsightItem(IParameterizedMember method) {
@@ -154,5 +155,6 @@ namespace HeuristicLab.CodeEditor {
         }
       }
     }
+    */
   }
 }

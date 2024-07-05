@@ -44,12 +44,13 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
-using ICSharpCode.NRefactory.Completion;
-using ICSharpCode.NRefactory.CSharp.Completion;
-using ICSharpCode.NRefactory.Editor;
+//using ICSharpCode.NRefactory.Completion;
+//using ICSharpCode.NRefactory.CSharp.Completion;
+//using ICSharpCode.NRefactory.Editor;
 
 namespace HeuristicLab.CodeEditor {
-  internal class CSharpOverloadProvider : IUpdatableOverloadProvider, IParameterDataProvider {
+  internal class CSharpOverloadProvider /*: IUpdatableOverloadProvider, IParameterDataProvider*/ {
+    /*
     private readonly CSharpCodeCompletionContext context;
     private readonly int startOffset;
     internal readonly IList<CSharpInsightItem> items;
@@ -166,5 +167,6 @@ namespace HeuristicLab.CodeEditor {
       if (PropertyChanged != null)
         PropertyChanged(this, args);
     }
+    */
   }
 }
