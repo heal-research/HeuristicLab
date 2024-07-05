@@ -39,12 +39,12 @@ namespace HeuristicLab.Clients.Hive.SlaveCore.Views {
 
     #region Register Content Events
     protected override void DeregisterContentEvents() {
-      Content.SlaveStatusChanged -= new EventHandler<Common.EventArgs<StatusCommons>>(Content_SlaveStatusChanged);
+      Content.SlaveStatusChanged -= new EventHandler<HeuristicLab.Common.EventArgs<StatusCommons>>(Content_SlaveStatusChanged);
       base.DeregisterContentEvents();
     }
     protected override void RegisterContentEvents() {
       base.RegisterContentEvents();
-      Content.SlaveStatusChanged += new EventHandler<Common.EventArgs<StatusCommons>>(Content_SlaveStatusChanged);
+      Content.SlaveStatusChanged += new EventHandler<HeuristicLab.Common.EventArgs<StatusCommons>>(Content_SlaveStatusChanged);
     }
     #endregion
 
@@ -57,9 +57,9 @@ namespace HeuristicLab.Clients.Hive.SlaveCore.Views {
     }
 
     #region Event Handlers
-    void Content_SlaveStatusChanged(object sender, Common.EventArgs<StatusCommons> e) {
+    void Content_SlaveStatusChanged(object sender, HeuristicLab.Common.EventArgs<StatusCommons> e) {
       if (InvokeRequired) {
-        Action<object, Common.EventArgs<StatusCommons>> action = new Action<object, Common.EventArgs<StatusCommons>>(Content_SlaveStatusChanged);
+        Action<object, HeuristicLab.Common.EventArgs<StatusCommons>> action = new Action<object, HeuristicLab.Common.EventArgs<StatusCommons>>(Content_SlaveStatusChanged);
         Invoke(action, sender, e);
       } else {
         lstJobs.Items.Clear();

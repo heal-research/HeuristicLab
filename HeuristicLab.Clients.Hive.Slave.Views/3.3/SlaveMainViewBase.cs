@@ -48,7 +48,7 @@ namespace HeuristicLab.Clients.Hive.SlaveCore.Views {
       }
     }
 
-    void Content_UserVisibleMessageFired(object sender, Common.EventArgs<string> e) {
+    void Content_UserVisibleMessageFired(object sender, HeuristicLab.Common.EventArgs<string> e) {
       if (Settings.Default.ShowBalloonTips) {
         notifyIcon.ShowBalloonTip(2000, "HeuristicLab Hive", e.Value, ToolTipIcon.Info);
       }
@@ -60,26 +60,26 @@ namespace HeuristicLab.Clients.Hive.SlaveCore.Views {
 
     #region Register Content Events
     protected override void DeregisterContentEvents() {
-      Content.CoreConnectionChanged -= new EventHandler<Common.EventArgs<CoreConnection>>(Content_CoreConnectionChanged);
-      Content.SlaveDisplayStateChanged -= new EventHandler<Common.EventArgs<SlaveDisplayStat>>(Content_SlaveDisplayStateChanged);
+      Content.CoreConnectionChanged -= new EventHandler<HeuristicLab.Common.EventArgs<CoreConnection>>(Content_CoreConnectionChanged);
+      Content.SlaveDisplayStateChanged -= new EventHandler<HeuristicLab.Common.EventArgs<SlaveDisplayStat>>(Content_SlaveDisplayStateChanged);
       base.DeregisterContentEvents();
     }
 
     protected override void RegisterContentEvents() {
       base.RegisterContentEvents();
-      Content.CoreConnectionChanged += new EventHandler<Common.EventArgs<CoreConnection>>(Content_CoreConnectionChanged);
-      Content.SlaveDisplayStateChanged += new EventHandler<Common.EventArgs<SlaveDisplayStat>>(Content_SlaveDisplayStateChanged);
+      Content.CoreConnectionChanged += new EventHandler<HeuristicLab.Common.EventArgs<CoreConnection>>(Content_CoreConnectionChanged);
+      Content.SlaveDisplayStateChanged += new EventHandler<HeuristicLab.Common.EventArgs<SlaveDisplayStat>>(Content_SlaveDisplayStateChanged);
     }
 
-    void Content_SlaveDisplayStateChanged(object sender, Common.EventArgs<SlaveDisplayStat> e) {
+    void Content_SlaveDisplayStateChanged(object sender, HeuristicLab.Common.EventArgs<SlaveDisplayStat> e) {
       if (e.Value == SlaveDisplayStat.NoService) {
-        Task.Factory.StartNew(Connector);
+        System.Threading.Tasks.Task.Factory.StartNew(Connector);
       }
     }
 
-    void Content_CoreConnectionChanged(object sender, Common.EventArgs<CoreConnection> e) {
+    void Content_CoreConnectionChanged(object sender, HeuristicLab.Common.EventArgs<CoreConnection> e) {
       if (e.Value == CoreConnection.Offline) {
-        Task.Factory.StartNew(Connector);
+        System.Threading.Tasks.Task.Factory.StartNew(Connector);
       }
     }
     #endregion
@@ -90,10 +90,10 @@ namespace HeuristicLab.Clients.Hive.SlaveCore.Views {
       logView.Content = Content;
       slaveView.Content = Content;
       if (Content != null) {
-        Content.UserVisibleMessageFired += new System.EventHandler<Common.EventArgs<string>>(Content_UserVisibleMessageFired);
-        Task.Factory.StartNew(Connector);
+        Content.UserVisibleMessageFired += new System.EventHandler<HeuristicLab.Common.EventArgs<string>>(Content_UserVisibleMessageFired);
+        System.Threading.Tasks.Task.Factory.StartNew(Connector);
       } else {
-        Content.UserVisibleMessageFired -= new System.EventHandler<Common.EventArgs<string>>(Content_UserVisibleMessageFired);
+        Content.UserVisibleMessageFired -= new System.EventHandler<HeuristicLab.Common.EventArgs<string>>(Content_UserVisibleMessageFired);
       }
     }
 
