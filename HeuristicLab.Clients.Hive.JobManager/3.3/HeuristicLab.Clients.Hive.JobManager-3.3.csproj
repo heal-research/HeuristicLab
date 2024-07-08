@@ -7,6 +7,7 @@
     <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
   </PropertyGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\HeuristicLab.Clients.Access.Views\3.3\HeuristicLab.Clients.Access.Views-3.3.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.Clients.Access\3.3\HeuristicLab.Clients.Access-3.3.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.Clients.Common\3.3\HeuristicLab.Clients.Common-3.3.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.Clients.Hive.Views\3.3\HeuristicLab.Clients.Hive.Views-3.3.csproj" />

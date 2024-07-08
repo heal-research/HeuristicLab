@@ -546,6 +546,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HeuristicLab.Tests", "Heuri
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.PluginInfrastructure.Views-3.3", "HeuristicLab.PluginInfrastructure.Views\3.3\HeuristicLab.PluginInfrastructure.Views-3.3.csproj", "{F2CFA602-F16F-4DFD-AB70-9D5BDFC83EBC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Clients.Common.Views-3.3", "HeuristicLab.Clients.Common.Views\3.3\HeuristicLab.Clients.Common.Views-3.3.csproj", "{95855611-1C1B-497C-81D5-D1E8F28B78F6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -1280,6 +1282,10 @@ Global
 		{F2CFA602-F16F-4DFD-AB70-9D5BDFC83EBC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F2CFA602-F16F-4DFD-AB70-9D5BDFC83EBC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F2CFA602-F16F-4DFD-AB70-9D5BDFC83EBC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{95855611-1C1B-497C-81D5-D1E8F28B78F6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{95855611-1C1B-497C-81D5-D1E8F28B78F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{95855611-1C1B-497C-81D5-D1E8F28B78F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{95855611-1C1B-497C-81D5-D1E8F28B78F6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
