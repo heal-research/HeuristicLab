@@ -214,9 +214,11 @@ namespace HeuristicLab.Scripting.Views {
       if (e.Button != MouseButtons.Left) return;
 
       var item = errorListView.SelectedItems[0];
-      var message = (CompilerError)item.Tag;
+      var message = (Diagnostic)item.Tag;
 
-      codeEditor.ScrollToPosition(message.Line, message.Column);
+      var line = message.Location.GetLineSpan().StartLinePosition.Line;
+      var column = message.Location.GetLineSpan().StartLinePosition.Character;
+      codeEditor.ScrollToPosition(line, column);
       codeEditor.Focus();
     }
 
@@ -224,7 +226,7 @@ namespace HeuristicLab.Scripting.Views {
       if (e.Button != MouseButtons.Left) return;
 
       var item = errorListView.SelectedItems[0];
-      var message = (CompilerError)item.Tag;
+      var message = (Diagnostic)item.Tag;
 
       using (var dialog = new CompilerErrorDialog(message)) {
         dialog.ShowDialog(this);

@@ -1,8 +1,8 @@
-﻿using System.CodeDom.Compiler;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
 using HeuristicLab.Common.Resources;
+using Microsoft.CodeAnalysis;
 
 namespace HeuristicLab.Scripting.Views {
   public partial class CompilerErrorDialog : Form {
@@ -11,24 +11,27 @@ namespace HeuristicLab.Scripting.Views {
     private static readonly Bitmap WarningImage = VSImageLibrary.Warning;
     private static readonly Bitmap ErrorImage = VSImageLibrary.Error;
 
-    public CompilerErrorDialog(CompilerError error) {
+    public CompilerErrorDialog(Diagnostic error) {
       InitializeComponent();
 
-      var image = error.IsWarning ? WarningImage : ErrorImage;
+      var image = error.Severity == DiagnosticSeverity.Warning ? WarningImage : ErrorImage;
 
       Icon = Icon.FromHandle(image.GetHicon());
-      Text = error.IsWarning ? "Warning" : "Error";
+      Text = error.Severity == DiagnosticSeverity.Warning ? "Warning" : "Error";
       iconLabel.Image = image;
-      infoTextBox.Text = string.Format(infoTextBox.Text, error.IsWarning ? "A warning" : "An error");
-      lineValueLabel.Text = error.Line.ToString();
-      columnValueLabel.Text = error.Column.ToString();
-      codeValueLinkLabel.Text = error.ErrorNumber;
-      codeValueLinkLabel.Links.Add(new LinkLabel.Link(0, error.ErrorNumber.Length, string.Format(ErrorLinkFormatString, error.ErrorNumber)));
-      messageValueTextBox.Text = error.ErrorText;
+      infoTextBox.Text = string.Format(infoTextBox.Text, error.Severity == DiagnosticSeverity.Warning ? "A warning" : "An error");
+      lineValueLabel.Text = error.Location.GetLineSpan().StartLinePosition.Line.ToString();
+      columnValueLabel.Text = error.Location.GetLineSpan().StartLinePosition.Character.ToString();
+      codeValueLinkLabel.Text = error.Id;
+      codeValueLinkLabel.Links.Add(new LinkLabel.Link(0, error.Id.Length, string.Format(ErrorLinkFormatString, error.Id)));
+      messageValueTextBox.Text = error.GetMessage();
     }
 
     private void codeLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) {
-      Process.Start((string)e.Link.LinkData);
+      var startInfo = new ProcessStartInfo((string)e.Link.LinkData) {
+        UseShellExecute = true
+      };
+      Process.Start(startInfo);
     }
   }
 }
