@@ -1,1 +1,0 @@
-<%@ServiceHost language=c# Debug="true" Service="HeuristicLab.Services.OKB.Administration.AdministrationService"%>
