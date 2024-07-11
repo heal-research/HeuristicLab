@@ -11,7 +11,4 @@
   <ItemGroup>
     <PackageReference Include="System.ServiceModel.Federation" Version="6.0.0" />
   </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Advanced\DeploymentService\services.heuristiclab.com.cer" />
-  </ItemGroup>
 </Project>

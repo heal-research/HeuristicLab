@@ -55,7 +55,6 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       logTextBox = new System.Windows.Forms.TextBox();
       menuStrip = new System.Windows.Forms.MenuStrip();
       optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-      connectionSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       toolTip = new System.Windows.Forms.ToolTip(components);
       statusStrip.SuspendLayout();
       tabControl.SuspendLayout();
@@ -152,18 +151,9 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       // 
       // optionsToolStripMenuItem
       // 
-      optionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { connectionSettingsToolStripMenuItem });
       optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
       optionsToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
       optionsToolStripMenuItem.Text = "Options";
-      // 
-      // connectionSettingsToolStripMenuItem
-      // 
-      connectionSettingsToolStripMenuItem.Image = (System.Drawing.Image)resources.GetObject("connectionSettingsToolStripMenuItem.Image");
-      connectionSettingsToolStripMenuItem.Name = "connectionSettingsToolStripMenuItem";
-      connectionSettingsToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
-      connectionSettingsToolStripMenuItem.Text = "Connection Settings...";
-      connectionSettingsToolStripMenuItem.Click += connectionSettingsToolStripMenuItem_Click;
       // 
       // InstallationManagerForm
       // 
@@ -198,7 +188,6 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
     private System.Windows.Forms.TextBox logTextBox;
     private System.Windows.Forms.MenuStrip menuStrip;
     private System.Windows.Forms.ToolStripMenuItem optionsToolStripMenuItem;
-    private System.Windows.Forms.ToolStripMenuItem connectionSettingsToolStripMenuItem;
     private System.Windows.Forms.ToolTip toolTip;
     private System.Windows.Forms.TabPage localPluginsTabPage;
     private InstalledPluginsView localPluginsView;

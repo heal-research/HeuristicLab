@@ -19,13 +19,7 @@
  */
 #endregion
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.IO;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
-using HeuristicLab.PluginInfrastructure.Manager;
 
 namespace HeuristicLab.PluginInfrastructure.Advanced {
   public partial class InstallationManagerForm : Form, IStatusView {   
@@ -43,11 +37,6 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
     }    
    
     #region button events
-    private void connectionSettingsToolStripMenuItem_Click(object sender, EventArgs e) {
-      using (var conSetupView = new ConnectionSetupView()) {
-        conSetupView.ShowDialog(this);
-      }
-    }
     private void tabControl_SelectedIndexChanged(object sender, EventArgs e) {
       toolStripStatusLabel.Text = string.Empty;
     }
