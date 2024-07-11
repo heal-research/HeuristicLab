@@ -10,14 +10,4 @@ namespace HeuristicLab.Persistence.GUI {
   [PluginDependency("HeuristicLab.Persistence", "3.3")]
   public class HeuristicLabPersistenceGUIPlugin : PluginBase { }
 
-
-  [Application("Persistence Configuration", "Configure type mappings of persistence")]
-  public class HeuristicLabPersistenceGUIApplication : ApplicationBase {
-    public override void Run(ICommandLineArgument[] args) {
-      Application.EnableVisualStyles();
-      Application.SetCompatibleTextRenderingDefault(false);
-      Application.Run(new PersistenceConfigurationForm());
-    }
-  }
-
 }

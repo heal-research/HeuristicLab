@@ -27,9 +27,9 @@ namespace HeuristicLab.PluginInfrastructure {
   /// The DefaultApplicationManager is registered as ApplicationManager.Manager singleton for each HL application
   /// started via the plugin infrastructure.
   /// </summary>
-  internal sealed class DefaultApplicationManager : SandboxApplicationManager {
+  public sealed class DefaultApplicationManager : SandboxApplicationManager {
 
-    internal DefaultApplicationManager()
+    public DefaultApplicationManager()
       : base() {
       AppDomain.CurrentDomain.AssemblyResolve += (sender, args) => {
         if (loadedAssemblies.ContainsKey(args.Name)) {
@@ -37,15 +37,6 @@ namespace HeuristicLab.PluginInfrastructure {
         }
         return null;
       };
-    }
-
-    /// infinite lease time
-    /// <summary>
-    /// Initializes the life time service with infinite lease time.
-    /// </summary>
-    /// <returns><c>null</c>.</returns>
-    public override object InitializeLifetimeService() {
-      return null;
     }
   }
 }

@@ -26,17 +26,17 @@ using System.Windows.Forms;
 using HeuristicLab.PluginInfrastructure.Manager;
 
 namespace HeuristicLab.PluginInfrastructure.Starter {
-  internal partial class SplashScreen : Form {
+  public partial class SplashScreen : Form {
     private const int FADE_INTERVAL = 50;
     private Timer fadeTimer;
     private int initialInterval;
     private PluginManager pluginManager;
 
-    internal SplashScreen() {
+    public SplashScreen() {
       InitializeComponent();
     }
 
-    internal SplashScreen(PluginManager manager, int initialInterval)
+    public SplashScreen(PluginManager manager, int initialInterval)
       : this() {
       this.initialInterval = initialInterval;
       this.pluginManager = manager;

@@ -34,15 +34,15 @@ namespace HeuristicLab.PluginInfrastructure {
   /// The SandboxApplicationManager is used in sandboxed Application Domains where permissions are restricted and
   /// only partially-trusted code can be executed. 
   /// </summary>
-  internal class SandboxApplicationManager : MarshalByRefObject, IApplicationManager {
+  public class SandboxApplicationManager : MarshalByRefObject, IApplicationManager {
     /// <summary>
     /// Fired when a plugin is loaded.
     /// </summary>
-    internal event EventHandler<PluginInfrastructureEventArgs> PluginLoaded;
+    public event EventHandler<PluginInfrastructureEventArgs> PluginLoaded;
     /// <summary>
     /// Fired when a plugin is unloaded (when the application terminates).
     /// </summary>
-    internal event EventHandler<PluginInfrastructureEventArgs> PluginUnloaded;
+    public event EventHandler<PluginInfrastructureEventArgs> PluginUnloaded;
 
     // cache for the AssemblyResolveEvent 
     // which must be handled when assemblies are loaded dynamically after the application start
@@ -58,7 +58,7 @@ namespace HeuristicLab.PluginInfrastructure {
       get { return plugins.Cast<IPluginDescription>(); }
     }
 
-    private List<ApplicationDescription> applications;
+    private List<ApplicationDescription> applications; // TODO: remove
     /// <summary>
     /// Gets all installed applications.
     /// </summary>
@@ -66,7 +66,7 @@ namespace HeuristicLab.PluginInfrastructure {
       get { return applications.Cast<IApplicationDescription>(); }
     }
 
-    internal SandboxApplicationManager()
+    public SandboxApplicationManager()
       : base() {
       loadedAssemblies = new Dictionary<string, Assembly>();
       loadedPlugins = new List<IPlugin>();
@@ -88,9 +88,16 @@ namespace HeuristicLab.PluginInfrastructure {
     /// </summary>
     /// <param name="apps">Enumerable of available HL applications.</param>
     /// <param name="plugins">Enumerable of plugins that should be pre-loaded.</param>  
-    internal void PrepareApplicationDomain(IEnumerable<ApplicationDescription> apps, IEnumerable<PluginDescription> plugins) {
+    public void PrepareApplicationDomain(IEnumerable<ApplicationDescription> apps, IEnumerable<PluginDescription> plugins) {
       this.plugins = new List<PluginDescription>(plugins);
       this.applications = new List<ApplicationDescription>(apps);
+      ApplicationManager.RegisterApplicationManager(this);
+      LoadPlugins(plugins);
+    }
+
+    public void PrepareApplicationDomain(IEnumerable<PluginDescription> plugins) {
+      this.plugins = new List<PluginDescription>(plugins);
+
       ApplicationManager.RegisterApplicationManager(this);
       LoadPlugins(plugins);
     }
@@ -142,7 +149,7 @@ namespace HeuristicLab.PluginInfrastructure {
     /// This is a synchronous call. When the application is terminated all plugins are unloaded.
     /// </summary>
     /// <param name="appInfo">Description of the application to run</param>
-    internal void Run(ApplicationDescription appInfo, ICommandLineArgument[] args) {
+    public void Run(ApplicationDescription appInfo, ICommandLineArgument[] args) {
       IApplication runnablePlugin = (IApplication)Activator.CreateInstance(appInfo.DeclaringAssemblyName, appInfo.DeclaringTypeName).Unwrap();
       try {
         runnablePlugin.Run(args);
@@ -169,8 +176,7 @@ namespace HeuristicLab.PluginInfrastructure {
       List<T> instances = new List<T>();
       foreach (Type t in GetTypes(typeof(T), plugin, onlyInstantiable: true, includeGenericTypeDefinitions: false)) {
         T instance = null;
-        try { instance = (T)Activator.CreateInstance(t); }
-        catch { }
+        try { instance = (T)Activator.CreateInstance(t); } catch { }
         if (instance != null) instances.Add(instance);
       }
       return instances;
@@ -185,8 +191,7 @@ namespace HeuristicLab.PluginInfrastructure {
       List<T> instances = new List<T>();
       foreach (Type t in GetTypes(typeof(T), asm, onlyInstantiable: true, includeGenericTypeDefinitions: false)) {
         T instance = null;
-        try { instance = (T)Activator.CreateInstance(t); }
-        catch { }
+        try { instance = (T)Activator.CreateInstance(t); } catch { }
         if (instance != null) instances.Add(instance);
       }
       return instances;
@@ -210,8 +215,7 @@ namespace HeuristicLab.PluginInfrastructure {
       List<object> instances = new List<object>();
       foreach (Type t in GetTypes(type, onlyInstantiable: true, includeGenericTypeDefinitions: false)) {
         object instance = null;
-        try { instance = Activator.CreateInstance(t); }
-        catch { }
+        try { instance = Activator.CreateInstance(t); } catch { }
         if (instance != null) instances.Add(instance);
       }
       return instances;

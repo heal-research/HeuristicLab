@@ -20,13 +20,33 @@
 #endregion
 
 using System;
+using System.IO;
+using System.Windows.Forms;
+using HeuristicLab.Optimizer;
+using HeuristicLab.PluginInfrastructure;
+using HeuristicLab.PluginInfrastructure.Manager;
 
 namespace HeuristicLab {
-  static class Program {
+  class Program {
     [STAThread]
     static void Main(string[] args) {
-      System.Windows.Forms.Application.SetHighDpiMode(System.Windows.Forms.HighDpiMode.DpiUnawareGdiScaled);
-      HeuristicLab.PluginInfrastructure.Main.Run(args);
+      Application.SetHighDpiMode(HighDpiMode.DpiUnawareGdiScaled);
+      Application.EnableVisualStyles();
+      Application.SetCompatibleTextRenderingDefault(false);
+
+      var arguments = CommandLineArgumentHandling.GetArguments(args);
+      string pluginPath = Path.GetFullPath(Application.StartupPath);
+      var pluginManager = new PluginManager(pluginPath);
+      var splashScreen = new PluginInfrastructure.Starter.SplashScreen(pluginManager, 1000);      
+      splashScreen.Show("Loading HeuristicLab...");
+      
+      pluginManager.DiscoverAndCheckPlugins();
+
+      DefaultApplicationManager applicationManager = new DefaultApplicationManager();
+      applicationManager.PrepareApplicationDomain(pluginManager.Plugins);
+
+      var app = new HeuristicLabOptimizerApplication();
+      app.Run(arguments);
     }
   }
 }

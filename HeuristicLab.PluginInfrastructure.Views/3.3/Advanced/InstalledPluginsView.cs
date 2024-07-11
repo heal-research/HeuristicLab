@@ -28,27 +28,16 @@ using HeuristicLab.PluginInfrastructure.Manager;
 
 namespace HeuristicLab.PluginInfrastructure.Advanced {
   internal partial class InstalledPluginsView : InstallationManagerControl {
-    private const string CheckingPluginsMessage = "Checking for updated plugins...";
-    private const string NoUpdatesAvailableMessage = "No updates available.";
-    private BackgroundWorker removePluginsBackgroundWorker;
-    private BackgroundWorker updatePluginsBackgroundWorker;
-
     private ListViewGroup enabledPluginsGroup;
     private ListViewGroup disabledPluginsGroup;
 
-    private PluginManager pluginManager;
-    public PluginManager PluginManager {
+    private IApplicationManager pluginManager;
+    public IApplicationManager PluginManager {
       get { return pluginManager; }
       set {
         pluginManager = value;
         UpdateControl();
       }
-    }
-
-    private InstallationManager installationManager;
-    public InstallationManager InstallationManager {
-      get { return installationManager; }
-      set { installationManager = value; }
     }
 
     public InstalledPluginsView()
@@ -57,83 +46,15 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       enabledPluginsGroup = localPluginsListView.Groups["activePluginsGroup"];
       disabledPluginsGroup = localPluginsListView.Groups["disabledPluginsGroup"];
       pluginImageList.Images.Add(HeuristicLab.PluginInfrastructure.Resources.Plugin);
-      removePluginsBackgroundWorker = new BackgroundWorker();
-      removePluginsBackgroundWorker.DoWork += new DoWorkEventHandler(removePluginsBackgroundWorker_DoWork);
-      removePluginsBackgroundWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(removePluginsBackgroundWorker_RunWorkerCompleted);
-      updatePluginsBackgroundWorker = new BackgroundWorker();
-      updatePluginsBackgroundWorker.DoWork += new DoWorkEventHandler(updatePluginsBackgroundWorker_DoWork);
-      updatePluginsBackgroundWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(updatePluginsBackgroundWorker_RunWorkerCompleted);
-
+     
       UpdateControl();
     }
-
-
-
-    #region event handlers for plugin removal background worker
-    void removePluginsBackgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) {
-      if (e.Error != null) {
-        StatusView.ShowError("File Deletion Error", "There was problem while deleting files." + Environment.NewLine + e.Error.Message);
-      }
-      UpdateControl();
-      StatusView.HideProgressIndicator();
-      StatusView.UnlockUI();
-    }
-
-    void removePluginsBackgroundWorker_DoWork(object sender, DoWorkEventArgs e) {
-      IEnumerable<IPluginDescription> pluginsToRemove = (IEnumerable<IPluginDescription>)e.Argument;
-      if (pluginsToRemove.Count() > 0) {
-        installationManager.Remove(pluginsToRemove);
-        pluginManager.DiscoverAndCheckPlugins();
-      }
-    }
-    #endregion
-
-    #region event handlers for update plugins backgroundworker
-    void updatePluginsBackgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) {
-      if (e.Error != null) {
-        StatusView.ShowError("Connection Error",
-          "There was an error while connecting to the server." + Environment.NewLine +
-           "Please check your connection settings and user credentials.");
-      }
-      StatusView.RemoveMessage(CheckingPluginsMessage);
-      StatusView.HideProgressIndicator();
-      UpdateControl();
-      StatusView.UnlockUI();
-    }
-
-    void updatePluginsBackgroundWorker_DoWork(object sender, DoWorkEventArgs e) {
-      IEnumerable<IPluginDescription> selectedPlugins = (IEnumerable<IPluginDescription>)e.Argument;
-      var remotePlugins = installationManager.GetRemotePluginList();
-      // if there is a local plugin with same name and same major and minor version then it's an update
-      var pluginsToUpdate = from remotePlugin in remotePlugins
-                            let matchingLocalPlugins = from installedPlugin in selectedPlugins
-                                                       where installedPlugin.Name == remotePlugin.Name
-                                                       where installedPlugin.Version.Major == remotePlugin.Version.Major
-                                                       where installedPlugin.Version.Minor == remotePlugin.Version.Minor
-                                                       where IsNewerThan(remotePlugin, installedPlugin)
-                                                       select installedPlugin
-                            where matchingLocalPlugins.Count() > 0
-                            select remotePlugin;
-      if (pluginsToUpdate.Count() > 0) {
-        bool cancelled;
-        installationManager.Update(pluginsToUpdate, out cancelled);
-        if (!cancelled) pluginManager.DiscoverAndCheckPlugins();
-      }
-    }
-
-    // compares for two plugins with same major and minor version if plugin1 is newer than plugin2
-    private static bool IsNewerThan(IPluginDescription plugin1, IPluginDescription plugin2) {
-      // newer: build version is higher, or if build version is the same revision is higher
-      return plugin1.Version.Build > plugin2.Version.Build ||
-        (plugin1.Version.Build == plugin2.Version.Build && plugin1.Version.Revision > plugin2.Version.Revision);
-    }
-    #endregion
 
     private void UpdateControl() {
       ClearPluginList();
       if (pluginManager != null) {
         localPluginsListView.SuppressItemCheckedEvents = true;
-        foreach (var plugin in pluginManager.Plugins) {
+        foreach (var plugin in pluginManager.Plugins.Cast<PluginDescription>()) {
           var item = CreateListViewItem(plugin);
           if (plugin.PluginState == PluginState.Enabled) {
             item.Group = enabledPluginsGroup;
@@ -144,8 +65,6 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
         }
         localPluginsListView.SuppressItemCheckedEvents = false;
       }
-      removeButton.Enabled = localPluginsListView.CheckedItems.Count > 0;
-      updateSelectedButton.Enabled = localPluginsListView.CheckedItems.Count > 0;
       Util.ResizeColumns(localPluginsListView.Columns.OfType<ColumnHeader>());
     }
 
@@ -154,7 +73,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       itemsToRemove.ForEach(item => localPluginsListView.Items.Remove(item));
     }
 
-    private static ListViewItem CreateListViewItem(PluginDescription plugin) {
+    private static ListViewItem CreateListViewItem(IPluginDescription plugin) {
       ListViewItem item = new ListViewItem(new string[] { plugin.Name, plugin.Version.ToString(), plugin.Description });
       item.Tag = plugin;
       item.ImageIndex = 0;
@@ -194,8 +113,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
           modifiedItems.Add(item);
         }
         localPluginsListView.UncheckItems(modifiedItems);
-      }
-      OnItemsCheckedChanged(EventArgs.Empty);
+      }      
     }
 
     private void localPluginsListView_ItemActivate(object sender, EventArgs e) {
@@ -204,40 +122,6 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
         PluginView pluginView = new PluginView(plugin);
         pluginView.Show(this);
       }
-    }
-
-    private void OnItemsCheckedChanged(EventArgs eventArgs) {
-      removeButton.Enabled = localPluginsListView.CheckedItems.Count > 0;
-      updateSelectedButton.Enabled = localPluginsListView.CheckedItems.Count > 0;
-    }
-
-    private void updateSelectedButton_Click(object sender, EventArgs e) {
-      StatusView.LockUI();
-      StatusView.ShowProgressIndicator();
-      StatusView.RemoveMessage(NoUpdatesAvailableMessage);
-      StatusView.ShowMessage(CheckingPluginsMessage);
-      var checkedPlugins = localPluginsListView.CheckedItems.OfType<ListViewItem>()
-        .Select(item => item.Tag)
-        .OfType<IPluginDescription>()
-        .ToList();
-      updatePluginsBackgroundWorker.RunWorkerAsync(checkedPlugins);
-    }
-
-    private void removeButton_Click(object sender, EventArgs e) {
-      StatusView.LockUI();
-      StatusView.ShowProgressIndicator();
-      var checkedPlugins = localPluginsListView.CheckedItems.OfType<ListViewItem>()
-        .Select(item => item.Tag)
-        .OfType<IPluginDescription>()
-        .ToList();
-      removePluginsBackgroundWorker.RunWorkerAsync(checkedPlugins);
-    }
-
-    private void refreshButton_Click(object sender, EventArgs e) {
-      StatusView.LockUI();
-      StatusView.ShowProgressIndicator();
-      // refresh = update empty list of plugins (plugins are reloaded)
-      updatePluginsBackgroundWorker.RunWorkerAsync(new IPluginDescription[0]);
     }
   }
 }

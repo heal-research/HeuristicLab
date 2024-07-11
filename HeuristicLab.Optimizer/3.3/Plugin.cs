@@ -48,7 +48,7 @@ namespace HeuristicLab.Optimizer {
   }
 
   [Application("Optimizer", "HeuristicLab Optimizer 3.3.16.0")]
-  internal class HeuristicLabOptimizerApplication : ApplicationBase {
+  public class HeuristicLabOptimizerApplication : ApplicationBase {
     public override void Run(ICommandLineArgument[] args) {
       HeuristicLab.MainForm.WindowsForms.MainForm mainForm = null;
 
