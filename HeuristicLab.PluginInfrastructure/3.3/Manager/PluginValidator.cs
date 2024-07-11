@@ -33,7 +33,7 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
   /// Discovers all installed plugins in the plugin directory. Checks correctness of plugin meta-data and if
   /// all plugin files are available and checks plugin dependencies. 
   /// </summary>
-  internal sealed class PluginValidator : MarshalByRefObject {
+  internal sealed class PluginValidator {
     // private class to store plugin dependency declarations while reflecting over plugins
     private class PluginDependency {
       public string Name { get; private set; }
@@ -49,15 +49,6 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
     internal event EventHandler<PluginInfrastructureEventArgs> PluginLoaded;
 
     private Dictionary<PluginDescription, IEnumerable<PluginDependency>> pluginDependencies;
-
-    private List<ApplicationDescription> applications;
-    internal IEnumerable<ApplicationDescription> Applications {
-      get {
-        if (string.IsNullOrEmpty(PluginDir)) throw new InvalidOperationException("PluginDir is not set.");
-        if (applications == null) DiscoverAndCheckPlugins();
-        return applications;
-      }
-    }
 
     private IEnumerable<PluginDescription> plugins;
     internal IEnumerable<PluginDescription> Plugins {
@@ -140,35 +131,6 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
       LoadPlugins(pluginDescriptions);
 
       plugins = pluginDescriptions;
-      DiscoverApplications(pluginDescriptions);
-    }
-
-    private void DiscoverApplications(IEnumerable<PluginDescription> pluginDescriptions) {
-      applications = new List<ApplicationDescription>();
-      foreach (IApplication application in GetApplications(pluginDescriptions)) {
-        Type appType = application.GetType();
-        ApplicationAttribute attr = (from x in appType.GetCustomAttributes(typeof(ApplicationAttribute), false)
-                                     select (ApplicationAttribute)x).Single();
-        ApplicationDescription info = new ApplicationDescription();
-        PluginDescription declaringPlugin = GetDeclaringPlugin(appType, pluginDescriptions);
-        info.Name = application.Name;
-        info.Version = declaringPlugin.Version;
-        info.Description = application.Description;
-        info.AutoRestart = attr.RestartOnErrors;
-        info.DeclaringAssemblyName = appType.Assembly.GetName().Name;
-        info.DeclaringTypeName = appType.Namespace + "." + application.GetType().Name;
-
-        applications.Add(info);
-      }
-    }
-
-    private static IEnumerable<IApplication> GetApplications(IEnumerable<PluginDescription> pluginDescriptions) {
-      return from asm in AppDomain.CurrentDomain.GetAssemblies()
-             from t in asm.GetTypes()
-             where typeof(IApplication).IsAssignableFrom(t) &&
-               !t.IsAbstract && !t.IsInterface && !t.HasElementType
-             where GetDeclaringPlugin(t, pluginDescriptions).PluginState != PluginState.Disabled
-             select (IApplication)Activator.CreateInstance(t);
     }
 
     private IEnumerable<Assembly> ReflectionOnlyLoadDlls(string baseDir) {
@@ -622,14 +584,6 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
     private void OnPluginLoaded(PluginInfrastructureEventArgs e) {
       if (PluginLoaded != null)
         PluginLoaded(this, e);
-    }
-
-    /// <summary>
-    /// Initializes the life time service with an infinite lease time.
-    /// </summary>
-    /// <returns><c>null</c>.</returns>
-    public override object InitializeLifetimeService() {
-      return null;
     }
   }
 }

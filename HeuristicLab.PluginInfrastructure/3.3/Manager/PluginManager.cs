@@ -26,18 +26,14 @@ using System.Reflection;
 using System.Security.Permissions;
 
 namespace HeuristicLab.PluginInfrastructure.Manager {
-
-  // must extend MarshalByRefObject because of event passing between Loader and PluginManager (each in it's own AppDomain)
   /// <summary>
   /// Class to manage different plugins.
   /// </summary>
-  public sealed class PluginManager : MarshalByRefObject {
+  public sealed class PluginManager {
     public event EventHandler<PluginInfrastructureEventArgs> PluginLoaded;
     public event EventHandler<PluginInfrastructureEventArgs> PluginUnloaded;
     public event EventHandler<PluginInfrastructureEventArgs> Initializing;
     public event EventHandler<PluginInfrastructureEventArgs> Initialized;
-    public event EventHandler<PluginInfrastructureEventArgs> ApplicationStarting;
-    public event EventHandler<PluginInfrastructureEventArgs> ApplicationStarted;
 
     private string pluginDir;
 
@@ -49,21 +45,12 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
       get { return plugins; }
     }
 
-    private List<ApplicationDescription> applications;
-    /// <summary>
-    /// Gets all installed applications.
-    /// </summary>
-    public IEnumerable<ApplicationDescription> Applications {
-      get { return applications; }
-    }
-
     private object locker = new object();
     private bool initialized;
 
     public PluginManager(string pluginDir) {
       this.pluginDir = pluginDir;
       plugins = new List<PluginDescription>();
-      applications = new List<ApplicationDescription>();
       initialized = false;
     }
 
@@ -92,9 +79,8 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
             OnPluginLoaded(e);
           };
         // get list of plugins and applications from the validator
-        plugins.Clear(); applications.Clear();
-        plugins.AddRange(remoteValidator.Plugins);
-        applications.AddRange(remoteValidator.Applications);
+        plugins.Clear(); 
+        plugins.AddRange(remoteValidator.Plugins);        
       }
       finally {
         // discard the AppDomain that was used for plugin discovery
@@ -108,46 +94,6 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
         }
         initialized = true;
         OnInitialized(PluginInfrastructureEventArgs.Empty);
-      }
-    }
-
-
-    /// <summary>
-    /// Starts an application in a separate AppDomain.
-    /// Loads all enabled plugins and starts the application via an ApplicationManager instance activated in the new AppDomain.
-    /// </summary>
-    /// <param name="appInfo">application to run</param>
-    public void Run(ApplicationDescription appInfo, ICommandLineArgument[] args) {
-      if (!initialized) throw new InvalidOperationException("PluginManager is not initialized. DiscoverAndCheckPlugins() must be called before Run()");
-      // create a separate AppDomain for the application
-      // initialize the static ApplicationManager in the AppDomain
-      // and remotely tell it to start the application
-
-      OnApplicationStarting(new PluginInfrastructureEventArgs(appInfo));
-#if NETFRAMEWORK
-      AppDomain applicationDomain = null;
-#endif
-      try {
-        Type applicationManagerType = typeof(DefaultApplicationManager);
-#if NETFRAMEWORK
-        AppDomainSetup setup = AppDomain.CurrentDomain.SetupInformation;
-        setup.PrivateBinPath = pluginDir;
-        applicationDomain = AppDomain.CreateDomain(AppDomain.CurrentDomain.FriendlyName, null, setup);
-        DefaultApplicationManager applicationManager = (DefaultApplicationManager)applicationDomain.CreateInstanceAndUnwrap(applicationManagerType.Assembly.FullName, applicationManagerType.FullName, true, BindingFlags.NonPublic | BindingFlags.Instance, null, null, null, null);
-#else
-        DefaultApplicationManager applicationManager = (DefaultApplicationManager)Activator.CreateInstance(applicationManagerType.Assembly.FullName, applicationManagerType.FullName, true, BindingFlags.NonPublic | BindingFlags.Instance, null, null, null, null).Unwrap();        
-#endif
-        applicationManager.PluginLoaded += applicationManager_PluginLoaded;
-        applicationManager.PluginUnloaded += applicationManager_PluginUnloaded;
-        applicationManager.PrepareApplicationDomain(applications, plugins);
-        OnApplicationStarted(new PluginInfrastructureEventArgs(appInfo));
-        applicationManager.Run(appInfo, args);
-      }
-      finally {
-        // make sure domain is unloaded in all cases
-#if NETFRAMEWORK
-        AppDomain.Unload(applicationDomain);
-#endif
       }
     }
 
@@ -200,28 +146,6 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
         Initialized(this, e);
       }
     }
-
-    private void OnApplicationStarting(PluginInfrastructureEventArgs e) {
-      if (ApplicationStarting != null) {
-        ApplicationStarting(this, e);
-      }
-    }
-
-    private void OnApplicationStarted(PluginInfrastructureEventArgs e) {
-      if (ApplicationStarted != null) {
-        ApplicationStarted(this, e);
-      }
-    }
     #endregion
-
-    // infinite lease time
-    /// <summary>
-    /// Make sure that the plugin manager is never disposed (necessary for cross-app-domain events)
-    /// </summary>
-    /// <returns><c>null</c>.</returns>
-    [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.Infrastructure)]
-    public override object InitializeLifetimeService() {
-      return null;
-    }
   }
 }

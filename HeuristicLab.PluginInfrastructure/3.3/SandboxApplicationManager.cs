@@ -58,15 +58,7 @@ namespace HeuristicLab.PluginInfrastructure {
       get { return plugins.Cast<IPluginDescription>(); }
     }
 
-    private List<ApplicationDescription> applications; // TODO: remove
-    /// <summary>
-    /// Gets all installed applications.
-    /// </summary>
-    public IEnumerable<IApplicationDescription> Applications {
-      get { return applications.Cast<IApplicationDescription>(); }
-    }
-
-    public SandboxApplicationManager()
+     public SandboxApplicationManager()
       : base() {
       loadedAssemblies = new Dictionary<string, Assembly>();
       loadedPlugins = new List<IPlugin>();
@@ -85,16 +77,8 @@ namespace HeuristicLab.PluginInfrastructure {
     /// <summary>
     /// Prepares the application domain for the execution of an HL application.
     /// Pre-loads all <paramref name="plugins"/>.
-    /// </summary>
-    /// <param name="apps">Enumerable of available HL applications.</param>
+    /// </summary>    
     /// <param name="plugins">Enumerable of plugins that should be pre-loaded.</param>  
-    public void PrepareApplicationDomain(IEnumerable<ApplicationDescription> apps, IEnumerable<PluginDescription> plugins) {
-      this.plugins = new List<PluginDescription>(plugins);
-      this.applications = new List<ApplicationDescription>(apps);
-      ApplicationManager.RegisterApplicationManager(this);
-      LoadPlugins(plugins);
-    }
-
     public void PrepareApplicationDomain(IEnumerable<PluginDescription> plugins) {
       this.plugins = new List<PluginDescription>(plugins);
 
@@ -142,20 +126,6 @@ namespace HeuristicLab.PluginInfrastructure {
         OnPluginUnloaded(new PluginInfrastructureEventArgs(desc));
       }
       plugins.Clear(); // remove all plugin descriptions once unloaded
-    }
-
-    /// <summary>
-    /// Runs the application declared in <paramref name="appInfo"/>.
-    /// This is a synchronous call. When the application is terminated all plugins are unloaded.
-    /// </summary>
-    /// <param name="appInfo">Description of the application to run</param>
-    public void Run(ApplicationDescription appInfo, ICommandLineArgument[] args) {
-      IApplication runnablePlugin = (IApplication)Activator.CreateInstance(appInfo.DeclaringAssemblyName, appInfo.DeclaringTypeName).Unwrap();
-      try {
-        runnablePlugin.Run(args);
-      } finally {
-        UnloadPlugins();
-      }
     }
 
     // register assembly in the assembly cache for the AssemblyResolveEvent

@@ -50,13 +50,6 @@ namespace HeuristicLab.PluginInfrastructure {
     }
 
     /// <summary>
-    /// Gets an empty list of applications. (LightweightApplicationManager doesn't support application discovery)
-    /// </summary>
-    public IEnumerable<IApplicationDescription> Applications {
-      get { return new IApplicationDescription[0]; }
-    }
-
-    /// <summary>
     /// Creates an instance of all types that are subtypes or the same type of the specified type
     /// </summary>
     /// <typeparam name="T">Most general type.</typeparam>

@@ -56,8 +56,6 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
 
     #region events
     private void RegisterPluginManagerEventHandlers() {
-      pluginManager.ApplicationStarted += new EventHandler<PluginInfrastructureEventArgs>(manager_ApplicationStarted);
-      pluginManager.ApplicationStarting += new EventHandler<PluginInfrastructureEventArgs>(manager_ApplicationStarting);
       pluginManager.Initializing += new EventHandler<PluginInfrastructureEventArgs>(manager_Initializing);
       pluginManager.Initialized += new EventHandler<PluginInfrastructureEventArgs>(manager_Initialized);
       pluginManager.PluginLoaded += new EventHandler<PluginInfrastructureEventArgs>(manager_PluginLoaded);
@@ -65,8 +63,6 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
     }
 
     private void DeregisterPluginManagerEventHandlers() {
-      pluginManager.ApplicationStarted -= new EventHandler<PluginInfrastructureEventArgs>(manager_ApplicationStarted);
-      pluginManager.ApplicationStarting -= new EventHandler<PluginInfrastructureEventArgs>(manager_ApplicationStarting);
       pluginManager.Initializing -= new EventHandler<PluginInfrastructureEventArgs>(manager_Initializing);
       pluginManager.Initialized -= new EventHandler<PluginInfrastructureEventArgs>(manager_Initialized);
       pluginManager.PluginLoaded -= new EventHandler<PluginInfrastructureEventArgs>(manager_PluginLoaded);
@@ -89,13 +85,6 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
       SafeUpdateMessage("Initializing");
     }
 
-    private void manager_ApplicationStarting(object sender, PluginInfrastructureEventArgs e) {
-      SafeUpdateMessage("Starting " + e.Entity);
-    }
-
-    private void manager_ApplicationStarted(object sender, PluginInfrastructureEventArgs e) {
-      SafeUpdateMessage("Started " + e.Entity);
-    }
     // called from event handlers
     private void SafeUpdateMessage(string msg) {
       try {

@@ -52,7 +52,7 @@ namespace HeuristicLab.PluginInfrastructure.Sandboxing {
 
       PluginManager pm = new PluginManager(applicationBase);
       pm.DiscoverAndCheckPlugins();
-      applicationManager.PrepareApplicationDomain(pm.Applications, pm.Plugins);
+      applicationManager.PrepareApplicationDomain(pm.Plugins);
 #if NETFRAMEWORK
       return applicationDomain;
 #else
