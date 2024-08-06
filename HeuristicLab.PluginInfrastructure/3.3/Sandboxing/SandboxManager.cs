@@ -26,6 +26,7 @@ using System.Security.Permissions;
 using HeuristicLab.PluginInfrastructure.Manager;
 
 namespace HeuristicLab.PluginInfrastructure.Sandboxing {
+  //TODO: Delete this class after Hive drone is rewritten
   public static class SandboxManager {
     /// <summary>
     /// Returns a new AppDomain with loaded assemblies/plugins from applicationBase
