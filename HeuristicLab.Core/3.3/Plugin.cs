@@ -33,8 +33,7 @@ namespace HeuristicLab.Core {
   [PluginDependency("HeuristicLab.Attic", "1.0")]
   [PluginDependency("HeuristicLab.Collections", "3.3")]
   [PluginDependency("HeuristicLab.Common", "3.3")]
-  [PluginDependency("HeuristicLab.Common.Resources", "3.3")]
-  [PluginDependency("HeuristicLab.Persistence", "3.3")]
+  [PluginDependency("HeuristicLab.Common.Resources", "3.3")]  
   public class HeuristicLabCorePlugin : PluginBase {
   }
 }

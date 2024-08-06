@@ -39,7 +39,6 @@ namespace HeuristicLab.Clients.Hive {
   [PluginDependency("HeuristicLab.MainForm", "3.3")]
   [PluginDependency("HeuristicLab.MainForm.WindowsForms", "3.3")]
   [PluginDependency("HeuristicLab.Optimization", "3.3")]
-  [PluginDependency("HeuristicLab.Persistence", "3.3")]
   public class HeuristicLabClientsHivePlugin : PluginBase {
   }
 }

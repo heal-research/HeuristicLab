@@ -29,7 +29,6 @@ namespace HeuristicLab.DebugEngine {
   [PluginDependency("HeuristicLab.Collections", "3.3")]
   [PluginDependency("HeuristicLab.Common", "3.3")]
   [PluginDependency("HeuristicLab.Common.Resources", "3.3")]
-  [PluginDependency("HeuristicLab.Core", "3.3")]
-  [PluginDependency("HeuristicLab.Persistence", "3.3")]  
+  [PluginDependency("HeuristicLab.Core", "3.3")]  
   public class HeuristicLabDebugEnginePlugin : PluginBase { }
 }
