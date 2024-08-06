@@ -37,9 +37,10 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       set { base.AllDayEvent = value; Changed = true; }
     }
 
-    public new bool Recurring {
-      get { return base.Recurring; }
-      set { base.Recurring = value; Changed = true; }
+    private bool recurring;
+    public bool Recurring {
+      get { return recurring; }
+      set { recurring = value; Changed = true; }
     }
 
     public Guid RecurringId {
@@ -60,5 +61,7 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
     public bool Deleted { get; set; }
 
     public Guid Id { get; set; }
+
+    public String Subject { get; set; } //TODO: map to title?
   }
 }

@@ -42,7 +42,9 @@
     <ProjectReference Include="..\..\HeuristicLab.Clients.Access.Administration\3.3\HeuristicLab.Clients.Access.Administration-3.3.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.Clients.Access.Views\3.3\HeuristicLab.Clients.Access.Views-3.3.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.Clients.Access\3.3\HeuristicLab.Clients.Access-3.3.csproj" />
+    <ProjectReference Include="..\..\HeuristicLab.Clients.Common.Views\3.3\HeuristicLab.Clients.Common.Views-3.3.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.Clients.Common\3.3\HeuristicLab.Clients.Common-3.3.csproj" />
+    <ProjectReference Include="..\..\HeuristicLab.Clients.Hive.Administrator\3.3\HeuristicLab.Clients.Hive.Administrator-3.3.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.Clients.Hive.JobManager\3.3\HeuristicLab.Clients.Hive.JobManager-3.3.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.Clients.Hive.Views\3.3\HeuristicLab.Clients.Hive.Views-3.3.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.Clients.Hive\3.3\HeuristicLab.Clients.Hive-3.3.csproj" />
@@ -78,6 +80,8 @@
     <ProjectReference Include="..\..\HeuristicLab.ExtLibs\HeuristicLab.AutoDiff\1.0\HeuristicLab.AutoDiff-1.0\HeuristicLab.AutoDiff-1.0.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.ExtLibs\HeuristicLab.Cecil\0.9.5\HeuristicLab.Cecil-0.9.5\HeuristicLab.Cecil-0.9.5.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.ExtLibs\HeuristicLab.Cecil\0.9.5\Mono.Cecil-0.9.5\Mono.Cecil-0.9.5.csproj" />
+    <ProjectReference Include="..\..\HeuristicLab.ExtLibs\HeuristicLab.DayView\1.0\HeuristicLab.DayView-1.0.csproj" />
+    <ProjectReference Include="..\..\HeuristicLab.ExtLibs\HeuristicLab.DayView\DayView\DayView.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.ExtLibs\HeuristicLab.EPPlus\4.0.3\EPPlus-4.0.3\EPPlus-4.0.3.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.ExtLibs\HeuristicLab.EPPlus\4.0.3\HeuristicLab.EPPlus-4.0.3\HeuristicLab.EPPlus-4.0.3.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.ExtLibs\HeuristicLab.LibSVM\3.12\HeuristicLab.LibSVM-3.12\HeuristicLab.LibSVM-3.12.csproj" />

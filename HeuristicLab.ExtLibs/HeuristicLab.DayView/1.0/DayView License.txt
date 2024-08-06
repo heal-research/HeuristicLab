@@ -1,4 +1,5 @@
-HeuristicLab.DayView uses the DayView Calendar Control from http://calendar.codeplex.com/.
+HeuristicLab.DayView uses the DayView Calendar Control from https://github.com/k3ldar/DayView2
+based on http://calendar.codeplex.com/
 
                     GNU GENERAL PUBLIC LICENSE
                        Version 3, 29 June 2007

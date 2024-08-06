@@ -70,16 +70,7 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       this.dvOnline.AmPmDisplay = false;
       this.dvOnline.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
             | System.Windows.Forms.AnchorStyles.Left)
-            | System.Windows.Forms.AnchorStyles.Right)));
-      this.dvOnline.AppointmentDuration = Calendar.AppointmentSlotDuration.SixtyMinutes;
-      this.dvOnline.AppointmentHeightMode = Calendar.AppHeightDrawMode.TrueHeightAll;
-      this.dvOnline.DayHeadersHeight = 15;
-      this.dvOnline.DaysToShow = 7;
-      this.dvOnline.DrawAllAppBorder = false;
-      this.dvOnline.EnableDurationDisplay = false;
-      this.dvOnline.EnableRoundedCorners = false;
-      this.dvOnline.EnableShadows = false;
-      this.dvOnline.EnableTimeIndicator = false;
+            | System.Windows.Forms.AnchorStyles.Right)));     
       this.dvOnline.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F);
       this.dvOnline.Location = new System.Drawing.Point(3, 183);
       this.dvOnline.MinHalfHourApp = false;
@@ -89,7 +80,7 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       this.dvOnline.Size = new System.Drawing.Size(836, 354);
       this.dvOnline.StartDate = new System.DateTime(((long)(0)));
       this.dvOnline.TabIndex = 54;
-      this.dvOnline.OnSelectionChanged += new System.EventHandler<System.EventArgs>(this.dvOnline_OnSelectionChanged);
+      this.dvOnline.SelectionChanged += this.dvOnline_OnSelectionChanged;
       // 
       // dtpTo
       // 

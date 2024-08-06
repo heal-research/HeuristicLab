@@ -5,9 +5,6 @@
     <RootNamespace>HeuristicLab.DayView</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <Content Include="Calendar.DayView.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="DayView License.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
