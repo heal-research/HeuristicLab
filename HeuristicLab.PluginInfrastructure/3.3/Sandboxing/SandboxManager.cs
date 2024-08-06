@@ -32,33 +32,13 @@ namespace HeuristicLab.PluginInfrastructure.Sandboxing {
     /// Returns a new AppDomain with loaded assemblies/plugins from applicationBase
     /// </summary>    
     public static AppDomain CreateAndInitSandbox(string appDomainName, string applicationBase, string configFilePath) {
-      PermissionSet pSet;
-      pSet = new PermissionSet(PermissionState.Unrestricted);
-
-#if NETFRAMEWORK
-      AppDomainSetup setup = new AppDomainSetup();
-      setup.PrivateBinPath = applicationBase;
-      setup.ApplicationBase = applicationBase;
-      setup.ConfigurationFile = configFilePath;
-#endif
-
-      Type applicationManagerType = typeof(DefaultApplicationManager);
-#if NETFRAMEWORK
-      AppDomain applicationDomain = AppDomain.CreateDomain(appDomainName, null, setup, pSet, null);
-      DefaultApplicationManager applicationManager = (DefaultApplicationManager)applicationDomain.CreateInstanceAndUnwrap(applicationManagerType.Assembly.FullName, applicationManagerType.FullName, true, BindingFlags.NonPublic | BindingFlags.Instance, null, null, null, null);
-#else
-      DefaultApplicationManager applicationManager = (DefaultApplicationManager)Activator.CreateInstance(applicationManagerType.Assembly.FullName, applicationManagerType.FullName, true, BindingFlags.NonPublic | BindingFlags.Instance, null, null, null, null).Unwrap();
-#endif
-      
+      DefaultApplicationManager applicationManager = new DefaultApplicationManager();
 
       PluginManager pm = new PluginManager(applicationBase);
       pm.DiscoverAndCheckPlugins();
       applicationManager.PrepareApplicationDomain(pm.Plugins);
-#if NETFRAMEWORK
-      return applicationDomain;
-#else
+
       return AppDomain.CurrentDomain;
-#endif
     }
   }
 }

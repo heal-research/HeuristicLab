@@ -59,34 +59,19 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
     /// </summary>
     public void DiscoverAndCheckPlugins() {
       OnInitializing(PluginInfrastructureEventArgs.Empty);
-#if NETFRAMEWORK
-      AppDomainSetup setup = AppDomain.CurrentDomain.SetupInformation;
-      setup.ApplicationBase = pluginDir;
-      AppDomain pluginDomain = null;
-#endif
+
       try {
-        Type pluginValidatorType = typeof(PluginValidator);
-#if NETFRAMEWORK
-        pluginDomain = AppDomain.CreateDomain("plugin domain", null, setup);
-        PluginValidator remoteValidator = (PluginValidator)pluginDomain.CreateInstanceAndUnwrap(pluginValidatorType.Assembly.FullName, pluginValidatorType.FullName, true, BindingFlags.NonPublic | BindingFlags.Instance, null, null, null, null);
-#else
-        PluginValidator remoteValidator = (PluginValidator)Activator.CreateInstance(pluginValidatorType.Assembly.FullName, pluginValidatorType.FullName, true, BindingFlags.NonPublic | BindingFlags.Instance, null, null, null, null).Unwrap();
-#endif
-        remoteValidator.PluginDir = pluginDir;
-        // forward all events from the remoteValidator to listeners
-        remoteValidator.PluginLoaded +=
-          delegate(object sender, PluginInfrastructureEventArgs e) {
+        PluginValidator pluginValidator = new PluginValidator();
+        pluginValidator.PluginDir = pluginDir;
+        // forward all events to listeners
+        pluginValidator.PluginLoaded +=
+          delegate (object sender, PluginInfrastructureEventArgs e) {
             OnPluginLoaded(e);
           };
         // get list of plugins and applications from the validator
-        plugins.Clear(); 
-        plugins.AddRange(remoteValidator.Plugins);        
-      }
-      finally {
-        // discard the AppDomain that was used for plugin discovery
-#if NETFRAMEWORK
-        AppDomain.Unload(pluginDomain);
-#endif
+        plugins.Clear();
+        plugins.AddRange(pluginValidator.Plugins);
+      } finally {        
         // unload all plugins
         foreach (var pluginDescription in plugins.Where(x => x.PluginState == PluginState.Loaded)) {
           pluginDescription.Unload();
