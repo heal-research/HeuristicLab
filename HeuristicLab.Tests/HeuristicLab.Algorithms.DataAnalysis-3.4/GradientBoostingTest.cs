@@ -2,6 +2,7 @@
 using System.Collections;
 using System.IO;
 using System.Linq;
+using HEAL.Attic;
 using HeuristicLab.Data;
 using HeuristicLab.Problems.DataAnalysis;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -195,6 +196,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     [TestMethod]
     [TestCategory("Algorithms.DataAnalysis")]
     public void TestDecisionTreePersistence() {
+      var ser = new ProtoBufSerializer();
       var provider = new HeuristicLab.Problems.Instances.DataAnalysis.RegressionRealWorldInstanceProvider();
       var instance = provider.GetDataDescriptors().Single(x => x.Name.Contains("Tower"));
       var regProblem = new RegressionProblem();
@@ -207,10 +209,10 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       var treeM = model.Models.Skip(1).First();
       var origStr = treeM.ToString();
       using (var memStream = new MemoryStream()) {
-        Persistence.Default.Xml.XmlGenerator.Serialize(treeM, memStream);
+        ser.Serialize(treeM, memStream);
         var buf = memStream.GetBuffer();
         using (var restoreStream = new MemoryStream(buf)) {
-          var restoredTree = Persistence.Default.Xml.XmlParser.Deserialize(restoreStream);
+          var restoredTree = ser.Deserialize(restoreStream);
           var restoredStr = restoredTree.ToString();
           Assert.AreEqual(origStr, restoredStr);
         }

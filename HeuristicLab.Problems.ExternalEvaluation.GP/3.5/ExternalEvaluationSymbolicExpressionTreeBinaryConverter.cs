@@ -28,7 +28,7 @@ using HEAL.Attic;
 using System;
 
 namespace HeuristicLab.Problems.ExternalEvaluation.GP {
-  [Item("SymbolicExpressionTreeBinaryConverter", "Converts a symbolic expression tree into a binary representation by prefix iteration over all nodes in the tree. The binary format is defined in HeuristicLab.Persistence.")]
+  [Item("SymbolicExpressionTreeBinaryConverter", "Converts a symbolic expression tree into a binary representation by prefix iteration over all nodes in the tree. The binary format is defined in HEAL.Attic.")]
   [StorableType("E3C9DE32-6EF2-4BA5-AFDF-23AE7D198AC6")]
   [Obsolete("Use the SymbolicExpressionTreeProtobufConverter instead; The SymbolicExpressionTreeBinaryConverter uses the old serialization format and will be removed in the next major release of HeuristicLab.")]
   public class SymbolicExpressionTreeBinaryConverter : SymbolicExpressionTreeConverter {
@@ -44,7 +44,9 @@ namespace HeuristicLab.Problems.ExternalEvaluation.GP {
 
     protected override void ConvertSymbolicExpressionTree(SymbolicExpressionTree tree, string name, SolutionMessage builder) {
       using (MemoryStream memoryStream = new MemoryStream()) {
-        Persistence.Default.Xml.XmlGenerator.Serialize(tree, memoryStream);
+        var ser = new ProtoBufSerializer();
+        ser.Serialize(tree, memoryStream);
+
         byte[] byteRep = memoryStream.ToArray();
         SolutionMessage.Types.RawVariable rawVariable = new SolutionMessage.Types.RawVariable {
           Name = name,

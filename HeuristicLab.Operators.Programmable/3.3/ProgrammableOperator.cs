@@ -32,10 +32,10 @@ using HeuristicLab.Collections;
 using HeuristicLab.Common;
 using HeuristicLab.Common.Resources;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Auxiliary;
 using HEAL.Attic;
 using HeuristicLab.PluginInfrastructure;
 using Microsoft.CSharp;
+using HeuristicLab.PluginInfrastructure.TypeNameParsing;
 
 namespace HeuristicLab.Operators.Programmable {
 

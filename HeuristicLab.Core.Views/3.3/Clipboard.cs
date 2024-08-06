@@ -54,8 +54,7 @@ namespace HeuristicLab.Core.Views {
               Directory.CreateDirectory(itemsPath);
             }
           }
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
           throw new ArgumentException(string.Format("Invalid items path \"{0}\".", itemsPath), ex);
         }
       }
@@ -154,12 +153,7 @@ namespace HeuristicLab.Core.Views {
       string[] items = Directory.GetFiles(ItemsPath);
       foreach (string filename in items) {
         try {
-          T item = null;
-          if (HeuristicLab.Persistence.Default.Xml.XmlParser.CanOpen(filename)) {
-            item = HeuristicLab.Persistence.Default.Xml.XmlParser.Deserialize<T>(filename);
-          } else {
-            item = (T)new ProtoBufSerializer().Deserialize(filename);
-          }
+          T item = (T)new ProtoBufSerializer().Deserialize(filename);
           OnItemLoaded(item, progressBar.Maximum / items.Length);
         } catch (Exception) {
           // ignore if loading a clipboad item fails.
@@ -206,9 +200,7 @@ namespace HeuristicLab.Core.Views {
           var ser = new ProtoBufSerializer();
           ser.Serialize(item, ItemsPath + Path.DirectorySeparatorChar + i.ToString("00000000") + ".hl");
           OnItemSaved(item, progressBar.Maximum / listView.Items.Count);
-        }
-        catch (Exception) { }
-        finally {
+        } catch (Exception) { } finally {
           SetEnabledStateOfContentViews(item, true);
         }
       }
@@ -335,8 +327,7 @@ namespace HeuristicLab.Core.Views {
             foreach (T item in items)
               AddItem(item);
           }
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
           ErrorHandling.ShowErrorDialog(this, ex);
         }
       }
@@ -355,8 +346,7 @@ namespace HeuristicLab.Core.Views {
       if (typeSelectorDialog.ShowDialog(this) == DialogResult.OK) {
         try {
           AddItem((T)typeSelectorDialog.TypeSelector.CreateInstanceOfSelectedType());
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
           ErrorHandling.ShowErrorDialog(this, ex);
         }
       }

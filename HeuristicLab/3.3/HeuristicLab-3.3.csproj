@@ -107,8 +107,6 @@
     <ProjectReference Include="..\..\HeuristicLab.ParallelEngine\3.3\HeuristicLab.ParallelEngine-3.3.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.Parameters.Views\3.3\HeuristicLab.Parameters.Views-3.3.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.Parameters\3.3\HeuristicLab.Parameters-3.3.csproj" />
-    <ProjectReference Include="..\..\HeuristicLab.Persistence.GUI\3.3\HeuristicLab.Persistence.GUI-3.3.csproj" />
-    <ProjectReference Include="..\..\HeuristicLab.Persistence\3.3\HeuristicLab.Persistence-3.3.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.PluginInfrastructure.Views\3.3\HeuristicLab.PluginInfrastructure.Views-3.3.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.PluginInfrastructure\3.3\HeuristicLab.PluginInfrastructure-3.3.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.Problems.Binary\3.3\HeuristicLab.Problems.Binary-3.3.csproj" />

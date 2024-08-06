@@ -21,9 +21,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
 using HEAL.Attic;
-using HeuristicLab.Persistence.Default.Xml;
 
 namespace HeuristicLab.Clients.Hive {
   public static class PersistenceUtil {
@@ -41,21 +39,7 @@ namespace HeuristicLab.Clients.Hive {
 
     public static T Deserialize<T>(byte[] sjob) {
       var ser = new ProtoBufSerializer();
-      try {
-        return (T)ser.Deserialize(sjob);
-      } catch (PersistenceException e) {
-        if (e.InnerException is InvalidDataException) {
-          // We assume the data was not serialized with HEAL.Attic, but with the former
-          // XML-based persistence
-          return DeserializeWithXmlParser<T>(sjob);
-        } else throw;
-      }
-    }
-
-    private static T DeserializeWithXmlParser<T>(byte[] sjob) {
-      using (MemoryStream memStream = new MemoryStream(sjob)) {
-        return XmlParser.Deserialize<T>(memStream);
-      }
+      return (T)ser.Deserialize(sjob);
     }
   }
 }
