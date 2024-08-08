@@ -36,6 +36,7 @@ using HEAL.Attic;
 using HeuristicLab.PluginInfrastructure;
 using Microsoft.CSharp;
 using HeuristicLab.PluginInfrastructure.TypeNameParsing;
+using System.Runtime.Loader;
 
 namespace HeuristicLab.Operators.Programmable {
 
@@ -273,7 +274,7 @@ namespace HeuristicLab.Operators.Programmable {
 
     protected static Dictionary<Assembly, bool> DiscoverAssemblies() {
       var assemblies = new Dictionary<Assembly, bool>();
-      foreach (var a in AppDomain.CurrentDomain.GetAssemblies()) {
+      foreach (var a in AssemblyLoadContext.Default.Assemblies) {
         try {
           if (File.Exists(a.Location)) {
             assemblies.Add(a, false);

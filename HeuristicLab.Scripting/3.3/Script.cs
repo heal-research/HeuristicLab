@@ -25,6 +25,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Loader;
 using System.Text;
 using System.Text.RegularExpressions;
 using HEAL.Attic;
@@ -129,7 +130,7 @@ namespace HeuristicLab.Scripting {
     }
 
     public virtual IEnumerable<Assembly> GetAssemblies() {
-      var assemblies = AppDomain.CurrentDomain.GetAssemblies()
+      var assemblies = AssemblyLoadContext.Default.Assemblies
         .Where(a => !a.IsDynamic && File.Exists(a.Location)
                  && !ExcludedAssemblyFileNames.Contains(Path.GetFileName(a.Location)))
         .GroupBy(x => Regex.Replace(Path.GetFileName(x.Location), @"-[\d.]+\.dll$", ""))

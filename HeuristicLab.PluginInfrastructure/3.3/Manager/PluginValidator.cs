@@ -85,13 +85,8 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
       discoveryContextAssemblies.Clear();
 
       AssemblyLoadContext discoveryContext = new AssemblyLoadContext("PluginDiscoverContext", isCollectible: true);
-      IEnumerable<Assembly> discoveredAssemblies;
-
-      using (discoveryContext.EnterContextualReflection()) {
-        discoveredAssemblies = DiscoveryOnlyLoadDlls(PluginDir);
-      }
+      var discoveredAssemblies = DiscoveryOnlyLoadDlls(PluginDir, discoveryContext);
       discoveryContext.Unload();
-      discoveryContext = null;
 
       IEnumerable<PluginDescription> pluginDescriptions = GatherPluginDescriptions(discoveredAssemblies);
       CheckPluginFiles(pluginDescriptions);
@@ -128,19 +123,22 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
       // load the enabled plugins
       LoadPlugins(pluginDescriptions);
 
+      //AssemblyLoadContext.Unload only works if there are no references left to the context and assemblies
+      discoveryContextAssemblies.Clear();
+
       plugins = pluginDescriptions;
     }
 
-    private IEnumerable<Assembly> DiscoveryOnlyLoadDlls(string baseDir) {
+    private IEnumerable<Assembly> DiscoveryOnlyLoadDlls(string baseDir, AssemblyLoadContext discoveryContext) {
       List<Assembly> assemblies = new List<Assembly>();
       // recursively load .dll files in subdirectories
       foreach (string dirName in Directory.GetDirectories(baseDir)) {
-        assemblies.AddRange(DiscoveryOnlyLoadDlls(dirName));
+        assemblies.AddRange(DiscoveryOnlyLoadDlls(dirName, discoveryContext));
       }
       // try to load each .dll file in the plugin directory into the reflection only context
       foreach (string filename in Directory.GetFiles(baseDir, "*.dll").Union(Directory.GetFiles(baseDir, "*.exe"))) {
         try {
-          Assembly asm = Assembly.LoadFrom(filename);
+          Assembly asm = discoveryContext.LoadFromAssemblyPath(filename);
           RegisterLoadedAssembly(asm);
           assemblies.Add(asm);
         } catch (BadImageFormatException) { } // just ignore the case that the .dll file is not a CLR assembly (e.g. a native dll)
@@ -489,12 +487,11 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
     // calls OnLoad method of the plugin 
     // and raises the PluginLoaded event
     private void LoadPlugins(IEnumerable<PluginDescription> pluginDescriptions) {
-      List<Assembly> assemblies = new List<Assembly>(AppDomain.CurrentDomain.GetAssemblies());
       foreach (var desc in pluginDescriptions) {
         if (desc.PluginState == PluginState.Enabled) {
           // cannot use ApplicationManager to retrieve types because it is not yet instantiated
           foreach (string assemblyName in desc.AssemblyNames) {
-            var asm = (from assembly in assemblies
+            var asm = (from assembly in AssemblyLoadContext.Default.Assemblies
                        where assembly.FullName == assemblyName
                        select assembly)
                       .SingleOrDefault();

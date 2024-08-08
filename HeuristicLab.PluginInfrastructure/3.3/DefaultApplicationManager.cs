@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Loader;
 using HeuristicLab.PluginInfrastructure.Manager;
 
 namespace HeuristicLab.PluginInfrastructure {
@@ -123,7 +124,7 @@ namespace HeuristicLab.PluginInfrastructure {
     /// (interfaces, abstract classes... are not returned)</param>
     /// <returns>Enumerable of the discovered types.</returns>
     internal static IEnumerable<Type> GetTypes(Type type, bool onlyInstantiable, bool includeGenericTypeDefinitions) {
-      return from asm in AppDomain.CurrentDomain.GetAssemblies()
+      return from asm in AssemblyLoadContext.Default.Assemblies
              where !asm.IsDynamic && !string.IsNullOrEmpty(asm.Location)
              from t in GetTypes(type, asm, onlyInstantiable, includeGenericTypeDefinitions)
              select t;
@@ -151,7 +152,7 @@ namespace HeuristicLab.PluginInfrastructure {
     /// <returns>Enumerable of the discovered types.</returns>
     internal static IEnumerable<Type> GetTypes(Type type, IPluginDescription pluginDescription, bool onlyInstantiable, bool includeGenericTypeDefinitions) {
       PluginDescription pluginDesc = (PluginDescription)pluginDescription;
-      return from asm in AppDomain.CurrentDomain.GetAssemblies()
+      return from asm in AssemblyLoadContext.Default.Assemblies
              where !asm.IsDynamic && !string.IsNullOrEmpty(asm.Location)
              where pluginDesc.AssemblyLocations.Any(location => location.Equals(Path.GetFullPath(asm.Location), StringComparison.CurrentCultureIgnoreCase))
              from t in GetTypes(type, asm, onlyInstantiable, includeGenericTypeDefinitions)
