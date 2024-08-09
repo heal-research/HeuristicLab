@@ -71,7 +71,7 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
         // get list of plugins and applications from the validator
         plugins.Clear();
         plugins.AddRange(pluginValidator.Plugins);
-      } finally {        
+      } finally {
         // unload all plugins
         foreach (var pluginDescription in plugins.Where(x => x.PluginState == PluginState.Loaded)) {
           pluginDescription.Unload();
@@ -80,31 +80,6 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
         initialized = true;
         OnInitialized(PluginInfrastructureEventArgs.Empty);
       }
-    }
-
-    private void applicationManager_PluginUnloaded(object sender, PluginInfrastructureEventArgs e) {
-      // unload the matching plugin description (
-      PluginDescription desc = (PluginDescription)e.Entity;
-
-      // access to plugin descriptions has to be synchronized because multiple applications 
-      // can be started or stopped at the same time
-      lock (locker) {
-        // also unload the matching plugin description in this AppDomain
-        plugins.First(x => x.Equals(desc)).Unload();
-      }
-      OnPluginUnloaded(e);
-    }
-
-    private void applicationManager_PluginLoaded(object sender, PluginInfrastructureEventArgs e) {
-      // load the matching plugin description (
-      PluginDescription desc = (PluginDescription)e.Entity;
-      // access to plugin descriptions has to be synchronized because multiple applications 
-      // can be started or stopped at the same time
-      lock (locker) {
-        // also load the matching plugin description in this AppDomain
-        plugins.First(x => x.Equals(desc)).Load();
-      }
-      OnPluginLoaded(e);
     }
 
     #region event raising methods

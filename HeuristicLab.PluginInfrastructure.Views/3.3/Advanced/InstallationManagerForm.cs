@@ -22,7 +22,7 @@ using System;
 using System.Windows.Forms;
 
 namespace HeuristicLab.PluginInfrastructure.Advanced {
-  public partial class InstallationManagerForm : Form, IStatusView {   
+  public partial class InstallationManagerForm : Form, IStatusView {
     private string pluginDir;
 
     public InstallationManagerForm(IApplicationManager appManager)
@@ -31,23 +31,9 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       Text = "HeuristicLab Plugin Manager " + AssemblyHelpers.GetFileVersion(GetType().Assembly);
 
       pluginDir = Application.StartupPath;
-      
+
       localPluginsView.StatusView = this;
       localPluginsView.PluginManager = appManager;
-    }    
-   
-    #region button events
-    private void tabControl_SelectedIndexChanged(object sender, EventArgs e) {
-      toolStripStatusLabel.Text = string.Empty;
-    }
-    #endregion
-    
-    private void SetStatusStrip(string msg) {
-      if (InvokeRequired) Invoke((Action<string>)SetStatusStrip, msg);
-      else {
-        toolStripStatusLabel.Text = msg;
-        logTextBox.Text += DateTime.Now + ": " + msg + Environment.NewLine;
-      }
     }
 
     public void ShowProgressIndicator(double percentProgress) {
@@ -83,16 +69,12 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
     }
     public void LockUI() {
       Cursor = Cursors.AppStarting;
-      tabControl.Enabled = false;
     }
     public void UnlockUI() {
-      tabControl.Enabled = true;
       Cursor = Cursors.Default;
     }
     public void ShowError(string shortMessage, string description) {
-      logTextBox.Text += DateTime.Now + ": " + shortMessage + Environment.NewLine + description + Environment.NewLine;
       MessageBox.Show(description, shortMessage);
     }
-    
   }
 }
