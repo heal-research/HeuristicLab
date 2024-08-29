@@ -24,14 +24,14 @@ using HeuristicLab.PluginInfrastructure;
 namespace HeuristicLab.Clients.Hive.Administration {
   [Plugin("HeuristicLab.Clients.Hive.Administrator", "3.3.16.0")]
   [PluginFile("HeuristicLab.Clients.Hive.Administrator-3.3.dll", PluginFileType.Assembly)]
-  [PluginDependency("HeuristicLab.Clients.Access", "3.3")]  
+  [PluginDependency("HeuristicLab.Clients.Access", "3.3")]
   [PluginDependency("HeuristicLab.Clients.Access.Views", "3.3")]
   [PluginDependency("HeuristicLab.Collections", "3.3")]
   [PluginDependency("HeuristicLab.Common", "3.3")]
   [PluginDependency("HeuristicLab.Common.Resources", "3.3")]
   [PluginDependency("HeuristicLab.Core", "3.3")]
-  [PluginDependency("HeuristicLab.Core.Views", "3.3")]  
-  [PluginDependency("HeuristicLab.Clients.Common", "3.3")]
+  [PluginDependency("HeuristicLab.Core.Views", "3.3")]
+  [PluginDependency("HeuristicLab.Clients.Common.Views", "3.3")]
   [PluginDependency("HeuristicLab.Clients.Hive", "3.3")]
   [PluginDependency("HeuristicLab.Clients.Hive.Views", "3.3")]
   [PluginDependency("HeuristicLab.Data", "3.3")]
@@ -39,7 +39,7 @@ namespace HeuristicLab.Clients.Hive.Administration {
   [PluginDependency("HeuristicLab.DayView", "1.0.0.0")]
   [PluginDependency("HeuristicLab.Optimizer", "3.3")]
   [PluginDependency("HeuristicLab.MainForm", "3.3")]
-  [PluginDependency("HeuristicLab.MainForm.WindowsForms", "3.3")]  
+  [PluginDependency("HeuristicLab.MainForm.WindowsForms", "3.3")]
   public class HeuristicLabClientsHiveAdministratorPlugin : PluginBase {
   }
 }

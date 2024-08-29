@@ -31,7 +31,7 @@ namespace HeuristicLab.Optimizer {
   [PluginFile("HeuristicLab.Optimizer-3.3.dll", PluginFileType.Assembly)]
   [PluginDependency("HeuristicLab.Attic", "1.0")]
   [PluginDependency("HeuristicLab.Clients.Access", "3.3")]
-  [PluginDependency("HeuristicLab.Clients.Common", "3.3")]
+  [PluginDependency("HeuristicLab.Clients.Common.Views", "3.3")]
   [PluginDependency("HeuristicLab.Collections", "3.3")]
   [PluginDependency("HeuristicLab.Common", "3.3")]
   [PluginDependency("HeuristicLab.Common.Resources", "3.3")]

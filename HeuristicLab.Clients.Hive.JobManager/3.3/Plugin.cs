@@ -25,7 +25,7 @@ namespace HeuristicLab.Clients.Hive.JobManager {
   [Plugin("HeuristicLab.Clients.Hive.JobManager", "3.3.16.0")]
   [PluginFile("HeuristicLab.Clients.Hive.JobManager-3.3.dll", PluginFileType.Assembly)]
   [PluginDependency("HeuristicLab.Clients.Access", "3.3")]
-  [PluginDependency("HeuristicLab.Clients.Common", "3.3")]
+  [PluginDependency("HeuristicLab.Clients.Common.Views", "3.3")]
   [PluginDependency("HeuristicLab.Clients.Hive", "3.3")]
   [PluginDependency("HeuristicLab.Clients.Hive.Views", "3.3")]
   [PluginDependency("HeuristicLab.Collections", "3.3")]

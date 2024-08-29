@@ -27,6 +27,7 @@ namespace HeuristicLab.Clients.Common {
   /// </summary>
   [Plugin("HeuristicLab.Clients.Common.Views", "3.3.16.0")]
   [PluginFile("HeuristicLab.Clients.Common.Views-3.3.dll", PluginFileType.Assembly)]
+  [PluginDependency("HeuristicLab.Clients.Common", "3.3")]
   public class HeuristicLabClientsCommonViewsPlugin : PluginBase {
   }
 }
