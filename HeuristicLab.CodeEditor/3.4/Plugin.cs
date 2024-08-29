@@ -26,10 +26,6 @@ namespace HeuristicLab.CodeEditor {
   [PluginFile("HeuristicLab.CodeEditor-3.4.dll", PluginFileType.Assembly)]
   [PluginDependency("HeuristicLab.Common", "3.3")]
   [PluginDependency("HeuristicLab.Common.Resources", "3.3")]
-  [PluginDependency("HeuristicLab.NRefactory", "5.5.0")]
-#if !__MonoCS__
-  [PluginDependency("HeuristicLab.AvalonEdit", "5.0.1")]
-#endif
   public class HeuristicLabCodeEditorPlugin : PluginBase {
   }
 }
