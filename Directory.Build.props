@@ -5,6 +5,7 @@
     <!-- <SignAssembly>true</SignAssembly> -->
     <!-- <AssemblyOriginatorKeyFile>$(SolutionDir)\HeuristicLab.snk</AssemblyOriginatorKeyFile> -->
     <DebugType>embedded</DebugType>
+    <OutDir>$(SolutionDir)bin\</OutDir>
   </PropertyGroup>
   <ItemGroup>
     <GlobalAnalyzerConfigFiles Include="$(SolutionDir)\.analyzerconfig" />
