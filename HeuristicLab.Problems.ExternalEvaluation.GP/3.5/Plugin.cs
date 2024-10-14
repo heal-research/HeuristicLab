@@ -30,7 +30,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation.GP {
   [PluginDependency("HeuristicLab.Encodings.SymbolicExpressionTreeEncoding", "3.4")]  
   [PluginDependency("HeuristicLab.Problems.DataAnalysis.Symbolic", "3.4")]
   [PluginDependency("HeuristicLab.Problems.ExternalEvaluation", "3.4")]
-  [PluginDependency("HeuristicLab.ProtobufCS", "2.4.1.473")]
+  [PluginDependency("HeuristicLab.Protobuf", "3.6")]
   public class HeuristicLabProblemsExternalEvaluationGPPlugin : PluginBase {
   }
 }

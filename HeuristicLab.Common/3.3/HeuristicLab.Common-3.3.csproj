@@ -5,6 +5,7 @@
     <RootNamespace>HeuristicLab.Common</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\HeuristicLab.ExtLibs\HeuristicLab.Attic\1.0.0\HeuristicLab.Attic.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.PluginInfrastructure\3.3\HeuristicLab.PluginInfrastructure-3.3.csproj" />
   </ItemGroup>
   <ItemGroup>
