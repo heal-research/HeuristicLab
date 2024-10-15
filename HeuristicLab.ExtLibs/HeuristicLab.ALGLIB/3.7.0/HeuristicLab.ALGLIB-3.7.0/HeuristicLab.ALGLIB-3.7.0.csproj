@@ -6,9 +6,6 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\HeuristicLab.PluginInfrastructure\3.3\HeuristicLab.PluginInfrastructure-3.3.csproj" />
-    <ProjectReference Include="..\ALGLIB-3.7.0\ALGLIB-3.7.0.csproj">
-      <TreatAsUsed>true</TreatAsUsed>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="ALGLIB changes by HEAL.txt" />

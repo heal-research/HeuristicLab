@@ -15,5 +15,6 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\HeuristicLab.PluginInfrastructure\3.3\HeuristicLab.PluginInfrastructure-3.3.csproj" />
+    <ProjectReference Include="..\..\HeuristicLab.Protobuf\3.6.1\HeuristicLab.Protobuf.csproj" />
   </ItemGroup>
 </Project>

@@ -17,6 +17,8 @@
     <ProjectReference Include="..\..\HeuristicLab.Encodings.SymbolicExpressionTreeEncoding\3.4\HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.4.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.ExtLibs\HeuristicLab.ALGLIB\3.17.0\ALGLIB-3.17.0\ALGLIB-3.17.0.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.ExtLibs\HeuristicLab.ALGLIB\3.7.0\ALGLIB-3.7.0\ALGLIB-3.7.0.csproj" Aliases="alglib_3_7" Private="true" ExcludeAssets="all" />
+    <ProjectReference Include="..\..\HeuristicLab.ExtLibs\HeuristicLab.ALGLIB\3.7.0\HeuristicLab.ALGLIB-3.7.0\HeuristicLab.ALGLIB-3.7.0.csproj" />
+    <ProjectReference Include="..\..\HeuristicLab.ExtLibs\HeuristicLab.LibSVM\3.12\HeuristicLab.LibSVM-3.12\HeuristicLab.LibSVM-3.12.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.ExtLibs\HeuristicLab.LibSVM\3.12\LibSVM-3.12\LibSVM-3.12.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.Operators\3.3\HeuristicLab.Operators-3.3.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.Optimization\3.3\HeuristicLab.Optimization-3.3.csproj" />

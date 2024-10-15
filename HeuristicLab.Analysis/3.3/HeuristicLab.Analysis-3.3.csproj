@@ -11,6 +11,7 @@
     <ProjectReference Include="..\..\HeuristicLab.Core\3.3\HeuristicLab.Core-3.3.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.Data\3.3\HeuristicLab.Data-3.3.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.ExtLibs\HeuristicLab.ALGLIB\3.17.0\ALGLIB-3.17.0\ALGLIB-3.17.0.csproj" />
+    <ProjectReference Include="..\..\HeuristicLab.ExtLibs\HeuristicLab.ALGLIB\3.17.0\HeuristicLab.ALGLIB-3.17.0\HeuristicLab.ALGLIB-3.17.0.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.Operators\3.3\HeuristicLab.Operators-3.3.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.Optimization.Operators\3.3\HeuristicLab.Optimization.Operators-3.3.csproj" />
     <ProjectReference Include="..\..\HeuristicLab.Optimization\3.3\HeuristicLab.Optimization-3.3.csproj" />

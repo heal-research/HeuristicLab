@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 using AutoDiff;
+using AD = AutoDiff;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
@@ -116,7 +117,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
       // use a transformator object which holds the state (variable list, parameter list, ...) for recursive transformation of the tree
       var transformator = new TreeToAutoDiffTermConverter(makeVariableWeightsVariable, addLinearScalingTerms, excludedNodes);
-      AutoDiff.Term term;
+      AD.Term term;
       try {
         term = transformator.ConvertToAutoDiff(tree.Root.GetSubtree(0));
         var parameterEntries = transformator.parameters.ToArray(); // guarantee same order for keys and values
@@ -138,8 +139,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
     // state for recursive transformation of trees 
     private readonly List<double> initialParamValues;
-    private readonly Dictionary<DataForVariable, AutoDiff.Variable> parameters;
-    private readonly List<AutoDiff.Variable> variables;
+    private readonly Dictionary<DataForVariable, AD.Variable> parameters;
+    private readonly List<AD.Variable> variables;
     private readonly bool makeVariableWeightsVariable;
     private readonly bool addLinearScalingTerms;
     private readonly HashSet<ISymbolicExpressionTreeNode> excludedNodes;
@@ -150,14 +151,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       this.excludedNodes = new HashSet<ISymbolicExpressionTreeNode>(excludedNodes);
 
       this.initialParamValues = new List<double>();
-      this.parameters = new Dictionary<DataForVariable, AutoDiff.Variable>();
-      this.variables = new List<AutoDiff.Variable>();
+      this.parameters = new Dictionary<DataForVariable, AD.Variable>();
+      this.variables = new List<AD.Variable>();
     }
 
-    private AutoDiff.Term ConvertToAutoDiff(ISymbolicExpressionTreeNode node) {
+    private AD.Term ConvertToAutoDiff(ISymbolicExpressionTreeNode node) {
       if (node.Symbol is Number) {
         initialParamValues.Add(((NumberTreeNode)node).Value);
-        var var = new AutoDiff.Variable();
+        var var = new AD.Variable();
         variables.Add(var);
         return var;
       }
@@ -174,9 +175,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
         if (makeVariableWeightsVariable && !excludedNodes.Contains(node)) {
           initialParamValues.Add(varNode.Weight);
-          var w = new AutoDiff.Variable();
+          var w = new AD.Variable();
           variables.Add(w);
-          return AutoDiff.TermBuilder.Product(w, par);
+          return AD.TermBuilder.Product(w, par);
         } else {
           return varNode.Weight * par;
         }
@@ -189,17 +190,17 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
           if (makeVariableWeightsVariable && !excludedNodes.Contains(node)) {
             initialParamValues.Add(factorVarNode.GetValue(variableValue));
-            var wVar = new AutoDiff.Variable();
+            var wVar = new AD.Variable();
             variables.Add(wVar);
 
-            products.Add(AutoDiff.TermBuilder.Product(wVar, par));
+            products.Add(AD.TermBuilder.Product(wVar, par));
           } else {
             var weight = factorVarNode.GetValue(variableValue);
             products.Add(weight * par);
           }
 
         }
-        return AutoDiff.TermBuilder.Sum(products);
+        return AD.TermBuilder.Sum(products);
       }
       if (node.Symbol is LaggedVariable) {
         var varNode = node as LaggedVariableTreeNode;
@@ -207,45 +208,45 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
         if (makeVariableWeightsVariable && !excludedNodes.Contains(node)) {
           initialParamValues.Add(varNode.Weight);
-          var w = new AutoDiff.Variable();
+          var w = new AD.Variable();
           variables.Add(w);
-          return AutoDiff.TermBuilder.Product(w, par);
+          return AD.TermBuilder.Product(w, par);
         } else {
           return varNode.Weight * par;
         }
       }
       if (node.Symbol is Addition) {
-        List<AutoDiff.Term> terms = new List<Term>();
+        List<AD.Term> terms = new List<Term>();
         foreach (var subTree in node.Subtrees) {
           terms.Add(ConvertToAutoDiff(subTree));
         }
-        return AutoDiff.TermBuilder.Sum(terms);
+        return AD.TermBuilder.Sum(terms);
       }
       if (node.Symbol is Subtraction) {
-        List<AutoDiff.Term> terms = new List<Term>();
+        List<AD.Term> terms = new List<Term>();
         for (int i = 0; i < node.SubtreeCount; i++) {
-          AutoDiff.Term t = ConvertToAutoDiff(node.GetSubtree(i));
+          AD.Term t = ConvertToAutoDiff(node.GetSubtree(i));
           if (i > 0) t = -t;
           terms.Add(t);
         }
         if (terms.Count == 1) return -terms[0];
-        else return AutoDiff.TermBuilder.Sum(terms);
+        else return AD.TermBuilder.Sum(terms);
       }
       if (node.Symbol is Multiplication) {
-        List<AutoDiff.Term> terms = new List<Term>();
+        List<AD.Term> terms = new List<Term>();
         foreach (var subTree in node.Subtrees) {
           terms.Add(ConvertToAutoDiff(subTree));
         }
         if (terms.Count == 1) return terms[0];
-        else return terms.Aggregate((a, b) => new AutoDiff.Product(a, b));
+        else return terms.Aggregate((a, b) => new AD.Product(a, b));
       }
       if (node.Symbol is Division) {
-        List<AutoDiff.Term> terms = new List<Term>();
+        List<AD.Term> terms = new List<Term>();
         foreach (var subTree in node.Subtrees) {
           terms.Add(ConvertToAutoDiff(subTree));
         }
         if (terms.Count == 1) return 1.0 / terms[0];
-        else return terms.Aggregate((a, b) => new AutoDiff.Product(a, 1.0 / b));
+        else return terms.Aggregate((a, b) => new AD.Product(a, 1.0 / b));
       }
       if (node.Symbol is Absolute) {
         var x1 = ConvertToAutoDiff(node.GetSubtree(0));
@@ -257,23 +258,23 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         return x1 / (TermBuilder.Power(1 + x2 * x2, 0.5));
       }
       if (node.Symbol is Logarithm) {
-        return AutoDiff.TermBuilder.Log(
+        return AD.TermBuilder.Log(
           ConvertToAutoDiff(node.GetSubtree(0)));
       }
       if (node.Symbol is Exponential) {
-        return AutoDiff.TermBuilder.Exp(
+        return AD.TermBuilder.Exp(
           ConvertToAutoDiff(node.GetSubtree(0)));
       }
       if (node.Symbol is Square) {
-        return AutoDiff.TermBuilder.Power(
+        return AD.TermBuilder.Power(
           ConvertToAutoDiff(node.GetSubtree(0)), 2.0);
       }
       if (node.Symbol is SquareRoot) {
-        return AutoDiff.TermBuilder.Power(
+        return AD.TermBuilder.Power(
           ConvertToAutoDiff(node.GetSubtree(0)), 0.5);
       }
       if (node.Symbol is Cube) {
-        return AutoDiff.TermBuilder.Power(
+        return AD.TermBuilder.Power(
           ConvertToAutoDiff(node.GetSubtree(0)), 3.0);
       }
       if (node.Symbol is CubeRoot) {
@@ -286,7 +287,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         var intPower = Math.Truncate(powerNode.Value);
         if (intPower != powerNode.Value)
           throw new NotSupportedException("Only integer powers are allowed in parameter optimization. Try to use exp() and log() instead of the power symbol.");
-        return AutoDiff.TermBuilder.Power(ConvertToAutoDiff(node.GetSubtree(0)), intPower);
+        return AD.TermBuilder.Power(ConvertToAutoDiff(node.GetSubtree(0)), intPower);
       }
       if (node.Symbol is Sine) {
         return sin(
@@ -315,8 +316,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       if (node.Symbol is StartSymbol) {
         if (addLinearScalingTerms) {
           // scaling variables α, β are given at the beginning of the parameter vector
-          var alpha = new AutoDiff.Variable();
-          var beta = new AutoDiff.Variable();
+          var alpha = new AD.Variable();
+          var beta = new AD.Variable();
           variables.Add(beta);
           variables.Add(alpha);
           var t = ConvertToAutoDiff(node.GetSubtree(0));
@@ -332,13 +333,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
     // for each factor variable value we need a parameter which represents a binary indicator for that variable & value combination
     // each binary indicator is only necessary once. So we only create a parameter if this combination is not yet available
-    private static Term FindOrCreateParameter(Dictionary<DataForVariable, AutoDiff.Variable> parameters,
+    private static Term FindOrCreateParameter(Dictionary<DataForVariable, AD.Variable> parameters,
       string varName, string varValue = "", int lag = 0) {
       var data = new DataForVariable(varName, varValue, lag);
 
-      if (!parameters.TryGetValue(data, out AutoDiff.Variable par)) {
+      if (!parameters.TryGetValue(data, out AD.Variable par)) {
         // not found -> create new parameter and entries in names and values lists
-        par = new AutoDiff.Variable();
+        par = new AD.Variable();
         parameters.Add(data, par);
       }
       return par;
