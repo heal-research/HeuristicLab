@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net9.0-windows</TargetFramework>
+    <TargetFramework>net8.0-windows</TargetFramework>
     <OutputType>Library</OutputType>
     <RootNamespace>HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis.Views</RootNamespace>
     <UseWindowsForms>true</UseWindowsForms>
