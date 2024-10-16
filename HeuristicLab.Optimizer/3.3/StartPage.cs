@@ -31,6 +31,7 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
+using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Optimizer {
   [View("Start Page")]
@@ -89,6 +90,7 @@ namespace HeuristicLab.Optimizer {
 
     private void LoadSamples(object state) {
       progress = Progress.ShowOnControl(samplesListView, "Loading...");
+      var samplesWithErrors = new List<(string SampleName, Exception Exception)>();
       try {
         var assembly = Assembly.GetExecutingAssembly();
         var samples = assembly.GetManifestResourceNames().Where(x => x.EndsWith(SampleNameSuffix));
@@ -99,7 +101,11 @@ namespace HeuristicLab.Optimizer {
           var sampleList = entry.Value;
           foreach (var sampleName in sampleList) {
             string resourceName = SampleNamePrefix + sampleName + SampleNameSuffix;
-            LoadSample(resourceName, assembly, group, count);
+            try {
+              LoadSample(resourceName, assembly, group, count);
+            } catch (Exception exc) {
+              samplesWithErrors.Add((sampleName, exc));
+            }
           }
         }
 
@@ -107,12 +113,26 @@ namespace HeuristicLab.Optimizer {
         var uncategorizedSamples = samples.Except(categorizedSamples);
 
         foreach (var resourceName in uncategorizedSamples) {
-          LoadSample(resourceName, assembly, uncategorizedGroup, count);
+          try {
+            LoadSample(resourceName, assembly, uncategorizedGroup, count);
+          } catch (Exception exc) {
+            string sampleName = resourceName;
+            if (sampleName.StartsWith(SampleNamePrefix)) sampleName = sampleName.Substring(SampleNamePrefix.Length);
+            if (sampleName.EndsWith(SampleNameSuffix)) sampleName = sampleName.Substring(0, sampleName.Length - SampleNameSuffix.Length);
+            samplesWithErrors.Add((sampleName, exc));
+          }
         }
 
         OnAllSamplesLoaded();
       } finally {
         Progress.HideFromControl(samplesListView);
+      }
+      if (samplesWithErrors.Any()) {
+        string errorMessage = "The following samples could not be loaded:" 
+                              + Environment.NewLine
+                              + string.Join(Environment.NewLine, samplesWithErrors.Select(t => t.SampleName));
+        var exc = new AggregateException(samplesWithErrors.Select(t => t.Exception));
+        ErrorHandling.ShowErrorDialog(samplesListView, errorMessage, exc);
       }
     }
 
