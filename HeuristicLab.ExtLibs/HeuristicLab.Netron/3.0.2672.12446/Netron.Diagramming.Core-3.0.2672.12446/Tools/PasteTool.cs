@@ -5,6 +5,7 @@ using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Windows.Forms;
 namespace Netron.Diagramming.Core {
+#pragma warning disable SYSLIB0011
   // ----------------------------------------------------------------------
   /// <summary>
   /// This tool pastes items from the clipboard to the canvas.
@@ -131,5 +132,5 @@ namespace Netron.Diagramming.Core {
       }
     }
   }
-
+#pragma warning restore SYSLIB0011
 }

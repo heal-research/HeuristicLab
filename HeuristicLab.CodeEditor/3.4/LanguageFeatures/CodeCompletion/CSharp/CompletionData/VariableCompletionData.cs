@@ -21,12 +21,13 @@
 
 using System;
 using ICSharpCode.AvalonEdit.CodeCompletion;
-using ICSharpCode.NRefactory.Completion;
-using ICSharpCode.NRefactory.CSharp;
-using ICSharpCode.NRefactory.TypeSystem;
+//using ICSharpCode.NRefactory.Completion;
+//using ICSharpCode.NRefactory.CSharp;
+//using ICSharpCode.NRefactory.TypeSystem;
 
 namespace HeuristicLab.CodeEditor {
-  internal class VariableCompletionData : CompletionData, IVariableCompletionData {
+  internal class VariableCompletionData /*: CompletionData, IVariableCompletionData*/ {
+    /*
     private static readonly CSharpAmbience Ambience = new CSharpAmbience();
 
     #region IVariableCompletionData Members
@@ -43,5 +44,6 @@ namespace HeuristicLab.CodeEditor {
       Description = Ambience.ConvertVariable(variable);
       Image = CompletionImage.Field.BaseImage;
     }
+    */
   }
 }

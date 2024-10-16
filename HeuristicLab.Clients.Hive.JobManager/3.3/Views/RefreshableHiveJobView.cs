@@ -528,32 +528,29 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       if (Content != null && !SuppressEvents) Content.RefreshAutomatically = refreshAutomaticallyCheckBox.Checked;
     }
 
-    private void refreshButton_Click(object sender, EventArgs e) {
-      var invoker = new Action<RefreshableJob>(HiveClient.LoadJob);
-      invoker.BeginInvoke(Content, (ar) => {
-        try {
-          invoker.EndInvoke(ar);
-        } catch (Exception ex) {
-          ThreadPool.QueueUserWorkItem(delegate (object exception) { ErrorHandling.ShowErrorDialog(this, (Exception)exception); }, ex);
-        }
-      }, null);
+    private async void refreshButton_Click(object sender, EventArgs e) {
+      try {
+        await System.Threading.Tasks.Task.Run(() => {
+          HiveClient.LoadJob(Content);
+        });
+      } catch (Exception ex) {
+        ErrorHandling.ShowErrorDialog(this, ex);
+      }
       UpdateSelectorDialog();
     }
 
-    private void updateButton_Click(object sender, EventArgs e) {
+    private async void updateButton_Click(object sender, EventArgs e) {
       if (Content.ExecutionState == ExecutionState.Stopped) {
         MessageBox.Show("Job cannot be updated once it stopped.", "HeuristicLab Hive Job Manager", MessageBoxButtons.OK, MessageBoxIcon.Information);
         return;
       }
-
-      var invoker = new Action<RefreshableJob>(HiveClient.UpdateJob);
-      invoker.BeginInvoke(Content, (ar) => {
-        try {
-          invoker.EndInvoke(ar);
-        } catch (Exception ex) {
-          ThreadPool.QueueUserWorkItem(delegate (object exception) { ErrorHandling.ShowErrorDialog(this, (Exception)exception); }, ex);
-        }
-      }, null);
+      try {
+        await System.Threading.Tasks.Task.Run(() => {
+          HiveClient.UpdateJob(Content);
+        });
+      } catch (Exception ex) {
+        ErrorHandling.ShowErrorDialog(this, ex);
+      }
       UpdateSelectorDialog();
     }
 

@@ -32,10 +32,11 @@ using HeuristicLab.Collections;
 using HeuristicLab.Common;
 using HeuristicLab.Common.Resources;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Auxiliary;
 using HEAL.Attic;
 using HeuristicLab.PluginInfrastructure;
 using Microsoft.CSharp;
+using HeuristicLab.PluginInfrastructure.TypeNameParsing;
+using System.Runtime.Loader;
 
 namespace HeuristicLab.Operators.Programmable {
 
@@ -259,7 +260,9 @@ namespace HeuristicLab.Operators.Programmable {
       // mscorlib automatically included (would cause duplicate)
       typeof(System.ComponentModel.INotifyPropertyChanged).Assembly, // System.dll
       typeof(System.Linq.Enumerable).Assembly,  // System.Core.dll
+#if NETFRAMEWORK
       typeof(System.Data.Linq.DataContext).Assembly, // System.Data.Linq.dll
+#endif
       typeof(HeuristicLab.Common.IDeepCloneable).Assembly,
       typeof(HeuristicLab.Core.Item).Assembly,
       typeof(HeuristicLab.Data.IntValue).Assembly,
@@ -271,7 +274,7 @@ namespace HeuristicLab.Operators.Programmable {
 
     protected static Dictionary<Assembly, bool> DiscoverAssemblies() {
       var assemblies = new Dictionary<Assembly, bool>();
-      foreach (var a in AppDomain.CurrentDomain.GetAssemblies()) {
+      foreach (var a in AssemblyLoadContext.Default.Assemblies) {
         try {
           if (File.Exists(a.Location)) {
             assemblies.Add(a, false);

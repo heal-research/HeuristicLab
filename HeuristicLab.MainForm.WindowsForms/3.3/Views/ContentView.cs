@@ -23,6 +23,7 @@ using System;
 using System.Reflection;
 using System.Windows.Forms;
 using HeuristicLab.Common;
+using MethodInvoker = System.Windows.Forms.MethodInvoker;
 
 namespace HeuristicLab.MainForm.WindowsForms {
   public partial class ContentView : View, IContentView {

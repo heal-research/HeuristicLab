@@ -21,13 +21,14 @@
 
 using System.Collections.Generic;
 using System.Linq;
-using ICSharpCode.NRefactory.Completion;
-using ICSharpCode.NRefactory.CSharp;
-using ICSharpCode.NRefactory.CSharp.Completion;
-using ICSharpCode.NRefactory.TypeSystem;
+//using ICSharpCode.NRefactory.Completion;
+//using ICSharpCode.NRefactory.CSharp;
+//using ICSharpCode.NRefactory.CSharp.Completion;
+//using ICSharpCode.NRefactory.TypeSystem;
 
 namespace HeuristicLab.CodeEditor {
-  internal class CSharpCodeCompletionStrategy : CodeCompletionStrategy {
+  internal class CSharpCodeCompletionStrategy /*: CodeCompletionStrategy*/ {
+    /*
     private IProjectContent projectContent = new CSharpProjectContent();
 
     public CSharpCodeCompletionStrategy(CodeEditor codeEditor)
@@ -117,5 +118,6 @@ namespace HeuristicLab.CodeEditor {
       var unresolvedFile = CSharpParsingHelpers.CreateCSharpUnresolvedFile(document);
       projectContent = projectContent.AddOrUpdateFiles(unresolvedFile);
     }
+    */
   }
 }

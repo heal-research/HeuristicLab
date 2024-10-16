@@ -45,24 +45,29 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
       get { return itemTypes; }
     }
 
-    public void AddItemToBuilder(IItem item, string name, SolutionMessage.Builder builder) {
+    public void AddItemToBuilder(IItem item, string name, SolutionMessage builder) {
       ValueTypeValue<bool> value = (item as ValueTypeValue<bool>);
       if (value != null) {
-        SolutionMessage.Types.BoolVariable.Builder var = SolutionMessage.Types.BoolVariable.CreateBuilder();
-        var.SetName(name).SetData(value.Value);
-        builder.AddBoolVars(var.Build());
+        SolutionMessage.Types.BoolVariable var = new SolutionMessage.Types.BoolVariable();
+        var.Name = name;
+        var.Data = value.Value;
+        builder.BoolVars.Add(var);
       } else {
         ValueTypeArray<bool> array = (item as ValueTypeArray<bool>);
         if (array != null) {
-          SolutionMessage.Types.BoolArrayVariable.Builder var = SolutionMessage.Types.BoolArrayVariable.CreateBuilder();
-          var.SetName(name).AddRangeData(array).SetLength(array.Length);
-          builder.AddBoolArrayVars(var.Build());
+          SolutionMessage.Types.BoolArrayVariable var = new SolutionMessage.Types.BoolArrayVariable();
+          var.Name = name;
+          var.Data.AddRange(array);
+          var.Length = array.Length;
+          builder.BoolArrayVars.Add(var);
         } else {
           ValueTypeMatrix<bool> matrix = (item as ValueTypeMatrix<bool>);
           if (matrix != null) {
-            SolutionMessage.Types.BoolArrayVariable.Builder var = SolutionMessage.Types.BoolArrayVariable.CreateBuilder();
-            var.SetName(name).AddRangeData(matrix.AsEnumerable()).SetLength(matrix.Columns);
-            builder.AddBoolArrayVars(var.Build());
+            SolutionMessage.Types.BoolArrayVariable var = new SolutionMessage.Types.BoolArrayVariable();
+            var.Name = name;
+            var.Data.AddRange(matrix.AsEnumerable());
+            var.Length = matrix.Columns;
+            builder.BoolArrayVars.Add(var);
           } else {
             throw new ArgumentException(ItemName + ": Item is not of a supported type.", "item");
           }

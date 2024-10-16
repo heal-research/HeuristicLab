@@ -29,6 +29,7 @@ using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.PluginInfrastructure;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using ReferenceEqualityComparer = HeuristicLab.Common.ReferenceEqualityComparer;
 
 namespace HeuristicLab.Tests {
   [TestClass]

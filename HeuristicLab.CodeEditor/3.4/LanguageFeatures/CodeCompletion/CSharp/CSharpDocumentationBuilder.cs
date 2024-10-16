@@ -47,15 +47,16 @@ using System.Windows.Documents;
 using System.Windows.Media;
 using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Utils;
-using ICSharpCode.NRefactory.Editor;
-using ICSharpCode.NRefactory.TypeSystem;
-using ICSharpCode.NRefactory.Xml;
+//using ICSharpCode.NRefactory.Editor;
+//using ICSharpCode.NRefactory.TypeSystem;
+//using ICSharpCode.NRefactory.Xml;
 
 namespace HeuristicLab.CodeEditor {
   /// <summary>
   /// Builds a FlowDocument for XML documentation.
   /// </summary>
   public class CSharpDocumentationBuilder {
+    /*
     const string SyntaxHighlighting = "C#";
     const string FontFamily = "Consolas";
     const double FontSize = 13.0;
@@ -506,5 +507,6 @@ namespace HeuristicLab.CodeEditor {
       AddInline(new Run(text));
       ignoreWhitespace = trim; // trim start of next text element
     }
+    */
   }
 }

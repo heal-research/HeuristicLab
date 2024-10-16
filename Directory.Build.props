@@ -1,0 +1,12 @@
+<Project>
+  <PropertyGroup>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <SolutionDir>$(MSBuildThisFileDirectory)</SolutionDir>
+    <!-- <SignAssembly>true</SignAssembly> -->
+    <!-- <AssemblyOriginatorKeyFile>$(SolutionDir)\HeuristicLab.snk</AssemblyOriginatorKeyFile> -->
+    <DebugType>embedded</DebugType>
+  </PropertyGroup>
+  <ItemGroup>
+    <GlobalAnalyzerConfigFiles Include="$(SolutionDir)\.analyzerconfig" />
+  </ItemGroup>
+</Project>

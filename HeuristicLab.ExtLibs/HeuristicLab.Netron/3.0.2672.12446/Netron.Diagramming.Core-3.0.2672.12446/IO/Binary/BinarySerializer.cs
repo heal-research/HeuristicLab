@@ -5,6 +5,7 @@ using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Windows.Forms;
 namespace Netron.Diagramming.Core {
+#pragma warning disable SYSLIB0011
   /// <summary>
   /// Utility class to binary (de)serialize a diagram (from) to file
   /// </summary>
@@ -104,4 +105,5 @@ namespace Netron.Diagramming.Core {
 
     #endregion
   }
+#pragma warning restore SYSLIB0011
 }

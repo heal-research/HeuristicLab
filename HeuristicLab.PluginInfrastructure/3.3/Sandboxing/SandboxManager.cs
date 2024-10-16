@@ -26,28 +26,19 @@ using System.Security.Permissions;
 using HeuristicLab.PluginInfrastructure.Manager;
 
 namespace HeuristicLab.PluginInfrastructure.Sandboxing {
+  //TODO: Delete this class after Hive drone is rewritten
   public static class SandboxManager {
     /// <summary>
     /// Returns a new AppDomain with loaded assemblies/plugins from applicationBase
     /// </summary>    
     public static AppDomain CreateAndInitSandbox(string appDomainName, string applicationBase, string configFilePath) {
-      PermissionSet pSet;
-      pSet = new PermissionSet(PermissionState.Unrestricted);
-
-      AppDomainSetup setup = new AppDomainSetup();
-      setup.PrivateBinPath = applicationBase;
-      setup.ApplicationBase = applicationBase;
-      setup.ConfigurationFile = configFilePath;
-
-      Type applicationManagerType = typeof(DefaultApplicationManager);
-      AppDomain applicationDomain = AppDomain.CreateDomain(appDomainName, null, setup, pSet, null);
-      DefaultApplicationManager applicationManager = (DefaultApplicationManager)applicationDomain.CreateInstanceAndUnwrap(applicationManagerType.Assembly.FullName, applicationManagerType.FullName, true, BindingFlags.NonPublic | BindingFlags.Instance, null, null, null, null);
+      DefaultApplicationManager applicationManager = new DefaultApplicationManager();
 
       PluginManager pm = new PluginManager(applicationBase);
       pm.DiscoverAndCheckPlugins();
-      applicationManager.PrepareApplicationDomain(pm.Applications, pm.Plugins);
+      applicationManager.PrepareApplicationDomain(pm.Plugins);
 
-      return applicationDomain;
+      return AppDomain.CurrentDomain;
     }
   }
 }

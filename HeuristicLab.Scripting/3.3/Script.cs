@@ -20,20 +20,21 @@
 #endregion
 
 using System;
-using System.CodeDom;
-using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Loader;
 using System.Text;
 using System.Text.RegularExpressions;
 using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Common.Resources;
 using HeuristicLab.Core;
-using Microsoft.CSharp;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.Emit;
 
 namespace HeuristicLab.Scripting {
   [StorableType("0FA4F218-E1F5-4C09-9C2F-12B32D4EC373")]
@@ -55,8 +56,8 @@ namespace HeuristicLab.Scripting {
       }
     }
 
-    private CompilerErrorCollection compileErrors;
-    public CompilerErrorCollection CompileErrors {
+    private List<Diagnostic> compileErrors;
+    public List<Diagnostic> CompileErrors {
       get { return compileErrors; }
       private set {
         compileErrors = value;
@@ -72,7 +73,7 @@ namespace HeuristicLab.Scripting {
       : base(original, cloner) {
       code = original.code;
       if (original.compileErrors != null)
-        compileErrors = new CompilerErrorCollection(original.compileErrors);
+        compileErrors = new List<Diagnostic>(original.compileErrors);
     }
     protected Script()
       : base("Script", "An empty script.") {
@@ -84,58 +85,61 @@ namespace HeuristicLab.Scripting {
     #endregion
 
     #region Compilation
-    protected virtual CompilerResults DoCompile() {
-      var parameters = new CompilerParameters {
-        GenerateExecutable = false,
-        GenerateInMemory = true,
-        IncludeDebugInformation = true,
-        WarningLevel = 4
-      };
+    protected virtual EmitResult DoCompile(out Assembly assembly) {
+      var syntaxTree = CSharpSyntaxTree.ParseText(code,new CSharpParseOptions(LanguageVersion.CSharp10));
 
-      parameters.ReferencedAssemblies.AddRange(
-        GetAssemblies()
-        .Select(a => a.Location)
-        .ToArray());
+      var references = GetAssemblies()
+        .Select(a => MetadataReference.CreateFromFile(a.Location))
+        .Cast<MetadataReference>();
 
-      var codeProvider = new CSharpCodeProvider(
-        new Dictionary<string, string> {
-          { "CompilerVersion", "v4.0"} // support C# 4.0 syntax
-        });
+      var compilation = CSharpCompilation.Create(
+        assemblyName: Path.GetRandomFileName(),
+        syntaxTrees: new[] { syntaxTree },
+        references: references,
+        options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary)
+        
+          .WithOptimizationLevel(OptimizationLevel.Debug)
+          .WithWarningLevel(4)
+      );
 
-      return codeProvider.CompileAssemblyFromSource(parameters, code);
-    }
-
-    public virtual Assembly Compile() {
-      var results = DoCompile();
-      CompileErrors = results.Errors;
-      if (results.Errors.HasErrors) {
-        var sb = new StringBuilder();
-        foreach (CompilerError error in results.Errors) {
-          sb.Append(error.Line).Append(':')
-            .Append(error.Column).Append(": ")
-            .AppendLine(error.ErrorText);
+      using (var ms = new MemoryStream()) {
+        var result = compilation.Emit(ms);
+        if (result.Success) {
+          ms.Seek(0, SeekOrigin.Begin);
+          assembly = Assembly.Load(ms.ToArray());
+        } else {
+          assembly = null;
         }
-        throw new CompilationException(string.Format("Compilation of \"{0}\" failed:{1}{2}",
-          Name, Environment.NewLine, sb.ToString()));
-      } else {
-        return results.CompiledAssembly;
+        return result;
       }
     }
 
+    public virtual Assembly Compile() {
+      var result = DoCompile(out var assembly);
+      CompileErrors = result.Diagnostics.ToList();
+      if (!result.Success) {
+        var sb = new StringBuilder();
+        foreach (var diagnostic in CompileErrors) {
+          sb.Append(diagnostic.Location.GetLineSpan().StartLinePosition.Line + 1).Append(':')
+            .Append(diagnostic.Location.GetLineSpan().StartLinePosition.Character + 1).Append(": ")
+            .AppendLine(diagnostic.GetMessage());
+        }
+        throw new CompilationException($"Compilation of \"{Name}\" failed:{Environment.NewLine}{sb}");
+      }
+      return assembly;
+    }
+
     public virtual IEnumerable<Assembly> GetAssemblies() {
-      var assemblies = AppDomain.CurrentDomain.GetAssemblies()
+      var assemblies = AssemblyLoadContext.Default.Assemblies
         .Where(a => !a.IsDynamic && File.Exists(a.Location)
                  && !ExcludedAssemblyFileNames.Contains(Path.GetFileName(a.Location)))
         .GroupBy(x => Regex.Replace(Path.GetFileName(x.Location), @"-[\d.]+\.dll$", ""))
         .Select(x => x.OrderByDescending(y => y.GetName().Version).First())
         .ToList();
-      assemblies.Add(typeof(Microsoft.CSharp.RuntimeBinder.Binder).Assembly); // for dlr functionality
+      assemblies.Add(typeof(object).Assembly); // include mscorlib
+      assemblies.Add(typeof(Enumerable).Assembly); // include System.Linq
+      assemblies.Add(typeof(Microsoft.CSharp.RuntimeBinder.Binder).Assembly); // for dynamic functionality include Microsoft.CSharp  
       return assemblies;
-    }
-
-    protected virtual CodeCompileUnit CreateCompilationUnit() {
-      var unit = new CodeSnippetCompileUnit(code);
-      return unit;
     }
     #endregion
 

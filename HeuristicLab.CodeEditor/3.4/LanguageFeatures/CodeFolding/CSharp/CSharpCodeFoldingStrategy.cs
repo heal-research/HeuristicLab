@@ -23,7 +23,8 @@ using System.Linq;
 using CSharpBinding.Parser;
 
 namespace HeuristicLab.CodeEditor {
-  internal class CSharpCodeFoldingStrategy : CodeFoldingStrategy {
+  internal class CSharpCodeFoldingStrategy /*: CodeFoldingStrategy */{
+    /*
     public CSharpCodeFoldingStrategy(CodeEditor codeEditor) : base(codeEditor) { }
 
     protected override CodeFoldingResult GetCodeFoldingResult(out int firstErrorOffset) {
@@ -48,5 +49,6 @@ namespace HeuristicLab.CodeEditor {
 
       return result;
     }
+    */
   }
 }

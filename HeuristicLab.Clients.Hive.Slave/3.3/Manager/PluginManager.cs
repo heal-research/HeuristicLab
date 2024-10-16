@@ -28,6 +28,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading;
 using HeuristicLab.Core;
 using CoreProperties = HeuristicLab.Clients.Hive.SlaveCore.Properties;
+#pragma warning disable SYSLIB0011
 
 namespace HeuristicLab.Clients.Hive.SlaveCore {
   public class PluginManager {

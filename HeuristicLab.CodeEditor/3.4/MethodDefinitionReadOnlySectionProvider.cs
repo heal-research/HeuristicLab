@@ -22,10 +22,11 @@
 using System;
 using System.Collections.Generic;
 using ICSharpCode.AvalonEdit.Editing;
-using ICSharpCode.NRefactory.Editor;
+//using ICSharpCode.NRefactory.Editor;
 
 namespace HeuristicLab.CodeEditor {
-  internal class MethodDefinitionReadOnlySectionProvider : IReadOnlySectionProvider {
+  internal class MethodDefinitionReadOnlySectionProvider /*: IReadOnlySectionProvider */ {
+    /*
     private readonly CodeEditor codeEditor;
 
     private IDocument Doc { get { return codeEditor.TextEditor.Document; } }
@@ -49,5 +50,6 @@ namespace HeuristicLab.CodeEditor {
       if (offset >= Prefix.Length && offset + length <= Doc.TextLength - Suffix.Length)
         yield return segment;
     }
-  }
+    */
+  } 
 }

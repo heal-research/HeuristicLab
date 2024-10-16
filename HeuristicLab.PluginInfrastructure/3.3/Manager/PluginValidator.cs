@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Loader;
 using System.Security;
 using System.Text;
 
@@ -33,7 +34,7 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
   /// Discovers all installed plugins in the plugin directory. Checks correctness of plugin meta-data and if
   /// all plugin files are available and checks plugin dependencies. 
   /// </summary>
-  internal sealed class PluginValidator : MarshalByRefObject {
+  internal sealed class PluginValidator {
     // private class to store plugin dependency declarations while reflecting over plugins
     private class PluginDependency {
       public string Name { get; private set; }
@@ -45,19 +46,9 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
       }
     }
 
-
     internal event EventHandler<PluginInfrastructureEventArgs> PluginLoaded;
 
-    private Dictionary<PluginDescription, IEnumerable<PluginDependency>> pluginDependencies;
-
-    private List<ApplicationDescription> applications;
-    internal IEnumerable<ApplicationDescription> Applications {
-      get {
-        if (string.IsNullOrEmpty(PluginDir)) throw new InvalidOperationException("PluginDir is not set.");
-        if (applications == null) DiscoverAndCheckPlugins();
-        return applications;
-      }
-    }
+    internal string PluginDir { get; set; }
 
     private IEnumerable<PluginDescription> plugins;
     internal IEnumerable<PluginDescription> Plugins {
@@ -68,43 +59,36 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
       }
     }
 
-    internal string PluginDir { get; set; }
+    private Dictionary<PluginDescription, IEnumerable<PluginDependency>> pluginDependencies;
+
+    private Dictionary<string, Assembly> discoveryContextAssemblies;
 
     internal PluginValidator() {
-      this.pluginDependencies = new Dictionary<PluginDescription, IEnumerable<PluginDependency>>();
-
-      // ReflectionOnlyAssemblyResolveEvent must be handled because we load assemblies from the plugin path 
-      // (which is not listed in the default assembly lookup locations)
-      AppDomain.CurrentDomain.ReflectionOnlyAssemblyResolve += ReflectionOnlyAssemblyResolveEventHandler;
+      pluginDependencies = new Dictionary<PluginDescription, IEnumerable<PluginDependency>>();
+      discoveryContextAssemblies = new Dictionary<string, Assembly>();
     }
-
-    private Dictionary<string, Assembly> reflectionOnlyAssemblies = new Dictionary<string, Assembly>();
-    private Assembly ReflectionOnlyAssemblyResolveEventHandler(object sender, ResolveEventArgs args) {
-      if (reflectionOnlyAssemblies.ContainsKey(args.Name))
-        return reflectionOnlyAssemblies[args.Name];
-      else
-        return Assembly.ReflectionOnlyLoad(args.Name);
-    }
-
 
     /// <summary>
     /// Init first clears all internal datastructures (including plugin lists)
-    /// 1. All assemblies in the plugins directory are loaded into the reflection only context.
+    /// 1. All assemblies in the plugins directory are loaded into an AssemblyLoadContext.
     /// 2. The validator checks if all necessary files for each plugin are available.
     /// 3. The validator checks if all declared plugin assemblies can be loaded.
     /// 4. The validator builds the tree of plugin descriptions (dependencies)
     /// 5. The validator checks if there are any cycles in the plugin dependency graph and disables plugin with circular dependencies
     /// 6. The validator checks for each plugin if any dependency is disabled.
-    /// 7. All plugins that are not disabled are loaded into the execution context.
+    /// 7. All plugins that are not disabled are loaded into the default assembly context.
     /// 8. Each loaded plugin (all assemblies) is searched for a types that implement IPlugin
-    ///    then one instance of each IPlugin type is activated and the OnLoad hook is called.
-    /// 9. All types implementing IApplication are discovered
+    ///    then one instance of each IPlugin type is activated and the OnLoad hook is called.    
     /// </summary>
     internal void DiscoverAndCheckPlugins() {
       pluginDependencies.Clear();
+      discoveryContextAssemblies.Clear();
 
-      IEnumerable<Assembly> reflectionOnlyAssemblies = ReflectionOnlyLoadDlls(PluginDir);
-      IEnumerable<PluginDescription> pluginDescriptions = GatherPluginDescriptions(reflectionOnlyAssemblies);
+      AssemblyLoadContext discoveryContext = new AssemblyLoadContext("PluginDiscoverContext", isCollectible: true);
+      var discoveredAssemblies = DiscoveryOnlyLoadDlls(PluginDir, discoveryContext);
+      discoveryContext.Unload();
+
+      IEnumerable<PluginDescription> pluginDescriptions = GatherPluginDescriptions(discoveredAssemblies);
       CheckPluginFiles(pluginDescriptions);
 
       // check if all plugin assemblies can be loaded
@@ -124,7 +108,7 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
 
       // test full loading (in contrast to reflection only loading) of plugins
       // disables plugins that are not loaded correctly
-      CheckExecutionContextLoad(pluginDescriptions);
+      CheckExecutionContextLoad(pluginDescriptions, discoveredAssemblies);
 
       // 2nd time recursively check if all necessary plugins have been loaded successfully and not disabled
       // disable plugins with for which dependencies could not be loaded successfully
@@ -139,55 +123,26 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
       // load the enabled plugins
       LoadPlugins(pluginDescriptions);
 
+      //AssemblyLoadContext.Unload only works if there are no references left to the context and assemblies
+      discoveryContextAssemblies.Clear();
+
       plugins = pluginDescriptions;
-      DiscoverApplications(pluginDescriptions);
     }
 
-    private void DiscoverApplications(IEnumerable<PluginDescription> pluginDescriptions) {
-      applications = new List<ApplicationDescription>();
-      foreach (IApplication application in GetApplications(pluginDescriptions)) {
-        Type appType = application.GetType();
-        ApplicationAttribute attr = (from x in appType.GetCustomAttributes(typeof(ApplicationAttribute), false)
-                                     select (ApplicationAttribute)x).Single();
-        ApplicationDescription info = new ApplicationDescription();
-        PluginDescription declaringPlugin = GetDeclaringPlugin(appType, pluginDescriptions);
-        info.Name = application.Name;
-        info.Version = declaringPlugin.Version;
-        info.Description = application.Description;
-        info.AutoRestart = attr.RestartOnErrors;
-        info.DeclaringAssemblyName = appType.Assembly.GetName().Name;
-        info.DeclaringTypeName = appType.Namespace + "." + application.GetType().Name;
-
-        applications.Add(info);
-      }
-    }
-
-    private static IEnumerable<IApplication> GetApplications(IEnumerable<PluginDescription> pluginDescriptions) {
-      return from asm in AppDomain.CurrentDomain.GetAssemblies()
-             from t in asm.GetTypes()
-             where typeof(IApplication).IsAssignableFrom(t) &&
-               !t.IsAbstract && !t.IsInterface && !t.HasElementType
-             where GetDeclaringPlugin(t, pluginDescriptions).PluginState != PluginState.Disabled
-             select (IApplication)Activator.CreateInstance(t);
-    }
-
-    private IEnumerable<Assembly> ReflectionOnlyLoadDlls(string baseDir) {
+    private IEnumerable<Assembly> DiscoveryOnlyLoadDlls(string baseDir, AssemblyLoadContext discoveryContext) {
       List<Assembly> assemblies = new List<Assembly>();
       // recursively load .dll files in subdirectories
       foreach (string dirName in Directory.GetDirectories(baseDir)) {
-        assemblies.AddRange(ReflectionOnlyLoadDlls(dirName));
+        assemblies.AddRange(DiscoveryOnlyLoadDlls(dirName, discoveryContext));
       }
       // try to load each .dll file in the plugin directory into the reflection only context
       foreach (string filename in Directory.GetFiles(baseDir, "*.dll").Union(Directory.GetFiles(baseDir, "*.exe"))) {
         try {
-          Assembly asm = Assembly.ReflectionOnlyLoadFrom(filename);
+          Assembly asm = discoveryContext.LoadFromAssemblyPath(filename);
           RegisterLoadedAssembly(asm);
           assemblies.Add(asm);
-        }
-        catch (BadImageFormatException) { } // just ignore the case that the .dll file is not a CLR assembly (e.g. a native dll)
-        catch (FileLoadException) { }
-        catch (SecurityException) { }
-        catch (ReflectionTypeLoadException) { } // referenced assemblies are missing
+        } catch (BadImageFormatException) { } // just ignore the case that the .dll file is not a CLR assembly (e.g. a native dll)
+        catch (FileLoadException) { } catch (SecurityException) { } catch (ReflectionTypeLoadException) { } // referenced assemblies are missing
       }
       return assemblies;
     }
@@ -204,7 +159,7 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
             // the assembly must have been loaded in ReflectionOnlyDlls
             // so we simply determine the name of the assembly and try to find it in the cache of loaded assemblies
             var asmName = AssemblyName.GetAssemblyName(asmLocation);
-            if (!reflectionOnlyAssemblies.ContainsKey(asmName.FullName)) {
+            if (!discoveryContextAssemblies.ContainsKey(asmName.FullName)) {
               missingAssemblies.Add(asmName.FullName);
             }
           }
@@ -216,24 +171,19 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
             }
             desc.Disable(errorStrBuiler.ToString());
           }
-        }
-        catch (BadImageFormatException ex) {
+        } catch (BadImageFormatException ex) {
           // disable the plugin
           desc.Disable("Problem while loading plugin assemblies:" + Environment.NewLine + "BadImageFormatException: " + ex.Message);
-        }
-        catch (FileNotFoundException ex) {
+        } catch (FileNotFoundException ex) {
           // disable the plugin
           desc.Disable("Problem while loading plugin assemblies:" + Environment.NewLine + "FileNotFoundException: " + ex.Message);
-        }
-        catch (FileLoadException ex) {
+        } catch (FileLoadException ex) {
           // disable the plugin
           desc.Disable("Problem while loading plugin assemblies:" + Environment.NewLine + "FileLoadException: " + ex.Message);
-        }
-        catch (ArgumentException ex) {
+        } catch (ArgumentException ex) {
           // disable the plugin
           desc.Disable("Problem while loading plugin assemblies:" + Environment.NewLine + "ArgumentException: " + ex.Message);
-        }
-        catch (SecurityException ex) {
+        } catch (SecurityException ex) {
           // disable the plugin
           desc.Disable("Problem while loading plugin assemblies:" + Environment.NewLine + "SecurityException: " + ex.Message);
         }
@@ -260,14 +210,10 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
         }
         // ignore exceptions. Just don't yield a plugin description when an exception is thrown
         catch (FileNotFoundException) {
-        }
-        catch (FileLoadException) {
-        }
-        catch (InvalidPluginException) {
-        }
-        catch (TypeLoadException) {
-        }
-        catch (MissingMemberException) {
+        } catch (FileLoadException) {
+        } catch (InvalidPluginException) {
+        } catch (TypeLoadException) {
+        } catch (MissingMemberException) {
         }
       }
       return pluginDescriptions;
@@ -339,8 +285,7 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
         if (dependencyAttr.ConstructorArguments.Count > 1) {
           try {
             version = new Version((string)dependencyAttr.ConstructorArguments[1].Value); // might throw FormatException
-          }
-          catch (FormatException ex) {
+          } catch (FormatException ex) {
             throw new InvalidPluginException("Invalid version format of dependency " + name + " in plugin " + pluginType.ToString(), ex);
           }
         }
@@ -501,7 +446,7 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
 
     // tries to load all plugin assemblies into the execution context
     // if an assembly of a plugin cannot be loaded the plugin is disabled
-    private void CheckExecutionContextLoad(IEnumerable<PluginDescription> pluginDescriptions) {
+    private void CheckExecutionContextLoad(IEnumerable<PluginDescription> pluginDescriptions, IEnumerable<Assembly> reflectionOnlyAssemblies) {
       // load all loadable plugins (all dependencies available) into the execution context
       foreach (var desc in PluginDescriptionIterator.IterateDependenciesBottomUp(pluginDescriptions
                                                                                 .Where(x => x.PluginState != PluginState.Disabled))) {
@@ -510,7 +455,7 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
         foreach (string assemblyLocation in desc.AssemblyLocations) {
           if (desc.PluginState != PluginState.Disabled) {
             try {
-              string assemblyName = (from assembly in AppDomain.CurrentDomain.ReflectionOnlyGetAssemblies()
+              string assemblyName = (from assembly in reflectionOnlyAssemblies
                                      where string.Equals(Path.GetFullPath(assembly.Location), Path.GetFullPath(assemblyLocation), StringComparison.CurrentCultureIgnoreCase)
                                      select assembly.FullName).Single();
               // now load the assemblies into the execution context  
@@ -519,20 +464,15 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
               // when loading the assembly using it's assemblyName it can be loaded from a different location than before (e.g. the GAC)
               Assembly.Load(assemblyName);
               assemblyNames.Add(assemblyName);
-            }
-            catch (BadImageFormatException) {
+            } catch (BadImageFormatException) {
               desc.Disable(Path.GetFileName(assemblyLocation) + " is not a valid assembly.");
-            }
-            catch (FileLoadException) {
+            } catch (FileLoadException) {
               desc.Disable("Can't load file " + Path.GetFileName(assemblyLocation));
-            }
-            catch (FileNotFoundException) {
+            } catch (FileNotFoundException) {
               desc.Disable("File " + Path.GetFileName(assemblyLocation) + " is missing.");
-            }
-            catch (SecurityException) {
+            } catch (SecurityException) {
               desc.Disable("File " + Path.GetFileName(assemblyLocation) + " can't be loaded because of security constraints.");
-            }
-            catch (NotSupportedException ex) {
+            } catch (NotSupportedException ex) {
               // disable the plugin
               desc.Disable("Problem while loading plugin assemblies:" + Environment.NewLine + "NotSupportedException: " + ex.Message);
             }
@@ -547,12 +487,11 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
     // calls OnLoad method of the plugin 
     // and raises the PluginLoaded event
     private void LoadPlugins(IEnumerable<PluginDescription> pluginDescriptions) {
-      List<Assembly> assemblies = new List<Assembly>(AppDomain.CurrentDomain.GetAssemblies());
       foreach (var desc in pluginDescriptions) {
         if (desc.PluginState == PluginState.Enabled) {
           // cannot use ApplicationManager to retrieve types because it is not yet instantiated
           foreach (string assemblyName in desc.AssemblyNames) {
-            var asm = (from assembly in assemblies
+            var asm = (from assembly in AssemblyLoadContext.Default.Assemblies
                        where assembly.FullName == assemblyName
                        select assembly)
                       .SingleOrDefault();
@@ -611,24 +550,16 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
 
     // register assembly in the assembly cache for the ReflectionOnlyAssemblyResolveEvent
     private void RegisterLoadedAssembly(Assembly asm) {
-      if (reflectionOnlyAssemblies.ContainsKey(asm.FullName) || reflectionOnlyAssemblies.ContainsKey(asm.GetName().Name)) {
-        throw new ArgumentException("An assembly with the name " + asm.GetName().Name + " has been registered already.", "asm");
+      if (discoveryContextAssemblies.ContainsKey(asm.FullName) || discoveryContextAssemblies.ContainsKey(asm.GetName().Name)) {
+        return;
       }
-      reflectionOnlyAssemblies.Add(asm.FullName, asm);
-      reflectionOnlyAssemblies.Add(asm.GetName().Name, asm); // add short name
+      discoveryContextAssemblies.Add(asm.FullName, asm);
+      discoveryContextAssemblies.Add(asm.GetName().Name, asm); // add short name
     }
 
     private void OnPluginLoaded(PluginInfrastructureEventArgs e) {
       if (PluginLoaded != null)
         PluginLoaded(this, e);
-    }
-
-    /// <summary>
-    /// Initializes the life time service with an infinite lease time.
-    /// </summary>
-    /// <returns><c>null</c>.</returns>
-    public override object InitializeLifetimeService() {
-      return null;
     }
   }
 }

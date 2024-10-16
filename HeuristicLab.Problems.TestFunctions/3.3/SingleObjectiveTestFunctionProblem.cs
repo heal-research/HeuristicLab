@@ -319,9 +319,9 @@ namespace HeuristicLab.Problems.TestFunctions {
       try {
         BestKnownSolutionParameter.Value = Evaluator.GetBestKnownSolution(ProblemSize.Value);
       }
-      catch (ArgumentException e) {
-        ErrorHandling.ShowErrorDialog(e);
+      catch (ArgumentException) {
         ProblemSize.Value = Evaluator.MinimumProblemSize;
+        throw;
       }
     }
     private void ParameterizeOperators() {

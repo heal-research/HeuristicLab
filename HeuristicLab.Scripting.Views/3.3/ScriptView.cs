@@ -32,6 +32,7 @@ using HeuristicLab.Common.Resources;
 using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
+using Microsoft.CodeAnalysis;
 
 namespace HeuristicLab.Scripting.Views {
 
@@ -121,7 +122,7 @@ namespace HeuristicLab.Scripting.Views {
         UpdateInfoTextLabel(CompilationSucceededMessage, Color.DarkGreen);
         return true;
       } catch (CompilationException) {
-        if (Content.CompileErrors.HasErrors) {
+        if (Content.CompileErrors.Any(x => x.Severity == DiagnosticSeverity.Error)) {
           outputTextBox.AppendText(CompilationFailedMessage);
           UpdateInfoTextLabel(CompilationFailedMessage, Color.DarkRed);
           return false;
@@ -142,21 +143,21 @@ namespace HeuristicLab.Scripting.Views {
 
     #region Helpers
     protected virtual void ShowCompilationResults() {
-      var messages = Content.CompileErrors.OfType<CompilerError>()
-                                      .OrderBy(x => x.IsWarning)
-                                      .ThenBy(x => x.Line)
-                                      .ThenBy(x => x.Column);
+      var messages = Content.CompileErrors.Where(x => x.Severity == DiagnosticSeverity.Warning || x.Severity == DiagnosticSeverity.Error)
+                                          .OrderByDescending(x => x.Severity)
+                                          .ThenBy(x => x.Location.GetLineSpan().StartLinePosition.Line)
+                                          .ThenBy(x => x.Location.GetLineSpan().StartLinePosition.Character);
 
       foreach (var m in messages) {
         var item = new ListViewItem { Tag = m };
         item.SubItems.AddRange(new[] {
-          m.IsWarning ? "Warning" : "Error",
-          m.ErrorNumber,
-          m.Line.ToString(CultureInfo.InvariantCulture),
-          m.Column.ToString(CultureInfo.InvariantCulture),
-          m.ErrorText
+          m.Severity.ToString(),
+          m.Id,
+          m.Location.GetLineSpan().StartLinePosition.Line.ToString(CultureInfo.InvariantCulture),
+          m.Location.GetLineSpan().StartLinePosition.Character.ToString(CultureInfo.InvariantCulture),
+          m.GetMessage(),
         });
-        item.ImageIndex = m.IsWarning ? 0 : 1;
+        item.ImageIndex = m.Severity == DiagnosticSeverity.Warning ? 0 : 1;
         errorListView.Items.Add(item);
       }
 
@@ -213,9 +214,11 @@ namespace HeuristicLab.Scripting.Views {
       if (e.Button != MouseButtons.Left) return;
 
       var item = errorListView.SelectedItems[0];
-      var message = (CompilerError)item.Tag;
+      var message = (Diagnostic)item.Tag;
 
-      codeEditor.ScrollToPosition(message.Line, message.Column);
+      var line = message.Location.GetLineSpan().StartLinePosition.Line;
+      var column = message.Location.GetLineSpan().StartLinePosition.Character;
+      codeEditor.ScrollToPosition(line, column);
       codeEditor.Focus();
     }
 
@@ -223,7 +226,7 @@ namespace HeuristicLab.Scripting.Views {
       if (e.Button != MouseButtons.Left) return;
 
       var item = errorListView.SelectedItems[0];
-      var message = (CompilerError)item.Tag;
+      var message = (Diagnostic)item.Tag;
 
       using (var dialog = new CompilerErrorDialog(message)) {
         dialog.ShowDialog(this);

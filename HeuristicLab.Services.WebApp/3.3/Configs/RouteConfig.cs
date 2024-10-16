@@ -19,7 +19,6 @@
  */
 #endregion
 
-using System.Web.Mvc;
 using System.Web.Routing;
 
 namespace HeuristicLab.Services.WebApp.Configs {

@@ -34,11 +34,6 @@ namespace HeuristicLab.PluginInfrastructure {
     IEnumerable<IPluginDescription> Plugins { get; }
 
     /// <summary>
-    /// Gets all discovered applications.
-    /// </summary>
-    IEnumerable<IApplicationDescription> Applications { get; }
-
-    /// <summary>
     /// Discovers and creates instances of <typeparamref name="T"/> and all types implementing or inheriting <typeparamref name="T"/> (directly and indirectly).
     /// </summary>
     /// <typeparam name="T">The type or super-type to discover.</typeparam>

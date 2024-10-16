@@ -23,13 +23,14 @@ using System;
 using System.Windows;
 using System.Windows.Controls;
 using ICSharpCode.AvalonEdit.CodeCompletion;
-using ICSharpCode.NRefactory.Completion;
-using ICSharpCode.NRefactory.CSharp;
-using ICSharpCode.NRefactory.TypeSystem;
-using ICSharpCode.NRefactory.Xml;
+//using ICSharpCode.NRefactory.Completion;
+//using ICSharpCode.NRefactory.CSharp;
+//using ICSharpCode.NRefactory.TypeSystem;
+//using ICSharpCode.NRefactory.Xml;
 
 namespace HeuristicLab.CodeEditor {
-  internal class EntityCompletionData : CompletionData, IEntityCompletionData {
+  internal class EntityCompletionData /*: CompletionData, IEntityCompletionData*/ {
+    /*
     private static readonly CSharpAmbience Ambience = new CSharpAmbience();
 
     #region IEntityCompletionData Members
@@ -69,5 +70,6 @@ namespace HeuristicLab.CodeEditor {
         VerticalScrollBarVisibility = ScrollBarVisibility.Auto
       };
     }
+    */
   }
 }

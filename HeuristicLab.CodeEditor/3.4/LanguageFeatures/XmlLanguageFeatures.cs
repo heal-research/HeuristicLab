@@ -20,7 +20,8 @@
 #endregion
 
 namespace HeuristicLab.CodeEditor {
-  internal class XmlLanguageFeatures : LanguageFeatures {
+  internal class XmlLanguageFeatures /* : LanguageFeatures */{
+    /*
     public XmlLanguageFeatures(CodeEditor codeEditor)
       : base(codeEditor, new XmlCodeFoldingStrategy(codeEditor), null) {
     }
@@ -28,5 +29,6 @@ namespace HeuristicLab.CodeEditor {
     public static ILanguageFeatures Apply(CodeEditor codeEditor) {
       return new XmlLanguageFeatures(codeEditor);
     }
+    */
   }
 }

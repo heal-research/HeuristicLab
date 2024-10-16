@@ -23,11 +23,12 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using ICSharpCode.AvalonEdit.CodeCompletion;
-using ICSharpCode.NRefactory.Editor;
+//using ICSharpCode.NRefactory.Editor;
 using Timer = System.Timers.Timer;
 
 namespace HeuristicLab.CodeEditor {
-  internal abstract class CodeCompletionStrategy : ICodeCompletionStrategy {
+  internal abstract class CodeCompletionStrategy /*: ICodeCompletionStrategy */ {
+    /*
     protected readonly CodeEditor codeEditor;
     protected readonly Timer parserTimer;
     protected IDocument document;
@@ -102,5 +103,6 @@ namespace HeuristicLab.CodeEditor {
       var doc = codeEditor.TextEditor.Document;
       document = new ReadOnlyDocument(doc, doc.FileName);
     }
+    */
   }
 }

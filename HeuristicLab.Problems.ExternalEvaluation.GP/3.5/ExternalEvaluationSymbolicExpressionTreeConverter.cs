@@ -44,14 +44,14 @@ namespace HeuristicLab.Problems.ExternalEvaluation.GP {
       get { return itemTypes; }
     }
 
-    public void AddItemToBuilder(IItem item, string name, SolutionMessage.Builder builder) {
+    public void AddItemToBuilder(IItem item, string name, SolutionMessage builder) {
       SymbolicExpressionTree tree = (item as SymbolicExpressionTree);
       if (tree != null) {
         ConvertSymbolicExpressionTree(tree, name, builder);
       }
     }
 
-    protected abstract void ConvertSymbolicExpressionTree(SymbolicExpressionTree tree, string name, SolutionMessage.Builder builder);
+    protected abstract void ConvertSymbolicExpressionTree(SymbolicExpressionTree tree, string name, SolutionMessage builder);
 
     #endregion
   }

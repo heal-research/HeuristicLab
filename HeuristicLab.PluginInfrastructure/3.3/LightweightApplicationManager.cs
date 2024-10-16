@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Loader;
 
 namespace HeuristicLab.PluginInfrastructure {
 
@@ -47,13 +48,6 @@ namespace HeuristicLab.PluginInfrastructure {
     /// </summary>
     public IEnumerable<IPluginDescription> Plugins {
       get { return new IPluginDescription[0]; }
-    }
-
-    /// <summary>
-    /// Gets an empty list of applications. (LightweightApplicationManager doesn't support application discovery)
-    /// </summary>
-    public IEnumerable<IApplicationDescription> Applications {
-      get { return new IApplicationDescription[0]; }
     }
 
     /// <summary>
@@ -108,7 +102,7 @@ namespace HeuristicLab.PluginInfrastructure {
     /// <param name="includeGenericTypeDefinitions">Specifies if generic type definitions shall be included</param>
     /// <returns>Enumerable of the discovered types.</returns>
     public IEnumerable<Type> GetTypes(Type type, bool onlyInstantiable = true, bool includeGenericTypeDefinitions = false) {
-      return from asm in AppDomain.CurrentDomain.GetAssemblies()
+      return from asm in AssemblyLoadContext.Default.Assemblies
              from t in GetTypes(type, asm, onlyInstantiable, includeGenericTypeDefinitions)
              select t;
     }

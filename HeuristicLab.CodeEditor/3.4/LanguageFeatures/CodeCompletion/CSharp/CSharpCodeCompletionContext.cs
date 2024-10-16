@@ -19,13 +19,14 @@
  */
 #endregion
 
-using ICSharpCode.NRefactory.CSharp.Completion;
-using ICSharpCode.NRefactory.CSharp.TypeSystem;
-using ICSharpCode.NRefactory.Editor;
-using ICSharpCode.NRefactory.TypeSystem;
+//using ICSharpCode.NRefactory.CSharp.Completion;
+//using ICSharpCode.NRefactory.CSharp.TypeSystem;
+//using ICSharpCode.NRefactory.Editor;
+//using ICSharpCode.NRefactory.TypeSystem;
 
 namespace HeuristicLab.CodeEditor {
   internal class CSharpCodeCompletionContext {
+    /*
     private readonly IDocument document;
     public IDocument Document { get { return document; } }
 
@@ -54,5 +55,6 @@ namespace HeuristicLab.CodeEditor {
       var location = this.document.GetLocation(this.offset);
       typeResolveContextAtCaret = unresolvedFile.GetTypeResolveContext(compilation, location);
     }
+    */
   }
 }

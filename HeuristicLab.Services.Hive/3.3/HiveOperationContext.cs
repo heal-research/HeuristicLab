@@ -67,11 +67,13 @@ namespace HeuristicLab.Services.Hive {
   }
 
   public class HiveOperationContextBehaviorAttribute : Attribute, IServiceBehavior {
-    public void AddBindingParameters(ServiceDescription serviceDescription, ServiceHostBase serviceHostBase,
+    public void AddBindingParameters(ServiceDescription serviceDescription, // TODO WCF server APIs are unsupported on .NET Core. Consider rewriting to use gRPC (https://docs.microsoft.com/dotnet/architecture/grpc-for-wcf-developers), ASP.NET Core, or CoreWCF (https://github.com/CoreWCF/CoreWCF) instead.
+ServiceHostBase serviceHostBase,
       Collection<ServiceEndpoint> endpoints, BindingParameterCollection bindingParameters) {
     }
 
-    public void ApplyDispatchBehavior(ServiceDescription serviceDescription, ServiceHostBase serviceHostBase) {
+    public void ApplyDispatchBehavior(ServiceDescription serviceDescription, // TODO WCF server APIs are unsupported on .NET Core. Consider rewriting to use gRPC (https://docs.microsoft.com/dotnet/architecture/grpc-for-wcf-developers), ASP.NET Core, or CoreWCF (https://github.com/CoreWCF/CoreWCF) instead.
+ServiceHostBase serviceHostBase) {
       foreach (ChannelDispatcher cd in serviceHostBase.ChannelDispatchers) {
         foreach (EndpointDispatcher ed in cd.Endpoints) {
           ed.DispatchRuntime.MessageInspectors.Add(new HiveOperationContextMessageInspector());
@@ -79,7 +81,8 @@ namespace HeuristicLab.Services.Hive {
       }
     }
 
-    public void Validate(ServiceDescription serviceDescription, ServiceHostBase serviceHostBase) {
+    public void Validate(ServiceDescription serviceDescription, // TODO WCF server APIs are unsupported on .NET Core. Consider rewriting to use gRPC (https://docs.microsoft.com/dotnet/architecture/grpc-for-wcf-developers), ASP.NET Core, or CoreWCF (https://github.com/CoreWCF/CoreWCF) instead.
+ServiceHostBase serviceHostBase) {
     }
   }
 }

@@ -25,9 +25,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Reflection;
-using System.Web.Http;
-using System.Web.Http.Controllers;
-using System.Web.Http.Dispatcher;
+using Microsoft.AspNetCore.Mvc;
 
 namespace HeuristicLab.Services.WebApp.Controllers {
   public class WebAppHttpControllerSelector : DefaultHttpControllerSelector {
@@ -45,7 +43,7 @@ namespace HeuristicLab.Services.WebApp.Controllers {
     private void LoadAppControllers() {
       var assembly = Assembly.GetExecutingAssembly();
       var assemblyTypes = assembly.GetTypes();
-      var apiControllers = assemblyTypes.Where(c => typeof(ApiController).IsAssignableFrom(c)).ToList();
+      var apiControllers = assemblyTypes.Where(c => typeof(ControllerBase).IsAssignableFrom(c)).ToList();
       foreach (var apiController in apiControllers) {
         var apiControllerName = apiController.Name.Remove(apiController.Name.Length - 10).ToLower();
         controllers.Add(apiControllerName, new HttpControllerDescriptor(configuration, apiControllerName, apiController));

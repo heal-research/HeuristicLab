@@ -54,9 +54,13 @@ namespace HeuristicLab.PluginInfrastructure {
         var typeGenericArgument = typeGenericArguments[i];
         var protoTypeGenericArgument = protoTypeGenericArguments[i];
 
-        //check class contraint on generic type parameter 
+        //check reference type constraint on generic type parameter 
         if (typeGenericArgument.GenericParameterAttributes.HasFlag(GenericParameterAttributes.ReferenceTypeConstraint))
           if (!protoTypeGenericArgument.IsClass && !protoTypeGenericArgument.IsInterface && !protoType.IsArray) return null;
+        
+        //check (not-nullable) value type constraint on generic type parameter
+        if (typeGenericArgument.GenericParameterAttributes.HasFlag(GenericParameterAttributes.NotNullableValueTypeConstraint))
+          if (!protoTypeGenericArgument.IsValueType) return null;
 
         //check default constructor constraint on generic type parameter 
         if (typeGenericArgument.GenericParameterAttributes.HasFlag(GenericParameterAttributes.DefaultConstructorConstraint))

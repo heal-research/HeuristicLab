@@ -19,11 +19,12 @@
  */
 #endregion
 
-using ICSharpCode.NRefactory.CSharp;
-using ICSharpCode.NRefactory.Editor;
+//using ICSharpCode.NRefactory.CSharp;
+//using ICSharpCode.NRefactory.Editor;
 
 namespace HeuristicLab.CodeEditor {
   internal class CSharpCodeFoldingContext {
+    /*
     private readonly IDocument document;
     public IDocument Document { get { return document; } }
 
@@ -34,5 +35,6 @@ namespace HeuristicLab.CodeEditor {
       this.document = new ReadOnlyDocument(document, document.FileName);
       syntaxTree = CSharpParsingHelpers.CreateSyntaxTree(this.document);
     }
+    */
   }
 }

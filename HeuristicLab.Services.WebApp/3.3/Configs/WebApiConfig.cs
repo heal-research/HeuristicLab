@@ -20,8 +20,6 @@
 #endregion
 
 using System.Net.Http.Formatting;
-using System.Web.Http;
-using System.Web.Http.Dispatcher;
 using HeuristicLab.Services.WebApp.Controllers;
 
 namespace HeuristicLab.Services.WebApp.Configs {

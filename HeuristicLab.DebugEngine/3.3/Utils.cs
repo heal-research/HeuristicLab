@@ -23,7 +23,7 @@ using System;
 using System.Text;
 using System.Text.RegularExpressions;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Auxiliary;
+using HeuristicLab.PluginInfrastructure.TypeNameParsing;
 
 namespace HeuristicLab.DebugEngine {
   public static class Utils {

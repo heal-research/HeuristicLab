@@ -26,11 +26,12 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using HeuristicLab.Common;
-using ICSharpCode.NRefactory.Documentation;
-using ICSharpCode.NRefactory.TypeSystem;
+//using ICSharpCode.NRefactory.Documentation;
+//using ICSharpCode.NRefactory.TypeSystem;
 
 namespace HeuristicLab.CodeEditor {
   internal class AssemblyLoader {
+    /*
     private readonly HashSet<IUnresolvedAssembly> assemblySet = new HashSet<IUnresolvedAssembly>();
     private readonly object locker = new object();
 
@@ -140,5 +141,6 @@ namespace HeuristicLab.CodeEditor {
       if (handler != null) handler(this, new EventArgs<IEnumerable<IUnresolvedAssembly>>(args));
     }
     #endregion
+  */
   }
 }

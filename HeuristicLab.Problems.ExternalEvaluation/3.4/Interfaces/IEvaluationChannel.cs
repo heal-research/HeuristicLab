@@ -19,7 +19,7 @@
  */
 #endregion
 
-using Google.ProtocolBuffers;
+using Google.Protobuf;
 using HeuristicLab.Core;
 using HEAL.Attic;
 
@@ -49,7 +49,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
     /// </summary>
     /// <param name="builder">The builder that must match the message type that is to be received.</param>
     /// <returns>The received message.</returns>
-    IMessage Receive(IBuilder builder, ExtensionRegistry extensions);
+    IMessage Receive(IMessage builder, ExtensionRegistry extensions);
     /// <summary>
     /// Tells the channel to close down and terminate open connections.
     /// </summary>

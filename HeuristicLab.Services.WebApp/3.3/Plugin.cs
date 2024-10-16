@@ -25,8 +25,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Web.Http;
-using System.Web.Http.Controllers;
+using Microsoft.AspNetCore.Mvc;
 
 namespace HeuristicLab.Services.WebApp {
   public class Plugin {
@@ -81,7 +80,7 @@ namespace HeuristicLab.Services.WebApp {
         AssemblyName = Path.GetFileName(assemblyPath);
         var assembly = Assembly.Load(File.ReadAllBytes(assemblyPath));
         var assemblyTypes = assembly.GetTypes();
-        var apiControllers = assemblyTypes.Where(c => typeof(ApiController).IsAssignableFrom(c)).ToList();
+        var apiControllers = assemblyTypes.Where(c => typeof(ControllerBase).IsAssignableFrom(c)).ToList();
         foreach (var apiController in apiControllers) {
           var controllerName = apiController.Name.Remove(apiController.Name.Length - 10).ToLower();
           Controllers.Add(controllerName, new HttpControllerDescriptor(configuration, controllerName, apiController));

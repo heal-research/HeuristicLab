@@ -19,15 +19,16 @@
 using System.Collections.Generic;
 using System.Linq;
 
-using ICSharpCode.AvalonEdit.Folding;
-using ICSharpCode.NRefactory;
-using ICSharpCode.NRefactory.CSharp;
-using ICSharpCode.NRefactory.Editor;
+//using ICSharpCode.AvalonEdit.Folding;
+//using ICSharpCode.NRefactory;
+//using ICSharpCode.NRefactory.CSharp;
+//using ICSharpCode.NRefactory.Editor;
 
 namespace CSharpBinding.Parser {
   // TODO: move this class + NewFolding to NRefactory
-  class FoldingVisitor : DepthFirstAstVisitor
+  class FoldingVisitor /*: DepthFirstAstVisitor*/
 	{
+    /*
 		internal List<NewFolding> foldings = new List<NewFolding> ();
 		internal IDocument document;
 		
@@ -198,43 +199,44 @@ namespace CSharpBinding.Parser {
 			}
 		}
 		#endregion
+		*/
+		//#region Comments
+		//public override void VisitComment(Comment comment)
+		//{
+		//	if (comment.CommentType == CommentType.InactiveCode)
+		//		return; // don't fold the inactive code comment; instead fold the preprocessor directives
+		//	if (AreTwoSinglelineCommentsInConsecutiveLines(comment.PrevSibling as Comment, comment))
+		//		return; // already handled by previous comment
+		//	Comment lastComment = comment;
+		//	Comment nextComment;
+		//	while (true) {
+		//		nextComment = lastComment.NextSibling as Comment;
+		//		if (!AreTwoSinglelineCommentsInConsecutiveLines(lastComment, nextComment))
+		//			break;
+		//		lastComment = nextComment;
+		//	}
+		//	if (lastComment.EndLocation.Line - comment.StartLocation.Line > 2) {
+		//		var folding = AddFolding(comment.StartLocation, lastComment.EndLocation);
+		//		if (folding != null) {
+		//			switch (comment.CommentType) {
+		//				case CommentType.SingleLine:
+		//					folding.Name = "// ...";
+		//					break;
+		//				case CommentType.MultiLine:
+		//					folding.Name = "/* ... */";
+		//					break;
+		//				case CommentType.Documentation:
+		//					folding.Name = "/// ...";
+		//					break;
+		//				case CommentType.MultiLineDocumentation:
+		//					folding.Name = "/** ... */";
+		//					break;
+		//			}
+		//		}
+		//	}
+		//}
 		
-		#region Comments
-		public override void VisitComment(Comment comment)
-		{
-			if (comment.CommentType == CommentType.InactiveCode)
-				return; // don't fold the inactive code comment; instead fold the preprocessor directives
-			if (AreTwoSinglelineCommentsInConsecutiveLines(comment.PrevSibling as Comment, comment))
-				return; // already handled by previous comment
-			Comment lastComment = comment;
-			Comment nextComment;
-			while (true) {
-				nextComment = lastComment.NextSibling as Comment;
-				if (!AreTwoSinglelineCommentsInConsecutiveLines(lastComment, nextComment))
-					break;
-				lastComment = nextComment;
-			}
-			if (lastComment.EndLocation.Line - comment.StartLocation.Line > 2) {
-				var folding = AddFolding(comment.StartLocation, lastComment.EndLocation);
-				if (folding != null) {
-					switch (comment.CommentType) {
-						case CommentType.SingleLine:
-							folding.Name = "// ...";
-							break;
-						case CommentType.MultiLine:
-							folding.Name = "/* ... */";
-							break;
-						case CommentType.Documentation:
-							folding.Name = "/// ...";
-							break;
-						case CommentType.MultiLineDocumentation:
-							folding.Name = "/** ... */";
-							break;
-					}
-				}
-			}
-		}
-		
+    /*
 		bool AreTwoSinglelineCommentsInConsecutiveLines(Comment comment1, Comment comment2)
 		{
 			if (comment1 == null || comment2 == null)
@@ -246,5 +248,6 @@ namespace CSharpBinding.Parser {
 				&& comment2.StartLocation.Line == comment2.EndLocation.Line;
 		}
 		#endregion
+    */
 	}
 }

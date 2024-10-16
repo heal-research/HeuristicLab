@@ -7,6 +7,7 @@ using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using Netron.NetronLight;
 namespace Netron.Diagramming.Core {
+#pragma warning disable SYSLIB0011
   /// <summary>
   /// CollectionBase is a base class that can be used to more easily implement the
   /// generic ICollection&lt;T&gt; and non-generic ICollection interfaces.
@@ -620,7 +621,7 @@ namespace Netron.Diagramming.Core {
     public virtual bool Show(System.Text.StringBuilder stringbuilder, ref int rest, IFormatProvider formatProvider) {
       return true;
     }
-
+#pragma warning restore SYSLIB0011
   }
 
 

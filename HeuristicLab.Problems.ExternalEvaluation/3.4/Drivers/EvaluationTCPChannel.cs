@@ -20,9 +20,10 @@
 #endregion
 
 using System;
+using System.IO;
 using System.Net;
 using System.Net.Sockets;
-using Google.ProtocolBuffers;
+using Google.Protobuf;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HEAL.Attic;
@@ -115,11 +116,11 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
     }
 
     private byte[] EncodeDelimited(IMessage message) {
-      int messageSize = message.SerializedSize;
+      int messageSize = message.CalculateSize();
       int headerSize = GetVarint32EncodedSize(messageSize);
       byte[] buffer = new byte[headerSize + messageSize];
-      CodedOutputStream tmp = CodedOutputStream.CreateInstance(buffer);
-      tmp.WriteRawVarint32((uint)messageSize);
+      CodedOutputStream tmp = new CodedOutputStream(buffer);
+      tmp.WriteInt32(messageSize);
       message.WriteTo(tmp);
       return buffer;
     }
@@ -135,10 +136,11 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
       return sizeByteCount;
     }
 
-    public override IMessage Receive(IBuilder builder, ExtensionRegistry extensions) {
+    public override IMessage Receive(IMessage builder, ExtensionRegistry extensions) {
       try {
         byte[] buffer = GetMessageBuffer();
-        return builder.WeakMergeFrom(ByteString.CopyFrom(buffer), extensions).WeakBuild();
+        using (var stream = new MemoryStream(buffer))
+          return QualityMessage.Parser.WithExtensionRegistry(extensions).ParseDelimitedFrom(stream);
       } catch (SocketException) {
         Close();
         throw;
@@ -163,8 +165,8 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
     private int GetReceivedMessageSize(out byte[] buffer) {
       buffer = new byte[MAX_VARINT32_SIZE];
       socket.Receive(buffer);
-      CodedInputStream tmp = CodedInputStream.CreateInstance(buffer);
-      return (int)tmp.ReadRawVarint32();
+      CodedInputStream tmp = new CodedInputStream(buffer);
+      return (int)tmp.ReadInt32();
     }
 
     private void ReceiveMessage(byte[] buffer, int offset, int size) {

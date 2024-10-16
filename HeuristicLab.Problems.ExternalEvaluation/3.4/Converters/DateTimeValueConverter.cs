@@ -44,12 +44,13 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
       get { return itemTypes; }
     }
 
-    public void AddItemToBuilder(IItem item, string name, SolutionMessage.Builder builder) {
+    public void AddItemToBuilder(IItem item, string name, SolutionMessage builder) {
       DateTimeValue date = (item as DateTimeValue);
       if (date != null) {
-        SolutionMessage.Types.StringVariable.Builder var = SolutionMessage.Types.StringVariable.CreateBuilder();
-        var.SetName(name).SetData(date.Value.ToString("yyyy-MM-dd HH:mm:sszzz"));
-        builder.AddStringVars(var.Build());
+        SolutionMessage.Types.StringVariable var = new SolutionMessage.Types.StringVariable();
+        var.Name = name;
+        var.Data = date.Value.ToString("yyyy-MM-dd HH:mm:sszzz");
+        builder.StringVars.Add(var);
       } else {
         throw new ArgumentException(ItemName + ": Item is not of a supported type.", "item");
       }

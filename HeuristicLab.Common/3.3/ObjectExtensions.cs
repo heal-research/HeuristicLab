@@ -134,7 +134,12 @@ namespace HeuristicLab.Common {
           } catch (SecurityException) {
             continue;
           }
-          if (excludedMembers.Contains(fieldValue)) continue;
+          try {
+            if (excludedMembers.Contains(fieldValue)) continue;
+          } catch (NotSupportedException ex) {
+            continue;
+          }
+
           yield return fieldValue;
         }
       }

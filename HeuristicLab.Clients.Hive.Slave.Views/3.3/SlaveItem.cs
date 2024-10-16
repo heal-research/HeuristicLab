@@ -233,7 +233,7 @@ namespace HeuristicLab.Clients.Hive.SlaveCore.Views {
       Close();
     }
 
-    public override Common.IDeepCloneable Clone(Common.Cloner cloner) {
+    public override HeuristicLab.Common.IDeepCloneable Clone(HeuristicLab.Common.Cloner cloner) {
       throw new NotImplementedException("It's not allowed to clone a SlaveItem!");
     }
   }

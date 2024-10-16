@@ -20,7 +20,7 @@
 #endregion
 
 using System;
-using Google.ProtocolBuffers;
+using Google.Protobuf;
 using HeuristicLab.Core;
 using HEAL.Attic;
 

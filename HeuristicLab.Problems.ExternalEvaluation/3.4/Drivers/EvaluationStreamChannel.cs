@@ -21,7 +21,7 @@
 
 using System;
 using System.IO;
-using Google.ProtocolBuffers;
+using Google.Protobuf;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HEAL.Attic;
@@ -59,10 +59,10 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
       }
     }
 
-    public override IMessage Receive(IBuilder builder, ExtensionRegistry extensions) {
+    public override IMessage Receive(IMessage builder, ExtensionRegistry extensions) {
       QualityMessage message;
       lock (input) { // only one thread can read from the stream at one time
-        message = QualityMessage.ParseDelimitedFrom(input, extensions);
+        message = QualityMessage.Parser.WithExtensionRegistry(extensions).ParseDelimitedFrom(input);
       }
       return message;
     }

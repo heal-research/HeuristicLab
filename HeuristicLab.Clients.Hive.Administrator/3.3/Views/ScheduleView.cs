@@ -50,8 +50,8 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
 
     private void InitCalender() {
       dvOnline.StartDate = DateTime.Now;
-      dvOnline.OnNewAppointment += new EventHandler<NewAppointmentEventArgs>(dvOnline_OnNewAppointment);
-      dvOnline.OnResolveAppointments += new EventHandler<ResolveAppointmentsEventArgs>(dvOnline_OnResolveAppointments);
+      dvOnline.NewAppointment += dvOnline_OnNewAppointment;
+      dvOnline.ResolveAppointments += dvOnline_OnResolveAppointments;
     }
 
     private void dvOnline_OnResolveAppointments(object sender, ResolveAppointmentsEventArgs e) {
@@ -203,8 +203,7 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       try {
         HiveDowntime downtime = offlineTimes.First(s => s.Equals((HiveDowntime)dvOnline.SelectedAppointment));
         downtime.Deleted = true;
-      }
-      catch (InvalidOperationException) {
+      } catch (InvalidOperationException) {
         // this is a ui bug where a selected all day appointment is not properly selected :-/
       }
     }
@@ -230,7 +229,7 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       dtpTo.Enabled = enabled;
       chbade.Enabled = enabled;
       btCreate.Enabled = enabled;
-      btbDelete.Enabled = enabled;      
+      btbDelete.Enabled = enabled;
       btnRecurrence.Enabled = enabled;
       btnClearCal.Enabled = enabled;
       btnSaveCal.Enabled = enabled;
@@ -255,7 +254,7 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
     }
 
     private void chbade_CheckedChanged(object sender, EventArgs e) {
-      if(chbade.Checked) {
+      if (chbade.Checked) {
         dtpFrom.Value = new DateTime(dtpFrom.Value.Year, dtpFrom.Value.Month, dtpFrom.Value.Day);
         dtpTo.Value = new DateTime(dtpTo.Value.Year, dtpTo.Value.Month, dtpTo.Value.Day);
       }
@@ -272,7 +271,7 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
         dtpFrom.Value = dvOnline.SelectedAppointment.StartDate;
         dtpTo.Value = dvOnline.SelectedAppointment.EndDate;
 
-        if (dvOnline.SelectedAppointment.Recurring)
+        if (((HiveDowntime)dvOnline.SelectedAppointment).Recurring)
           //also change the caption of the save button
           btCreate.Text = "Save changes";
       }
@@ -298,7 +297,7 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
         CreateDowntime(dtType);
       } else {
         //now we want to change an existing appointment
-        if (!dvOnline.SelectedAppointment.Recurring) {
+        if (!((HiveDowntime)dvOnline.SelectedAppointment).Recurring) {
           if (CreateDowntime(GetDowntimeTypeOfSelectedDowntime()))
             DeleteDowntime();
         } else {
@@ -322,14 +321,14 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
     }
 
     private void btnSaveCal_Click(object sender, EventArgs e) {
-      if (HiveAdminClient.Instance.DowntimeForResourceId == null || HiveAdminClient.Instance.DowntimeForResourceId == Guid.Empty) {
+      if (HiveAdminClient.Instance.DowntimeForResourceId == Guid.Empty || HiveAdminClient.Instance.DowntimeForResourceId == Guid.Empty) {
         MessageBox.Show("You have to save the group before you can save the schedule. ", "HeuristicLab Hive Administrator", MessageBoxButtons.OK, MessageBoxIcon.Stop);
       } else {
         List<Downtime> downtimes = new List<Downtime>();
         foreach (HiveDowntime downtime in offlineTimes) {
           if (downtime.Deleted && downtime.Id != Guid.Empty) {
             HiveAdminClient.Delete(ToDowntime(downtime));
-          } else if (downtime.Changed || downtime.Id == null || downtime.Id == Guid.Empty) {
+          } else if (downtime.Changed || downtime.Id == Guid.Empty || downtime.Id == Guid.Empty) {
             Downtime dt = ToDowntime(downtime);
             downtimes.Add(dt);
           }

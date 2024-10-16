@@ -29,13 +29,13 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
-using Google.ProtocolBuffers;
+using Google.Protobuf;
+using HEAL.Attic;
 using HeuristicLab.Common;
 using HeuristicLab.Common.Resources;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HEAL.Attic;
 
 namespace HeuristicLab.Problems.ExternalEvaluation {
 
@@ -49,7 +49,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
       private QualityMessage message;
       private byte[] rawMessage;
 
-      private object lockObject = new object();
+      private readonly object lockObject = new object();
 
       public byte[] RawMessage {
         get { return rawMessage; }
@@ -68,7 +68,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
       public QualityMessage GetMessage(ExtensionRegistry extensions) {
         lock (lockObject) {
           if (message == null && rawMessage != null)
-            message = QualityMessage.ParseFrom(ByteString.CopyFrom(rawMessage), extensions);
+            message = QualityMessage.Parser.WithExtensionRegistry(extensions).ParseFrom(ByteString.CopyFrom(rawMessage));
         }
         return message;
       }
@@ -96,18 +96,20 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
         var msg = message ?? CreateBasicQualityMessage();
         switch (msg.Type) {
           case QualityMessage.Types.Type.SingleObjectiveQualityMessage:
-            return msg.GetExtension(SingleObjectiveQualityMessage.QualityMessage_).Quality.ToString(formatProvider);
+            return msg.GetExtension(SingleObjectiveQualityMessage.Extensions.QualityMessage_).Quality.ToString(formatProvider);
           case QualityMessage.Types.Type.MultiObjectiveQualityMessage:
-            var qualities = msg.GetExtension(MultiObjectiveQualityMessage.QualityMessage_).QualitiesList;
+            var qualities = msg.GetExtension(MultiObjectiveQualityMessage.Extensions.QualityMessage_).Qualities;
             return string.Format("[{0}]", string.Join(",", qualities.Select(q => q.ToString(formatProvider))));
           default:
             return "-";
         }
       }
       private QualityMessage CreateBasicQualityMessage() {
-        var extensions = ExtensionRegistry.CreateInstance();
-        ExternalEvaluationMessages.RegisterAllExtensions(extensions);
-        return QualityMessage.ParseFrom(ByteString.CopyFrom(rawMessage), extensions);
+        var extensions = new ExtensionRegistry {
+          SingleObjectiveQualityMessage.Extensions.QualityMessage_,
+          MultiObjectiveQualityMessage.Extensions.QualityMessage_
+        };
+        return QualityMessage.Parser.WithExtensionRegistry(extensions).ParseFrom(ByteString.CopyFrom(rawMessage));
       }
 
       public override string ToString() {
@@ -123,7 +125,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
     private Dictionary<CacheEntry, LinkedListNode<CacheEntry>> index;
 
     private HashSet<string> activeEvaluations = new HashSet<string>();
-    private object cacheLock = new object();
+    private readonly object cacheLock = new object();
     #endregion
 
     #region Properties
@@ -167,22 +169,6 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
     #endregion
 
     #region Persistence
-    #region BackwardsCompatibility3.4
-    [Storable(Name = "Cache")]
-    private IEnumerable<KeyValuePair<string, double>> Cache_Persistence_backwardscompatability {
-      get { return Enumerable.Empty<KeyValuePair<string, double>>(); }
-      set {
-        var rawMessages = value.ToDictionary(kvp => kvp.Key,
-          kvp => QualityMessage.CreateBuilder()
-            .SetSolutionId(0)
-            .SetExtension(
-              SingleObjectiveQualityMessage.QualityMessage_,
-              SingleObjectiveQualityMessage.CreateBuilder().SetQuality(kvp.Value).Build())
-            .Build().ToByteArray());
-        SetCacheValues(rawMessages);
-      }
-    }
-    #endregion
     [Storable(Name = "CacheNew")]
     private IEnumerable<KeyValuePair<string, byte[]>> Cache_Persistence {
       get { return IsPersistent ? GetCacheValues() : Enumerable.Empty<KeyValuePair<string, byte[]>>(); }
@@ -220,7 +206,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
       CapacityParameter.Value.ValueChanged += new EventHandler(CapacityChanged);
     }
 
-    void CapacityChanged(object sender, EventArgs e) {
+    private void CapacityChanged(object sender, EventArgs e) {
       if (Capacity < 0)
         throw new ArgumentOutOfRangeException("Cache capacity cannot be less than zero");
       lock (cacheLock)

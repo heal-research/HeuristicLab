@@ -46,8 +46,9 @@ using System.Windows.Media;
 using System.Windows.Threading;
 using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Rendering;
-using ICSharpCode.NRefactory.Editor;
+//using ICSharpCode.NRefactory.Editor;
 using ICSharpCode.SharpDevelop.Editor;
+using ISegment = ICSharpCode.AvalonEdit.Document.ISegment;
 
 namespace ICSharpCode.AvalonEdit.AddIn {
   /// <summary>

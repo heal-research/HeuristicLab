@@ -20,9 +20,11 @@
 #endregion
 
 using System;
+using System.Threading.Tasks;
 using HeuristicLab.Clients.Common;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
+using Microsoft.Extensions.Configuration;
 
 namespace HeuristicLab.Clients.Access {
   [Item("AccessClient", "Access client.")]
@@ -42,6 +44,13 @@ namespace HeuristicLab.Clients.Access {
     }
     #endregion
 
+    private static readonly Lazy<IConfigurationRoot> configurationRoot = new Lazy<IConfigurationRoot>(() => new ConfigurationBuilder().AddJsonFile("appsettings.json").Build());
+
+    private static WCFClientConfiguration GetClientConfiguration() {
+      configurationRoot.Value.Reload();
+      return configurationRoot.Value.GetRequiredSection("AccessService").Get<WCFClientConfiguration>();
+    }
+
     private AccessClient() { }
 
     #region Refresh
@@ -49,43 +58,33 @@ namespace HeuristicLab.Clients.Access {
       usersAndGroups = new ItemList<UserGroupBase>();
       usersAndGroups.AddRange(CallAccessService<ItemList<UserGroupBase>>(s => new ItemList<UserGroupBase>(s.GetAllLeightweightUsersAndGroups())));
     }
-    public void RefreshAsync(Action<Exception> exceptionCallback) {
-      var call = new Func<Exception>(delegate() {
-        try {
-          OnRefreshing();
-          Refresh();
-        }
-        catch (Exception ex) {
-          return ex;
-        }
-        finally {
-          OnRefreshed();
-        }
-        return null;
-      });
-      call.BeginInvoke(delegate(IAsyncResult result) {
-        Exception ex = call.EndInvoke(result);
-        if (ex != null) exceptionCallback(ex);
-      }, null);
+    public async Task RefreshAsync(Action<Exception> exceptionCallback) {
+      try {
+        await Task.Run(() => {
+          try {
+            OnRefreshing();
+            Refresh();
+          } finally {
+            OnRefreshed();
+          }
+        });
+      } catch (Exception ex) {
+        exceptionCallback(ex);
+      }
     }
-    public void ExecuteActionAsync(Action action, Action<Exception> exceptionCallback) {
-      var call = new Func<Exception>(delegate() {
-        try {
-          OnRefreshing();
-          action();
-        }
-        catch (Exception ex) {
-          return ex;
-        }
-        finally {
-          OnRefreshed();
-        }
-        return null;
-      });
-      call.BeginInvoke(delegate(IAsyncResult result) {
-        Exception ex = call.EndInvoke(result);
-        if (ex != null) exceptionCallback(ex);
-      }, null);
+    public async Task ExecuteActionAsync(Action action, Action<Exception> exceptionCallback) {
+      try {
+        await Task.Run(() => {
+          try {
+            OnRefreshing();
+            action();
+          } finally {
+            OnRefreshed();
+          }
+        });
+      } catch (Exception ex) {
+        exceptionCallback(ex);
+      }
     }
     #endregion
 
@@ -104,29 +103,26 @@ namespace HeuristicLab.Clients.Access {
 
     #region Helpers
     public static void CallAccessService(Action<IAccessService> call) {
-      AccessServiceClient client = ClientFactory.CreateClient<AccessServiceClient, IAccessService>();
+      AccessServiceClient client = ClientFactory.CreateCoreClient<AccessServiceClient, IAccessService>(GetClientConfiguration());
       try {
         call(client);
-      }
-      finally {
+      } finally {
         try {
           client.Close();
-        }
-        catch (Exception) {
+        } catch (Exception) {
           client.Abort();
         }
       }
     }
+
     public static T CallAccessService<T>(Func<IAccessService, T> call) {
-      AccessServiceClient client = ClientFactory.CreateClient<AccessServiceClient, IAccessService>();
+      AccessServiceClient client = ClientFactory.CreateCoreClient<AccessServiceClient, IAccessService>(GetClientConfiguration());
       try {
         return call(client);
-      }
-      finally {
+      } finally {
         try {
           client.Close();
-        }
-        catch (Exception) {
+        } catch (Exception) {
           client.Abort();
         }
       }
