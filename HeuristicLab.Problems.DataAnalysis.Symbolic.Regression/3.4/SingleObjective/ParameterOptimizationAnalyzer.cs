@@ -136,13 +136,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
           trainingQuality = Quality.Select(x => x.Value).ToArray();
         }
         // sort trees by training qualities
-        int topN = (int)Math.Max(trainingQuality.Length * PercentageOfBestSolutions, 1);
+        var topN = (int)Math.Max(trainingQuality.Length * PercentageOfBestSolutions, 1);
         scopeIndexes = Enumerable.Range(0, trainingQuality.Length).ToArray();
         Array.Sort(trainingQuality, scopeIndexes);
         scopeIndexes = scopeIndexes.Take(topN).ToArray();
         qualitiesBeforeCoOp = scopeIndexes.Select(x => Quality[x].Value).ToArray();
 
-        OperationCollection operationCollection = new OperationCollection();
+        var operationCollection = new OperationCollection();
         operationCollection.Parallel = true;
         foreach (var scopeIndex in scopeIndexes) {
           var childOperation = ExecutionContext.CreateChildOperation(ParameterOptimizationEvaluator, ExecutionContext.Scope.SubScopes[scopeIndex]);
@@ -153,7 +153,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       }
 
       //code executed to analyze results of parameter optimization
-      double[] qualitiesAfterCoOp = scopeIndexes.Select(x => Quality[x].Value).ToArray();
+      var qualitiesAfterCoOp = scopeIndexes.Select(x => Quality[x].Value).ToArray();
       var qualityImprovement = qualitiesBeforeCoOp.Zip(qualitiesAfterCoOp, (b, a) => a - b).ToArray();
 
       if (!ResultCollection.ContainsKey(DataTableNameParameterOptimizationImprovement)) {

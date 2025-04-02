@@ -34,7 +34,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
       get { return (IValueParameter<SymbolicClassificationPruningOperator>)Parameters[PruningOperatorParameterName]; }
     }
 
-    protected override SymbolicDataAnalysisExpressionPruningOperator PruningOperator {
+    protected override SymbolicDataAnalysisSingleObjectiveExpressionPruningOperator PruningOperator {
       get { return PruningOperatorParameter.Value; }
     }
 
@@ -54,7 +54,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
 
       #region Backwards compatible code, remove with 3.4
       if (Parameters.ContainsKey(PruningOperatorParameterName)) {
-        var oldParam = Parameters[PruningOperatorParameterName] as ValueParameter<SymbolicDataAnalysisExpressionPruningOperator>;
+        var oldParam = Parameters[PruningOperatorParameterName] as ValueParameter<SymbolicDataAnalysisSingleObjectiveExpressionPruningOperator>;
         if (oldParam != null) {
           Parameters.Remove(oldParam);
           Parameters.Add(new ValueParameter<SymbolicClassificationPruningOperator>(PruningOperatorParameterName, "The operator used to prune trees", new SymbolicClassificationPruningOperator(new SymbolicClassificationSolutionImpactValuesCalculator())));

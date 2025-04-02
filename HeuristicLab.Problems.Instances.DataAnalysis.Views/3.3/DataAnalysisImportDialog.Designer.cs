@@ -192,7 +192,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
       this.DateTimeFormatComboBox.Name = "DateTimeFormatComboBox";
       this.DateTimeFormatComboBox.Size = new System.Drawing.Size(300, 21);
       this.DateTimeFormatComboBox.TabIndex = 15;
-      this.DateTimeFormatComboBox.SelectionChangeCommitted += new System.EventHandler(this.CSVFormatComboBoxSelectionChangeCommitted);
+      this.DateTimeFormatComboBox.SelectionChangeCommitted += new System.EventHandler(this.CsvFormatComboBoxSelectionChangeCommitted);
       // 
       // DecimalSeparatorComboBox
       // 
@@ -205,7 +205,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
       this.DecimalSeparatorComboBox.Name = "DecimalSeparatorComboBox";
       this.DecimalSeparatorComboBox.Size = new System.Drawing.Size(300, 21);
       this.DecimalSeparatorComboBox.TabIndex = 14;
-      this.DecimalSeparatorComboBox.SelectionChangeCommitted += new System.EventHandler(this.CSVFormatComboBoxSelectionChangeCommitted);
+      this.DecimalSeparatorComboBox.SelectionChangeCommitted += new System.EventHandler(this.CsvFormatComboBoxSelectionChangeCommitted);
       // 
       // DateTimeFormatLabel
       // 
@@ -245,7 +245,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
       this.SeparatorComboBox.Name = "SeparatorComboBox";
       this.SeparatorComboBox.Size = new System.Drawing.Size(300, 21);
       this.SeparatorComboBox.TabIndex = 10;
-      this.SeparatorComboBox.SelectionChangeCommitted += new System.EventHandler(this.CSVFormatComboBoxSelectionChangeCommitted);
+      this.SeparatorComboBox.SelectionChangeCommitted += new System.EventHandler(this.CsvFormatComboBoxSelectionChangeCommitted);
       // 
       // CSVSettingsGroupBox
       // 
@@ -303,7 +303,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
       this.EncodingComboBox.Name = "EncodingComboBox";
       this.EncodingComboBox.Size = new System.Drawing.Size(300, 21);
       this.EncodingComboBox.TabIndex = 25;
-      this.EncodingComboBox.SelectionChangeCommitted += new System.EventHandler(this.CSVFormatComboBoxSelectionChangeCommitted);
+      this.EncodingComboBox.SelectionChangeCommitted += new System.EventHandler(this.CsvFormatComboBoxSelectionChangeCommitted);
       // 
       // CheckboxColumnNames
       // 

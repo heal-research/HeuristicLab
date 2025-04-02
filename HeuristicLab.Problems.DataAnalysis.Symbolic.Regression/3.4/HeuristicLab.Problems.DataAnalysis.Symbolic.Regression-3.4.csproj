@@ -149,7 +149,8 @@
     <Compile Include="SingleObjective\SolutionRSquaredAnalyzer.cs" />
     <Compile Include="SingleObjective\StructureTemplateSymbolicRegressionProblem.cs" />
     <Compile Include="SymbolicRegressionPhenotypicDiversityAnalyzer.cs" />
-    <Compile Include="SymbolicRegressionPruningAnalyzer.cs" />
+    <Compile Include="SymbolicRegressionMultiObjectivePruningAnalyzer.cs" />
+    <Compile Include="SymbolicRegressionSingleObjectivePruningAnalyzer.cs" />
     <Compile Include="SingleObjective\Evaluators\SymbolicRegressionLogResidualEvaluator.cs" />
     <Compile Include="SingleObjective\SymbolicRegressionSingleObjectiveValidationParetoBestSolutionAnalyzer.cs" />
     <Compile Include="SingleObjective\SymbolicRegressionSingleObjectiveTrainingParetoBestSolutionAnalyzer.cs" />
@@ -174,7 +175,8 @@
     <Compile Include="SingleObjective\Evaluators\SymbolicRegressionSingleObjectiveEvaluator.cs" />
     <Compile Include="SingleObjective\Evaluators\SymbolicRegressionSingleObjectiveMeanSquaredErrorEvaluator.cs" />
     <Compile Include="SingleObjective\Evaluators\SymbolicRegressionSingleObjectivePearsonRSquaredEvaluator.cs" />
-    <Compile Include="SymbolicRegressionPruningOperator.cs" />
+    <Compile Include="SymbolicRegressionMultiObjectivePruningOperator.cs" />
+    <Compile Include="SymbolicRegressionSingleObjectivePruningOperator.cs" />
     <Compile Include="SymbolicRegressionSolution.cs" />
     <Compile Include="SymbolicRegressionSolutionImpactValuesCalculator.cs" />
     <None Include="HeuristicLab.snk" />

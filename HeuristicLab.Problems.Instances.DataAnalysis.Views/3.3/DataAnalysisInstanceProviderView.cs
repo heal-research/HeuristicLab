@@ -42,7 +42,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
         if (importTypeDialog.ShowDialog() == DialogResult.OK) {
           T instance = default(T);
           try {
-            instance = provider.ImportData(importTypeDialog.Path, importTypeDialog.ImportType, importTypeDialog.CSVFormat);
+            instance = provider.ImportData(importTypeDialog.Path, importTypeDialog.ImportType, importTypeDialog.CsvFormat);
           } catch (IOException ex) {
             ErrorWhileParsing(ex);
             return;

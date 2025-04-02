@@ -138,6 +138,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Analyzers\SymbolicDataAnalysisBottomUpDiversityAnalyzer.cs" />
+    <Compile Include="Analyzers\SymbolicDataAnalysisMultiObjectivePruningAnalyzer.cs" />
     <Compile Include="Analyzers\SymbolicDataAnalysisSingleObjectivePruningAnalyzer.cs" />
     <Compile Include="Analyzers\SymbolicDataAnalysisSingleObjectiveValidationParetoBestSolutionAnalyzer.cs" />
     <Compile Include="Analyzers\SymbolicDataAnalysisSingleObjectiveTrainingParetoBestSolutionAnalyzer.cs" />
@@ -195,7 +196,8 @@
     <Compile Include="SymbolicDataAnalysisExpressionTreeAverageSimilarityCalculator.cs" />
     <Compile Include="SymbolicDataAnalysisExpressionTreeSimplificationOperator.cs" />
     <Compile Include="SymbolicDataAnalysisModelComplexityCalculator.cs" />
-    <Compile Include="SymbolicDataAnalysisExpressionPruningOperator.cs" />
+    <Compile Include="SymbolicDataAnalysisMultiObjectiveExpressionPruningOperator.cs" />
+    <Compile Include="SymbolicDataAnalysisSingleObjectiveExpressionPruningOperator.cs" />
     <Compile Include="Analyzers\SymbolicDataAnalysisVariableFrequencyAnalyzer.cs" />
     <Compile Include="Analyzers\SymbolicDataAnalysisAlleleFrequencyAnalyzer.cs" />
     <Compile Include="Creators\MultiSymbolicDataAnalysisExpressionCreator.cs" />

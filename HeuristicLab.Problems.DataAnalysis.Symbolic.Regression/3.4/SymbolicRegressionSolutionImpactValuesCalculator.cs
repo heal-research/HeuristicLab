@@ -37,16 +37,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     [StorableConstructor]
     protected SymbolicRegressionSolutionImpactValuesCalculator(StorableConstructorFlag _) : base(_) { }
 
-    protected override double CalculateQualityForImpacts(ISymbolicDataAnalysisModel model, IDataAnalysisProblemData problemData, IEnumerable<int> rows) {
+    public override double CalculateQualityForImpacts(ISymbolicDataAnalysisModel model, IDataAnalysisProblemData problemData, IEnumerable<int> rows) {
       var regressionModel = (ISymbolicRegressionModel)model;
       var regressionProblemData = (IRegressionProblemData)problemData;
       var estimatedValues = regressionModel.GetEstimatedValues(problemData.Dataset, rows); // also bounds the values
       var targetValues = problemData.Dataset.GetDoubleValues(regressionProblemData.TargetVariable, rows);
-      OnlineCalculatorError errorState;
-      var r = OnlinePearsonsRCalculator.Calculate(targetValues, estimatedValues, out errorState);
+      var r = OnlinePearsonsRCalculator.Calculate(targetValues, estimatedValues, out var errorState);
       var quality = r * r;
-      if (errorState != OnlineCalculatorError.None) return double.NaN;
-      return quality;
+      return errorState != OnlineCalculatorError.None ? double.NaN : quality;
     }
+
   }
 }

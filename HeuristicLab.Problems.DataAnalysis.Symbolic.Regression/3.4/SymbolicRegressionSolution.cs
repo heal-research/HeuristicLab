@@ -126,7 +126,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       Add(new Result(ModelLengthResultName, "Length of the symbolic regression model.", new IntValue()));
       Add(new Result(ModelDepthResultName, "Depth of the symbolic regression model.", new IntValue()));
 
-      ResultCollection estimationLimitResults = new ResultCollection();
+      var estimationLimitResults = new ResultCollection();
       estimationLimitResults.Add(new Result(EstimationLimitsResultName, "", new DoubleLimit()));
       estimationLimitResults.Add(new Result(TrainingUpperEstimationLimitHitsResultName, "", new IntValue()));
       estimationLimitResults.Add(new Result(TestUpperEstimationLimitHitsResultName, "", new IntValue()));
@@ -149,7 +149,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
       if (!ContainsKey(EstimationLimitsResultsResultName)) {
-        ResultCollection estimationLimitResults = new ResultCollection();
+        var estimationLimitResults = new ResultCollection();
         estimationLimitResults.Add(new Result(EstimationLimitsResultName, "", new DoubleLimit()));
         estimationLimitResults.Add(new Result(TrainingUpperEstimationLimitHitsResultName, "", new IntValue()));
         estimationLimitResults.Add(new Result(TestUpperEstimationLimitHitsResultName, "", new IntValue()));

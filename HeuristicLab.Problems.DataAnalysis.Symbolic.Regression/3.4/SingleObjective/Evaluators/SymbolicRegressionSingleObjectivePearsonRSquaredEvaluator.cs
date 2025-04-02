@@ -45,9 +45,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
 
     public override IOperation InstrumentedApply() {
       var solution = SymbolicExpressionTreeParameter.ActualValue;
-      IEnumerable<int> rows = GenerateRowsToEvaluate();
+      var rows = GenerateRowsToEvaluate();
 
-      double quality = Calculate(
+      var quality = Calculate(
         solution, ProblemDataParameter.ActualValue,
         rows, SymbolicDataAnalysisTreeInterpreterParameter.ActualValue,
         ApplyLinearScalingParameter.ActualValue.Value,
@@ -66,8 +66,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       bool applyLinearScaling,
       double lowerEstimationLimit, 
       double upperEstimationLimit) {
-      IEnumerable<double> estimatedValues = interpreter.GetSymbolicExpressionTreeValues(tree, problemData.Dataset, rows);
-      IEnumerable<double> targetValues = problemData.Dataset.GetDoubleValues(problemData.TargetVariable, rows);
+      var estimatedValues = interpreter.GetSymbolicExpressionTreeValues(tree, problemData.Dataset, rows);
+      var targetValues = problemData.Dataset.GetDoubleValues(problemData.TargetVariable, rows);
       OnlineCalculatorError errorState;
 
       double r;
@@ -77,7 +77,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
         errorState = rCalculator.ErrorState;
         r = rCalculator.R;
       } else {
-        IEnumerable<double> boundedEstimatedValues = estimatedValues.LimitToRange(lowerEstimationLimit, upperEstimationLimit);
+        var boundedEstimatedValues = estimatedValues.LimitToRange(lowerEstimationLimit, upperEstimationLimit);
         r = OnlinePearsonsRCalculator.Calculate(targetValues, boundedEstimatedValues, out errorState);
       }
       if (errorState != OnlineCalculatorError.None) return double.NaN;
@@ -89,7 +89,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       EstimationLimitsParameter.ExecutionContext = context;
       ApplyLinearScalingParameter.ExecutionContext = context;
 
-      double r2 = Calculate(
+      var r2 = Calculate(
          tree, problemData, rows, 
          SymbolicDataAnalysisTreeInterpreterParameter.ActualValue,
          ApplyLinearScalingParameter.ActualValue.Value,

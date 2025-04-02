@@ -54,9 +54,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
 
     public override IOperation InstrumentedApply() {
       var tree = SymbolicExpressionTreeParameter.ActualValue;
-      IEnumerable<int> rows = GenerateRowsToEvaluate();
+      var rows = GenerateRowsToEvaluate();
 
-      double quality = Calculate(
+      var quality = Calculate(
         tree, ProblemDataParameter.ActualValue, 
         rows, SymbolicDataAnalysisTreeInterpreterParameter.ActualValue,
         EstimationLimitsParameter.ActualValue.Lower, 
@@ -73,9 +73,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       ISymbolicDataAnalysisExpressionTreeInterpreter interpreter,
       double lowerEstimationLimit, 
       double upperEstimationLimit) {
-      IEnumerable<double> estimatedValues = interpreter.GetSymbolicExpressionTreeValues(tree, problemData.Dataset, rows);
-      IEnumerable<double> targetValues = problemData.Dataset.GetDoubleValues(problemData.TargetVariable, rows);
-      IEnumerable<double> boundedEstimatedValues = estimatedValues.LimitToRange(lowerEstimationLimit, upperEstimationLimit);
+      var estimatedValues = interpreter.GetSymbolicExpressionTreeValues(tree, problemData.Dataset, rows);
+      var targetValues = problemData.Dataset.GetDoubleValues(problemData.TargetVariable, rows);
+      var boundedEstimatedValues = estimatedValues.LimitToRange(lowerEstimationLimit, upperEstimationLimit);
 
       var logRes = boundedEstimatedValues.Zip(targetValues, (e, t) => Math.Log(1.0 + Math.Abs(e - t)));
 
@@ -92,7 +92,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       SymbolicDataAnalysisTreeInterpreterParameter.ExecutionContext = context;
       EstimationLimitsParameter.ExecutionContext = context;
 
-      double mlr = Calculate(
+      var mlr = Calculate(
         tree, problemData, rows, 
         SymbolicDataAnalysisTreeInterpreterParameter.ActualValue,
         EstimationLimitsParameter.ActualValue.Lower, 

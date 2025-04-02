@@ -353,7 +353,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
         if (realVector.Length != numberTreeNodes.Length)
           throw new InvalidOperationException("The number of numeric parameters in the tree does not match the provided numerical values.");
 
-        for (int i = 0; i < numberTreeNodes.Length; i++)
+        for (var i = 0; i < numberTreeNodes.Length; i++)
           numberTreeNodes[i].Value = realVector[i];
       }
 
@@ -399,7 +399,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
         if (realVector.Length != numberTreeNodes.Length)
           throw new InvalidOperationException("The number of numeric parameters in the tree does not match the provided numerical values.");
 
-        for (int i = 0; i < numberTreeNodes.Length; i++)
+        for (var i = 0; i < numberTreeNodes.Length; i++)
           realVector[i] = numberTreeNodes[i].Value;
       }
     }

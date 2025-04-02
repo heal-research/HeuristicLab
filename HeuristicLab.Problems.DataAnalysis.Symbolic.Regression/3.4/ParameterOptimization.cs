@@ -53,23 +53,23 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       var parameterEntries = parameters.ToArray(); // order of entries must be the same for x
 
       // extract initial parameters
-      double[] c = (double[])initialParameters.Clone();
+      var c = (double[])initialParameters.Clone();
       alglib.minlmreport rep;
 
-      double originalQuality = SymbolicRegressionSingleObjectiveMeanSquaredErrorEvaluator.Calculate(
+      var originalQuality = SymbolicRegressionSingleObjectiveMeanSquaredErrorEvaluator.Calculate(
         tree, problemData, rows,
         interpreter, applyLinearScaling: false,
         lowerEstimationLimit, upperEstimationLimit);
 
 
-      IDataset ds = problemData.Dataset;
-      int n = rows.Count();
-      int k = parameters.Count;
+      var ds = problemData.Dataset;
+      var n = rows.Count();
+      var k = parameters.Count;
 
-      double[,] x = new double[n, k];
-      int row = 0;
+      var x = new double[n, k];
+      var row = 0;
       foreach (var r in rows) {
-        int col = 0;
+        var col = 0;
         foreach (var info in parameterEntries) {
           if (ds.VariableHasType<double>(info.variableName)) {
             x[row, col] = ds.GetDoubleValue(info.variableName, r + info.lag);
@@ -80,7 +80,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
         }
         row++;
       }
-      double[] y = ds.GetDoubleValues(problemData.TargetVariable, rows).ToArray();
+      var y = ds.GetDoubleValues(problemData.TargetVariable, rows).ToArray();
 
       alglib.ndimensional_rep xrep = (p, f, obj) => iterationCallback(p, f, obj);
 
@@ -132,11 +132,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
 
     private static void UpdateParameters(ISymbolicExpressionTree tree, double[] parameters,
       bool updateVariableWeights, IEnumerable<ISymbolicExpressionTreeNode> excludedNodes) {
-      int i = 0;
+      var i = 0;
       foreach (var node in tree.Root.IterateNodesPrefix().OfType<SymbolicExpressionTreeTerminalNode>().Except(excludedNodes)) {
-        NumberTreeNode numberTreeNode = node as NumberTreeNode;
-        VariableTreeNodeBase variableTreeNodeBase = node as VariableTreeNodeBase;
-        FactorVariableTreeNode factorVarTreeNode = node as FactorVariableTreeNode;
+        var numberTreeNode = node as NumberTreeNode;
+        var variableTreeNodeBase = node as VariableTreeNodeBase;
+        var factorVarTreeNode = node as FactorVariableTreeNode;
         if (numberTreeNode != null) {
           if (numberTreeNode.Parent.Symbol is Power
               && numberTreeNode.Parent.GetSubtree(1) == numberTreeNode) continue; // exponents in powers are not optimized (see TreeToAutoDiffTermConverter)
@@ -144,19 +144,19 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
         } else if (updateVariableWeights && variableTreeNodeBase != null)
           variableTreeNodeBase.Weight = parameters[i++];
         else if (updateVariableWeights && factorVarTreeNode != null) {
-          for (int j = 0; j < factorVarTreeNode.Weights.Length; j++)
+          for (var j = 0; j < factorVarTreeNode.Weights.Length; j++)
             factorVarTreeNode.Weights[j] = parameters[i++];
         }
       }
     }
 
     private static alglib.ndimensional_fvec CreateFunc(TreeToAutoDiffTermConverter.ParametricFunction func, double[,] x, double[] y) {
-      int d = x.GetLength(1);
+      var d = x.GetLength(1);
       // row buffer
       var xi = new double[d];
       // function must return residuals, alglib optimizes resid²
       return (double[] c, double[] resid, object o) => {
-        for (int i = 0; i < y.Length; i++) {
+        for (var i = 0; i < y.Length; i++) {
           Buffer.BlockCopy(x, i * d * sizeof(double), xi, 0, d * sizeof(double)); // copy row. We are using BlockCopy instead of Array.Copy because x has rank 2
           resid[i] = func(c, xi) - y[i];
         }
@@ -164,12 +164,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     }
 
     private static alglib.ndimensional_jac CreateJac(TreeToAutoDiffTermConverter.ParametricFunctionGradient func_grad, double[,] x, double[] y) {
-      int numParams = x.GetLength(1);
+      var numParams = x.GetLength(1);
       // row buffer
       var xi = new double[numParams];
       return (double[] c, double[] resid, double[,] jac, object o) => {
-        int numVars = c.Length;
-        for (int i = 0; i < y.Length; i++) {
+        var numVars = c.Length;
+        for (var i = 0; i < y.Length; i++) {
           Buffer.BlockCopy(x, i * numParams * sizeof(double), xi, 0, numParams * sizeof(double)); // copy row
           var tuple = func_grad(c, xi);
           resid[i] = tuple.Item2 - y[i];

@@ -129,10 +129,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       }
 
 
-      int previousTreeLength = -1;
+      var previousTreeLength = -1;
       var sizeParetoFront = new LinkedList<ISymbolicRegressionSolution>();
       foreach (var solution in paretoFront.OrderBy(s => s.Model.SymbolicExpressionTree.Length)) {
-        int treeLength = solution.Model.SymbolicExpressionTree.Length;
+        var treeLength = solution.Model.SymbolicExpressionTree.Length;
         if (!sizeParetoFront.Any()) sizeParetoFront.AddLast(solution);
         if (solution.TrainingNormalizedMeanSquaredError < sizeParetoFront.Last.Value.TrainingNormalizedMeanSquaredError) {
           if (treeLength == previousTreeLength)

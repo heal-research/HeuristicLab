@@ -85,9 +85,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
 
       // store actual names of parameter because they are changed below
       var resultParameter = ResultParameter;
-      string savedResultParamName = resultParameter.ActualName;
+      var savedResultParamName = resultParameter.ActualName;
       var secondaryResultParameter = SecondaryResultParameter;
-      string savedSecondaryResultParamName = secondaryResultParameter.ActualName;
+      var savedSecondaryResultParamName = secondaryResultParameter.ActualName;
       try {
         foreach (var result in results.Where(r => r.Value is RegressionSolution)) {
           var solution = (RegressionSolution)result.Value;

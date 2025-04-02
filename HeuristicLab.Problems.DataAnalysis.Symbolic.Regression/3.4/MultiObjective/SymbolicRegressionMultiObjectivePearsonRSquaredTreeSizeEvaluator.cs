@@ -46,7 +46,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     public override IEnumerable<bool> Maximization { get { return new bool[2] { true, false }; } }
 
     public override IOperation InstrumentedApply() {
-      IEnumerable<int> rows = GenerateRowsToEvaluate();
+      var rows = GenerateRowsToEvaluate();
       var solution = SymbolicExpressionTreeParameter.ActualValue;
       var problemData = ProblemDataParameter.ActualValue;
 
@@ -54,13 +54,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
         ParameterOptimizationEvaluator.OptimizeParameters(solution, problemData, rows, rowWeights: Enumerable.Empty<double>(), ParameterOptimizationIterations, ParameterOptimizationUpdateVariableWeights);
       }
 
-      double[] qualities = Calculate(SymbolicDataAnalysisTreeInterpreterParameter.ActualValue, solution, EstimationLimitsParameter.ActualValue.Lower, EstimationLimitsParameter.ActualValue.Upper, ProblemDataParameter.ActualValue, rows, ApplyLinearScalingParameter.ActualValue.Value, DecimalPlaces);
+      var qualities = Calculate(SymbolicDataAnalysisTreeInterpreterParameter.ActualValue, solution, EstimationLimitsParameter.ActualValue.Lower, EstimationLimitsParameter.ActualValue.Upper, ProblemDataParameter.ActualValue, rows, ApplyLinearScalingParameter.ActualValue.Value, DecimalPlaces);
       QualitiesParameter.ActualValue = new DoubleArray(qualities);
       return base.InstrumentedApply();
     }
 
     public static double[] Calculate(ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, ISymbolicExpressionTree tree, double lowerEstimationLimit, double upperEstimationLimit, IRegressionProblemData problemData, IEnumerable<int> rows, bool applyLinearScaling, int decimalPlaces) {
-      double r2 = SymbolicRegressionSingleObjectivePearsonRSquaredEvaluator.Calculate(
+      var r2 = SymbolicRegressionSingleObjectivePearsonRSquaredEvaluator.Calculate(
         tree, problemData, rows, interpreter, applyLinearScaling,
         lowerEstimationLimit, upperEstimationLimit);
       if (decimalPlaces >= 0)
@@ -73,7 +73,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       EstimationLimitsParameter.ExecutionContext = context;
       ApplyLinearScalingParameter.ExecutionContext = context;
 
-      double[] quality = Calculate(SymbolicDataAnalysisTreeInterpreterParameter.ActualValue, tree, EstimationLimitsParameter.ActualValue.Lower, EstimationLimitsParameter.ActualValue.Upper, problemData, rows, ApplyLinearScalingParameter.ActualValue.Value, DecimalPlaces);
+      var quality = Calculate(SymbolicDataAnalysisTreeInterpreterParameter.ActualValue, tree, EstimationLimitsParameter.ActualValue.Lower, EstimationLimitsParameter.ActualValue.Upper, problemData, rows, ApplyLinearScalingParameter.ActualValue.Value, DecimalPlaces);
 
       SymbolicDataAnalysisTreeInterpreterParameter.ExecutionContext = null;
       EstimationLimitsParameter.ExecutionContext = null;

@@ -69,7 +69,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     public override IEnumerable<bool> Maximization { get { return new bool[2] { true, false }; } } // maximize R² and minimize average similarity 
 
     public override IOperation InstrumentedApply() {
-      IEnumerable<int> rows = GenerateRowsToEvaluate();
+      var rows = GenerateRowsToEvaluate();
       var tree = SymbolicExpressionTreeParameter.ActualValue;
       var problemData = ProblemDataParameter.ActualValue;
       var interpreter = SymbolicDataAnalysisTreeInterpreterParameter.ActualValue;
@@ -80,7 +80,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
         ParameterOptimizationEvaluator.OptimizeParameters(tree, problemData, rows, rowWeights: Enumerable.Empty<double>(), ParameterOptimizationIterations, ParameterOptimizationUpdateVariableWeights);
       }
 
-      double r2 = SymbolicRegressionSingleObjectivePearsonRSquaredEvaluator.Calculate(
+      var r2 = SymbolicRegressionSingleObjectivePearsonRSquaredEvaluator.Calculate(
         tree, problemData, rows, interpreter, applyLinearScaling,
         estimationLimits.Lower, estimationLimits.Upper);
 
@@ -109,7 +109,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       var estimationLimits = EstimationLimitsParameter.ActualValue;
       var applyLinearScaling = ApplyLinearScalingParameter.ActualValue.Value;
 
-      double r2 = SymbolicRegressionSingleObjectivePearsonRSquaredEvaluator.Calculate(
+      var r2 = SymbolicRegressionSingleObjectivePearsonRSquaredEvaluator.Calculate(
         tree, problemData, rows,
         SymbolicDataAnalysisTreeInterpreterParameter.ActualValue,
         applyLinearScaling,

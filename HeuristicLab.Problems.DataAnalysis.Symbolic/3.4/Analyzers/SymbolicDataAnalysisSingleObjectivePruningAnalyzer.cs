@@ -80,7 +80,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     #endregion
 
     #region properties
-    protected abstract SymbolicDataAnalysisExpressionPruningOperator PruningOperator { get; }
+    protected abstract SymbolicDataAnalysisSingleObjectiveExpressionPruningOperator PruningOperator { get; }
     protected int UpdateInterval { get { return UpdateIntervalParameter.Value.Value; } }
 
     protected int UpdateCounter {
@@ -204,9 +204,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       var operations = new OperationCollection { Parallel = true };
       var range = GetSliceBounds();
       var qualities = Quality.Select(x => x.Value).ToArray();
+
+      //sort worst to best
       var indices = Enumerable.Range(0, qualities.Length).ToArray();
       indices.StableSort((a, b) => qualities[a].CompareTo(qualities[b]));
-
       if (!Maximization.Value) Array.Reverse(indices);
 
       var subscopes = ExecutionContext.Scope.SubScopes;
@@ -214,7 +215,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
       var empty = new EmptyOperator();
 
-      for (int i = 0; i < indices.Length; ++i) {
+      for (var i = 0; i < indices.Length; ++i) {
         IOperator @operator;
         if (range.Start <= i && i < range.End && random.NextDouble() <= PruningProbability)
           @operator = PruningOperator;

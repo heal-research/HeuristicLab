@@ -32,7 +32,7 @@ using HeuristicLab.Problems.DataAnalysis;
 namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
   public partial class DataAnalysisImportDialog : Form {
 
-    private static readonly List<KeyValuePair<DateTimeFormatInfo, string>> POSSIBLE_DATETIME_FORMATS =
+    private static readonly List<KeyValuePair<DateTimeFormatInfo, string>> PossibleDatetimeFormats =
       new List<KeyValuePair<DateTimeFormatInfo, string>>{
         new KeyValuePair<DateTimeFormatInfo, string>(DateTimeFormatInfo.GetInstance(new CultureInfo("de-DE")), "dd/mm/yyyy hh:MM:ss" ),
         new KeyValuePair<DateTimeFormatInfo, string>(DateTimeFormatInfo.InvariantInfo, "mm/dd/yyyy hh:MM:ss" ),
@@ -40,7 +40,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
         new KeyValuePair<DateTimeFormatInfo, string>(DateTimeFormatInfo.InvariantInfo, "mm/yyyy/dd hh:MM:ss" )
     };
 
-    private static readonly List<KeyValuePair<char, string>> POSSIBLE_SEPARATORS =
+    private static readonly List<KeyValuePair<char, string>> PossibleSeparators =
       new List<KeyValuePair<char, string>>{
         new KeyValuePair<char, string>(';', "; (Semicolon)" ),
         new KeyValuePair<char, string>(',', ", (Comma)" ),
@@ -48,13 +48,13 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
         new KeyValuePair<char, string>((char)0, "all whitespaces (including tabs and spaces)")
     };
 
-    private static readonly List<KeyValuePair<NumberFormatInfo, string>> POSSIBLE_DECIMAL_SEPARATORS =
+    private static readonly List<KeyValuePair<NumberFormatInfo, string>> PossibleDecimalSeparators =
       new List<KeyValuePair<NumberFormatInfo, string>>{
         new KeyValuePair<NumberFormatInfo, string>(NumberFormatInfo.GetInstance(new CultureInfo("de-DE")), ", (Comma)"),
         new KeyValuePair<NumberFormatInfo, string>(NumberFormatInfo.InvariantInfo, ". (Period)" )
     };
 
-    private static readonly List<KeyValuePair<Encoding, string>> POSSIBLE_ENCODINGS =
+    private static readonly List<KeyValuePair<Encoding, string>> PossibleEncodings =
       new List<KeyValuePair<Encoding, string>> {
         new KeyValuePair<Encoding, string>(Encoding.Default, "Default"),
         new KeyValuePair<Encoding, string>(Encoding.ASCII, "ASCII"),
@@ -75,7 +75,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
       }
     }
 
-    public DataAnalysisCSVFormat CSVFormat {
+    public DataAnalysisCSVFormat CsvFormat {
       get {
         return new DataAnalysisCSVFormat() {
           Separator = (char)SeparatorComboBox.SelectedValue,
@@ -90,36 +90,36 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
     public DataAnalysisImportDialog() {
       InitializeComponent();
 
-      SeparatorComboBox.DataSource = POSSIBLE_SEPARATORS;
+      SeparatorComboBox.DataSource = PossibleSeparators;
       SeparatorComboBox.ValueMember = "Key";
       SeparatorComboBox.DisplayMember = "Value";
-      DecimalSeparatorComboBox.DataSource = POSSIBLE_DECIMAL_SEPARATORS;
+      DecimalSeparatorComboBox.DataSource = PossibleDecimalSeparators;
       DecimalSeparatorComboBox.ValueMember = "Key";
       DecimalSeparatorComboBox.DisplayMember = "Value";
-      DateTimeFormatComboBox.DataSource = POSSIBLE_DATETIME_FORMATS;
+      DateTimeFormatComboBox.DataSource = PossibleDatetimeFormats;
       DateTimeFormatComboBox.ValueMember = "Key";
       DateTimeFormatComboBox.DisplayMember = "Value";
-      EncodingComboBox.DataSource = POSSIBLE_ENCODINGS;
+      EncodingComboBox.DataSource = PossibleEncodings;
       EncodingComboBox.ValueMember = "Key";
       EncodingComboBox.DisplayMember = "Value";
 
 
       // set default values based on the current culture
-      var separator = POSSIBLE_SEPARATORS.Where(n => n.Value.Substring(0, 1) == CultureInfo.CurrentCulture.TextInfo.ListSeparator);
+      var separator = PossibleSeparators.Where(n => n.Value.Substring(0, 1) == CultureInfo.CurrentCulture.TextInfo.ListSeparator).ToArray();
       if (separator.Any())
         SeparatorComboBox.SelectedItem = separator.First();
 
-      var decimalSeparator = POSSIBLE_DECIMAL_SEPARATORS.Where(n => n.Value.Substring(0,1) == CultureInfo.CurrentCulture.NumberFormat.CurrencyDecimalSeparator);
+      var decimalSeparator = PossibleDecimalSeparators.Where(n => n.Value.Substring(0,1) == CultureInfo.CurrentCulture.NumberFormat.CurrencyDecimalSeparator).ToArray();
       if (decimalSeparator.Any())
         DecimalSeparatorComboBox.SelectedItem = decimalSeparator.First();
     }
 
-    private void TrainingTestTrackBar_ValueChanged(object sender, System.EventArgs e) {
+    private void TrainingTestTrackBar_ValueChanged(object sender, EventArgs e) {
       TrainingLabel.Text = "Training: " + TrainingTestTrackBar.Value + " %";
       TestLabel.Text = "Test: " + (TrainingTestTrackBar.Maximum - TrainingTestTrackBar.Value) + " %";
     }
 
-    protected virtual void OpenFileButtonClick(object sender, System.EventArgs e) {
+    protected virtual void OpenFileButtonClick(object sender, EventArgs e) {
       if (openFileDialog.ShowDialog(this) != DialogResult.OK) return;
 
       SeparatorComboBox.Enabled = true;
@@ -127,37 +127,37 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
       DateTimeFormatComboBox.Enabled = true;
       EncodingComboBox.Enabled = true;
       ProblemTextBox.Text = openFileDialog.FileName;
-      TableFileParser csvParser = new TableFileParser();
+      var csvParser = new TableFileParser();
       CheckboxColumnNames.Checked = csvParser.AreColumnNamesInFirstLine(ProblemTextBox.Text,
                                                                       (NumberFormatInfo)DecimalSeparatorComboBox.SelectedValue,
                                                                       (DateTimeFormatInfo)DateTimeFormatComboBox.SelectedValue,
                                                                       (char)SeparatorComboBox.SelectedValue);
-      ParseCSVFile();
+      ParseCsvFile();
     }
 
-    protected virtual void CSVFormatComboBoxSelectionChangeCommitted(object sender, EventArgs e) {
+    protected virtual void CsvFormatComboBoxSelectionChangeCommitted(object sender, EventArgs e) {
       if (string.IsNullOrEmpty(ProblemTextBox.Text)) return;
 
-      ParseCSVFile();
+      ParseCsvFile();
     }
 
     protected virtual void CheckboxColumnNames_CheckedChanged(object sender, EventArgs e) {
       if (string.IsNullOrEmpty(ProblemTextBox.Text)) return;
 
-      ParseCSVFile();
+      ParseCsvFile();
     }
 
-    protected void ParseCSVFile() {
+    protected void ParseCsvFile() {
       PreviewDatasetMatrix.Content = null;
       try {
-        TableFileParser csvParser = new TableFileParser();
+        var csvParser = new TableFileParser();
         csvParser.Encoding = (Encoding)EncodingComboBox.SelectedValue;
         csvParser.Parse(ProblemTextBox.Text,
                         (NumberFormatInfo)DecimalSeparatorComboBox.SelectedValue,
                         (DateTimeFormatInfo)DateTimeFormatComboBox.SelectedValue,
                         (char)SeparatorComboBox.SelectedValue,
                         CheckboxColumnNames.Checked, lineLimit: 500);
-        IEnumerable<string> variableNamesWithType = GetVariableNamesWithType(csvParser);
+        var variableNamesWithType = GetVariableNamesWithType(csvParser);
         PreviewDatasetMatrix.Content = new Dataset(variableNamesWithType, csvParser.Values);
 
         CheckAdditionalConstraints(csvParser);
@@ -183,26 +183,30 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
       }
     }
 
-    private IEnumerable<string> GetVariableNamesWithType(TableFileParser csvParser) {
+    private static IEnumerable<string> GetVariableNamesWithType(TableFileParser csvParser) {
       IList<string> variableNamesWithType = csvParser.VariableNames.ToList();
-      for (int i = 0; i < csvParser.Values.Count; i++) {
-        if (csvParser.Values[i] is List<double>) {
-          variableNamesWithType[i] += " (Double)";
-        } else if (csvParser.Values[i] is List<string>) {
-          variableNamesWithType[i] += " (String)";
-        } else if (csvParser.Values[i] is List<DateTime>) {
-          variableNamesWithType[i] += " (DateTime)";
-        } else {
-          throw new ArgumentException("The variable values must be of type List<double>, List<string> or List<DateTime>");
+      for (var i = 0; i < csvParser.Values.Count; i++) {
+        switch (csvParser.Values[i]) {
+          case List<double> _:
+            variableNamesWithType[i] += " (Double)";
+            break;
+          case List<string> _:
+            variableNamesWithType[i] += " (String)";
+            break;
+          case List<DateTime> _:
+            variableNamesWithType[i] += " (DateTime)";
+            break;
+          default:
+            throw new ArgumentException("The variable values must be of type List<double>, List<string> or List<DateTime>");
         }
       }
       return variableNamesWithType;
     }
 
     protected void ControlToolTip_DoubleClick(object sender, EventArgs e) {
-      Control control = sender as Control;
+      var control = sender as Control;
       if (control != null) {
-        using (TextDialog dialog = new TextDialog(control.Name, (string)control.Tag, true)) {
+        using (var dialog = new TextDialog(control.Name, (string)control.Tag, true)) {
           dialog.ShowDialog(this);
         }
       }

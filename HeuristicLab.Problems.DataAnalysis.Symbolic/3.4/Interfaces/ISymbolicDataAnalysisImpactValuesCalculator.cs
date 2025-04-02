@@ -8,5 +8,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   public interface ISymbolicDataAnalysisSolutionImpactValuesCalculator : IItem {
     void CalculateImpactAndReplacementValues(ISymbolicDataAnalysisModel model, ISymbolicExpressionTreeNode node, IDataAnalysisProblemData problemData,
       IEnumerable<int> rows, out double impactValue, out double replacementValue, out double newQualityForImpactsCalculation, double qualityForImpactsCalculation = double.NaN);
+
+    double CalculateQualityForImpacts(ISymbolicDataAnalysisModel model, IDataAnalysisProblemData problemData, IEnumerable<int> rows);
+
   }
 }

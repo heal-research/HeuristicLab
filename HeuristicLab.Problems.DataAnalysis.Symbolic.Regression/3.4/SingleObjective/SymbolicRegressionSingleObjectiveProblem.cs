@@ -80,7 +80,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     private void AfterDeserialization() {
       RegisterEventHandlers();
       // compatibility
-      bool changed = false;
+      var changed = false;
       if (!Operators.OfType<SymbolicRegressionSingleObjectiveTrainingParetoBestSolutionAnalyzer>().Any()) {
         Operators.Add(new SymbolicRegressionSingleObjectiveTrainingParetoBestSolutionAnalyzer());
         changed = true;

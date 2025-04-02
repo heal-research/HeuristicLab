@@ -49,60 +49,61 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
       var tempModelNode = (ISymbolicExpressionTreeNode)cloner.GetClone(node);
       var tempModelParentNode = tempModelNode.Parent;
-      int i = tempModelParentNode.IndexOfSubtree(tempModelNode);
-
-      double bestReplacementValue = 0.0;
-      double bestImpactValue = double.PositiveInfinity;
+      var i = tempModelParentNode.IndexOfSubtree(tempModelNode);
+      var bestReplacementValue = 0.0;
+      var bestImpactValue = double.PositiveInfinity;
       newQualityForImpactsCalculation = qualityForImpactsCalculation; // initialize
       // try the potentially reasonable replacement values and use the best one
-      foreach (var repValue in CalculateReplacementValues(node, model.SymbolicExpressionTree, model.Interpreter, problemData.Dataset, rows)) {
+      foreach (var repValue in 
+               CalculateReplacementValues(node, model.SymbolicExpressionTree, model.Interpreter, problemData.Dataset, rows)) {
         tempModelParentNode.RemoveSubtree(i);
-
         var numberNode = new NumberTreeNode(new Number()) { Value = repValue };
         tempModelParentNode.InsertSubtree(i, numberNode);
-
         newQualityForImpactsCalculation = CalculateQualityForImpacts(tempModel, problemData, rows);
 
         impactValue = qualityForImpactsCalculation - newQualityForImpactsCalculation;
-        if (impactValue < bestImpactValue) {
-          bestImpactValue = impactValue;
-          bestReplacementValue = repValue;
-        }
+        if (impactValue >= bestImpactValue) continue;
+        bestImpactValue = impactValue;
+        bestReplacementValue = repValue;
       }
 
       replacementValue = bestReplacementValue;
       impactValue = bestImpactValue;
     }
 
-    protected abstract double CalculateQualityForImpacts(ISymbolicDataAnalysisModel model, IDataAnalysisProblemData problemData, IEnumerable<int> rows);
+    public abstract double CalculateQualityForImpacts(ISymbolicDataAnalysisModel model, IDataAnalysisProblemData problemData, IEnumerable<int> rows);
 
     protected IEnumerable<double> CalculateReplacementValues(ISymbolicExpressionTreeNode node, ISymbolicExpressionTree sourceTree, ISymbolicDataAnalysisExpressionTreeInterpreter interpreter,
       IDataset dataset, IEnumerable<int> rows) {
-      var numberNode = node as INumericTreeNode;
-      BinaryFactorVariableTreeNode binaryFactorNode = node as BinaryFactorVariableTreeNode;
-      FactorVariableTreeNode factorNode = node as FactorVariableTreeNode;
-      if (numberNode != null) {
-        yield return numberNode.Value;
-      } else if (binaryFactorNode != null) {
-        // valid replacements are either all off or all on
-        yield return 0;
-        yield return 1;
-      } else if (factorNode != null) {
-        foreach (var w in factorNode.Weights) yield return w;
-        yield return 0.0;
-      } else {
-        var rootSymbol = new ProgramRootSymbol().CreateTreeNode();
-        var startSymbol = new StartSymbol().CreateTreeNode();
-        rootSymbol.AddSubtree(startSymbol);
-        startSymbol.AddSubtree((ISymbolicExpressionTreeNode)node.Clone());
-
-        var tempTree = new SymbolicExpressionTree(rootSymbol);
-        // clone ADFs of source tree
-        for (int i = 1; i < sourceTree.Root.SubtreeCount; i++) {
-          tempTree.Root.AddSubtree((ISymbolicExpressionTreeNode)sourceTree.Root.GetSubtree(i).Clone());
+      switch (node) {
+        case INumericTreeNode numberNode:
+          yield return numberNode.Value;
+          break;
+        case BinaryFactorVariableTreeNode _:
+          // valid replacements are either all off or all on
+          yield return 0;
+          yield return 1;
+          break;
+        case FactorVariableTreeNode factorNode: {
+          foreach (var w in factorNode.Weights) yield return w;
+          yield return 0.0;
+          break;
         }
-        yield return interpreter.GetSymbolicExpressionTreeValues(tempTree, dataset, rows).Median();
-        yield return interpreter.GetSymbolicExpressionTreeValues(tempTree, dataset, rows).Average(); // TODO perf
+        default: {
+          var rootSymbol = new ProgramRootSymbol().CreateTreeNode();
+          var startSymbol = new StartSymbol().CreateTreeNode();
+          rootSymbol.AddSubtree(startSymbol);
+          startSymbol.AddSubtree((ISymbolicExpressionTreeNode)node.Clone());
+
+          var tempTree = new SymbolicExpressionTree(rootSymbol);
+          // clone ADFs of source tree
+          for (var i = 1; i < sourceTree.Root.SubtreeCount; i++) {
+            tempTree.Root.AddSubtree((ISymbolicExpressionTreeNode)sourceTree.Root.GetSubtree(i).Clone());
+          }
+          yield return interpreter.GetSymbolicExpressionTreeValues(tempTree, dataset, rows).Median();
+          yield return interpreter.GetSymbolicExpressionTreeValues(tempTree, dataset, rows).Average(); // TODO perf
+          break;
+        }
       }
     }
   }

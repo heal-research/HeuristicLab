@@ -171,7 +171,7 @@ namespace HeuristicLab.DataPreprocessing.Views {
             var progress = Progress.Show(Content, "Loading problem instance.");
             instanceProvider.ProgressChanged += (o, args) => { progress.ProgressValue = args.ProgressPercentage / 100.0; };
 
-            instance = instanceProvider.ImportData(importDialog.Path, getImportType(importDialog), importDialog.CSVFormat);
+            instance = instanceProvider.ImportData(importDialog.Path, getImportType(importDialog), importDialog.CsvFormat);
           } catch (IOException ex) {
             MessageBox.Show(string.Format("There was an error parsing the file: {0}", Environment.NewLine + ex.Message), "Error while parsing", MessageBoxButtons.OK, MessageBoxIcon.Error);
             Progress.Hide(Content);

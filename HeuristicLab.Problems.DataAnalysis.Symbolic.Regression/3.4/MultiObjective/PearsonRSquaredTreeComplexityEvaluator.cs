@@ -46,7 +46,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     public override IEnumerable<bool> Maximization { get { return new bool[2] { true, false }; } } // maximize R² and minimize model complexity 
 
     public override IOperation InstrumentedApply() {
-      IEnumerable<int> rows = GenerateRowsToEvaluate();
+      var rows = GenerateRowsToEvaluate();
       var solution = SymbolicExpressionTreeParameter.ActualValue;
       var problemData = ProblemDataParameter.ActualValue;
       var interpreter = SymbolicDataAnalysisTreeInterpreterParameter.ActualValue;
@@ -57,13 +57,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
         ParameterOptimizationEvaluator.OptimizeParameters(solution, problemData, rows, rowWeights: Enumerable.Empty<double>(), ParameterOptimizationIterations, ParameterOptimizationUpdateVariableWeights);
       }
 
-      double[] qualities = Calculate(interpreter, solution, estimationLimits.Lower, estimationLimits.Upper, problemData, rows, applyLinearScaling, DecimalPlaces);
+      var qualities = Calculate(interpreter, solution, estimationLimits.Lower, estimationLimits.Upper, problemData, rows, applyLinearScaling, DecimalPlaces);
       QualitiesParameter.ActualValue = new DoubleArray(qualities);
       return base.InstrumentedApply();
     }
 
     public static double[] Calculate(ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, ISymbolicExpressionTree tree, double lowerEstimationLimit, double upperEstimationLimit, IRegressionProblemData problemData, IEnumerable<int> rows, bool applyLinearScaling, int decimalPlaces) {
-      double r2 = SymbolicRegressionSingleObjectivePearsonRSquaredEvaluator.Calculate(
+      var r2 = SymbolicRegressionSingleObjectivePearsonRSquaredEvaluator.Calculate(
          tree, problemData, rows,
          interpreter, applyLinearScaling,
          lowerEstimationLimit, upperEstimationLimit);
@@ -78,7 +78,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       ApplyLinearScalingParameter.ExecutionContext = context;
       // DecimalPlaces parameter is a FixedValueParameter and doesn't need the context.
 
-      double[] quality = Calculate(SymbolicDataAnalysisTreeInterpreterParameter.ActualValue, tree, EstimationLimitsParameter.ActualValue.Lower, EstimationLimitsParameter.ActualValue.Upper, problemData, rows, ApplyLinearScalingParameter.ActualValue.Value, DecimalPlaces);
+      var quality = Calculate(SymbolicDataAnalysisTreeInterpreterParameter.ActualValue, tree, EstimationLimitsParameter.ActualValue.Lower, EstimationLimitsParameter.ActualValue.Upper, problemData, rows, ApplyLinearScalingParameter.ActualValue.Value, DecimalPlaces);
 
       SymbolicDataAnalysisTreeInterpreterParameter.ExecutionContext = null;
       EstimationLimitsParameter.ExecutionContext = null;

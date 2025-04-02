@@ -43,68 +43,49 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     private const string FunctionEvaluationsResultParameterName = "Function evaluations";
     private const string GradientEvaluationsResultParameterName = "Gradient evaluations";
 
-    public IFixedValueParameter<IntValue> IterationsParameter {
-      get { return (IFixedValueParameter<IntValue>)Parameters[IterationsParameterName]; }
-    }
-    public IFixedValueParameter<PercentValue> ProbabilityParameter {
-      get { return (IFixedValueParameter<PercentValue>)Parameters[ProbabilityParameterName]; }
-    }
-    public IFixedValueParameter<PercentValue> RowsPercentageParameter {
-      get { return (IFixedValueParameter<PercentValue>)Parameters[RowsPercentageParameterName]; }
-    }
-    public IFixedValueParameter<BoolValue> UpdateParametersParameter {
-      get { return (IFixedValueParameter<BoolValue>)Parameters[UpdateParametersParameterName]; }
-    }
-    public IFixedValueParameter<BoolValue> UpdateVariableWeightsParameter {
-      get { return (IFixedValueParameter<BoolValue>)Parameters[UpdateVariableWeightsParameterName]; }
-    }
-    public IFixedValueParameter<BoolValue> CountEvaluationsParameter {
-      get { return (IFixedValueParameter<BoolValue>)Parameters[CountEvaluationsParameterName]; }
-    }
-    public IResultParameter<IntValue> FunctionEvaluationsResultParameter {
-      get { return (IResultParameter<IntValue>)Parameters[FunctionEvaluationsResultParameterName]; }
-    }
-    public IResultParameter<IntValue> GradientEvaluationsResultParameter {
-      get { return (IResultParameter<IntValue>)Parameters[GradientEvaluationsResultParameterName]; }
-    }
+    public IFixedValueParameter<IntValue> IterationsParameter => (IFixedValueParameter<IntValue>)Parameters[IterationsParameterName];
+    public IFixedValueParameter<PercentValue> ProbabilityParameter => (IFixedValueParameter<PercentValue>)Parameters[ProbabilityParameterName];
+    public IFixedValueParameter<PercentValue> RowsPercentageParameter => (IFixedValueParameter<PercentValue>)Parameters[RowsPercentageParameterName];
+    public IFixedValueParameter<BoolValue> UpdateParametersParameter => (IFixedValueParameter<BoolValue>)Parameters[UpdateParametersParameterName];
+    public IFixedValueParameter<BoolValue> UpdateVariableWeightsParameter => (IFixedValueParameter<BoolValue>)Parameters[UpdateVariableWeightsParameterName];
+    public IFixedValueParameter<BoolValue> CountEvaluationsParameter => (IFixedValueParameter<BoolValue>)Parameters[CountEvaluationsParameterName];
+    public IResultParameter<IntValue> FunctionEvaluationsResultParameter => (IResultParameter<IntValue>)Parameters[FunctionEvaluationsResultParameterName];
+    public IResultParameter<IntValue> GradientEvaluationsResultParameter => (IResultParameter<IntValue>)Parameters[GradientEvaluationsResultParameterName];
 
     public int Iterations {
-      get { return IterationsParameter.Value.Value; }
-      set { IterationsParameter.Value.Value = value; }
+      get => IterationsParameter.Value.Value;
+      set => IterationsParameter.Value.Value = value;
     }
     public double Probability {
-      get { return ProbabilityParameter.Value.Value; }
-      set { ProbabilityParameter.Value.Value = value; }
+      get => ProbabilityParameter.Value.Value;
+      set => ProbabilityParameter.Value.Value = value;
     }
     public double RowsPercentage {
-      get { return RowsPercentageParameter.Value.Value; }
-      set { RowsPercentageParameter.Value.Value = value; }
+      get => RowsPercentageParameter.Value.Value;
+      set => RowsPercentageParameter.Value.Value = value;
     }
     public bool UpdateParameters {
-      get { return UpdateParametersParameter.Value.Value; }
-      set { UpdateParametersParameter.Value.Value = value; }
+      get => UpdateParametersParameter.Value.Value;
+      set => UpdateParametersParameter.Value.Value = value;
     }
     public bool UpdateVariableWeights {
-      get { return UpdateVariableWeightsParameter.Value.Value; }
-      set { UpdateVariableWeightsParameter.Value.Value = value; }
+      get => UpdateVariableWeightsParameter.Value.Value;
+      set => UpdateVariableWeightsParameter.Value.Value = value;
     }
     public bool CountEvaluations {
-      get { return CountEvaluationsParameter.Value.Value; }
-      set { CountEvaluationsParameter.Value.Value = value; }
+      get => CountEvaluationsParameter.Value.Value;
+      set => CountEvaluationsParameter.Value.Value = value;
     }
 
 
-    public override bool Maximization {
-      get { return false; }
-    }
+    public override bool Maximization => false;
 
     [StorableConstructor]
     protected ParameterOptimizationEvaluator(StorableConstructorFlag _) : base(_) { }
     protected ParameterOptimizationEvaluator(ParameterOptimizationEvaluator original, Cloner cloner)
       : base(original, cloner) {
     }
-    public ParameterOptimizationEvaluator()
-      : base() {
+    public ParameterOptimizationEvaluator() {
       Parameters.Add(new FixedValueParameter<IntValue>(IterationsParameterName, "Determines how many iterations should be calculated while optimizing the parameters of a symbolic expression tree (0 indicates other or default stopping criterion).", new IntValue(10)));
       Parameters.Add(new FixedValueParameter<PercentValue>(ProbabilityParameterName, "Determines the probability that the parameters are optimized", new PercentValue(1)));
       Parameters.Add(new FixedValueParameter<PercentValue>(RowsPercentageParameterName, "Determines the percentage of the rows which should be used for parameter optimization", new PercentValue(1)));
@@ -136,26 +117,25 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
         Parameters.Add(new ResultParameter<IntValue>(GradientEvaluationsResultParameterName, "The number of gradient evaluations performed by the evaluator", "Results", new IntValue()));
     }
 
-    private static readonly object locker = new object();
+    private static readonly object Locker = new();
     public override IOperation InstrumentedApply() {
       var tree = SymbolicExpressionTreeParameter.ActualValue;
-      double quality;
       if (RandomParameter.ActualValue.NextDouble() < Probability) {
         var counter = new EvaluationsCounter();
         var constOptRows = GenerateRowsToEvaluate(RowsPercentage);
         OptimizeParameters(tree, ProblemDataParameter.ActualValue, constOptRows,
-           rowWeights: Enumerable.Empty<double>(), Iterations,
+           rowWeights: [], Iterations,
            updateVariableWeights: UpdateVariableWeights, counter: counter);
 
         if (CountEvaluations) {
-          lock (locker) {
+          lock (Locker) {
             FunctionEvaluationsResultParameter.ActualValue.Value += counter.FunctionEvaluations;
             GradientEvaluationsResultParameter.ActualValue.Value += counter.GradientEvaluations;
           }
         }
       }
 
-      quality = Evaluate(tree, ProblemDataParameter.ActualValue, GenerateRowsToEvaluate(),
+      var quality = Evaluate(tree, ProblemDataParameter.ActualValue, GenerateRowsToEvaluate(),
         SymbolicDataAnalysisTreeInterpreterParameter.ActualValue, ApplyLinearScalingParameter.ActualValue.Value,
         EstimationLimitsParameter.ActualValue.Lower, EstimationLimitsParameter.ActualValue.Upper);
 
@@ -191,25 +171,18 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     }
 
     public class EvaluationsCounter {
-      public int FunctionEvaluations = 0;
-      public int GradientEvaluations = 0;
+      public int FunctionEvaluations;
+      public int GradientEvaluations;
     }
 
     public static bool CanOptimizeParameters(ISymbolicExpressionTree tree) {
       return ParameterOptimizer.CanOptimizeParameters(tree);
     }
 
-    public static void OptimizeParamters(ISymbolicExpressionTree tree, IRegressionProblemData problemData, IEnumerable<int> rows, int maxIterations) {
-      OptimizeParameters(tree, problemData, rows, rowWeights: null, maxIterations);
-    }
-
     public static void OptimizeParameters(
       ISymbolicExpressionTree tree, IRegressionProblemData problemData, IEnumerable<int> rows, IEnumerable<double> rowWeights, int maxIterations,
       bool updateVariableWeights = true, EvaluationsCounter counter = null) {
-
       var nodesToOptimize = new HashSet<ISymbolicExpressionTreeNode>();
-      var originalNodeValues = new Dictionary<ISymbolicExpressionTreeNode, double>();
-
       foreach (var node in tree.IterateNodesPrefix().OfType<SymbolicExpressionTreeTerminalNode>()) {
         if (node is VariableTreeNode && !updateVariableWeights
           || node is ConstantTreeNode  // do not optimize constants
@@ -218,11 +191,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
           continue;
         }
         nodesToOptimize.Add(node);
-        if (node is NumberTreeNode number) {
-          originalNodeValues[node] = number.Value;
-        } else if (node is VariableTreeNode variable) {
-          originalNodeValues[node] = variable.Weight;
-        }
       } // end foreach node
 
       var options = new SolverOptions {
@@ -244,10 +212,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     private static void UpdateNodeValues(IDictionary<ISymbolicExpressionTreeNode, double> values) {
       foreach (var item in values) {
         var node = item.Key;
-        if (node is NumberTreeNode number) {
-          number.Value = item.Value;
-        } else if (node is VariableTreeNode variable) {
-          variable.Weight = item.Value;
+        switch (node) {
+          case NumberTreeNode number:
+            number.Value = item.Value;
+            break;
+          case VariableTreeNode variable:
+            variable.Weight = item.Value;
+            break;
         }
       }
     }

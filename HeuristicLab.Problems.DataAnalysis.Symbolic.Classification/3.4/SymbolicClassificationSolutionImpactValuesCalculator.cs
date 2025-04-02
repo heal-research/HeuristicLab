@@ -37,7 +37,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
     [StorableConstructor]
     protected SymbolicClassificationSolutionImpactValuesCalculator(StorableConstructorFlag _) : base(_) { }
 
-    protected override double CalculateQualityForImpacts(ISymbolicDataAnalysisModel model, IDataAnalysisProblemData problemData, IEnumerable<int> rows) {
+    public override double CalculateQualityForImpacts(ISymbolicDataAnalysisModel model, IDataAnalysisProblemData problemData, IEnumerable<int> rows) {
       var classificationModel = (ISymbolicClassificationModel)model;
       var classificationProblemData = (IClassificationProblemData)problemData;
       OnlineCalculatorError errorState;

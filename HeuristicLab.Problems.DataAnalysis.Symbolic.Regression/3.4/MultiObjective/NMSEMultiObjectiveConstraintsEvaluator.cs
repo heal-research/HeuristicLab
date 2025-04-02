@@ -167,7 +167,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       double nmse;
 
       var boundedEstimatedValues = estimatedValues.LimitToRange(lowerEstimationLimit, upperEstimationLimit);
-      nmse = OnlineNormalizedMeanSquaredErrorCalculator.Calculate(targetValues, boundedEstimatedValues, out OnlineCalculatorError errorState);
+      nmse = OnlineNormalizedMeanSquaredErrorCalculator.Calculate(targetValues, boundedEstimatedValues, out var errorState);
 
       if (errorState != OnlineCalculatorError.None) nmse = 1.0;
 

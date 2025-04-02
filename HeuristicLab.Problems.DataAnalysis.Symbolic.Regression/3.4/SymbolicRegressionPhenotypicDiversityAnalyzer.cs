@@ -88,8 +88,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     }
 
     public override IOperation Apply() {
-      int updateInterval = UpdateIntervalParameter.Value.Value;
-      IntValue updateCounter = UpdateCounterParameter.ActualValue;
+      var updateInterval = UpdateIntervalParameter.Value.Value;
+      var updateCounter = UpdateCounterParameter.ActualValue;
 
       if (updateCounter == null) {
         updateCounter = new IntValue(updateInterval);

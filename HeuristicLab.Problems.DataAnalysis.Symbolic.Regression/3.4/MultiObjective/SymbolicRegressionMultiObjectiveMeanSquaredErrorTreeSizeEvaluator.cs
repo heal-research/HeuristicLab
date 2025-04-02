@@ -46,7 +46,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     public override IEnumerable<bool> Maximization { get { return new bool[2] { false, false }; } }
 
     public override IOperation InstrumentedApply() {
-      IEnumerable<int> rows = GenerateRowsToEvaluate();
+      var rows = GenerateRowsToEvaluate();
       var tree = SymbolicExpressionTreeParameter.ActualValue;
       var problemData = ProblemDataParameter.ActualValue;
 
@@ -54,7 +54,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
         ParameterOptimizationEvaluator.OptimizeParameters(tree, problemData, rows, rowWeights: Enumerable.Empty<double>(), ParameterOptimizationIterations, ParameterOptimizationUpdateVariableWeights);
       }
 
-      double[] qualities = Calculate(
+      var qualities = Calculate(
         tree, ProblemDataParameter.ActualValue,
         rows, SymbolicDataAnalysisTreeInterpreterParameter.ActualValue,
         ApplyLinearScalingParameter.ActualValue.Value,
@@ -90,7 +90,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       EstimationLimitsParameter.ExecutionContext = context;
       ApplyLinearScalingParameter.ExecutionContext = context;
 
-      double[] quality = Calculate(
+      var quality = Calculate(
         tree, problemData, rows,
         SymbolicDataAnalysisTreeInterpreterParameter.ActualValue,
         ApplyLinearScalingParameter.ActualValue.Value,

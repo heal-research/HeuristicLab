@@ -206,7 +206,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       var tree = SymbolicExpressionTreeParameter.ActualValue;
       double quality;
       if (RandomParameter.ActualValue.NextDouble() < ParameterOptimizationProbability.Value) {
-        IEnumerable<int> parameterOptimizationRows = GenerateRowsToEvaluate(ParameterOptimizationRowsPercentage.Value);
+        var parameterOptimizationRows = GenerateRowsToEvaluate(ParameterOptimizationRowsPercentage.Value);
         var counter = new EvaluationsCounter();
         quality = OptimizeParameters(SymbolicDataAnalysisTreeInterpreterParameter.ActualValue, tree, ProblemDataParameter.ActualValue,
            parameterOptimizationRows, ApplyLinearScalingParameter.ActualValue.Value, ParameterOptimizationIterations.Value, updateVariableWeights: UpdateVariableWeights, lowerEstimationLimit: EstimationLimitsParameter.ActualValue.Lower, upperEstimationLimit: EstimationLimitsParameter.ActualValue.Upper, updateParametersInTree: UpdateParametersInTree, counter: counter);
@@ -252,7 +252,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       double upperEstimationLimit = double.MaxValue) {
 
       var random = RandomParameter.ActualValue;
-      double quality = double.NaN;
+      var quality = double.NaN;
 
       var propability = random.NextDouble();
       if (propability < ParameterOptimizationProbability.Value) {
@@ -287,7 +287,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       // Pearson R² evaluator is used on purpose instead of the const-opt evaluator, 
       // because Evaluate() is used to get the quality of evolved models on 
       // different partitions of the dataset (e.g., best validation model)
-      double r2 = SymbolicRegressionSingleObjectivePearsonRSquaredEvaluator.Calculate(
+      var r2 = SymbolicRegressionSingleObjectivePearsonRSquaredEvaluator.Calculate(
         tree, problemData, rows,
         SymbolicDataAnalysisTreeInterpreterParameter.ActualValue,
         ApplyLinearScalingParameter.ActualValue.Value,
@@ -340,7 +340,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
         c = (double[])initialParameters.Clone();
       }
 
-      double originalQuality = SymbolicRegressionSingleObjectivePearsonRSquaredEvaluator.Calculate(
+      var originalQuality = SymbolicRegressionSingleObjectivePearsonRSquaredEvaluator.Calculate(
         tree, problemData, rows,
         interpreter, applyLinearScaling,
         lowerEstimationLimit,
@@ -353,11 +353,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       alglib.lsfitreport rep;
       int retVal;
 
-      IDataset ds = problemData.Dataset;
-      double[,] x = new double[rows.Count(), parameters.Count];
-      int row = 0;
+      var ds = problemData.Dataset;
+      var x = new double[rows.Count(), parameters.Count];
+      var row = 0;
       foreach (var r in rows) {
-        int col = 0;
+        var col = 0;
         foreach (var info in parameterEntries) {
           if (ds.VariableHasType<double>(info.variableName)) {
             x[row, col] = ds.GetDoubleValue(info.variableName, r + info.lag);
@@ -368,13 +368,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
         }
         row++;
       }
-      double[] y = ds.GetDoubleValues(problemData.TargetVariable, rows).ToArray();
-      int n = x.GetLength(0);
-      int m = x.GetLength(1);
-      int k = c.Length;
+      var y = ds.GetDoubleValues(problemData.TargetVariable, rows).ToArray();
+      var n = x.GetLength(0);
+      var m = x.GetLength(1);
+      var k = c.Length;
 
-      alglib.ndimensional_pfunc function_cx_1_func = CreatePFunc(func);
-      alglib.ndimensional_pgrad function_cx_1_grad = CreatePGrad(func_grad);
+      var function_cx_1_func = CreatePFunc(func);
+      var function_cx_1_grad = CreatePGrad(func_grad);
       alglib.ndimensional_rep xrep = (p, f, obj) => iterationCallback(p, f, obj);
 
       try {
@@ -417,11 +417,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     }
 
     private static void UpdateParameters(ISymbolicExpressionTree tree, double[] parameters, bool updateVariableWeights) {
-      int i = 0;
+      var i = 0;
       foreach (var node in tree.Root.IterateNodesPrefix().OfType<SymbolicExpressionTreeTerminalNode>()) {
-        NumberTreeNode numberTreeNode = node as NumberTreeNode;
-        VariableTreeNodeBase variableTreeNodeBase = node as VariableTreeNodeBase;
-        FactorVariableTreeNode factorVarTreeNode = node as FactorVariableTreeNode;
+        var numberTreeNode = node as NumberTreeNode;
+        var variableTreeNodeBase = node as VariableTreeNodeBase;
+        var factorVarTreeNode = node as FactorVariableTreeNode;
         if (numberTreeNode != null) {
           if (numberTreeNode.Parent.Symbol is Power
               && numberTreeNode.Parent.GetSubtree(1) == numberTreeNode) continue; // exponents in powers are not optimized (see TreeToAutoDiffTermConverter)
@@ -429,7 +429,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
         } else if (updateVariableWeights && variableTreeNodeBase != null)
           variableTreeNodeBase.Weight = parameters[i++];
         else if (factorVarTreeNode != null) {
-          for (int j = 0; j < factorVarTreeNode.Weights.Length; j++)
+          for (var j = 0; j < factorVarTreeNode.Weights.Length; j++)
             factorVarTreeNode.Weights[j] = parameters[i++];
         }
       }

@@ -96,9 +96,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       ILookupParameter<DoubleValue> testQualityParam = null;
       // store actual names of parameter because they are changed below
       trainingQualityParam = TrainingQualityParameter;
-      string prevTrainingQualityParamName = trainingQualityParam.ActualName;
+      var prevTrainingQualityParamName = trainingQualityParam.ActualName;
       testQualityParam = TestQualityParameter;
-      string prevTestQualityParamName = testQualityParam.ActualName;
+      var prevTestQualityParamName = testQualityParam.ActualName;
       foreach (var result in results.Where(r => r.Value is IRegressionSolution)) {
         var solution = (IRegressionSolution)result.Value;
 

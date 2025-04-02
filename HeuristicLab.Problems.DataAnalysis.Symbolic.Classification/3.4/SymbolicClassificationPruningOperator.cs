@@ -32,7 +32,7 @@ using HEAL.Attic;
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
   [StorableType("F213025F-ACE7-4E43-A149-70C3AD824D19")]
   [Item("SymbolicClassificationPruningOperator", "An operator which prunes symbolic classificaton trees.")]
-  public class SymbolicClassificationPruningOperator : SymbolicDataAnalysisExpressionPruningOperator {
+  public class SymbolicClassificationPruningOperator : SymbolicDataAnalysisSingleObjectiveExpressionPruningOperator {
     private const string ModelCreatorParameterName = "ModelCreator";
     private const string EvaluatorParameterName = "Evaluator";
 

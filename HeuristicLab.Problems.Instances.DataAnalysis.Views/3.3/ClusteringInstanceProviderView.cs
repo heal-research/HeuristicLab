@@ -44,7 +44,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
       if (importTypeDialog.ShowDialog() == DialogResult.OK) {
         IClusteringProblemData instance = null;
         try {
-          instance = Content.ImportData(importTypeDialog.Path, importTypeDialog.ImportType, importTypeDialog.CSVFormat);
+          instance = Content.ImportData(importTypeDialog.Path, importTypeDialog.ImportType, importTypeDialog.CsvFormat);
         } catch (IOException ex) {
           ErrorWhileParsing(ex);
           return;

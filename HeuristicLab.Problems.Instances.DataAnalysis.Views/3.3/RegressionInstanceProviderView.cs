@@ -60,7 +60,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
               }
             };
 
-            instance = Content.ImportData(importTypeDialog.Path, importTypeDialog.ImportType, importTypeDialog.CSVFormat);
+            instance = Content.ImportData(importTypeDialog.Path, importTypeDialog.ImportType, importTypeDialog.CsvFormat);
           } catch (Exception ex) {
             ErrorWhileParsing(ex);
             return;

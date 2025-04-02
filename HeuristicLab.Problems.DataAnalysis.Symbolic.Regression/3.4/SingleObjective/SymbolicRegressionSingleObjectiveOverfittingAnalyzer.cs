@@ -74,18 +74,18 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     }
 
     public override IOperation Apply() {
-      IEnumerable<int> rows = GenerateRowsToEvaluate();
+      var rows = GenerateRowsToEvaluate();
       if (!rows.Any()) return base.Apply();
 
-      double[] trainingQuality = QualityParameter.ActualValue.Select(x => x.Value).ToArray();
+      var trainingQuality = QualityParameter.ActualValue.Select(x => x.Value).ToArray();
       var problemData = ProblemDataParameter.ActualValue;
       var evaluator = EvaluatorParameter.ActualValue;
       // evaluate on validation partition
-      IExecutionContext childContext = (IExecutionContext)ExecutionContext.CreateChildOperation(evaluator);
-      double[] validationQuality = SymbolicExpressionTree
-        .Select(t => evaluator.Evaluate(childContext, t, problemData, rows))
-        .ToArray();
-      double r = 0.0;
+      var childContext = (IExecutionContext)ExecutionContext.CreateChildOperation(evaluator);
+      var validationQuality = SymbolicExpressionTree
+                              .Select(t => evaluator.Evaluate(childContext, t, problemData, rows))
+                              .ToArray();
+      var r = 0.0;
       try {
         r = alglib.spearmancorr2(trainingQuality, validationQuality);
       }
