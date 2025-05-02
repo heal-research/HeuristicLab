@@ -402,3 +402,4 @@ FodyWeavers.xsd
 # JetBrains Rider
 *.sln.iml
 Google.ProtocolBuffers-2.4.1.473.dll
+HeuristicLab.EvolutionTracking/3.4/HeuristicLab.EvolutionTracking-3.4.csproj.DotSettings
